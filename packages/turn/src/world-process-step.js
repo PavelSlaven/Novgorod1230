@@ -4,7 +4,7 @@ import { turnFailure } from './errors.js';
 const REQUEST_KEYS = ['schema','request_id','party_state_version',
   'process_state_version','process_mode','process_kind','process',
   'current_timestamp','trigger','subject_state','environment_state',
-  'allowed_outcomes'];
+  'outcome_contract'];
 const PLAN_KEYS = ['schema','request_id','process_ref','process_state_version',
   'interpretation','process_outcome','affected_refs','fact_changes','reason_code'];
 const PROCESS_KEYS = ['process_ref','scope_ref','causal_basis_ref','status',
@@ -40,11 +40,18 @@ function validRequest(value) {
     && timestamp(value.current_timestamp)
     && ['start_attempt','actor_affected','subject_changed'].includes(value.trigger)
     && plain(value.subject_state) && plain(value.environment_state)
-    && Array.isArray(value.allowed_outcomes)
-    && value.allowed_outcomes.length > 0
-    && new Set(value.allowed_outcomes).size === value.allowed_outcomes.length
-    && value.allowed_outcomes.every((entry) =>
-      ['no_effect','start','continue','complete'].includes(entry));
+    && validOutcomeContract(value.outcome_contract);
+}
+
+function validOutcomeContract(value) {
+  if (!Array.isArray(value) || value.length === 0) return false;
+  const pairs = new Set();
+  return value.every((entry) => exact(entry,
+    ['process_outcome','reason_code','applicability'])
+    && ['no_effect','start','continue','complete'].includes(entry.process_outcome)
+    && text(entry.reason_code) && text(entry.applicability)
+    && !pairs.has(`${entry.process_outcome}\u0000${entry.reason_code}`)
+    && pairs.add(`${entry.process_outcome}\u0000${entry.reason_code}`));
 }
 
 function validProcess(value, stateVersion) {
@@ -80,7 +87,9 @@ export function validateWorldProcessStepPlan(value, request) {
       || value.process_state_version !== request.process_state_version
       || !exact(value.interpretation, ['grounded_transition'])
       || !text(value.interpretation.grounded_transition)
-      || !request.allowed_outcomes.includes(value.process_outcome)
+      || !request.outcome_contract.some((entry) =>
+        entry.process_outcome === value.process_outcome
+          && entry.reason_code === value.reason_code)
       || !Array.isArray(value.affected_refs)
       || new Set(value.affected_refs).size !== value.affected_refs.length
       || !Array.isArray(value.fact_changes) || value.fact_changes.length !== 0

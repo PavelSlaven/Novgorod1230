@@ -76,8 +76,8 @@ test('turn step model sends the validated request to the isolated planner role',
     'achieved direct result',
     'Focused inspect or search for hidden or new details uses discovery',
     'A reality_limited physical attempt uses the mapped moderate effort',
-    'absent spaceship is make_believe',
-    'create no spaceship or other entity',
+    'absent fantastical referent is make_believe',
+    'create no referent or other entity',
     'do not move the actor'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
 });
@@ -118,7 +118,8 @@ test('turn step planner prompt maps grounded and visible-look contracts',
         return { output: output() };
       } }
     });
-    await model(request());
+    const input = request();
+    await model(input);
     const mappings = JSON.parse(prompt.match(
       /Use these mappings[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
@@ -128,6 +129,28 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' },
       operations: [], check: null
     });
+    assert.deepEqual(mappings.impossible_absent_fantastical_referent, {
+      interpretation: { adaptation: 'make_believe' },
+      resolution: 'direct', goal_result: 'not_achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+      operations: [], check: null
+    });
+    assert.equal(validateTurnStepPlan({
+      schema: 'turn_step_plan_v1', request_id: input.request_id,
+      committed_state_version: input.committed_state_version,
+      working_revision: input.working_revision, step_index: input.step_index,
+      interpretation: { player_goal: input.root_player_action,
+        grounded_attempt: 'разыграть невозможное действие на месте',
+        ...mappings.impossible_absent_fantastical_referent.interpretation },
+      resolution: mappings.impossible_absent_fantastical_referent.resolution,
+      goal_result: mappings.impossible_absent_fantastical_referent.goal_result,
+      activity: mappings.impossible_absent_fantastical_referent.activity,
+      operations: mappings.impossible_absent_fantastical_referent.operations,
+      check: mappings.impossible_absent_fantastical_referent.check,
+      continuation: null, clarification: null,
+      reason_code: 'absent_fantastical_referent',
+      reason: 'В мире нет такого объекта.'
+    }, { request: input }).ok, true);
     assert.deepEqual(mappings.visible_general_look, {
       interpretation: { adaptation: 'literal' },
       resolution: 'direct', goal_result: 'achieved',
@@ -278,7 +301,8 @@ test('world process prompt supplies complete bounded plan shape', async () => {
     'interpretation', 'process_outcome', 'affected_refs', 'fact_changes',
     'reason_code'
   ]);
-  assert.equal(shape.process_outcome, input.allowed_outcomes[0]);
+  assert.equal(shape.process_outcome, input.outcome_contract[0].process_outcome);
+  assert.equal(shape.reason_code, input.outcome_contract[0].reason_code);
   assert.deepEqual(shape.fact_changes, []);
   assert.match(prompt, /affected_refs may contain only unique refs supplied by request/u);
 });
@@ -313,7 +337,7 @@ test('impossible jump and absent spaceship plans stay grounded model contracts',
               assert.equal(call.messages[0].content.includes(
                 current.name === 'jump'
                   ? 'reality_limited physical attempt uses the mapped moderate effort'
-                  : 'absent spaceship is make_believe'), true);
+                  : 'absent fantastical referent is make_believe'), true);
               return { output: groundedPlan(input, current) };
             }
           }
@@ -447,6 +471,13 @@ function worldProcessRequest() {
     current_timestamp: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
     trigger: 'actor_affected', subject_state: { source_refs: ['water:1'] },
     environment_state: { scope_ref: 'shore:1' },
-    allowed_outcomes: ['no_effect', 'continue', 'complete']
+    outcome_contract: [
+      { process_outcome: 'no_effect', reason_code: 'affect_no_effect',
+        applicability: 'input does not materially change process' },
+      { process_outcome: 'continue', reason_code: 'affect_continues_process',
+        applicability: 'input changes process without ending it' },
+      { process_outcome: 'complete', reason_code: 'affect_completes_process',
+        applicability: 'input ends process' }
+    ]
   };
 }

@@ -17,7 +17,14 @@ function request() {
       facts: ['existing water portion'], quantities: [{ ref: 'water', value: 1,
         unit: 'item', mass_grams: 1000 }] },
     environment_state: { scope_ref: 'anchor:shore', facts: [] },
-    allowed_outcomes: ['no_effect', 'continue', 'complete']
+    outcome_contract: [
+      { process_outcome: 'no_effect', reason_code: 'affect_no_effect',
+        applicability: 'input does not materially change process' },
+      { process_outcome: 'continue', reason_code: 'affect_continues_process',
+        applicability: 'input changes process without ending it' },
+      { process_outcome: 'complete', reason_code: 'affect_completes_process',
+        applicability: 'input ends process' }
+    ]
   };
 }
 
@@ -30,7 +37,7 @@ test('world process semantic step accepts only a bounded qualitative result', as
         process_ref: 'fire:1', process_state_version: 2,
         interpretation: { grounded_transition: 'water extinguishes fire' },
         process_outcome: 'complete', affected_refs: ['water'],
-        fact_changes: [], reason_code: 'water_extinguishes' };
+        fact_changes: [], reason_code: 'affect_completes_process' };
     } });
   assert.equal(seen.length, 1);
   assert.equal(Object.isFrozen(seen[0]), true);
@@ -70,6 +77,17 @@ test('world process semantic step rejects unrequested effects and numeric deltas
       process_ref: 'fire:1', process_state_version: 2,
       interpretation: { grounded_transition: 'water extinguishes fire' },
       process_outcome: 'complete', affected_refs: ['item:foreign'],
-      fact_changes: [], reason_code: 'water_extinguishes', resource_deltas: []
+      fact_changes: [], reason_code: 'affect_completes_process', resource_deltas: []
+    }) }), { code: 'TURN_WORLD_PROCESS_STEP_PLAN_INVALID' });
+});
+
+test('world process semantic step rejects a reason code outside its outcome contract', async () => {
+  await assert.rejects(resolveWorldProcessStep({ request: request(),
+    worldProcessStepModel: async () => ({
+      schema: 'world_process_step_plan_v1', request_id: 'req:water:world-process',
+      process_ref: 'fire:1', process_state_version: 2,
+      interpretation: { grounded_transition: 'input ends fire' },
+      process_outcome: 'complete', affected_refs: ['water'],
+      fact_changes: [], reason_code: 'invented_reason'
     }) }), { code: 'TURN_WORLD_PROCESS_STEP_PLAN_INVALID' });
 });

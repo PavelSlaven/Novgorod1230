@@ -252,7 +252,13 @@ function worldProcessRequest({envelope,loaded,operation,scopeRef,admission}){
         value:admission.snapshot.quantity,unit:'item',
         mass_grams:admission.snapshot.mass_grams}]},
     environment_state:{scope_ref:scopeRef,facts:[]},
-    allowed_outcomes:['no_effect','continue','complete']};
+    outcome_contract:[
+      {process_outcome:'no_effect',reason_code:'affect_no_effect',
+        applicability:'affected input does not materially change active process'},
+      {process_outcome:'continue',reason_code:'affect_continues_process',
+        applicability:'affected input changes active process without ending it'},
+      {process_outcome:'complete',reason_code:'affect_completes_process',
+        applicability:'affected input ends active process'}]};
 }
 function profilePinFrom(profile,scopeRef,ignitionBasisRef){return{
   profile_ref:profile.profile_id,profile_version:profile.revision,

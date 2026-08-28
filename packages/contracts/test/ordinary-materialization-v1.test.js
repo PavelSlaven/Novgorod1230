@@ -97,6 +97,20 @@ test('ordinary materialization request rejects a Stage A candidate and malformed
   assert.ok(validateOrdinaryMaterializationRequestV1({ ...targetedRequest(), candidate_query: { ...targetedRequest().candidate_query, evidence_weight: 1 } }).some((error) => error.path === 'candidate_query.evidence_weight' && error.code === 'const'));
 });
 
+test('ordinary authority envelope accepts code-owned choices and rejects mixed stages', () => {
+  const request = targetedRequest();
+  request.authority_envelope = { stage: 'resolve_presence', candidate: {
+    semantic_type: 'hand_utensil', functional_bucket: 'household',
+    admission_class: 'common_mundane', availability_class: 'common',
+    coverage_kind: 'visible_surface', coverage_ref: 'surface' },
+  allowed_supporting_bases: [{ basis_ref: 'basis-1', basis_state: 'committed' }],
+  property_basis_ref: 'property-1', placement_refs: ['position-1'] };
+  assert.deepEqual(validateOrdinaryMaterializationRequestV1(request), []);
+  request.authority_envelope.stage = 'seed_scope';
+  assert.ok(validateOrdinaryMaterializationRequestV1(request).some((error) =>
+    error.path === 'authority_envelope.stage'));
+});
+
 test('ordinary materialization request rejects impossible unseeded and seeded state combinations', () => {
   for (const mutate of [
     (state) => { state.density_band = 'ordinary'; },

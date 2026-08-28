@@ -42,11 +42,18 @@ export function buildPlayerRequest(context) {
         skill_ref: context.contracts.check.skill,
         difficulty_band: context.contracts.check.check_id
       } }),
+      ...(context.requiredResolution == null ? {} : {
+        required_resolution: context.requiredResolution,
+        ...(context.requiredCheck == null ? {} : {
+          required_check: structuredClone(context.requiredCheck)
+        })
+      }),
       ...(context.phase === 'phase_3' && context.availableEvidence !== null
         ? { available_evidence: structuredClone(context.availableEvidence) }
         : {}),
       ...(context.requiredSupportingOperation != null ? {
-        required_supporting_operation: context.requiredSupportingOperation
+        required_supporting_operation: structuredClone(
+          context.requiredSupportingOperation)
       } : {}),
       ...(context.phase === 'phase_4' ? {
         offer_policy_ref: context.contracts.promisePolicy.policy_id

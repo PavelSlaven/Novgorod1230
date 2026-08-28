@@ -12,6 +12,8 @@ import { createLowerDvinaTraceNpcCombatModel } from
   '../src/runtime/lower-dvina-trace-combat-llm.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../src/runtime/lower-dvina-trace-world-process-llm.js';
+import { buildOrdinaryMaterializationMessages } from
+  '../src/runtime/ordinary-materialization-llm.js';
 
 const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
   + 'frozen-role-requests-v1.json', import.meta.url);
@@ -33,13 +35,24 @@ const models = {
 
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
-  for (const fixture of corpus.fixtures.filter(({ role_id }) => role_id in models)) {
+  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
+    role_id in models || role_id === 'ordinary_materialization')) {
     assert.deepEqual(await productionMessages(fixture), fixture.messages,
       fixture.id);
   }
 });
 
 async function productionMessages(fixture) {
+  if (fixture.role_id === 'ordinary_materialization') {
+    const request = fixture.repair
+      ? fixture.request.request
+      : JSON.parse(fixture.messages.at(-1).content);
+    return buildOrdinaryMaterializationMessages(request, { repair: fixture.repair
+      ? { schema: 'ordinary_materialization_repair_context_v1',
+        original_output: fixture.request.original_output,
+        validation_errors: fixture.request.validation_errors }
+      : null });
+  }
   let call;
   const model = models[fixture.role_id]({ roleRunner: { async run(next) {
     call = next;

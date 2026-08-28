@@ -56,7 +56,8 @@ export async function resolveOrdinaryMaterializationSeedScope({
   }
   const plan = immutable(rawPlan);
   const seedPlan = validateSeedPlan({ request: safeRequest, plan,
-    basisCatalog, allowedDisclosurePolicyRefs });
+    basisCatalog, allowedDisclosurePolicyRefs: safeRequest.authority_envelope
+      ?.disclosure_policy_refs ?? allowedDisclosurePolicyRefs });
   if (seedPlan.kind === 'no_change') {
     return deepFreeze({
       status: 'no_change', decision: decisionMetadata(safeRequest, plan, repaired),
@@ -136,6 +137,12 @@ function validateSeedPlan({ request, plan, basisCatalog,
     reject('ORDINARY_SEED_OUTCOME_INVALID',
       'Stage A requires density and may prepare groups, never concrete entities.');
   }
+  const authority = request.authority_envelope;
+  if (authority?.stage === 'seed_scope'
+      && !authority.density_bands.includes(plan.density_band_proposal)) {
+    reject('ORDINARY_SEED_DENSITY_NOT_ALLOWED',
+      'Stage A density must be selected from the authority envelope.');
+  }
   if (plan.background_groups.length > request.technical_limits.max_new_background_groups
       || plan.entities.length > request.technical_limits.max_new_entities) {
     reject('ORDINARY_SEED_LIMIT_EXCEEDED',
@@ -143,6 +150,16 @@ function validateSeedPlan({ request, plan, basisCatalog,
   }
   const preparedGroups = plan.background_groups.map((group) => {
     try {
+      if (authority?.stage === 'seed_scope' && !group.causal_basis.basis_refs
+        .every((ref) => authority.group_bases.some((basis) =>
+          basis.basis_ref === ref
+          && basis.functional_buckets.includes(group.functional_bucket)
+          && group.allowed_admission_classes.every((admission) =>
+            basis.allowed_admission_classes.includes(admission))
+          && sameRefs(basis.permission_refs, group.permission_refs)))) {
+        reject('ORDINARY_SEED_GROUP_NOT_ALLOWED',
+          'Stage A group must use only envelope-authorized basis classes.');
+      }
       return validateOrdinaryBackgroundGroup({ request, group,
         basis_catalog: basisCatalog,
         allowed_disclosure_policy_refs: allowedDisclosurePolicyRefs });
@@ -153,6 +170,8 @@ function validateSeedPlan({ request, plan, basisCatalog,
   return { kind: 'seeded', preparedGroups: immutable(preparedGroups),
     pendingItemsPropertyAdmission: immutable([]) };
 }
+function sameRefs(left, right) { return Array.isArray(left) && Array.isArray(right)
+  && left.length === right.length && left.every((ref) => right.includes(ref)); }
 
 function decisionMetadata(request, plan, repaired) {
   return deepFreeze({

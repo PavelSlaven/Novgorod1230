@@ -103,7 +103,8 @@ test('world-process semantic mismatch fails even when owner validator accepts pl
 test('planner, ordinary and NPC conversation semantic mismatches fail after owner validation', async () => {
   const planner = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const ordinary = corpus.fixtures.find(({ id }) => id === 'ordinary-stage-b-common-cordage');
-  const conversation = corpus.fixtures.find(({ id }) => id === 'npc-conversation-check-required');
+  const conversation = structuredClone(corpus.fixtures.find(({ id }) => id === 'npc-conversation-check-required'));
+  conversation.expected.required_values['speech.dominant_act'] = 'inform';
   const plannerOutput = structuredClone(planner.expected_output);
   plannerOutput.activity.effort = 'light';
   const ordinaryOutput = structuredClone(ordinary.expected_output);

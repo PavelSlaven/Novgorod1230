@@ -7,6 +7,9 @@ import {
   uniqueStableIds
 } from './internal.js';
 import { validateAllowedContributionReferences, validateContributionReferences } from './conversation-reference-contracts.js';
+import { matchesContributionRequirement, sameRequiredCheck,
+  validateContributionRequirement } from
+  './conversation-contribution-requirements.js';
 import { CHECK_OUTCOMES, DELIVERY_QUALITY_BY_OUTCOME,
   validateSocialDeliveryResult } from
   './conversation-social-delivery-contract.js';
@@ -275,6 +278,7 @@ function validateContributionBody(value, request = null) {
       value.contribution_kind,
       operationContract
     )
+    || !matchesContributionRequirement(value, request, operationContract)
     || !RESOLUTIONS.has(value.resolution)
     || !validateHandoff(value.handoff, value.contribution_kind)) {
     return false;
@@ -363,6 +367,12 @@ export function validatePlayerConversationInput(value) {
     && validateAllowedContributionReferences(
       value.player_safe_context.allowed_references)
     && plainRecord(value.operation_contract)
+    && validateContributionRequirement(
+      value.player_safe_context, value.operation_contract)
+    && (value.player_safe_context.required_check === undefined
+      || value.player_safe_context.available_check === undefined
+      || sameRequiredCheck(value.player_safe_context.required_check,
+        value.player_safe_context.available_check))
     && jsonSafe(value);
 }
 

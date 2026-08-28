@@ -61,6 +61,16 @@ function positive(input, plan, projection, bases) {
       || (identity.availability_class === 'context_bound'
         && entity.semantic_descriptor.facts.length !== 0)
       || permission_refs === null) reject('ORDINARY_PRESENCE_ENTITY_INVALID');
+  const authority = request.authority_envelope;
+  if (authority?.stage === 'resolve_presence'
+      && (!authority.allowed_supporting_bases.some((basis) =>
+        basis.basis_ref === entity.supporting_basis_ref)
+      || !entity.causal_basis.basis_refs.every((ref) =>
+        authority.allowed_supporting_bases.some((basis) => basis.basis_ref === ref))
+      || entity.property_basis_ref !== authority.property_basis_ref
+      || !authority.placement_refs.includes(entity.placement_proposal.position_ref))) {
+    reject('ORDINARY_PRESENCE_ENVELOPE_SELECTION_INVALID');
+  }
   if (!propertyOK(input) || entity.property_basis_ref !== request.context_refs.property_context_ref) reject('ORDINARY_PRESENCE_PROPERTY_INVALID');
   if (entity.placement_proposal.scope_ref !== request.scope_ref.entity_id || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref) && v.position_ref === entity.placement_proposal.position_ref)) reject('ORDINARY_PRESENCE_PLACEMENT_INVALID');
   try { validate(entity.supporting_basis_ref); for (const ref of entity.causal_basis.basis_refs) validate(ref); } catch (error) { reject('ORDINARY_PRESENCE_BASIS_INVALID', message(error)); }
@@ -116,16 +126,25 @@ function envelopeOf(value) {
       property_basis_ref:e.request.context_refs.property_context_ref,
       property_placement_context_digest:e.property_placement_context_digest,
       ...source});
+    const authority = e.request.authority_envelope;
     if (i.candidate_key !== candidate_key || i.coverage_key !== coverage_key
         || i.category_key !== category_key || i.context_version !== context_version
         || i.policy_version !== e.request.policy_refs.ordinary_presence_policy_ref
         || !e.request.policy_refs.allowed_admission_classes.includes(i.admission_class)
-        || permissionsFor(i, e.request) === null) {
+        || permissionsFor(i, e.request) === null
+        || authority?.stage === 'resolve_presence' && !sameCandidateAuthority(
+          authority.candidate, i)) {
       fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID');
     }
   } catch { fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID'); }
   return freeze(e);
 }
+function sameCandidateAuthority(authority, identity) { return authority.semantic_type
+  === identity.semantic_type && authority.functional_bucket === identity.functional_bucket
+  && authority.admission_class === identity.admission_class
+  && authority.availability_class === identity.availability_class
+  && authority.coverage_kind === identity.coverage_kind
+  && authority.coverage_ref === identity.coverage_ref; }
 function propertyContext(value) {
   const v1 = record(value,['scope_ref','item_kind','property_catalog_version_ref',
     'placement_catalog_version_ref','personal_communal_refs','occupied_site_refs',

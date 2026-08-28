@@ -30,8 +30,21 @@ export async function prepareTracePhase3PlayerConversationPlan(input) {
     targetActor: target,
     actualNpcActors: contracts.actors,
     availableEvidence,
-    requiredSupportingOperation: input.evidence
-      ? EVIDENCE_INTERACTION : null,
+    ...(input.evidence ? {
+      requiredResolution: 'check_required',
+      requiredCheck: {
+        attribute_ref: contracts.check.attribute,
+        skill_ref: contracts.check.skill,
+        difficulty_band: contracts.check.check_id
+      },
+      requiredSupportingOperation: {
+        op: EVIDENCE_OPERATION,
+        interaction_kind: EVIDENCE_INTERACTION,
+        actor_ref: ref('player_character', input.state.actor_id),
+        target_ref: ref('npc', target.instance_id),
+        entity_ref: structuredClone(availableEvidence.item_ref)
+      }
+    } : {}),
     playerOperationContract: phase3PlayerOperationContract(availableEvidence)
   }));
 }

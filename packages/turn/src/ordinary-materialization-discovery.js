@@ -48,7 +48,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     let newBases = [];
     if (!enabled.ordinary_aggregate.seeded) {
       const seed = await resolveOrdinaryMaterializationSeedScope({
-        request: buildSeedRequest({ objective_context: objective }),
+        request: buildSeedRequest({ objective_context: objective,
+          authority_context: seedAuthorityContext({ execution,
+            objective: enabled.objective_context,
+            scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -205,6 +208,25 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       resolution: item == null ? presence.status : 'materialize', item,
       finiteResourceEffects });
   };
+}
+
+function seedAuthorityContext({ execution, objective, scopeRef }) {
+  const mappings = execution.density_policy?.mappings ?? [];
+  const matches = mappings.filter((entry) => entry?.scope_kind === scopeRef.entity_kind
+    && (entry.function_ref === null
+      || objective.context_refs.function_refs.includes(entry.function_ref)));
+  const bands = matches.length === 1 ? Object.entries(matches[0].bands ?? {})
+    .filter(([band, limit]) => ['sparse','ordinary','dense'].includes(band)
+      && Number.isSafeInteger(limit) && limit >= 0)
+    .map(([band]) => band) : [];
+  return { stage: 'seed_scope', density_bands: bands,
+    disclosure_policy_refs: structuredClone(
+      execution.allowed_disclosure_policy_refs ?? []),
+    group_bases: execution.supporting_bases.map((basis) => ({
+      basis_ref: basis.basis_ref, basis_state: basis.state,
+      functional_buckets: structuredClone(basis.functional_buckets),
+      allowed_admission_classes: structuredClone(basis.allowed_admission_classes),
+      permission_refs: structuredClone(basis.permission_refs ?? []) })) };
 }
 
 function semanticModelCallBudget(model) {

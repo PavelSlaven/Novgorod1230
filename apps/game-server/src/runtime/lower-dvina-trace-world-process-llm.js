@@ -1,13 +1,14 @@
 import { serverError } from '../errors.js';
 
 function planShape(request) {
+  const outcome = request.outcome_contract[0];
   return JSON.stringify({ schema: 'world_process_step_plan_v1',
     request_id: request.request_id,
     process_ref: request.process?.process_ref ?? null,
     process_state_version: request.process_state_version,
     interpretation: { grounded_transition: '<grounded_transition>' },
-    process_outcome: request.allowed_outcomes[0], affected_refs: [],
-    fact_changes: [], reason_code: '<reason_code>' });
+    process_outcome: outcome.process_outcome, affected_refs: [],
+    fact_changes: [], reason_code: outcome.reason_code });
 }
 
 export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) {
@@ -21,9 +22,8 @@ export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) 
         'Return only one JSON object matching world_process_step_plan_v1.',
         `Use this complete valid shape:\n${planShape(request)}`,
         'Copy request_id, process_ref, and process_state_version exactly from request.',
-        'Choose process_outcome only from request.allowed_outcomes; affected_refs',
+        'Copy process_outcome and reason_code together from one applicable request.outcome_contract entry; affected_refs',
         'may contain only unique refs supplied by request; fact_changes must be [].',
-        'Choose only an allowed qualitative process outcome.',
         'Do not invent numbers, resources, timestamps, process IDs, damage, hidden facts, or authority.'
       ].join(' ') }, { role: 'user', content: JSON.stringify(request) }] });
     if (!response?.output || typeof response.output !== 'object'

@@ -3,6 +3,24 @@ import { validateFiniteInitialAmountEstimate as initialEstimate,
   validateFiniteInitialAmountEstimateBinding as initialBinding,
   validateFiniteInitialAmountEstimatePolicy as initialPolicy } from
   './ordinary-materialization-initial-amount-choice.js';
+import {
+  arrayOf,
+  arrayOfEnum,
+  arrayOfStrings,
+  assertValid,
+  boolean,
+  boundedInteger,
+  enumValue,
+  exactObject,
+  freezeErrors,
+  issue,
+  nonemptyString,
+  nonnegativeInteger,
+  nullableEnum,
+  positiveInteger,
+  stringConst,
+  validateJsonDataBoundary
+} from './ordinary-materialization-validation.js';
 export { ordinaryWorldPropertyPlacementContextDigest } from
   './ordinary-materialization-property-context-digest.js';
 
@@ -34,7 +52,8 @@ export function assertOrdinaryMaterializationPlanV1(value, request = null) {
 }
 
 function validateRequest(value,errors) {
-  if (!exactObject(value, ['schema', 'request_id', 'mode', 'scope_ref', 'context_refs', 'policy_refs', 'ordinary_state', 'candidate_query', 'technical_limits'], '$', errors)) return;
+  const keys=['schema', 'request_id', 'mode', 'scope_ref', 'context_refs', 'policy_refs', 'ordinary_state', 'candidate_query', 'technical_limits'];
+  if (!exactObject(value, Object.hasOwn(value ?? {}, 'authority_envelope') ? [...keys,'authority_envelope'] : keys, '$', errors)) return;
   stringConst(value.schema, REQUEST_SCHEMA, 'schema', errors);
   nonemptyString(value.request_id, 'request_id', errors);
   enumValue(value.mode, ORDINARY_MATERIALIZATION_V1_ENUMS.mode, 'mode', errors);
@@ -43,11 +62,28 @@ function validateRequest(value,errors) {
   validatePolicyRefs(value.policy_refs, errors);
   validateOrdinaryState(value.ordinary_state, errors);
   validateTechnicalLimits(value.technical_limits, errors);
+  if (Object.hasOwn(value, 'authority_envelope')) validateAuthorityEnvelope(value.authority_envelope, value.mode, errors);
   if (value.mode === 'seed_scope') {
     if (value.candidate_query !== null) issue(errors, 'candidate_query', 'const', 'candidate_query must be null for seed_scope.');
   } else {
     validateCandidateQuery(value.candidate_query, errors);
   }
+}
+
+function validateAuthorityEnvelope(value, mode, errors) {
+  const path='authority_envelope';
+  if (mode === 'seed_scope') {
+    if (!exactObject(value,['stage','density_bands','disclosure_policy_refs','group_bases'],path,errors)) return;
+    stringConst(value.stage,'seed_scope',`${path}.stage`,errors);
+    arrayOfEnum(value.density_bands,ORDINARY_MATERIALIZATION_V1_ENUMS.density_band,`${path}.density_bands`,errors);
+    arrayOfStrings(value.disclosure_policy_refs,`${path}.disclosure_policy_refs`,errors);
+    arrayOf(value.group_bases,`${path}.group_bases`,errors,(entry,p,e)=>{if(!exactObject(entry,['basis_ref','basis_state','functional_buckets','allowed_admission_classes','permission_refs'],p,e))return;nonemptyString(entry.basis_ref,`${p}.basis_ref`,e);enumValue(entry.basis_state,ORDINARY_MATERIALIZATION_V1_ENUMS.basis_state,`${p}.basis_state`,e);arrayOfEnum(entry.functional_buckets,ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket,`${p}.functional_buckets`,e);arrayOfEnum(entry.allowed_admission_classes,ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class,`${p}.allowed_admission_classes`,e);arrayOfStrings(entry.permission_refs,`${p}.permission_refs`,e);});
+    return;
+  }
+  if (!exactObject(value,['stage','candidate','allowed_supporting_bases','property_basis_ref','placement_refs'],path,errors)) return;
+  stringConst(value.stage,'resolve_presence',`${path}.stage`,errors);
+  if (exactObject(value.candidate,['semantic_type','functional_bucket','admission_class','availability_class','coverage_kind','coverage_ref'],`${path}.candidate`,errors)) { nonemptyString(value.candidate.semantic_type,`${path}.candidate.semantic_type`,errors);enumValue(value.candidate.functional_bucket,ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket,`${path}.candidate.functional_bucket`,errors);enumValue(value.candidate.admission_class,ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class,`${path}.candidate.admission_class`,errors);enumValue(value.candidate.availability_class,ORDINARY_MATERIALIZATION_V1_ENUMS.availability_class,`${path}.candidate.availability_class`,errors);nonemptyString(value.candidate.coverage_kind,`${path}.candidate.coverage_kind`,errors);nonemptyString(value.candidate.coverage_ref,`${path}.candidate.coverage_ref`,errors); }
+  arrayOf(value.allowed_supporting_bases,`${path}.allowed_supporting_bases`,errors,validateAllowedSupportingBasis);nonemptyString(value.property_basis_ref,`${path}.property_basis_ref`,errors);arrayOfStrings(value.placement_refs,`${path}.placement_refs`,errors);
 }
 
 function validatePlan(value,errors) {
@@ -235,151 +271,4 @@ function validateTargetedPlanBinding(plan, candidateQuery, errors) {
   if (presence.candidate_key !== candidateQuery.candidate_key) issue(errors, 'presence_resolutions[0].candidate_key', 'const', 'presence_resolutions[0].candidate_key must match candidate_query.candidate_key.');
   if (presence.coverage_key !== candidateQuery.coverage_key) issue(errors, 'presence_resolutions[0].coverage_key', 'const', 'presence_resolutions[0].coverage_key must match candidate_query.coverage_key.');
   if (presence.resolution !== plan.resolution) issue(errors, 'presence_resolutions[0].resolution', 'const', 'presence_resolutions[0].resolution must match plan resolution.');
-}
-
-function exactObject(value, keys, path, errors) {
-  if (!plainObject(value)) {
-    issue(errors, path, 'type', `${path} must be an object.`);
-    return false;
-  }
-  for (const key of keys) if (!Object.hasOwn(value, key)) issue(errors, path === '$' ? key : `${path}.${key}`, 'required', `${path === '$' ? key : `${path}.${key}`} is required.`);
-  for (const key of Object.keys(value)) if (!keys.includes(key)) issue(errors, path === '$' ? key : `${path}.${key}`, 'additional_property', `${path === '$' ? key : `${path}.${key}`} is not allowed.`);
-  return true;
-}
-
-function arrayOf(value, path, errors, validator) {
-  if (!Array.isArray(value)) {
-    issue(errors, path, 'type', `${path} must be an array.`);
-    return;
-  }
-  value.forEach((item, index) => validator(item, `${path}[${index}]`, errors));
-}
-
-function arrayOfStrings(value, path, errors, nonempty = false) {
-  arrayOf(value, path, errors, (item, itemPath, itemErrors) => nonemptyString(item, itemPath, itemErrors));
-  if (nonempty && Array.isArray(value) && value.length === 0) issue(errors, path, 'min_items', `${path} must not be empty.`);
-}
-
-function arrayOfEnum(value, values, path, errors) {
-  arrayOf(value, path, errors, (item, itemPath, itemErrors) => enumValue(item, values, itemPath, itemErrors));
-}
-
-function nonemptyString(value, path, errors) {
-  if (typeof value !== 'string' || value.trim() !== value || value.length === 0) issue(errors, path, 'type', `${path} must be a nonempty string.`);
-}
-
-function stringConst(value, constant, path, errors) {
-  if (typeof value !== 'string') issue(errors, path, 'type', `${path} must be a string.`);
-  else if (value !== constant) issue(errors, path, 'const', `${path} must equal ${constant}.`);
-}
-
-function enumValue(value, values, path, errors) {
-  if (typeof value !== 'string') issue(errors, path, 'type', `${path} must be a string.`);
-  else if (!values.includes(value)) issue(errors, path, 'enum', `${path} must be one of: ${values.join(', ')}.`);
-}
-
-function nullableEnum(value, values, path, errors) {
-  if (value !== null) enumValue(value, values, path, errors);
-}
-
-function boolean(value, path, errors) {
-  if (typeof value !== 'boolean') issue(errors, path, 'type', `${path} must be a boolean.`);
-}
-
-function nonnegativeInteger(value, path, errors) {
-  if (!Number.isInteger(value) || value < 0) issue(errors, path, 'type', `${path} must be a nonnegative integer.`);
-}
-
-function positiveInteger(value, path, errors) {
-  if (!Number.isInteger(value) || value < 1) issue(errors, path, 'type', `${path} must be a positive integer.`);
-}
-
-function boundedInteger(value, min, max, path, errors) {
-  if (!Number.isInteger(value) || value < min || value > max) issue(errors, path, 'range', `${path} must be an integer from ${min} to ${max}.`);
-}
-
-function issue(errors, path, code, message) {
-  errors.push({ path, code, message });
-}
-
-function assertValid(value, validator, code) {
-  const errors = validator(value);
-  if (errors.length === 0) return value;
-  const error = new TypeError(errors.map(({ message }) => message).join('\n'));
-  error.name = 'OrdinaryMaterializationValidationError';
-  error.code = code;
-  error.validationErrors = errors;
-  throw error;
-}
-
-function freezeErrors(errors) {
-  return Object.freeze(errors.map((error) => Object.freeze(error))
-    .sort((left, right) => `${left.path}\u0000${left.code}\u0000${left.message}`.localeCompare(`${right.path}\u0000${right.code}\u0000${right.message}`)));
-}
-
-function plainObject(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value)
-    && (Object.getPrototypeOf(value) === Object.prototype
-      || Object.getPrototypeOf(value) === null);
-}
-
-function validateJsonDataBoundary(root) {
-  const errors = [];
-  const seen = new WeakSet();
-  const stack = [{ value: root, path: '$' }];
-  while (stack.length !== 0) {
-    const { value, path } = stack.pop();
-    if (value === null || typeof value === 'string' || typeof value === 'boolean') continue;
-    if (typeof value === 'number') {
-      if (!Number.isFinite(value)) issue(errors, path, 'data_boundary', `${path} must not be nonfinite.`);
-      continue;
-    }
-    if (typeof value !== 'object') {
-      issue(errors, path, 'data_boundary', `${path} must be JSON data.`);
-      continue;
-    }
-    if (seen.has(value)) {
-      issue(errors, path, 'data_boundary', `${path} must not contain cycles or aliases.`);
-      continue;
-    }
-    seen.add(value);
-    const array = Array.isArray(value);
-    const prototype = Object.getPrototypeOf(value);
-    if ((array && prototype !== Array.prototype)
-        || (!array && prototype !== Object.prototype && prototype !== null)) {
-      issue(errors, path, 'data_boundary', `${path} must have a JSON-compatible prototype.`);
-      continue;
-    }
-    const keys = Reflect.ownKeys(value);
-    if (keys.some((key) => typeof key === 'symbol')) {
-      issue(errors, path, 'data_boundary', `${path} must not contain symbol keys.`);
-      continue;
-    }
-    if (array) {
-      const length = Object.getOwnPropertyDescriptor(value, 'length');
-      const validKeys = length?.enumerable === false
-        && Object.hasOwn(length, 'value')
-        && length.value === value.length
-        && keys.length === value.length + 1
-        && keys.every((key) => key === 'length' || typeof key === 'string'
-          && Number.isSafeInteger(Number(key))
-          && Number(key) >= 0 && Number(key) < value.length
-          && String(Number(key)) === key);
-      if (!validKeys) {
-        issue(errors, path, 'data_boundary', `${path} must be a dense standard array.`);
-        continue;
-      }
-    }
-    for (const key of keys.sort((left, right) => String(left).localeCompare(String(right)))) {
-      if (array && key === 'length') continue;
-      const descriptor = Object.getOwnPropertyDescriptor(value, key);
-      const childPath = array ? `${path}[${key}]` : `${path}.${key}`;
-      if (descriptor?.enumerable !== true || !Object.hasOwn(descriptor ?? {}, 'value')) {
-        issue(errors, childPath, 'data_boundary', `${childPath} must be an enumerable data property.`);
-        continue;
-      }
-      stack.push({ value: descriptor.value, path: childPath });
-    }
-  }
-  return errors;
 }

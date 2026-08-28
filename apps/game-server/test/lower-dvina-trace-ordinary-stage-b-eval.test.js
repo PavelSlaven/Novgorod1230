@@ -77,26 +77,38 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(prompt, /seed_scope permits only seeded or no_change/u);
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
-  assert.match(prompt, /absent fallback only when committed context cannot support materialization/u);
-  assert.match(prompt, /lack of a pre-supplied descriptor alone is not a reason for absent/u);
-  assert.match(prompt, /derive the ordinary semantic descriptor from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /Materialize only supplied candidate using that envelope/u);
+  assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
+  assert.match(prompt, /derive ordinary semantic descriptor only from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /exact candidate_key and coverage_key/u);
   assert.match(prompt, /availability_class is common or context_bound/u);
-  assert.match(prompt, /policy_refs\.allowed_admission_classes/u);
+  assert.match(prompt, /authority_envelope/u);
   assert.doesNotMatch(prompt, /простая верёвка|cordage/u);
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
 });
 
-test('frozen ordinary probes ship production-built messages', async () => {
+test('frozen ordinary probes carry code-owned Stage A and Stage B envelopes', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
-  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
-    role_id === 'ordinary_materialization')) {
+  const fixtures = corpus.fixtures.filter(({ role_id }) =>
+    role_id === 'ordinary_materialization');
+  for (const fixture of fixtures) {
+    const request = fixture.repair ? fixture.request.request
+      : JSON.parse(fixture.messages.at(-1).content);
+    assert.equal(Object.hasOwn(request, 'authority_envelope'), true);
+  }
+  const common = fixtures.find(({ id }) => id === 'ordinary-stage-b-common-cordage');
+  const commonRequest = JSON.parse(common.messages.at(-1).content);
+  assert.deepEqual(commonRequest.authority_envelope.candidate, {
+    semantic_type: 'cordage', functional_bucket: 'other_ordinary',
+    admission_class: 'common_mundane', availability_class: 'common',
+    coverage_kind: 'visible_surface', coverage_ref: 'bench'
+  });
+  for (const id of ['ordinary-stage-b-sword-absent',
+    'ordinary-stage-b-silver-absent', 'ordinary-stage-b-letter-absent']) {
+    const fixture = fixtures.find((candidate) => candidate.id === id);
     const request = JSON.parse(fixture.messages.at(-1).content);
-    const errors = fixture.repair ? JSON.parse(fixture.messages[0].content.match(
-      /Validation errors: (.+)$/u)[1]) : null;
-    assert.deepEqual(fixture.messages, buildOrdinaryMaterializationMessages(request,
-      { repair: errors == null ? null : {
-        schema: 'ordinary_materialization_repair_context_v1',
-        original_output: null, validation_errors: errors } }));
+    assert.notEqual(request.authority_envelope.candidate.admission_class,
+      'common_mundane');
   }
 });
 

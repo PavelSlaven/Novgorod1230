@@ -11,7 +11,7 @@ import {
   createLowerDvinaTraceNpcSemanticModel,
   createLowerDvinaTracePlayerConversationModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
-import { requiredNpcConversationCandidate } from
+import { requiredNpcConversationCandidate, requiredPlayerConversationCandidate } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -241,6 +241,43 @@ test('NPC required candidate is validator-valid and preserves operation', async 
     /"op":"emit_interaction"/u);
 });
 
+test('player required candidate is validator-valid and preserves operation', () => {
+  const required = {
+    verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'npc-1'),
+      entity_ref: ref('item', 'item-1') }
+  };
+  const request = playerRequest(required);
+  const candidate = requiredPlayerConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  candidate.speech.dominant_act = 'request';
+  candidate.interpretation.intent = 'попросить правду';
+  candidate.interpretation.grounded_contribution = 'обратиться с просьбой';
+  candidate.check.purpose = 'code-owned social delivery';
+  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
+  assert.equal(candidate.input_mode, 'verbatim');
+  assert.equal(candidate.speech.utterance_text, required.verbatim_utterance_text);
+  assert.deepEqual(candidate.primary_addressee_ref,
+    required.required_supporting_operation.target_ref);
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+});
+
+test('player required candidate is omitted for target outside allowed actors', () => {
+  const request = playerRequest({
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'other-npc'),
+      entity_ref: ref('item', 'item-1') }
+  });
+  assert.equal(requiredPlayerConversationCandidate(request), null);
+});
+
 test('NPC required candidate is omitted for target outside allowed actors', () => {
   const request = npcRequest({
     required_resolution: 'check_required',
@@ -273,4 +310,6 @@ test('player repair receives and preserves required contract', async () => {
   const repairPayload = JSON.parse(fixture.calls[1].messages[1].content);
   assert.deepEqual(repairPayload.request.player_safe_context
     .required_supporting_operation, required.required_supporting_operation);
+  assert.match(fixture.calls[1].messages[0].content,
+    /Required conversation candidate/u);
 });

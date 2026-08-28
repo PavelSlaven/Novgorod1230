@@ -95,7 +95,7 @@ export function createLowerDvinaTracePlayerConversationModel({
         : 'player_conversation_interpreter',
       messages: [{
         role: 'system',
-        content: playerConversationInstructions(repair)
+        content: playerConversationInstructions(repair, request)
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {

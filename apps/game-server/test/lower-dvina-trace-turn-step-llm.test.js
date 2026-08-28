@@ -172,6 +172,24 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     assert.match(prompt, /do not substitute or invent refs/u);
   });
 
+test('turn step planner prompt prioritizes an absent fantastical referent',
+  async () => {
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      } }
+    });
+    await model(request());
+    assert.match(prompt,
+      /Classify the goal’s required referent before its physical verb/u);
+    assert.match(prompt,
+      /fantastical referent requires make_believe despite physical-action wording/u);
+    assert.match(prompt,
+      /reality_limited only when both referent and attempted action are real and present/u);
+  });
+
 test('conversation prompts supply complete shapes and request-bound mappings',
   async () => {
     const calls = [];

@@ -94,7 +94,7 @@ test('turn step planner prompt preserves only compound intent outside capability
     } }
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
-  assert.match(prompt, /exactly one executable step[\s\S]*selected domain operation covers only its own grounded event[\s\S]*multiple verbs only when the selected operation explicitly represents every clause[\s\S]*Matching one clause, shared actor, place, time, or generic owner does not extend coverage[\s\S]*every independent uncovered clause in continuation[\s\S]*continuation null only when none remains[\s\S]*Every domain_request uses goal_result pending[\s\S]*complete composite with continuation null[\s\S]*pending means code-owned execution, not unhandled intent[\s\S]*continuation is present, goal_result must be pending[\s\S]*continuation\.remaining_intent must preserve every independent uncovered clause/u);
+  assert.match(prompt, /Sentence boundary is a continuation boundary[\s\S]*first independently executable sentence[\s\S]*later non-empty sentences[\s\S]*preserve all of them in continuation[\s\S]*goal_result pending[\s\S]*never let one selected operation consume them[\s\S]*Only clauses inside the same sentence may form one composite operation[\s\S]*explicitly represents their single event[\s\S]*Every domain_request uses goal_result pending[\s\S]*continuation is present, goal_result must be pending/u);
 });
 
 test('turn step planner prompt supplies current complete plan shape', async () => {

@@ -215,7 +215,10 @@ export function createTracePhase4VisibleProjector({ phase3Projector }) {
           : responseKind === 'leave_conversation'
             ? 'Ратша прекращает разговор.'
           : 'Ратша переводит столкновение в открытый бой.';
-    return { version: 1, schema: 'visible_context_package', visible_scene: visibleScene, visible_changes: semantic?.statements.map(({ statement_id: statementId }) => statementId) ?? [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth'] };
+    return { version: 1, schema: 'visible_context_package', visible_scene: visibleScene, visible_changes: [
+      ...(semantic?.statements.map(({ statement_id: statementId }) => statementId) ?? []),
+      ...(responseKind === 'surrender' ? ['ratsha_surrendered'] : [])
+    ], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth'] };
   } };
 }
 

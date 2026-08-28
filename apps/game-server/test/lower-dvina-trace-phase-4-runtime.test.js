@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTracePhase4Commands } from '../src/runtime/lower-dvina-trace-phase-4-command.js';
 import {
+  createTracePhase4VisibleProjector,
   createTracePhase4TemporalAdvance,
   negotiationEffect,
   routeToShedEffect
@@ -125,6 +126,27 @@ test('attack produces a separate two-minute player-response boundary without har
     'ratsha_attack_attempt_committed',
     'ratsha_attack_player_response_required'
   ]);
+});
+
+test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
+  const projector = createTracePhase4VisibleProjector({
+    phase3Projector: { project: async () => assert.fail('unexpected fallback') }
+  });
+  for (const responseKind of ['surrender', 'speech', 'lie', 'bargain',
+    'combat_handoff']) {
+    const visible = await projector.project({ consequence: {
+      phase4_kind: 'negotiation', negotiation: { semantic_exchange:
+        semanticExchange(responseKind) }
+    } });
+    assert.equal(visible.visible_changes.includes('ratsha_surrendered'),
+      responseKind === 'surrender');
+  }
+  const legacy = await projector.project({ consequence: {
+    phase4_kind: 'negotiation', negotiation: { npc_decision: {
+      outcome: 'surrender'
+    } }
+  } });
+  assert.ok(legacy.visible_changes.includes('ratsha_surrendered'));
 });
 
 test('Phase 4 temporal owner commits route once and preserves separate negotiation roots', async () => {
@@ -298,5 +320,19 @@ function executionBinding(option_id) {
         clock_write: 'single_if_completed'
       }]
     }
+  };
+}
+
+function semanticExchange(response_kind) {
+  const utterance = 'Слова Ратши.';
+  return {
+    response_kind,
+    statements: [{ statement_id: 'ratsha-statement',
+      speaker_ref: { entity_kind: 'npc' }, utterance_text: utterance }],
+    audiences: [{ statement_ref: { entity_kind: 'conversation_statement',
+      entity_id: 'ratsha-statement' }, received_messages: [{
+      listener_ref: { entity_kind: 'player_character' }, comprehension: 'full',
+      utterance_text: utterance
+    }] }]
   };
 }

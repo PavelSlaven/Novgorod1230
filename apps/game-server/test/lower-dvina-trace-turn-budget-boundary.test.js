@@ -80,6 +80,58 @@ test('failed deadline transaction cleanup destroys the client without masking wo
   }
 });
 
+test('deadline transaction rolls back when timeout setup reaches deadline', async () => {
+  let expired = false;
+  const queries = [];
+  const exhausted = () => Object.assign(
+    new Error('Gameplay LLM turn budget is exhausted.'),
+    { code: 'LLM_TURN_BUDGET_EXHAUSTED' }
+  );
+  const turnBudget = {
+    assertWithinDeadline() { if (expired) throw exhausted(); },
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 })
+  };
+  const client = {
+    async query(query) {
+      queries.push(query);
+      if (String(query).includes("set_config('statement_timeout'")) expired = true;
+      return {};
+    },
+    release() {}
+  };
+  const pool = { connect(callback) { callback(null, client); } };
+  await assert.rejects(withTurnDeadlineTransaction(pool, turnBudget,
+    (tx) => tx.query('SELECT mutation')), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  assert.equal(queries.includes('SELECT mutation'), false);
+  assert.equal(queries.includes('ROLLBACK'), true);
+});
+
+test('deadline transaction reports expiry after an atomic commit without rollback', async () => {
+  let expired = false;
+  const queries = [];
+  const exhausted = () => Object.assign(
+    new Error('Gameplay LLM turn budget is exhausted.'),
+    { code: 'LLM_TURN_BUDGET_EXHAUSTED' }
+  );
+  const turnBudget = {
+    assertWithinDeadline() { if (expired) throw exhausted(); },
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 })
+  };
+  const client = {
+    async query(query) {
+      queries.push(query);
+      if (query === 'COMMIT') expired = true;
+      return {};
+    },
+    release() {}
+  };
+  const pool = { connect(callback) { callback(null, client); } };
+  await assert.rejects(withTurnDeadlineTransaction(pool, turnBudget,
+    (tx) => tx.query('SELECT mutation')), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  assert.equal(queries.includes('COMMIT'), true);
+  assert.equal(queries.includes('ROLLBACK'), false);
+});
+
 test('Phase 2 replay read uses a deadline-bound read-only pool', async () => {
   const queries = [];
   const turnBudget = { assertWithinDeadline() {},

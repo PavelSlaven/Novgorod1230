@@ -18,8 +18,10 @@ export async function completePendingTracePhase10Replay({ partyId,
     throw serverError('TRACE_PHASE_10_REPOSITORY_PORT_MISSING',
       'Phase 10 follow-up commit port is required.', { status: 500 });
   }
-  await repository.commitPhase10FollowUp({ partyId, phase10Contracts,
-    presentationIdempotencyKey: idempotencyKey, turnBudget });
+  await runWithinTurnDeadline(turnBudget, () =>
+    repository.commitPhase10FollowUp({ partyId, phase10Contracts,
+      presentationIdempotencyKey: idempotencyKey, turnBudget })
+  );
   const completed = await repository.loadPhase2Replay({ partyId,
     idempotencyKey, turnBudget });
   if (completed == null || tracePhase10Pending(completed.state)) {

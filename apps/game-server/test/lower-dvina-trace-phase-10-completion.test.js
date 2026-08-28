@@ -7,6 +7,8 @@ import { commitLowerDvinaTracePhase10 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-10-commit.js';
 import { buildTracePhase10Completion, resolveTracePhase10Contracts } from
   '../src/runtime/lower-dvina-trace-phase-10-completion.js';
+import { completePendingTracePhase10Replay } from
+  '../src/runtime/lower-dvina-trace-phase-10-replay.js';
 import { createLowerDvinaTracePhase2Runtime } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
 
@@ -221,6 +223,27 @@ test('expired deadline during pending replay loader skips commit and narration',
       { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
     assert.equal(commitCalls, 0);
     assert.equal(replayCalls, 0);
+});
+
+test('pending replay checks deadline immediately before Phase 10 follow-up commit',
+  async () => {
+    let checks = 0, commitCalls = 0;
+    const turnBudget = { assertWithinDeadline() {
+      if (++checks < 3) return;
+      const error = new Error('Gameplay LLM turn budget is exhausted.');
+      error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
+      throw error;
+    } };
+    await assert.rejects(completePendingTracePhase10Replay({
+      partyId: 'party-1', idempotencyKey: 'turn-idem-8',
+      replay: { state: phase9State() }, turnBudget,
+      bundleLoader: async () => bundle,
+      repository: {
+        async commitPhase10FollowUp() { commitCalls += 1; },
+        async loadPhase2Replay() { throw new Error('unexpected replay'); }
+      }
+    }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    assert.equal(commitCalls, 0);
   });
 
 function phase9State() {

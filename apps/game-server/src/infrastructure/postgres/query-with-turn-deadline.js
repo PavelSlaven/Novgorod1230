@@ -85,8 +85,10 @@ export async function withTurnDeadlineTransaction(pool, turnBudget, work,
       return result;
     }
     await setLocalTimeouts(client, turnBudget);
+    turnBudget.assertWithinDeadline();
     await client.query('COMMIT');
     transactionOpen = false;
+    turnBudget.assertWithinDeadline();
     return result;
   } catch (error) {
     primaryError = normalizeTurnDeadlineError(error, turnBudget);
@@ -146,6 +148,7 @@ async function setSessionStatementTimeout(client, turnBudget) {
   turnBudget.assertWithinDeadline();
   const remaining = Math.max(1, Math.floor(turnBudget.remaining().deadline_ms));
   await client.query(`SET statement_timeout = ${remaining}`);
+  turnBudget.assertWithinDeadline();
 }
 
 async function setLocalTimeouts(client, turnBudget) {
@@ -155,6 +158,7 @@ async function setLocalTimeouts(client, turnBudget) {
     "SELECT set_config('statement_timeout', $1, true), set_config('lock_timeout', $1, true)",
     [String(remaining)]
   );
+  turnBudget.assertWithinDeadline();
 }
 
 function acquisitionTimeout(turnBudget) {

@@ -30,8 +30,7 @@ function planShape(request) {
 }
 
 function operationMappings(request) {
-  const scope = request?.decision_scope ?? {};
-  const allowed = scope.operation_contract?.request_world_process?.allowed;
+  const requestOperations = requestDerivedOperations(request);
   const mappings = {
     domain_request: {
       resolution: 'domain_request', goal_result: 'pending',
@@ -50,14 +49,13 @@ function operationMappings(request) {
         outcomes: GENERIC_CHECK_OUTCOMES
       }
     } } : {}),
-    request_world_process: Array.isArray(allowed) ? allowed.map((entry) => ({
-      resolution: entry.resolution ?? 'domain_request', operation: {
-        op: 'request_world_process', actor_ref: request.npc_ref,
-        process_action: entry.process_action, process_ref: entry.process_ref,
-        process_kind: entry.process_kind, source_refs: entry.source_refs,
-        target_refs: entry.target_refs, description: '<brief grounded attempt>'
-      }
-    })) : []
+    request_world_process: (requestOperations.request_world_process ?? []).map(
+      (operation) => ({ resolution: 'domain_request', operation })
+    ),
+    ...Object.fromEntries(Object.entries(requestOperations)
+      .filter(([op]) => op !== 'request_world_process')
+      .map(([op, operations]) =>
+        [op, operations.map((operation) => ({ resolution: 'domain_request', operation }))]))
   };
   return JSON.stringify(mappings);
 }
@@ -68,10 +66,9 @@ function hasAllowedAttributeRefs(request) {
 }
 
 function singleWorldProcessCandidate(request) {
-  const allowed = request?.decision_scope?.operation_contract
-    ?.request_world_process?.allowed;
-  if (!Array.isArray(allowed) || allowed.length !== 1) return null;
-  const entry = allowed[0];
+  const operations = requestDerivedOperations(request).request_world_process ?? [];
+  if (operations.length !== 1) return null;
+  const [operation] = operations;
   return JSON.stringify({
     schema: 'npc_step_plan_v1', request_id: request.request_id,
     root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
@@ -82,10 +79,7 @@ function singleWorldProcessCandidate(request) {
       grounded_attempt: '<nearest grounded attempt>', adaptation: 'literal' },
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [{ op: 'request_world_process', actor_ref: request.npc_ref,
-      process_action: entry.process_action, process_ref: entry.process_ref,
-      process_kind: entry.process_kind, source_refs: entry.source_refs,
-      target_refs: entry.target_refs, description: '<brief grounded attempt>' }],
+    operations: [operation],
     check: null, reason_code: '<reason_code>', reason: '<brief subjective reason>'
   });
 }
@@ -114,9 +108,8 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
           ]),
           'Copy every identity field exactly from request. For domain_request use',
           'goal_result pending, domain activity, null check, and exactly one',
-          'allowed domain operation. For request_world_process, copy one whole',
-          'mapped operation: never change its process_action, process_ref,',
-          'process_kind, source_refs, or target_refs.',
+          'allowed domain operation. Copy one whole mapped executable operation,',
+          'never a capability summary. Never change its supplied refs or kinds.',
           ...(genericCheckAvailable ? [
             'For generic_check use its mapped resolution, pending goal_result,',
             'semantic activity, empty top-level operations, and complete check.',
@@ -157,34 +150,51 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
     if (!plainObject(response?.output)) {
       throw dependencyError('NPC autonomous decider returned no JSON object.');
     }
-    return bindSingleWorldProcessRequest(response.output, request);
+    return bindRequestDerivedOperation(response.output, request);
   };
 }
 
-function bindSingleWorldProcessRequest(plan, request) {
-  const allowed = request?.decision_scope?.operation_contract
-    ?.request_world_process?.allowed;
-  if (plan.resolution !== 'domain_request' || plan.goal_result !== 'pending'
-      || !Array.isArray(allowed) || allowed.length !== 1) return plan;
-
-  const operation = worldProcessOperation(allowed[0], request.npc_ref);
-  if (Array.isArray(plan.operations) && plan.operations.length === 0) {
-    return { ...plan, operations: [operation] };
+function bindRequestDerivedOperation(plan, request) {
+  if (plan.resolution !== 'domain_request' || plan.goal_result !== 'pending') {
+    return plan;
   }
-  const index = Array.isArray(plan.operations)
-    ? plan.operations.findIndex((value) => value?.op === 'request_world_process')
-    : -1;
-  return index < 0 ? plan
-    : { ...plan, operations: plan.operations.map((value, current) =>
-      current === index ? operation : value) };
+  const candidates = requestDerivedOperations(request);
+  if (!Array.isArray(plan.operations)) return plan;
+  return { ...plan, operations: plan.operations.map((value) => {
+    const family = value?.op ?? value?.operation_kind;
+    const operations = candidates[family];
+    return operations?.length === 1 ? operations[0] : value;
+  }) };
 }
 
-function worldProcessOperation(entry, actor_ref) {
+function requestDerivedOperations(request) {
+  const contract = request?.decision_scope?.operation_contract ?? {};
+  const actor_ref = request.npc_ref;
+  const worldProcess = contract.request_world_process?.allowed;
+  const activity = contract.request_activity?.allowed;
+  const itemUse = contract.request_item_use?.allowed;
+  const movement = contract.request_movement;
   return {
-    op: 'request_world_process', actor_ref, process_action: entry.process_action,
-    process_ref: entry.process_ref, process_kind: entry.process_kind,
-    source_refs: entry.source_refs, target_refs: entry.target_refs,
-    description: 'Execute supplied world-process request.'
+    ...(Array.isArray(worldProcess) ? { request_world_process: worldProcess.map((entry) => ({
+      op: 'request_world_process', actor_ref, process_action: entry.process_action,
+      process_ref: entry.process_ref, process_kind: entry.process_kind,
+      source_refs: entry.source_refs, target_refs: entry.target_refs,
+      description: 'Execute supplied world-process request.'
+    })) } : {}),
+    ...(Array.isArray(activity) ? { request_activity: activity.map((entry) => ({
+      op: 'request_activity', actor_ref, activity_kind: entry.activity_kind,
+      target_refs: entry.target_refs, description: 'Execute supplied activity request.'
+    })) } : {}),
+    ...(Array.isArray(itemUse) ? { request_item_use: itemUse.map((entry) => ({
+      op: 'request_item_use', actor_ref, item_ref: entry.item_ref,
+      use_kind: entry.use_kind, target_refs: entry.target_refs
+    })) } : {}),
+    ...(Array.isArray(movement?.movement_kinds) && Array.isArray(movement.target_refs)
+      ? { request_movement: movement.movement_kinds.flatMap((movement_kind) =>
+        movement.target_refs.map((target_ref) => ({
+          op: 'request_movement', actor_ref, movement_kind, target_ref
+        }))) }
+      : {})
   };
 }
 

@@ -100,7 +100,7 @@ test('autonomous prompt maps supplied world-process and generic-check values', a
     operations: [{ op: 'request_world_process', actor_ref: 'zhdanko',
       process_action: 'start', process_ref: null, process_kind: 'fire',
       source_refs: ['fuel'], target_refs: ['flint'],
-      description: '<brief grounded attempt>' }],
+      description: 'Execute supplied world-process request.' }],
     check: null, reason_code: '<reason_code>', reason: '<brief subjective reason>'
   })), true);
 });
@@ -135,7 +135,7 @@ test('autonomous prompt forbids generic check without attribute refs', async () 
     true);
 });
 
-test('autonomous adapter binds incomplete world-process plans to one request mapping', async () => {
+test('autonomous adapter preserves empty domain-request operations', async () => {
   const model = createLowerDvinaTraceNpcAutonomousModel({
     roleRunner: { async run() { return { output: {
       resolution: 'domain_request', goal_result: 'pending', operations: []
@@ -150,12 +150,7 @@ test('autonomous adapter binds incomplete world-process plans to one request map
   };
 
   const plan = await model(scopedRequest);
-  assert.deepEqual(plan.operations, [{
-    op: 'request_world_process', actor_ref: request.npc_ref,
-    process_action: 'start', process_ref: null, process_kind: 'fire',
-    source_refs: ['fuel'], target_refs: ['flint'],
-    description: 'Execute supplied world-process request.'
-  }]);
+  assert.deepEqual(plan.operations, []);
 });
 
 test('autonomous adapter replaces mismatched world-process mapping', async () => {
@@ -182,6 +177,87 @@ test('autonomous adapter replaces mismatched world-process mapping', async () =>
   assert.equal(operation.process_kind, 'fire');
   assert.deepEqual(operation.source_refs, ['fuel']);
   assert.deepEqual(operation.target_refs, ['flint']);
+});
+
+test('autonomous prompt maps complete request-derived activity, item, and movement DTOs', async () => {
+  let call;
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run(next) { call = next; return { output: {} }; } }
+  });
+  await model({
+    ...request,
+    decision_scope: { operation_contract: {
+      request_activity: { allowed: [{ activity_kind: 'wait', target_refs: [] }] },
+      request_item_use: { allowed: [{ item_ref: 'bag', use_kind: 'operate',
+        target_refs: ['storehouse'] }] },
+      request_movement: { movement_kinds: ['local'], target_refs: ['river_access'],
+        route_refs: ['route:river'] }
+    } }
+  });
+  const prompt = call.messages[0].content;
+  for (const operation of [
+    { op: 'request_activity', actor_ref: 'zhdanko', activity_kind: 'wait',
+      target_refs: [], description: 'Execute supplied activity request.' },
+    { op: 'request_item_use', actor_ref: 'zhdanko', item_ref: 'bag',
+      use_kind: 'operate', target_refs: ['storehouse'] },
+    { op: 'request_movement', actor_ref: 'zhdanko', movement_kind: 'local',
+      target_ref: 'river_access' }
+  ]) assert.equal(prompt.includes(JSON.stringify(operation)), true,
+    JSON.stringify(operation));
+  assert.equal(prompt.includes('never a capability summary'), true);
+});
+
+test('autonomous adapter canonicalizes a uniquely selected malformed movement DTO', async () => {
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: [{
+        operation_kind: 'request_movement', movement_kinds: ['local'],
+        target_refs: ['river_access'], route_refs: ['route:river']
+      }]
+    } }; } }
+  });
+  const plan = await model({
+    ...request,
+    decision_scope: { operation_contract: { request_movement: {
+      movement_kinds: ['local'], target_refs: ['river_access'],
+      route_refs: ['route:river']
+    } } }
+  });
+  assert.deepEqual(plan.operations, [{
+    op: 'request_movement', actor_ref: 'zhdanko', movement_kind: 'local',
+    target_ref: 'river_access'
+  }]);
+});
+
+test('autonomous adapter does not guess ambiguous activity or item DTOs', async () => {
+  const operation = { operation_kind: 'request_activity' };
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: [operation]
+    } }; } }
+  });
+  const activityPlan = await model({
+    ...request,
+    decision_scope: { operation_contract: { request_activity: { allowed: [
+      { activity_kind: 'wait', target_refs: [] },
+      { activity_kind: 'carry', target_refs: ['bag', 'river_access'] }
+    ] } } }
+  });
+  assert.equal(activityPlan.operations[0], operation);
+
+  const itemOperation = { operation_kind: 'request_item_use' };
+  const itemPlan = await createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: [itemOperation]
+    } }; } }
+  })({
+    ...request,
+    decision_scope: { operation_contract: { request_item_use: { allowed: [
+      { item_ref: 'bag', use_kind: 'operate', target_refs: [] },
+      { item_ref: 'rope', use_kind: 'other', target_refs: ['bag'] }
+    ] } } }
+  });
+  assert.equal(itemPlan.operations[0], itemOperation);
 });
 
 test('autonomous adapter fails closed for missing runner or non-object output', async () => {

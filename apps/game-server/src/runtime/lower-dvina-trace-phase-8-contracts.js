@@ -50,7 +50,7 @@ export function resolveTracePhase8Contracts({ state, bundle,
   const actor = exactActor(state, 'zhdanko_storehouse_controller');
   const companions = ['eremey_fisher', 'ratsha_storehouse_helper']
     .map((slot) => exactActor(state, slot));
-  const participant = participatingFisher(state);
+  const participants = participatingFishers(state);
   const binding = bundle.combat_semantic_bindings?.phase_8;
   const interiorEntry = buildTraceInteriorEntryBinding({ access, capacity,
     binding,
@@ -83,8 +83,8 @@ export function resolveTracePhase8Contracts({ state, bundle,
     route, routeActivity,
     accusationActivity, access, capacity, sourceEndpoint,
     destinationEndpoint, storehouseAnchor: scene.anchor.instance_id,
-    actors: { zhdanko: actor, eremey: companions[0], ratsha: companions[1],
-      participatingFisher: participant },
+    actors: { zhdanko: actor, eremey: companions[0], ratsha: companions[1] },
+    participatingFishers: participants,
     combatBindings: structuredClone(binding),
     combatMovementBindings: { route_bindings: [structuredClone(route),
       structuredClone(reverseRoute)],
@@ -117,15 +117,20 @@ export function resolveTracePhase8Contracts({ state, bundle,
 
 function ref(entity_kind, entity_id) { return { entity_kind, entity_id }; }
 
-function participatingFisher(state) {
-  const ids = new Set((state.route_participant_commitments ?? [])
-    .filter(({ role }) => role === 'escort')
-    .map(({ npc_ref: ref }) => ref?.entity_id));
-  const matches = (state.npcs ?? []).filter(({ instance_id: id,
-    participant_slot_ref: slot }) => ids.has(id)
-      && /^background_fisher_[12]$/.test(slot));
-  if (matches.length !== 1) gap('TRACE_PHASE_8_FISHER_GAP');
-  return structuredClone(matches[0]);
+function participatingFishers(state) {
+  const escorts = (state.route_participant_commitments ?? [])
+    .filter(({ role }) => role === 'escort');
+  const ids = escorts.map(({ npc_ref: ref }) => ref?.entity_id);
+  if (ids.length === 0 || escorts.some(({ npc_ref: ref }) =>
+    ref?.entity_kind !== 'npc') || ids.some((id) => typeof id !== 'string')
+      || new Set(ids).size !== ids.length) gap('TRACE_PHASE_8_FISHER_GAP');
+  return ids.map((id) => {
+    const matches = (state.npcs ?? []).filter(({ instance_id,
+      participant_slot_ref: slot }) => instance_id === id
+        && /^background_fisher_[12]$/.test(slot));
+    if (matches.length !== 1) gap('TRACE_PHASE_8_FISHER_GAP');
+    return structuredClone(matches[0]);
+  });
 }
 function exactActor(state, slot) {
   const matches = (state.npcs ?? []).filter(

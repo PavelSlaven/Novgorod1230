@@ -77,7 +77,9 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
   } });
 }
 function visibleNpcSummaries(contracts) {
-  return Object.values(contracts.actors).map((npc) => ({
+  return [contracts.actors.zhdanko, contracts.actors.eremey,
+    contracts.actors.ratsha, ...contracts.participatingFishers]
+    .map((npc) => ({
     entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
     display_label: npc.semantic_profile?.identity?.canonical_name
       ?? npc.participant_slot_ref,

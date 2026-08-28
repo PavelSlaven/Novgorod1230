@@ -53,8 +53,13 @@ function contextFor({ state, contracts, playerInput, inputDigest,
   playerConversationModel, npcSemanticModel, temporalAdvanceOwner,
   revalidateStateVersion, playerPlan = null }) {
   const target = contracts.actors.zhdanko;
-  const actualNpcActors = Object.entries(contracts.actors).map(([refName, actor]) =>
-    ({ ref: refName, ...structuredClone(actor) }));
+  const actualNpcActors = [
+    ['zhdanko', contracts.actors.zhdanko],
+    ['eremey', contracts.actors.eremey],
+    ['ratsha', contracts.actors.ratsha],
+    ...contracts.participatingFishers.map((actor) =>
+      [actor.participant_slot_ref, actor])
+  ].map(([refName, actor]) => ({ ref: refName, ...structuredClone(actor) }));
   return createM2ConversationContext({ phase: 'phase_8', state, contracts,
     playerInput, inputDigest, checkResult: null,
     mapping: contracts.combatBindings.conversation.signal_mapping,

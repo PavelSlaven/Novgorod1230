@@ -96,10 +96,10 @@ function companionBindings(contracts) {
     binding: roleBinding(roles.ratsha_storehouse_helper, contracts),
     perceivedChangeSummary:
       'Ратша видит вооружённое сопротивление Жданко рядом с сумкой.' },
-  { actor: contracts.actors.participatingFisher,
+  ...contracts.participatingFishers.map((actor) => ({ actor,
     binding: roleBinding(roles.participating_fisher, contracts),
     perceivedChangeSummary:
-      'Рыбак видит вооружённое сопротивление Жданко перед группой.' }];
+      'Рыбак видит вооружённое сопротивление Жданко перед группой.' }))];
 }
 function roleBinding(role, contracts) {
   if (!role?.operation_contract || !Array.isArray(role.execution_profiles)) {
@@ -112,8 +112,9 @@ function accusationAvailable(state, contracts) {
   const present = new Set((state.npcs ?? []).filter(({ anchor_id: anchor }) =>
     anchor === state.position?.g5_anchor_id).map(({ instance_id: id }) => id));
   return state.position?.location_ref === contracts.ids.storehouse
-    && Object.values(contracts.actors).every(({ instance_id: id }) =>
-      present.has(id))
+    && [contracts.actors.zhdanko, contracts.actors.eremey,
+      contracts.actors.ratsha, ...contracts.participatingFishers]
+      .every(({ instance_id: id }) => present.has(id))
     && !(state.combat_sessions ?? []).some(({ status }) => status !== 'ended')
     && state.player_response_boundary == null;
 }

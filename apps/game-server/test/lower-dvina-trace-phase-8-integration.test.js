@@ -123,6 +123,45 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
   });
 
+test('Phase 8 carries every committed escort into route and combat', async () => {
+  const state = phase8CampState();
+  const fishers = state.npcs.filter(({ participant_slot_ref: slot }) =>
+    /^background_fisher_[12]$/.test(slot));
+  const second = fishers.find(({ instance_id: id }) => id !== actorIds(state).fisher);
+  const camp = state.prepared_scenes.find(({ location_profile_ref: id }) =>
+    id === 'trace_ld_v1_loc_fishing_camp');
+  second.anchor_id = camp.anchor.instance_id;
+  second.location_profile_ref = camp.location_profile_ref;
+  second.zone_ref = 'fire_side';
+  second.machine_state = { ...second.machine_state,
+    location_ref: camp.location_profile_ref, spatial_zone_ref: 'fire_side' };
+  state.route_participant_commitments.push({ npc_ref: ref(second.instance_id),
+    role: 'escort' });
+  const ids = { ...actorIds(state), escorts: fishers.map(({ instance_id: id }) => id) };
+  const conversation = createM2ConversationModels({
+    ratshaResponseKind: 'combat_handoff'
+  });
+  const runtime = fixture({ scenarioBundle: bundle,
+    materializationBundle: bundle, committedState: state, rollValue: 0.5,
+    temporalAdvanceOwner: createTemporalAdvanceOwner({ effect_registrations: [
+      ...npcTemporalEffectRegistrations(),
+      ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+      ...lowerDvinaTraceCombatTemporalEffectRegistrations()
+    ] }), turnStepModel: (request) => phase8Plan(request, ids),
+    playerConversationModel: conversation.playerConversationModel,
+    npcSemanticModel: conversation.npcSemanticModel,
+    npcCombatModel: (request) => combatPlan(request, ids) });
+
+  await openPhase8Combat(runtime, 'phase8-two-escorts');
+  for (const id of ids.escorts) assert.equal(runtime.state.npcs.find(
+    ({ instance_id }) => instance_id === id).anchor_id,
+  runtime.state.position.g5_anchor_id);
+  const participantIds = runtime.state.combat_sessions[0].participant_states
+    .map(({ actor_ref: actor }) => actor.entity_id);
+  assert.equal(ids.escorts.every((id) => participantIds.includes(id)), true);
+  assert.equal(runtime.npcCombatCount(), 5);
+});
+
 test('Ratsha reaches the factual road bag through the movement owner',
   async () => {
     const state = phase8CampState();
@@ -458,7 +497,8 @@ export function combatPlan(request, ids, choices = {}) {
     scopeRef = null;
     forceLimit = 'ordinary';
     if (intentKind === 'break_contact') targetRefs = [];
-  } else if ([ids.eremey, ids.fisher].includes(request.npc_ref.entity_id)) {
+  } else if ([ids.eremey, ids.fisher, ...(ids.escorts ?? [])]
+    .includes(request.npc_ref.entity_id)) {
     intentKind = choices.companions ?? 'control';
     if (intentKind === 'control') {
       targetRefs = [{ entity_kind: 'npc', entity_id: ids.zhdanko }];

@@ -26,7 +26,7 @@ const COMPOUND_TURN_10 =
   'Отдохнуть у огня полчаса и подсушить одежду. '
   + 'Попросить Еремея и рыбака пойти со мной к Жданко.';
 
-test('canonical Turn 10 runs real rest and companion conversation in one semantic turn', async () => {
+test('canonical Turn 10 preserves parent activity for prepared followup marker', async () => {
   const { state, contracts } = turn10State({ completedRest: false });
   let autonomousCalls = 0;
   let playerCalls = 0;
@@ -197,7 +197,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.deepEqual(runtimeFixture.state, stateAfterFirst);
 });
 
-test('repaired rest plan continues to companion conversation atomically',
+test('invented prepared followup marker repairs once then continues atomically',
   async () => {
     const { state, contracts } = turn10State({ completedRest: false });
     let plannerCalls = 0;
@@ -215,7 +215,9 @@ test('repaired rest plan continues to companion conversation atomically',
       turnStepModel(request) {
         plannerCalls += 1;
         const plan = turn10StepPlan(request, contracts);
-        return plannerCalls === 1 ? { ...plan, request_id: 'forged' } : plan;
+        return plannerCalls === 1 ? { ...plan, continuation: {
+          ...plan.continuation, prepared_followup_ref: 'invented-marker'
+        } } : plan;
       },
       playerConversationModel: (request) => playerPlan(request, contracts),
       npcSemanticModel: (request) => npcPlan(request, contracts),
@@ -475,7 +477,11 @@ function turn10StepPlan(request, contracts) {
         contracts.actors.eremey.instance_id,
         contracts.actors.participatingFisher.instance_id,
         contracts.actors.otherFisher.instance_id
-      ]
+      ],
+      ...(request.prepared_followup_candidates?.[0] == null ? {} : {
+        prepared_followup_ref:
+          request.prepared_followup_candidates[0].prepared_followup_ref
+      })
     } : null,
     clarification: null,
     reason_code: first ? 'rest_then_request_companions' : 'request_companions',

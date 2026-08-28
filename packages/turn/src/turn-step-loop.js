@@ -134,12 +134,18 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       completed_steps: structuredClone(completedSteps),
       actor: identity.actor,
       player_safe_state: playerSafeState,
-      available_domain_operations: availableDomainOperations
+      available_domain_operations: availableDomainOperations,
+      ...(projectedPlayerSafeState?.prepared_followup_candidates?.length
+        ? { prepared_followup_candidates:
+          structuredClone(projectedPlayerSafeState.prepared_followup_candidates) }
+        : {})
     };
     const inputDigest = sha256({
       remaining_intent: remainingIntent,
       player_safe_state: playerSafeState,
-      available_domain_operations: availableDomainOperations
+      available_domain_operations: availableDomainOperations,
+      prepared_followup_candidates:
+        projectedPlayerSafeState?.prepared_followup_candidates ?? []
     });
     if (seen.has(inputDigest)) {
       stopReason = 'no_progress';

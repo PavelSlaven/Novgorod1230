@@ -29,7 +29,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - `resolveSpatialSemanticDescriptor` owns S1 descriptor prompt, injected
   role-runner invocation and exact request/proposal DTO validation; materialization
   remains the admission/formal-handoff owner.
-- `continuation` переносит только `remaining_intent` и `depends_on_refs`.
+- `continuation` переносит `remaining_intent`, `depends_on_refs` и только при
+  явном request candidate — opaque `prepared_followup_ref`. Marker не
+  резервирует future operation: следующий шаг заново выбирается и revalidate-ится.
   Следующий semantic step всегда заново выбирается моделью из обновлённой
   player-safe working projection и только затем проходит exact binding и
   applicability admission. Prepared draft не резервирует будущую operation.

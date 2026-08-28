@@ -65,7 +65,12 @@ export async function resolveBoundTurnStepCommand({
   const selectedCommands = [];
   const initialDomainOperations = semanticBindings.filter(({ command, binding }) => availableOptions.has(command.option_id) && binding.operation_dto != null)
     .map(({ binding }) => structuredClone(binding.operation_dto));
-  const withAvailableDomainOperations = (state, operations) => deepFreeze({ player_safe_state: state, available_domain_operations: structuredClone(operations) });
+  const withAvailableDomainOperations = (state, operations,
+    preparedFollowupCandidates = []) => deepFreeze({ player_safe_state: state,
+    available_domain_operations: structuredClone(operations),
+    ...(preparedFollowupCandidates.length === 0 ? {} : {
+      prepared_followup_candidates: structuredClone(preparedFollowupCandidates)
+    }) });
   const currentDomainOperations = async (context, remainingIntent, completedSteps) => {
     if ((context?.prior_effect_count ?? 0) === 0) return completedSteps.length === 0 ? initialDomainOperations : [];
     const owner = services.turnStepPreparedDomainEffect;
@@ -86,7 +91,9 @@ export async function resolveBoundTurnStepCommand({
     }
     return operations;
   };
-  let firstProjection = withAvailableDomainOperations(projected.player_safe_state, initialDomainOperations);
+  let firstProjection = withAvailableDomainOperations(projected.player_safe_state,
+    initialDomainOperations, initialPreparedFollowupCandidates(
+      semanticBindings, availableOptions));
   const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
   if (externalRegistry != null) requireTurnStepExecutionRegistry(externalRegistry);
@@ -428,6 +435,20 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
+function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
+  const candidates = new Map();
+  for (const { command } of semanticBindings) {
+    const ref = command.prepared_followup_ref;
+    if (!availableOptions.has(command.option_id)
+        || typeof ref !== 'string' || ref.length === 0) continue;
+    const successors = semanticBindings.filter(({ command: candidate, binding }) =>
+      candidate.command_id === ref && binding.operation_dto != null);
+    if (successors.length !== 1) continue;
+    candidates.set(ref, { prepared_followup_ref: ref,
+      operation: structuredClone(successors[0].binding.operation_dto) });
+  }
+  return [...candidates.values()];
+}
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   semanticBindings, availableOptions, actor, committedState, services }) {
@@ -447,6 +468,20 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   const validate = ({ plan, request,
     prepared_chain_context: preparedChainContext }) => {
     const errors = [];
+    const marker = plan.continuation?.prepared_followup_ref;
+    if (marker != null && semanticBindings.filter(({ command, binding }) =>
+      availableOptions.has(command.option_id)
+        && command.prepared_followup_ref === marker
+        && plan.operations?.some((operation) => binding.matches(deepFreeze({
+          operation: structuredClone(operation), plan: structuredClone(plan),
+          actor: structuredClone(actor),
+          player_safe_state: structuredClone(request.player_safe_state),
+          committed_state: structuredClone(committedState)
+        })) === true)).length !== 1) {
+      errors.push({ path: '$.continuation.prepared_followup_ref',
+        rule: 'prepared_followup_binding', code: 'prepared_followup_binding',
+        message: 'must bind the current available prepared command' });
+    }
     for (const { operation, path } of plannedDomainOperations(plan)) {
       const owner = resolve({ operation, plan, request, preparedChainContext });
       if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner);

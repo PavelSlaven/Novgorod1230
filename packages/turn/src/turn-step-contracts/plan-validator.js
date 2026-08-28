@@ -61,7 +61,8 @@ export function validateTurnStepPlan(value, { request } = {}) {
   const operationKinds = validateOperations(
     value.operations, '$.operations', errors, trace, { directOnly: false }
   );
-  validateContinuation(value.continuation, '$.continuation', errors, trace);
+  validateContinuation(value.continuation, '$.continuation', errors, trace,
+    request?.prepared_followup_candidates);
   validateClarification(value.clarification, '$.clarification', errors, trace);
   validateCheck(value.check, '$.check', errors, trace);
   validateResolution(value, operationKinds, errors);
@@ -104,7 +105,8 @@ function validateAdditionalActivity(value, path, errors) {
   enumValue(value.effort, EFFORTS, `${path}.effort`, errors);
 }
 
-function validateContinuation(value, path, errors, trace = null) {
+function validateContinuation(value, path, errors, trace = null,
+  preparedFollowupCandidates = []) {
   if (value === null) return;
   if (!plain(value)) {
     strict(value, path, [], errors);
@@ -112,12 +114,21 @@ function validateContinuation(value, path, errors, trace = null) {
   }
   if (!strict(value, path, [
     'remaining_intent', 'depends_on_refs'
-  ], errors)) {
+  ], errors, { optional: ['prepared_followup_ref'] })) {
     return;
   }
   requiredText(value.remaining_intent, `${path}.remaining_intent`, errors);
   refs(value.depends_on_refs, `${path}.depends_on_refs`, errors, trace,
     { allowEmpty: true });
+  if (value.prepared_followup_ref != null) {
+    requiredText(value.prepared_followup_ref,
+      `${path}.prepared_followup_ref`, errors);
+    if (!(preparedFollowupCandidates ?? []).some(({ prepared_followup_ref: ref }) =>
+      ref === value.prepared_followup_ref)) {
+      add(errors, `${path}.prepared_followup_ref`, 'candidate',
+        'must copy a request prepared followup candidate');
+    }
+  }
 }
 
 function validateClarification(value, path, errors, trace = null) {

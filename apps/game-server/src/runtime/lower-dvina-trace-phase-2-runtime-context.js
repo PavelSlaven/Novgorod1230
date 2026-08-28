@@ -129,7 +129,7 @@ export function buildTracePhase2Registry(context) {
             contracts: phase7Contracts,
             conversationBindings: phase3Contracts?.conversationBindings ?? null,
             conversationActivity: phase3Contracts?.talk ?? null,
-            continuationTargetRefs: turn10?.companionTargetRefs ?? [],
+            preparedFollowupRef: turn10?.command.command_id ?? null,
             inputDigest,
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,

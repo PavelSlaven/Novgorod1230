@@ -104,6 +104,9 @@ export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
     player_safe_state: { $ref: '#/$defs/json_object' },
     available_domain_operations: {
       type: 'array', items: { $ref: '#/$defs/json_object' }
+    },
+    prepared_followup_candidates: {
+      type: 'array', items: { $ref: '#/$defs/prepared_followup_candidate' }
     }
   }),
   $defs: {
@@ -111,6 +114,12 @@ export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
     completed_step: strictObject(['step_index', 'summary'], {
       step_index: { type: 'integer', minimum: 1, maximum: 7 },
       summary: textSchema
+    }),
+    prepared_followup_candidate: strictObject([
+      'prepared_followup_ref', 'operation'
+    ], {
+      prepared_followup_ref: refSchema,
+      operation: { $ref: '#/$defs/json_object' }
     })
   }
 });
@@ -149,7 +158,8 @@ const planDefinitions = {
       remaining_intent: textSchema,
       depends_on_refs: {
         type: 'array', uniqueItems: true, items: refSchema
-      }
+      },
+      prepared_followup_ref: nullableRefSchema
     }
   },
   clarification: strictObject(['question', 'target_refs'], {

@@ -209,8 +209,8 @@ function noHandoff() {
   return { action_handoff_available: false, combat_handoff_available: false };
 }
 
-function fail() {
-  throw Object.assign(new Error(
-    'NPC participation must match one exact approved Turn 10 binding.'),
-  { code: 'TRACE_TURN10_NPC_PLAN_INVALID' });
+function fail(code = 'TRACE_TURN10_NPC_PLAN_INVALID') {
+  throw Object.assign(new Error(code === 'TRACE_TURN10_NPC_PLAN_INVALID'
+    ? 'NPC participation must match one exact approved Turn 10 binding.' : code),
+  { code });
 }

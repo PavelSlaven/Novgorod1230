@@ -105,6 +105,36 @@ test('autonomous prompt maps supplied world-process and generic-check values', a
   })), true);
 });
 
+test('autonomous prompt forbids generic check without attribute refs', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run(call) { calls.push(call); return { output: {} }; } }
+  });
+  const requestWithoutAttributes = {
+    ...request,
+    decision_scope: { allowed_attribute_refs: [], allowed_skill_refs: [],
+      operation_contract: { request_world_process: { allowed: [{
+        process_action: 'start', process_ref: null, process_kind: 'fire',
+        source_refs: ['fuel'], target_refs: ['flint']
+      }] } } }
+  };
+
+  await model(requestWithoutAttributes);
+  await model(requestWithoutAttributes, { repair: {
+    original_output: { resolution: 'generic_check' }, validation_errors: []
+  } });
+
+  for (const call of calls) {
+    const prompt = call.messages[0].content;
+    assert.equal(prompt.includes('<direct|domain_request>'), true);
+    assert.equal(prompt.includes('"generic_check"'), false);
+    assert.equal(prompt.includes('generic_check is forbidden'), true);
+    assert.equal(prompt.includes('This complete request-derived candidate is valid'), true);
+  }
+  assert.equal(calls[1].messages[0].content.includes('may change resolution'),
+    true);
+});
+
 test('autonomous adapter binds incomplete world-process plans to one request mapping', async () => {
   const model = createLowerDvinaTraceNpcAutonomousModel({
     roleRunner: { async run() { return { output: {

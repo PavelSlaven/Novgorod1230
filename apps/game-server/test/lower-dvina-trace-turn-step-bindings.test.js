@@ -35,6 +35,7 @@ const handlers = Object.freeze({
 });
 const commands = commandIds.map((commandId) => ({
   command_id: commandId,
+  label: commandId,
   matches: () => false,
   ...handlers
 }));
@@ -48,7 +49,17 @@ const targetRefs = Object.freeze({
   ratsha: 'npc:ratsha',
   onisim: 'npc:onisim',
   participatingFisher: 'npc:fisher-1',
-  otherFisher: 'npc:fisher-2'
+  otherFisher: 'npc:fisher-2',
+  zhdankoStorehouse: 'place:zhdanko-storehouse',
+  zhdanko: 'npc:zhdanko',
+  activeHostileNpc: 'npc:hostile',
+  roadBag: 'item:road-bag',
+  sealedPacket: 'item:sealed-packet',
+  caseEvidence: 'case:evidence',
+  temporaryDispositionOptions: {
+    custody: ['custody:hold'], property: ['property:preserve'],
+    promise: ['promise:recognize']
+  }
 });
 
 test('historical revision keeps the original bounded command definitions', () => {
@@ -220,6 +231,27 @@ test('revision 16 keeps future Phase 8 bindings inactive before admission', () =
     bundle,
     targetRefs
   }), { code: 'TRACE_TURN_STEP_BINDING_INVALID' });
+});
+
+test('revision 17 exposes valid copyable DTOs except bounded selection', () => {
+  const revision17Commands = revision17Bindings.domain_bindings.map(
+    ({ command_id: commandId }) => ({ command_id: commandId,
+      label: commandId, matches: () => false, ...handlers }));
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: revision17Commands,
+    bundle: { definition_revision: 17, turn_step_bindings: revision17Bindings },
+    targetRefs
+  });
+  for (const command of bound) {
+    if (command.command_id ===
+        'lower_dvina_trace.commit_temporary_disposition') {
+      assert.equal(command.semantic_binding.operation_dto, null);
+    } else {
+      assert.equal(command.semantic_binding.matches({
+        operation: command.semantic_binding.operation_dto
+      }), true, command.command_id);
+    }
+  }
 });
 
 test('revision 24 keeps inherited inactive bindings unbound', () => {

@@ -4,6 +4,8 @@ import { createTurnStepDomainOwnerPreflight } from
   '../src/turn-step-admission.js';
 import { createTurnStepExecutionRegistry, runTurnStepLoop } from
   '../src/turn-step-loop.js';
+import { createTurnCommandRegistry, runTurnWorkflow } from '../src/index.js';
+import { createServices, input as workflowInput, turnStepPlan } from './turn-workflow-fixture.js';
 
 const bands = [
   'clean_success', 'success', 'success_with_cost',
@@ -84,6 +86,125 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.deepEqual(result.check_results, []);
     assert.deepEqual(result.write_fragments, []);
   });
+
+test('planner receives only available exact domain operation DTOs', async () => {
+  const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
+  const run = async (available) => {
+    const { services } = createServices([], { command: { matches: () => false,
+      availability: () => ({ version: 1, schema: 'turn_availability_decision', status: available ? 'available' : 'blocked', can_attempt: available, reasons: [], check_requests: [] }),
+      semantic_binding: { binding_id: 'activity', operation: 'request_activity', operation_dto: dto, matches: () => false } },
+      playerSafeStateProjector: () => ({ actor: { actor_ref: 'party-1' }, player_safe_state: {} }),
+      turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+        applySemanticActivity: async ({ working_projection }) => ({
+          working_projection, write_fragments: [] })
+      }) });
+    if (!available) {
+      const fallback = services.commandRegistry.get('inspect_cart');
+      services.commandRegistry = createTurnCommandRegistry([{ ...fallback,
+        semantic_binding: null, availability: () => ({ version: 1,
+          schema: 'turn_availability_decision', status: 'available', can_attempt: true,
+          reasons: [], check_requests: [] }) }, { ...fallback,
+        command_id: 'activity', option_id: 'activity', availability: () => ({
+          version: 1, schema: 'turn_availability_decision', status: 'blocked',
+          can_attempt: false, reasons: [], check_requests: [] }), semantic_binding: {
+          binding_id: 'activity', operation: 'request_activity', operation_dto: dto,
+          matches: () => false } }]);
+    }
+    let request; services.turnStepModel = (value) => (request = value, turnStepPlan(value));
+    await runTurnWorkflow(workflowInput(), services); return request;
+  };
+  assert.deepEqual((await run(true)).available_domain_operations, [dto]);
+  assert.deepEqual((await run(false)).available_domain_operations, []);
+});
+
+test('prepared continuation recomputes domain operation DTOs from current state', async () => {
+  const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
+  const { services } = createServices([], { command: {
+    matches: () => false,
+    availability: ({ committed_state: state }) => ({ version: 1,
+      schema: 'turn_availability_decision',
+      status: state.after_prepare ? 'blocked' : 'available',
+      can_attempt: !state.after_prepare, reasons: [], check_requests: [] }),
+    consequence: () => ({ version: 1, schema: 'turn_consequence_package',
+      status: 'resolved', duration_minutes: 1, visible_seed: {}, hidden_update: {},
+      state_changes: [], suggested_actions: [] }),
+    semantic_binding: { binding_id: 'activity', operation: 'request_activity',
+      operation_dto: dto, matches: ({ operation }) => operation.op === 'request_activity' } },
+    playerSafeStateProjector: () => ({ actor: { actor_ref: 'party-1' }, player_safe_state: {} }),
+    turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+      applySemanticActivity: async ({ working_projection }) => ({
+        working_projection, write_fragments: [], player_response_boundary: true })
+    }) });
+  services.turnStepPreparedDomainEffect = {
+    supports: ({ operation }) => operation.op === 'request_activity',
+    currentState: () => ({ after_prepare: true }),
+    apply: async ({ working_projection }) => ({ working_projection,
+      summary: 'prepared', write_fragments: [], player_response_boundary: false,
+      prepared_effect_request: { effect_kind: 'domain_command', owner_ref: 'inspect_cart',
+        operation_ref: 'request_activity', availability: { version: 1,
+          schema: 'turn_availability_decision', status: 'available', can_attempt: true,
+          reasons: [], check_requests: [] }, consequence: { duration_minutes: 1 } } })
+  };
+  services.turnStepPreparedEffectContext = { current_clock: clock(0), current_body_state: body() };
+  services.turnStepPreparedEffectTimeOwner = ({ prepared_chain_context: context }) => ({
+    version: 2, schema: 'turn_time_update', owner: '@rus/time-events-history',
+    clock_before: context.current_clock, clock_after: clock(1),
+    exact_elapsed: { exact_minutes: { numerator: '1', denominator: '1' } },
+    nearest_boundary: null
+  });
+  services.turnStepPreparedEffectBodyOwner = ({ prepared_chain_context: context }) => ({
+    version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+    applied: false, proposal: null, state_after: context.current_body_state
+  });
+  const requests = [];
+  services.turnStepModel = (request) => {
+    requests.push(request);
+    if (request.step_index === 2) throw new Error('second request captured');
+    return turnStepPlan(request, { resolution: 'domain_request',
+      goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [dto], continuation: {
+        remaining_intent: 'осмотреться', depends_on_refs: [] } });
+  };
+  await assert.rejects(() => runTurnWorkflow(workflowInput(), services),
+    /second request captured/u);
+  assert.deepEqual(requests.map((request) => request.available_domain_operations), [[dto], []]);
+});
+
+test('direct continuation does not reuse initial domain operation DTOs', async () => {
+  const dto = { op: 'request_activity', actor_ref: 'party-1',
+    activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
+  const { services } = createServices([], { command: { matches: () => false,
+    availability: () => ({ version: 1, schema: 'turn_availability_decision',
+      status: 'available', can_attempt: true, reasons: [], check_requests: [] }),
+    semantic_binding: { binding_id: 'activity', operation: 'request_activity',
+      operation_dto: dto, matches: () => false } },
+    playerSafeStateProjector: () => ({ actor: { actor_ref: 'party-1' },
+      player_safe_state: {} }),
+    turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+      applySemanticActivity: async ({ working_projection }) => ({
+        working_projection, write_fragments: [], player_response_boundary: false })
+    }) });
+  const requests = [];
+  services.turnStepModel = (request) => {
+    requests.push(request);
+    if (request.step_index === 2) throw new Error('second request captured');
+    return turnStepPlan(request, { goal_result: 'pending', continuation: {
+      remaining_intent: 'осмотреться', depends_on_refs: [] } });
+  };
+  await assert.rejects(() => runTurnWorkflow(workflowInput(), services),
+    /second request captured/u);
+  assert.deepEqual(requests.map((request) => request.available_domain_operations),
+    [[dto], []]);
+});
+
+function clock(value) {
+  return { whole_minutes: String(value), subminute_numerator: '0', subminute_denominator: '1' };
+}
+
+function body() {
+  return { health: 100, satiety: 100, energy: 100, active_conditions: [] };
+}
 
 test('structural then unavailable owner consumes no third repair', async () => {
   let calls = 0;

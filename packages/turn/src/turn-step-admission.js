@@ -61,20 +61,37 @@ export async function resolveBoundTurnStepCommand({
     throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID',
       'Player-safe projector must return actor and player_safe_state objects.');
   }
-  const availableOptions = new Set(actionSet.options.map(
-    ({ option_id: optionId }) => optionId
-  ));
+  const availableOptions = new Set(actionSet.options.map(({ option_id: id }) => id));
   const selectedCommands = [];
-  let firstProjection = projected.player_safe_state;
+  const initialDomainOperations = semanticBindings.filter(({ command, binding }) => availableOptions.has(command.option_id) && binding.operation_dto != null)
+    .map(({ binding }) => structuredClone(binding.operation_dto));
+  const withAvailableDomainOperations = (state, operations) => deepFreeze({ player_safe_state: state, available_domain_operations: structuredClone(operations) });
+  const currentDomainOperations = async (context, remainingIntent, completedSteps) => {
+    if ((context?.prior_effect_count ?? 0) === 0) return completedSteps.length === 0 ? initialDomainOperations : [];
+    const owner = services.turnStepPreparedDomainEffect;
+    if (typeof owner?.currentState !== 'function') return [];
+    const currentState = await owner.currentState(deepFreeze({ prepared_chain_context: structuredClone(context), committed_state: structuredClone(committedState) }));
+    const operations = [];
+    for (const { command, binding } of semanticBindings) {
+      const operation = structuredClone(binding.operation_dto);
+      if (binding.operation_dto == null || owner.supports?.(deepFreeze({ operation,
+        command_id: command.command_id, option_id: command.option_id,
+        prepared_chain_context: structuredClone(context) })) !== true) continue;
+      const availability = await command.availability(deepFreeze({
+        playerInput: { ...structuredClone(playerInput), raw_text: remainingIntent },
+        committed_state: structuredClone(currentState), retrievedState: structuredClone(currentState),
+        modeResolution: null, action_set_evaluation: true }));
+      assertValid('turn_availability_decision', validateAvailabilityDecision(availability));
+      if (availability.can_attempt === true && availability.status !== 'blocked' && availability.check_requests.length === 0) operations.push(operation);
+    }
+    return operations;
+  };
+  let firstProjection = withAvailableDomainOperations(projected.player_safe_state, initialDomainOperations);
   const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
-  if (externalRegistry != null) {
-    requireTurnStepExecutionRegistry(externalRegistry);
-  }
-  const preflightDomainPlan = createTurnStepDomainOwnerPreflight({
-    externalRegistry, semanticBindings, availableOptions, actor: projected.actor,
-    committedState, services
-  });
+  if (externalRegistry != null) requireTurnStepExecutionRegistry(externalRegistry);
+  const preflightDomainPlan = createTurnStepDomainOwnerPreflight({ externalRegistry,
+    semanticBindings, availableOptions, actor: projected.actor, committedState, services });
   const direct = Object.fromEntries([...DIRECT_STEP_OPERATIONS].map((op) => [
     op,
     async (execution) => {
@@ -308,7 +325,9 @@ export async function resolveBoundTurnStepCommand({
     randomSource: services.randomSource,
     resolveCheckContext: services.turnStepCheckContextResolver,
     async projectPlayerSafeState({working_projection:workingProjection,completed_steps:completedSteps,
-      local_fire_atomic_write_plans: localFirePlans }) {
+      local_fire_atomic_write_plans: localFirePlans,
+      prepared_chain_context: preparedChainContext,
+      remaining_intent: remainingIntent }) {
       if (firstProjection != null) {
         const first = firstProjection;
         firstProjection = null;
@@ -326,7 +345,9 @@ export async function resolveBoundTurnStepCommand({
         throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID',
           'Player-safe projector must return actor and player_safe_state objects.');
       }
-      return next.player_safe_state;
+      return withAvailableDomainOperations(next.player_safe_state,
+        await currentDomainOperations(preparedChainContext, remainingIntent,
+          completedSteps));
     },
     async revalidateCommittedState({ step_index: stepIndex }) {
       const request = {

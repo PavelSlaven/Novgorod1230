@@ -101,7 +101,10 @@ export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
       items: { $ref: '#/$defs/completed_step' }
     },
     actor: { $ref: '#/$defs/json_object' },
-    player_safe_state: { $ref: '#/$defs/json_object' }
+    player_safe_state: { $ref: '#/$defs/json_object' },
+    available_domain_operations: {
+      type: 'array', items: { $ref: '#/$defs/json_object' }
+    }
   }),
   $defs: {
     ...jsonDataDefinitions,

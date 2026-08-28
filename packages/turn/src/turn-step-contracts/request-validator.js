@@ -15,7 +15,7 @@ export function validateTurnStepRequest(value) {
     'working_revision', 'step_index', 'max_internal_steps',
     'root_player_action', 'remaining_intent', 'completed_steps', 'actor',
     'player_safe_state'
-  ], errors)) return result(errors);
+  ], errors, { optional: ['available_domain_operations'] })) return result(errors);
   constant(value.schema, 'turn_step_request_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   requiredText(value.root_turn_id, '$.root_turn_id', errors);
@@ -42,6 +42,13 @@ export function validateTurnStepRequest(value) {
   }
   jsonProjection(value.actor, '$.actor', errors);
   jsonProjection(value.player_safe_state, '$.player_safe_state', errors);
+  if (value.available_domain_operations !== undefined
+      && !Array.isArray(value.available_domain_operations)) {
+    add(errors, '$.available_domain_operations', 'type', 'must be an array');
+  } else if (Array.isArray(value.available_domain_operations)) {
+    value.available_domain_operations.forEach((operation, index) =>
+      jsonProjection(operation, `$.available_domain_operations[${index}]`, errors));
+  }
   if (Number.isInteger(value.step_index) && value.step_index > 8) {
     add(errors, '$.step_index', 'maximum', 'must be <= 8');
   }

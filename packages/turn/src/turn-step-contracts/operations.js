@@ -6,6 +6,7 @@ import {
 } from '@rus/contracts/combat-v1';
 import {
   add,
+  collectKnownRefs,
   constant,
   enumValue,
   integer,
@@ -15,6 +16,7 @@ import {
   plain,
   refs,
   requiredText,
+  result,
   strict
 } from './validation.js';
 import { validateActionProduction } from
@@ -48,6 +50,18 @@ export function validateOperations(value, path, errors, trace, {
     validateOperation(operation, operationPath, errors, trace);
   });
   return kinds;
+}
+
+export function validateTurnStepOperationDto(value) {
+  const errors = [];
+  const trace = {
+    knownRefs: collectKnownRefs({ actor: { actor_ref: value?.actor_ref },
+      player_safe_state: value }),
+    tempRefs: new Set(), allTempRefs: new Set(), retired: new Set(),
+    placements: new Map(), inside: new Map()
+  };
+  validateOperations([value], '$', errors, trace, { directOnly: false });
+  return result(errors);
 }
 
 function validateOperation(operation, path, errors, trace) {

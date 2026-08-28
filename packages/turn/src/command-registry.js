@@ -8,6 +8,7 @@ import {
   isDomainStepOperation,
   resolveBoundTurnStepCommand
 } from './turn-step-admission.js';
+import { validateTurnStepOperationDto } from './turn-step-contracts/operations.js';
 
 const registries = new WeakSet();
 const actionSets = new WeakMap();
@@ -411,16 +412,25 @@ function structuredCloneHandlers(value) {
 }
 function normalizeSemanticBinding(value) {
   if (value == null) return null;
+  let operationDto = null;
+  if (value.operation_dto != null) {
+    try { operationDto = structuredClone(value.operation_dto); }
+    catch { throw new TypeError('semantic_binding operation_dto must be cloneable.'); }
+  }
   if (!plain(value) || !stable(value.binding_id)
       || !isDomainStepOperation(value.operation)
       || typeof value.matches !== 'function'
       || Object.keys(value).some((key) =>
-        !['binding_id', 'operation', 'matches'].includes(key))) {
+        !['binding_id', 'operation', 'operation_dto', 'matches'].includes(key))
+      || (operationDto != null && (!plain(operationDto)
+        || operationDto.op !== value.operation
+        || !validateTurnStepOperationDto(operationDto).ok))) {
     throw new TypeError('semantic_binding requires binding_id, domain operation and code matcher.');
   }
   return {
     binding_id: value.binding_id,
     operation: value.operation,
+    operation_dto: operationDto,
     matches: value.matches
   };
 }

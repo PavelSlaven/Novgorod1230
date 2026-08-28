@@ -1,7 +1,7 @@
 {
   "schema": "rus.llm_runtime_flash_first_decision_record.v1",
   "candidate": {
-    "checkout_sha": "2c412ed747cdff0890401c389a07bf48f89c3694",
+    "checkout_sha": "e4495ca9b8d62cfc6e2a7f669d5a85531616b6da",
     "clean": true,
     "base_main_sha": "d83b0908"
   },
@@ -10,13 +10,13 @@
     "corpus": {
       "path": "data/model-evals/llm-runtime/frozen-role-requests-v1.json",
       "version": 12,
-      "sha256": "5b1cd6b282f61acf3342056e33c0f83468d4dc2ef78f0ae8cd775254954009d0"
+      "sha256": "33c1894d37295734fca4d4b147dd8632bc40d06639e9b3ef9f9d47e87200b638"
     },
     "execution": { "passes": 1, "concurrency": 1 },
     "fixtures": { "count": 22, "passed": 22 },
     "repairs": { "calls": 6, "passed": 6 },
-    "latency_ms": { "p50": 1829, "p95": 3038, "max": 3157 },
-    "tokens": { "input": 29411, "output": 4993, "total": 34404 },
+    "latency_ms": { "p50": 1827, "p95": 3472, "max": 3495 },
+    "tokens": { "input": 29902, "output": 5224, "total": 35126 },
     "roles": [
       { "role": "world_process_step", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "5d5dc95704111775" },
       { "role": "turn_step_planner", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "db6b7bb0c3e05c9e" },
@@ -44,51 +44,51 @@
     }
   },
   "production_playtest": {
-    "generated_at": "2026-08-28T07:21:40.16Z",
+    "generated_at": "2026-08-28T09:06:16.665Z",
     "composition": "builtin:production-spatial-v3",
     "policy": { "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "off", "whole_turn_budget_ms": 30000 },
     "turns": [
-      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 6686, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 5986, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 6500, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 8445, "llm_calls": 4, "repair_calls": 1 },
-      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7828, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 6662, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 8388, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 6191, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 6558, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7050, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 5907, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 8490, "llm_calls": 4, "repair_calls": 1 },
-      { "scenario_class": "semantic_repair_probe", "status": "resolved", "duration_ms": 8194, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 7204, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 6860, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 6122, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 7090, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 7418, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 11177, "llm_calls": 4, "repair_calls": 1 },
-      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 6536, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7289, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 7793, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 7067, "llm_calls": 3, "repair_calls": 0 },
-      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 7699, "llm_calls": 3, "repair_calls": 0 }
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 9534, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 4969, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 5671, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 9942, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7127, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 5904, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 6972, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 9041, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 5700, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 5737, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 5414, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 8457, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "semantic_repair_probe", "status": "resolved", "duration_ms": 8019, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 5601, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 6434, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 4948, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 7065, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 6411, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 9471, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 6801, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 6466, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 6141, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 6173, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 6407, "llm_calls": 3, "repair_calls": 0 }
     ],
     "aggregate": {
-      "whole_turn_latency_ms": { "p50": 7067, "p95": 8490, "max": 11177 },
+      "whole_turn_latency_ms": { "p50": 6411, "p95": 9534, "max": 9942 },
       "resolved_turns": 24,
       "failed_turns": 0,
       "successful_over_30s": 0,
       "budget_exhausted_turns": 0,
       "domain_binding_missing_turns": 0,
       "malformed_json_failures": 0,
-      "total_llm_calls": 75,
-      "repair_calls": 3,
+      "total_llm_calls": 77,
+      "repair_calls": 5,
       "narrator_repair_calls": 0,
       "role_call_counts": {
         "turn_step_planner": 24,
+        "turn_step_planner_repair": 5,
         "legacy.narrator.dossier": 24,
-        "legacy.narrator.audit": 24,
-        "turn_step_planner_repair": 3
+        "legacy.narrator.audit": 24
       },
       "model_policy_violations": 0
     }

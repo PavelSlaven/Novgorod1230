@@ -119,3 +119,15 @@ test('repair with same operation recomputes owner for changed plan context', () 
     operations: [operation], check: null }, request,
   prepared_chain_context: null }));
 });
+
+test('active prepared chain defers one unavailable domain request', () => {
+  const request = { remaining_intent: 'ждать', player_safe_state: {} };
+  assert.doesNotThrow(() => preflight()({ plan: {
+    resolution: 'domain_request', operations: [{ op: 'request_activity' }],
+    check: null
+  }, request, prepared_chain_context: { prior_effect_count: 1 } }));
+  assert.throws(() => preflight()({ plan: {
+    resolution: 'domain_request', operations: [{ op: 'request_activity' }],
+    check: null
+  }, request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
+});

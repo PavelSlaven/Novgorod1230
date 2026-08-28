@@ -429,7 +429,9 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     for (const { operation, path } of plannedDomainOperations(plan)) {
       const owner = resolve({ operation, plan, request, preparedChainContext });
       if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner);
-      if (owner.kind === 'missing') errors.push({ path,
+      if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
+        plan, path, preparedChainContext
+      })) errors.push({ path,
         rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
         message: 'must resolve to one available domain owner' });
     }
@@ -438,6 +440,13 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   };
   validate.resolve = resolve;
   return validate;
+}
+
+function deferredPreparedDomainPlan({ plan, path, preparedChainContext }) {
+  return (preparedChainContext?.prior_effect_count ?? 0) > 0
+    && plan.resolution === 'domain_request'
+    && plan.operations?.length === 1
+    && path === '$.operations.0';
 }
 
 function* plannedDomainOperations(plan) {

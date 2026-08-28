@@ -152,10 +152,23 @@
           "request_movement"
         ],
         "required_values": {
-          "interpretation.adaptation": "make_believe",
           "resolution": "direct",
           "goal_result": "not_achieved",
-          "check": null
+          "activity.owner": "semantic",
+          "activity.duration_class": "moment",
+          "operations.length": 0,
+          "check": null,
+          "continuation": null
+        },
+        "allowed_values": {
+          "interpretation.adaptation": [
+            "make_believe",
+            "reality_limited"
+          ],
+          "activity.effort": [
+            "light",
+            "moderate"
+          ]
         }
       },
       "expected_output": {

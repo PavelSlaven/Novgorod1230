@@ -25,6 +25,25 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
     operations: [{ op: 'request_discovery', actor_ref: '<copy current actor ref from request>',
       discovery_kind: 'look', target_refs: ['<copy spatial_semantic.position_ref from request>'],
       query: '<brief look query>' }], check: null
+  },
+  local_world_process_start: {
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_world_process',
+      actor_ref: '<copy current actor ref from request>', process_action: 'start',
+      process_ref: null, process_kind: 'fire',
+      source_refs: ['<one visible admitted fuel ref>'],
+      target_refs: ['<copy local_world_process.ignition_basis_refs ref>'],
+      description: '<brief grounded fire start>' }], check: null
+  },
+  local_world_process_affect: {
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_world_process',
+      actor_ref: '<copy current actor ref from request>', process_action: 'affect',
+      process_ref: '<copy local_world_process.active_process_refs ref>',
+      process_kind: 'fire', source_refs: ['<one visible whole water ref>'],
+      target_refs: [], description: '<brief grounded fire affect>' }], check: null
   }
 });
 
@@ -406,6 +425,13 @@ export const TURN_STEP_PLANNER_INSTRUCTIONS = [
   'true, use the mapped spatial_grounded_look exactly: copy its actor',
   'and position refs from request, use only request or operation-contract',
   'enum values, and do not substitute or invent refs.',
+  'When player_safe_state.local_world_process.semantic_grounding_available is',
+  'true, map only a matching fire intent through local_world_process. For',
+  'start, use local_world_process_start with one visible admitted fuel and one',
+  'listed ignition_basis_refs ref. For affecting an active fire, use',
+  'local_world_process_affect with one visible whole water ref and one listed',
+  'active_process_refs ref. Do not emit request_world_process otherwise, mix',
+  'fuel with water, invent refs, or decide the process outcome.',
   'Emit a domain_request only when player_safe_state contains the exact code-owned capability, owner, and referenced target; never use it as an open-ended fallback. Without that capability, use a direct no-operation reality-limited or visible attempt; do not discover or assert hidden facts.',
   'Focused inspect or search for hidden or new details uses discovery.',
   'When player_safe_state.ordinary_resolution.discovery_available is true, a focused inspect or search of the current visible location or entity for an unspecified ordinary detail uses exactly one request_discovery: copy discovery_kind inspect or search from the intent, actor_ref from request.actor, one current visible target_ref, and preserve the player query. A general look remains the mapped direct result.',

@@ -14,6 +14,8 @@ import { projectLowerDvinaTraceF1Capability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { materializeLocalFireActivation } from
+  '../../../packages/materialization/src/lower-dvina-trace-local-fire.js';
 
 test('production-v10 threads the exact A1 profile and resolver into Phase 2',
   async () => {
@@ -195,7 +197,19 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
       committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},
       loadedProfile,resolverAvailable:true});
     assert.equal(hidden.local_world_process,undefined);
-  });
+});
+
+test('F1 activation provisions one player-owned whole water portion', async () => {
+  const loadedProfile = await loadLowerDvinaTraceLocalFireProfile();
+  const activation = materializeLocalFireActivation('party', 'player', 'shore',
+    'run', loadedProfile.profile, (...parts) => parts.join(':'));
+  const water = activation.items.filter((item) =>
+    item.state?.ordinary_metadata?.semantic_type === 'water_portion');
+  assert.equal(water.length, 1);
+  assert.equal(water[0].quantity, 1);
+  assert.equal(water[0].owner_character_id, 'player');
+  assert.equal(water[0].controller_character_id, 'player');
+});
 
 async function capturedTraceRuntime(actionProductionProfile,
   localFireProfile = null) {

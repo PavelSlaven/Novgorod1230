@@ -12,16 +12,22 @@ export function materializeLocalFireActivation(partyId, actorRef, anchorId,
   }));
   const ignition = item({ descriptor: profile.ignition_basis,
     instanceId: ignitionId, anchorId, actorRef, fuel: false });
-  return { items: [ignition, ...fuelItems] };
+  const water = item({ descriptor: profile.water_portion,
+    instanceId: deterministicInstanceId(partyId, runId, 'item',
+      profile.water_portion.authored_ref, 0), anchorId, actorRef,
+    water: true });
+  return { items: [ignition, ...fuelItems, water] };
 }
 
-function item({ descriptor, instanceId, anchorId, actorRef, fuel }) {
+function item({ descriptor, instanceId, anchorId, actorRef, fuel = false,
+  water = false }) {
   const mechanics = { mass_grams: descriptor.mass_grams,
     external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
     quantity: 1, container: null };
   return { instance_id: instanceId, template_id: descriptor.template_id,
     profile_id: descriptor.profile_id,
-    category_id: fuel ? 'ordinary_solid_fuel_unit' : 'ordinary_ignition_basis',
+    category_id: fuel ? 'ordinary_solid_fuel_unit'
+      : water ? 'water_portion' : 'ordinary_ignition_basis',
     quantity: 1, condition_state: 'serviceable', legal_status: 'owned',
     claim_state: 'owned', anchor_id: fuel ? anchorId : null,
     holder_character_id: fuel ? null : actorRef,
@@ -42,6 +48,10 @@ function item({ descriptor, instanceId, anchorId, actorRef, fuel }) {
         schema: 'rus.items.local_fire_fuel.v1',
         fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
         provenance: { source_refs: [descriptor.authored_ref] }
+      } } : water ? { ordinary_metadata: {
+        semantic_type: 'water_portion', semantic_category: 'ordinary_mundane',
+        origin: { kind: 'authored_local_fire_provisioning',
+          source_refs: [descriptor.authored_ref] }
       } } : { local_fire_ignition_basis: {
         schema: 'rus.items.local_fire_ignition_basis.v1',
         ignition_kind: 'authored_manual', mechanics } }) } };
@@ -51,7 +61,7 @@ function validate(value) {
   const keys = ['schema', 'profile_id', 'revision', 'status', 'context_ref',
     'policy_ref', 'policy_version', 'scope_binding', 'recheck_interval',
     'fuel_unit_mass_grams_min', 'fuel_unit_mass_grams_max', 'ignition_basis',
-    'fuel_units', 'allowed_actions', 'water_extinguish_policy', 'process_owner',
+    'fuel_units', 'water_portion', 'allowed_actions', 'water_extinguish_policy', 'process_owner',
     'time_owner', 'persistence_owner', 'fallback_policy'];
   if (!exact(value, keys)
       || value.schema !== 'rus.lower_dvina_trace_local_fire_profile.v1'
@@ -69,7 +79,7 @@ function validate(value) {
       || value.persistence_owner !== 'P16_combined_atomic_committer'
       || value.fallback_policy !== 'forbidden'
       || !descriptor(value.ignition_basis)
-      || !value.fuel_units.every(descriptor)) {
+      || !value.fuel_units.every(descriptor) || !descriptor(value.water_portion)) {
     fail('TRACE_LOCAL_FIRE_PROFILE_INVALID',
       'Revision 22 requires one exact approved local-fire profile.');
   }

@@ -21,21 +21,21 @@
     "digest": "1be1b36ef4d718e1178ef3377a2e86f2ea91ca407dab6f5918e75bdb36c7e5af"
   },
   "files": {
-    "definition.json": "54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe",
-    "local-fire-profile.json": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
+    "definition.json": "5ce56d6deb2504ad9375f16d9f4c51764b48bb41b44e38f07715baa767d91138",
+    "local-fire-profile.json": "33f373759271afd0339264c14bfefde693b48f0bb864a34e7c8e480250d06e0e"
   },
   "content_refs": {
     "definition": {
       "path": "definition.json", "id": "lower_dvina_trace_v1",
       "revision": 22, "schema": "rus.trace_scenario_definition.v1",
-      "digest": "54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe"
+      "digest": "5ce56d6deb2504ad9375f16d9f4c51764b48bb41b44e38f07715baa767d91138"
     },
     "local_fire_profile": {
       "path": "local-fire-profile.json",
       "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
-      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
+      "digest": "33f373759271afd0339264c14bfefde693b48f0bb864a34e7c8e480250d06e0e"
     },
     "inherited_m9_content": {
       "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/manifest.json",
@@ -45,7 +45,7 @@
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "add898ee5278e3936c072211029b4e0f2293aef50232ae3f450be773c17d8c35",
+  "content_digest": "85fe228f349de8098529c1206e8ce7bb437425c0d02d46e4815e3f734ed0e407",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

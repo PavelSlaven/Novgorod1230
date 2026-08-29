@@ -8,6 +8,7 @@ import {
   TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
   TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
   TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
+  TRACE_PHASE_1B_REVISION22_PHASE_1A_MANIFEST_DIGEST,
   TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST,
   TRACE_PHASE_1B_REVISION17_PHASE_1A_MANIFEST_DIGEST
 } from './lower-dvina-trace-phase-1b-identities.js';
@@ -23,7 +24,8 @@ import { loadLowerDvinaTraceSpatialSemanticPublication, loadLowerDvinaTraceRevis
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1', MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`, BINDING_PATH = `${ROOT}/phase-1b-v13/publication-binding.json`;
 export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(), phase1AManifestDigest = null } = {}) {
   if (phase1AManifestDigest == null || phase1AManifestDigest === TRACE_NPC_ACTOR_STEP_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceNpcActorStepPublication({ rootDir, phase1AManifestDigest }); if (phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceSpatialSemanticPublication({ rootDir, phase1AManifestDigest }); if (phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceRevision23SpatialSemanticPublication({ rootDir, phase1AManifestDigest });
-  if (phase1AManifestDigest === TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceLocalFirePublication({ rootDir, phase1AManifestDigest });
+  if (phase1AManifestDigest === TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST
+      || phase1AManifestDigest === TRACE_PHASE_1B_REVISION22_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceLocalFirePublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest === TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceActionProductionPublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest
       === TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST) {

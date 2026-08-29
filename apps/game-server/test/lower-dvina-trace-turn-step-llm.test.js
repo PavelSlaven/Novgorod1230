@@ -107,6 +107,26 @@ test('turn step planner prompt routes focused ordinary discovery without narrowi
   assert.match(prompt, /general look remains the mapped direct result/u);
 });
 
+test('turn step planner maps local fire only through its visible capability', async () => {
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    } }
+  });
+  await model(request({ remaining_intent: 'вылить воду на огонь',
+    player_safe_state: { local_world_process: {
+      semantic_grounding_available: true,
+      ignition_basis_refs: ['item:firesteel'],
+      active_process_refs: ['fire:active'] }, items: [{ item_id: 'item:water' }] }
+  }));
+  assert.match(prompt, /local_world_process\.semantic_grounding_available/u);
+  assert.match(prompt, /local_world_process_affect/u);
+  assert.match(prompt, /one visible whole water ref/u);
+  assert.match(prompt, /Do not emit request_world_process otherwise/u);
+});
+
 test('turn step planner prompt preserves only compound intent outside capability coverage', async () => {
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({

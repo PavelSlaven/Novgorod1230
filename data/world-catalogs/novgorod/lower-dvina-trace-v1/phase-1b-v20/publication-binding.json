@@ -21,7 +21,7 @@
     "id": "lower_dvina_trace_phase_1a_v21",
     "revision": 21,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505"
+    "digest": "0baa2032acba1b72ad1c6144f7fce0a428a6d02fa03fc12d6a0b77303bf8af2c"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/definition.json",
@@ -55,7 +55,7 @@
     "trigger": "new_game",
     "occurrence": 0,
     "scenario_definition_revision": 25,
-    "phase_1a_manifest_digest": "f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505",
+    "phase_1a_manifest_digest": "0baa2032acba1b72ad1c6144f7fce0a428a6d02fa03fc12d6a0b77303bf8af2c",
     "scenario_definition_digest": "3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711"
   },
   "world_compatibility": {

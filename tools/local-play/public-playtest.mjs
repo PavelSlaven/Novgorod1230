@@ -23,7 +23,7 @@ export const IMPOSSIBLE_PROBE = Object.freeze(entry('impossible-jump', 'impossib
 export async function runPublicPlaytest({ start = startLocalPlay, fetchImpl = fetch, manifest = PUBLIC_PLAYTEST_MANIFEST, impossibleProbe = IMPOSSIBLE_PROBE, now = () => Date.now(), git = gitState, branch = 0, log = console.log, stop = stopOwnedServer } = {}) {
   assertManifest(manifest);
   const gitSnapshot = requireCleanGitSnapshot(git());
-  const runSeed = playtestSeed(gitSnapshot.head, branch);
+  const runSeed = playtestSeed(branch);
   const local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true' } });
   try {
     const http = createPublicClient(local.url, fetchImpl, now);
@@ -62,7 +62,7 @@ function isTerminalPublicResponse(response) { const summary = publicSummary(resp
 function isPendingPresentation(response) { return publicSummary(response).screen_status === 'committed_presentation_pending'; }
 function assertCurrentCatalog(catalog) { const scenarios = catalog?.scenarios; if (!Array.isArray(scenarios) || scenarios.length !== 1 || scenarios[0]?.scenario_id !== SCENARIO_ID || scenarios[0]?.available !== true) throw gateError('PUBLIC_CATALOG_INVALID', 'Public catalog is not exactly current scenario.'); }
 function assertManifest(manifest) { if (!Array.isArray(manifest) || manifest.length < 20 || manifest.length > 30 || new Set(manifest.map((turn) => turn.id)).size !== manifest.length) throw new TypeError('Manifest must contain 20–30 uniquely named turns.'); }
-function playtestSeed(head, branch) { const value = Number(branch); if (!Number.isInteger(value) || value < 0) throw new TypeError('branch must be a non-negative integer.'); return `public-playtest:${head}:branch:${value}`; }
+function playtestSeed(branch) { const value = Number(branch); if (!Number.isInteger(value) || value < 0) throw new TypeError('branch must be a non-negative integer.'); return `public-playtest:${SCENARIO_ID}:branch:${value}`; }
 function publicEvidence(expected, data) { const context = data?.screen?.visible_context ?? {}; const changes = context.visible_changes ?? []; if (!expected) return { expected: null, pass: true }; if (expected === 'blue_wool_found') return { expected, pass: (context.visible_objects ?? []).some((object) => text(object?.entity_ref?.entity_id).endsWith(':blue-wool')) }; if (expected === 'route_to_shed_disclosed') return { expected, pass: (context.known_context ?? []).some((line) => text(line).includes('путь к сушильне')) }; if (expected === 'onisim_treatment_completed') return { expected, pass: ['onisim_stabilized_unable_to_walk', 'onisim_first_aid_completed_without_stabilization'].some((marker) => changes.includes(marker)) }; const marker = { onisim_found: 'onisim_found_alive', ratsha_surrendered: 'ratsha_surrendered', onisim_carried: 'onisim_carried_to_camp_committed' }[expected]; if (!marker) throw new TypeError(`Unknown public evidence predicate: ${expected}`); return { expected, pass: changes.includes(marker) }; }
 function requireCleanGitSnapshot(value) { const snapshot = sanitizeGit(value); if (!/^[a-f0-9]{40}$/u.test(snapshot.head) || snapshot.dirty !== false) throw gateError('PUBLIC_PLAYTEST_GIT_EVIDENCE_INVALID', 'Public playtest requires a clean exact git HEAD.', { schema: 'public_production_playtest_v1', git: snapshot }); return snapshot; }
 function sanitizeGit(value = {}) { return { head: text(value.head), dirty: value.dirty === true ? true : value.dirty === false ? false : null }; }

@@ -89,22 +89,30 @@ test('turn step model sends the validated request to the isolated planner role',
   ]) assert.equal(prompt.includes(phrase), true, phrase);
 });
 
-test('turn step planner prompt routes focused ordinary discovery without narrowing queries', async () => {
-  let prompt;
+test('turn step planner and repair prompts route focused ordinary discovery by searched target', async () => {
+  const prompts = [];
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run(call) {
-      prompt = call.messages[0].content;
+      prompts.push(call.messages[0].content);
       return { output: output() };
     } }
   });
-  await model(request({
-    remaining_intent: 'внимательно осмотреть берег и найти обычную деталь',
-    player_safe_state: { position: { location_ref: 'shore' },
+  const input = request({
+    root_player_action: 'Поискать на берегу у стана обычную сухую ветку, если она там есть.',
+    remaining_intent: 'Поискать на берегу у стана обычную сухую ветку, если она там есть.',
+    player_safe_state: { position: { g6_id: 'camp' },
       ordinary_resolution: { discovery_available: true,
         container_resolution_available: false } }
-  }));
-  assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
-  assert.match(prompt, /general look remains the mapped direct result/u);
+  });
+  await model(input);
+  await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
+    structural_errors: [] });
+  for (const prompt of prompts) {
+    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*MUST use exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
+    assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
+    assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
+    assert.match(prompt, /general look remains the mapped direct result/u);
+  }
 });
 
 test('turn step planner maps local fire only through its visible capability', async () => {

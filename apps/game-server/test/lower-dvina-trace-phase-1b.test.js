@@ -129,6 +129,20 @@ test('trace recovery rehydrates Phase 1A and attaches one stable session', async
   assert.equal(replayed.screen.panels.character.data.name, 'Микула');
 });
 
+test('distinct new-game request identities create distinct parties', async () => {
+  const firstFixture = fixture();
+  const secondFixture = fixture();
+  const first = await createRuntime(firstFixture).startNewGame({
+    scenario_id: 'lower_dvina_trace_v1', request_id: 'playtest-run:first'
+  });
+  const second = await createRuntime(secondFixture).startNewGame({
+    scenario_id: 'lower_dvina_trace_v1', request_id: 'playtest-run:second'
+  });
+  assert.notEqual(first.party_id, second.party_id);
+  assert.equal(firstFixture.materializeCalls.length, 1);
+  assert.equal(secondFixture.materializeCalls.length, 1);
+});
+
 test('historical Phase 1A commits recover through their pinned publications', async (t) => {
   for (const [revision, historical] of TRACE_PHASE_1B_SESSION_IDENTITIES
     .slice(0, -1).entries()) {

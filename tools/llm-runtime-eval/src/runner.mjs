@@ -18,6 +18,10 @@ import {
   validatePlayerConversationContributionPlan
 } from '@rus/npc-runtime';
 import { validateTurnStepPlan, validateWorldProcessStepPlan } from '@rus/turn';
+import { requestTurnStepPlanWithRepair } from
+  '../../../packages/turn/src/turn-step-loop.js';
+import { createLowerDvinaTraceTurnStepModel } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env = process.env, metadata = {} } = {}) {
   const fixtures = Array.isArray(corpus?.fixtures) ? corpus.fixtures : [];
@@ -27,24 +31,107 @@ export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env =
   const role_config_policy = appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride });
   const results = [];
   for (const fixture of fixtures) {
-    const call = await executeRoleLlmCall({ scope: fixture.scope, roleId: fixture.role_id,
-      messages: fixture.messages, env, runtimeProviderOverride });
-    results.push(scoreFixture(fixture, call));
+    results.push(await runFixture(fixture, { env, runtimeProviderOverride }));
   }
   return { schema: 'rus.llm_runtime_eval_report.v1', corpus_version: corpus.corpus_version,
     metadata: { execution: { passes: 1, concurrency: 1 }, ...metadata, role_config_policy },
     fixture_count: results.length, results, aggregates: aggregate(results) };
 }
 
+async function runFixture(fixture, execution) {
+  if (fixture.validator !== 'turn_step_plan'
+      || fixture.role_id !== 'turn_step_planner'
+      || fixture.repair === true) {
+    const call = await executeRoleLlmCall({ scope: fixture.scope,
+      roleId: fixture.role_id, messages: fixture.messages, ...execution });
+    return scoreFixture(fixture, call);
+  }
+  return runTurnStepPlannerWorkflow(fixture, execution);
+}
+
+async function runTurnStepPlannerWorkflow(fixture, execution) {
+  const calls = [];
+  const roleRunner = { async run({ scope, role_id, messages, overrides }) {
+    const call = await executeRoleLlmCall({ scope, roleId: role_id, messages,
+      overrides, repair: role_id === 'turn_step_planner_repair', ...execution });
+    calls.push(call);
+    if (call.status !== 'ok') {
+      const error = new Error(call.error?.message ?? `${role_id} failed.`);
+      error.code = call.error?.code ?? call.status;
+      throw error;
+    }
+    return { output: call.parsed_json };
+  } };
+  let workflowError = null;
+  try {
+    await requestTurnStepPlanWithRepair({
+      request: fixture.request ?? messagePayload(fixture.messages),
+      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner })
+    });
+  } catch (error) {
+    workflowError = error;
+  }
+  const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
+  const result = scoreFixture(fixture, finalCall, calls);
+  const primary = plannerStage(fixture, calls[0]);
+  const repair = calls[1] == null ? null : plannerStage(fixture, calls[1]);
+  const finalStage = repair ?? primary;
+  const finalOutput = finalCall.parsed_json;
+  const rubricPass = finalOutput != null && typeof finalOutput === 'object'
+    && !Array.isArray(finalOutput)
+    && validateExpected(fixture.expected ?? {}, finalOutput).length === 0;
+  return { ...result, workflow: {
+    primary,
+    repair_needed: repair != null,
+    repair,
+    final: {
+      source: repair == null ? 'primary' : 'repair',
+      status: result.status,
+      valid: finalStage?.valid === true,
+      rubric_pass: rubricPass,
+      quality_status: result.quality_status,
+      pass: result.pass
+    },
+    ...(workflowError ? { error_code: workflowError.code ?? 'workflow_failed' } : {})
+  } };
+}
+
+function plannerStage(fixture, call) {
+  if (!call) return null;
+  const output = call.parsed_json;
+  return {
+    role_id: call.role_id,
+    status: call.status,
+    valid: call.status === 'ok' && output != null
+      && typeof output === 'object' && !Array.isArray(output)
+      && validateRoleOutput(fixture, output).length === 0,
+    duration_ms: call.durationMs,
+    usage: call.usage ?? null,
+    model: call.model,
+    provider: call.provider,
+    config_hash: call.config_hash
+  };
+}
+
+function missingCall(fixture, error) {
+  return { status: 'workflow_error', error: {
+    code: error?.code ?? 'workflow_failed'
+  }, durationMs: 0, usage: null, model: null, provider: null,
+  config_hash: 'unavailable', role_id: fixture.role_id };
+}
+
 function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
   return [...new Map(fixtures.map(({ scope, role_id }) => [`${scope}:${role_id}`, { scope, role_id }])).values()]
     .map(({ scope, role_id }) => {
-      const resolution = resolveLlmExecutionConfig({ scope, roleId: role_id, env, runtimeProviderOverride });
+      const overrides = plannerOverrides(role_id);
+      const resolution = resolveLlmExecutionConfig({ scope, roleId: role_id,
+        env, runtimeProviderOverride, overrides });
       if (!resolution.enabled) return { scope, role_id, status: 'unavailable', reason: resolution.reason };
       const { config } = resolution;
       return {
         scope, role_id, provider: config.provider, model: config.model,
-        config_hash: describeRoleLlmCall({ scope, roleId: role_id, env, runtimeProviderOverride }).config_hash,
+        config_hash: describeRoleLlmCall({ scope, roleId: role_id, env,
+          runtimeProviderOverride, overrides }).config_hash,
         request_timeout_ms: config.requestTimeoutMs, thinking: config.thinking?.type ?? null,
         reasoning_effort: config.reasoningEffort ?? null, max_tokens: config.maxTokens,
         context_budget: config.contextBudget
@@ -52,7 +139,13 @@ function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
     });
 }
 
-function scoreFixture(fixture, call) {
+function plannerOverrides(roleId) {
+  if (roleId === 'turn_step_planner') return { temperature: 0, maxTokens: 8000 };
+  if (roleId === 'turn_step_planner_repair') return { temperature: 0, maxTokens: 4000 };
+  return null;
+}
+
+function scoreFixture(fixture, call, workflowCalls = [call]) {
   const output = call.parsed_json;
   const errors = [];
   if (call.status !== 'ok') errors.push(call.error?.code ?? call.status);
@@ -66,11 +159,26 @@ function scoreFixture(fixture, call) {
   const scored = !manual && isScored(fixture.expected);
   const quality_status = manual ? 'manual' : scored
     ? (errors.length === 0 ? 'automated_passed' : 'automated_failed') : 'unscored';
+  const usage = sumUsage(workflowCalls);
   return { fixture_id: fixture.id, role_id: fixture.role_id, repair: fixture.repair === true,
     scored, manual, quality_status, status: call.status, pass: quality_status === 'automated_passed',
-    valid: errors.length === 0, errors, duration_ms: call.durationMs,
-    usage: call.usage ?? null, model: call.model, provider: call.provider,
+    valid: errors.length === 0, errors,
+    llm_calls: workflowCalls.length,
+    repair_calls: workflowCalls.length === 1 && fixture.repair === true ? 1
+      : workflowCalls.filter(({ role_id }) =>
+        role_id === 'turn_step_planner_repair').length,
+    duration_ms: workflowCalls.reduce((sum, current) =>
+      sum + Number(current.durationMs ?? 0), 0),
+    usage, model: call.model, provider: call.provider,
     config_hash: call.config_hash };
+}
+
+function sumUsage(calls) {
+  const prompt_tokens = calls.reduce((sum, call) =>
+    sum + Number(call.usage?.prompt_tokens ?? 0), 0);
+  const completion_tokens = calls.reduce((sum, call) =>
+    sum + Number(call.usage?.completion_tokens ?? 0), 0);
+  return prompt_tokens || completion_tokens ? { prompt_tokens, completion_tokens } : null;
 }
 
 function validateRoleOutput(fixture, output) {
@@ -184,7 +292,11 @@ function summarize(calls) {
   const validatorFailures = count(({ errors }) => errors.some((error) => error.startsWith('validator:')));
   const rubricFailures = count(({ errors }) => errors.some((error) => /^(missing|forbidden)_/.test(error)));
   const semanticFailures = count(({ errors }) => errors.some((error) => /^(unexpected|disallowed)_value:/.test(error)));
-  return { calls: calls.length, automated_passed: automatedPassed, automated_failed: automatedFailed,
+  const llmCalls = calls.reduce((sum, call) => sum + Number(call.llm_calls ?? 1), 0);
+  const repairs = calls.reduce((sum, call) => sum
+    + Number(call.repair_calls ?? (call.repair ? 1 : 0)), 0);
+  return { calls: llmCalls, fixtures: calls.length,
+    automated_passed: automatedPassed, automated_failed: automatedFailed,
     quality_denominator: scored, quality_pass_rate: rate(automatedPassed, scored),
     passed: automatedPassed, errors: automatedFailed, error_rate: rate(automatedFailed, scored),
     validation_failures: validationFailures,
@@ -193,7 +305,7 @@ function summarize(calls) {
     rubric_failures: rubricFailures, rubric_failure_rate: rate(rubricFailures),
     semantic_failures: semanticFailures, semantic_failure_rate: rate(semanticFailures),
     scored, unscored: calls.length - scored - manual, manual,
-    repairs: count(({ repair }) => repair), repair_rate: rate(count(({ repair }) => repair)), p50_ms: percentile(durations, .5),
+    repairs, repair_rate: rate(repairs, llmCalls), p50_ms: percentile(durations, .5),
     p95_ms: percentile(durations, .95), input_tokens: sum('prompt_tokens'), output_tokens: sum('completion_tokens') };
 }
 

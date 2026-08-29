@@ -87,6 +87,106 @@ test('provider-ok invalid plan counts as validator failure and error in role/mod
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
+test('planner fixture uses one production repair only after production validation rejects primary', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  const invalidPrimary = structuredClone(fixture.expected_output);
+  invalidPrimary.continuation = {
+    remaining_intent: 'осмотреть окрестности', depends_on_refs: []
+  };
+  const outputs = [invalidPrimary, fixture.expected_output];
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }], usage: { prompt_tokens: 2, completion_tokens: 3 } }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    const result = report.results[0];
+    assert.equal(calls, 2);
+    assert.equal(result.pass, true);
+    assert.equal(result.workflow.primary.valid, false);
+    assert.equal(result.workflow.repair_needed, true);
+    assert.equal(result.workflow.repair.role_id, 'turn_step_planner_repair');
+    assert.equal(result.workflow.repair.valid, true);
+    assert.deepEqual(result.workflow.final, {
+      source: 'repair', status: 'ok', valid: true,
+      rubric_pass: true,
+      quality_status: 'automated_passed', pass: true
+    });
+    assert.equal(report.aggregates.total.calls, 2);
+    assert.equal(report.aggregates.total.fixtures, 1);
+    assert.equal(report.aggregates.total.repairs, 1);
+    assert.equal(report.aggregates.total.input_tokens, 4);
+    assert.equal(report.aggregates.total.output_tokens, 6);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('planner rubric-only failure does not invoke repair', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  const output = structuredClone(fixture.expected_output);
+  output.activity.effort = 'heavy';
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(output)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    const result = report.results[0];
+    assert.equal(calls, 1);
+    assert.equal(result.workflow.primary.valid, true);
+    assert.equal(result.workflow.repair_needed, false);
+    assert.equal(result.pass, false);
+    assert.ok(result.errors.includes('disallowed_value:activity.effort'));
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('planner invalid repair fails after exactly two calls', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 2);
+    assert.equal(report.results[0].pass, false);
+    assert.equal(report.results[0].workflow.repair_needed, true);
+    assert.equal(report.results[0].workflow.repair.valid, false);
+    assert.equal(report.results[0].workflow.error_code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(report.aggregates.total.repairs, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
 test('world-process semantic mismatch fails even when owner validator accepts plan', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'world-process-water-affect');
   const output = { ...fixture.expected_output, process_outcome: 'no_effect', reason_code: 'water_unaffected' };

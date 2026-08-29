@@ -182,11 +182,7 @@ export function createTraceTurnRuntime({
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool, narrationService
     }),
-    randomSourceFactory: (identity) => createSeededRandomSource(
-      canonicalDigest({
-        schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1', ...identity
-      })
-    ),
+    randomSourceFactory: createTraceRandomSourceFactory({ env }),
     temporalAdvanceOwner,
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
@@ -194,4 +190,24 @@ export function createTraceTurnRuntime({
     llmDiagnostics
   });
   return Object.freeze({ ...runtime, llmDiagnostics });
+}
+
+export function createTraceRandomSourceFactory({ env = {} } = {}) {
+  const scenarioSeed = env.RUS_DEVELOPER_MODE === 'true'
+    ? String(env.RUS_PUBLIC_PLAYTEST_SCENARIO_SEED ?? '').trim() : '';
+  return (identity) => createSeededRandomSource(canonicalDigest(scenarioSeed
+    ? {
+        schema: 'rus.lower_dvina_trace_public_playtest_rng_identity.v1',
+        scenario_seed: scenarioSeed,
+        request_id: identity.request_id,
+        ...(identity.decision_boundary_id == null ? {} : {
+          decision_boundary_id: identity.decision_boundary_id
+        }),
+        ...(identity.check_profile_ref == null ? {} : {
+          check_profile_ref: identity.check_profile_ref
+        })
+      }
+    : {
+        schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1', ...identity
+      }));
 }

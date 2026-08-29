@@ -17,7 +17,55 @@ test('runner rejects repeated pending presentation with typed local failure', as
 test('runner reports failed presentation acknowledgement without unsafe payload', async () => { const responses = [health(), catalog(), newGame(), ack(), pendingTurn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false, error: { code: 'PRESENTATION_DOWN', message: 'do not retain' } }) }]; await assert.rejects(() => runPublicPlaytest({ manifest: testManifest(), impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart, fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.deepEqual(error.report.turn_failure, { turn_id: 'probe-0', code: 'PUBLIC_HTTP_FAILED', http_status: 503, public_error_code: 'PRESENTATION_DOWN' }); assert.equal(JSON.stringify(error.report).includes('do not retain'), false); return true; }); });
 test('runner retains partial turns when a later turn fails', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false }) }]; const manifest = testManifest(); await assert.rejects(() => runPublicPlaytest({ manifest, impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.ok(error.report, error.message); assert.deepEqual(error.report.git, cleanGit()); assert.equal(error.report.turns.length, 1); assert.equal(error.report.turn_failure.turn_id, 'probe-1'); return true; }); });
 test('runner retains only safe status and public error code from failed turn', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false, error: { code: 'SAFE_CODE', message: 'do not retain' } }) }]; const manifest = testManifest(); await assert.rejects(() => runPublicPlaytest({ manifest, impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.deepEqual(error.report.turn_failure, { turn_id: 'probe-1', code: 'PUBLIC_HTTP_FAILED', http_status: 503, public_error_code: 'SAFE_CODE' }); assert.equal(JSON.stringify(error.report).includes('do not retain'), false); return true; }); });
-test('runner uses commit-independent deterministic identities and stops on missing public causal evidence', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics()]; const bodies = []; await assert.rejects(() => runPublicPlaytest({ manifest: PUBLIC_PLAYTEST_MANIFEST.slice(2), git: cleanGit, branch: 7, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async (_url, request) => { if (request.body) bodies.push(JSON.parse(request.body)); return responses.shift(); }, now: counter(), log() {} }), (error) => { assert.equal(error.code, 'PUBLIC_PLAYTEST_CAUSAL_EVIDENCE_MISSING'); assert.equal(error.report.run_seed, 'public-playtest:lower_dvina_trace_v1:branch:7'); assert.equal(error.report.turns.length, 1); assert.deepEqual(error.report.turns[0].public_evidence, { expected: 'blue_wool_found', pass: false }); return true; }); assert.equal(bodies[0].request_id, 'public-playtest:lower_dvina_trace_v1:branch:7'); assert.equal(bodies[2].request_id, 'public-playtest:lower_dvina_trace_v1:branch:7:inspect'); assert.equal(bodies[2].idempotency_key, bodies[2].request_id); });
+test('consecutive runs keep scenario seed but use unique party and idempotency identities', async () => {
+  const runs = [];
+  for (const [suffix, head] of [['first', 'a'], ['second', 'b']]) {
+    const responses = [health(), catalog(), newGame(`party-${suffix}`), ack(),
+      turn(), diagnostics()];
+    const bodies = [];
+    let startedEnv;
+    await assert.rejects(() => runPublicPlaytest({
+      manifest: PUBLIC_PLAYTEST_MANIFEST.slice(2),
+      git: () => ({ head: head.repeat(40), dirty: false }),
+      branch: 7,
+      createRunIdentity: () => `run-${suffix}`,
+      start: async ({ env }) => {
+        startedEnv = env;
+        return { url: 'http://local', child: { exitCode: 0, kill() {} } };
+      },
+      fetchImpl: async (_url, request) => {
+        if (request.body) bodies.push(JSON.parse(request.body));
+        return responses.shift();
+      },
+      now: counter(), log() {}
+    }), (error) => {
+      assert.equal(error.code, 'PUBLIC_PLAYTEST_CAUSAL_EVIDENCE_MISSING');
+      runs.push({ report: error.report, bodies, startedEnv });
+      return true;
+    });
+  }
+  const [first, second] = runs;
+  const seed = 'public-playtest:lower_dvina_trace_v1:branch:7';
+  assert.equal(first.report.scenario_seed, seed);
+  assert.equal(second.report.scenario_seed, seed);
+  assert.deepEqual([first.report.run_identity, second.report.run_identity],
+    ['run-first', 'run-second']);
+  assert.deepEqual([first.report.git.head, second.report.git.head],
+    ['a'.repeat(40), 'b'.repeat(40)]);
+  assert.deepEqual([
+    first.report.public_responses.new_game.party_id,
+    second.report.public_responses.new_game.party_id
+  ], ['party-first', 'party-second']);
+  assert.notEqual(first.bodies[0].request_id, second.bodies[0].request_id);
+  assert.deepEqual([first.bodies[2].request_id, second.bodies[2].request_id],
+    [`${seed}:inspect`, `${seed}:inspect`]);
+  assert.deepEqual([
+    first.bodies[2].idempotency_key,
+    second.bodies[2].idempotency_key
+  ], ['run-first:inspect', 'run-second:inspect']);
+  assert.equal(first.startedEnv.RUS_PUBLIC_PLAYTEST_SCENARIO_SEED, seed);
+  assert.equal(second.startedEnv.RUS_PUBLIC_PLAYTEST_SCENARIO_SEED, seed);
+});
 test('runner stops at surrender when public marker is absent', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics()]; const bodies = []; await assert.rejects(() => runPublicPlaytest({ manifest: surrenderFirstManifest(), impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async (_url, request) => { if (request.body) bodies.push(JSON.parse(request.body)); return responses.shift(); }, now: counter(), log() {} }), (error) => { assert.equal(error.code, 'PUBLIC_PLAYTEST_CAUSAL_EVIDENCE_MISSING'); assert.equal(error.report.turn_failure.turn_id, 'surrender'); assert.deepEqual(error.report.turns[0].public_evidence, { expected: 'ratsha_surrendered', pass: false }); return true; }); assert.equal(bodies.some(({ raw_text }) => raw_text === 'Оказать Онисиму первую помощь.'), false); });
 test('treatment evidence accepts both code-owned terminal check outcomes', async () => { const treatment = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'treatment'); assert.equal(treatment.expect, 'onisim_treatment_completed'); for (const marker of ['onisim_stabilized_unable_to_walk', 'onisim_first_aid_completed_without_stabilization']) { const responses = [health(), catalog(), newGame(), ack(), turn([marker]), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false }) }]; await assert.rejects(() => runPublicPlaytest({ manifest: [treatment, ...testManifest().slice(1)], impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart, fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.equal(error.report.turns[0].public_evidence.pass, true); return true; }); } });
 test('manifest role evidence reports compound prerequisite gaps', () => { const gate = roleGate({ observed_role_ids: [], turns: [{ turn_id: 'rest', required_role_ids: ['turn_step_planner', 'npc_autonomous_decider'], role_ids: ['turn_step_planner'], status: 200, llm: { turn_duration_ms: 1, turn_deadline_ms: 10, aggregate: { repair_calls: 0 } } }] }); assert.ok(gate.gaps.includes('missing compound prerequisite: rest: npc_autonomous_decider')); });
@@ -33,7 +81,7 @@ const localStart = async () => ({ url: 'http://local', child: { exitCode: 0, kil
 function json(data) { return async () => ({ ok: true, data }); }
 function health() { return { ok: true, status: 200, json: json({ status: 'ok' }) }; }
 function catalog() { return { ok: true, status: 200, json: json({ scenarios: [{ scenario_id: 'lower_dvina_trace_v1', available: true }] }) }; }
-function newGame() { return { ok: true, status: 201, json: json({ party_id: 'party-1' }) }; }
+function newGame(partyId = 'party-1') { return { ok: true, status: 201, json: json({ party_id: partyId }) }; }
 function ack() { return { ok: true, status: 200, json: json({ party_id: 'party-1' }) }; }
 function traceTurn() { return { status: 200, ok: true, data: { party_id: 'party-1', state_version: 7, option_id: 'wait', screen: { turn_id: 'turn-trace-1', turn_number: 1, screen_status: 'ready' } } }; }
 function turn(visibleChanges = []) { return { ok: true, status: 200, json: json({ party_id: 'party-1', turn: { turn_id: 'turn-1', status: 'resolved', mode: 'attention' }, screen: { schema: 'turn_screen', version: 1, screen_status: 'ready', visible_context: { visible_changes: visibleChanges } } }) }; }

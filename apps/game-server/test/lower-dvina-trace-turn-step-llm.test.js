@@ -100,7 +100,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   const input = request({
     root_player_action: 'Поискать на берегу у стана обычную сухую ветку, если она там есть.',
     remaining_intent: 'Поискать на берегу у стана обычную сухую ветку, если она там есть.',
-    player_safe_state: { position: { g6_id: 'camp' },
+    player_safe_state: { position: { g6_id: 'camp', location_ref: 'camp' },
       ordinary_resolution: { discovery_available: true,
         container_resolution_available: false } }
   });
@@ -108,8 +108,36 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
     structural_errors: [] });
   for (const prompt of prompts) {
-    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*MUST use exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
-    assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
+    const mappings = JSON.parse(prompt.match(
+      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
+    )[1]);
+    assert.deepEqual(mappings.focused_ordinary_discovery, {
+      interpretation: { adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [{ op: 'request_discovery',
+        actor_ref: '<copy current actor ref from request>',
+        discovery_kind: '<copy inspect or search from intent>',
+        target_refs: ['<copy one current visible searched location or entity ref>'],
+        query: '<copy player query>' }], check: null
+    });
+    const mapping = mappings.focused_ordinary_discovery;
+    assert.equal(validateTurnStepPlan({
+      schema: 'turn_step_plan_v1', request_id: input.request_id,
+      committed_state_version: input.committed_state_version,
+      working_revision: input.working_revision, step_index: input.step_index,
+      interpretation: { player_goal: input.root_player_action,
+        grounded_attempt: input.remaining_intent, ...mapping.interpretation },
+      resolution: mapping.resolution, goal_result: mapping.goal_result,
+      activity: mapping.activity, operations: [{ ...mapping.operations[0],
+        actor_ref: input.actor.actor_ref, discovery_kind: 'search',
+        target_refs: [input.player_safe_state.position.location_ref],
+        query: input.remaining_intent }], check: mapping.check,
+      continuation: null, clarification: null,
+      reason_code: 'ordinary_discovery', reason: 'Ищу обычную деталь.'
+    }, { request: input }).ok, true);
+    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
+    assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general look remains the mapped direct result/u);
   }

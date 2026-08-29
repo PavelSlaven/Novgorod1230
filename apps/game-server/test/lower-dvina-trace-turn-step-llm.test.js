@@ -188,7 +188,7 @@ test('turn step planner and repair prompts map available container access exactl
       continuation: null, clarification: null,
       reason_code: 'container_access', reason: 'Открываю доступный контейнер.'
     }, { request: input }).ok, true);
-    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching operation object copied unchanged[\s\S]*activity is domain, check is null/u);
+    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching operation object copied unchanged[\s\S]*exactly these four keys: op, actor_ref, container_ref, access_kind[\s\S]*Do not add target_refs[\s\S]*activity is domain, check is null/u);
   }
 });
 

@@ -117,7 +117,8 @@ function appendChangedNpcs({ updates, partyId, state, next }) {
     if (prior && canonicalDigest(prior) !== canonicalDigest(npc)) {
       updates.push(row('party_npcs', npc.instance_id, { party_id: partyId,
         npc_id: npc.instance_id, anchor_id: npc.anchor_id,
-        machine_state: npc.machine_state, semantic_state: npc.semantic_state }));
+        machine_state: npc.machine_state, semantic_state: {
+          ...npc.semantic_state, participant_slot_ref: npc.participant_slot_ref } }));
     }
   }
 }

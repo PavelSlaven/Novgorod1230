@@ -33,6 +33,8 @@ import {
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-semantic-write-shared.js';
 import { appendPhase4ActivityExecution } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-activity-writes.js';
+import { phase8AccusationWrites } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-8-writes.js';
 
 const PARTY_ID = 'party-semantic-persistence';
 const CHANGE_SET_ID = 'change:' + PARTY_ID + ':semantic';
@@ -97,6 +99,34 @@ test('shared activity writer preserves Phase 4 and Phase 8 snapshot identities',
       activity_ref: 'activity-profile', phase_kind: 'accusation'
     });
   });
+
+test('Phase 8 NPC update retains participant slot in semantic state', () => {
+  const state = { party_id: PARTY_ID, actor_id: 'player', position: {},
+    party_state: { state_version: 1 }, npcs: [{ instance_id: 'zhdanko',
+      anchor_id: 'storehouse', participant_slot_ref:
+        'zhdanko_storehouse_controller', machine_state: { alert: false },
+      semantic_state: { disposition: 'hostile' } }] };
+  const next = structuredClone(state);
+  next.party_state.state_version = 2;
+  next.clock = AT;
+  next.npcs[0].machine_state.alert = true;
+  const writes = phase8AccusationWrites({ partyId: PARTY_ID, state, next,
+    factual: { player_input: { request_id: 'request',
+      idempotency_key: 'idempotency' }, mode_resolution: { turn_id: ROOT_TURN_ID,
+      option_id: 'option' }, time_update: { clock_before: AT }, consequence: {
+      phase8_kind: 'accusation', accusation: { activity_roots: [{
+        activity_ref: 'activity-profile', duration_minutes: 1,
+        status: 'completed' }], combat_initialization: null,
+      semantic_exchange: { response_kind: 'surrender', exact_elapsed_minutes: 1,
+        exchange: { applied_contribution_count: 0, stop_reason: null } } } } },
+    turnNumber: 2, changeSetId: CHANGE_SET_ID, idemId: 'idempotency',
+    envelope: {}, screen: {} });
+
+  assert.deepEqual(only(writes.updates, 'party_npcs').record.semantic_state, {
+    disposition: 'hostile',
+    participant_slot_ref: 'zhdanko_storehouse_controller'
+  });
+});
 
 test('semantic writer persists CAS, audiences, lineage and actual messages', () => {
   const fixture = semanticWriterFixture();

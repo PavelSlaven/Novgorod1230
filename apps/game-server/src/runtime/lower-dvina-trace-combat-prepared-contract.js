@@ -71,6 +71,18 @@ export function validTracePreparedCombatConsequence(consequence,
       source?.entity_kind === 'combat_event' && eventIds.has(source.entity_id));
 }
 
+export function validTraceCombatStartConsequence(consequence) {
+  const initialization = consequence?.combat_initialization;
+  const session = initialization?.session;
+  return consequence?.combat_kind === 'start'
+    && consequence.phase8_kind === 'combat_start'
+    && consequence.duration_minutes === 0
+    && session?.status === 'paused_for_player'
+    && session.player_response_required === true
+    && typeof session.combat_id === 'string'
+    && Array.isArray(initialization.decision_records);
+}
+
 function validTraversalProgressSlice(combat, durationMinutes) {
   if (!Number.isSafeInteger(durationMinutes)) return false;
   const blockedEvents = combat.outcome_events.filter(({ event_kind: kind }) =>

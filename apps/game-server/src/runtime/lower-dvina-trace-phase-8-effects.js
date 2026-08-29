@@ -42,6 +42,13 @@ export function createTracePhase8TemporalAdvance({ fallback }) {
           ?? input.relevant_state.temporal_boundary_candidates,
         roots: consequence.accusation.activity_roots });
     }
+    if (consequence?.phase8_kind === 'combat_start') {
+      return { clock_before: structuredClone(input.clock_before),
+        clock_after: structuredClone(input.clock_before),
+        exact_elapsed: input.exact_elapsed, nearest_boundary: null,
+        boundary_trace: { owner: 'combat_start', policy: 'instant',
+          evaluated_candidate_count: 0, processed_boundary_ids: [] } };
+    }
     return fallback(input);
   };
 }
@@ -73,6 +80,14 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
         do_not_imply: ['npc_decision_request', 'npc_combat_intent_plan',
           'hidden_truth', 'combat_outcome'] };
     }
+    if (consequence?.phase8_kind === 'combat_start') return {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Игрок начинает непосредственное противостояние с Жданко.',
+      visible_changes: ['combat_session_opened'], sensory_details: [],
+      visible_npc: visibleNpcSummaries(contracts), visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: ['armed_confrontation'],
+      do_not_imply: ['npc_decision_request', 'npc_combat_intent_plan',
+        'hidden_truth', 'combat_outcome'] };
     return fallback.project(input);
   } });
 }

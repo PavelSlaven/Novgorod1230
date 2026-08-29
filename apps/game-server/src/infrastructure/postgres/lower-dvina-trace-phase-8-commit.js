@@ -23,8 +23,11 @@ export async function commitLowerDvinaTracePhase8Accusation({ partyId,
   loadState, committer }) {
   const factual = target(writePlan, 'party_state');
   const visible = target(writePlan, 'party_visible_context_package');
-  if (factual?.consequence?.phase8_kind !== 'accusation'
-      || !factual.consequence.accusation?.semantic_exchange || !visible) {
+  const accusation = factual?.consequence?.accusation ?? null;
+  const combatStart = factual?.consequence?.phase8_kind === 'combat_start';
+  if (!visible || (!combatStart && (factual?.consequence?.phase8_kind
+      !== 'accusation' || !accusation?.semantic_exchange))
+      || (combatStart && factual.consequence.combat_initialization == null)) {
     fail('TRACE_PHASE_8_WRITE_PLAN_INVALID');
   }
   const state = await loadState(partyId, { presentationIdempotencyKey:
@@ -50,25 +53,27 @@ export async function commitLowerDvinaTracePhase8Accusation({ partyId,
   const writes = mergeLowerDvinaTraceTurnStepWrites(
     phase8AccusationWrites({ partyId, state, next, factual, turnNumber,
       changeSetId, idemId, envelope, screen }), turnStep.writes);
+  const operationKind = combatStart ? 'trace_phase_8_combat_start'
+    : 'trace_phase_8_accusation';
   const builder = createCombinedWritePlanBuilder({ verifyApproval:
     async (candidate) => ({ ok: candidate.party_id === partyId
-      && candidate.operation_kind === 'trace_phase_8_accusation' }) });
-  const semantic = factual.consequence.accusation.semantic_exchange;
+      && candidate.operation_kind === operationKind }) });
+  const semantic = accusation?.semantic_exchange ?? null;
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase8:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit',
-    operation_kind: 'trace_phase_8_accusation',
+    operation_kind: operationKind,
     canonical_input_digest: digest(inputDigest),
     expected_state_versions: [expected('parties', partyId,
       state.party_state.state_version), expected('party_server_sessions',
       partyId, state.party_state.session_state_version),
     expected('party_clocks', partyId, state.party_state.clock_state_version),
-    ...expectedSemanticConversationSession(state, semantic)],
+    ...(semantic == null ? [] : expectedSemanticConversationSession(state, semantic))],
     validation_report: { status: 'pass', digest: digest(canonicalDigest({
-      input_digest: inputDigest, activity_ref:
-        factual.consequence.accusation.activity_ref,
-      response_kind: semantic.response_kind,
-      combat_id: factual.consequence.accusation.combat_initialization
+      input_digest: inputDigest, activity_ref: accusation?.activity_ref ?? null,
+      response_kind: semantic?.response_kind ?? 'combat_start',
+      combat_id: (accusation?.combat_initialization
+        ?? factual.consequence.combat_initialization)
         ?.session.combat_id ?? null })) },
     idempotency: { id: idemId, key: factual.player_input.idempotency_key,
       ...bindLowerDvinaTraceFactualTurnStepIdempotency({
@@ -82,7 +87,8 @@ export async function commitLowerDvinaTracePhase8Accusation({ partyId,
     approved_write_sets: [writes], lock_context: { owner_keys:
       Object.values(phase8Contracts.actors).map(({ instance_id: id }) =>
         `actor:${id}`), execution_keys: [
-        `activity:${partyId}:trace-phase8:${turnNumber}:accusation`],
+        `activity:${partyId}:trace-phase8:${turnNumber}:${combatStart
+          ? 'combat-start' : 'accusation'}`],
       g4_keys: [], physical_keys: Object.values(writes).flat()
         .map((write) => `party_runtime.${write.target_table}:${write.id}`) },
     commit_rechecks: [sealedCheck('physical', { party_id: partyId,

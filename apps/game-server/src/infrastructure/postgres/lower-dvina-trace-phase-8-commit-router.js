@@ -10,7 +10,8 @@ export async function routeLowerDvinaTracePhase8Commit({ factual, partyId,
     handled: true, result: await commitLowerDvinaTracePhase3({ partyId,
       writePlan, inputDigest, phase3Contracts: phase8Contracts,
       turnStepApprovedOwners, loadState, committer }) };
-  if (factual?.consequence?.phase8_kind === 'accusation') return {
+  if (['accusation', 'combat_start'].includes(
+    factual?.consequence?.phase8_kind)) return {
     handled: true, result: await commitLowerDvinaTracePhase8Accusation({
       partyId, writePlan, inputDigest, phase8Contracts,
       turnStepApprovedOwners, loadState, committer }) };

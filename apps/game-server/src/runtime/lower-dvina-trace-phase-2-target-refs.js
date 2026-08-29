@@ -10,6 +10,7 @@ export function buildTracePhase2TargetRefs({ state, contracts,
     dryingShed: phase4Contracts?.ids.shed,
     ratsha: phase4Contracts?.actors.ratsha_storehouse_helper.instance_id,
     onisim: phase5Contracts?.actors.onisim_boatman.instance_id,
-    ...(turn10?.targetRefs ?? {}), ...traceCombatTargetRefs(state),
+    ...(turn10?.targetRefs ?? {}), ...traceCombatTargetRefs(state,
+      phase8?.contracts ?? null),
     ...(phase8?.targetRefs ?? {}), ...(phase9?.targetRefs ?? {}) };
 }

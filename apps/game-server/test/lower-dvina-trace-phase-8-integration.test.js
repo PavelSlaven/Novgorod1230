@@ -13,6 +13,10 @@ import { createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 import { createTracePhase8Runtime } from
   '../src/runtime/lower-dvina-trace-phase-8-runtime.js';
+import { resolveTracePhase3Contracts } from
+  '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { createTraceCombatCommand } from
+  '../src/runtime/lower-dvina-trace-combat-command.js';
 
 const bundle = await loadScenarioBundle(16);
 const ROUTE_TEXT =
@@ -121,6 +125,79 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     assert.equal(runtime.rollCount(), rollCount);
     assert.equal(runtime.npcCombatCount(), 4);
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
+  });
+
+test('visible Phase 8 Zhdanko can receive a player-started combat handoff',
+  async () => {
+    const state = phase8CampState();
+    const ids = actorIds(state);
+    const conversation = createM2ConversationModels({ ratshaResponseKind: 'speech' });
+    const plannerRequests = [];
+    const runtime = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState: state, rollValue: 0.5,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({ effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+        ...lowerDvinaTraceCombatTemporalEffectRegistrations()
+      ] }),
+      turnStepModel: (request) => {
+        plannerRequests.push(structuredClone(request));
+        return request.root_player_action.includes('объяснений')
+          ? phase8Plan(request, ids) : phase8StartPlan(request, ids);
+      },
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      npcCombatModel: (request) => combatPlan(request, ids) });
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-start-route', idempotency_key: 'phase8-start-route',
+      raw_text: ROUTE_TEXT } });
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-start-speech', idempotency_key: 'phase8-start-speech',
+      raw_text: 'Потребовать у Жданко объяснений.' } });
+    assert.equal(runtime.state.combat_sessions?.length ?? 0, 0);
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-player-combat', idempotency_key: 'phase8-player-combat',
+      raw_text: 'Помочь Еремею обезоружить Жданко, не убивая его.' } });
+    const combatRequest = plannerRequests.at(-1);
+    assert.equal(combatRequest.available_domain_operations.some((operation) =>
+      operation.op === 'request_combat'
+      && operation.target_refs.includes(ids.zhdanko)), true);
+    assert.equal(runtime.state.last_turn.consequence.combat_kind, 'start');
+    assert.equal(runtime.state.combat_sessions.length, 1);
+    assert.equal(runtime.state.combat_sessions[0].status, 'paused_for_player');
+    assert.equal(runtime.state.player_response_boundary.kind, 'combat');
+    assert.equal(runtime.npcCombatCount(), 4);
+  });
+
+test('moved visible Phase 8 participants are not offered as combat targets',
+  async () => {
+    const state = phase8CampState();
+    const ids = actorIds(state);
+    const runtime = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState: state,
+      turnStepModel: (request) => phase8Plan(request, ids) });
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-hidden-route', idempotency_key: 'phase8-hidden-route',
+      raw_text: ROUTE_TEXT } });
+    const storehouseAnchor = runtime.state.position.g5_anchor_id;
+    const zhdanko = runtime.state.npcs.find(({ instance_id: id }) => id === ids.zhdanko);
+    zhdanko.anchor_id = 'other-anchor';
+    zhdanko.visibility_state = 'visible';
+    const phase8 = createTracePhase8Runtime({ state: runtime.state, bundle,
+      phase3Contracts: resolveTracePhase3Contracts({ state: runtime.state,
+        bundle }) });
+    const command = createTraceCombatCommand({ state: runtime.state, bundle,
+      inputDigest: 'phase8-hidden', randomSource: { next: () => 0.5 },
+      phase8Contracts: phase8.contracts, npcCombatModel: async () => null,
+      revalidateStateVersion: async () => runtime.state.party_state.state_version });
+    assert.equal(command.availability({ committed_state: runtime.state })
+      .can_attempt, false);
+    zhdanko.anchor_id = storehouseAnchor;
+    const eremey = runtime.state.npcs.find(({ instance_id: id }) => id === ids.eremey);
+    eremey.anchor_id = 'other-anchor';
+    eremey.visibility_state = 'visible';
+    assert.equal(command.availability({ committed_state: runtime.state })
+      .can_attempt, false);
   });
 
 test('Phase 8 carries every committed escort into route and combat', async () => {
@@ -488,6 +565,14 @@ export function phase8Plan(request, ids, combatIntentKind = 'control') {
     operations: [operation], check: null, continuation: null,
     clarification: null, reason_code: combat ? 'combat_response' : 'accusation',
     reason: 'Передать действие утверждённому владельцу домена.' };
+}
+
+function phase8StartPlan(request, ids) {
+  const combat = request.available_domain_operations?.some(({ op,
+    target_refs: targets }) => op === 'request_combat' && targets.includes(ids.zhdanko));
+  if (combat) return phase8Plan({ ...request, player_safe_state: {
+    ...request.player_safe_state, combat_sessions: [{}] } }, ids);
+  return phase8Plan(request, ids);
 }
 
 export function combatPlan(request, ids, choices = {}) {

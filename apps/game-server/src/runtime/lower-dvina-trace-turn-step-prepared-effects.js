@@ -7,6 +7,8 @@ import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 import { validTracePreparedCombatConsequence } from
   './lower-dvina-trace-combat-prepared-contract.js';
+import { validTraceCombatStartConsequence } from
+  './lower-dvina-trace-combat-prepared-contract.js';
 import { TRACE_PHASE9_PREPARED_COMMANDS } from
   './lower-dvina-trace-phase-9-prepared-commands.js';
 
@@ -59,7 +61,7 @@ export function createLowerDvinaTracePreparedDomainEffect({
         return applyPreparedTurn10Conversation(input);
       }
       if (input?.command_id === COMBAT_RESPONSE_COMMAND) {
-        return applyPreparedCombatExchange(input);
+        return applyPreparedCombat(input);
       }
       if (TRACE_PHASE9_PREPARED_COMMANDS.has(input?.command_id)) {
         return applyPreparedPhase9(input);
@@ -102,12 +104,14 @@ function applyPreparedTurn10Conversation(input) {
   return preparedResult(input, consequence, true);
 }
 
-function applyPreparedCombatExchange(input) {
+function applyPreparedCombat(input) {
   const consequence = input?.consequence;
-  const session = consequence?.combat?.session_after;
+  const session = consequence?.combat?.session_after
+    ?? consequence?.combat_initialization?.session;
   const pausedForPlayer = session?.status === 'paused_for_player'
     && session.player_response_required === true;
-  if (!validTracePreparedCombatConsequence(consequence)
+  if (!(validTracePreparedCombatConsequence(consequence)
+      || validTraceCombatStartConsequence(consequence))
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_COMBAT_INVALID');
   }
@@ -207,6 +211,12 @@ function projectPreparedDomainState(state, effect) {
       combat.working_state_after?.active_combat_traversals ?? []);
     next.active_combat_step_progress = structuredClone(
       combat.working_state_after?.active_combat_step_progress ?? []);
+  }
+  if (effect.consequence?.combat_kind === 'start') {
+    next.combat_sessions = [structuredClone(
+      effect.consequence.combat_initialization.session)];
+    next.player_response_boundary = { kind: 'combat', combat_id:
+      effect.consequence.combat_initialization.session.combat_id };
   }
   return next;
 }

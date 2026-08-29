@@ -78,7 +78,7 @@ export async function commitLowerDvinaTracePhase2({
       return committed;
     }
   }
-  if (factual?.consequence?.combat_kind) return commitLowerDvinaTraceCombat({
+  if (factual?.consequence?.combat_kind === 'exchange') return commitLowerDvinaTraceCombat({
     partyId, writePlan, inputDigest, loadState, committer
   });
   const phase8 = await routeLowerDvinaTracePhase8Commit({ factual, partyId,

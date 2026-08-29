@@ -234,7 +234,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         || (phase9Contracts != null
           && tracePhase9TestimonyPreconditionSatisfied(precondition,
             committedState, phase9Contracts))
-        || traceCombatPreconditionSatisfied(precondition, committedState);
+        || traceCombatPreconditionSatisfied(precondition, committedState,
+          phase8Contracts);
     },
     randomSource,
     temporalAdvance,

@@ -48,7 +48,7 @@ export function createTracePhase8AccusationCommand({ contracts, inputDigest,
         : await initializeTraceCombatHandoff({ state,
           binding: contracts.combatBindings,
           actor: contracts.actors.zhdanko,
-          participantBindings: companionBindings(contracts),
+          participantBindings: phase8CombatParticipantBindings(contracts),
           semanticExchange: semantic, playerInput, npcCombatModel,
           revalidateStateVersion, combatLabel: 'zhdanko',
           movementBindings: contracts.combatMovementBindings,
@@ -86,7 +86,7 @@ export function tracePhase8AccusationPreconditionSatisfied(precondition,
     && accusationAvailable(state, contracts);
 }
 
-function companionBindings(contracts) {
+export function phase8CombatParticipantBindings(contracts) {
   const roles = contracts.combatBindings.participant_roles;
   return [{ actor: contracts.actors.eremey,
     binding: roleBinding(roles.eremey_fisher, contracts),

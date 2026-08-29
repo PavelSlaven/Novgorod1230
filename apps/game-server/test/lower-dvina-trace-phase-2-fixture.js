@@ -251,7 +251,7 @@ function fixture({
             contracts: phase9Contracts,
           }),
         );
-      } else if (factual.consequence.combat_kind != null) {
+      } else if (factual.consequence.combat_kind === 'exchange') {
         replaceState(
           state,
           nextCombatState({
@@ -263,7 +263,8 @@ function fixture({
             inputDigest,
           }),
         );
-      } else if (factual.consequence.phase8_kind === 'accusation') {
+      } else if (['accusation', 'combat_start'].includes(
+        factual.consequence.phase8_kind)) {
         replaceState(
           state,
           nextPhase8AccusationState({

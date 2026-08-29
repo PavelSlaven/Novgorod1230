@@ -182,6 +182,7 @@ export function createLowerDvinaTracePhase2Runtime({
           actionProducedWeaponClassifier,
           revalidateStateVersion,
           temporalAdvanceOwner,
+          phase8Contracts,
         });
         const registry = buildTracePhase2Registry({
           bundle,

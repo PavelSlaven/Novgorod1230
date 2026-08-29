@@ -6,9 +6,25 @@ import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
+function providerOutput(fixture) {
+  const output = fixture.expected_output;
+  if (!fixture.role_id.startsWith('npc_autonomous_decider')) return output;
+  const semantic = { interpretation: output.interpretation,
+    resolution: output.resolution, reason_code: output.reason_code,
+    reason: output.reason };
+  if (output.resolution === 'domain_request') return { ...semantic,
+    operation_choice: `${output.operations[0].op}:0` };
+  if (output.resolution === 'generic_check') return { ...semantic,
+    activity: { duration_class: output.activity.duration_class,
+      effort: output.activity.effort }, check: output.check };
+  return { ...semantic, goal_result: output.goal_result,
+    activity: { duration_class: output.activity.duration_class,
+      effort: output.activity.effort }, operations: output.operations };
+}
+
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 15);
-  const outputs = corpus.fixtures.map(({ expected_output }) => expected_output);
+  assert.equal(corpus.corpus_version, 16);
+  const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
     const output = outputs.shift();
@@ -20,7 +36,7 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     const { port } = server.address();
     const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
       git: { checkout_sha: 'fixture-sha', dirty: false },
-      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 15 }
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 16 }
     } });
     assert.equal(report.fixture_count, 27);
     assert.equal(report.aggregates.total.passed, 27);
@@ -36,7 +52,7 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
     assert.deepEqual(report.metadata.corpus, {
-      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 15
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 16
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
@@ -51,6 +67,96 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       const policy = report.metadata.role_config_policy.find((entry) => entry.role_id === roleId);
       assert.deepEqual([policy.thinking, policy.reasoning_effort], ['disabled', null], roleId);
     }
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('autonomous eval scores the production-assembled plan, not the provider fragment', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'npc-autonomous-world-process');
+  const semanticChoice = {
+    interpretation: { npc_goal: 'разжечь огонь',
+      grounded_attempt: 'использовать топливо и кресало', adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'request_world_process:0',
+    reason_code: 'local_fire_needed', reason: 'Нужен огонь.'
+  };
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(semanticChoice)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].pass, true);
+    assert.equal(report.results[0].valid, true);
+    assert.equal(report.results[0].llm_calls, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('autonomous eval records its single bounded production repair', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'npc-autonomous-world-process');
+  const outputs = [{}, {
+    interpretation: { npc_goal: 'разжечь огонь',
+      grounded_attempt: 'использовать топливо и кресало', adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'request_world_process:0',
+    reason_code: 'local_fire_needed', reason: 'Нужен огонь.'
+  }];
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 2);
+    assert.equal(report.results[0].pass, true);
+    assert.equal(report.results[0].repair_calls, 1);
+    assert.equal(report.aggregates.total.repairs, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('autonomous eval fails after one invalid semantic repair', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'npc-autonomous-world-process');
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 2);
+    assert.equal(report.results[0].pass, false);
+    assert.equal(report.results[0].repair_calls, 1);
+    assert.ok(report.results[0].errors.includes('validator:npc_step_plan'));
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

@@ -9,33 +9,28 @@ const GENERIC_CHECK_OUTCOMES = Object.fromEntries([
   operations: []
 }]));
 
-function planShape(request) {
+function choiceShape(request) {
   const genericCheckAvailable = hasAllowedAttributeRefs(request);
   return JSON.stringify({
-    schema: 'npc_step_plan_v1', request_id: request.request_id,
-    root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    decision_index: request.decision_index, npc_ref: request.npc_ref,
     interpretation: { npc_goal: '<current goal>',
       grounded_attempt: '<nearest grounded attempt>', adaptation: 'literal' },
     resolution: genericCheckAvailable
       ? '<direct|generic_check|domain_request>'
       : '<direct|domain_request>',
-    goal_result: '<pending|achieved|partially_achieved|not_achieved>',
-    activity: { owner: '<semantic|domain>', duration_class: '<value|null>',
-      effort: '<value|null>' }, operations: [], check: null,
+    goal_result: '<direct only: achieved|partially_achieved|not_achieved>',
+    activity: { duration_class: '<direct/generic only>',
+      effort: '<direct/generic only>' },
+    operations: [], operation_choice: '<domain choice_id or null>', check: null,
     reason_code: '<reason_code>', reason: '<brief subjective reason>'
   });
 }
 
 function operationMappings(request) {
-  const requestOperations = requestDerivedOperations(request);
+  const choices = requestDerivedOperationChoices(request);
   const mappings = {
     domain_request: {
-      resolution: 'domain_request', goal_result: 'pending',
-      activity: { owner: 'domain', duration_class: null, effort: null },
-      check: null
+      resolution: 'domain_request', operation_choice: '<one choice_id>',
+      operations: []
     },
     ...(hasAllowedAttributeRefs(request) ? { generic_check: {
       resolution: 'generic_check', goal_result: 'pending',
@@ -49,10 +44,7 @@ function operationMappings(request) {
         outcomes: GENERIC_CHECK_OUTCOMES
       }
     } } : {}),
-    request_world_process: requestOperations.request_world_process ?? [],
-    ...Object.fromEntries(Object.entries(requestOperations)
-      .filter(([op]) => op !== 'request_world_process')
-      .map(([op, operations]) => [op, operations]))
+    operation_choices: choices
   };
   return JSON.stringify(mappings);
 }
@@ -62,32 +54,12 @@ function hasAllowedAttributeRefs(request) {
     && request.decision_scope.allowed_attribute_refs.length > 0;
 }
 
-function singleWorldProcessCandidate(request) {
-  const operations = requestDerivedOperations(request).request_world_process ?? [];
-  if (operations.length !== 1) return null;
-  const [operation] = operations;
-  return JSON.stringify({
-    schema: 'npc_step_plan_v1', request_id: request.request_id,
-    root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    decision_index: request.decision_index, npc_ref: request.npc_ref,
-    interpretation: { npc_goal: '<current goal>',
-      grounded_attempt: '<nearest grounded attempt>', adaptation: 'literal' },
-    resolution: 'domain_request', goal_result: 'pending',
-    activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [operation],
-    check: null, reason_code: '<reason_code>', reason: '<brief subjective reason>'
-  });
-}
-
 export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') {
     throw dependencyError('Configured LLM role runner is required.');
   }
   return async function planNpcAutonomousAction(request, context = {}) {
     const repair = context.repair ?? null;
-    const candidate = singleWorldProcessCandidate(request);
     const genericCheckAvailable = hasAllowedAttributeRefs(request);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
@@ -98,19 +70,19 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
       messages: [{
         role: 'system',
         content: [
-          'Return exactly one plain JSON object matching npc_step_plan_v1.',
-          `Use this complete valid shape; angle-bracket values are placeholders, never emit them literally:\n${planShape(request)}`,
-          `Use these request-derived operation mappings exactly:\n${operationMappings(request)}`,
-          ...(candidate === null ? [] : [
-            `This complete request-derived candidate is valid; replace its goal, attempt, reason code, and reason text:\n${candidate}`
-          ]),
-          'Copy every identity field exactly from request. For domain_request use',
-          'goal_result pending, domain activity, null check, and exactly one',
-          'allowed domain operation. Copy one whole mapped executable operation,',
-          'never a capability summary. Never change its supplied refs or kinds.',
+          'Return exactly one plain JSON object containing only the semantic NPC choice.',
+          'Code constructs the npc_step_plan_v1 identity and deterministic envelope.',
+          `Use this semantic shape; angle-bracket values are placeholders, never emit them literally:\n${choiceShape(request)}`,
+          `Use these request-derived operation choices exactly:\n${operationMappings(request)}`,
+          'Never copy request_id, root_turn_id, boundary_id, versions, decision_index, npc_ref,',
+          'domain activity, pending goal_result, or an exact mapped operation DTO.',
+          'For domain_request select one supplied choice_id in operation_choice and',
+          'leave operations empty. Code restores the exact registered operation.',
+          'If no mapped choice represents the intended permitted domain operation,',
+          'set operation_choice to null and return that one semantic operation in operations.',
           ...(genericCheckAvailable ? [
-            'For generic_check use its mapped resolution, pending goal_result,',
-            'semantic activity, empty top-level operations, and complete check.',
+            'For generic_check provide semantic activity and a complete check.',
+            'Code supplies pending goal_result and empty top-level operations.',
             'Copy check attribute_ref only from allowed_attribute_refs, skill_ref',
             'only from allowed_skill_refs or null, and difficulty_id only from',
             'the mapped closed difficulty values. Put an allowed operation only',
@@ -153,21 +125,83 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
     if (!plainObject(response?.output)) {
       throw dependencyError('NPC autonomous decider returned no JSON object.');
     }
-    return bindRequestDerivedOperation(response.output, request);
+    return assembleNpcStepPlan(response.output, request);
   };
 }
 
-function bindRequestDerivedOperation(plan, request) {
-  if (plan.resolution !== 'domain_request' || plan.goal_result !== 'pending') {
-    return plan;
-  }
+function assembleNpcStepPlan(choice, request) {
+  const choices = requestDerivedOperationChoices(request);
+  const selected = choices.find(({ choice_id }) =>
+    choice_id === choice.operation_choice)?.operation;
+  const rawOperations = Array.isArray(choice.operations)
+    ? choice.operations : [];
+  const operations = selected == null
+    ? bindRequestDerivedOperations(rawOperations, request)
+    : [structuredClone(selected)];
+  const resolution = choice.resolution;
+  const domainActionProduction = resolution === 'domain_request'
+    && operations.some((operation) => operation?.op === 'request_item_use'
+      && operation.action_production != null);
+  return {
+    schema: 'npc_step_plan_v1', request_id: request.request_id,
+    root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index, npc_ref: request.npc_ref,
+    interpretation: choice.interpretation,
+    resolution,
+    goal_result: resolution === 'domain_request' || resolution === 'generic_check'
+      ? 'pending' : choice.goal_result,
+    activity: resolution === 'domain_request' && !domainActionProduction
+      ? { owner: 'domain', duration_class: null, effort: null }
+      : semanticActivity(choice.activity),
+    operations: resolution === 'generic_check' ? [] : operations,
+    check: resolution === 'generic_check'
+      ? resolveCheckOperations(choice.check, request) : null,
+    reason_code: choice.reason_code,
+    reason: choice.reason
+  };
+}
+
+function semanticActivity(value) {
+  if (!plainObject(value)) return value;
+  return { owner: 'semantic', duration_class: value.duration_class,
+    effort: value.effort };
+}
+
+function resolveCheckOperations(check, request) {
+  if (!plainObject(check) || !plainObject(check.outcomes)) return check;
+  return { ...check, outcomes: Object.fromEntries(Object.entries(check.outcomes)
+    .map(([key, outcome]) => [key, plainObject(outcome)
+      ? { ...outcome, operations: bindRequestDerivedOperations(
+        outcome.operations, request) }
+      : outcome])) };
+}
+
+function bindRequestDerivedOperations(operations, request) {
+  if (!Array.isArray(operations)) return operations;
+  const choices = requestDerivedOperationChoices(request);
+  return operations.map((value) => {
+    const selected = choices.find(({ choice_id }) =>
+      choice_id === value?.operation_choice)?.operation;
+    if (selected != null) return structuredClone(selected);
+    return bindRequestDerivedOperation(value, request);
+  });
+}
+
+function bindRequestDerivedOperation(value, request) {
   const candidates = requestDerivedOperations(request);
-  if (!Array.isArray(plan.operations)) return plan;
-  return { ...plan, operations: plan.operations.map((value) => {
-    const family = value?.op ?? value?.operation_kind ?? value?.operation?.op;
-    const operations = candidates[family];
-    return operations?.length === 1 ? operations[0] : value;
-  }) };
+  const family = value?.op ?? value?.operation_kind ?? value?.operation?.op;
+  const operations = candidates[family];
+  return operations?.length > 0 ? { operation_choice: null } : value;
+}
+
+function requestDerivedOperationChoices(request) {
+  return Object.entries(requestDerivedOperations(request)).flatMap(
+    ([operationKind, operations]) => operations.map((operation, index) => ({
+      choice_id: `${operationKind}:${index}`,
+      operation: structuredClone(operation)
+    })));
 }
 
 function requestDerivedOperations(request) {
@@ -188,7 +222,8 @@ function requestDerivedOperations(request) {
       op: 'request_activity', actor_ref, activity_kind: entry.activity_kind,
       target_refs: entry.target_refs, description: 'Execute supplied activity request.'
     })) } : {}),
-    ...(Array.isArray(itemUse) ? { request_item_use: itemUse.map((entry) => ({
+    ...(Array.isArray(itemUse) ? { request_item_use: itemUse
+      .filter((entry) => entry.action_production == null).map((entry) => ({
       op: 'request_item_use', actor_ref, item_ref: entry.item_ref,
       use_kind: entry.use_kind, target_refs: entry.target_refs
     })) } : {}),

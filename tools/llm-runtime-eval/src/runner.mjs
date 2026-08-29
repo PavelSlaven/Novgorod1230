@@ -24,6 +24,8 @@ import { createTurnStepDomainOwnerPreflight } from
   '../../../packages/turn/src/turn-step-admission.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceNpcAutonomousModel } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js';
 
 export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env = process.env, metadata = {} } = {}) {
   const fixtures = Array.isArray(corpus?.fixtures) ? corpus.fixtures : [];
@@ -41,6 +43,10 @@ export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env =
 }
 
 async function runFixture(fixture, execution) {
+  if (fixture.validator === 'npc_step_plan'
+      && fixture.role_id.startsWith('npc_autonomous_decider')) {
+    return runNpcAutonomousWorkflow(fixture, execution);
+  }
   if (fixture.validator !== 'turn_step_plan'
       || fixture.role_id !== 'turn_step_planner'
       || fixture.repair === true) {
@@ -49,6 +55,51 @@ async function runFixture(fixture, execution) {
     return scoreFixture(fixture, call);
   }
   return runTurnStepPlannerWorkflow(fixture, execution);
+}
+
+async function runNpcAutonomousWorkflow(fixture, execution) {
+  const calls = [];
+  const roleRunner = { async run({ scope, role_id, messages, overrides }) {
+    if (calls.length === 0 && !isDeepStrictEqual(messages, fixture.messages)) {
+      throw Object.assign(new Error(
+        `Frozen autonomous prompt drifted for fixture ${fixture.id}.`), {
+        code: 'FROZEN_AUTONOMOUS_PROMPT_DRIFT'
+      });
+    }
+    const call = await executeRoleLlmCall({ scope, roleId: role_id, messages,
+      overrides, repair: role_id === 'npc_autonomous_decider_format_repair',
+      ...execution });
+    calls.push(call);
+    if (call.status !== 'ok') {
+      const error = new Error(call.error?.message ?? `${role_id} failed.`);
+      error.code = call.error?.code ?? call.status;
+      throw error;
+    }
+    return { output: call.parsed_json };
+  } };
+  const payload = messagePayload(fixture.messages);
+  const request = fixture.repair === true ? payload?.request : payload;
+  const model = createLowerDvinaTraceNpcAutonomousModel({ roleRunner });
+  let plan;
+  let workflowError = null;
+  try {
+    const standaloneRepair = fixture.repair === true ? {
+      original_output: payload.original_output,
+      validation_errors: payload.validation_errors
+    } : null;
+    plan = await model(request, { repair: standaloneRepair });
+    if (fixture.repair !== true && !validateNpcStepPlan(plan, request)) {
+      plan = await model(request, { repair: {
+        original_output: plan,
+        validation_errors: [{ code: 'npc_step_plan_schema_invalid', path: '$',
+          message: 'Assembled plan must match npc_step_plan_v1.' }]
+      } });
+    }
+  } catch (error) {
+    workflowError = error;
+  }
+  const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
+  return scoreFixture(fixture, { ...finalCall, parsed_json: plan }, calls);
 }
 
 async function runTurnStepPlannerWorkflow(fixture, execution) {
@@ -235,7 +286,7 @@ function scoreFixture(fixture, call, workflowCalls = [call]) {
     llm_calls: workflowCalls.length,
     repair_calls: workflowCalls.length === 1 && fixture.repair === true ? 1
       : workflowCalls.filter(({ role_id }) =>
-        role_id === 'turn_step_planner_repair').length,
+        role_id?.endsWith('_repair')).length,
     duration_ms: workflowCalls.reduce((sum, current) =>
       sum + Number(current.durationMs ?? 0), 0),
     usage, model: call.model, provider: call.provider,

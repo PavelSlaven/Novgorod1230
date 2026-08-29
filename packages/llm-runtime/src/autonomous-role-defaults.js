@@ -2,7 +2,7 @@ export function autonomousTurnRoleDefaults(contractModes) {
   return {
     npc_autonomous_decider: semanticRole(
       'NPC_AUTONOMOUS_DECIDER',
-      contractModes.JSON_OBJECT_WITH_SCHEMA
+      contractModes.JSON_OBJECT
     ),
     npc_autonomous_decider_format_repair: repairRole(
       'NPC_AUTONOMOUS_DECIDER_REPAIR',
@@ -20,7 +20,7 @@ function semanticRole(envPrefix, outputContractMode) {
     responseFormat: 'json_object',
     maxTokens: 8000,
     outputContractMode,
-    expectedSchema: 'npc_step_plan_v1',
+    expectedSchema: null,
     parseJson: true,
     targetInputTokens: 100000,
     comfortableInputTokens: 220000,
@@ -41,7 +41,7 @@ function repairRole(envPrefix, outputContractMode) {
     temperature: 0,
     topP: 1,
     outputContractMode,
-    expectedSchema: 'npc_step_plan_v1',
+    expectedSchema: null,
     parseJson: true,
     targetInputTokens: 30000,
     comfortableInputTokens: 30000,

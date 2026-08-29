@@ -30,6 +30,16 @@ test('custom provider keeps its model instead of turn default model', () => {
   assert.equal(config.provider, 'openai_compatible');
 });
 
+test('autonomous roles request plain semantic JSON, not a full NPC plan', () => {
+  for (const roleId of [TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
+    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR]) {
+    const { config } = resolveLlmExecutionConfig({
+      scope: 'turn_runtime', roleId, env
+    });
+    assert.equal(config.expectedSchema, null, roleId);
+  }
+});
+
 test('public runtime policy excludes retired legacy and new-game LLM families', () => {
   assert.deepEqual(Object.values(LLM_SCOPES).sort(), ['portrait_lab', 'turn_runtime']);
   assert.equal('LegacyWorldRoles' in llmRuntime, false);

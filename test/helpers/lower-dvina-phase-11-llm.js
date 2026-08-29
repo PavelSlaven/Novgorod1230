@@ -122,7 +122,17 @@ export function createCanonicalPhase11LlmResponder({
     if (['fixture-npc-autonomous-decider',
       'fixture-npc-autonomous-decider-repair'].includes(model)) {
       turn10Actors = { ...turn10Actors, zhdanko: input.npc_ref };
-      return phase7AutonomousPlan(input, phase7Choice);
+      const plan = phase7AutonomousPlan(input, phase7Choice);
+      return {
+        interpretation: plan.interpretation,
+        resolution: plan.resolution,
+        operation_choice: phase7Choice === 'move_bag'
+          ? 'request_activity:1' : 'request_activity:0',
+        operations: [],
+        check: plan.check,
+        reason_code: plan.reason_code,
+        reason: plan.reason
+      };
     }
     if (['fixture-npc-combat-decider',
       'fixture-npc-combat-decider-repair'].includes(model)) {

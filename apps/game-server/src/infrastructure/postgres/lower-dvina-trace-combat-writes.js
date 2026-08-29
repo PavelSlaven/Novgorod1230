@@ -205,7 +205,8 @@ function appendCombatBodyHistory({ appends, partyId, factual, changeSetId,
       subject_id: transition.actor_ref.entity_id, effect_ref: {
         entity_kind: 'body_effect', entity_id: 'combat_harm',
         threshold_crossings: transition.threshold_crossings },
-      change_set_id: changeSetId, idempotency_record_id: idemId,
+      change_set_id: changeSetId,
+      idempotency_record_id: `${idemId}:combat-body:${index}`,
       occurred_at_whole_minutes: factual.time_update.clock_after.whole_minutes,
       occurred_at_subminute_numerator:
         factual.time_update.clock_after.subminute_numerator,

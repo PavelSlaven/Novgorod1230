@@ -20,6 +20,8 @@ test('prepared route rejects a zero-duration direct semantic activity before wri
       body_parts: {}
     };
     const committedState = {
+      party_id: 'party-prepared-zero-duration',
+      party_state: { turn_number: 0 },
       body_state: body,
       clock: at(0),
       items: [],

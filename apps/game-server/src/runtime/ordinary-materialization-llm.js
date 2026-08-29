@@ -57,6 +57,7 @@ function approvedIdentity({ roleRunner, defaultApprovedIdentity,
 
 async function runRole({ roleRunner, request, repair }) {
   return roleRunner.run({ ...modelInvocation(),
+    request_identity: request.request_id,
     repair: repair !== null,
     messages: buildOrdinaryMaterializationMessages(request, { repair }) });
 }

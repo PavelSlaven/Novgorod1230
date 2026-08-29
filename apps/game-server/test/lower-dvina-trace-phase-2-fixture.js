@@ -576,7 +576,8 @@ function fixture({
     },
     narrator: {
       async run(input) {
-        narratorInput = structuredClone(input);
+        const { turnBudget: _turnBudget, ...cloneableInput } = input;
+        narratorInput = structuredClone(cloneableInput);
         if (shouldFailNarration) {
           return {
             version: 1,

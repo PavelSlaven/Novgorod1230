@@ -367,7 +367,8 @@ test('failed narration audit cannot roll back committed factual state', async ()
       }
     }
   });
-  await assert.rejects(() => runTurnWorkflow(input(), services), /narration_flow_result invalid/u);
+  await assert.rejects(() => runTurnWorkflow(input(), services),
+    { code: 'TURN_NARRATION_REJECTED' });
   assert.equal(commits.length, 1);
 });
 

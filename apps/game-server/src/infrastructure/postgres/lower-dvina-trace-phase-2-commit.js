@@ -31,6 +31,8 @@ import { commitLowerDvinaTracePhase9 } from
 import { commitLowerDvinaTracePhase10 } from
   './lower-dvina-trace-phase-10-commit.js';
 import { mergePhase2Items } from './lower-dvina-trace-phase-2-commit-items.js';
+import { isExpectedPostCommitPresentationFailure } from
+  '../../runtime/lower-dvina-trace-post-commit-failure.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -67,7 +69,8 @@ export async function commitLowerDvinaTracePhase2({
       return await commitLowerDvinaTracePhase10({ partyId, phase10Contracts,
         loadState, committer, presentationIdempotencyKey:
           factual.player_input.idempotency_key });
-    } catch {
+    } catch (error) {
+      if (!isExpectedPostCommitPresentationFailure(error)) throw error;
       return committed;
     }
   }

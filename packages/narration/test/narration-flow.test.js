@@ -155,6 +155,7 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
         : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair(input) {
+      assert.equal(input.request_id, 'turn:party-1:1');
       assert.deepEqual(input.segments.map((segment) => segment.segment_id), ['s2']);
       return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Телега стоит у ворот. ' }] };
     } }

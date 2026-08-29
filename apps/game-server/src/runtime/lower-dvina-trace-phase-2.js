@@ -19,6 +19,7 @@ import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js'
 import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
+import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
@@ -286,8 +287,8 @@ export function createLowerDvinaTracePhase2Runtime({
           return await runWithinTurnDeadline(turnBudget, () =>
             repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
         } catch (error) {
-          if (services.committedPublicResult() != null)
-            return services.committedPublicResult();
+          if (isExpectedPostCommitPresentationFailure(error)
+              && services.committedPublicResult() != null) return services.committedPublicResult();
           throw error;
         }
       };

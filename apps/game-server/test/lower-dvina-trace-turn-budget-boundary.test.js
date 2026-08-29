@@ -521,3 +521,17 @@ test('whole-turn deadline returns committed pending screen before narration or s
   assert.equal(f.narratorInput(), null);
   assert.equal(f.events.includes('persist_screen'), false);
 });
+
+test('unexpected repository failure after factual commit remains visible', async () => {
+  const failure = Object.assign(new Error('repository read failed'), {
+    code: 'TRACE_TEST_REPOSITORY_FAILED'
+  });
+  const f = fixture({ afterCommittedVisibleRead() { throw failure; } });
+  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'post-commit-repository-error',
+    idempotency_key: 'post-commit-repository-error',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  } }), (error) => error === failure);
+  assert.equal(f.commitCount(), 1);
+  assert.equal(f.events.includes('persist_screen'), false);
+});

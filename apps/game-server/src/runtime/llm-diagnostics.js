@@ -134,8 +134,7 @@ function incident(record = {}) {
     budget_exhausted: record.budget_exhausted === true,
     remaining_llm_budget_ms: nonNegative(record.remaining_llm_budget_ms),
     remaining_turn_deadline_ms: nonNegative(record.remaining_turn_deadline_ms),
-    repair_role_id: text(record.repair_role_id) || null,
-    claimed_repair_role_id: text(record.claimed_repair_role_id) || null
+    request_identity: text(record.request_identity) || null
   };
 }
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }

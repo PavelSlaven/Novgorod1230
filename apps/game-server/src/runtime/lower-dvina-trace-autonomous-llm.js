@@ -94,6 +94,7 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
       role_id: repair
         ? 'npc_autonomous_decider_format_repair'
         : 'npc_autonomous_decider',
+      request_identity: request.request_id,
       messages: [{
         role: 'system',
         content: [
@@ -113,7 +114,12 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
             'Copy check attribute_ref only from allowed_attribute_refs, skill_ref',
             'only from allowed_skill_refs or null, and difficulty_id only from',
             'the mapped closed difficulty values. Put an allowed operation only',
-            'inside a matching check outcome.'
+            'inside a matching check outcome. Difficulty describes only the task',
+            'and stated external conditions: a routine feasible task with no stated external obstacle is ordinary;',
+            'trivial is almost automatic, risky has a meaningful obstacle, dangerous has severe external difficulty,',
+            'limit is near the normal human limit, and nearly_impossible remains physically possible but extraordinary.',
+            'Do not raise or lower difficulty for character attributes, skills, body, equipment, or personal stakes;',
+            'code applies those exact modifiers.'
           ] : [
             'generic_check is forbidden because allowed_attribute_refs is empty.',
             'Choose direct or a permitted domain_request instead.',

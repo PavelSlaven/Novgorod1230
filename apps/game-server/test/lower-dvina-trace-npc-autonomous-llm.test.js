@@ -31,6 +31,8 @@ test('autonomous adapter uses isolated plan and repair roles', async () => {
   }), output);
   assert.equal(calls[0].role_id, 'npc_autonomous_decider');
   assert.equal(calls[1].role_id, 'npc_autonomous_decider_format_repair');
+  assert.deepEqual(calls.map(({ request_identity }) => request_identity),
+    ['decision-1', 'decision-1']);
   const prompt = calls[0].messages[0].content;
   const repairPrompt = calls[1].messages[0].content;
   for (const phrase of [
@@ -88,7 +90,11 @@ test('autonomous prompt maps supplied world-process and generic-check values', a
   for (const value of ['"process_action":"start"', '"process_kind":"fire"',
     '"source_refs":["fuel"]', '"attribute_ref":"<one of allowed_attribute_refs>"',
     '"difficulty_id":"<trivial|ordinary|risky|dangerous|limit|nearly_impossible>"',
-    'empty top-level operations']) assert.equal(prompt.includes(value), true, value);
+    'empty top-level operations',
+    'routine feasible task with no stated external obstacle is ordinary',
+    'character attributes, skills, body, equipment, or personal stakes']) {
+    assert.equal(prompt.includes(value), true, value);
+  }
   assert.equal(prompt.includes(JSON.stringify({
     schema: 'npc_step_plan_v1', request_id: 'decision-1', root_turn_id: 'turn-1',
     boundary_id: 'boundary-1', committed_state_version: 1, working_revision: 0,

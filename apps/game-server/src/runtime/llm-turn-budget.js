@@ -29,12 +29,14 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       return storage.run({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
         llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claims: new Set() }, execute);
     },
-    claimRepair({ roleId = null } = {}) {
+    claimRepair({ requestIdentity = null } = {}) {
       const turn = current();
       if (!turn) return null;
-      const claim = Object.freeze({ role_id: String(roleId ?? '').trim() || null });
-      if (turn.repair_claims.has(claim.role_id)) throw repairClaimed(claim, roleId);
-      turn.repair_claims.add(claim.role_id);
+      const request_identity = String(requestIdentity ?? '').trim();
+      if (!request_identity) throw repairIdentityRequired();
+      const claim = Object.freeze({ request_identity });
+      if (turn.repair_claims.has(request_identity)) throw repairClaimed(claim);
+      turn.repair_claims.add(request_identity);
       return claim;
     },
     clamp({ requestedTimeoutMs = null, repair = false } = {}) {
@@ -84,11 +86,16 @@ export function exhausted(remaining, budgetExhausted = false) {
   return error;
 }
 
-export function repairClaimed(claim, roleId) {
+export function repairClaimed(claim) {
   const error = new Error('Gameplay turn repair budget is already claimed.');
   error.code = 'LLM_TURN_REPAIR_ALREADY_CLAIMED';
-  error.claimed_repair_role_id = claim.role_id;
-  error.repair_role_id = String(roleId ?? '').trim() || null;
+  error.request_identity = claim.request_identity;
+  return error;
+}
+
+function repairIdentityRequired() {
+  const error = new Error('Gameplay repair requires an immutable request identity.');
+  error.code = 'LLM_TURN_REPAIR_IDENTITY_REQUIRED';
   return error;
 }
 

@@ -9,6 +9,16 @@ test('NPC generic check allows an attribute without a skill', () => {
   assert.equal(validateNpcStepPlan(genericPlan(request, 'foreign-skill'), request), false);
 });
 
+test('an unseen routine generic attempt uses the same bounded qualitative scale', () => {
+  const request = actionRequest();
+  const plan = genericPlan(request, null);
+  plan.interpretation = { npc_goal: 'прислушаться',
+    grounded_attempt: 'разобрать обычный близкий звук', adaptation: 'literal' };
+  plan.check = { ...plan.check, purpose: 'разобрать обычный близкий звук' };
+  assert.equal(validateNpcStepPlan(plan, request), true);
+  assert.equal(plan.check.difficulty_id, 'ordinary');
+});
+
 function actionRequest() {
   return { schema: 'npc_action_decision_request_v1', request_id: 'request',
     root_turn_id: 'turn', boundary_id: 'boundary', committed_state_version: 1,

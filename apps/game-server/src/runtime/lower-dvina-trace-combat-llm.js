@@ -29,6 +29,7 @@ export function createLowerDvinaTraceNpcCombatModel({ roleRunner } = {}) {
       role_id: repair
         ? 'npc_combat_decider_format_repair'
         : 'npc_combat_decider',
+      request_identity: request.request_id,
       messages: [{
         role: 'system',
         content: [

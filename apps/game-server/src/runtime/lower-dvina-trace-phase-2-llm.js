@@ -46,6 +46,7 @@ export function createLowerDvinaTraceTurnStepModel({
         role_id: repairing
           ? 'turn_step_planner_repair'
           : 'turn_step_planner',
+        request_identity: request.request_id,
         messages: [{
           role: 'system',
           content: [
@@ -112,6 +113,7 @@ export function createLowerDvinaTracePlayerConversationModel({
       role_id: repair
         ? 'player_conversation_interpreter_format_repair'
         : 'player_conversation_interpreter',
+      request_identity: request.request_id,
       messages: [{
         role: 'system',
         content: playerConversationInstructions(repair, request)
@@ -139,6 +141,7 @@ export function createLowerDvinaTraceNpcSemanticModel({
       role_id: repair
         ? 'npc_conversation_responder_format_repair'
         : 'npc_conversation_responder',
+      request_identity: request.request_id,
       messages: [{
         role: 'system',
         content: npcConversationInstructions(repair, request)
@@ -222,6 +225,7 @@ async function runNarrationRole(roleRunner, roleId, instruction, request, maxTok
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: roleId,
+    request_identity: request.request_id ?? request.request?.request_id,
     messages: [{
       role: 'system',
       content: instruction

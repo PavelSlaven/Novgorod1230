@@ -34,6 +34,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const repair = await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
+    request_id: request.request_id,
     visible_context: clone(request.visible_context),
     style_policy: clone(request.style_policy ?? {}),
     concerns: clone(audit.concerns),

@@ -20,6 +20,8 @@ import {
 import { validateTurnStepPlan, validateWorldProcessStepPlan } from '@rus/turn';
 import { requestTurnStepPlanWithRepair } from
   '../../../packages/turn/src/turn-step-loop.js';
+import { createTurnStepDomainOwnerPreflight } from
+  '../../../packages/turn/src/turn-step-admission.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 
@@ -51,7 +53,15 @@ async function runFixture(fixture, execution) {
 
 async function runTurnStepPlannerWorkflow(fixture, execution) {
   const calls = [];
+  const validationErrors = [];
   const roleRunner = { async run({ scope, role_id, messages, overrides }) {
+    if (role_id === 'turn_step_planner'
+        && !isDeepStrictEqual(messages, fixture.messages)) {
+      throw Object.assign(new Error(
+        `Frozen planner prompt drifted for fixture ${fixture.id}.`), {
+        code: 'FROZEN_PLANNER_PROMPT_DRIFT'
+      });
+    }
     const call = await executeRoleLlmCall({ scope, roleId: role_id, messages,
       overrides, repair: role_id === 'turn_step_planner_repair', ...execution });
     calls.push(call);
@@ -63,18 +73,33 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
     return { output: call.parsed_json };
   } };
   let workflowError = null;
+  const request = fixture.request ?? messagePayload(fixture.messages);
+  const preflightDomainPlan = frozenPlannerDomainOwnerPreflight(request);
+  const semanticPlanValidator = async (value) => {
+    try {
+      await preflightDomainPlan(value);
+    } catch (error) {
+      validationErrors[calls.length - 1] = error;
+      throw error;
+    }
+  };
+  const preparedChainContext = fixture.prepared_chain_context ?? null;
   try {
     await requestTurnStepPlanWithRepair({
-      request: fixture.request ?? messagePayload(fixture.messages),
-      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner })
+      request,
+      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+      semanticPlanValidator,
+      preparedChainContext,
+      allowRepair: (preparedChainContext?.prior_effect_count ?? 0) === 0
     });
   } catch (error) {
     workflowError = error;
   }
   const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
   const result = scoreFixture(fixture, finalCall, calls);
-  const primary = plannerStage(fixture, calls[0]);
-  const repair = calls[1] == null ? null : plannerStage(fixture, calls[1]);
+  const primary = plannerStage(fixture, calls[0], validationErrors[0]);
+  const repair = calls[1] == null ? null
+    : plannerStage(fixture, calls[1], validationErrors[1]);
   const finalStage = repair ?? primary;
   const finalOutput = finalCall.parsed_json;
   const rubricPass = finalOutput != null && typeof finalOutput === 'object'
@@ -92,25 +117,57 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
       quality_status: result.quality_status,
       pass: result.pass
     },
-    ...(workflowError ? { error_code: workflowError.code ?? 'workflow_failed' } : {})
+    ...(workflowError ? {
+      error_code: workflowError.code ?? 'workflow_failed',
+      ...(workflowError.details?.repair_suppressed == null ? {} : {
+        repair_suppressed: workflowError.details.repair_suppressed
+      })
+    } : {})
   } };
 }
 
-function plannerStage(fixture, call) {
+function plannerStage(fixture, call, validationError = null) {
   if (!call) return null;
   const output = call.parsed_json;
   return {
     role_id: call.role_id,
     status: call.status,
-    valid: call.status === 'ok' && output != null
+    valid: validationError == null && call.status === 'ok' && output != null
       && typeof output === 'object' && !Array.isArray(output)
       && validateRoleOutput(fixture, output).length === 0,
+    ...(validationError == null ? {} : {
+      validation_error_code: validationError.code ?? 'semantic_validation_failed'
+    }),
     duration_ms: call.durationMs,
     usage: call.usage ?? null,
     model: call.model,
     provider: call.provider,
     config_hash: call.config_hash
   };
+}
+
+function frozenPlannerDomainOwnerPreflight(request) {
+  const operations = request.available_domain_operations ?? [];
+  const semanticBindings = operations.map((operation, index) => ({
+    command: { option_id: `frozen-domain-operation-${index}` },
+    binding: { operation: operation.op,
+      matches: ({ operation: candidate }) =>
+        isDeepStrictEqual(candidate, operation) }
+  }));
+  return createTurnStepDomainOwnerPreflight({
+    externalRegistry: null,
+    semanticBindings,
+    availableOptions: new Set(semanticBindings.map(
+      ({ command }) => command.option_id)),
+    actor: request.actor,
+    committedState: {},
+    services: {
+      turnStepOrdinaryDiscoveryResolver: async () => {},
+      turnStepWorldProcessResolver: async () => {},
+      turnStepSpatialSemanticResolver: async () => {},
+      turnStepActionProductionOwner: async () => {}
+    }
+  });
 }
 
 function missingCall(fixture, error) {
@@ -163,6 +220,9 @@ function scoreFixture(fixture, call, workflowCalls = [call]) {
   return { fixture_id: fixture.id, role_id: fixture.role_id, repair: fixture.repair === true,
     scored, manual, quality_status, status: call.status, pass: quality_status === 'automated_passed',
     valid: errors.length === 0, errors,
+    ...(fixture.role_id === 'turn_step_planner' ? {
+      failure_classification: classifyPlannerEvalFailure(errors)
+    } : {}),
     llm_calls: workflowCalls.length,
     repair_calls: workflowCalls.length === 1 && fixture.repair === true ? 1
       : workflowCalls.filter(({ role_id }) =>
@@ -171,6 +231,17 @@ function scoreFixture(fixture, call, workflowCalls = [call]) {
       sum + Number(current.durationMs ?? 0), 0),
     usage, model: call.model, provider: call.provider,
     config_hash: call.config_hash };
+}
+
+export function classifyPlannerEvalFailure(errors = []) {
+  if (errors.includes('json_object_required')
+      || errors.some((error) => error.startsWith('validator:'))) {
+    return 'A_production_validation_rejected';
+  }
+  if (errors.some((error) => /^(missing|forbidden|unexpected|disallowed)_/.test(error))) {
+    return 'B_rubric_only';
+  }
+  return null;
 }
 
 function sumUsage(calls) {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { runFrozenRoleEval } from '../src/runner.mjs';
+import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs';
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
@@ -131,6 +131,41 @@ test('planner fixture uses one production repair only after production validatio
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
+test('planner fixture repairs a structurally valid plan rejected by domain-owner preflight', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  const invalidPrimary = structuredClone(fixture.expected_output);
+  invalidPrimary.resolution = 'domain_request';
+  invalidPrimary.goal_result = 'pending';
+  invalidPrimary.activity = { owner: 'domain', duration_class: null, effort: null };
+  invalidPrimary.operations = [{ op: 'request_activity', actor_ref: 'actor_mikula',
+    activity_kind: 'wait', target_refs: [], description: 'Ждать.' }];
+  const outputs = [invalidPrimary, fixture.expected_output];
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    const result = report.results[0];
+    assert.equal(calls, 2);
+    assert.equal(result.workflow.primary.valid, false);
+    assert.equal(result.workflow.repair_needed, true);
+    assert.equal(result.workflow.repair.valid, true);
+    assert.equal(result.pass, true);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
 test('planner rubric-only failure does not invoke repair', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const output = structuredClone(fixture.expected_output);
@@ -157,8 +192,80 @@ test('planner rubric-only failure does not invoke repair', async () => {
     assert.equal(result.workflow.primary.valid, true);
     assert.equal(result.workflow.repair_needed, false);
     assert.equal(result.pass, false);
+    assert.equal(result.failure_classification, 'B_rubric_only');
     assert.ok(result.errors.includes('disallowed_value:activity.effort'));
   } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('prepared-effect chain suppresses planner repair like production', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  const invalidPrimary = structuredClone(fixture.expected_output);
+  invalidPrimary.continuation = {
+    remaining_intent: 'осмотреть окрестности', depends_on_refs: []
+  };
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(invalidPrimary)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [{ ...fixture,
+        prepared_chain_context: { prior_effect_count: 1 } }] },
+    runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    const result = report.results[0];
+    assert.equal(calls, 1);
+    assert.equal(result.workflow.repair_needed, false);
+    assert.equal(result.workflow.error_code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(result.workflow.repair_suppressed,
+      'prepared_effect_chain_active');
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('planner primary prompt must match its frozen fixture before provider call', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
+  const drifted = structuredClone(fixture);
+  drifted.messages[0].content += ' drift';
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.end();
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [drifted] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 0);
+    assert.equal(report.results[0].workflow.error_code,
+      'FROZEN_PLANNER_PROMPT_DRIFT');
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('saved 26/27 planner failure is classified as branch A without a new API call', () => {
+  const saved = {
+    checkout_sha: '37c63c483b20bd1c0940bf7fc010b74226968493',
+    corpus_version: 15,
+    fixture_id: 'planner-reality-limited',
+    status: 'ok',
+    errors: ['validator:turn_step_plan', 'unexpected_value:continuation']
+  };
+  assert.equal(saved.status, 'ok');
+  assert.equal(classifyPlannerEvalFailure(saved.errors),
+    'A_production_validation_rejected');
 });
 
 test('planner invalid repair fails after exactly two calls', async () => {

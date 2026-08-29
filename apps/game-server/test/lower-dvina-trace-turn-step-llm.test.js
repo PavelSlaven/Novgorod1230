@@ -143,6 +143,55 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   }
 });
 
+test('turn step planner and repair prompts map available container access exactly', async () => {
+  const prompts = [];
+  const candidate = {
+    op: 'request_container_access', actor_ref: 'actor_mikula',
+    container_ref: 'container:road-bag', access_kind: 'open'
+  };
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      prompts.push(call.messages[0].content);
+      return { output: output() };
+    } }
+  });
+  const input = request({
+    root_player_action: 'открыть дорожную сумку',
+    remaining_intent: 'открыть дорожную сумку',
+    player_safe_state: { visible_entities: [{ entity_ref: 'container:road-bag' }] },
+    available_domain_operations: [candidate]
+  });
+  await model(input);
+  await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
+    structural_errors: [] });
+  for (const prompt of prompts) {
+    const mappings = JSON.parse(prompt.match(
+      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
+    )[1]);
+    assert.deepEqual(mappings.available_container_access, {
+      interpretation: { adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: ['<copy exactly one matching request_container_access object unchanged from available_domain_operations>'], check: null
+    });
+    assert.equal(validateTurnStepPlan({
+      schema: 'turn_step_plan_v1', request_id: input.request_id,
+      committed_state_version: input.committed_state_version,
+      working_revision: input.working_revision, step_index: input.step_index,
+      interpretation: { player_goal: input.root_player_action,
+        grounded_attempt: input.remaining_intent,
+        ...mappings.available_container_access.interpretation },
+      resolution: mappings.available_container_access.resolution,
+      goal_result: mappings.available_container_access.goal_result,
+      activity: mappings.available_container_access.activity,
+      operations: [candidate], check: mappings.available_container_access.check,
+      continuation: null, clarification: null,
+      reason_code: 'container_access', reason: 'Открываю доступный контейнер.'
+    }, { request: input }).ok, true);
+    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching operation object copied unchanged[\s\S]*activity is domain, check is null/u);
+  }
+});
+
 test('turn step planner maps local fire only through its visible capability', async () => {
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({

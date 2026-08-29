@@ -142,7 +142,7 @@ test('turn step planner prompt maps optional prepared followup without forcing i
       remaining_intent: 'сделать несвязанное действие',
       prepared_followup_candidates: [candidate]
     }));
-    assert.match(prompt, /current operation matches its precursor_operation[\s\S]*operation semantically matches next uncovered intent[\s\S]*unrelated continuation or another precursor has no prepared_followup_ref/u);
+    assert.match(prompt, /current operation matches its precursor_operation[\s\S]*operation semantically covers all continuation\.remaining_intent[\s\S]*every later clause or sentence[\s\S]*any intent remains uncovered[\s\S]*prepared_followup_ref is null/u);
     assert.equal(prompt.includes(JSON.stringify(candidate)), true);
     assert.equal(prompt.includes(JSON.stringify([{
       remaining_intent: '<copy next uncovered intent>',

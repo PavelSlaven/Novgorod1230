@@ -463,6 +463,9 @@ test('Turn 10 rejects an unsupported second plan chosen from current state',
       }),
       turnStepModel(request) {
         const semantic = turn10StepPlan(request, contracts);
+        if (request.step_index === 1) semantic.continuation = {
+          ...semantic.continuation, prepared_followup_ref: null
+        };
         if (request.step_index === 2) {
           semantic.operations = [{
             op: 'request_activity',

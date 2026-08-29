@@ -89,14 +89,14 @@ function preparedFollowupPrompt(candidates) {
   return [
     'prepared_followup_candidates is a closed code-owned mapping:',
     JSON.stringify(candidates),
-    'Select a candidate only if the plan current operation matches its precursor_operation and its operation semantically matches next uncovered intent; an unrelated continuation or another precursor has no prepared_followup_ref.',
+    'Select a candidate only if the plan current operation matches its precursor_operation and its operation semantically covers all continuation.remaining_intent, including every later clause or sentence; if any intent remains uncovered, prepared_followup_ref is null.',
     'When selected, copy its prepared_followup_ref exactly alongside remaining_intent and depends_on_refs in the complete continuation object:',
     JSON.stringify(candidates.map(({ prepared_followup_ref }) => ({
       remaining_intent: '<copy next uncovered intent>',
       depends_on_refs: ['<copy only required player-safe refs>'],
       prepared_followup_ref
     }))),
-    'This marker neither reserves nor executes it; next step is independently planned and revalidated. Never invent a marker.'
+    'This marker preserves only this exact candidate for a later current-state admission; it neither reserves nor executes it. Never invent a marker.'
   ].join(' ');
 }
 /** Server-only O1 role: its request is built from committed enablement data. */

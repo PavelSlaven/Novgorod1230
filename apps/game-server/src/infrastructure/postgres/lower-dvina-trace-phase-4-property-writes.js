@@ -123,7 +123,7 @@ export function appendApprovedRatshaKnife({ updates, state, next, n, partyId,
       ratsha_storehouse_helper: contracts.actors.ratsha_storehouse_helper.instance_id,
       trace_ld_v1_audience_slot_participating_fisher: n.participating_fisher_id
     },
-    items: state.items,
+    items: committedInventory.items,
     item_profiles: committedInventory.item_profiles,
     item_placements: committedInventory.item_placements,
     containers: committedInventory.containers,

@@ -57,6 +57,13 @@ test('surrender keeps an unspecified knife carry position', async () => {
   const fixture = phase4ArrivalState();
   const state = structuredClone(fixture.state);
   const contracts = structuredClone(fixture.contracts);
+  state.items.push({
+    item_id: 'retired-water-portion',
+    template_id: 'trace_ld_v1_item_player_water_portion',
+    condition_state: 'retired',
+    placement: { anchor_id: state.position.g5_anchor_id },
+    ownership: {}
+  });
   delete contracts.knifeTransition.requires.physical_position;
   delete contracts.knifeTransition.requires.accessibility;
   delete contracts.knifeTransition.writes.physical_position;

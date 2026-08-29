@@ -36,6 +36,21 @@ test('zero-time invalidation reaches prepared commit admission and replay',
       .event_kind, 'combat_intent_invalidated');
   });
 
+test('player-started prepared combat admits an empty prior session', async () => {
+  const fixture = preparedCombatStart();
+  const owner = createLowerDvinaTracePreparedDomainEffect({
+    committedState: fixture.state
+  });
+  await assert.doesNotReject(() => owner.apply({
+    command_id: COMBAT_RESPONSE_COMMAND,
+    consequence: fixture.envelope.consequence,
+    prepared_chain_context: { prior_effect_count: 0 },
+    operation: { op: 'request_combat' }, availability: { available: true },
+    working_projection: {}
+  }));
+  assert.doesNotThrow(() => validatePreparedEffectCommit(fixture));
+});
+
 test('terminal prepared combat admits no player response boundary', async () => {
   const fixture = preparedCombat({ exchange: formalExchange(),
     duration: 2, status: 'ended', playerBoundary: false });
@@ -212,11 +227,20 @@ function preparedCombat({ exchange, duration, status, playerBoundary }) {
   return preparedConsequence(consequence, playerBoundary);
 }
 
+function preparedCombatStart() {
+  const session = { combat_id: 'combat-1', status: 'paused_for_player',
+    player_response_required: true };
+  return preparedConsequence({ combat_kind: 'start', phase8_kind: 'combat_start',
+    duration_minutes: 0, combat_initialization: { session,
+      decision_records: [] } }, true);
+}
+
 function preparedConsequence(consequence, playerBoundary) {
   const duration = consequence.duration_minutes;
   const clockBefore = at(10), clockAfter = at(10 + duration);
   const body = { health: 100, energy: 100, satiety: 100 };
-  const sessionBefore = consequence.combat.session_before;
+  const sessionBefore = consequence.combat?.session_before
+    ?? consequence.combat_initialization?.session;
   const ledger = buildTurnStepPreparedEffectLedger({
     rootTurnId: 'turn:party-1:1', committedStateVersion: 7,
     effects: [{ effect: { step_index: 1, effect_kind: 'domain_command',
@@ -238,7 +262,8 @@ function preparedConsequence(consequence, playerBoundary) {
       player_response_boundary: playerBoundary,
       approved_plan: { resolution: 'domain_request',
         operations: [{ op: 'request_combat' }] },
-      plan_request: { player_safe_state: { combat_sessions: [sessionBefore],
+      plan_request: { player_safe_state: { combat_sessions:
+        consequence.combat_kind === 'start' ? [] : [sessionBefore],
         clock: clockBefore } } }] } };
   return { batch: { root_turn_id: 'turn:party-1:1',
     committed_state_version: 7 }, envelope, factual: {

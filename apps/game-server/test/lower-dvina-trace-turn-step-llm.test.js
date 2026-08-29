@@ -119,9 +119,15 @@ test('turn step planner maps local fire only through its visible capability', as
     player_safe_state: { local_world_process: {
       semantic_grounding_available: true,
       ignition_basis_refs: ['item:firesteel'],
-      active_process_refs: ['fire:active'] }, items: [{ item_id: 'item:water' }] }
+      active_process_refs: ['fire:active'], allowed: [{
+        op: 'request_world_process', actor_ref: 'actor_mikula',
+        process_action: 'affect', process_ref: 'fire:active',
+        process_kind: 'fire', source_refs: ['item:water'], target_refs: [],
+        description: 'Воздействовать на огонь.' }] },
+      items: [{ item_id: 'item:water' }] }
   }));
   assert.match(prompt, /local_world_process\.semantic_grounding_available/u);
+  assert.match(prompt, /matching candidate[\s\S]*MUST return a[\s\S]*domain_request plan[\s\S]*exactly that candidate unchanged[\s\S]*never return a direct plan/u);
   assert.match(prompt, /local_world_process_affect/u);
   assert.match(prompt, /one visible whole water ref/u);
   assert.match(prompt, /Do not emit request_world_process otherwise/u);

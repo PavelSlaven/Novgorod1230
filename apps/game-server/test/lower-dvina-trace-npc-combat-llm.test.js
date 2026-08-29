@@ -27,7 +27,15 @@ test('combat model uses the registered decider and repair roles', async () => {
       '"scope_ref":null',
       '"destination_ref":null',
       'Copy intent_kind, force_limit, risk_posture,',
-      'candidate sets; never invent, rename, or combine closed values/refs.'
+      'candidate sets; never invent, rename, or combine closed values/refs.',
+      'Set refs only for selected intent_kind:',
+      'engage/control need exactly',
+      'protect needs empty',
+      'hold needs only scope_ref;',
+      'reach needs only destination_ref;',
+      'break_contact may use only destination_ref;',
+      'surrender/cease_hostility',
+      'Never put a ref in protected_refs for hold.'
     ]) assert.equal(prompt.includes(phrase), true, phrase);
   }
 });

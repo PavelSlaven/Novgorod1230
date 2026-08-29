@@ -1,84 +1,29 @@
 import { isDeepStrictEqual } from 'node:util';
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { turnFailure } from './errors.js';
-import { requestTurnStepPlan } from './turn-step-contracts.js';
-import {
-  executeTurnStepActorStep,
-  TURN_STEP_DIRECT_OPERATIONS,
-  TURN_STEP_DOMAIN_OPERATIONS
-} from './turn-step-actor-step.js';
+import { executeTurnStepActorStep } from './turn-step-actor-step.js';
 import {
   buildTurnStepPreparedChainContext,
   buildTurnStepPreparedEffectLedger
 } from './turn-step-prepared-effects.js';
+import {
+  createTurnStepExecutionRegistry,
+  requireTurnStepExecutionRegistry
+} from './turn-step-execution-registry.js';
+import {
+  requestAndValidateTurnStepPlan,
+  requestTurnStepPlanWithRepair
+} from './turn-step-plan-repair.js';
 
-const DIRECT_OPS = new Set(TURN_STEP_DIRECT_OPERATIONS);
-const DOMAIN_OPS = new Set(TURN_STEP_DOMAIN_OPERATIONS);
-const executionRegistries = new WeakSet();
-export function createTurnStepExecutionRegistry({
-  direct = {},
-  domain = {},
-  applySemanticActivity = null,
-  operationContract = {}
-} = {}) {
-  const directHandlers = handlers(direct, DIRECT_OPS, 'direct');
-  const domainHandlers = handlers(domain, DOMAIN_OPS, 'domain');
-  if (applySemanticActivity != null
-      && typeof applySemanticActivity !== 'function') {
-    throw new TypeError('applySemanticActivity must be a function.');
-  }
-  const contract = normalizeOperationContract(
-    operationContract, directHandlers, domainHandlers
-  );
-  const registry = Object.freeze({
-    direct(operation) {
-      return directHandlers.get(operation?.op) ?? null;
-    },
-    domain(operation) {
-      return domainHandlers.get(operation?.op) ?? null;
-    },
-    semanticActivity() {
-      return applySemanticActivity;
-    },
-    operationContract() {
-      return structuredClone(contract);
-    }
-  });
-  executionRegistries.add(registry);
-  return registry;
-}
-
-function normalizeOperationContract(value, directHandlers, domainHandlers) {
-  if (!plain(value)) {
-    throw new TypeError('operationContract must be a JSON object.');
-  }
-  const output = {};
-  for (const [operation, descriptor] of Object.entries(value)) {
-    const registered = directHandlers.has(operation)
-      || domainHandlers.has(operation);
-    if (!registered || !plain(descriptor)) {
-      throw new TypeError(
-        `Operation contract requires a registered handler: ${operation}.`
-      );
-    }
-    try {
-      output[operation] = structuredClone(descriptor);
-    } catch {
-      throw new TypeError(
-        `Operation contract descriptor must be cloneable: ${operation}.`
-      );
-    }
-  }
-  return deepFreeze(output);
-}
-
-export function requireTurnStepExecutionRegistry(registry) {
-  return requireRegistry(registry);
-}
+export {
+  createTurnStepExecutionRegistry,
+  requireTurnStepExecutionRegistry
+};
+export { requestTurnStepPlanWithRepair };
 
 export async function runTurnStepLoop(input = {}, ports = {}) {
   const identity = normalizeInput(input);
-  const registry = requireRegistry(ports.executionRegistry);
+  const registry = requireTurnStepExecutionRegistry(ports.executionRegistry);
   requireFunction(ports.turnStepModel, 'TURN_STEP_MODEL_MISSING',
     'turnStepModel');
   requireFunction(ports.projectPlayerSafeState,
@@ -399,63 +344,6 @@ function sameJson(left, right) {
   return isDeepStrictEqual(left, right);
 }
 
-export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
-  semanticPlanValidator = null,
-  preparedChainContext = null,
-  allowRepair = true
-}) {
-  try {
-    return {
-      plan: await requestAndValidateTurnStepPlan({ request, turnStepModel,
-        semanticPlanValidator, preparedChainContext }),
-      repaired: false
-    };
-  } catch (error) {
-    if (error?.code !== 'TURN_STEP_PLAN_INVALID') throw error;
-    if (allowRepair !== true) {
-      error.details = deepFreeze({
-        ...error.details,
-        repair_attempted: false,
-        repair_suppressed: 'prepared_effect_chain_active'
-      });
-      throw error;
-    }
-    const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
-      attempt: 2,
-      structural_errors: structuredClone(error.details?.errors ?? [])
-    });
-    try {
-      return {
-        plan: await requestAndValidateTurnStepPlan({
-          request,
-          turnStepModel: (safeRequest) =>
-            turnStepModel(safeRequest, repairContext),
-          semanticPlanValidator,
-          preparedChainContext
-        }),
-        repaired: true
-      };
-    } catch (repairError) {
-      if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
-        repairError.details = deepFreeze({
-          ...repairError.details,
-          repair_attempted: true
-        });
-      }
-      throw repairError;
-    }
-  }
-}
-
-async function requestAndValidateTurnStepPlan({ request, turnStepModel,
-  semanticPlanValidator, preparedChainContext }) {
-  const plan = await requestTurnStepPlan({ request, turnStepModel });
-  if (typeof semanticPlanValidator === 'function') {
-    await semanticPlanValidator(deepFreeze({ plan, request: structuredClone(request),
-      prepared_chain_context: structuredClone(preparedChainContext) }));
-  }
-  return plan;
-}
 function initialPreparedChainContext(value) {
   if (value == null) return null;
   return buildTurnStepPreparedChainContext({ priorEffectCount: 0,
@@ -544,27 +432,6 @@ function normalizeInput(input) {
     maxInternalSteps,
     actor: deepFreeze(cloneObject(input.actor, 'TURN_STEP_LOOP_INPUT_INVALID'))
   };
-}
-
-function handlers(value, allowed, label) {
-  const entries = value instanceof Map ? [...value.entries()]
-    : Object.entries(value ?? {});
-  const result = new Map();
-  for (const [name, handler] of entries) {
-    if (!allowed.has(name) || typeof handler !== 'function') {
-      throw new TypeError(`Invalid ${label} step handler: ${name}.`);
-    }
-    result.set(name, handler);
-  }
-  return result;
-}
-
-function requireRegistry(registry) {
-  if (!executionRegistries.has(registry)) {
-    throw turnFailure('TURN_STEP_EXECUTION_REGISTRY_INVALID',
-      'Execution registry must be created by its factory.');
-  }
-  return registry;
 }
 
 function requireFunction(value, code, label) {

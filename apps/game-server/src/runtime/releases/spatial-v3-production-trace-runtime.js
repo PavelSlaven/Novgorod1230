@@ -200,9 +200,6 @@ export function createTraceRandomSourceFactory({ env = {} } = {}) {
         schema: 'rus.lower_dvina_trace_public_playtest_rng_identity.v1',
         scenario_seed: scenarioSeed,
         request_id: identity.request_id,
-        ...(identity.decision_boundary_id == null ? {} : {
-          decision_boundary_id: identity.decision_boundary_id
-        }),
         ...(identity.check_profile_ref == null ? {} : {
           check_profile_ref: identity.check_profile_ref
         })

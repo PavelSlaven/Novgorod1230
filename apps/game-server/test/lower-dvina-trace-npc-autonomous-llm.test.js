@@ -111,6 +111,28 @@ test('autonomous prompt maps supplied world-process and generic-check values', a
   })), true);
 });
 
+test('autonomous adapter applies general difficulty guidance to an unseen routine attempt', async () => {
+  let call;
+  const output = { schema: 'npc_step_plan_v1', resolution: 'generic_check',
+    check: { purpose: 'разобрать обычный близкий звук',
+      attribute_ref: 'attention', skill_ref: null, difficulty_id: 'ordinary' } };
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run(next) { call = next; return { output }; } }
+  });
+  const plan = await model({ ...request, root_turn_id: 'turn-unseen',
+    boundary_id: 'boundary-unseen', committed_state_version: 2,
+    working_revision: 0, decision_index: 1,
+    decision_reasons: { perceived_changes: ['слышен обычный близкий звук'] },
+    decision_scope: { allowed_attribute_refs: ['attention'],
+      allowed_skill_refs: [], operation_contract: {} } });
+  const prompt = call.messages[0].content;
+  assert.equal(prompt.includes('routine feasible task with no stated external obstacle is ordinary'), true);
+  assert.equal(prompt.includes('разобрать обычный близкий звук'), false);
+  assert.equal(JSON.parse(call.messages[1].content).decision_reasons
+    .perceived_changes[0], 'слышен обычный близкий звук');
+  assert.equal(plan.check.difficulty_id, 'ordinary');
+});
+
 test('autonomous prompt forbids generic check without attribute refs', async () => {
   const calls = [];
   const model = createLowerDvinaTraceNpcAutonomousModel({

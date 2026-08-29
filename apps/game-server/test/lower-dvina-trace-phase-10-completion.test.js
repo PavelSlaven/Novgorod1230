@@ -282,6 +282,53 @@ test('expired deadline during pending replay returns committed pending result',
     assert.equal(screenWrites, 0);
 });
 
+test('pending replay rethrows unexpected repository and contract failures',
+  async () => {
+    const input = { request_id: 'turn-request-unexpected',
+      idempotency_key: 'turn-idem-unexpected', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1', ...input });
+    const state = phase9State();
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const screen = { screen_status: 'committed_presentation_pending',
+      party_id: 'party-1', turn_id: 'turn-unexpected', turn_number: 7,
+      current_projection_anchor: { committed_state_version: 25,
+        package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+    const publicResult = { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition',
+      screen: structuredClone(screen) };
+    const replay = { input_digest: inputDigest, state,
+      public_result: publicResult, screen };
+    const failures = [{ source: 'repository', error: Object.assign(
+      new Error('database unavailable'), { code: 'DATABASE_UNAVAILABLE' }) },
+    { source: 'contract', error: Object.assign(
+      new Error('phase 10 contract invalid'),
+      { code: 'TRACE_PHASE_10_CONTRACT_INVALID' }) }];
+
+    for (const failure of failures) {
+      const runtime = createLowerDvinaTracePhase2Runtime({
+        repository: {
+          async loadPhase2Replay() { return structuredClone(replay); },
+          async commitPhase10FollowUp() {
+            if (failure.source === 'repository') throw failure.error;
+          },
+          async loadPhase2State() { throw new Error('unexpected load'); },
+          async commitPhase2Turn() { throw new Error('unexpected commit'); },
+          async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+          async persistPhase2Screen() { throw new Error('unexpected screen'); }
+        },
+        semanticResolver: async () => ({}), narrator: { async run() {} },
+        randomSourceFactory: () => ({}), decisionSecret: 'secret',
+        bundleLoader: async () => {
+          if (failure.source === 'contract') throw failure.error;
+          return bundle;
+        }
+      });
+      await assert.rejects(runtime.submitTurn({ partyId: 'party-1', input }),
+        (actual) => actual === failure.error, failure.source);
+    }
+  });
+
 test('pending replay requires complete matching committed anchors', () => {
   const state = phase9State();
   state.last_turn.idempotency_key = 'turn-idem-8';

@@ -27,25 +27,34 @@ test('turn budget clamps calls, preserves lower override, and isolates contexts'
 test('repair claim is bounded per request, atomic, and shared by nested turn context', async () => {
   const budget = createLlmTurnBudget();
   await budget.runTurn(async () => {
-    assert.deepEqual(budget.claimRepair({ requestIdentity: 'step-1' }),
-      { request_identity: 'step-1' });
-    assert.deepEqual(budget.claimRepair({ requestIdentity: 'step-2' }),
-      { request_identity: 'step-2' });
+    assert.deepEqual(budget.claimRepair({ requestIdentity: 'step-1',
+      repairKind: 'format' }),
+    { request_identity: 'step-1', repair_kind: 'format' });
+    assert.deepEqual(budget.claimRepair({ requestIdentity: 'step-1',
+      repairKind: 'semantic' }),
+    { request_identity: 'step-1', repair_kind: 'semantic' });
+    assert.deepEqual(budget.claimRepair({ requestIdentity: 'step-2',
+      repairKind: 'format' }),
+    { request_identity: 'step-2', repair_kind: 'format' });
     await budget.runTurn(async () => {
-      assert.throws(() => budget.claimRepair({ requestIdentity: 'step-1' }),
+      assert.throws(() => budget.claimRepair({ requestIdentity: 'step-1',
+        repairKind: 'format' }),
         { code: 'LLM_TURN_REPAIR_ALREADY_CLAIMED' });
     });
   });
   await budget.runTurn(async () => {
     const claims = await Promise.allSettled([
-      Promise.resolve().then(() => budget.claimRepair({ requestIdentity: 'step-3' })),
-      Promise.resolve().then(() => budget.claimRepair({ requestIdentity: 'step-3' }))
+      Promise.resolve().then(() => budget.claimRepair({ requestIdentity: 'step-3',
+        repairKind: 'format' })),
+      Promise.resolve().then(() => budget.claimRepair({ requestIdentity: 'step-3',
+        repairKind: 'format' }))
     ]);
     assert.equal(claims.filter(({ status }) => status === 'fulfilled').length, 1);
     assert.equal(claims.filter(({ reason }) => reason?.code
       === 'LLM_TURN_REPAIR_ALREADY_CLAIMED').length, 1);
   });
-  assert.equal(budget.claimRepair({ requestIdentity: 'step-3' }), null);
+  assert.equal(budget.claimRepair({ requestIdentity: 'step-3',
+    repairKind: 'format' }), null);
 });
 
 test('registered gameplay repair roles and explicit ordinary repair marker claim budget', async () => {
@@ -85,6 +94,8 @@ test('same-role repairs for independent requests execute and duplicate request i
     })), (error) => {
       assert.equal(error.code, 'LLM_TURN_REPAIR_ALREADY_CLAIMED');
       assert.equal(error.request_identity, 'decision-2');
+      assert.equal(error.repair_kind,
+        'npc_autonomous_decider_format_repair');
       return true;
     });
   });

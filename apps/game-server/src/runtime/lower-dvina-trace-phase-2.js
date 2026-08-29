@@ -80,7 +80,7 @@ export function createLowerDvinaTracePhase2Runtime({
             return repository.replayPhase2Turn
               ? repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
               : replay.public_result;
-          } catch (error) {
+          } catch (error) { if (!isExpectedPostCommitPresentationFailure(error)) throw error;
             const pending = committedPendingReplayResult({
               partyId, idempotencyKey, inputDigest, replay
             });

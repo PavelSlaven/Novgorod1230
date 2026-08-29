@@ -1,10 +1,14 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { executeCheck } from '@rus/checks-rng';
+import { createTraceRandomSourceFactory } from '../../apps/game-server/src/runtime/releases/spatial-v3-production-trace-runtime.js';
 import { startLocalPlay } from './local-play.js';
 
 const SCENARIO_ID = 'lower_dvina_trace_v1';
+export const PUBLIC_PLAYTEST_BRANCH = 1;
 const REQUIRED_ROLES = Object.freeze(['player_conversation_interpreter', 'npc_conversation_responder', 'npc_autonomous_decider', 'npc_combat_decider', 'ordinary_materialization', 'world_process_step']);
 const AUTHORITATIVE_TURN_CEILING_MS = 30_000;
 const IMPOSSIBLE_DOMAIN_REJECTION_TEST = 'apps/game-server/test/lower-dvina-trace-turn-step-llm.test.js#impossible jump and absent spaceship plans stay grounded model contracts/jump';
@@ -20,10 +24,11 @@ export const PUBLIC_PLAYTEST_MANIFEST = Object.freeze([
 ]);
 export const IMPOSSIBLE_PROBE = Object.freeze(entry('impossible-jump', 'impossible_domain', 'Прыгну очень высоко и осмотрю окрестности как птица', { expectedFailure: true }));
 
-export async function runPublicPlaytest({ start = startLocalPlay, fetchImpl = fetch, manifest = PUBLIC_PLAYTEST_MANIFEST, impossibleProbe = IMPOSSIBLE_PROBE, now = () => Date.now(), git = gitState, branch = 0, createRunIdentity = () => `public-playtest-run:${randomUUID()}`, log = console.log, stop = stopOwnedServer } = {}) {
+export async function runPublicPlaytest({ start = startLocalPlay, fetchImpl = fetch, manifest = PUBLIC_PLAYTEST_MANIFEST, impossibleProbe = IMPOSSIBLE_PROBE, now = () => Date.now(), git = gitState, branch = PUBLIC_PLAYTEST_BRANCH, createRunIdentity = () => `public-playtest-run:${randomUUID()}`, log = console.log, stop = stopOwnedServer } = {}) {
   assertManifest(manifest);
   const gitSnapshot = requireCleanGitSnapshot(git());
   const scenarioSeed = playtestSeed(branch);
+  preflightPublicPlaytestSeed(branch);
   const runIdentity = text(createRunIdentity());
   if (!runIdentity) throw new TypeError('createRunIdentity must return a non-empty identity.');
   const local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true',
@@ -70,6 +75,76 @@ function isPendingPresentation(response) { return publicSummary(response).screen
 function assertCurrentCatalog(catalog) { const scenarios = catalog?.scenarios; if (!Array.isArray(scenarios) || scenarios.length !== 1 || scenarios[0]?.scenario_id !== SCENARIO_ID || scenarios[0]?.available !== true) throw gateError('PUBLIC_CATALOG_INVALID', 'Public catalog is not exactly current scenario.'); }
 function assertManifest(manifest) { if (!Array.isArray(manifest) || manifest.length < 20 || manifest.length > 30 || new Set(manifest.map((turn) => turn.id)).size !== manifest.length) throw new TypeError('Manifest must contain 20–30 uniquely named turns.'); }
 function playtestSeed(branch) { const value = Number(branch); if (!Number.isInteger(value) || value < 0) throw new TypeError('branch must be a non-negative integer.'); return `public-playtest:${SCENARIO_ID}:branch:${value}`; }
+export function preflightPublicPlaytestSeed(branch = PUBLIC_PLAYTEST_BRANCH) {
+  const scenarioSeed = playtestSeed(branch), randomSourceFactory =
+    createTraceRandomSourceFactory({ env: { RUS_DEVELOPER_MODE: 'true',
+      RUS_PUBLIC_PLAYTEST_SCENARIO_SEED: scenarioSeed } });
+  const profiles = seedProfiles(), player = profiles.player;
+  const activity = (turnId, checkId, identity = {}) => {
+    const profile = profiles.activity.get(checkId);
+    if (!profile) throw new TypeError(`Missing playtest check profile: ${checkId}`);
+    return seededCheck(turnId, scenarioSeed, randomSourceFactory, {
+      check_id: checkId, difficulty: profile.dc,
+      attribute_value: player.attributes[profile.attribute].value,
+      skill_bonus: player.skills[profile.skill].bonus,
+      state_modifier: profile.modifiers.state,
+      equipment_modifier: profile.modifiers.item_or_evidence,
+      circumstance_modifier: profile.modifiers.circumstance
+    }, identity);
+  };
+  const combatProfile = profiles.combat;
+  const combat = ['combat', 'combat-followup-1', 'combat-followup-2'].map(
+    (turnId) => seededCheck(turnId, scenarioSeed, randomSourceFactory, {
+      check_id: combatProfile.check_profile_ref,
+      difficulty: combatProfile.check_request.target_defense,
+      attribute_value: combatProfile.check_request.attribute_value,
+      skill_bonus: combatProfile.check_request.skill_bonus,
+      equipment_modifier: combatProfile.check_request.equipment_modifier
+    }));
+  const gates = [{ gate_id: 'inspect', results: [activity('inspect',
+    'trace_ld_v1_check_detailed_wreck_inspection')] },
+  { gate_id: 'clue', results: [activity('clue',
+    'trace_ld_v1_check_eremey_cooperation')] },
+  { gate_id: 'surrender', results: [activity('surrender',
+    'trace_ld_v1_check_ratsha_surrender_attempt', {
+      check_profile_ref: profiles.social.profile_id })] },
+  { gate_id: 'treatment', results: [activity('treatment',
+    'trace_ld_v1_check_risky_first_aid')], anyOutcome: true },
+  { gate_id: 'combat', results: combat }].map(
+    ({ anyOutcome = false, ...gate }) => ({ ...gate,
+      pass: anyOutcome || gate.results.some((result) => result.outcome.success) }));
+  const failed = gates.filter(({ pass }) => !pass);
+  if (failed.length) throw gateError('PUBLIC_PLAYTEST_SEED_INCAPABLE',
+    `seed cannot pass required stochastic gates: ${failed.map(({ gate_id }) => gate_id).join(', ')}`,
+    { scenario_seed: scenarioSeed, gates });
+  return Object.freeze({ scenario_seed: scenarioSeed, gates: Object.freeze(gates) });
+}
+function seededCheck(turnId, scenarioSeed, randomSourceFactory, request,
+  identity = {}) {
+  return executeCheck(request, randomSourceFactory({
+    request_id: `${scenarioSeed}:${turnId}`, ...identity
+  }));
+}
+let loadedSeedProfiles;
+function seedProfiles() {
+  if (loadedSeedProfiles) return loadedSeedProfiles;
+  const root = resolve(import.meta.dirname, '../..');
+  const read = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
+  const activity = read('data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/activity-check-consequence-profiles.json');
+  const player = read('data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/player-profile.json');
+  const bindings = read('data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m5-content/turn-step-bindings.json');
+  const conversation = read('data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/conversation-semantic-bindings.json');
+  loadedSeedProfiles = { player,
+    activity: new Map(activity.check_profiles.map((profile) => [profile.check_id, profile])),
+    social: conversation.npc_social_check_profiles.find(({ actor_ref }) =>
+      actor_ref === 'ratsha_storehouse_helper'),
+    combat: bindings.player_execution_profiles.find(({ profile_id }) =>
+      profile_id === 'trace_ld_v1_combat_player_control') };
+  if (!loadedSeedProfiles.social || !loadedSeedProfiles.combat) {
+    throw new TypeError('Missing playtest check profile.');
+  }
+  return loadedSeedProfiles;
+}
 function publicEvidence(expected, data) { const context = data?.screen?.visible_context ?? {}; const changes = context.visible_changes ?? []; if (!expected) return { expected: null, pass: true }; if (expected === 'blue_wool_found') return { expected, pass: (context.visible_objects ?? []).some((object) => text(object?.entity_ref?.entity_id).endsWith(':blue-wool')) }; if (expected === 'route_to_shed_disclosed') return { expected, pass: (context.known_context ?? []).some((line) => text(line).includes('путь к сушильне')) }; if (expected === 'onisim_treatment_completed') return { expected, pass: ['onisim_stabilized_unable_to_walk', 'onisim_first_aid_completed_without_stabilization'].some((marker) => changes.includes(marker)) }; const marker = { onisim_found: 'onisim_found_alive', ratsha_surrendered: 'ratsha_surrendered', onisim_carried: 'onisim_carried_to_camp_committed' }[expected]; if (!marker) throw new TypeError(`Unknown public evidence predicate: ${expected}`); return { expected, pass: changes.includes(marker) }; }
 function requireCleanGitSnapshot(value) { const snapshot = sanitizeGit(value); if (!/^[a-f0-9]{40}$/u.test(snapshot.head) || snapshot.dirty !== false) throw gateError('PUBLIC_PLAYTEST_GIT_EVIDENCE_INVALID', 'Public playtest requires a clean exact git HEAD.', { schema: 'public_production_playtest_v1', git: snapshot }); return snapshot; }
 function sanitizeGit(value = {}) { return { head: text(value.head), dirty: value.dirty === true ? true : value.dirty === false ? false : null }; }

@@ -21,6 +21,14 @@ test('developer playtest RNG stays stable across unique run identities', () => {
   const second = factory(secondRun);
   assert.equal(first.snapshot().seed_ref, second.snapshot().seed_ref);
   assert.deepEqual([first.next(), first.next()], [second.next(), second.next()]);
+  const socialFirst = factory({ ...firstRun,
+    decision_boundary_id: 'npc-decision:conversation:party:first:ratsha',
+    check_profile_ref: 'ratsha-social' });
+  const socialSecond = factory({ ...secondRun,
+    decision_boundary_id: 'npc-decision:conversation:party:second:ratsha',
+    check_profile_ref: 'ratsha-social' });
+  assert.equal(socialFirst.snapshot().seed_ref, socialSecond.snapshot().seed_ref);
+  assert.equal(socialFirst.next(), socialSecond.next());
 });
 
 test('normal production RNG remains bound to party and idempotency identity', () => {

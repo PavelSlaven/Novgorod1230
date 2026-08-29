@@ -27,7 +27,8 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       const isRepair = repair === true || isRepairRole(role_id, description?.contract);
       let requestTimeoutMs;
       try {
-        if (isRepair) turnBudget?.claimRepair({ requestIdentity: request_identity });
+        if (isRepair) turnBudget?.claimRepair({ requestIdentity: request_identity,
+          repairKind: role_id });
         requestTimeoutMs = turnBudget?.clamp({ requestedTimeoutMs,
           repair: isRepair });
       } catch (error) {

@@ -27,16 +27,20 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       if (current()) return execute();
       const started_at = startedAt;
       return storage.run({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claims: new Set() }, execute);
+        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claims: new Map() }, execute);
     },
-    claimRepair({ requestIdentity = null } = {}) {
+    claimRepair({ requestIdentity = null, repairKind = null } = {}) {
       const turn = current();
       if (!turn) return null;
       const request_identity = String(requestIdentity ?? '').trim();
       if (!request_identity) throw repairIdentityRequired();
-      const claim = Object.freeze({ request_identity });
-      if (turn.repair_claims.has(request_identity)) throw repairClaimed(claim);
-      turn.repair_claims.add(request_identity);
+      const repair_kind = String(repairKind ?? '').trim();
+      if (!repair_kind) throw repairKindRequired();
+      const claim = Object.freeze({ request_identity, repair_kind });
+      const claimedKinds = turn.repair_claims.get(request_identity) ?? new Set();
+      if (claimedKinds.has(repair_kind)) throw repairClaimed(claim);
+      claimedKinds.add(repair_kind);
+      turn.repair_claims.set(request_identity, claimedKinds);
       return claim;
     },
     clamp({ requestedTimeoutMs = null, repair = false } = {}) {
@@ -90,12 +94,19 @@ export function repairClaimed(claim) {
   const error = new Error('Gameplay turn repair budget is already claimed.');
   error.code = 'LLM_TURN_REPAIR_ALREADY_CLAIMED';
   error.request_identity = claim.request_identity;
+  error.repair_kind = claim.repair_kind;
   return error;
 }
 
 function repairIdentityRequired() {
   const error = new Error('Gameplay repair requires an immutable request identity.');
   error.code = 'LLM_TURN_REPAIR_IDENTITY_REQUIRED';
+  return error;
+}
+
+function repairKindRequired() {
+  const error = new Error('Gameplay repair requires a repair boundary kind.');
+  error.code = 'LLM_TURN_REPAIR_KIND_REQUIRED';
   return error;
 }
 

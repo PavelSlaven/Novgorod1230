@@ -1,8 +1,28 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { DETERMINISTIC_PROOFS, IMPOSSIBLE_PROBE, PUBLIC_PLAYTEST_MANIFEST, manifestDigest, roleGate, runPublicPlaytest, sanitizeReport, stopOwnedServer } from '../public-playtest.mjs';
+import { DETERMINISTIC_PROOFS, IMPOSSIBLE_PROBE, PUBLIC_PLAYTEST_MANIFEST, manifestDigest, preflightPublicPlaytestSeed, roleGate, runPublicPlaytest, sanitizeReport, stopOwnedServer } from '../public-playtest.mjs';
 
 test('public playtest manifest is stable 20–30 named turns', () => { assert.equal(PUBLIC_PLAYTEST_MANIFEST.length, 25); assert.equal(new Set(PUBLIC_PLAYTEST_MANIFEST.map((turn) => turn.id)).size, 25); assert.match(manifestDigest(), /^[a-f0-9]{64}$/u); });
+test('default seed passes deterministic causal preflight and branch 0 fails before server start', async () => {
+  let starts = 0;
+  await assert.rejects(() => runPublicPlaytest({ branch: 0, git: cleanGit,
+    start: async () => { starts += 1; return localStart(); } }),
+  { code: 'PUBLIC_PLAYTEST_SEED_INCAPABLE' });
+  assert.equal(starts, 0);
+  let startedEnv;
+  const stop = new Error('stop after preflight');
+  await assert.rejects(() => runPublicPlaytest({ git: cleanGit,
+    start: async ({ env }) => { startedEnv = env; throw stop; } }),
+  (error) => error === stop);
+  assert.equal(startedEnv.RUS_PUBLIC_PLAYTEST_SCENARIO_SEED,
+    'public-playtest:lower_dvina_trace_v1:branch:1');
+  const proof = preflightPublicPlaytestSeed();
+  assert.deepEqual(proof.gates.map(({ gate_id, pass }) => [gate_id, pass]),
+    [['inspect', true], ['clue', true], ['surrender', true],
+      ['treatment', true], ['combat', true]]);
+  assert.deepEqual(proof.gates.map(({ results }) =>
+    results.map(({ roll }) => roll)), [[18], [11], [18], [3], [9, 1, 11]]);
+});
 test('fire affect requires the real world-process role after deterministic start', () => { const [start, affect] = PUBLIC_PLAYTEST_MANIFEST; assert.equal(start.id, 'fire-start'); assert.equal(affect.id, 'fire-affect'); assert.deepEqual(affect.required_role_ids, ['turn_step_planner', 'world_process_step']); });
 test('ordinary narration gates live writer then auditor, never repair', () => { const expected = ['gameplay_narrator', 'gameplay_narrator_auditor']; const ordinary = ['ordinary-use', 'carry'].map((id) => PUBLIC_PLAYTEST_MANIFEST.find((turn) => turn.id === id)); for (const turn of ordinary) assert.deepEqual(turn.required_waterfall, expected); const report = { observed_role_ids: [], turns: [{ turn_id: 'ordinary', scenario_class: 'free_form', status: 200, required_waterfall: expected, role_ids: expected, llm: { turn_duration_ms: 1, aggregate: { repair_calls: 0 }, waterfall: expected.map((role) => ({ role })) } }] }; assert.equal(roleGate(report).gaps.some((gap) => gap.includes('missing live waterfall')), false); report.turns[0].llm.waterfall = report.turns[0].llm.waterfall.slice(0, 1); assert.ok(roleGate(report).gaps.includes('missing live waterfall: ordinary: gameplay_narrator_auditor')); });
 test('repair paths remain deterministic proofs, never live waterfall claims', () => { assert.deepEqual(DETERMINISTIC_PROOFS.map(({ id, proof_kind, test }) => [id, proof_kind, test]), [['narration-audit-failure-before-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-precommit-narration-failure.test.js#required precommit narration failures reject before factual commit'], ['deadline-exhaustion-before-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-budget-boundary.test.js#pre-commit reserve blocks phase 2 repository commit'], ['narration-localized-semantic-repair', 'deterministic_focused_test', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'], ['cross-workflow-gameplay-repairs', 'deterministic_focused_test', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider']]); assert.equal(PUBLIC_PLAYTEST_MANIFEST.some((turn) => turn.required_waterfall?.some((role) => role.includes('repair'))), false); const safe = sanitizeReport({ deterministic_proofs: DETERMINISTIC_PROOFS, gates: { pass: true, gaps: [], live_waterfalls: true, deterministic_proofs: DETERMINISTIC_PROOFS } }); assert.equal(safe.gates.live_waterfalls, true); assert.deepEqual(safe.gates.deterministic_proofs, DETERMINISTIC_PROOFS); assert.equal(JSON.stringify(safe.gates).includes('live_observed'), false); });
@@ -27,7 +47,7 @@ test('consecutive runs keep scenario seed but use unique party and idempotency i
     await assert.rejects(() => runPublicPlaytest({
       manifest: PUBLIC_PLAYTEST_MANIFEST.slice(2),
       git: () => ({ head: head.repeat(40), dirty: false }),
-      branch: 7,
+      branch: 1,
       createRunIdentity: () => `run-${suffix}`,
       start: async ({ env }) => {
         startedEnv = env;
@@ -45,7 +65,7 @@ test('consecutive runs keep scenario seed but use unique party and idempotency i
     });
   }
   const [first, second] = runs;
-  const seed = 'public-playtest:lower_dvina_trace_v1:branch:7';
+  const seed = 'public-playtest:lower_dvina_trace_v1:branch:1';
   assert.equal(first.report.scenario_seed, seed);
   assert.equal(second.report.scenario_seed, seed);
   assert.deepEqual([first.report.run_identity, second.report.run_identity],

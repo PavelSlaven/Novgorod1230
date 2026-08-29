@@ -452,7 +452,9 @@ function buildRuntime({
     now: () => new Date('2026-07-30T08:00:00.000Z')
   });
   const repository = createLowerDvinaTracePhase2PostgresRepository({
-    partyPool: pool, committer
+    partyPool: pool, committer, narrationService: { async run(request) {
+      return approvedNarration(request.request_id);
+    } }
   });
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels({
@@ -568,7 +570,7 @@ function approvedNarration(requestId) {
       action_options: [], used_references: [],
       self_check: { no_new_world_facts: true } },
     final_audit: { version: 1, schema: 'narration_audit', pass: true,
-      concerns: [], evidence: [] }, repair_request: null,
+      concerns: [], evidence: ['visible_context'] }, repair_request: null,
     generation_history: [], audit_history: [], repair_history: [], diagnostics: {} };
 }
 

@@ -5,6 +5,7 @@ import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infra
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3CombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { validateSpatialV3CombinedWritePlan } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-write-plan-validation.js';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { batchInput } from '../../apps/game-server/test/ordinary-materialization-container-batch-plan.test.js';
 const digest = 'a'.repeat(64);
@@ -242,6 +243,64 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
     { verifyApproval: approval }
   );
   assert.equal(forbiddenPortrait.error.code, 'generated_schema_mismatch');
+});
+
+test('P16 seals an approved narration into an initially delivered job', async () => {
+  const base = input();
+  const narration = {
+    party_id: 'p', kind: 'approved_narration',
+    request_id: 'turn-1', package_id: 'visible-cs',
+    package_digest: base.visible_package_envelope.package_digest,
+    text: 'Изменение зафиксировано.',
+    dependency_pins: base.visible_package_envelope.dependency_pins,
+    flow_result: {
+      version: 1, schema: 'narration_flow_result', request_id: 'turn-1',
+      status: 'approved', pass: true,
+      approved_output: { version: 1, schema: 'narration_output',
+        output_id: 'turn-1', prose: 'Изменение зафиксировано.',
+        action_options: [], used_references: [], self_check: {} },
+      final_audit: { version: 1, schema: 'narration_audit', pass: true,
+        concerns: [], evidence: ['visible_context'] },
+      generation_history: [], audit_history: [], repair_history: []
+    }
+  };
+  narration.canonical_digest = computeSpatialV3CanonicalDigest(narration);
+  const built = await buildCombinedWritePlan(input(), {
+    verifyApproval: approval, approveNarration: async () => narration
+  });
+  assert.equal(built.ok, true);
+  const job = built.plan.inserts.find(({ target_table }) =>
+    target_table === 'party_narration_jobs');
+  assert.deepEqual(job.record, {
+    job_id: 'narration-job:visible-cs', party_id: 'p', package_id: 'visible-cs',
+    status: 'delivered',
+    idempotency_key: `presentation:visible-cs:${base.visible_package_envelope.package_digest}`,
+    next_attempt_ordinal: 1, narration_output: narration,
+    output_digest: narration.canonical_digest
+  });
+  assert.equal(validateSpatialV3CombinedWritePlan(built.plan), true);
+  narration.text = 'Подмена.';
+  const rejected = await buildCombinedWritePlan(input(), {
+    verifyApproval: approval, approveNarration: async () => narration
+  });
+  assert.equal(rejected.error.code, 'visible_package_persistence_gap');
+
+  for (const mutate of [
+    (value) => { value.request_id = 'foreign-turn'; },
+    (value) => { value.package_id = 'foreign-package'; },
+    (value) => { value.flow_result.final_audit.version = 2; },
+    (value) => { value.flow_result.final_audit.evidence = []; }
+  ]) {
+    const forged = structuredClone(narration);
+    forged.text = forged.flow_result.approved_output.prose;
+    mutate(forged);
+    const { canonical_digest, ...payload } = forged;
+    forged.canonical_digest = computeSpatialV3CanonicalDigest(payload);
+    const result = await buildCombinedWritePlan(input(), {
+      verifyApproval: approval, approveNarration: async () => forged
+    });
+    assert.equal(result.error.code, 'visible_package_persistence_gap');
+  }
 });
 
 test('P16 builder snapshots outer ordinary plan input without executing accessors', async () => {

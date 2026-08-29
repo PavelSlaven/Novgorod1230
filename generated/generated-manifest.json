@@ -2,28 +2,28 @@
   "command": "npm run docs:generate",
   "files": [
     {
-      "bytes": 41715,
+      "bytes": 42099,
       "path": "generated/module-index.json",
-      "sha256": "e5d60f35777836caaed42eb8c806ff69d9aeca9a353697cb2f30bed9481c0a1b"
+      "sha256": "3243d098daf43d09bdec571ce43b1358ca55fa4296f565cc14916324ca9301d2"
     },
     {
-      "bytes": 39297,
+      "bytes": 39463,
       "path": "generated/schema-reference.json",
-      "sha256": "c4aee2a2deab1bd1b0a1b71edde5ec96df933789fd177c56e3918b467b8cee84"
+      "sha256": "69ee9b05a5c397281b2d3d89882575e1d6f5486756e72de8af17411190db78f5"
     },
     {
-      "bytes": 27076,
+      "bytes": 27185,
       "path": "generated/schema-reference.md",
-      "sha256": "20be5b7c370a78091526dce14b41112646a5409c4b70cd78d87dbae614919d99"
+      "sha256": "9d1600289690866d34906fb86b15938d32ce3edd9d1780f573a517f9b7d96a97"
     },
     {
-      "bytes": 14535,
+      "bytes": 14471,
       "path": "MODULE_INDEX.md",
-      "sha256": "714d1e8063e64e61433bff846370d4570dd10ac528deea459224473492611900"
+      "sha256": "b05a7abdde9a0d132e558989ef4decfe9001b0eabecb01722dc42d7412bf4222"
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "72ea7c92142d2abf0ccf8ba4914e2e0780265f16707d4e97a4fccdf981dff3cf",
+  "input_digest": "afb3ac8a3c6fa0cc6e72fde0d976aaa0cddd0a6abef2ccabc81e8c58ded12fd0",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

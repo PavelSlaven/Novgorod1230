@@ -5,6 +5,11 @@ import {
 } from '@rus/llm-runtime';
 import { isDeepStrictEqual } from 'node:util';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
+import {
+  validateNarrationAudit,
+  validateNarrationOutput,
+  validateNarrationSemanticRepair
+} from '@rus/narration';
 import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
 import {
   validateConversationContributionPlan,
@@ -82,6 +87,19 @@ function validateRoleOutput(fixture, output) {
     case 'combat_weapon_classification':
       try { resolveActionProducedCombatWeaponClass({ classification: output }); return []; }
       catch { return ['validator:combat_weapon_classification']; }
+    case 'narration_output': {
+      const requestId = request?.request_id;
+      const errors = validateNarrationOutput(output).errors;
+      if (requestId && output.output_id !== requestId) errors.push('output_id must match request_id');
+      return errors.length ? ['validator:narration_output'] : [];
+    }
+    case 'narration_audit':
+      return validateNarrationAudit(output, request?.segments?.map(({ segment_id }) => segment_id)).ok
+        ? [] : ['validator:narration_audit'];
+    case 'narration_semantic_repair':
+      return validateNarrationSemanticRepair(output,
+        request?.concerns?.map(({ segment_id }) => segment_id) ?? []).ok
+        ? [] : ['validator:narration_semantic_repair'];
     case undefined: return [];
     default: return [`unknown_validator:${fixture.validator}`];
   }

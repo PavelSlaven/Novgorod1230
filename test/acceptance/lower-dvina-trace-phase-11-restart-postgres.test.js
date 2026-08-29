@@ -143,7 +143,8 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     });
     const ratsha = await startTraceParty(environment, 'phase11-ratsha');
     for (const [id, text] of PHASE11_CANONICAL_TURNS.slice(0, 5)) {
-      await submit(environment, ratsha, `ratsha-${id}`, text);
+      await submit(environment, ratsha, `ratsha-${id}`, text,
+        id === 'surrender' ? { maxFirstRngRoll: 0.29 } : undefined);
     }
     let combatState = await latestState(environment, ratsha);
     assert.equal(combatState.combat_sessions[0].status, 'paused_for_player');
@@ -155,7 +156,7 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     const combatCalls = environment.llm.requests.length;
     await environment.restartRoot();
     await submit(environment, ratsha, 'ratsha-surrender',
-      PHASE11_CANONICAL_TURNS[4][1]);
+      PHASE11_CANONICAL_TURNS[4][1], { maxFirstRngRoll: 0.29 });
     assert.equal(environment.llm.requests.length, combatCalls);
     await submit(environment, ratsha, 'ratsha-combat',
       'Сдержать Ратшу вместе с рыбаками, не убивая его.');
@@ -235,9 +236,9 @@ async function latestState(environment, partyId) {
   )).rows[0].state_payload;
 }
 
-async function submit(environment, partyId, id, rawText) {
+async function submit(environment, partyId, id, rawText, identityOptions) {
   try {
-    const identity = environment.requestIdentity(partyId, id);
+    const identity = environment.requestIdentity(partyId, id, identityOptions);
     return await post(environment,
       `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, {
         ...identity,

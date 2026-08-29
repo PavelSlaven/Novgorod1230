@@ -1,15 +1,8 @@
 import { deepFreeze } from '@rus/kernel';
 import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import {
-  NARRATION_FLOW_RESULT_SCHEMA
-} from './contracts.js';
+import { NARRATION_FLOW_RESULT_SCHEMA } from './contracts.js';
 import { validateNarrationPorts } from './ports.js';
-import {
-  assertNarrationValid,
-  validateNarrationFlowResult,
-  validateNarrationOutput,
-  validateNarrationRequest
-} from './validators.js';
+import { assertNarrationValid, validateNarrationAudit, validateNarrationFlowResult, validateNarrationOutput, validateNarrationRequest, validateNarrationSemanticRepair } from './validators.js';
 
 export async function runNarrationFlow(request, ports, options = {}) {
   assertNarrationValid('narration_request', validateNarrationRequest(request));
@@ -17,75 +10,84 @@ export async function runNarrationFlow(request, ports, options = {}) {
   rejectHidden(request.visible_context, 'visible_context');
   rejectHidden(request.context ?? {}, 'context');
   assertNarrationValid('visible_context', validateVisibleContext(request.visible_context));
-
-  const maxRepairs = Math.min(1, Number(options.maxRepairs ?? request.max_repairs ?? 1));
-  const generationHistory = [];
-  const repairHistory = [];
-
+  const maxFormatRepairs = Math.min(1, Number(options.maxRepairs ?? request.max_repairs ?? 1));
+  const generationHistory = [], repairHistory = [], auditHistory = [];
   let draft = await ports.writer.generate(clone(request));
   generationHistory.push(record('writer', draft));
-
   let errors = outputErrors(draft, request.request_id);
-  if (errors.length && maxRepairs > 0) {
-    draft = await ports.formatRepairer.repair({
-      version: 1,
-      schema: 'narration_format_repair_request',
-      request: clone(request),
-      invalid_output: clone(draft),
-      validation_errors: errors,
-      attempt: 1
-    });
+  if (errors.length && maxFormatRepairs > 0) {
+    draft = await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(request), invalid_output: clone(draft), validation_errors: errors, attempt: 1 });
     repairHistory.push(record('format_repair', draft));
     generationHistory.push(record('format_repairer', draft));
     errors = outputErrors(draft, request.request_id);
   }
-  if (errors.length) {
-    return finish(buildResult({ request, status: 'blocked', generationHistory, repairHistory,
-      diagnostics: { phase: 'output_validation', errors } }));
-  }
-  return finish(buildResult({ request, status: 'approved', draft, generationHistory, repairHistory }));
+  if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'output_validation', errors);
+
+  const segments = segmentProse(draft.prose);
+  const audit = await audited(ports.auditor, request, draft, segments, 'initial');
+  auditHistory.push(record('auditor', audit));
+  const auditErrors = validateNarrationAudit(audit, segmentIds(segments)).errors;
+  if (auditErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
+  if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
+
+  const flaggedIds = [...new Set(audit.concerns.map((concern) => concern.segment_id))];
+  const repair = await ports.semanticRepairer.repair({
+    version: 1,
+    schema: 'narration_semantic_repair_request',
+    visible_context: clone(request.visible_context),
+    style_policy: clone(request.style_policy ?? {}),
+    concerns: clone(audit.concerns),
+    segments: segments.filter((segment) => flaggedIds.includes(segment.segment_id)).map((segment) => ({ ...clone(segment), nearby_context: nearbySegments(segments, segment.segment_id) }))
+  });
+  generationHistory.push(record('semantic_repairer', repair));
+  repairHistory.push(record('semantic_repair', repair));
+  const repairErrors = validateNarrationSemanticRepair(repair, flaggedIds).errors;
+  if (repairErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'semantic_repair_validation', repairErrors);
+  const repaired = { ...draft, prose: reassemble(segments, repair.replacements) };
+  errors = outputErrors(repaired, request.request_id);
+  if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'reassembled_output_validation', errors);
+
+  const finalSegments = segmentProse(repaired.prose);
+  const finalAudit = await audited(ports.auditor, request, repaired, finalSegments, 'final');
+  auditHistory.push(record('auditor', finalAudit));
+  const finalErrors = validateNarrationAudit(finalAudit, segmentIds(finalSegments)).errors;
+  if (finalErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_validation', finalErrors);
+  if (!finalAudit.pass) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_failed', finalAudit.concerns);
+  return approved(request, repaired, finalAudit, generationHistory, repairHistory, auditHistory);
 }
 
 export function createNarrationService(ports, defaults = {}) {
   validateNarrationPorts(ports);
-  return Object.freeze({
-    run(request, options = {}) {
-      return runNarrationFlow({ ...clone(defaults.request ?? {}), ...clone(request) }, ports, { ...defaults.options, ...options });
-    }
-  });
+  return Object.freeze({ run(request, options = {}) { return runNarrationFlow({ ...clone(defaults.request ?? {}), ...clone(request) }, ports, { ...defaults.options, ...options }); } });
 }
 
-function buildResult({ request, status, draft = null, generationHistory, repairHistory, diagnostics = {} }) {
-  return {
-    version: 1,
-    schema: NARRATION_FLOW_RESULT_SCHEMA,
-    request_id: request.request_id,
-    surface: request.surface,
-    status,
-    pass: status === 'approved',
-    approved_output: status === 'approved' ? clone(draft) : null,
-    final_audit: status === 'approved' ? deterministicAudit() : null,
-    repair_request: null,
-    generation_history: clone(generationHistory),
-    audit_history: [],
-    repair_history: clone(repairHistory),
-    diagnostics: { ...clone(diagnostics), repairs_used: repairHistory.filter((entry) => entry.role !== 'route').length }
-  };
-}
-function deterministicAudit() {
-  return {
-    version: 1,
-    schema: 'narration_audit',
-    pass: true,
-    concerns: [],
-    evidence: ['Deterministic schema and visible-only validation passed.']
-  };
+export function segmentProse(prose) {
+  const chunks = String(prose).match(/[^.!?…]+(?:[.!?…]+|$)(?:\s*)/g) ?? [String(prose)];
+  return chunks.filter(Boolean).map((text, index) => ({ segment_id: `s${index + 1}`, prose: text }));
 }
 
-function finish(result) {
-  assertNarrationValid('narration_flow_result', validateNarrationFlowResult(result));
-  return deepFreeze(result);
+function audited(auditor, request, draft, segments, phase) {
+  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
 }
+function nearbySegments(segments, id) {
+  const index = segments.findIndex((segment) => segment.segment_id === id);
+  return [segments[index - 1], segments[index + 1]].filter(Boolean).map(clone);
+}
+function reassemble(segments, replacements) {
+  const byId = new Map(replacements.map((replacement) => [replacement.segment_id, replacement.prose]));
+  return segments.map((segment) => byId.get(segment.segment_id) ?? segment.prose).join('');
+}
+function segmentIds(segments) { return segments.map((segment) => segment.segment_id); }
+function approved(request, draft, audit, generationHistory, repairHistory, auditHistory) {
+  return finish(buildResult({ request, status: 'approved', draft, finalAudit: audit, generationHistory, repairHistory, auditHistory }));
+}
+function blocked(request, generationHistory, repairHistory, auditHistory, phase, errors) {
+  return finish(buildResult({ request, status: 'blocked', generationHistory, repairHistory, auditHistory, diagnostics: { phase, errors: clone(errors) } }));
+}
+function buildResult({ request, status, draft = null, finalAudit = null, generationHistory, repairHistory, auditHistory, diagnostics = {} }) {
+  return { version: 1, schema: NARRATION_FLOW_RESULT_SCHEMA, request_id: request.request_id, surface: request.surface, status, pass: status === 'approved', approved_output: status === 'approved' ? clone(draft) : null, final_audit: status === 'approved' ? clone(finalAudit) : null, repair_request: null, generation_history: clone(generationHistory), audit_history: clone(auditHistory), repair_history: clone(repairHistory), diagnostics: { ...clone(diagnostics), repairs_used: repairHistory.filter((entry) => entry.role !== 'route').length } };
+}
+function finish(result) { assertNarrationValid('narration_flow_result', validateNarrationFlowResult(result)); return deepFreeze(result); }
 function rejectHidden(value, label) {
   const leaks = detectHiddenLeaks(value);
   if (!leaks.length) return;

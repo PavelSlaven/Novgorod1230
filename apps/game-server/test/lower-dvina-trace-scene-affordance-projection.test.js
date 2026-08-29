@@ -70,7 +70,7 @@ function narration() {
     },
     final_audit: {
       version: 1, schema: 'narration_audit', pass: true,
-      concerns: [], evidence: []
+      concerns: [], evidence: ['Grounded.']
     },
     generation_history: [], audit_history: [], repair_history: []
   };

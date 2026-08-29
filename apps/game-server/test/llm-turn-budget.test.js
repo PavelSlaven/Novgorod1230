@@ -24,20 +24,22 @@ test('turn budget clamps calls, preserves lower override, and isolates contexts'
   assert.equal(budget.current(), null);
 });
 
-test('repair claim is single, atomic, and not reset by a nested turn context', async () => {
+test('repair claim is bounded per role, atomic, and not reset by a nested turn context', async () => {
   const budget = createLlmTurnBudget();
   await budget.runTurn(async () => {
     assert.deepEqual(budget.claimRepair({ roleId: 'turn_step_planner_repair' }),
       { role_id: 'turn_step_planner_repair' });
+    assert.deepEqual(budget.claimRepair({ roleId: 'gameplay_narrator_format_repair' }),
+      { role_id: 'gameplay_narrator_format_repair' });
     await budget.runTurn(async () => {
-      assert.throws(() => budget.claimRepair({ roleId: 'gameplay_narrator_format_repair' }),
+      assert.throws(() => budget.claimRepair({ roleId: 'turn_step_planner_repair' }),
         { code: 'LLM_TURN_REPAIR_ALREADY_CLAIMED' });
     });
   });
   await budget.runTurn(async () => {
     const claims = await Promise.allSettled([
       Promise.resolve().then(() => budget.claimRepair({ roleId: 'turn_step_planner_repair' })),
-      Promise.resolve().then(() => budget.claimRepair({ roleId: 'npc_autonomous_decider_format_repair' }))
+      Promise.resolve().then(() => budget.claimRepair({ roleId: 'turn_step_planner_repair' }))
     ]);
     assert.equal(claims.filter(({ status }) => status === 'fulfilled').length, 1);
     assert.equal(claims.filter(({ reason }) => reason?.code
@@ -50,7 +52,8 @@ test('registered gameplay repair roles and explicit ordinary repair marker claim
   for (const roleId of [
     'turn_step_planner_repair', 'player_conversation_interpreter_format_repair',
     'npc_conversation_responder_format_repair', 'npc_autonomous_decider_format_repair',
-    'npc_combat_decider_format_repair', 'gameplay_narrator_format_repair'
+    'npc_combat_decider_format_repair', 'gameplay_narrator_format_repair',
+    'gameplay_narrator_semantic_repair'
   ]) assert.equal(isRepairRole(roleId), true, roleId);
   assert.equal(isRepairRole('ordinary_materialization'), false);
   const budget = createLlmTurnBudget();
@@ -60,13 +63,14 @@ test('registered gameplay repair roles and explicit ordinary repair marker claim
     role_id: 'ordinary_materialization', repair: true }));
 });
 
-test('cross-path gameplay repairs keep one claim and block provider', async () => {
-  for (const { first, second, nested = false } of [
+test('cross-workflow gameplay repairs execute, duplicate repair is blocked before provider', async () => {
+  for (const { first, second, duplicate, nested = false } of [
     { first: 'turn_step_planner_repair', second: 'gameplay_narrator_format_repair' },
     { first: 'player_conversation_interpreter_format_repair',
       second: 'npc_conversation_responder_format_repair' },
     { first: 'npc_autonomous_decider_format_repair',
-      second: 'turn_step_planner_repair', nested: true }
+      second: 'turn_step_planner_repair', nested: true },
+    { first: 'gameplay_narrator_format_repair', second: 'gameplay_narrator_semantic_repair' }
   ]) {
     const calls = [];
     const budget = createLlmTurnBudget();
@@ -77,14 +81,15 @@ test('cross-path gameplay repairs keep one claim and block provider', async () =
       } });
     await budget.runTurn(async () => {
       await runner.run({ scope: 'turn_runtime', role_id: first });
-      const retry = () => runner.run({ scope: 'turn_runtime', role_id: second });
+      await runner.run({ scope: 'turn_runtime', role_id: second });
+      const retry = () => runner.run({ scope: 'turn_runtime', role_id: duplicate ?? second });
       await assert.rejects(nested ? budget.runTurn(retry) : retry(), (error) => {
         assert.equal(error.code, 'LLM_TURN_REPAIR_ALREADY_CLAIMED');
-        assert.equal(error.claimed_repair_role_id, first);
+        assert.equal(error.claimed_repair_role_id, duplicate ?? second);
         return true;
       });
     });
-    assert.equal(calls.length, 1, `${first} → ${second}`);
+    assert.equal(calls.length, 2, `${first} → ${second}`);
   }
 });
 

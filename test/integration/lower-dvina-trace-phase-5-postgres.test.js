@@ -102,7 +102,8 @@ async function runtimePins() {
 function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
   treatmentRandomValue = randomValue, counters = null }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: firstPlayableCommitRecheck, now: () => new Date('2026-07-30T08:00:00.000Z') });
-  const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer });
+  const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer,
+    narrationService: { async run(request) { return narration(request.request_id); } } });
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels();
   const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
@@ -464,7 +465,7 @@ async function resolveTreatmentBoundary(pool, partyId) {
       `event:${partyId}:phase5-interruption:resolved`, partyId]
   );
 }
-function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
+function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible_context'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
 async function waitForPostgres(name) {
   for (let i = 0; i < 30; i += 1) {

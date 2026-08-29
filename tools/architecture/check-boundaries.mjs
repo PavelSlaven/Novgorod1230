@@ -629,11 +629,11 @@ for (const spec of [
 }
 
 const narrationFlowSource = await readFile(join(root, 'packages/narration/src/flow.js'), 'utf8');
-for (const required of ['writer.generate', 'formatRepairer.repair']) {
-  if (!narrationFlowSource.includes(required)) violations.push(`Narration flow is missing explicit port ${required}`);
+for (const required of ['writer.generate', 'formatRepairer.repair', 'auditor.audit', 'semanticRepairer.repair']) {
+  if (!narrationFlowSource.includes(required)) violations.push(`Narration flow is missing required writer, auditor, or repair port ${required}`);
 }
-for (const forbidden of ['auditor.audit', 'seniorWriter.repair', 'seniorAuditor.audit', 'router.route']) {
-  if (narrationFlowSource.includes(forbidden)) violations.push(`Narration flow must not restore LLM auditor/router/senior cascade port ${forbidden}`);
+for (const forbidden of ['seniorWriter.repair', 'seniorAuditor.audit', 'router.route']) {
+  if (narrationFlowSource.includes(forbidden)) violations.push(`Narration flow must not restore LLM router/senior cascade port ${forbidden}`);
 }
 if (!narrationFlowSource.includes('detectHiddenLeaks')) violations.push('Narration flow must enforce hidden leak detection');
 const presentationScreensSource = await readFile(join(root, 'packages/presentation/src/read-models/screens.js'), 'utf8');

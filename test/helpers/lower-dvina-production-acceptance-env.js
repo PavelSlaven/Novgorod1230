@@ -227,7 +227,7 @@ function createAcceptanceIdentityFactory() {
   const next = () => `phase11-runtime-${++ordinal}`;
   return Object.freeze({
     next,
-    requestIdentity(partyId, label) {
+    requestIdentity(partyId, label, { maxFirstRngRoll } = {}) {
       const requiredRolls = /combat|flight/u.test(label) ? 6 : 1;
       const minimumRoll = /combat/u.test(label) ? 0.8 : 0.75;
       for (let attempt = 0; attempt < 100_000; attempt += 1) {
@@ -239,8 +239,11 @@ function createAcceptanceIdentityFactory() {
           idempotency_key: requestId
         });
         const random = createSeededRandomSource(seed);
-        if (Array.from({ length: requiredRolls }, () => random.next())
-          .every((value) => value >= minimumRoll)) {
+        const rolls = Array.from({ length: requiredRolls }, () => random.next());
+        if ((maxFirstRngRoll == null
+          ? rolls[0] >= minimumRoll
+          : rolls[0] <= maxFirstRngRoll)
+          && rolls.slice(1).every((value) => value >= minimumRoll)) {
           return Object.freeze({
             request_id: requestId,
             idempotency_key: requestId

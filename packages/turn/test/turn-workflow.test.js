@@ -144,6 +144,7 @@ test('turn integrates the canonical narration flow and versioned TurnScreen', as
       }
     },
     auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded in visible context.'] }; } },
+    semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [] }; } },
     formatRepairer: { async repair(request) { return request.invalid_output ?? request.prior_output; } },
     seniorWriter: { async repair(request) { return request.prior_output; } },
     seniorAuditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Senior approval.'] }; } },

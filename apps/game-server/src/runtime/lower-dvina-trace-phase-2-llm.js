@@ -199,6 +199,22 @@ export function createLowerDvinaTraceNarrationService({
         'Return only one repaired JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request.request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request.request_id exactly into output_id; do not emit angle brackets literally. Repair JSON shape only; prose, action_options, used_references, and self_check must remain grounded exclusively in request.visible_context.',
         request
       )
+    },
+    auditor: {
+      audit: (request) => runNarrationRole(
+        roleRunner,
+        'gameplay_narrator_auditor',
+        'Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Return exactly {"version":1,"schema":"narration_audit","pass":true|false,"concerns":[],"evidence":[]}; when pass is false, every concern must name one supplied segment_id and explain only an unsupported, contradictory, hidden, or style-violating claim. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.',
+        request
+      )
+    },
+    semanticRepairer: {
+      repair: (request) => runNarrationRole(
+        roleRunner,
+        'gameplay_narrator_semantic_repair',
+        'Return only one narration_semantic_repair JSON object. Repair only supplied flagged segments using their concerns, read-only nearby_context, and player-safe visible_context. Return exactly {"version":1,"schema":"narration_semantic_repair","replacements":[{"segment_id":"<supplied flagged segment_id>","prose":"<replacement>"}]}. Keep every supplied segment_id immutable; return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role.',
+        request
+      )
     }
   });
 }

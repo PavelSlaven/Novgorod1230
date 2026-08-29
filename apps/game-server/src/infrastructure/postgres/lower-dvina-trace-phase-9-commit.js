@@ -51,7 +51,8 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
     contracts: phase9Contracts }), turnStep.writes);
   const builder = createCombinedWritePlanBuilder({ verifyApproval:
     async (candidate) => ({ ok: candidate.party_id === partyId
-      && candidate.operation_kind === `trace_phase_9_${kind}` }) });
+      && candidate.operation_kind === `trace_phase_9_${kind}` }),
+    approveNarration: committer.approveNarration });
   const semantic = factual.consequence.phase9.semantic_exchange;
   const updatedTables = new Set(writes.updates.map(
     ({ target_table: table }) => table));

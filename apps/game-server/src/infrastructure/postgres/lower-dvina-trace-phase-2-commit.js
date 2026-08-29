@@ -172,7 +172,8 @@ export async function commitLowerDvinaTracePhase2({
     partyId, state, factual, visibleEnvelope, writes, nextVersion,
     turnNumber, changeSetId, idemId, inputDigest, contracts,
     turnStepCommit: writePlan.turn_step_commit,
-    localFirePlans: writePlan.local_fire_atomic_write_plans ?? []
+    localFirePlans: writePlan.local_fire_atomic_write_plans ?? [],
+    approveNarration: committer.approveNarration
   });
   const committed = await committer.commit({
     plan: built.plan,
@@ -201,7 +202,7 @@ async function buildP16Plan(input) {
   const {
     partyId, state, factual, visibleEnvelope, writes, turnNumber,
     changeSetId, idemId, inputDigest, contracts, turnStepCommit,
-    localFirePlans
+    localFirePlans, approveNarration
   } = input;
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
@@ -209,7 +210,8 @@ async function buildP16Plan(input) {
       ok: candidate.party_id === partyId
         && candidate.operation_kind === 'trace_wreck_inspection'
         && candidate.canonical_input_digest === canonicalInputDigest
-    })
+    }),
+    approveNarration
   });
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase2:${turnNumber}`,

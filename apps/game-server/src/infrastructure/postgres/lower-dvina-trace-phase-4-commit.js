@@ -34,7 +34,7 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     inputDigest, changeSetId, contracts: phase4Contracts,
     rootTurnId: semanticContext?.rootTurnId,
     workingRevision: semanticContext?.workingRevision });
-  const builder = createCombinedWritePlanBuilder({ verifyApproval: async (candidate) => ({ ok: candidate.party_id === partyId && candidate.operation_kind === 'trace_phase_4_turn' }) });
+  const builder = createCombinedWritePlanBuilder({ verifyApproval: async (candidate) => ({ ok: candidate.party_id === partyId && candidate.operation_kind === 'trace_phase_4_turn' }), approveNarration: committer.approveNarration });
   const context = writePlan.write_targets.find((entry) => entry.target === 'party_visible_context_package')?.value;
   if (!context) throw fail('TRACE_PHASE_4_VISIBLE_CONTEXT_MISSING');
   const visibleEnvelope = phase4VisibleEnvelope({ partyId, nextVersion, turnNumber,

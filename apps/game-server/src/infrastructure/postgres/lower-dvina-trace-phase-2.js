@@ -1,6 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
-import { serverError } from '../../errors.js';
 import { json } from '../../runtime/first-playable/shared.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import { assertPhase2NormalizedRows, phase2IntegrityError,
@@ -37,19 +36,22 @@ import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-co
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
-import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
-export { normalizeJourneyLocation, normalizeJourneyLocationRows } from
-  './lower-dvina-trace-phase-2-journey-location.js';
+import { createLowerDvinaTracePhase2PrecommitNarrationApprover,
+  createLowerDvinaTracePhase2PrecommitNarrationCommitter } from './lower-dvina-trace-phase-2-presentation.js';
+export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
-  committer
+  committer,
+  narrationService
 } = {}) {
   if (!partyPool?.query || !partyPool?.connect
-      || typeof committer?.commit !== 'function') {
+      || typeof committer?.commit !== 'function'
+      || typeof narrationService?.run !== 'function') {
     throw new TypeError(
-      'Phase 2 PostgreSQL repository requires pool and P16 committer.'
+      'Phase 2 PostgreSQL repository requires pool, P16 committer, and narration service.'
     );
   }
+  const narrationApprover = createLowerDvinaTracePhase2PrecommitNarrationApprover({ narrationService });
   async function loadPhase2State(
     partyId,
     { presentationIdempotencyKey = null, turnBudget = null } = {}
@@ -230,20 +232,19 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   async function commitPhase2Turn(input) {
     return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
   }
-
   function commitPorts(turnBudget = null) {
-    if (turnBudget == null) return { loadState: loadCommittablePhase2State,
-      committer };
-    return { loadState: (partyId, options = {}) => loadCommittablePhase2State(
-      partyId, { ...options, turnBudget }),
-    committer: { commit: (input) => committer.commit({ ...input, turnBudget }) } };
+    const loadState = turnBudget == null ? loadCommittablePhase2State :
+      (partyId, options = {}) => loadCommittablePhase2State(
+        partyId, { ...options, turnBudget });
+    return { loadState,
+      committer: createLowerDvinaTracePhase2PrecommitNarrationCommitter({ committer,
+        narrationApprover, turnBudget }) };
   }
   async function loadCommittablePhase2State(...args) {
     return withoutPhase2CurrentVisibleContext(
       await loadPhase2State(...args)
     );
   }
-
   async function persistPhase2Screen({ partyId, inputDigest, result, turnBudget = null }) {
     const anchor = result.commit;
     const narration =

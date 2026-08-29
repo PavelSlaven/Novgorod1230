@@ -19,23 +19,23 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     const { port } = server.address();
     const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
       git: { checkout_sha: 'fixture-sha', dirty: false },
-      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 12 }
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 13 }
     } });
-    assert.equal(report.fixture_count, 22);
-    assert.equal(report.aggregates.total.passed, 22);
+    assert.equal(report.fixture_count, 26);
+    assert.equal(report.aggregates.total.passed, 26);
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 22);
+    assert.equal(report.aggregates.total.scored, 26);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 22);
-    assert.equal(report.aggregates.total.quality_denominator, 22);
-    assert.equal(report.aggregates.total.repairs, 6);
-    assert.equal(report.aggregates.total.input_tokens, 44);
-    assert.equal(report.aggregates.total.output_tokens, 66);
+    assert.equal(report.aggregates.total.automated_passed, 26);
+    assert.equal(report.aggregates.total.quality_denominator, 26);
+    assert.equal(report.aggregates.total.repairs, 8);
+    assert.equal(report.aggregates.total.input_tokens, 52);
+    assert.equal(report.aggregates.total.output_tokens, 78);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
     assert.deepEqual(report.metadata.corpus, {
-      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 12
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 13
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
@@ -45,6 +45,11 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
         hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000 }
     });
     assert.equal(report.results.every(({ config_hash }) => typeof config_hash === 'string' && config_hash.length > 0), true);
+    for (const roleId of ['gameplay_narrator', 'gameplay_narrator_format_repair',
+      'gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair']) {
+      const policy = report.metadata.role_config_policy.find((entry) => entry.role_id === roleId);
+      assert.deepEqual([policy.thinking, policy.reasoning_effort], ['disabled', null], roleId);
+    }
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

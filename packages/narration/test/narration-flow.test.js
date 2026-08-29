@@ -50,6 +50,8 @@ function ports(overrides = {}) {
   return {
     writer: { async generate() { return output(); } },
     formatRepairer: { async repair() { return output(); } },
+    auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] }; } },
+    semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [] }; } },
     ...overrides
   };
 }
@@ -87,7 +89,7 @@ test('uses one targeted repair then deterministic revalidation', async () => {
   assert.equal(result.approved_output.prose, 'У ворот всё так же стоит телега.');
   assert.equal(writerCalls, 1);
   assert.equal(repairCalls, 1);
-  assert.equal(result.audit_history.length, 0);
+  assert.equal(result.audit_history.length, 1);
 });
 
 test('blocks after invalid repair without another LLM call', async () => {
@@ -112,12 +114,12 @@ test('repairs hidden-leak-shaped output before approval', async () => {
   assert.deepEqual(errors, ['forbidden field: hidden_state', 'hidden leak: hidden_state', 'hidden leak: hidden_state.secret']);
 });
 
-test('keeps valid writer prose', async () => {
+test('keeps supported writer prose after audit', async () => {
   const result = await runNarrationFlow(request(), ports({
-    writer: { async generate() { return output('Телега скрипит у ворот.'); } }
+    writer: { async generate() { return output('Телега неподвижно стоит у ворот.'); } }
   }));
   assert.equal(result.status, 'approved');
-  assert.equal(result.approved_output.prose, 'Телега скрипит у ворот.');
+  assert.equal(result.approved_output.prose, 'Телега неподвижно стоит у ворот.');
 });
 
 test('repairs non-empty unsupported action_options', async () => {
@@ -140,6 +142,87 @@ test('blocks non-empty unsupported used_references after one repair', async () =
   assert.equal(result.status, 'blocked');
   assert.equal(repairCalls, 1);
   assert.deepEqual(result.diagnostics.errors, ['used_references must be empty until visible_context defines reference vocabulary']);
+});
+
+test('repairs only auditor-flagged segment and re-audits complete prose', async () => {
+  const audits = [];
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output('Сначала видно ворота. Телега скрипит у ворот. Потом всё тихо.'); } },
+    auditor: { async audit(input) {
+      audits.push(input);
+      return audits.length === 1
+        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's2', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
+        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.deepEqual(input.segments.map((segment) => segment.segment_id), ['s2']);
+      return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Телега стоит у ворот. ' }] };
+    } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, 'Сначала видно ворота. Телега стоит у ворот. Потом всё тихо.');
+  assert.equal(audits.length, 2);
+  assert.equal(audits[1].output.prose, result.approved_output.prose);
+});
+
+test('blocks malformed auditor, unflagged repair, and failed final audit without another repair', async (t) => {
+  await t.test('malformed auditor', async () => {
+    const result = await runNarrationFlow(request(), ports({ auditor: { async audit() { return {}; } } }));
+    assert.equal(result.status, 'blocked');
+    assert.equal(result.diagnostics.phase, 'audit_validation');
+  });
+  await t.test('unflagged repair', async () => {
+    const result = await runNarrationFlow(request(), ports({
+      auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'hidden_knowledge', reason: 'Hidden fact.' }], evidence: ['Hidden.'] }; } },
+      semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Нет.' }] }; } }
+    }));
+    assert.equal(result.status, 'blocked');
+    assert.equal(result.diagnostics.phase, 'semantic_repair_validation');
+  });
+  await t.test('duplicate and missing replacements', async () => {
+    const result = await runNarrationFlow(request(), ports({
+      auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Bad.' }], evidence: ['Bad.'] }; } },
+      semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: 'У ворот стоит телега.' }, { segment_id: 's1', prose: 'Повтор.' }] }; } }
+    }));
+    assert.equal(result.status, 'blocked');
+    assert.match(result.diagnostics.errors.join('; '), /duplicate replacement/);
+  });
+  await t.test('final audit failure', async () => {
+    let repairs = 0, audits = 0;
+    const result = await runNarrationFlow(request(), ports({
+      auditor: { async audit() { audits += 1; return audits === 1 ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Bad.' }], evidence: ['Bad.'] } : { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Still bad.' }], evidence: ['Still bad.'] }; } },
+      semanticRepairer: { async repair() { repairs += 1; return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: 'У ворот стоит телега.' }] }; } }
+    }));
+    assert.equal(result.status, 'blocked');
+    assert.equal(result.diagnostics.phase, 'final_audit_failed');
+    assert.equal(repairs, 1);
+  });
+});
+
+test('semantic regression corpus passes player-safe context unchanged to auditor', async (t) => {
+  for (const [name, visible_scene, prose, kind] of [
+    ['unsupported sensory fact', 'У ворот стоит телега.', 'Телега скрипит у ворот.', 'unsupported_fact'],
+    ['unsupported environment fact', 'У ворот стоит телега.', 'Ветер раскачивает телегу у ворот.', 'unsupported_fact'],
+    ['contradiction', 'Дверь закрыта.', 'Открытая дверь ведёт внутрь.', 'contradiction'],
+    ['hidden knowledge', 'У ворот стоит телега.', 'В тайнике лежит ключ.', 'hidden_knowledge']
+  ]) await t.test(name, async () => {
+    const result = await runNarrationFlow(request({ visible_context: { ...request().visible_context, visible_scene } }), ports({
+      writer: { async generate() { return output(prose); } },
+      auditor: { async audit(input) {
+        assert.equal(input.visible_context.visible_scene, visible_scene);
+        return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind, reason: 'Unsupported.' }], evidence: ['Unsupported.'] };
+      } },
+      semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: visible_scene }] }; } }
+    }));
+    assert.equal(result.status, 'blocked');
+  });
+  await t.test('supported fact and NPC opinion pass', async () => {
+    const visible_scene = 'Телега скрипит у ворот. "Мне кажется, он нас обманул."';
+    const result = await runNarrationFlow(request({ visible_context: { ...request().visible_context, visible_scene } }), ports({
+      writer: { async generate() { return output('Телега скрипит у ворот. NPC говорит: «Мне кажется, он нас обманул».'); } }
+    }));
+    assert.equal(result.status, 'approved');
+  });
 });
 
 

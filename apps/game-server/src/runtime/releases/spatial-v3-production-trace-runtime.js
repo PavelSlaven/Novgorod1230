@@ -137,7 +137,7 @@ export function createTraceTurnRuntime({
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner });
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
-      partyPool, committer
+      partyPool, committer, narrationService
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),

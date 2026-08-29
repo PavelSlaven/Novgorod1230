@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import {
   createLowerDvinaTraceNpcSemanticModel,
+  createLowerDvinaTraceNarrationService,
   createLowerDvinaTracePlayerConversationModel,
   createLowerDvinaTraceTurnStepModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -37,7 +38,7 @@ const models = {
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
-    role_id in models || role_id === 'ordinary_materialization')) {
+    role_id in models || role_id === 'ordinary_materialization' || role_id.startsWith('gameplay_narrator'))) {
     assert.deepEqual(await productionMessages(fixture), fixture.messages,
       fixture.id);
   }
@@ -89,6 +90,7 @@ test('unowned domain intent uses one direct planner step', async () => {
 });
 
 async function productionMessages(fixture) {
+  if (fixture.role_id.startsWith('gameplay_narrator')) return narrationMessages(fixture);
   if (fixture.role_id === 'ordinary_materialization') {
     const request = fixture.repair
       ? fixture.request.request
@@ -112,5 +114,40 @@ async function productionMessages(fixture) {
     original_output: payload.original_output,
     validation_errors: payload.validation_errors
   } });
+  return call.messages;
+}
+
+async function narrationMessages(fixture) {
+  const target = fixture.role_id;
+  const payload = JSON.parse(fixture.messages.at(-1).content);
+  const request = target === 'gameplay_narrator_format_repair' ? payload.request : {
+    version: 1, schema: 'narration_request', request_id: 'narration-eval-1',
+    surface: 'turn', visible_context: payload.visible_context ?? payload.request?.visible_context,
+    style_policy: payload.style_policy ?? payload.request?.style_policy ?? {}
+  };
+  const draft = target === 'gameplay_narrator_auditor' ? payload.output : {
+    version: 1, schema: 'narration_output', output_id: request.request_id,
+    prose: 'Сначала видны ворота. Телега скрипит у ворот. Потом всё тихо.',
+    action_options: [], used_references: [], self_check: {}
+  };
+  let call, auditCalls = 0;
+  const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(next) {
+    if (next.role_id === target) call = next;
+    if (next.role_id === 'gameplay_narrator') {
+      return { output: target === 'gameplay_narrator_format_repair' ? payload.invalid_output
+        : target === 'gameplay_narrator_auditor' || target === 'gameplay_narrator_semantic_repair'
+          ? draft : fixture.expected_output };
+    }
+    if (next.role_id === 'gameplay_narrator_format_repair') return { output: fixture.expected_output };
+    if (next.role_id === 'gameplay_narrator_semantic_repair') return { output: fixture.expected_output };
+    auditCalls += 1;
+    return { output: target === 'gameplay_narrator_auditor' ? fixture.expected_output
+      : target === 'gameplay_narrator_semantic_repair' && auditCalls === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+        concerns: payload.concerns, evidence: ['Unsupported sound.'] }
+        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] } };
+  } } });
+  await narration.run(request);
+  if (!call) throw new Error(`narration role was not called: ${target}`);
   return call.messages;
 }

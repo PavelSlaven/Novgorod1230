@@ -27,14 +27,14 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       if (current()) return execute();
       const started_at = startedAt;
       return storage.run({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claim: null }, execute);
+        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claims: new Set() }, execute);
     },
     claimRepair({ roleId = null } = {}) {
       const turn = current();
       if (!turn) return null;
-      if (turn.repair_claim != null) throw repairClaimed(turn.repair_claim, roleId);
       const claim = Object.freeze({ role_id: String(roleId ?? '').trim() || null });
-      turn.repair_claim = claim;
+      if (turn.repair_claims.has(claim.role_id)) throw repairClaimed(claim, roleId);
+      turn.repair_claims.add(claim.role_id);
       return claim;
     },
     clamp({ requestedTimeoutMs = null, repair = false } = {}) {
@@ -98,7 +98,8 @@ const REPAIR_ROLE_IDS = new Set([
   'npc_conversation_responder_format_repair',
   'npc_autonomous_decider_format_repair',
   'npc_combat_decider_format_repair',
-  'gameplay_narrator_format_repair'
+  'gameplay_narrator_format_repair',
+  'gameplay_narrator_semantic_repair'
 ]);
 
 function positive(value) { return Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : null; }

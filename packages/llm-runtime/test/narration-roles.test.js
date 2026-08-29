@@ -4,11 +4,13 @@ import test from 'node:test';
 import { resolveLlmExecutionConfig } from '../src/provider-config.js';
 
 const gameplayNarrationRoles = {
-  gameplay_narrator: ['json_object_with_schema', 'narration_output'],
-  gameplay_narrator_format_repair: ['json_repair', 'narration_output']
+  gameplay_narrator: ['json_object_with_schema', 'narration_output', 10000],
+  gameplay_narrator_format_repair: ['json_repair', 'narration_output', 6000],
+  gameplay_narrator_auditor: ['json_object_with_schema', 'narration_audit', 10000],
+  gameplay_narrator_semantic_repair: ['json_object_with_schema', 'narration_semantic_repair', 6000]
 };
 
-for (const [roleId, [outputContractMode, expectedSchema]] of Object.entries(gameplayNarrationRoles)) {
+for (const [roleId, [outputContractMode, expectedSchema, requestTimeoutMs]] of Object.entries(gameplayNarrationRoles)) {
   test(`${roleId} uses Flash without reasoning`, () => {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
@@ -27,6 +29,7 @@ for (const [roleId, [outputContractMode, expectedSchema]] of Object.entries(game
     assert.equal(resolution.config.responseFormat.type, 'json_object');
     assert.equal(resolution.config.outputContractMode, outputContractMode);
     assert.equal(resolution.config.expectedSchema, expectedSchema);
+    assert.equal(resolution.config.requestTimeoutMs, requestTimeoutMs);
   });
 }
 

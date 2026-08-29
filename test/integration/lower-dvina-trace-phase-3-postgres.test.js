@@ -155,6 +155,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     'party_runtime.party_actor_npc_interactions', partyA.party_id), 1);
   assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 1);
+  assert.equal(await narrationStatus(pool, partyA.party_id), 'delivered');
   assert.equal(await knowledgeCount(pool, partyA.party_id,
     'trace_ld_v1_route_camp_to_shed'), 0);
 
@@ -804,9 +805,17 @@ function buildRuntime({
     recheck: firstPlayableCommitRecheck,
     now: () => new Date('2026-07-30T08:00:00.000Z')
   });
+  const narrationService = {
+    async run(request) {
+      assert.equal(JSON.stringify(request).includes('must-not-reach-llm'),
+        false);
+      return approvedNarration(request.request_id);
+    }
+  };
   const repository = createLowerDvinaTracePhase2PostgresRepository({
     partyPool: pool,
-    committer
+    committer,
+    narrationService
   });
   const { playerConversationModel, npcSemanticModel } =
     conversationModels ?? createM2ConversationModels();
@@ -821,13 +830,7 @@ function buildRuntime({
     }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool: pool,
-      narrationService: {
-        async run(request) {
-          assert.equal(JSON.stringify(request).includes('must-not-reach-llm'),
-            false);
-          return approvedNarration(request.request_id);
-        }
-      }
+      narrationService
     }),
     randomSourceFactory: ({ request_id: requestId }) => {
       const source = createSeededRandomSource(`phase-3:${requestId}`);
@@ -992,6 +995,19 @@ function approvedNarration(requestId) {
     repair_history: [],
     diagnostics: {}
   };
+}
+
+async function narrationStatus(pool, partyId) {
+  return (await pool.query(
+    `SELECT j.status
+       FROM party_runtime.party_narration_jobs j
+       JOIN party_runtime.party_visible_packages p
+         ON p.package_id=j.package_id
+      WHERE p.party_id=$1
+      ORDER BY p.committed_state_version DESC
+      LIMIT 1`,
+    [partyId]
+  )).rows[0]?.status;
 }
 
 async function installSchemas(pool) {

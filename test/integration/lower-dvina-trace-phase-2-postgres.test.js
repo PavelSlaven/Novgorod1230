@@ -254,6 +254,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'trace_ld_v1_item_dry_kindling_bundle',
     'trace_ld_v1_item_firesteel_set',
     'trace_ld_v1_item_mikula_knife',
+    'trace_ld_v1_item_player_water_portion',
     'trace_ld_v1_item_ratsha_caftan',
     'trace_ld_v1_item_ratsha_knife',
     'trace_ld_v1_item_sealed_packet',
@@ -273,7 +274,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
          ON jobs.job_id=attempts.job_id
       WHERE jobs.party_id=$1`,
     [opened.party_id]
-  )).rows[0].count, 1);
+  )).rows[0].count, 0);
   const firstSnapshot = (await pool.query(
     `SELECT state_payload
        FROM party_runtime.party_state_snapshots
@@ -295,7 +296,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 23);
+    opened.party_id), 24);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -357,7 +358,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 23);
+    opened.party_id), 24);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -373,7 +374,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 23);
+    opened.party_id), 24);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -436,7 +437,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 22);
+    failureParty.party_id), 23);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions
@@ -497,7 +498,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
       if (narrationCalls === 1) {
         throw new Error('retryable narration failure');
       }
-      return approvedNarration(request.request_id);
+      return approvedNarration(request);
     }
   };
   const retryRuntime = buildRuntime({
@@ -525,37 +526,14 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  const pendingNarrationResult = await retryRuntime.submitTurn(
+  await assert.rejects(() => retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
-  );
-  assert.equal(pendingNarrationResult.screen.screen_status,
-    'committed_presentation_pending');
-  assert.equal(pendingNarrationResult.screen.main_prose,
-    'Факты хода сохранены; повествование ожидает повторной доставки.');
-  const pendingScreen = (await retryRuntime.getPartyScreen(
-    retryParty.party_id
-  )).screen;
-  assert.deepEqual(pendingScreen, pendingNarrationResult.screen);
+  ), { code: 'TRACE_PHASE_2_WRITE_PLAN_REJECTED' });
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    retryParty.party_id), 1);
+    retryParty.party_id), 0);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
-    retryParty.party_id), 1);
-  assert.equal(retrySemanticCalls, 1);
-  assert.equal(retryRolls, 1);
-  await assert.rejects(
-    () => retryRuntime.submitTurn(retryParty.party_id, {
-      request_id: 'phase-2-new-turn-while-presentation-pending',
-      idempotency_key: 'phase-2-new-turn-while-presentation-pending',
-      raw_text:
-        'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
-    }),
-    { code: 'TRACE_PHASE_2_PRESENTATION_PENDING' }
-  );
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    retryParty.party_id), 1);
-  assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
-    retryParty.party_id), 1);
+    retryParty.party_id), 0);
   assert.equal(retrySemanticCalls, 1);
   assert.equal(retryRolls, 1);
   assert.equal(
@@ -565,7 +543,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
         WHERE party_id=$1`,
       [retryParty.party_id]
     )).rows[0].whole_minutes,
-    '333075'
+    '333060'
   );
   const retryRestart = buildRuntime({
     pool,
@@ -584,16 +562,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     retryInput
   );
   assert.equal(afterNarrationRetry.option_id, 'inspect_wreck_in_detail');
-  assert.deepEqual(pendingNarrationResult, {
-    ...afterNarrationRetry,
-    screen: pendingScreen
-  });
   assert.equal(narrationCalls, 2);
-  assert.equal(retrySemanticCalls, 1);
-  assert.equal(retryRolls, 1);
+  assert.equal(retrySemanticCalls, 2);
+  assert.equal(retryRolls, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
-  const afterPendingResolved = await retryRuntime.submitTurn(
+  const afterNarrationResolved = await retryRuntime.submitTurn(
     retryParty.party_id,
     {
       request_id: 'phase-2-new-turn-after-presentation',
@@ -602,18 +576,18 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
         'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
     }
   );
-  assert.equal(afterPendingResolved.turn_number, 2);
-  assert.equal(retrySemanticCalls, 2);
-  assert.equal(retryRolls, 2);
+  assert.equal(afterNarrationResolved.turn_number, 2);
+  assert.equal(retrySemanticCalls, 3);
+  assert.equal(retryRolls, 3);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 2);
-  const historicalAfterPending = await retryRuntime.submitTurn(
+  const historicalAfterNarration = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
   );
-  assert.deepEqual(historicalAfterPending, afterNarrationRetry);
-  assert.equal(retrySemanticCalls, 2);
-  assert.equal(retryRolls, 2);
+  assert.deepEqual(historicalAfterNarration, afterNarrationRetry);
+  assert.equal(retrySemanticCalls, 3);
+  assert.equal(retryRolls, 3);
 
   await assertGeneralLookUsesOpeningScene({
     pool,
@@ -639,13 +613,6 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     pool,
     release,
     runtimeCatalogPin,
-    pendingPresentation: false
-  });
-  await assertConcurrentStaleCommitBlocked({
-    pool,
-    release,
-    runtimeCatalogPin,
-    pendingPresentation: true
   });
 });
 
@@ -692,7 +659,8 @@ async function assertRatshaCaftanTransitionPersists({
       pool,
       recheck: firstPlayableCommitRecheck,
       now: () => new Date('2026-07-30T08:00:00.000Z')
-    })
+    }),
+    narrationService: { async run() { throw new Error('unexpected narration'); } }
   });
   const initial = await repository.loadPhase2State(opened.party_id);
   const ratsha = initial.npcs.find(({ participant_slot_ref: slot }) =>
@@ -751,7 +719,8 @@ async function assertRatshaCaftanTransitionPersists({
       pool,
       recheck: firstPlayableCommitRecheck,
       now: () => new Date('2026-07-30T08:00:00.000Z')
-    })
+    }),
+    narrationService: { async run() { throw new Error('unexpected narration'); } }
   });
   const afterRestart = await restartedRepository.loadPhase2State(
     opened.party_id
@@ -836,7 +805,7 @@ async function assertGeneralLookAfterInspection({
     narrationService: {
       async run(request) {
         narrationRequests.push(structuredClone(request));
-        return approvedNarration(request.request_id);
+        return approvedNarration(request);
       }
     }
   });
@@ -940,7 +909,7 @@ async function assertGeneralLookUsesOpeningScene({
     narrationService: {
       async run(request) {
         narrationRequest = structuredClone(request);
-        return approvedNarration(request.request_id);
+        return approvedNarration(request);
       }
     }
   });
@@ -1016,7 +985,7 @@ function buildRuntime({
   repositoryDecorator = (value) => value,
   narrationService = {
     async run(request) {
-      return approvedNarration(request.request_id);
+      return approvedNarration(request);
     }
   }
 }) {
@@ -1028,7 +997,8 @@ function buildRuntime({
   const repository = repositoryDecorator(
     createLowerDvinaTracePhase2PostgresRepository({
       partyPool: pool,
-      committer
+      committer,
+      narrationService
     })
   );
   const { playerConversationModel, npcSemanticModel } =
@@ -1101,10 +1071,9 @@ function buildRuntime({
 async function assertConcurrentStaleCommitBlocked({
   pool,
   release,
-  runtimeCatalogPin,
-  pendingPresentation
+  runtimeCatalogPin
 }) {
-  const suffix = pendingPresentation ? 'pending' : 'ready';
+  const suffix = 'ready';
   const secondKey = `phase-2-concurrent-b-${suffix}`;
   const gate = commitGate(secondKey);
   let narrationCalls = 0;
@@ -1116,10 +1085,7 @@ async function assertConcurrentStaleCommitBlocked({
     narrationService: {
       async run(request) {
         narrationCalls += 1;
-        if (pendingPresentation && narrationCalls === 1) {
-          throw new Error('concurrent pending presentation');
-        }
-        return approvedNarration(request.request_id);
+        return approvedNarration(request);
       }
     }
   });
@@ -1145,28 +1111,17 @@ async function assertConcurrentStaleCommitBlocked({
     raw_text: rawText
   };
   try {
-    if (pendingPresentation) {
-      const pending = await runtime.submitTurn(party.party_id, firstInput);
-      assert.equal(pending.screen.screen_status,
-        'committed_presentation_pending');
-    } else {
-      await runtime.submitTurn(party.party_id, firstInput);
-    }
+    await runtime.submitTurn(party.party_id, firstInput);
   } finally {
     gate.release();
   }
   await assert.rejects(
     () => second,
     {
-      code: pendingPresentation
-        ? 'TRACE_PHASE_2_PRESENTATION_PENDING'
-        : 'TRACE_PHASE_2_STALE_STATE'
+      code: 'TRACE_PHASE_2_STALE_STATE'
     }
   );
   await assertSingleInspectionState(pool, party.party_id);
-  if (pendingPresentation) {
-    await runtime.submitTurn(party.party_id, firstInput);
-  }
   const retried = await runtime.submitTurn(party.party_id, secondInput);
   assert.equal(retried.turn_number, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
@@ -1230,18 +1185,19 @@ async function assertSingleInspectionState(pool, partyId) {
     partyId), 1);
 }
 
-function approvedNarration(requestId) {
+function approvedNarration(request) {
+  const { request_id: requestId, surface } = request;
   return {
     version: 1,
     schema: 'narration_flow_result',
     request_id: requestId,
-    surface: 'turn',
+    surface,
     status: 'approved',
     pass: true,
     approved_output: {
       version: 1,
       schema: 'narration_output',
-      output_id: `narration:${requestId}`,
+      output_id: requestId,
       prose: 'На берегу проступает ясная картина повреждений.',
       action_options: [],
       used_references: [],

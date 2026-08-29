@@ -21,6 +21,8 @@ import {
   commitEnvelope
 } from './lower-dvina-trace-turn-step-envelope-fixture.js';
 
+const unusedNarrationService = { async run() { throw new Error('unexpected narration'); } };
+
 test('turn-step commit rejects extra nested player, completed-step and trace fields',
   () => {
     const cases = [
@@ -67,7 +69,8 @@ test('replay looks up idempotency before loading committed mechanics',
         },
         async connect() { throw new Error('unexpected connection'); }
       },
-      committer: { async commit() { throw new Error('unexpected commit'); } }
+      committer: { async commit() { throw new Error('unexpected commit'); } },
+      narrationService: unusedNarrationService
     });
     const replay = await repository.loadPhase2Replay({
       partyId: 'p', idempotencyKey: 'missing'
@@ -90,7 +93,8 @@ test('Phase 2 revalidation reads only the committed state version', async () => 
       },
       async connect() { throw new Error('unexpected connection'); }
     },
-    committer: { async commit() { throw new Error('unexpected commit'); } }
+    committer: { async commit() { throw new Error('unexpected commit'); } },
+    narrationService: unusedNarrationService
   });
   assert.equal(await repository.loadPhase2StateVersion('party'), 17);
   assert.equal(queries.length, 1);

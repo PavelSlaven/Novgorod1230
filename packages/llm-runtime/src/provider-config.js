@@ -27,6 +27,8 @@ export const TurnRuntimeRoles = Object.freeze({
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
   GAMEPLAY_NARRATOR: 'gameplay_narrator',
   GAMEPLAY_NARRATOR_REPAIR: 'gameplay_narrator_format_repair',
+  GAMEPLAY_NARRATOR_AUDITOR: 'gameplay_narrator_auditor',
+  GAMEPLAY_NARRATOR_SEMANTIC_REPAIR: 'gameplay_narrator_semantic_repair',
   WORLD_PROCESS_STEP: 'world_process_step',
   ORDINARY_MATERIALIZATION: 'ordinary_materialization',
   SPATIAL_SEMANTIC_DESCRIPTOR: 'spatial_semantic_descriptor',
@@ -94,6 +96,18 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: 'narration_output', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
+  },
+  [TurnRuntimeRoles.GAMEPLAY_NARRATOR_AUDITOR]: {
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'narration_audit', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    hardInputLimitTokens: 60000, reserveOutputTokens: 800, reserveRepairTokens: 0
+  },
+  [TurnRuntimeRoles.GAMEPLAY_NARRATOR_SEMANTIC_REPAIR]: {
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_SEMANTIC_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 1200, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'narration_semantic_repair', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    hardInputLimitTokens: 60000, reserveOutputTokens: 1200, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
     envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,

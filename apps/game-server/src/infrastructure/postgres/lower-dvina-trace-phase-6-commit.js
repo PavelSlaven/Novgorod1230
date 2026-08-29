@@ -71,7 +71,7 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     verifyApproval: async (candidate) => ({
       ok: candidate.party_id === partyId
         && candidate.operation_kind === 'trace_phase_6_carry'
-    })
+    }), approveNarration: committer.approveNarration
   });
   const baseInput = {
     plan_id: `p16:${partyId}:trace-phase6:${turnNumber}`,

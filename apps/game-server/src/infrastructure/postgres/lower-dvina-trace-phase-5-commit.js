@@ -80,7 +80,8 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
     verifyApproval: async (candidate) => ({
       ok: candidate.party_id === partyId
         && candidate.operation_kind === 'trace_phase_5_treatment'
-    })
+    }),
+    approveNarration: committer.approveNarration
   });
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase5:${turnNumber}`,

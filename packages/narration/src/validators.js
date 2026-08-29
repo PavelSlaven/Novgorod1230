@@ -6,6 +6,7 @@ import {
   NARRATION_REPAIR_ROUTES,
   NARRATION_REQUEST_SCHEMA,
   NARRATION_RESULT_STATUSES,
+  NARRATION_SEMANTIC_REPAIR_SCHEMA,
   NARRATION_SURFACES
 } from './contracts.js';
 
@@ -38,16 +39,44 @@ export function validateNarrationOutput(value) {
   return result(errors);
 }
 
-export function validateNarrationAudit(value) {
+export function validateNarrationAudit(value, segmentIds = null) {
   const errors = [];
   if (!plain(value)) return fail('narration audit must be an object');
+  forbiddenFields(errors, value, ['version', 'schema', 'pass', 'concerns', 'evidence']);
   if (value.version !== 1 || value.schema !== NARRATION_AUDIT_SCHEMA) errors.push(`expected ${NARRATION_AUDIT_SCHEMA} version 1`);
   if (typeof value.pass !== 'boolean') errors.push('pass must be boolean');
   if (!Array.isArray(value.concerns)) errors.push('concerns must be an array');
   if (!Array.isArray(value.evidence)) errors.push('evidence must be an array');
+  if (Array.isArray(value.evidence) && value.evidence.some((item) => !String(item ?? '').trim())) errors.push('evidence entries must be text');
+  if (Array.isArray(value.concerns)) {
+    value.concerns.forEach((concern, index) => validateConcern(errors, concern, index, segmentIds));
+  }
   if (value.pass === true && Array.isArray(value.concerns) && value.concerns.length) errors.push('successful audit must have no concerns');
   if (value.pass === true && Array.isArray(value.evidence) && value.evidence.length === 0) errors.push('successful audit requires evidence');
   if (value.pass === false && Array.isArray(value.concerns) && value.concerns.length === 0) errors.push('failed audit requires concerns');
+  return result(errors);
+}
+
+export function validateNarrationSemanticRepair(value, flaggedIds = []) {
+  const errors = [];
+  if (!plain(value)) return fail('narration semantic repair must be an object');
+  forbiddenFields(errors, value, ['version', 'schema', 'replacements']);
+  if (value.version !== 1 || value.schema !== NARRATION_SEMANTIC_REPAIR_SCHEMA) errors.push(`expected ${NARRATION_SEMANTIC_REPAIR_SCHEMA} version 1`);
+  if (!Array.isArray(value.replacements)) errors.push('replacements must be an array');
+  const seen = new Set();
+  if (Array.isArray(value.replacements)) {
+    value.replacements.forEach((replacement, index) => {
+      if (!plain(replacement)) return errors.push(`replacement ${index} must be an object`);
+      forbiddenFields(errors, replacement, ['segment_id', 'prose'], `replacement ${index}`);
+      const id = String(replacement.segment_id ?? '');
+      if (!id.trim()) errors.push(`replacement ${index} segment_id is required`);
+      else if (!flaggedIds.includes(id)) errors.push(`replacement ${index} targets unflagged segment_id: ${id}`);
+      else if (seen.has(id)) errors.push(`duplicate replacement segment_id: ${id}`);
+      seen.add(id);
+      if (!String(replacement.prose ?? '').trim()) errors.push(`replacement ${index} prose is required`);
+    });
+  }
+  for (const id of flaggedIds) if (!seen.has(id)) errors.push(`missing replacement segment_id: ${id}`);
   return result(errors);
 }
 
@@ -88,5 +117,17 @@ export function assertNarrationValid(label, validation) {
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function requiredText(errors, value, label) { if (!String(value ?? '').trim()) errors.push(`${label} is required`); }
 function enumValue(errors, value, allowed, label) { if (!allowed.includes(String(value ?? '').trim())) errors.push(`${label} is invalid`); }
+function forbiddenFields(errors, value, allowed, label = 'narration audit') {
+  for (const key of Object.keys(value)) if (!allowed.includes(key)) errors.push(`${label} forbidden field: ${key}`);
+}
+function validateConcern(errors, concern, index, segmentIds) {
+  if (!plain(concern)) return errors.push(`concern ${index} must be an object`);
+  forbiddenFields(errors, concern, ['segment_id', 'kind', 'reason'], `concern ${index}`);
+  const id = String(concern.segment_id ?? '');
+  if (!id.trim()) errors.push(`concern ${index} segment_id is required`);
+  else if (segmentIds && !segmentIds.includes(id)) errors.push(`concern ${index} has unknown segment_id: ${id}`);
+  requiredText(errors, concern.kind, `concern ${index} kind`);
+  requiredText(errors, concern.reason, `concern ${index} reason`);
+}
 function result(errors) { return { ok: errors.length === 0, errors }; }
 function fail(message) { return { ok: false, errors: [message] }; }

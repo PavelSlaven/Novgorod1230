@@ -15,7 +15,7 @@
 
 Production `turn_runtime` по умолчанию использует Flash-first роли без heavy reasoning: primary — `deepseek-v4-flash` с выключенным thinking и timeout 10 с, structural repair — тот же Flash с timeout 6 с. Runtime per-call override может только ужесточить эти игровые лимиты в composition owner; он не расширяет их. Transport fallback 120 с относится только к non-gameplay scope, включая admin и eval, а не к gameplay deadline. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
 
-Gameplay narration uses `turn_runtime` roles `gameplay_narrator` and `gameplay_narrator_format_repair`; both are Flash JSON roles. No narration auditor role is used in production turn flow.
+Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are Flash JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
 
 ## Не делает
 

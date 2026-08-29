@@ -220,7 +220,8 @@ export async function commitLowerDvinaTracePhase3({
         && candidate.operation_kind === operationKind
         && candidate.canonical_input_digest
           === integratedInput.canonical_input_digest
-    })
+    }),
+    approveNarration: committer.approveNarration
   });
   const built = await builder.build(integratedInput);
   if (!built.ok) {

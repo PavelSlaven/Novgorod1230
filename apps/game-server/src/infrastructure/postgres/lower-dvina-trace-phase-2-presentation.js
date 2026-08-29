@@ -6,6 +6,72 @@ import {
   createTemporalPresentationPostgresStore
 } from './temporal-presentation-store.js';
 import { queryWithTurnDeadline } from './query-with-turn-deadline.js';
+import { phase2VisibleContextFromPayload } from
+  './lower-dvina-trace-phase-2-projection.js';
+import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
+import { serverError } from '../../errors.js';
+
+export function createLowerDvinaTracePhase2PrecommitNarrationApprover({
+  narrationService
+} = {}) {
+  if (typeof narrationService?.run !== 'function') {
+    throw new TypeError('Phase 2 narration approver requires narration owner.');
+  }
+  return Object.freeze({
+    async approveNarration({ visible_package_envelope: envelope,
+      turnBudget = null } = {}) {
+      if (!envelope?.party_id || !envelope.package_id
+          || !envelope.package_digest || !envelope.turn_id
+          || !envelope.visible_payload) {
+        throw presentationError();
+      }
+      const flow = await runWithinTurnDeadline(turnBudget, () =>
+        narrationService.run({
+          version: 1,
+          schema: 'narration_request',
+          request_id: envelope.turn_id,
+          surface: 'turn',
+          visible_context: phase2VisibleContextFromPayload(
+            envelope.visible_payload
+          ),
+          context: {},
+          style_policy: {
+            preserve_uncertainty: true,
+            no_new_world_facts: true
+          },
+          max_repairs: 1
+        })
+      );
+      if (flow?.status !== 'approved' || flow.pass !== true
+          || flow.final_audit?.pass !== true || !flow.approved_output?.prose) {
+        const error = presentationError();
+        error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+        throw error;
+      }
+      return sealApprovedNarration({ envelope, flow });
+    }
+  });
+}
+
+export function createLowerDvinaTracePhase2PrecommitNarrationCommitter({
+  committer, narrationApprover, turnBudget = null
+} = {}) {
+  return Object.freeze({
+    approveNarration: (candidate) => narrationApprover.approveNarration({
+      visible_package_envelope: candidate?.visible_package_envelope,
+      turnBudget
+    }),
+    async commit({ plan, ...input }) {
+      turnBudget?.assertCanCommit();
+      if (!plan?.inserts?.some(({ target_table, record }) =>
+        target_table === 'party_narration_jobs' && record?.status === 'delivered')) {
+        throw serverError('TRACE_PHASE_2_NARRATION_REJECTED',
+          'Approved narration is required before factual commit.', { status: 409 });
+      }
+      return committer.commit({ plan, ...input, turnBudget });
+    }
+  });
+}
 
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
@@ -89,7 +155,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
         throw error;
       }
-      const persistedNarration = sealNarration({
+      const persistedNarration = sealApprovedNarration({
         envelope,
         flow
       });
@@ -125,7 +191,7 @@ async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {
   const matches = result.rows.filter((candidate) =>
     candidate.package_digest
       === computeSpatialV3CanonicalDigest(candidate.visible_payload)
-    && canonicalDigest(visibleContextFromPayload(candidate.visible_payload))
+    && canonicalDigest(phase2VisibleContextFromPayload(candidate.visible_payload))
       === expectedContextDigest);
   if (matches.length !== 1) {
     throw presentationError();
@@ -133,10 +199,12 @@ async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {
   return matches[0];
 }
 
-function sealNarration({ envelope, flow }) {
+export function sealApprovedNarration({ envelope, flow }) {
   const payload = {
     kind: 'approved_narration',
     party_id: envelope.party_id,
+    request_id: envelope.turn_id,
+    package_id: envelope.package_id,
     package_digest: envelope.package_digest,
     dependency_pins: envelope.dependency_pins,
     text: flow.approved_output.prose,
@@ -185,22 +253,6 @@ function withPresentation(flow, narration) {
       output_digest: narration.canonical_digest
     }
   });
-}
-
-function visibleContextFromPayload(payload) {
-  return {
-    version: 1,
-    schema: 'visible_context_package',
-    visible_scene: payload.perceived_scene,
-    visible_changes: structuredClone(payload.perceived_changes),
-    sensory_details: structuredClone(payload.sensory_details),
-    visible_npc: structuredClone(payload.visible_npcs),
-    visible_objects: structuredClone(payload.visible_objects),
-    known_context: structuredClone(payload.known_context),
-    uncertainties: structuredClone(payload.uncertainties),
-    allowed_tensions: [],
-    do_not_imply: []
-  };
 }
 
 function presentationError() {

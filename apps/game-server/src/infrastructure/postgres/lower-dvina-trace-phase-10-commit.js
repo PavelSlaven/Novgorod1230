@@ -45,7 +45,8 @@ export async function commitLowerDvinaTracePhase10({ partyId,
   const builder = createCombinedWritePlanBuilder({ verifyApproval:
     async (candidate) => ({ ok: candidate.party_id === partyId
       && candidate.operation_kind === 'trace_phase_10_completion'
-      && candidate.canonical_input_digest === digest(inputDigest) }) });
+      && candidate.canonical_input_digest === digest(inputDigest) }),
+    approveNarration: committer.approveNarration });
   const pins = { phase10: phase10Contracts.pins };
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase10:${sourceVersion}`,

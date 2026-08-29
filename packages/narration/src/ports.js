@@ -1,6 +1,8 @@
 const REQUIRED = Object.freeze({
   writer: 'generate',
-  formatRepairer: 'repair'
+  formatRepairer: 'repair',
+  auditor: 'audit',
+  semanticRepairer: 'repair'
 });
 
 export function validateNarrationPorts(ports = {}) {

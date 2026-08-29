@@ -136,6 +136,7 @@ export function createCanonicalPhase11LlmResponder({
       .includes(model)) {
       return narrationOutput(input);
     }
+    if (model === 'fixture-gameplay-narrator-auditor') return narrationAudit();
     throw new Error(`Unexpected production LLM model: ${model}`);
   };
 }
@@ -229,7 +230,11 @@ function turn10Plan(request, ids) {
       ids.eremey,
       ids.fisher,
       ids.otherFisher
-    ]
+    ],
+    ...(request.prepared_followup_candidates?.[0] == null ? {} : {
+      prepared_followup_ref:
+        request.prepared_followup_candidates[0].prepared_followup_ref
+    })
   } : null;
   return turnStepPlan(request, operation, continuation,
     first ? 'rest_then_request_companions' : 'request_companions');
@@ -611,5 +616,15 @@ function narrationOutput(request) {
     prose: 'События хода завершены; видимые последствия сохранены.',
     action_options: [], used_references: [],
     self_check: { no_new_world_facts: true }
+  };
+}
+
+function narrationAudit() {
+  return {
+    version: 1,
+    schema: 'narration_audit',
+    pass: true,
+    concerns: [],
+    evidence: ['Нарратив основан на видимом контексте.']
   };
 }

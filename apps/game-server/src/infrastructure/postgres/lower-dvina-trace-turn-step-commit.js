@@ -174,7 +174,8 @@ export async function commitLowerDvinaTraceTurnStep({
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
     turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlans, spatialSemanticPlan
+    localFirePlans, spatialSemanticPlan,
+    approveNarration: committer.approveNarration
   });
   const committed = await committer.commit({
     plan: built.plan,

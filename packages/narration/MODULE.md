@@ -8,7 +8,9 @@
 
 - versioned `narration_request`, `narration_output` и `narration_flow_result`;
 - проверкой visible-only входа;
-- exactly one writer call → deterministic schema/visible-only/hidden-leak validation → at most one format/contract repair → repeat deterministic validation;
+- writer → deterministic structural validation → at most one format repair → semantic audit;
+- stable deterministic prose segments, один local semantic repair только flagged segments и code-owned reassembly;
+- full final semantic audit после semantic repair;
 - историей генераций и ремонтов.
 
 ## Не делает
@@ -28,13 +30,15 @@
 
 ## Порты
 
-`writer.generate`, `formatRepairer.repair`.
+`writer.generate`, `formatRepairer.repair`, `auditor.audit`, `semanticRepairer.repair`.
 
 ## Инварианты
 
 - narrator получает только validated visible context;
 - semantic failure не превращается в deterministic prose fallback;
-- repair ограничен одним вызовом и всегда повторно валидируется детерминированно;
-- normal gameplay path не вызывает LLM auditor, router или senior cascade;
+- format repair и semantic repair независимы: каждый максимум один раз;
+- malformed audit/repair, unflagged/duplicate/missing replacement и final audit failure блокируют flow;
+- unflagged segments reassembly сохраняет byte-for-byte;
+- normal gameplay вызывает один LLM auditor, без router/senior cascade;
 - approved result содержит ровно один утверждённый output;
 - upstream repair не вызывает persistence.

@@ -106,6 +106,27 @@ test('full modular turn runs a code command, approved check, commit and screen p
   assert.deepEqual(result.checkpoint.events.map((event) => event.stage_id), TURN_WORKFLOW_STAGE_IDS);
 });
 
+test('persistence retains a completed local-fire temporal plan from an exact command',
+  async () => {
+    const completedFire = { schema: 'local_fire_atomic_write_plan_v1',
+      transition_proposal: { process_after: {
+        process_ref: 'fire:shore', status: 'completed', state_version: 3
+      } } };
+    const { services, commits } = createServices([], {
+      temporalAdvance: async ({ clock_before: clockBefore }) => ({
+        clock_after: { ...clockBefore, minute: clockBefore.minute + 5 },
+        exact_elapsed: { exact_minutes: { numerator: '5', denominator: '1' } },
+        nearest_boundary: null,
+        local_fire_atomic_write_plans: [completedFire]
+      })
+    });
+
+    await runTurnWorkflow(input(), services);
+
+    assert.deepEqual(commits[0].local_fire_atomic_write_plans,
+      [completedFire]);
+  });
+
 test('turn integrates the canonical narration flow and versioned TurnScreen', async () => {
   const { services } = createServices();
   services.narrator = createNarrationService({

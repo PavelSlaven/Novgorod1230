@@ -171,7 +171,8 @@ export async function commitLowerDvinaTracePhase2({
   const built = await buildP16Plan({
     partyId, state, factual, visibleEnvelope, writes, nextVersion,
     turnNumber, changeSetId, idemId, inputDigest, contracts,
-    turnStepCommit: writePlan.turn_step_commit
+    turnStepCommit: writePlan.turn_step_commit,
+    localFirePlans: writePlan.local_fire_atomic_write_plans ?? []
   });
   const committed = await committer.commit({
     plan: built.plan,
@@ -199,7 +200,8 @@ export async function commitLowerDvinaTracePhase2({
 async function buildP16Plan(input) {
   const {
     partyId, state, factual, visibleEnvelope, writes, turnNumber,
-    changeSetId, idemId, inputDigest, contracts, turnStepCommit
+    changeSetId, idemId, inputDigest, contracts, turnStepCommit,
+    localFirePlans
   } = input;
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
@@ -255,7 +257,8 @@ async function buildP16Plan(input) {
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
     approved_write_sets: [writes],
-    lock_context: phase2LockContext(writes, state),
+    local_fire_atomic_write_plans: localFirePlans,
+    lock_context: phase2LockContext(writes, state, localFirePlans),
     commit_rechecks: buildLowerDvinaTracePhase2CommitRechecks({
       partyId, state, factual, contracts, inputDigest
     })

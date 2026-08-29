@@ -146,9 +146,12 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       action_production_atomic_write_plans:
         turnStepDraftActionProductionAtomicWritePlans(
           getTurnStepWorkflowDraft(state.modeResolution)),
-      local_fire_atomic_write_plans: turnStepDraftLocalFireAtomicWritePlans(
-        getTurnStepWorkflowDraft(state.modeResolution))
-          ?? state.consequence?.local_fire_atomic_write_plans ?? [],
+      local_fire_atomic_write_plans: [
+        ...turnStepDraftLocalFireAtomicWritePlans(
+          getTurnStepWorkflowDraft(state.modeResolution)),
+        ...(state.consequence?.local_fire_atomic_write_plans ?? []),
+        ...(state.timeUpdate?.local_fire_atomic_write_plans ?? [])
+      ],
       spatial_semantic_atomic_write_plan:
         turnStepDraftSpatialSemanticAtomicWritePlan(
           getTurnStepWorkflowDraft(state.modeResolution)),

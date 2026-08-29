@@ -696,6 +696,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   const repairShape = shape.replace('<request_id>', '<request.request_id>');
   assert.equal(calls[0].messages[0].content.includes(shape), true);
   assert.equal(calls[0].messages[0].content.includes('Copy request_id exactly into output_id'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'context.player_input only to understand attempted action or speech'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'never evidence of success or a new world fact'), true);
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].role_id, 'gameplay_narrator');
   assert.equal(calls[1].role_id, 'gameplay_narrator_format_repair');
@@ -704,6 +708,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].role_id, 'gameplay_narrator_auditor');
   assert.equal(calls[2].messages[0].content.includes('full narration output'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
+  assert.equal(calls[2].messages[0].content.includes('{"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
+  assert.equal(calls[2].messages[0].content.includes('{"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
     version: 1, schema: 'narration_semantic_audit_request', phase: 'initial',
     output: repairedOutput, visible_context: {

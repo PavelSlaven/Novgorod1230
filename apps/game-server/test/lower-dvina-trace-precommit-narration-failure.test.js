@@ -40,6 +40,35 @@ test('required precommit narration failures reject before factual commit',
     }
   });
 
+test('precommit narration writer receives player action, while audit receives only visible context',
+  async () => {
+    const requests = {};
+    const approver = createLowerDvinaTracePhase2PrecommitNarrationApprover({
+      narrationService: createLowerDvinaTraceNarrationService({
+        roleRunner: { async run({ role_id: roleId, messages }) {
+          const request = JSON.parse(messages.at(-1).content);
+          requests[roleId] = request;
+          if (roleId === 'gameplay_narrator') return { output: narration(request) };
+          return { output: { version: 1, schema: 'narration_audit',
+            pass: true, concerns: [], evidence: ['Берег.'] } };
+        } }
+      })
+    });
+    await approver.approveNarration({
+      visible_package_envelope: visibleEnvelope(),
+      semantic_command_snapshot: {
+        raw_text: 'Осмотреть лодку.', selected_option_id: 'inspect_boat'
+      }
+    });
+    assert.deepEqual(requests.gameplay_narrator.context, {
+      player_input: { party_id: 'party-1', raw_text: 'Осмотреть лодку.' },
+      mode_resolution: { option_id: 'inspect_boat' }
+    });
+    assert.equal('context' in requests.gameplay_narrator_auditor, false);
+    assert.equal(requests.gameplay_narrator_auditor.visible_context.visible_scene,
+      'Берег.');
+  });
+
 function failureRunner(stage) {
   let audits = 0;
   return { async run({ role_id: roleId, messages }) {
@@ -76,4 +105,14 @@ function failedAudit() {
   return { version: 1, schema: 'narration_audit', pass: false,
     concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Нет опоры.' }],
     evidence: ['Нет опоры.'] };
+}
+
+function visibleEnvelope() {
+  return {
+    party_id: 'party-1', package_id: 'package-1', package_digest: 'digest-1',
+    turn_id: 'turn-1', visible_payload: {
+      perceived_scene: 'Берег.', perceived_changes: [], sensory_details: [],
+      visible_npcs: [], visible_objects: [], known_context: [], uncertainties: []
+    }
+  };
 }

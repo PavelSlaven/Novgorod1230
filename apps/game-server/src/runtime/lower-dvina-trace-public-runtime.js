@@ -96,7 +96,8 @@ export function createLowerDvinaTracePublicRuntime({
     submitTurn: async (partyId, input) => {
       const requestId = String(input?.request_id ?? `turn:${idFactory()}`);
       const submit = async () => {
-        const turnBudget = traceTurnRuntime?.llmDiagnostics?.turnBudget ?? null;
+        const turnBudget = traceTurnRuntime?.llmTurnBudget
+          ?? traceTurnRuntime?.llmDiagnostics?.turnBudget ?? null;
         const session = await repository.loadSession(partyId, { turnBudget });
         turnBudget?.assertWithinDeadline?.();
         validateLowerDvinaTraceSessionRead({ partyId, session });
@@ -110,7 +111,8 @@ export function createLowerDvinaTracePublicRuntime({
         if (Number(session.turn_number) > 0) {
           await traceTurnRuntime.validateSessionRead?.({
             partyId,
-            session
+            session,
+            turnBudget
           });
         }
         return traceTurnRuntime.submitTurn({

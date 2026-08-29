@@ -52,9 +52,9 @@ export function createLowerDvinaTracePhase2Runtime({
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
-  return Object.freeze({
-    async validateSessionRead({ partyId }) {
-      await repository.loadPhase2State(partyId);
+  return Object.freeze({ llmTurnBudget,
+    async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) {
+      await repository.loadPhase2State(partyId, { turnBudget });
       return true;
     },
     async submitTurn({ partyId, input = {} }) {

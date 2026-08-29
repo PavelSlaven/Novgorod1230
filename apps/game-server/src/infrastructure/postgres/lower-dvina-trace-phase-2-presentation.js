@@ -19,7 +19,7 @@ export function createLowerDvinaTracePhase2PrecommitNarrationApprover({
   }
   return Object.freeze({
     async approveNarration({ visible_package_envelope: envelope,
-      turnBudget = null } = {}) {
+      semantic_command_snapshot: commandSnapshot, turnBudget = null } = {}) {
       if (!envelope?.party_id || !envelope.package_id
           || !envelope.package_digest || !envelope.turn_id
           || !envelope.visible_payload) {
@@ -34,7 +34,7 @@ export function createLowerDvinaTracePhase2PrecommitNarrationApprover({
           visible_context: phase2VisibleContextFromPayload(
             envelope.visible_payload
           ),
-          context: {},
+          context: narrationPlayerActionContext(envelope.party_id, commandSnapshot),
           style_policy: {
             preserve_uncertainty: true,
             no_new_world_facts: true
@@ -59,6 +59,7 @@ export function createLowerDvinaTracePhase2PrecommitNarrationCommitter({
   return Object.freeze({
     approveNarration: (candidate) => narrationApprover.approveNarration({
       visible_package_envelope: candidate?.visible_package_envelope,
+      semantic_command_snapshot: candidate?.semantic_command_snapshot,
       turnBudget
     }),
     async commit({ plan, ...input }) {
@@ -260,4 +261,16 @@ function presentationError() {
     new Error('Persisted Phase 2 narration lifecycle is inconsistent.'),
     { code: 'TRACE_PHASE_2_PRESENTATION_INVALID' }
   );
+}
+
+function narrationPlayerActionContext(partyId, snapshot) {
+  const rawText = typeof snapshot?.raw_text === 'string'
+    ? snapshot.raw_text : null;
+  const optionId = typeof snapshot?.selected_option_id === 'string'
+    ? snapshot.selected_option_id : null;
+  return {
+    ...(rawText == null ? {} : { player_input: { party_id: partyId,
+      raw_text: rawText } }),
+    ...(optionId == null ? {} : { mode_resolution: { option_id: optionId } })
+  };
 }

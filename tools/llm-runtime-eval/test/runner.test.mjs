@@ -7,6 +7,7 @@ import { runFrozenRoleEval } from '../src/runner.mjs';
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
+  assert.equal(corpus.corpus_version, 15);
   const outputs = corpus.fixtures.map(({ expected_output }) => expected_output);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -19,23 +20,23 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     const { port } = server.address();
     const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
       git: { checkout_sha: 'fixture-sha', dirty: false },
-      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 13 }
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 15 }
     } });
-    assert.equal(report.fixture_count, 26);
-    assert.equal(report.aggregates.total.passed, 26);
+    assert.equal(report.fixture_count, 27);
+    assert.equal(report.aggregates.total.passed, 27);
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 26);
+    assert.equal(report.aggregates.total.scored, 27);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 26);
-    assert.equal(report.aggregates.total.quality_denominator, 26);
+    assert.equal(report.aggregates.total.automated_passed, 27);
+    assert.equal(report.aggregates.total.quality_denominator, 27);
     assert.equal(report.aggregates.total.repairs, 8);
-    assert.equal(report.aggregates.total.input_tokens, 52);
-    assert.equal(report.aggregates.total.output_tokens, 78);
+    assert.equal(report.aggregates.total.input_tokens, 54);
+    assert.equal(report.aggregates.total.output_tokens, 81);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
     assert.deepEqual(report.metadata.corpus, {
-      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 13
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 15
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
@@ -102,6 +103,62 @@ test('world-process semantic mismatch fails even when owner validator accepts pl
     assert.equal(report.results[0].pass, false);
     assert.ok(report.results[0].errors.includes('unexpected_value:process_outcome'));
     assert.equal(report.aggregates.total.semantic_failures, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('negative narration audit fixture rejects an unsupported visible claim', () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-auditor-unsupported-fact');
+  assert.deepEqual(fixture?.expected?.required_values, {
+    pass: false, 'concerns.0.segment_id': 's1',
+    'concerns.0.kind': 'unsupported_fact'
+  });
+});
+
+test('narration semantic repair accepts grounded equivalent prose', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-semantic-repair-localized');
+  const output = structuredClone(fixture.expected_output);
+  output.replacements[0].prose = 'У ворот видна телега.';
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(output) } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].pass, true);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('narration semantic repair rejects unchanged unsupported prose', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-semantic-repair-localized');
+  const output = structuredClone(fixture.expected_output);
+  output.replacements[0].prose = 'Телега скрипит у ворот.';
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(output) } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].pass, false);
+    assert.ok(report.results[0].errors.includes('forbidden_text:скрип'));
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

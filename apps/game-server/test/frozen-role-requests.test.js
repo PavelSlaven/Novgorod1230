@@ -44,6 +44,17 @@ test('frozen role fixtures ship exact production-built messages', async () => {
   }
 });
 
+test('frozen narration auditor prompts retain both validator-valid forms', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
+    role_id === 'gameplay_narrator_auditor')) {
+    const prompt = fixture.messages[0].content;
+    assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
+    assert.equal(prompt.includes('{"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
+    assert.equal(prompt.includes('{"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+  }
+});
+
 test('Stage A frozen fixtures leave descriptor semantic while retaining code-owned assertions', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ id }) =>
@@ -121,9 +132,10 @@ async function narrationMessages(fixture) {
   const target = fixture.role_id;
   const payload = JSON.parse(fixture.messages.at(-1).content);
   const request = target === 'gameplay_narrator_format_repair' ? payload.request : {
-    version: 1, schema: 'narration_request', request_id: 'narration-eval-1',
+    version: 1, schema: 'narration_request', request_id: payload.output?.output_id ?? 'narration-eval-1',
     surface: 'turn', visible_context: payload.visible_context ?? payload.request?.visible_context,
-    style_policy: payload.style_policy ?? payload.request?.style_policy ?? {}
+    style_policy: payload.style_policy ?? payload.request?.style_policy ?? {},
+    ...(payload.context == null ? {} : { context: payload.context })
   };
   const draft = target === 'gameplay_narrator_auditor' ? payload.output : {
     version: 1, schema: 'narration_output', output_id: request.request_id,

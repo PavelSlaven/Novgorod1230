@@ -109,6 +109,7 @@ function validateExpected(expected, output) {
   const errors = [];
   for (const ref of expected.required_refs ?? []) if (!contains(output, ref)) errors.push(`missing_ref:${ref}`);
   for (const ref of expected.forbidden_refs ?? []) if (contains(output, ref)) errors.push(`forbidden_ref:${ref}`);
+  for (const text of expected.forbidden_text ?? []) if (containsText(output, text)) errors.push(`forbidden_text:${text}`);
   const operations = collectOperations(output);
   for (const op of expected.required_operations ?? []) if (!operations.has(op)) errors.push(`missing_operation:${op}`);
   for (const op of expected.forbidden_operations ?? []) if (operations.has(op)) errors.push(`forbidden_operation:${op}`);
@@ -125,7 +126,7 @@ function valueAt(value, path) {
   return path.split('.').reduce((current, key) => current?.[key], value);
 }
 function isScored(expected) {
-  return ['required_refs', 'forbidden_refs', 'required_operations', 'forbidden_operations']
+  return ['required_refs', 'forbidden_refs', 'forbidden_text', 'required_operations', 'forbidden_operations']
     .some((key) => expected?.[key]?.length > 0)
     || Object.keys(expected?.required_values ?? {}).length > 0
     || Object.keys(expected?.allowed_values ?? {}).length > 0;
@@ -139,6 +140,12 @@ function contains(value, needle) {
   if (value === needle) return true;
   if (Array.isArray(value)) return value.some((entry) => contains(entry, needle));
   return value != null && typeof value === 'object' && Object.values(value).some((entry) => contains(entry, needle));
+}
+function containsText(value, needle) {
+  if (typeof value === 'string') return value.toLowerCase().includes(String(needle).toLowerCase());
+  if (Array.isArray(value)) return value.some((entry) => containsText(entry, needle));
+  return value != null && typeof value === 'object'
+    && Object.values(value).some((entry) => containsText(entry, needle));
 }
 function collectOperations(value, found = new Set()) {
   if (Array.isArray(value)) value.forEach((entry) => collectOperations(entry, found));

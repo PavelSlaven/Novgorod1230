@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 13,
+  "corpus_version": 15,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -2172,8 +2172,8 @@
       "coverage": ["narration", "visible_only", "writer"],
       "provenance": {"source": "apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js", "kind": "active production narration request"},
       "messages": [
-        {"role": "system", "content": "Return only one JSON object. Required complete shape: {\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"<request_id>\",\"prose\":\"<visible-only prose>\",\"action_options\":[],\"used_references\":[],\"self_check\":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Ground prose, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity."},
-        {"role": "user", "content": "{\"version\":1,\"schema\":\"narration_request\",\"request_id\":\"narration-eval-1\",\"surface\":\"turn\",\"visible_context\":{\"version\":1,\"schema\":\"visible_context_package\",\"visible_scene\":\"У ворот стоит телега.\",\"visible_changes\":[],\"sensory_details\":[],\"visible_npc\":[],\"visible_objects\":[],\"known_context\":[],\"uncertainties\":[],\"allowed_tensions\":[],\"do_not_imply\":[]},\"style_policy\":{\"no_new_world_facts\":true}}"}
+        {"role": "system", "content": "Return only one JSON object. Required complete shape: {\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"<request_id>\",\"prose\":\"<visible-only prose>\",\"action_options\":[],\"used_references\":[],\"self_check\":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Use context.player_input only to understand attempted action or speech. It is never evidence of success or a new world fact. Ground every factual or result claim, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity."},
+        {"role": "user", "content": "{\"version\":1,\"schema\":\"narration_request\",\"request_id\":\"narration-eval-1\",\"surface\":\"turn\",\"visible_context\":{\"version\":1,\"schema\":\"visible_context_package\",\"visible_scene\":\"У ворот стоит телега.\",\"visible_changes\":[],\"sensory_details\":[],\"visible_npc\":[],\"visible_objects\":[],\"known_context\":[],\"uncertainties\":[],\"allowed_tensions\":[],\"do_not_imply\":[]},\"style_policy\":{\"no_new_world_facts\":true},\"context\":{\"player_input\":{\"party_id\":\"party-1\",\"raw_text\":\"Осмотреть телегу.\"},\"mode_resolution\":{\"option_id\":\"inspect_cart\"}}}"}
       ],
       "expected": {"required_values": {"schema": "narration_output", "output_id": "narration-eval-1", "action_options.length": 0, "used_references.length": 0}},
       "expected_output": {"version": 1, "schema": "narration_output", "output_id": "narration-eval-1", "prose": "У ворот стоит телега.", "action_options": [], "used_references": [], "self_check": {"no_new_world_facts": true}}
@@ -2201,11 +2201,25 @@
       "coverage": ["narration", "semantic_audit", "pass", "player_safe"],
       "provenance": {"source": "apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js", "kind": "active production narration audit request"},
       "messages": [
-        {"role": "system", "content": "Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Return exactly {\"version\":1,\"schema\":\"narration_audit\",\"pass\":true|false,\"concerns\":[],\"evidence\":[]}; when pass is false, every concern must name one supplied segment_id and explain only an unsupported, contradictory, hidden, or style-violating claim. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."},
+        {"role": "system", "content": "Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. PASS exactly: {\"version\":1,\"schema\":\"narration_audit\",\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}. FAIL exactly: {\"version\":1,\"schema\":\"narration_audit\",\"pass\":false,\"concerns\":[{\"segment_id\":\"<supplied segment_id>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."},
         {"role": "user", "content": "{\"version\":1,\"schema\":\"narration_semantic_audit_request\",\"phase\":\"initial\",\"output\":{\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"narration-eval-1\",\"prose\":\"У ворот стоит телега.\",\"action_options\":[],\"used_references\":[],\"self_check\":{}},\"visible_context\":{\"version\":1,\"schema\":\"visible_context_package\",\"visible_scene\":\"У ворот стоит телега.\",\"visible_changes\":[],\"sensory_details\":[],\"visible_npc\":[],\"visible_objects\":[],\"known_context\":[],\"uncertainties\":[],\"allowed_tensions\":[],\"do_not_imply\":[]},\"style_policy\":{\"no_new_world_facts\":true},\"segments\":[{\"segment_id\":\"s1\",\"prose\":\"У ворот стоит телега.\"}]}"}
       ],
       "expected": {"required_values": {"pass": true, "concerns.length": 0}},
       "expected_output": {"version": 1, "schema": "narration_audit", "pass": true, "concerns": [], "evidence": ["Visible scene supports narration."]}
+    },
+    {
+      "id": "gameplay-narrator-auditor-unsupported-fact",
+      "scope": "turn_runtime",
+      "role_id": "gameplay_narrator_auditor",
+      "validator": "narration_audit",
+      "coverage": ["narration", "semantic_audit", "negative", "unsupported_fact"],
+      "provenance": {"source": "apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js", "kind": "active production narration audit request"},
+      "messages": [
+        {"role": "system", "content": "Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. PASS exactly: {\"version\":1,\"schema\":\"narration_audit\",\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}. FAIL exactly: {\"version\":1,\"schema\":\"narration_audit\",\"pass\":false,\"concerns\":[{\"segment_id\":\"<supplied segment_id>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."},
+        {"role": "user", "content": "{\"version\":1,\"schema\":\"narration_semantic_audit_request\",\"phase\":\"initial\",\"output\":{\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"narration-eval-negative-1\",\"prose\":\"Телега скрипит у ворот.\",\"action_options\":[],\"used_references\":[],\"self_check\":{}},\"visible_context\":{\"version\":1,\"schema\":\"visible_context_package\",\"visible_scene\":\"У ворот стоит телега.\",\"visible_changes\":[],\"sensory_details\":[],\"visible_npc\":[],\"visible_objects\":[],\"known_context\":[],\"uncertainties\":[],\"allowed_tensions\":[],\"do_not_imply\":[]},\"style_policy\":{\"no_new_world_facts\":true},\"segments\":[{\"segment_id\":\"s1\",\"prose\":\"Телега скрипит у ворот.\"}]}"}
+      ],
+      "expected": {"required_values": {"pass": false, "concerns.0.segment_id": "s1", "concerns.0.kind": "unsupported_fact"}},
+      "expected_output": {"version": 1, "schema": "narration_audit", "pass": false, "concerns": [{"segment_id": "s1", "kind": "unsupported_fact", "reason": "Скрип не дан в visible_context."}], "evidence": ["Visible scene states only that cart is standing at gate."]}
     },
     {
       "id": "gameplay-narrator-semantic-repair-localized",
@@ -2219,7 +2233,7 @@
         {"role": "system", "content": "Return only one narration_semantic_repair JSON object. Repair only supplied flagged segments using their concerns, read-only nearby_context, and player-safe visible_context. Return exactly {\"version\":1,\"schema\":\"narration_semantic_repair\",\"replacements\":[{\"segment_id\":\"<supplied flagged segment_id>\",\"prose\":\"<replacement>\"}]}. Keep every supplied segment_id immutable; return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role."},
         {"role": "user", "content": "{\"version\":1,\"schema\":\"narration_semantic_repair_request\",\"visible_context\":{\"version\":1,\"schema\":\"visible_context_package\",\"visible_scene\":\"У ворот стоит телега.\",\"visible_changes\":[],\"sensory_details\":[],\"visible_npc\":[],\"visible_objects\":[],\"known_context\":[],\"uncertainties\":[],\"allowed_tensions\":[],\"do_not_imply\":[]},\"style_policy\":{\"no_new_world_facts\":true},\"concerns\":[{\"segment_id\":\"s2\",\"kind\":\"unsupported_fact\",\"reason\":\"Скрип не дан в visible_context.\"}],\"segments\":[{\"segment_id\":\"s2\",\"prose\":\"Телега скрипит у ворот. \",\"nearby_context\":[{\"segment_id\":\"s1\",\"prose\":\"Сначала видны ворота. \"},{\"segment_id\":\"s3\",\"prose\":\"Потом всё тихо.\"}]}]}"}
       ],
-      "expected": {"required_values": {"replacements.length": 1, "replacements.0.segment_id": "s2", "replacements.0.prose": "Телега стоит у ворот. "}},
+      "expected": {"forbidden_text": ["скрип"], "required_values": {"replacements.length": 1, "replacements.0.segment_id": "s2"}},
       "expected_output": {"version": 1, "schema": "narration_semantic_repair", "replacements": [{"segment_id": "s2", "prose": "Телега стоит у ворот. "}]}
     },
     {

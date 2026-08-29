@@ -116,6 +116,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       approvedNarration = snapshotJsonData(await approveNarration(clone({
         party_id, operation_kind, canonical_input_digest, validation_report,
         visible_package_envelope, approved_write_sets,
+        semantic_command_snapshot: idempotency.semantic_command_snapshot == null
+          ? null : clone(idempotency.semantic_command_snapshot),
         ordinary_materialization_atomic_write_plan,
         action_production_atomic_write_plans, local_fire_atomic_write_plans,
         spatial_semantic_atomic_write_plan

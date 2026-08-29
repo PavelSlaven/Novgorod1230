@@ -188,7 +188,7 @@ export function createLowerDvinaTraceNarrationService({
       generate: (request) => runNarrationRole(
         roleRunner,
         'gameplay_narrator',
-        'Return only one JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Ground prose, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
+        'Return only one JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Use context.player_input only to understand attempted action or speech. It is never evidence of success or a new world fact. Ground every factual or result claim, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
         request
       )
     },
@@ -204,7 +204,7 @@ export function createLowerDvinaTraceNarrationService({
       audit: (request) => runNarrationRole(
         roleRunner,
         'gameplay_narrator_auditor',
-        'Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Return exactly {"version":1,"schema":"narration_audit","pass":true|false,"concerns":[],"evidence":[]}; when pass is false, every concern must name one supplied segment_id and explain only an unsupported, contradictory, hidden, or style-violating claim. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.',
+        'Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. PASS exactly: {"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}. FAIL exactly: {"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.',
         request
       )
     },

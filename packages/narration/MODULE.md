@@ -34,7 +34,7 @@
 
 ## Инварианты
 
-- narrator получает только validated visible context;
+- writer получает validated visible context и optional player-safe action-intent context только для понимания попытки; это не evidence success/world fact, а auditor и semantic repair получают только visible context;
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
 - malformed audit/repair, unflagged/duplicate/missing replacement и final audit failure блокируют flow;

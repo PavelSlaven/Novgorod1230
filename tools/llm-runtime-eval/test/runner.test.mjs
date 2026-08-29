@@ -166,6 +166,50 @@ test('planner fixture repairs a structurally valid plan rejected by domain-owner
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
+test('semantic-invalid structurally-valid repair fails the planner workflow verdict', async () => {
+  const fixture = corpus.fixtures.find(({ id }) =>
+    id === 'planner-general-look-spatial-grounding');
+  const invalid = structuredClone(fixture.expected_output);
+  invalid.operations[0].target_refs.push('actor_mikula');
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(invalid)
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    const result = report.results[0];
+    assert.equal(calls, 2);
+    assert.equal(result.workflow.repair.valid, false);
+    assert.equal(result.workflow.error_code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(result.pass, false);
+    assert.equal(result.valid, false);
+    assert.equal(result.quality_status, 'automated_failed');
+    assert.equal(result.failure_classification,
+      'A_production_validation_rejected');
+    calls = 0;
+    const unscoredReport = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [{ ...fixture, expected: {} }] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 2);
+    assert.equal(unscoredReport.aggregates.total.automated_failed, 1);
+    assert.equal(unscoredReport.aggregates.total.quality_denominator, 1);
+    assert.equal(unscoredReport.aggregates.total.error_rate, 1);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
 test('planner rubric-only failure does not invoke repair', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const output = structuredClone(fixture.expected_output);

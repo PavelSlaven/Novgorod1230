@@ -96,11 +96,20 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
     workflowError = error;
   }
   const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
-  const result = scoreFixture(fixture, finalCall, calls);
+  const providerResult = scoreFixture(fixture, finalCall, calls);
   const primary = plannerStage(fixture, calls[0], validationErrors[0]);
   const repair = calls[1] == null ? null
     : plannerStage(fixture, calls[1], validationErrors[1]);
   const finalStage = repair ?? primary;
+  const workflowRejected = workflowError != null || finalStage?.valid !== true;
+  const productionPlanRejected = workflowError?.code === 'TURN_STEP_PLAN_INVALID';
+  const errors = productionPlanRejected
+    ? [...new Set([...providerResult.errors, 'validator:turn_step_workflow'])]
+    : providerResult.errors;
+  const result = workflowRejected ? { ...providerResult,
+    pass: false, valid: false, quality_status: 'automated_failed', errors,
+    failure_classification: classifyPlannerEvalFailure(errors)
+  } : providerResult;
   const finalOutput = finalCall.parsed_json;
   const rubricPass = finalOutput != null && typeof finalOutput === 'object'
     && !Array.isArray(finalOutput)
@@ -356,6 +365,7 @@ function summarize(calls) {
   const rate = (value, denominator = calls.length) => denominator ? value / denominator : 0;
   const automatedPassed = count(({ quality_status }) => quality_status === 'automated_passed');
   const automatedFailed = count(({ quality_status }) => quality_status === 'automated_failed');
+  const qualityDenominator = automatedPassed + automatedFailed;
   const scored = count(({ scored }) => scored);
   const manual = count(({ manual }) => manual);
   const validationFailures = count(({ valid }) => !valid);
@@ -368,8 +378,10 @@ function summarize(calls) {
     + Number(call.repair_calls ?? (call.repair ? 1 : 0)), 0);
   return { calls: llmCalls, fixtures: calls.length,
     automated_passed: automatedPassed, automated_failed: automatedFailed,
-    quality_denominator: scored, quality_pass_rate: rate(automatedPassed, scored),
-    passed: automatedPassed, errors: automatedFailed, error_rate: rate(automatedFailed, scored),
+    quality_denominator: qualityDenominator,
+    quality_pass_rate: rate(automatedPassed, qualityDenominator),
+    passed: automatedPassed, errors: automatedFailed,
+    error_rate: rate(automatedFailed, qualityDenominator),
     validation_failures: validationFailures,
     schema_failures: schemaFailures, schema_failure_rate: rate(schemaFailures),
     validator_failures: validatorFailures, validator_failure_rate: rate(validatorFailures),

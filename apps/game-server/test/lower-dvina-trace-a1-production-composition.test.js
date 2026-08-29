@@ -242,6 +242,9 @@ test('F1 activation provisions one player-owned whole water portion', async () =
     item.state?.ordinary_metadata?.semantic_type === 'water_portion');
   assert.equal(water.length, 1);
   assert.equal(water[0].quantity, 1);
+  assert.equal(water[0].anchor_id, 'shore');
+  assert.equal(water[0].holder_character_id, null);
+  assert.equal(water[0].physical_position, null);
   assert.equal(water[0].owner_character_id, 'player');
   assert.equal(water[0].controller_character_id, 'player');
 });

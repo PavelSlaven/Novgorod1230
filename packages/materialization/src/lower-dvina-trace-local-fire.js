@@ -29,9 +29,9 @@ function item({ descriptor, instanceId, anchorId, actorRef, fuel = false,
     category_id: fuel ? 'ordinary_solid_fuel_unit'
       : water ? 'water_portion' : 'ordinary_ignition_basis',
     quantity: 1, condition_state: 'serviceable', legal_status: 'owned',
-    claim_state: 'owned', anchor_id: fuel ? anchorId : null,
-    holder_character_id: fuel ? null : actorRef,
-    physical_position: fuel ? null : 'hands',
+    claim_state: 'owned', anchor_id: fuel || water ? anchorId : null,
+    holder_character_id: fuel || water ? null : actorRef,
+    physical_position: fuel || water ? null : 'hands',
     owner_character_id: actorRef, controller_character_id: actorRef,
     state: { lifecycle_status: 'active', display_name: descriptor.display_name,
       inventory_profile_snapshot: {

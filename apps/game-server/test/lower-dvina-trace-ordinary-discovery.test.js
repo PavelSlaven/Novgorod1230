@@ -298,6 +298,31 @@ test('visible target without a committed G6 never calls the ordinary model', asy
   assert.equal(result.summary, 'ordinary discovery unavailable');
 });
 
+test('current visible location maps to its already pinned G6 discovery context', async () => {
+  let modelCalls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'party', inputDigest: 'visible-location', verifyStageBCutover,
+    loadEnablement: async () => enabled(),
+    ordinaryMaterializationModel: async (modelRequest) => {
+      modelCalls += 1;
+      assert.equal(modelRequest.mode, 'seed_scope');
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'seeded',
+        density_band_proposal: 'sparse', background_groups: [], entities: [],
+        presence_resolutions: [], reason_code: 'sparse' };
+    }
+  });
+
+  await resolver({
+    ...request('найти ложку'),
+    committed_state: { position: { g6_id: 'shore',
+      location_ref: 'trace_ld_v1_loc_fishing_camp', g5_anchor_id: 'shore-anchor' } },
+    operation: { target_refs: ['trace_ld_v1_loc_fishing_camp'], query: 'найти ложку' }
+  });
+
+  assert.equal(modelCalls, 1);
+});
+
 test('projects a committed ordinary item without its materialization internals', () => {
   const committedState = {
     party_id: 'party', actor_id: 'mikula', player_profile: {},

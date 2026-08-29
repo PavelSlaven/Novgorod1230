@@ -176,22 +176,57 @@ test('production-v11 threads exact F1 profile, resolver and temporal owner',
 
 test('F1 player-safe marker exposes visible ignition and active process refs',
   async () => {
-    const loadedProfile = await loadLowerDvinaTraceLocalFireProfile();
-    const ignition = { item_id:'item:ignition', state:{lifecycle_status:'active',
+  const loadedProfile = await loadLowerDvinaTraceLocalFireProfile();
+  const kindling = { item_id:'item:kindling',template_id:'kindling-template',
+    quantity:1,state_version:1,state:{lifecycle_status:'active',
+      inventory_profile_snapshot:{item_template_ref:'kindling-template',
+        mass_grams:300},local_fire_fuel:{schema:
+        'rus.items.local_fire_fuel.v1',fuel_class:'ordinary_solid_fuel_unit',
+        whole_unit:true}},placement:{item_id:'item:kindling',anchor_id:
+        'anchor:current',container_id:null,holder_npc_id:null,
+        holder_character_id:null,physical_position:null,
+        equipment_slot_category_id:null,attached_item_id:null},ownership:{
+        item_id:'item:kindling'}};
+  const boundFuel = structuredClone(kindling);
+  boundFuel.item_id = 'item:bound-fuel';
+  boundFuel.template_id = 'bound-fuel-template';
+  boundFuel.state.inventory_profile_snapshot.item_template_ref =
+    'bound-fuel-template';
+  boundFuel.placement.item_id = 'item:bound-fuel';
+  boundFuel.ownership.item_id = 'item:bound-fuel';
+  const water = { item_id:'item:water',template_id:'water-template',quantity:1,
+    state_version:1,state:{lifecycle_status:'active',
+      inventory_profile_snapshot:{item_template_ref:'water-template',
+        mass_grams:750},ordinary_metadata:{semantic_type:'water_portion'}},
+    placement:{item_id:'item:water',anchor_id:null,container_id:null,
+      holder_npc_id:null,holder_character_id:'player',physical_position:'hands',
+      equipment_slot_category_id:null,attached_item_id:null},ownership:{
+      item_id:'item:water'}};
+  const ignition = { item_id:'item:ignition', state:{lifecycle_status:'active',
       local_fire_ignition_basis:{schema:
         'rus.items.local_fire_ignition_basis.v1'}} };
-    const base = { position:{g5_anchor_id:'anchor:current'},
-      items: [ignition,{item_id:'item:unlisted-fuel'}] };
-    const active = projectLowerDvinaTraceF1Capability({playerSafeState:base,
-      committedState:{position:{g5_anchor_id:'anchor:current'},
-        items:[ignition],local_fire_runtime:[{process_state:{
+  const base = { actor_id:'player',position:{g5_anchor_id:'anchor:current'},
+      items: [ignition,kindling,boundFuel,water] };
+  const active = projectLowerDvinaTraceF1Capability({playerSafeState:base,
+    committedState:{position:{g5_anchor_id:'anchor:current'},
+        items:[ignition,kindling,boundFuel,water],local_fire_runtime:[{process_state:{
           process_ref:'process:1',status:'active',scope_ref:'anchor:current',
           causal_basis_ref:'item:ignition',fuel_bindings:[{
-            fuel_ref:'item:unlisted-fuel'}]}}]},loadedProfile,
+            fuel_ref:'item:bound-fuel'}]}}]},loadedProfile,
       resolverAvailable:true});
-    assert.deepEqual(active.local_world_process,{semantic_grounding_available:true,
+  assert.deepEqual(active.local_world_process,{semantic_grounding_available:true,
       context_ref:loadedProfile.profile.context_ref,scope_ref:'anchor:current',
-      ignition_basis_refs:['item:ignition'],active_process_refs:['process:1']});
+      ignition_basis_refs:['item:ignition'],active_process_refs:['process:1'],
+      allowed:[{op:'request_world_process',actor_ref:'player',
+        process_action:'start',process_ref:null,process_kind:'fire',
+        source_refs:['item:kindling'],target_refs:['item:ignition'],
+        description:'Разжечь огонь.'},{op:'request_world_process',
+        actor_ref:'player',process_action:'affect',process_ref:'process:1',
+        process_kind:'fire',source_refs:['item:kindling'],target_refs:[],
+        description:'Воздействовать на огонь.'},{op:'request_world_process',
+        actor_ref:'player',process_action:'affect',process_ref:'process:1',
+        process_kind:'fire',source_refs:['item:water'],target_refs:[],
+        description:'Воздействовать на огонь.'}]});
     const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{
       position:{g5_anchor_id:'anchor:current'},items:[]},
       committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},

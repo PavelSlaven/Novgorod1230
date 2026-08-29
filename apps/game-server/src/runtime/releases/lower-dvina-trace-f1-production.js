@@ -129,16 +129,25 @@ export function projectLowerDvinaTraceF1Capability({playerSafeState,
   const ignition=(committedState?.items??[]).filter((item)=>visible.has(item.item_id)
     &&item.state?.local_fire_ignition_basis?.schema
       ==='rus.items.local_fire_ignition_basis.v1'
-    &&item.state?.lifecycle_status==='active').map(({item_id:id})=>id);
-  const active=currentProcessStates(committedState,localFirePlans)
+    &&item.state?.lifecycle_status==='active').map(({item_id:id})=>id).sort();
+  const items=currentFireItems(committedState,localFirePlans)
+    .filter(({item_id:id})=>visible.has(id));
+  const processStates=currentProcessStates(committedState,localFirePlans);
+  const active=processStates
     .filter((state)=>state?.status==='active'
       &&state.scope_ref===scopeRef&&state.fuel_bindings?.some(
-        ({fuel_ref:ref})=>visible.has(ref)));
+        ({fuel_ref:ref})=>visible.has(ref))).sort((left,right)=>
+        left.process_ref.localeCompare(right.process_ref));
   if(!text(scopeRef)||ignition.length===0&&active.length===0)
     return structuredClone(playerSafeState);
+  const bound=new Map(active.flatMap((state)=>state.fuel_bindings.map(
+    ({fuel_ref:ref})=>[ref,state.process_ref])));
+  const allowed=playerWorldProcessOperations({profile,actorRef:
+    playerSafeState?.actor_id,scopeRef,ignition,active,items,bound});
   return{...structuredClone(playerSafeState),local_world_process:{
     semantic_grounding_available:true,context_ref:profile.context_ref,scope_ref:scopeRef,
     ignition_basis_refs:ignition,active_process_refs:active.map(({process_ref:ref})=>ref),
+    ...(allowed.length===0?{}:{allowed}),
     }};
 }
 
@@ -233,6 +242,28 @@ function admittedInputRefs(items, actorRef, scopeRef, profile, bound,
     return admitted.pass && (requiredKind == null
       || admitted.input_kind === requiredKind) ? [item.item_id] : [];
   }).sort();
+}
+
+function playerWorldProcessOperations({profile,actorRef,scopeRef,ignition,
+  active,items,bound}){
+  if(!text(actorRef))return[];
+  const allowed=[];
+  if(profile.allowed_actions?.includes('start')){
+    const fuels=admittedInputRefs(items,actorRef,scopeRef,profile,bound,
+      'fuel_unit');
+    for(const sourceRef of fuels)for(const ignitionRef of ignition)allowed.push({
+      op:'request_world_process',actor_ref:actorRef,process_action:'start',
+      process_ref:null,process_kind:'fire',source_refs:[sourceRef],
+      target_refs:[ignitionRef],description:'Разжечь огонь.'});
+  }
+  if(profile.allowed_actions?.includes('affect')){
+    const inputs=admittedInputRefs(items,actorRef,scopeRef,profile,bound,null);
+    for(const {process_ref:processRef} of active)for(const sourceRef of inputs)
+      allowed.push({op:'request_world_process',actor_ref:actorRef,
+        process_action:'affect',process_ref:processRef,process_kind:'fire',
+        source_refs:[sourceRef],target_refs:[],description:'Воздействовать на огонь.'});
+  }
+  return Object.freeze(allowed.map(Object.freeze));
 }
 
 function worldProcessRequest({envelope,loaded,operation,scopeRef,admission}){

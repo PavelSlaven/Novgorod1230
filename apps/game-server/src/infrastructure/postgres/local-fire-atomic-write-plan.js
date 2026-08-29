@@ -85,15 +85,18 @@ export function applyLocalFireProjection({ next, plan }) {
   const item = next?.items?.find(
     ({ item_id: id }) => id === transition.item_id);
   if (item == null) fail('LOCAL_FIRE_PROJECTION_INVALID');
-  const fields = ({ condition_state, state, state_version }) =>
-    ({ condition_state, state, state_version });
-  const current = fields(item), before = fields(transition.before_item);
-  const after = fields(transition.after_item);
+  const fields = ({ condition_state, state, state_version }, withVersion) => ({
+    condition_state, state, ...(withVersion ? { state_version } : {})
+  });
+  const withVersion = Number.isSafeInteger(item.state_version);
+  const current = fields(item, withVersion);
+  const before = fields(transition.before_item, withVersion);
+  const after = fields(transition.after_item, withVersion);
   if (JSON.stringify(current) === JSON.stringify(after)) return next;
   if (JSON.stringify(current) !== JSON.stringify(before)) {
     fail('LOCAL_FIRE_PROJECTION_INVALID');
   }
-  Object.assign(item, clone(after));
+  Object.assign(item, clone(transition.after_item));
   return next;
 }
 

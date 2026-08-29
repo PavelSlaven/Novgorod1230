@@ -130,7 +130,9 @@ test('water affect retires whole portion and remains bound to trace operation', 
   assert.equal(plan.transition_proposal.outcome, 'complete');
   assert.equal(plan.item_retirement_transition.after_item.condition_state,
     'retired');
-  const snapshot = { items: [structuredClone(water.item)] };
+  const snapshotItem = structuredClone(water.item);
+  delete snapshotItem.state_version;
+  const snapshot = { items: [snapshotItem] };
   applyLocalFireProjection({ next: snapshot, plan });
   assert.equal(snapshot.items[0].condition_state, 'retired');
   assert.equal(snapshot.items[0].state.lifecycle_status, 'retired');
@@ -172,7 +174,8 @@ function outerPlan(localFire, approved, actorRef = 'actor:1') {
     owner_keys: [`actor:${actorRef}`],
     visible_package_envelope: { turn_id: 'turn:1' },
     semantic_command_snapshot: { semantic_trace: { step_traces: [{
-      step_index: 1, approved_plan: approved }] } },
+      step_index: 1, plan_request: { request_id: 'request:1',
+        root_turn_id: 'turn:1', step_index: 1 }, approved_plan: approved }] } },
     updates: [{ target_table: 'parties', id: 'party:1',
       record: { party_id: 'party:1' } }], inserts: [], deletes: [],
     expected_state_versions: [{ target_table: 'parties', id: 'party:1',

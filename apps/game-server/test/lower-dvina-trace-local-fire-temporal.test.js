@@ -43,6 +43,9 @@ test('configured temporal owner consumes three same-root fire boundaries',async(
       ({fuel_ref:ref})=>ref)),[['fuel-2','fuel-3'],['fuel-3'],[]]);
   assert.deepEqual(result.local_fire_atomic_write_plans.map((plan)=>
     plan.item_retirement_transition.item_id),['fuel-1','fuel-2','fuel-3']);
+  assert.deepEqual(result.local_fire_atomic_write_plans.map((plan)=>
+    plan.change_set_id),['change:party-fire:trace-phase2:2',
+      'change:party-fire:trace-phase2:2','change:party-fire:trace-phase2:2']);
   assert.equal(result.local_fire_atomic_write_plans.at(-1)
     .transition_proposal.process_after.status,'completed');
   assert.equal(result.local_fire_atomic_write_plans.at(-1)
@@ -133,7 +136,8 @@ test('production prepared route advances prior fire and hides retired fuel',
       activity:{nearest_temporal_boundary_rule:
         'split_before_earliest_boundary',duration_minutes:8}},
     temporalAdvanceOwner});
-    const committed={party_id:'party-fire',party_state:{state_version:1},
+    const committed={party_id:'party-fire',party_state:{state_version:1,
+      turn_number:1},
       actor_id:'pc',clock:clock(0),clock_weather_light:{clock:clock(0)},
       body_state:{},local_fire_runtime:[],temporal_boundary_candidates:[],
       temporal_source_proof:sourceProof(),items:[{item_id:'fuel-route',
@@ -195,6 +199,8 @@ test('production prepared route advances prior fire and hides retired fuel',
       ({item_id:id})=>id==='fuel-route'),false);
     assert.deepEqual(result.local_fire_atomic_write_plans.map((plan)=>
       plan.transition_proposal.action),['start','due_boundary']);
+    assert.equal(result.local_fire_atomic_write_plans[1].change_set_id,
+      'change:party-fire:turn-step:2');
     const draft={loop_result:result,selected_command_ids:[
       'lower_dvina_trace.follow_path_to_fishing_camp']};
     const consequence=mergeTurnStepDraftConsequence(
@@ -223,7 +229,7 @@ async function advance(actorPlans,minutes){
     nearest_temporal_boundary_rule:'split_before_earliest_boundary',
     duration_minutes:minutes}},temporalAdvanceOwner})({clock_before:clock(10),
     exact_elapsed:{exact_minutes:{numerator:String(minutes),denominator:'1'}},
-    relevant_state:{party_id:'party-fire',party_state:{state_version:1},
+    relevant_state:{party_id:'party-fire',party_state:{state_version:1,turn_number:1},
       temporal_boundary_candidates:[],temporal_source_proof:sourceProof()},
     local_fire_atomic_write_plans:actorPlans,root_turn_id:'turn-fire'});
 }

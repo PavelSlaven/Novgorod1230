@@ -28,7 +28,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
     clock_before: clockBefore,
     exact_elapsed: exactElapsed,
     relevant_state: state,local_fire_atomic_write_plans:actorPlans=[],
-    root_turn_id:rootTurnId='turn:prepared'
+    root_turn_id:rootTurnId='turn:prepared',change_set_id:changeSetId=
+      `change:${state.party_id}:trace-phase2:${state.party_state.turn_number+1}`
   }) {
     const window = inspectTracePhase2TemporalWindow({
       contracts,
@@ -55,7 +56,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
       local_fire_runtime:localFireProjection.local_fire_runtime};
     const request=buildTracePhase7TemporalRequest({state,contracts:null,
       executionId,limit:window.clock_after,commandIdempotencyKey:
-        `${rootTurnId}:prepared`,rootTurnId,clockBefore,
+      `${rootTurnId}:prepared`,rootTurnId,clockBefore,
+      changeSetId,
       sourceCandidates,projection,segment:'prepared'});
     const advanced=temporalAdvanceOwner.advance({request,
       engine_version:'lower-dvina-trace-prepared-temporal-v1',

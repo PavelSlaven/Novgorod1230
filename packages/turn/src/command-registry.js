@@ -96,7 +96,7 @@ export async function createTurnAvailableActionSet({
       deepFreeze(structuredClone(availability)));
   }
   included.sort((left, right) => left.option_id.localeCompare(right.option_id));
-  if (included.length === 0) {
+  if (included.length === 0 && (stepBindings.get(registry)?.length ?? 0) === 0) {
     throw turnCommandError('TURN_AVAILABLE_ACTION_SET_EMPTY', 'No registered action is available in committed state.');
   }
   const actionSet = deepFreeze({

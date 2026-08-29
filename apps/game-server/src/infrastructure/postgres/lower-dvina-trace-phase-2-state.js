@@ -25,7 +25,9 @@ export function buildPhase2Snapshot({
   }];
   return {
     ...runtimeState,
-    schema: 'rus.lower_dvina_trace_phase_2_snapshot.v1',
+    schema: state.schema === 'rus.lower_dvina_trace_turn_snapshot.v2'
+      ? 'rus.lower_dvina_trace_turn_snapshot.v2'
+      : 'rus.lower_dvina_trace_phase_2_snapshot.v1',
     party_state: {
       ...state.party_state,
       state_version: nextVersion,

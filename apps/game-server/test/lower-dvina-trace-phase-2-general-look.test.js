@@ -76,6 +76,45 @@ test('revision 13 general look stays a generic player-safe turn',
     }
   });
 
+test('runtime passes temporal owner into prepared turn services', async () => {
+  let advanced = false;
+  const f = fixture({
+    scenarioBundle: bundle13,
+    materializationBundle: bundle13,
+    temporalAdvanceOwner: {
+      advance() {
+        advanced = true;
+        return { result: { clock_after: scheduledAt,
+          combined_change_set: { proposals: [] },
+          trace: { processed_boundary_ids: [] } } };
+      }
+    },
+    turnStepModel: createLowerDvinaTraceTurnStepTestModel()
+  });
+  const scheduledAt = { ...f.state.clock,
+    whole_minutes: String(BigInt(f.state.clock.whole_minutes) + 1n) };
+  const subject = { entity_kind: 'party', entity_id: f.partyId };
+  const candidate = { boundary_id: 'temporal-owner-regression',
+    idempotency_key: 'temporal-owner-regression', scheduled_at: scheduledAt,
+    source_ref: subject, primary_subject_ref: subject, scope_ref: subject,
+    resolution_class: 'propagation_background', subject_refs: [subject],
+    causal_parent_refs: [] };
+  f.state.temporal_boundary_candidates = [candidate];
+  f.state.temporal_source_proof = {
+    schema: 'lower_dvina_trace_temporal_source_proof', version: 2,
+    owner: '@rus/time-events-history/temporal-boundaries',
+    same_time_cascade_owner:
+      '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
+    admission_policy: 'pass_exact_candidates_to_temporal_activity_owner',
+    pending_event_count: 0, active_schedule_count: 0, candidate_count: 1,
+    candidates: [candidate]
+  };
+  await f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'temporal-owner-regression',
+    idempotency_key: 'temporal-owner-regression', raw_text: 'Осмотреться' } });
+  assert.equal(advanced, true);
+});
+
 test('runtime keeps inherited A1/F1 owners through revisions 24 and 25',
   async (t) => {
     const [actionProductionProfile, localFireProfile] = await Promise.all([

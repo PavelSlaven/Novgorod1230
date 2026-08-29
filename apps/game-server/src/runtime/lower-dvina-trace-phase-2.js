@@ -255,7 +255,8 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
-          randomSource: turnRandomSource, decisionSecret, decisionNow: now, turnBudget,
+          randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
+          decisionNow: now, turnBudget,
         });
         try {
           const result = await runTurnWorkflow(

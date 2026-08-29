@@ -78,11 +78,33 @@ test('turn step model sends the validated request to the isolated planner role',
     'A general look around already visible surroundings uses the mapped',
     'achieved direct result',
     'Focused inspect or search for hidden or new details uses discovery',
+    'ordinary_resolution.discovery_available is true',
+    'exactly one request_discovery',
+    'one current visible target_ref',
+    'preserve the player query',
     'never grant an impossible result',
     'create an absent referent',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
+});
+
+test('turn step planner prompt routes focused ordinary discovery without narrowing queries', async () => {
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    } }
+  });
+  await model(request({
+    remaining_intent: 'внимательно осмотреть берег и найти обычную деталь',
+    player_safe_state: { position: { location_ref: 'shore' },
+      ordinary_resolution: { discovery_available: true,
+        container_resolution_available: false } }
+  }));
+  assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
+  assert.match(prompt, /general look remains the mapped direct result/u);
 });
 
 test('turn step planner prompt preserves only compound intent outside capability coverage', async () => {

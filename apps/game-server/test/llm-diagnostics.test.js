@@ -173,7 +173,8 @@ test('failed turn-step diagnostics retain codes without model text', () => {
     ], prompt: 'hidden prompt', original_output: { prose: 'hidden prose' } }
   };
   assert.deepEqual(buildLlmTurnReport({ failure: raw }).failure, {
-    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['required']
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['required'],
+    validation_scopes: ['operation', 'plan']
   });
   const serialized = JSON.stringify(buildLlmTurnReport({ failure: raw }));
   for (const secret of ['secret prose', 'raw output', 'hidden prompt',
@@ -185,13 +186,15 @@ test('turn context retains sanitized turn-step codes after report assembly', asy
   await assert.rejects(diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' },
     async () => { throw Object.assign(new Error('secret'), {
       code: 'TURN_STEP_PLAN_INVALID', details: { errors: [
-        { code: 'unknown_ref', message: 'hidden ref' },
-        { code: 'provider_dump', message: 'raw output' }
+        { path: '$.interpretation.hidden-party-42', code: 'unknown_ref',
+          message: 'hidden ref' },
+        { path: '$.secret-provider-data', code: 'provider_dump', message: 'raw output' }
       ] }
     }); }));
   const report = diagnostics.report({ party_id: 'party-1', request_id: 'turn-1' });
   assert.deepEqual(report.failure, {
-    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['unknown_ref']
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['unknown_ref'],
+    validation_scopes: ['interpretation']
   });
   assert.equal(JSON.stringify(report).includes('hidden ref'), false);
   assert.equal(JSON.stringify(report).includes('raw output'), false);

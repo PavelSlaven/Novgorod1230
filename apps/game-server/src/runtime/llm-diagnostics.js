@@ -207,9 +207,21 @@ function safeTurnStepFailure(value = {}) {
   const codes = Array.isArray(source)
     ? [...new Set(source.map(text)
       .filter((code) => SAFE_TURN_STEP_VALIDATION_CODES.has(code)))] : [];
+  const errors = Array.isArray(value?.details?.errors) ? value.details.errors : [];
+  const scopes = Array.isArray(value?.validation_scopes)
+    ? value.validation_scopes
+    : [...new Set(errors.map(({ path }) => turnStepValidationScope(path)).filter(Boolean))];
   return codes.length === 0 ? null : Object.freeze({
-    code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes)
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes),
+    ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
   });
+}
+function turnStepValidationScope(path) {
+  const value = text(path);
+  if (/^\$\.operations(?:\[\d+\])?(?:\.|$)/u.test(value)) return 'operation';
+  for (const scope of ['interpretation', 'activity', 'check', 'continuation',
+    'clarification']) if (value === `$.${scope}` || value.startsWith(`$.${scope}.`)) return scope;
+  return /^\$\.[a-z_]+$/u.test(value) ? 'plan' : null;
 }
 function safeNpcCombatFailure(value = {}) {
   if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;

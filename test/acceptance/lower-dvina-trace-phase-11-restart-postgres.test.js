@@ -239,11 +239,12 @@ async function latestState(environment, partyId) {
 async function submit(environment, partyId, id, rawText, identityOptions) {
   try {
     const identity = environment.requestIdentity(partyId, id, identityOptions);
-    return await post(environment,
-      `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, {
-        ...identity,
-        raw_text: rawText
-      });
+    const pathname = `/api/v1/parties/${encodeURIComponent(partyId)}/turns`;
+    const input = { ...identity, raw_text: rawText };
+    const result = await post(environment, pathname, input);
+    return result.screen?.screen_status === 'committed_presentation_pending'
+      ? post(environment, pathname, input)
+      : result;
   } catch (error) {
     const recentRequests = environment.llm.requests.slice(-20).map((entry) => ({
       model: entry.body?.model,

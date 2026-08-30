@@ -245,88 +245,40 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
   assert.equal(forbiddenPortrait.error.code, 'generated_schema_mismatch');
 });
 
-test('P16 seals an approved narration into an initially delivered job', async () => {
+test('P16 admits facts with a pending narration job', async () => {
   const base = input();
-  const narration = {
-    party_id: 'p', kind: 'approved_narration',
-    request_id: 'turn-1', package_id: 'visible-cs',
-    package_digest: base.visible_package_envelope.package_digest,
-    text: 'Изменение зафиксировано.',
-    dependency_pins: base.visible_package_envelope.dependency_pins,
-    flow_result: {
-      version: 1, schema: 'narration_flow_result', request_id: 'turn-1',
-      status: 'approved', pass: true,
-      approved_output: { version: 1, schema: 'narration_output',
-        output_id: 'turn-1', prose: 'Изменение зафиксировано.',
-        action_options: [], used_references: [], self_check: {} },
-      final_audit: { version: 1, schema: 'narration_audit', pass: true,
-        concerns: [], evidence: ['visible_context'] },
-      generation_history: [], audit_history: [], repair_history: []
-    }
-  };
-  narration.canonical_digest = computeSpatialV3CanonicalDigest(narration);
+  let narrationCalls = 0;
   const built = await buildCombinedWritePlan(input(), {
-    verifyApproval: approval, approveNarration: async () => narration
+    verifyApproval: approval,
+    async approveNarration() { narrationCalls += 1; }
   });
   assert.equal(built.ok, true);
+  assert.equal(narrationCalls, 0);
   const job = built.plan.inserts.find(({ target_table }) =>
     target_table === 'party_narration_jobs');
   assert.deepEqual(job.record, {
     job_id: 'narration-job:visible-cs', party_id: 'p', package_id: 'visible-cs',
-    status: 'delivered',
-    idempotency_key: `presentation:visible-cs:${base.visible_package_envelope.package_digest}`,
-    next_attempt_ordinal: 1, narration_output: narration,
-    output_digest: narration.canonical_digest
+    status: 'pending',
+    idempotency_key:
+      `presentation:visible-cs:${base.visible_package_envelope.package_digest}`
   });
   assert.equal(validateSpatialV3CombinedWritePlan(built.plan), true);
-  narration.text = 'Подмена.';
-  const rejected = await buildCombinedWritePlan(input(), {
-    verifyApproval: approval, approveNarration: async () => narration
-  });
-  assert.equal(rejected.error.code, 'visible_package_persistence_gap');
 
-  const narrationFailure = Object.assign(new Error('secret prose'), {
-    code: 'TRACE_PHASE_2_NARRATION_REJECTED'
-  });
-  const failedApproval = await buildCombinedWritePlan(input(), {
-    verifyApproval: approval,
-    approveNarration: async () => { throw narrationFailure; }
-  });
-  assert.equal(failedApproval.error.code, 'visible_package_persistence_gap');
-  assert.deepEqual(failedApproval.error.diagnostics, {
-    stage: 'narration_approval',
-    reason: 'TRACE_PHASE_2_NARRATION_REJECTED'
-  });
-  assert.equal(JSON.stringify(failedApproval).includes('secret prose'), false);
+  const forged = structuredClone(built.plan);
+  const forgedJob = forged.inserts.find(({ target_table }) =>
+    target_table === 'party_narration_jobs');
+  forgedJob.record.status = 'delivered';
+  assert.equal(validateSpatialV3CombinedWritePlan(forged), false);
 
-  narration.text = 'Изменение зафиксировано.';
   const afterNarration = input();
   afterNarration.lock_context.physical_keys = [];
-  const failedInvariant = await buildCombinedWritePlan(afterNarration, {
-    verifyApproval: approval, approveNarration: async () => narration
-  });
+  const failedInvariant = await buildCombinedWritePlan(afterNarration,
+    { verifyApproval: approval });
   assert.equal(failedInvariant.error.code, 'lock_order_violation');
   assert.equal(failedInvariant.error.diagnostics.stage,
     'write_plan_invariant');
   assert.equal(failedInvariant.error.diagnostics.reason,
     'physical_lock_key_missing');
-
-  for (const mutate of [
-    (value) => { value.request_id = 'foreign-turn'; },
-    (value) => { value.package_id = 'foreign-package'; },
-    (value) => { value.flow_result.final_audit.version = 2; },
-    (value) => { value.flow_result.final_audit.evidence = []; }
-  ]) {
-    const forged = structuredClone(narration);
-    forged.text = forged.flow_result.approved_output.prose;
-    mutate(forged);
-    const { canonical_digest, ...payload } = forged;
-    forged.canonical_digest = computeSpatialV3CanonicalDigest(payload);
-    const result = await buildCombinedWritePlan(input(), {
-      verifyApproval: approval, approveNarration: async () => forged
-    });
-    assert.equal(result.error.code, 'visible_package_persistence_gap');
-  }
 });
 
 test('P16 builder snapshots outer ordinary plan input without executing accessors', async () => {

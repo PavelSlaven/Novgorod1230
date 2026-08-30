@@ -57,8 +57,7 @@ export async function commitLowerDvinaTracePhase8Accusation({ partyId,
     : 'trace_phase_8_accusation';
   const builder = createCombinedWritePlanBuilder({ verifyApproval:
     async (candidate) => ({ ok: candidate.party_id === partyId
-      && candidate.operation_kind === operationKind }),
-    approveNarration: committer.approveNarration });
+      && candidate.operation_kind === operationKind }) });
   const semantic = accusation?.semantic_exchange ?? null;
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase8:${turnNumber}`, party_id: partyId,

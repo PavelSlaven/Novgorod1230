@@ -2,7 +2,6 @@ import {
   computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
-import { validateNarrationFlowResult } from '@rus/narration';
 import {
   CHILD_TABLES,
   FIRST_ENTRY_BINDING_FIELDS,
@@ -201,8 +200,15 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       || computeSpatialV3CanonicalDigest(visibleWrites[0].record) !== computeSpatialV3CanonicalDigest(envelope)
       || narrationJobs.length !== 1
       || narrationJobs[0].id !== expectedJobId
-      || !validNarrationJob(narrationJobs[0].record, plan.party_id, envelope,
-        expectedJobId)) return false;
+      || computeSpatialV3CanonicalDigest(narrationJobs[0].record)
+        !== computeSpatialV3CanonicalDigest({
+          job_id: expectedJobId,
+          party_id: plan.party_id,
+          package_id: envelope?.package_id,
+          status: 'pending',
+          idempotency_key:
+            `presentation:${envelope?.package_id}:${envelope?.package_digest}`
+        })) return false;
   } else if (plan.visible_package_envelope != null || visibleWrites.length || narrationJobs.length) {
     return false;
   }
@@ -212,39 +218,6 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       && item.id === write.id
       && Number.isInteger(item.state_version)
       && item.state_version >= 0));
-}
-
-function validNarrationJob(record, partyId, envelope, jobId) {
-  const base = {
-    job_id: jobId,
-    party_id: partyId,
-    package_id: envelope?.package_id,
-    idempotency_key: `presentation:${envelope?.package_id}:${envelope?.package_digest}`
-  };
-  const pending = { ...base, status: 'pending' };
-  if (computeSpatialV3CanonicalDigest(record) === computeSpatialV3CanonicalDigest(pending)) return true;
-  const output = record?.narration_output;
-  if (record?.status !== 'delivered' || record.next_attempt_ordinal !== 1
-      || record.output_digest !== output?.canonical_digest
-      || output?.kind !== 'approved_narration' || output.party_id !== partyId
-      || output.request_id !== envelope?.turn_id
-      || output.package_id !== envelope?.package_id
-      || output.package_digest !== envelope?.package_digest
-      || computeSpatialV3CanonicalDigest(output.dependency_pins)
-        !== computeSpatialV3CanonicalDigest(envelope?.dependency_pins)) return false;
-  const { canonical_digest, ...payload } = output;
-  const flow = output.flow_result;
-  return validateNarrationFlowResult(flow).ok
-    && flow.request_id === envelope?.turn_id && flow.status === 'approved'
-    && flow.pass === true && flow.final_audit?.schema === 'narration_audit'
-    && flow.final_audit?.pass === true && Array.isArray(flow.final_audit?.concerns)
-    && flow.final_audit.concerns.length === 0
-    && flow.approved_output?.prose === output.text
-    && output.canonical_digest === computeSpatialV3CanonicalDigest(payload)
-    && computeSpatialV3CanonicalDigest(record) === computeSpatialV3CanonicalDigest({
-      ...base, status: 'delivered', next_attempt_ordinal: 1,
-      narration_output: output, output_digest: output.canonical_digest
-    });
 }
 
 

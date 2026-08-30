@@ -14,7 +14,7 @@ const REQUIRED_ROLES = Object.freeze(['player_conversation_interpreter', 'npc_co
 const AUTHORITATIVE_TURN_CEILING_MS = 30_000;
 const IMPOSSIBLE_DOMAIN_REJECTION_TEST = 'apps/game-server/test/lower-dvina-trace-turn-step-llm.test.js#impossible jump and absent spaceship plans stay grounded model contracts/jump';
 export const DETERMINISTIC_PROOFS = Object.freeze([
-  proof('narration-audit-failure-before-commit', 'apps/game-server/test/lower-dvina-trace-precommit-narration-failure.test.js#required precommit narration failures reject before factual commit'),
+  proof('narration-failure-after-factual-commit', 'apps/game-server/test/lower-dvina-trace-phase-2.test.js#narration failure after factual commit returns its pending public result'),
   proof('deadline-exhaustion-before-commit', 'apps/game-server/test/lower-dvina-trace-turn-budget-boundary.test.js#pre-commit reserve blocks phase 2 repository commit'),
   proof('narration-localized-semantic-repair', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'),
   proof('cross-workflow-gameplay-repairs', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider')

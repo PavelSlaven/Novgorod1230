@@ -164,13 +164,12 @@ export async function commitLowerDvinaTracePhase2({
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: snapshot, screen: pendingScreen
   });
-  const built = await buildLowerDvinaTracePhase2P16Plan({
-    partyId, state, factual, visibleEnvelope, writes, nextVersion,
-    turnNumber, changeSetId, idemId, inputDigest, contracts,
-    turnStepCommit: writePlan.turn_step_commit,
-    localFirePlans: writePlan.local_fire_atomic_write_plans ?? [],
-    approveNarration: committer.approveNarration
-  });
+    const built = await buildLowerDvinaTracePhase2P16Plan({
+      partyId, state, factual, visibleEnvelope, writes, nextVersion,
+      turnNumber, changeSetId, idemId, inputDigest, contracts,
+      turnStepCommit: writePlan.turn_step_commit,
+      localFirePlans: writePlan.local_fire_atomic_write_plans ?? []
+    });
   const committed = await committer.commit({
     plan: built.plan,
     created_at_turn: turnNumber

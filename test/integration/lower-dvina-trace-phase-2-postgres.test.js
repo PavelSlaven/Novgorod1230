@@ -274,7 +274,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
          ON jobs.job_id=attempts.job_id
       WHERE jobs.party_id=$1`,
     [opened.party_id]
-  )).rows[0].count, 0);
+  )).rows[0].count, 1);
   const firstSnapshot = (await pool.query(
     `SELECT state_payload
        FROM party_runtime.party_state_snapshots
@@ -526,14 +526,16 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  await assert.rejects(() => retryRuntime.submitTurn(
+  const pendingNarration = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
-  ), { code: 'TRACE_PHASE_2_WRITE_PLAN_REJECTED' });
+  );
+  assert.equal(pendingNarration.screen.screen_status,
+    'committed_presentation_pending');
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    retryParty.party_id), 0);
+    retryParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
-    retryParty.party_id), 0);
+    retryParty.party_id), 1);
   assert.equal(retrySemanticCalls, 1);
   assert.equal(retryRolls, 1);
   assert.equal(
@@ -543,7 +545,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
         WHERE party_id=$1`,
       [retryParty.party_id]
     )).rows[0].whole_minutes,
-    '333060'
+    '333075'
   );
   const retryRestart = buildRuntime({
     pool,
@@ -563,8 +565,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   );
   assert.equal(afterNarrationRetry.option_id, 'inspect_wreck_in_detail');
   assert.equal(narrationCalls, 2);
-  assert.equal(retrySemanticCalls, 2);
-  assert.equal(retryRolls, 2);
+  assert.equal(retrySemanticCalls, 1);
+  assert.equal(retryRolls, 1);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
   const afterNarrationResolved = await retryRuntime.submitTurn(
@@ -577,8 +579,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     }
   );
   assert.equal(afterNarrationResolved.turn_number, 2);
-  assert.equal(retrySemanticCalls, 3);
-  assert.equal(retryRolls, 3);
+  assert.equal(retrySemanticCalls, 2);
+  assert.equal(retryRolls, 2);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 2);
   const historicalAfterNarration = await retryRuntime.submitTurn(
@@ -586,8 +588,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     retryInput
   );
   assert.deepEqual(historicalAfterNarration, afterNarrationRetry);
-  assert.equal(retrySemanticCalls, 3);
-  assert.equal(retryRolls, 3);
+  assert.equal(retrySemanticCalls, 2);
+  assert.equal(retryRolls, 2);
 
   await assertGeneralLookUsesOpeningScene({
     pool,

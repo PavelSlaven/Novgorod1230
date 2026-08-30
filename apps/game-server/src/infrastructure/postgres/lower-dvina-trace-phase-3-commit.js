@@ -216,13 +216,12 @@ export async function commitLowerDvinaTracePhase3({
   });
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === operationKind
-        && candidate.canonical_input_digest
-          === integratedInput.canonical_input_digest
-    }),
-    approveNarration: committer.approveNarration
-  });
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === operationKind
+          && candidate.canonical_input_digest
+            === integratedInput.canonical_input_digest
+      })
+    });
   const built = await builder.build(integratedInput);
   if (!built.ok) {
     throw serverError(

@@ -171,12 +171,11 @@ export async function commitLowerDvinaTraceTurnStep({
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
-  const built = await buildLowerDvinaTraceTurnStepCommitPlan({
-    partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlans, spatialSemanticPlan,
-    approveNarration: committer.approveNarration
-  });
+    const built = await buildLowerDvinaTraceTurnStepCommitPlan({
+      partyId, state, envelope, inputDigest, visibleEnvelope, writes,
+      turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
+      localFirePlans, spatialSemanticPlan
+    });
   const committed = await committer.commit({
     plan: built.plan,
     created_at_turn: turnNumber

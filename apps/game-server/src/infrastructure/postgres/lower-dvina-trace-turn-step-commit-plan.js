@@ -18,8 +18,7 @@ import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } fro
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null,
-  approveNarration
+  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
@@ -34,12 +33,11 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
   }
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_turn_step'
-        && candidate.canonical_input_digest === canonicalInputDigest
-    }),
-    approveNarration
+      verifyApproval: async (candidate) => ({
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === 'trace_turn_step'
+          && candidate.canonical_input_digest === canonicalInputDigest
+      })
   });
   const built = await builder.build({
     plan_id: `p16:${partyId}:turn-step:${turnNumber}`,

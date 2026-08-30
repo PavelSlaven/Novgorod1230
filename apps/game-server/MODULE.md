@@ -28,12 +28,6 @@ and adds no second transaction owner.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 - Владеет одним logical context для `submitTurn`: 30 с на весь ход, из них до 25 с на критический LLM path и 5 с детерминированного резерва. Role runner применяет одинаковый clamp к default и custom provider; autonomous retry остаётся в том же context и не получает новый budget. До provider call исчерпанный budget даёт controlled `LLM_TURN_BUDGET_EXHAUSTED`. После factual commit persisted projection и screen persistence получают remaining deadline через PostgreSQL `statement_timeout`; narration и остальные стадии проверяют тот же context до и после выполнения. Diagnostics показывает union wall time параллельных calls и их sum duration; `Promise.race`, detached work и обход общего context запрещены. Это gameplay deadline, не 120-секундный transport safeguard для admin/eval и других non-gameplay calls.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and, only for flagged segments, `gameplay_narrator_semantic_repair`; writer получает player-safe action-intent context (`raw_text`/selected option) только для понимания попытки, не как evidence success/world fact; auditor и semantic repair получают only visible_context. `@rus/narration` deterministically validates schema, visible context, hidden leaks, immutable segment reassembly and final audit. No router, senior cascade or narration fallback exists.
-- Для активного Lower Dvina P16 adapter передаёт `approveNarration` только
-  после `verifyApproval`: approved prose, связанная с sealed visible-package
-  envelope, записывается как `party_narration_jobs.status = delivered` в том
-  же physical transaction до factual commit. Stage 16 читает эту delivered
-  row и не вызывает LLM; deferred presentation lifecycle остаётся отдельным
-  для путей без precommit port.
 
 ## Не владеет
 
@@ -262,7 +256,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling, not a rollback promise for an already committed deferred-presentation turn. Active precommit-narration P16 fails before physical commit if approval/delivery is absent.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
 

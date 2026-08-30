@@ -126,11 +126,10 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
-  const built = await buildPhase7P16Plan({
-    partyId, writePlan, inputDigest, phase7Contracts, state, factual,
-    turnNumber, changeSetId, idemId, visibleEnvelope, writes, operationBatch,
-    ordinaryPlan, actionProductionPlans, localFirePlans, spatialSemanticPlan,
-    approveNarration: committer.approveNarration
+    const built = await buildPhase7P16Plan({
+      partyId, writePlan, inputDigest, phase7Contracts, state, factual,
+      turnNumber, changeSetId, idemId, visibleEnvelope, writes, operationBatch,
+      ordinaryPlan, actionProductionPlans, localFirePlans, spatialSemanticPlan
   });
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: next, screen: pendingScreen
@@ -161,7 +160,7 @@ function selectedCarrierPlan(phase7) {
 }
 function temporalLocalFirePlans(result){return(result?.combined_change_set?.proposals??[]).flatMap((proposal)=>proposal.local_fire_atomic_write_plans??[]);} export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase7Contracts,
-  committer: suppliedCommitter = null, approveNarration }) {
+  committer: suppliedCommitter = null }) {
   const writePlan={base_state_version:state.party_state.state_version,
     write_targets: [{ target: 'party_state', value: factual }, {
       target: 'party_visible_context_package', value: visibleContext
@@ -174,7 +173,6 @@ function temporalLocalFirePlans(result){return(result?.combined_change_set?.prop
     phase7Contracts,
     loadState: async () => state,
     committer: suppliedCommitter ?? {
-      approveNarration,
       async commit(input) {
         captured = input;
         return { ok: true };

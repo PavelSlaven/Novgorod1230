@@ -14,16 +14,15 @@ export async function buildLowerDvinaTracePhase2P16Plan(input) {
   const {
     partyId, state, factual, visibleEnvelope, writes, turnNumber,
     changeSetId, idemId, inputDigest, contracts, turnStepCommit,
-    localFirePlans, approveNarration
+    localFirePlans
   } = input;
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_wreck_inspection'
-        && candidate.canonical_input_digest === canonicalInputDigest
-    }),
-    approveNarration
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === 'trace_wreck_inspection'
+          && candidate.canonical_input_digest === canonicalInputDigest
+      })
   });
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase2:${turnNumber}`,

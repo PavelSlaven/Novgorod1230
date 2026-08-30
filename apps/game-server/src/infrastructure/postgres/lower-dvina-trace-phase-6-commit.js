@@ -68,11 +68,11 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     state, next, factual, turnNumber, changeSetId, idemId, visibleEnvelope,
     pendingScreen }), turnStep.writes);
   const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_phase_6_carry'
-    }), approveNarration: committer.approveNarration
-  });
+      verifyApproval: async (candidate) => ({
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === 'trace_phase_6_carry'
+      })
+    });
   const baseInput = {
     plan_id: `p16:${partyId}:trace-phase6:${turnNumber}`,
     party_id: partyId,

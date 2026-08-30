@@ -72,10 +72,10 @@ test('failed turn diagnostics retain only the safe write-plan cause', async () =
     Object.assign(error, {
       code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
       details: {
-        code: 'visible_package_persistence_gap',
+        code: 'lock_order_violation',
         diagnostics: {
-          stage: 'narration_approval',
-          reason: 'TRACE_PHASE_2_NARRATION_REJECTED',
+          stage: 'write_plan_invariant',
+          reason: 'physical_lock_key_missing',
           hidden_state: 'secret'
         },
         subject_ref: { entity_id: 'hidden-party-ref' }
@@ -86,9 +86,9 @@ test('failed turn diagnostics retain only the safe write-plan cause', async () =
   const report = diagnostics.report({ party_id: 'party-safe' });
   assert.deepEqual(report.failure, {
     code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
-    detail_code: 'visible_package_persistence_gap',
-    stage: 'narration_approval',
-    reason: 'TRACE_PHASE_2_NARRATION_REJECTED'
+    detail_code: 'lock_order_violation',
+    stage: 'write_plan_invariant',
+    reason: 'physical_lock_key_missing'
   });
   assert.equal(JSON.stringify(report).includes('secret'), false);
   assert.equal(JSON.stringify(report).includes('hidden-party-ref'), false);

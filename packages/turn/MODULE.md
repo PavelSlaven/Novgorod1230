@@ -124,13 +124,6 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 
 Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, `turnStepModel`, player-safe working projector, step execution registry, check-context resolver, optional RNG, persisted-visible reader, code-owned visible projector, narrator и party-store/server adapters). Closed bounded choices дополнительно используют прежние identity/expiry ports. Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL. Порядок общего workflow фиксирован как committed state → exact command или player step loop → revalidation → domain/check/time/body owners → code-owned write plan → factual commit → persisted safe projection → narration.
 
-Активный production P16 path расширяет только сборку sealed write plan: после
-code approval/`verifyApproval` injected `approveNarration` утверждает prose,
-связанную с visible-package envelope, до seal и physical factual commit. Успех
-добавляет `party_narration_jobs` со статусом `delivered` и sealed output в тот
-же atomic plan. Его Stage 16 читает delivered row и не вызывает LLM. Это не
-меняет общий stage order или deferred narration lifecycle путей без этого port.
-
 ## Target / activation
 
 Temporal v4 surfaces use current `temporal-world-v1.1` /

@@ -47,11 +47,10 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   const writes = mergeLowerDvinaTraceTurnStepWrites(combatWrites({ partyId,
     state, next, factual, turnNumber, changeSetId, idemId, visibleEnvelope,
     pendingScreen }), turnStep.writes);
-  const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({ ok:
-      candidate.party_id === partyId
-      && candidate.operation_kind === 'combat_exchange' }),
-    approveNarration: committer.approveNarration });
+    const builder = createCombinedWritePlanBuilder({
+      verifyApproval: async (candidate) => ({ ok:
+        candidate.party_id === partyId
+        && candidate.operation_kind === 'combat_exchange' }) });
   let buildInput = {
     plan_id: `p16:${partyId}:combat:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit', operation_kind: 'combat_exchange',

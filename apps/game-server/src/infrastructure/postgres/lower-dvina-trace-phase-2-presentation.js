@@ -8,71 +8,6 @@ import {
 import { queryWithTurnDeadline } from './query-with-turn-deadline.js';
 import { phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
-import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
-import { serverError } from '../../errors.js';
-
-export function createLowerDvinaTracePhase2PrecommitNarrationApprover({
-  narrationService
-} = {}) {
-  if (typeof narrationService?.run !== 'function') {
-    throw new TypeError('Phase 2 narration approver requires narration owner.');
-  }
-  return Object.freeze({
-    async approveNarration({ visible_package_envelope: envelope,
-      semantic_command_snapshot: commandSnapshot, turnBudget = null } = {}) {
-      if (!envelope?.party_id || !envelope.package_id
-          || !envelope.package_digest || !envelope.turn_id
-          || !envelope.visible_payload) {
-        throw presentationError();
-      }
-      const flow = await runWithinTurnDeadline(turnBudget, () =>
-        narrationService.run({
-          version: 1,
-          schema: 'narration_request',
-          request_id: envelope.turn_id,
-          surface: 'turn',
-          visible_context: phase2VisibleContextFromPayload(
-            envelope.visible_payload
-          ),
-          context: narrationPlayerActionContext(envelope.party_id, commandSnapshot),
-          style_policy: {
-            preserve_uncertainty: true,
-            no_new_world_facts: true
-          },
-          max_repairs: 1
-        })
-      );
-      if (flow?.status !== 'approved' || flow.pass !== true
-          || flow.final_audit?.pass !== true || !flow.approved_output?.prose) {
-        const error = presentationError();
-        error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
-        throw error;
-      }
-      return sealApprovedNarration({ envelope, flow });
-    }
-  });
-}
-
-export function createLowerDvinaTracePhase2PrecommitNarrationCommitter({
-  committer, narrationApprover, turnBudget = null
-} = {}) {
-  return Object.freeze({
-    approveNarration: (candidate) => narrationApprover.approveNarration({
-      visible_package_envelope: candidate?.visible_package_envelope,
-      semantic_command_snapshot: candidate?.semantic_command_snapshot,
-      turnBudget
-    }),
-    async commit({ plan, ...input }) {
-      turnBudget?.assertCanCommit();
-      if (!plan?.inserts?.some(({ target_table, record }) =>
-        target_table === 'party_narration_jobs' && record?.status === 'delivered')) {
-        throw serverError('TRACE_PHASE_2_NARRATION_REJECTED',
-          'Approved narration is required before factual commit.', { status: 409 });
-      }
-      return committer.commit({ plan, ...input, turnBudget });
-    }
-  });
-}
 
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
@@ -134,10 +69,12 @@ export function createLowerDvinaTracePhase2DurableNarrator({
           presentation_status: 'failed_retryable',
           failure: {
             stage: 'narration',
-            message: String(error?.message ?? 'Narration failed.')
+            message: 'Narration provider failed.'
           }
-        }).catch(() => {});
-        throw error;
+        });
+        const rejected = presentationError();
+        rejected.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+        throw rejected;
       }
       if (flow?.status !== 'approved' || flow.pass !== true
           || !flow.approved_output?.prose) {
@@ -261,16 +198,4 @@ function presentationError() {
     new Error('Persisted Phase 2 narration lifecycle is inconsistent.'),
     { code: 'TRACE_PHASE_2_PRESENTATION_INVALID' }
   );
-}
-
-function narrationPlayerActionContext(partyId, snapshot) {
-  const rawText = typeof snapshot?.raw_text === 'string'
-    ? snapshot.raw_text : null;
-  const optionId = typeof snapshot?.selected_option_id === 'string'
-    ? snapshot.selected_option_id : null;
-  return {
-    ...(rawText == null ? {} : { player_input: { party_id: partyId,
-      raw_text: rawText } }),
-    ...(optionId == null ? {} : { mode_resolution: { option_id: optionId } })
-  };
 }

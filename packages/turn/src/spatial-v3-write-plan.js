@@ -3,7 +3,6 @@ import {
   createSpatialV3TypedError,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
-import { validateNarrationFlowResult } from '@rus/narration';
 
 import {
   ALLOWED,
@@ -64,7 +63,6 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const action_production_atomic_write_plans = actionProductionPlans;
   const local_fire_atomic_write_plans = localFirePlans;
   const spatial_semantic_atomic_write_plan = spatialSemanticPlan;
-  const approveNarration = ownData(options, 'approveNarration');
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
@@ -107,30 +105,6 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     spatial_semantic_atomic_write_plan
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
-  let approvedNarration = null;
-  if (approveNarration !== undefined && write_plan_kind === 'semantic_commit') {
-    if (typeof approveNarration !== 'function') return fail('visible_package_persistence_gap',
-      party_id, { reason: 'narration approval port is invalid' });
-    try {
-      approvedNarration = snapshotJsonData(await approveNarration(clone({
-        party_id, operation_kind, canonical_input_digest, validation_report,
-        visible_package_envelope, approved_write_sets,
-        semantic_command_snapshot: idempotency.semantic_command_snapshot == null
-          ? null : clone(idempotency.semantic_command_snapshot),
-        ordinary_materialization_atomic_write_plan,
-        action_production_atomic_write_plans, local_fire_atomic_write_plans,
-        spatial_semantic_atomic_write_plan
-      })));
-    } catch(error){const code=String(error?.code??'');return fail(
-      'visible_package_persistence_gap',party_id,{stage:'narration_approval',
-        reason:/^[A-Z][A-Z0-9_]{0,127}$/u.test(code)?code:
-          'narration_approval_rejected'});}
-    if (approvedNarration === INVALID_INPUT || !validApprovedNarration(
-      approvedNarration, party_id, visible_package_envelope)) return fail(
-      'visible_package_persistence_gap', party_id,
-      { stage: 'narration_approval',
-        reason: 'narration_result_binding_invalid' });
-  }
   const r=(code,diagnostics)=>fail(code,party_id,
     {stage:'write_plan_invariant',...diagnostics});
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -154,21 +128,12 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       record: clone(visible_package_envelope),
       operation_mode: 'appends'
     };
-    const narrationJobRecord = approvedNarration == null ? {
+    const narrationJobRecord = {
       job_id: narrationJobId,
       party_id,
       package_id: visible_package_envelope.package_id,
       status: 'pending',
       idempotency_key: `presentation:${visible_package_envelope.package_id}:${visible_package_envelope.package_digest}`
-    } : {
-      job_id: narrationJobId,
-      party_id,
-      package_id: visible_package_envelope.package_id,
-      status: 'delivered',
-      idempotency_key: `presentation:${visible_package_envelope.package_id}:${visible_package_envelope.package_digest}`,
-      next_attempt_ordinal: 1,
-      narration_output: clone(approvedNarration),
-      output_digest: approvedNarration.canonical_digest
     };
     const narrationJobWrite = {
       target_schema: 'party_runtime',
@@ -432,26 +397,4 @@ function containsKey(value, key, seen = new WeakSet()) {
   seen.add(value);
   if (Object.hasOwn(value, key)) return true;
   return Object.values(value).some((child) => containsKey(child, key, seen));
-}
-
-function validApprovedNarration(value, partyId, envelope) {
-  const flow = value?.flow_result;
-  if (!envelope || value?.kind !== 'approved_narration'
-      || value.party_id !== partyId || value.request_id !== envelope.turn_id
-      || value.package_id !== envelope.package_id
-      || value.package_digest !== envelope.package_digest
-      || !validateNarrationFlowResult(flow).ok
-      || flow.request_id !== envelope.turn_id || flow.status !== 'approved'
-      || flow.pass !== true || flow.final_audit?.schema !== 'narration_audit'
-      || flow.final_audit?.pass !== true
-      || !Array.isArray(flow.final_audit?.concerns)
-      || flow.final_audit.concerns.length !== 0
-      || !stable(flow.approved_output?.prose)
-      || value.text !== flow.approved_output.prose
-      || computeSpatialV3CanonicalDigest(value.dependency_pins)
-        !== computeSpatialV3CanonicalDigest(envelope.dependency_pins)
-      || !stable(value.canonical_digest)) return false;
-  const { canonical_digest, ...payload } = value;
-  return stable(canonical_digest)
-    && canonical_digest === computeSpatialV3CanonicalDigest(payload);
 }

@@ -2,9 +2,6 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { createLlmTurnBudget, GAMEPLAY_LLM_BUDGET_MS, GAMEPLAY_TURN_DEADLINE_MS } from './llm-turn-budget.js';
 
 const SAFE_WRITE_PLAN_FAILURES = new Set([
-  'narration_approval:visible_package_persistence_gap:TRACE_PHASE_2_NARRATION_REJECTED',
-  'narration_approval:visible_package_persistence_gap:narration_approval_rejected',
-  'narration_approval:visible_package_persistence_gap:narration_result_binding_invalid',
   'write_plan_invariant:visible_package_persistence_gap:presentation_write_owner_invalid',
   'write_plan_invariant:generated_schema_mismatch:write_record_shape_or_mode_invalid',
   'write_plan_invariant:state_version_conflict:write_identity_conflict',

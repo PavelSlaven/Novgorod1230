@@ -2,16 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
-import { createLowerDvinaTraceNarrationService } from
-  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { executeTraceTurnWithDiagnostics } from '../src/runtime/lower-dvina-trace-phase-2-runtime-input.js';
 import { withTurnDeadlineQueryPool, withTurnDeadlineTransaction } from
   '../src/infrastructure/postgres/query-with-turn-deadline.js';
 import { createTemporalPresentationPostgresStore } from
   '../src/infrastructure/postgres/temporal-presentation-store.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
-import { createLowerDvinaTracePhase2PrecommitNarrationApprover } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { sealApprovedNarration } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
@@ -86,48 +82,7 @@ test('durable narrator forwards gameplay deadline to presentation store', async 
   assert.equal(claimInput.turnBudget, turnBudget);
 });
 
-test('precommit narration approver keeps live budget outside cloneable narration request', async () => {
-  const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
-    sensory_details: [], visible_npcs: [], visible_objects: [],
-    known_context: [], uncertainties: [] };
-  let request = null;
-  const turnBudget = createLlmTurnBudget();
-  const roleRunner = { async run({ role_id, messages }) {
-    const payload = JSON.parse(messages.at(-1).content);
-    if (role_id === 'gameplay_narrator') {
-      request = payload;
-      assert.ok(turnBudget.current());
-      return { output: { version: 1, schema: 'narration_output',
-        output_id: payload.request_id, prose: 'Вода тихо идет у берега.',
-        action_options: [], used_references: [], self_check: {} } };
-    }
-    return { output: { version: 1, schema: 'narration_audit', pass: true,
-      concerns: [], evidence: ['visible_context'] } };
-  } };
-  const approver = createLowerDvinaTracePhase2PrecommitNarrationApprover({
-    narrationService: createLowerDvinaTraceNarrationService({ roleRunner })
-  });
-  const narration = await turnBudget.runTurn(() => approver.approveNarration({
-    visible_package_envelope: { party_id: 'party', package_id: 'package',
-      package_digest: 'digest', turn_id: 'turn', dependency_pins: {},
-      visible_payload },
-    turnBudget
-  }));
-  assert.equal(request.visible_context.visible_scene, 'Берег.');
-  assert.equal(Object.hasOwn(request, 'turnBudget'), false);
-  assert.equal(narration.request_id, 'turn');
-  assert.equal(narration.package_id, 'package');
-  assert.equal(narration.canonical_digest,
-    computeSpatialV3CanonicalDigest({
-      kind: narration.kind, party_id: narration.party_id,
-      request_id: narration.request_id, package_id: narration.package_id,
-      package_digest: narration.package_digest,
-      dependency_pins: narration.dependency_pins, text: narration.text,
-      flow_result: narration.flow_result
-    }));
-});
-
-test('durable narrator reuses precommitted delivered narration without LLM', async () => {
+test('durable narrator reuses persisted delivered narration without LLM', async () => {
   const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
     sensory_details: [], visible_npcs: [], visible_objects: [],
     known_context: [], uncertainties: [] };
@@ -160,6 +115,34 @@ test('durable narrator reuses precommitted delivered narration without LLM', asy
   assert.equal(calls, 0);
   assert.equal(result.presentation.output_digest, narration_output.canonical_digest);
 });
+
+test('durable narrator does not hide failed-retryable persistence failure',
+  async () => {
+    const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
+      sensory_details: [], visible_npcs: [], visible_objects: [],
+      known_context: [], uncertainties: [] };
+    const envelope = { party_id: 'party', package_id: 'package', turn_id: 'turn',
+      package_digest: computeSpatialV3CanonicalDigest(visible_payload),
+      dependency_pins: {}, visible_payload };
+    const persistenceFailure = new Error('presentation persistence failed');
+    const narrator = createLowerDvinaTracePhase2DurableNarrator({
+      partyPool: { query: async () => ({ rows: [envelope] }) },
+      narrationService: { async run() { throw new Error('provider failed'); } },
+      presentationStore: {
+        async claimPresentationAttempt() {
+          return { ok: true, disposition: 'started', attempt_id: 'attempt',
+            claim_token: 'claim' };
+        },
+        async finalizePresentationAttempt() { throw persistenceFailure; }
+      }
+    });
+    await assert.rejects(narrator.run({ request_id: 'turn',
+      visible_context: { version: 1, schema: 'visible_context_package',
+        visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
+        visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+        allowed_tensions: [], do_not_imply: [] } }),
+    (error) => error === persistenceFailure);
+  });
 
 test('Postgres read queries receive the current gameplay deadline as statement timeout', async () => {
   let remainingMs = 1_234.8;

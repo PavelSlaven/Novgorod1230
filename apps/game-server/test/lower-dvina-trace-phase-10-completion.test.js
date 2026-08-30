@@ -5,8 +5,6 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
 import { commitLowerDvinaTracePhase10 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-10-commit.js';
-import { sealApprovedNarration } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { buildTracePhase10Completion, resolveTracePhase10Contracts } from
   '../src/runtime/lower-dvina-trace-phase-10-completion.js';
 import { committedPendingReplayResult, completePendingTracePhase10Replay } from
@@ -139,28 +137,24 @@ test('commits one zero-time follow-up and exact retry is a no-op', async () => {
     first.committed_public_result);
 });
 
-test('Phase 10 preapproves narration and commits delivered job', async () => {
-  const approvals = [], plans = [];
+test('Phase 10 commits a pending narration job without presentation', async () => {
+  let approvals = 0;
+  const plans = [];
   await commitLowerDvinaTracePhase10({ partyId: 'party-1',
     phase10Contracts: contracts, loadState: async () => phase9State(),
     committer: {
-      async approveNarration(candidate) {
-        approvals.push(candidate);
-        return sealApprovedNarration({
-          envelope: candidate.visible_package_envelope,
-          flow: approvedFlow(candidate.visible_package_envelope.turn_id)
-        });
+      async approveNarration() {
+        approvals += 1;
+        throw new Error('presentation must follow factual commit');
       },
       async commit({ plan }) {
         plans.push(plan);
         return { ok: true, plan_digest: plan.digest };
       }
     } });
-  assert.equal(approvals.length, 1);
-  assert.deepEqual(approvals[0].visible_package_envelope,
-    plans[0].visible_package_envelope);
+  assert.equal(approvals, 0);
   assert.equal(plans[0].inserts.find(({ target_table: table }) =>
-    table === 'party_narration_jobs').record.status, 'delivered');
+    table === 'party_narration_jobs').record.status, 'pending');
 });
 
 test('failed Phase 10 commit leaves Phase 9 state intact', async () => {
@@ -472,17 +466,4 @@ function value(outcome, dimension) {
 function visibleValue(projection, dimension) {
   return projection.visible_completion_dimensions.find(
     ({ dimension_id: id }) => id === dimension).value_id;
-}
-
-function approvedFlow(requestId) {
-  return { version: 1, schema: 'narration_flow_result', request_id: requestId,
-    surface: 'turn', status: 'approved', pass: true,
-    approved_output: { version: 1, schema: 'narration_output',
-      output_id: `narration:${requestId}`, prose: 'Проверенная проза.',
-      action_options: [], used_references: [],
-      self_check: { no_new_world_facts: true } },
-    final_audit: { version: 1, schema: 'narration_audit', pass: true,
-      concerns: [], evidence: ['Grounded.'] },
-    repair_request: null, generation_history: [], audit_history: [],
-    repair_history: [], diagnostics: {} };
 }

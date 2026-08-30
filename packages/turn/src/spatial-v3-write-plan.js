@@ -27,7 +27,6 @@ const fail = (code, party_id, diagnostics = {}) => Object.freeze({ ok: false, er
 const identity = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 const canonicalWrites = (writes) => [...writes].sort((a, b) => identity(a).localeCompare(identity(b)));
 function freeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }
-/** Builds no domain decision: its verifier attests pre-approved input and it only seals the three physical write sets. */
 export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const input = rawInput;
   const ordinaryMaterializationPlan = snapshotOrdinaryPlan(rawInput);
@@ -122,18 +121,24 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
         action_production_atomic_write_plans, local_fire_atomic_write_plans,
         spatial_semantic_atomic_write_plan
       })));
-    } catch { approvedNarration = INVALID_INPUT; }
+    } catch(error){const code=String(error?.code??'');return fail(
+      'visible_package_persistence_gap',party_id,{stage:'narration_approval',
+        reason:/^[A-Z][A-Z0-9_]{0,127}$/u.test(code)?code:
+          'narration_approval_rejected'});}
     if (approvedNarration === INVALID_INPUT || !validApprovedNarration(
       approvedNarration, party_id, visible_package_envelope)) return fail(
       'visible_package_persistence_gap', party_id,
-      { reason: 'narration approval result must bind the sealed visible package' });
+      { stage: 'narration_approval',
+        reason: 'narration_result_binding_invalid' });
   }
+  const r=(code,diagnostics)=>fail(code,party_id,
+    {stage:'write_plan_invariant',...diagnostics});
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
   for (const set of approved_write_sets) {
     for (const mode of Object.keys(sets)) {
       for (const write of set?.[mode] ?? []) {
         if (PRESENTATION_TABLES.has(write?.target_table)) {
-          return fail('visible_package_persistence_gap', party_id, { reason: 'visible package and narration job writes are derived only from the sealed envelope' });
+          return r('visible_package_persistence_gap', { reason: 'presentation_write_owner_invalid' });
         }
         sets[mode].push({ ...clone(write), operation_mode: mode });
       }
@@ -189,14 +194,13 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       ? write.record.party_id != null
       : write.record.party_id !== party_id));
   if (invalidWrite) {
-    return fail('generated_schema_mismatch', party_id, {
-      reason:
-        `write record is not a known party-owned shape or operation mode: ${invalidWrite.mode}:${invalidWrite.write?.target_table}:${invalidWrite.write?.id}`
+    return r('generated_schema_mismatch', {
+      reason: 'write_record_shape_or_mode_invalid'
     });
   }
   for (const mode of Object.keys(sets)) sets[mode] = canonicalWrites(sets[mode]);
   const identities = Object.values(sets).flat().map(identity);
-  if (new Set(identities).size !== identities.length) return fail('state_version_conflict', party_id, { reason: 'insert/update/append/delete identities must be disjoint' });
+  if (new Set(identities).size !== identities.length) return r('state_version_conflict', { reason: 'write_identity_conflict' });
   const identitySet = new Set(identities);
   const externalSpatialParents = spatial_semantic_atomic_write_plan == null ? new Set() : new Set([
     `party_runtime.party_scene_baselines:${spatial_semantic_atomic_write_plan.formal_spatial_context?.baseline_ref}`,
@@ -205,11 +209,11 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   if (Object.values(sets).flat().some((write) =>
     childParentIdentities(write).some((parent) => !identitySet.has(parent)
       && !externalSpatialParents.has(parent)))) {
-    return fail('generated_schema_mismatch', party_id, { reason: 'party-owned child writes require their exact parent in the same sealed write plan' });
+    return r('generated_schema_mismatch', { reason: 'child_parent_missing' });
   }
-  if (!identities.every((value) => physicalKeys.has(value))) return fail('lock_order_violation', party_id, { reason: 'every physical write must declare its exact physical lock key' });
+  if (!identities.every((value) => physicalKeys.has(value))) return r('lock_order_violation', { reason: 'physical_lock_key_missing' });
   const changes = sets.appends.filter((write) => write.target_table === 'party_v3_change_sets' && write.id === change_set.id);
-  if (changes.length !== 1 || changes[0].record.party_id !== party_id || changes[0].record.operation_kind !== operation_kind || changes[0].record.idempotency_record_id !== idempotency.id) return fail('generated_schema_mismatch', party_id, { reason: 'one matching append-only change set is required' });
+  if (changes.length !== 1 || changes[0].record.party_id !== party_id || changes[0].record.operation_kind !== operation_kind || changes[0].record.idempotency_record_id !== idempotency.id) return r('generated_schema_mismatch', { reason: 'change_set_binding_invalid' });
   if (operation_kind === 'first_entry') {
     const physicalRecheck = commit_rechecks.find((check) => check.kind === 'physical');
     const locationUpdates = sets.updates.filter((write) => write.target_table === 'party_journey_locations');
@@ -221,17 +225,17 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     if (locationUpdates.length !== 1
       || locationUpdates[0].record.location_kind !== 'scene'
       || locationUpdates[0].record.scene_position_id !== physicalRecheck.position_id) {
-      return fail('target_preparation_failed', party_id, { reason: 'first_entry location must use the exact prepared snapshot-member position' });
+      return r('target_preparation_failed', { reason: 'first_entry_location_binding_invalid' });
     }
     if (claimUpdates.length !== 1
       || claimUpdates[0].id !== physicalRecheck.preparation_claim_id
       || claimUpdates[0].record.claim_status !== 'consumed'
       || claimUpdates[0].record.terminal_change_set_id !== change_set.id) {
-      return fail('target_preparation_failed', party_id, { reason: 'first_entry must consume exactly its sealed preparation claim in the combined write plan' });
+      return r('target_preparation_failed', { reason: 'first_entry_claim_binding_invalid' });
     }
     if (physicalRecheck.baseline_disposition === 'reuse') {
       if (g5Sites.length || baselines.length || g6Instances.length || positions.length) {
-        return fail('target_preparation_failed', party_id, { reason: 'reused first_entry baseline forbids duplicate G5/G6/position inserts' });
+        return r('target_preparation_failed', { reason: 'first_entry_reuse_contains_inserts' });
       }
     } else {
       const baseline = baselines[0];
@@ -260,7 +264,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
         || (g5Sites.length === 1 && g5Sites[0].record.parent_g4_id !== physicalRecheck.g4_id)
         || (baseline.record.source_kind === 'generated_template'
           && (g5Sites.length !== 1 || g5Sites[0].record.origin !== 'generated'))) {
-        return fail('target_preparation_failed', party_id, { reason: 'created first_entry baseline/G5/G6/position chain must exactly match its sealed preparation-member binding' });
+        return r('target_preparation_failed', { reason: 'first_entry_created_chain_binding_invalid' });
       }
     }
   }
@@ -270,8 +274,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
         !NON_VERSIONED_MUTABLE_TABLES.includes(write.target_table))
       .map(identity)
   );
-  if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update or delete requires one expected version' });
-  if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
+  if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return r('state_version_conflict', { reason: 'expected_state_version_set_invalid' });
+  if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return r('generated_schema_mismatch', { reason: 'blocked_audit_write_set_invalid' });
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
   const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
     write_set, ordinary_materialization_atomic_write_plan,

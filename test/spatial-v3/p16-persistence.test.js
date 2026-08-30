@@ -285,6 +285,32 @@ test('P16 seals an approved narration into an initially delivered job', async ()
   });
   assert.equal(rejected.error.code, 'visible_package_persistence_gap');
 
+  const narrationFailure = Object.assign(new Error('secret prose'), {
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED'
+  });
+  const failedApproval = await buildCombinedWritePlan(input(), {
+    verifyApproval: approval,
+    approveNarration: async () => { throw narrationFailure; }
+  });
+  assert.equal(failedApproval.error.code, 'visible_package_persistence_gap');
+  assert.deepEqual(failedApproval.error.diagnostics, {
+    stage: 'narration_approval',
+    reason: 'TRACE_PHASE_2_NARRATION_REJECTED'
+  });
+  assert.equal(JSON.stringify(failedApproval).includes('secret prose'), false);
+
+  narration.text = 'Изменение зафиксировано.';
+  const afterNarration = input();
+  afterNarration.lock_context.physical_keys = [];
+  const failedInvariant = await buildCombinedWritePlan(afterNarration, {
+    verifyApproval: approval, approveNarration: async () => narration
+  });
+  assert.equal(failedInvariant.error.code, 'lock_order_violation');
+  assert.equal(failedInvariant.error.diagnostics.stage,
+    'write_plan_invariant');
+  assert.equal(failedInvariant.error.diagnostics.reason,
+    'physical_lock_key_missing');
+
   for (const mutate of [
     (value) => { value.request_id = 'foreign-turn'; },
     (value) => { value.package_id = 'foreign-package'; },

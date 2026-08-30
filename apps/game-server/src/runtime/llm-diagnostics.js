@@ -1,6 +1,24 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createLlmTurnBudget, GAMEPLAY_LLM_BUDGET_MS, GAMEPLAY_TURN_DEADLINE_MS } from './llm-turn-budget.js';
 
+const SAFE_WRITE_PLAN_FAILURES = new Set([
+  'narration_approval:visible_package_persistence_gap:TRACE_PHASE_2_NARRATION_REJECTED',
+  'narration_approval:visible_package_persistence_gap:narration_approval_rejected',
+  'narration_approval:visible_package_persistence_gap:narration_result_binding_invalid',
+  'write_plan_invariant:visible_package_persistence_gap:presentation_write_owner_invalid',
+  'write_plan_invariant:generated_schema_mismatch:write_record_shape_or_mode_invalid',
+  'write_plan_invariant:state_version_conflict:write_identity_conflict',
+  'write_plan_invariant:generated_schema_mismatch:child_parent_missing',
+  'write_plan_invariant:lock_order_violation:physical_lock_key_missing',
+  'write_plan_invariant:generated_schema_mismatch:change_set_binding_invalid',
+  'write_plan_invariant:target_preparation_failed:first_entry_location_binding_invalid',
+  'write_plan_invariant:target_preparation_failed:first_entry_claim_binding_invalid',
+  'write_plan_invariant:target_preparation_failed:first_entry_reuse_contains_inserts',
+  'write_plan_invariant:target_preparation_failed:first_entry_created_chain_binding_invalid',
+  'write_plan_invariant:state_version_conflict:expected_state_version_set_invalid',
+  'write_plan_invariant:generated_schema_mismatch:blocked_audit_write_set_invalid'
+]);
+
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
   const storage = new AsyncLocalStorage();
@@ -26,6 +44,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
       } catch (error) {
+        turn.failure = safeWritePlanFailure(error);
         if (['LLM_TURN_BUDGET_EXHAUSTED', 'LLM_TURN_REPAIR_ALREADY_CLAIMED']
           .includes(error?.code)) turn.incidents.push(incident(error));
         throw error;
@@ -47,7 +66,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
 export function buildLlmTurnReport(input = {}) {
   const { party_id, request_id, calls = [], turn_duration_ms = 0,
     turn_deadline_ms = GAMEPLAY_TURN_DEADLINE_MS,
-    llm_budget_ms = GAMEPLAY_LLM_BUDGET_MS, incidents = [] } = input;
+    llm_budget_ms = GAMEPLAY_LLM_BUDGET_MS, incidents = [], failure = null } = input;
   const waterfall = calls.map((call, index) => Object.freeze({
     sequence: index + 1,
     role: text(call.role ?? call.roleId) || null,
@@ -84,6 +103,7 @@ export function buildLlmTurnReport(input = {}) {
     turn_duration_ms: number(turn_duration_ms),
     turn_deadline_ms: number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS,
     llm_budget_ms: number(llm_budget_ms) || GAMEPLAY_LLM_BUDGET_MS,
+    failure: safeWritePlanFailure(failure),
     waterfall: Object.freeze(waterfall),
     aggregate: Object.freeze({
       calls: count,
@@ -137,6 +157,18 @@ function incident(record = {}) {
     request_identity: text(record.request_identity) || null,
     repair_kind: text(record.repair_kind) || null
   };
+}
+export function safeWritePlanFailure(value = {}) {
+  const details = value?.details ?? value;
+  const diagnostics = details?.diagnostics ?? value;
+  const code = text(value?.code);
+  const detailCode = text(value?.detail_code ?? details?.code);
+  const stage = text(value?.stage ?? diagnostics?.stage);
+  const reason = text(value?.reason ?? diagnostics?.reason)
+    .replace(/\s+/gu, ' ').slice(0, 500);
+  if (!/^TRACE_[A-Z0-9_]+_WRITE_PLAN_REJECTED$/u.test(code)
+      || !SAFE_WRITE_PLAN_FAILURES.has(`${stage}:${detailCode}:${reason}`)) return null;
+  return Object.freeze({ code, detail_code: detailCode, stage, reason });
 }
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }
 function usage(value = {}) {

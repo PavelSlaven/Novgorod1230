@@ -64,6 +64,47 @@ test('diagnostics keeps safe budget and provider failure incidents', async () =>
   assert.equal(JSON.stringify(incidents).includes('secret prompt'), false);
 });
 
+test('failed turn diagnostics retain only the safe write-plan cause', async () => {
+  const diagnostics = createLlmDiagnostics();
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party-safe',
+    request_id: 'turn-write-plan' }, async () => {
+    const error = new Error('secret prose');
+    Object.assign(error, {
+      code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
+      details: {
+        code: 'visible_package_persistence_gap',
+        diagnostics: {
+          stage: 'narration_approval',
+          reason: 'TRACE_PHASE_2_NARRATION_REJECTED',
+          hidden_state: 'secret'
+        },
+        subject_ref: { entity_id: 'hidden-party-ref' }
+      }
+    });
+    throw error;
+  }), { code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED' });
+  const report = diagnostics.report({ party_id: 'party-safe' });
+  assert.deepEqual(report.failure, {
+    code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
+    detail_code: 'visible_package_persistence_gap',
+    stage: 'narration_approval',
+    reason: 'TRACE_PHASE_2_NARRATION_REJECTED'
+  });
+  assert.equal(JSON.stringify(report).includes('secret'), false);
+  assert.equal(JSON.stringify(report).includes('hidden-party-ref'), false);
+});
+
+test('failed turn diagnostics reject unlisted write-plan identifiers', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
+    detail_code: 'generated_schema_mismatch',
+    stage: 'write_plan_invariant',
+    reason: 'hidden_party_42'
+  } });
+  assert.equal(report.failure, null);
+  assert.equal(JSON.stringify(report).includes('hidden_party_42'), false);
+});
+
 test('turn context groups calls and excludes probe records', async () => {
   const diagnostics = createLlmDiagnostics();
   await diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' }, async () => {

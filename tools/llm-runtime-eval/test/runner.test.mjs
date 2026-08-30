@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 17);
+  assert.equal(corpus.corpus_version, 18);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -38,7 +38,7 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     const { port } = server.address();
     const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
       git: { checkout_sha: 'fixture-sha', dirty: false },
-      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 17 }
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 18 }
     } });
     assert.equal(report.fixture_count, 28);
     assert.equal(report.aggregates.total.passed, 28);
@@ -54,7 +54,7 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
     assert.deepEqual(report.metadata.corpus, {
-      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 17
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 18
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',

@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 17,
+  "corpus_version": 18,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -20,7 +20,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only the qualitative world-process semantic choice. Use this complete semantic shape:\n{\"interpretation\":{\"grounded_transition\":\"<grounded_transition>\"},\"outcome_choice\":\"<supplied outcome choice_id>\",\"affected_refs\":[]} Choose one applicable code-owned outcome by choice_id: [{\"choice_id\":\"outcome_1\",\"applicability\":\"the supplied water reaches and extinguishes the active fire\"}] The server assembles schema, request/process identity, exact outcome pair, and empty fact_changes. affected_refs may contain only unique refs supplied by request. Do not invent numbers, resources, timestamps, process IDs, damage, hidden facts, or authority."
+          "content": "Return only the qualitative world-process semantic choice. Use this complete semantic shape:\n{\"interpretation\":{\"grounded_transition\":\"<grounded_transition>\"},\"outcome_choice\":\"<supplied outcome choice_id>\",\"affected_ref_choices\":[]} Choose one applicable code-owned outcome by choice_id: [{\"choice_id\":\"outcome_1\",\"applicability\":\"the supplied water reaches and extinguishes the active fire\"}] Choose affected refs only through these opaque code-owned choices: [{\"choice_id\":\"ref_1\",\"source\":\"process.process_ref\"},{\"choice_id\":\"ref_2\",\"source\":\"process.scope_ref\"},{\"choice_id\":\"ref_3\",\"source\":\"process.causal_basis_ref\"},{\"choice_id\":\"ref_4\",\"source\":\"process.fuel_bindings[0].fuel_ref\"},{\"choice_id\":\"ref_5\",\"source\":\"subject_state.source_refs[0]\"}] The server assembles schema, request/process identity, exact outcome pair, affected_refs, and empty fact_changes. Never copy or invent exact refs. Do not invent numbers, resources, timestamps, process IDs, damage, hidden facts, or authority."
         },
         {
           "role": "user",
@@ -32,8 +32,8 @@
           "grounded_transition": "water extinguishes fire"
         },
         "outcome_choice": "outcome_1",
-        "affected_refs": [
-          "water"
+        "affected_ref_choices": [
+          "ref_5"
         ]
       },
       "expected": {

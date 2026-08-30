@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { executeCheck } from '@rus/checks-rng';
-import { safeWritePlanFailure } from '../../apps/game-server/src/runtime/llm-diagnostics.js';
+import { safeTurnFailure } from '../../apps/game-server/src/runtime/llm-diagnostics.js';
 import { createTraceRandomSourceFactory } from '../../apps/game-server/src/runtime/releases/spatial-v3-production-trace-runtime.js';
 import { startLocalPlay } from './local-play.js';
 
@@ -168,7 +168,7 @@ function missingWaterfallEvidence(turn = {}) { const required = strings(turn.req
 function repeatedRepairRole(waterfall = []) { const seen = new Set(); for (const { role, repair } of waterfall) if (repair === true && role && (seen.has(role) || !seen.add(role))) return role; return null; }
 function httpStatus(value) { const status = Number(value); return Number.isInteger(status) && status >= 100 && status <= 599 ? status : null; }
 function publicErrorCode(value) { const code = text(value); return /^[A-Z][A-Z0-9_]{0,127}$/u.test(code) ? code : null; }
-function diagnosticFailure(value) { return safeWritePlanFailure(value); }
+function diagnosticFailure(value) { return safeTurnFailure(value); }
 function slowestRole(waterfall = []) { return nullableText(waterfall.slice().sort((a, b) => number(b.duration_ms) - number(a.duration_ms))[0]?.role); }
 function percentile(values, fraction) { return values.length ? values[Math.min(values.length - 1, Math.ceil(values.length * fraction) - 1)] : 0; }
 function text(value) { return String(value ?? '').trim(); }

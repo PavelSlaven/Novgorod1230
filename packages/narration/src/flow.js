@@ -31,11 +31,13 @@ export async function runNarrationFlow(request, ports, options = {}) {
   if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
 
   const flaggedIds = [...new Set(audit.concerns.map((concern) => concern.segment_id))];
+  const actionIntent = actionIntentContext(request);
   const repair = await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
     visible_context: clone(request.visible_context),
+    ...(actionIntent ? { action_intent_context: actionIntent } : {}),
     style_policy: clone(request.style_policy ?? {}),
     concerns: clone(audit.concerns),
     segments: segments.filter((segment) => flaggedIds.includes(segment.segment_id)).map((segment) => ({ ...clone(segment), nearby_context: nearbySegments(segments, segment.segment_id) }))
@@ -68,7 +70,17 @@ export function segmentProse(prose) {
 }
 
 function audited(auditor, request, draft, segments, phase) {
-  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
+  const actionIntent = actionIntentContext(request);
+  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), ...(actionIntent ? { action_intent_context: actionIntent } : {}), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
+}
+function actionIntentContext(request) {
+  const source = request.context ?? {};
+  if (source.player_input == null && source.mode_resolution == null) return null;
+  return {
+    evidence_scope: 'intent_only_non_evidence_of_success',
+    ...(source.player_input == null ? {} : { player_input: clone(source.player_input) }),
+    ...(source.mode_resolution == null ? {} : { mode_resolution: clone(source.mode_resolution) })
+  };
 }
 function nearbySegments(segments, id) {
   const index = segments.findIndex((segment) => segment.segment_id === id);

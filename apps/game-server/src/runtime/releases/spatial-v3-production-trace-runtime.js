@@ -180,7 +180,8 @@ export function createTraceTurnRuntime({
       revalidateStateVersion: input.revalidateStateVersion
     }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
-      partyPool, narrationService
+      partyPool, narrationService,
+      recordDiagnosticFailure: (error) => llmDiagnostics.recordFailure(error)
     }),
     randomSourceFactory: createTraceRandomSourceFactory({ env }),
     temporalAdvanceOwner,

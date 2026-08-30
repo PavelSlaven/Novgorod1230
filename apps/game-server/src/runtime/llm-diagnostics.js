@@ -15,6 +15,14 @@ const SAFE_WRITE_PLAN_FAILURES = new Set([
   'write_plan_invariant:state_version_conflict:expected_state_version_set_invalid',
   'write_plan_invariant:generated_schema_mismatch:blocked_audit_write_set_invalid'
 ]);
+const SAFE_NARRATION_PHASES = new Set([
+  'output_validation', 'audit_validation', 'semantic_repair_validation',
+  'reassembled_output_validation', 'final_audit_validation',
+  'final_audit_failed'
+]);
+const SAFE_NARRATION_CONCERN_KINDS = new Set([
+  'unsupported_fact', 'contradiction', 'hidden_knowledge'
+]);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
@@ -32,6 +40,10 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   return Object.freeze({
     turnBudget,
     telemetry: Object.freeze({ onCall }),
+    recordFailure(value) {
+      const turn = storage.getStore();
+      if (turn) turn.failure = safeTurnFailure(value);
+    },
     async runTurn({ party_id, request_id }, execute) {
       const startedAt = now();
       const turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
@@ -41,7 +53,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
       } catch (error) {
-        turn.failure = safeWritePlanFailure(error);
+        turn.failure = safeTurnFailure(error);
         if (['LLM_TURN_BUDGET_EXHAUSTED', 'LLM_TURN_REPAIR_ALREADY_CLAIMED']
           .includes(error?.code)) turn.incidents.push(incident(error));
         throw error;
@@ -100,7 +112,7 @@ export function buildLlmTurnReport(input = {}) {
     turn_duration_ms: number(turn_duration_ms),
     turn_deadline_ms: number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS,
     llm_budget_ms: number(llm_budget_ms) || GAMEPLAY_LLM_BUDGET_MS,
-    failure: safeWritePlanFailure(failure),
+    failure: safeTurnFailure(failure),
     waterfall: Object.freeze(waterfall),
     aggregate: Object.freeze({
       calls: count,
@@ -166,6 +178,25 @@ export function safeWritePlanFailure(value = {}) {
   if (!/^TRACE_[A-Z0-9_]+_WRITE_PLAN_REJECTED$/u.test(code)
       || !SAFE_WRITE_PLAN_FAILURES.has(`${stage}:${detailCode}:${reason}`)) return null;
   return Object.freeze({ code, detail_code: detailCode, stage, reason });
+}
+export function safeTurnFailure(value = {}) {
+  return safeWritePlanFailure(value) ?? safeNarrationFailure(value);
+}
+function safeNarrationFailure(value = {}) {
+  if (text(value?.code) !== 'TRACE_PHASE_2_NARRATION_REJECTED') return null;
+  const details = value?.details ?? value;
+  const phase = text(details.phase);
+  if (!SAFE_NARRATION_PHASES.has(phase)) return null;
+  const concernCount = Number(details.concern_count);
+  const concernKinds = Array.isArray(details.concern_kinds)
+    ? [...new Set(details.concern_kinds.map(text)
+      .filter((kind) => SAFE_NARRATION_CONCERN_KINDS.has(kind)))] : [];
+  return Object.freeze({
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED', phase,
+    concern_count: Number.isInteger(concernCount) && concernCount >= 0
+      ? concernCount : 0,
+    concern_kinds: Object.freeze(concernKinds)
+  });
 }
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }
 function usage(value = {}) {

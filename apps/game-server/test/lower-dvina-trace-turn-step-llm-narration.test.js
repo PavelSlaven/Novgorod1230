@@ -47,6 +47,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       version: 1, schema: 'visible_context_package', visible_scene: 'Двор тих.',
       visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }, context: {
+      player_input: { raw_text: 'Постучать в закрытую дверь.' },
+      mode_resolution: { option_id: 'ordinary-attempt' }
     }
   }));
   assert.equal(result.status, 'approved');
@@ -67,6 +70,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
   assert.equal(calls[2].messages[0].content.includes('full narration output'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'action_intent_context is explicitly intent-only'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'It never proves success, object use, a result, or a world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
   assert.equal(calls[2].messages[0].content.includes(
@@ -77,6 +84,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       version: 1, schema: 'visible_context_package', visible_scene: 'Двор тих.',
       visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }, action_intent_context: {
+      evidence_scope: 'intent_only_non_evidence_of_success',
+      player_input: { raw_text: 'Постучать в закрытую дверь.' },
+      mode_resolution: { option_id: 'ordinary-attempt' }
     }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'Двор тих.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
@@ -84,6 +95,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'Двор тих.', nearby_context: [] }]);
+  assert.equal(JSON.parse(calls[3].messages[1].content)
+    .action_intent_context.evidence_scope,
+  'intent_only_non_evidence_of_success');
   assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
   assert.equal(calls.length, 5);

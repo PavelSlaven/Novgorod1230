@@ -105,6 +105,50 @@ test('failed turn diagnostics reject unlisted write-plan identifiers', () => {
   assert.equal(JSON.stringify(report).includes('hidden_party_42'), false);
 });
 
+test('failed narration diagnostics retain only allowlisted audit categories', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED',
+    details: {
+      phase: 'final_audit_failed',
+      concern_count: 2,
+      concern_kinds: ['unsupported_fact', 'hidden-party-42'],
+      concerns: [{ reason: 'secret repaired prose' }],
+      prompt: 'secret prompt',
+      hidden_state: { entity_id: 'hidden-ref' }
+    }
+  } });
+  assert.deepEqual(report.failure, {
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED',
+    phase: 'final_audit_failed',
+    concern_count: 2,
+    concern_kinds: ['unsupported_fact']
+  });
+  const serialized = JSON.stringify(report.failure);
+  assert.equal(serialized.includes('secret'), false);
+  assert.equal(serialized.includes('hidden-party-42'), false);
+  assert.equal(serialized.includes('hidden-ref'), false);
+});
+
+test('completed post-commit turn can record a safe narration failure', async () => {
+  const diagnostics = createLlmDiagnostics();
+  await diagnostics.runTurn({ party_id: 'party-safe', request_id: 'turn-present' },
+    async () => {
+      diagnostics.recordFailure({
+        code: 'TRACE_PHASE_2_NARRATION_REJECTED',
+        details: {
+          phase: 'final_audit_failed', concern_count: 1,
+          concern_kinds: ['unsupported_fact'],
+          prose: 'secret prose', prompt: 'secret prompt'
+        }
+      });
+    });
+  assert.deepEqual(diagnostics.report({ party_id: 'party-safe' }).failure, {
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED',
+    phase: 'final_audit_failed', concern_count: 1,
+    concern_kinds: ['unsupported_fact']
+  });
+});
+
 test('turn context groups calls and excludes probe records', async () => {
   const diagnostics = createLlmDiagnostics();
   await diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' }, async () => {

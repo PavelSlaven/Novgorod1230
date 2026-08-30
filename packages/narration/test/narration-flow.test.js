@@ -166,6 +166,67 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
   assert.equal(audits[1].output.prose, result.approved_output.prose);
 });
 
+test('shares intent-only player context with audit and semantic repair', async () => {
+  const actionIntent = {
+    player_input: { raw_text: 'Постучать в закрытую дверь.' },
+    mode_resolution: { option_id: 'ordinary-attempt' }
+  };
+  const seen = [];
+  const result = await runNarrationFlow(request({ context: actionIntent }), ports({
+    writer: { async generate() {
+      return output('Вы пытаетесь постучать в закрытую дверь.');
+    } },
+    auditor: { async audit(input) {
+      seen.push(input.action_intent_context);
+      return seen.length === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
+              reason: 'Attempt needs intent-only grounding.' }], evidence: ['Attempt.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Attempt is grounded by player intent.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.deepEqual(input.action_intent_context, {
+        evidence_scope: 'intent_only_non_evidence_of_success',
+        ...actionIntent
+      });
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'Вы пытаетесь постучать в закрытую дверь.' }] };
+    } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(seen, [
+    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent },
+    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent }
+  ]);
+});
+
+test('intent-only context does not ground an unsupported success claim', async () => {
+  let repairCalls = 0;
+  const result = await runNarrationFlow(request({ context: {
+    player_input: { raw_text: 'Открыть закрытую дверь.' }
+  } }), ports({
+    writer: { async generate() { return output('Вы открыли закрытую дверь.'); } },
+    auditor: { async audit(input) {
+      assert.equal(input.action_intent_context.evidence_scope,
+        'intent_only_non_evidence_of_success');
+      return { version: 1, schema: 'narration_audit', pass: false,
+        concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
+          reason: 'Success is absent from visible context.' }],
+        evidence: ['Intent is not evidence of success.'] };
+    } },
+    semanticRepairer: { async repair() {
+      repairCalls += 1;
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: 'Вы открыли закрытую дверь.' }] };
+    } }
+  }));
+  assert.equal(result.status, 'blocked');
+  assert.equal(result.diagnostics.phase, 'final_audit_failed');
+  assert.equal(repairCalls, 1);
+});
+
 test('blocks malformed auditor, unflagged repair, and failed final audit without another repair', async (t) => {
   await t.test('malformed auditor', async () => {
     const result = await runNarrationFlow(request(), ports({ auditor: { async audit() { return {}; } } }));

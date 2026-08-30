@@ -16,13 +16,13 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
       request) },
     formatRepairer: { repair: (request) => runNarrationRole(roleRunner,
       'gameplay_narrator_format_repair',
-      'Return only one repaired semantic JSON object: {"prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. The server assembles version, schema, and output_id. Repair JSON shape only; prose, action_options, used_references, and self_check must remain grounded exclusively in request.visible_context.',
+      'Return only one repaired semantic JSON object: {"prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. The server assembles version, schema, and output_id. Repair JSON shape only. request.context may ground only that the player attempted an action, spoke, or selected an intention; it never proves success or a world-state change. Ground every other claim exclusively in request.visible_context.',
       request) },
     auditor: { audit: (request) => runNarrationRole(roleRunner,
       'gameplay_narrator_auditor', narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner,
       'gameplay_narrator_semantic_repair',
-      'Return only {"replacements":[{"prose":"<replacement>"}]} in the same order as supplied flagged segments. The server assembles version, schema, and immutable segment_id values. Repair only supplied flagged segments using their concerns, read-only nearby_context, and player-safe visible_context. Return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role.',
+      'Return only {"replacements":[{"prose":"<replacement>"}]} in the same order as supplied flagged segments. The server assembles version, schema, and immutable segment_id values. Repair only supplied flagged segments using their concerns, read-only nearby_context, player-safe visible_context, and optional action_intent_context. action_intent_context is intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role.',
       request) }
   });
 }
@@ -72,7 +72,7 @@ function narrationAuditInstruction(request) {
   const choices = (request.segments ?? []).map((segment, index) => ({
     segment_choice: `segment_${index + 1}`, prose: segment.prose
   }));
-  return `Return only the semantic audit: PASS {"pass":true,"concerns":[],"evidence":["visible facts only"]}; FAIL {"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}. Choose only from these request-local segment choices: ${JSON.stringify(choices)}. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Every concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.`;
+  return `Return only the semantic audit: PASS {"pass":true,"concerns":[],"evidence":["visible facts only"]}; FAIL {"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}. Choose only from these request-local segment choices: ${JSON.stringify(choices)}. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, optional action_intent_context, style_policy, and segments. action_intent_context is explicitly intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. Do not reject such attempt wording merely because it is absent from visible_context. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Every other concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.`;
 }
 
 function narrationSegmentId(request, choice) {

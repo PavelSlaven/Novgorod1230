@@ -12,7 +12,8 @@ import { phase2VisibleContextFromPayload } from
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
   narrationService,
-  presentationStore = null
+  presentationStore = null,
+  recordDiagnosticFailure = null
 } = {}) {
   if (!partyPool?.query || typeof narrationService?.run !== 'function') {
     throw new TypeError(
@@ -91,6 +92,10 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         });
         const error = presentationError();
         error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+        error.details = narrationFailureDetails(flow);
+        try { recordDiagnosticFailure?.(error); } catch {
+          // Diagnostics must not replace the typed presentation failure.
+        }
         throw error;
       }
       const persistedNarration = sealApprovedNarration({
@@ -115,6 +120,16 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       return withPresentation(flow, persistedNarration);
     }
   });
+}
+
+function narrationFailureDetails(flow) {
+  const audit = flow?.audit_history?.at(-1)?.value;
+  const concerns = Array.isArray(audit?.concerns) ? audit.concerns : [];
+  return {
+    phase: flow?.diagnostics?.phase,
+    concern_count: concerns.length,
+    concern_kinds: concerns.map(({ kind }) => kind)
+  };
 }
 
 async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {

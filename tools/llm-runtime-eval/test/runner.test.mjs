@@ -591,6 +591,35 @@ test('narration semantic repair rejects unchanged unsupported prose', async () =
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
+test('conversation eval assembles against the exact provider-facing request', async () => {
+  const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
+    id === 'npc-conversation-check-required'));
+  const output = structuredClone(fixture.expected_output);
+  const player = { entity_kind: 'player_character', entity_id: 'player' };
+  output.primary_addressee_ref = player;
+  output.intended_addressee_refs = [player];
+  output.resolution = 'automatic';
+  output.supporting_operations = [];
+  output.check = { purpose: output.check.purpose };
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(output) } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(report.results[0].pass, true,
+      JSON.stringify(report.results[0].errors));
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
 test('planner, ordinary and NPC conversation semantic mismatches fail after owner validation', async () => {
   const planner = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const ordinary = corpus.fixtures.find(({ id }) => id === 'ordinary-stage-b-common-cordage');

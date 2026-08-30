@@ -384,7 +384,7 @@ function sumUsage(calls) {
 }
 
 function validateRoleOutput(fixture, output) {
-  const payload = fixture.request ?? messagePayload(fixture.messages);
+  const payload = messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request ? payload.request : payload;
   switch (fixture.validator) {
     case 'turn_step_plan': return validateTurnStepPlan(output, { request }).ok ? [] : ['validator:turn_step_plan'];
@@ -451,7 +451,7 @@ function assembleFixtureOutput(fixture, output) {
   if (!output || typeof output !== 'object' || Array.isArray(output)) {
     return output;
   }
-  const payload = fixture.request ?? messagePayload(fixture.messages);
+  const payload = messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request
     ? payload.request : payload;
   if (fixture.role_id === 'world_process_step') {

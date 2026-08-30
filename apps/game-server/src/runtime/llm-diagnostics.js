@@ -202,9 +202,10 @@ export function safeTurnFailure(value = {}) {
 }
 function safeTurnStepFailure(value = {}) {
   if (text(value?.code) !== 'TURN_STEP_PLAN_INVALID') return null;
-  const errors = value?.details?.errors;
-  const codes = Array.isArray(errors)
-    ? [...new Set(errors.map(({ code }) => text(code))
+  const source = Array.isArray(value?.validation_codes)
+    ? value.validation_codes : value?.details?.errors?.map(({ code }) => code);
+  const codes = Array.isArray(source)
+    ? [...new Set(source.map(text)
       .filter((code) => SAFE_TURN_STEP_VALIDATION_CODES.has(code)))] : [];
   return codes.length === 0 ? null : Object.freeze({
     code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes)
@@ -212,8 +213,11 @@ function safeTurnStepFailure(value = {}) {
 }
 function safeNpcCombatFailure(value = {}) {
   if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;
-  const codes = Array.isArray(value?.details?.validation_errors)
-    ? [...new Set(value.details.validation_errors.map(({ code }) => text(code))
+  const source = Array.isArray(value?.validation_codes)
+    ? value.validation_codes
+    : value?.details?.validation_errors?.map(({ code }) => code);
+  const codes = Array.isArray(source)
+    ? [...new Set(source.map(text)
       .filter((code) => SAFE_NPC_COMBAT_VALIDATION_CODES.has(code)))] : [];
   return codes.length === 0 ? null : Object.freeze({
     code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes)

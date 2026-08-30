@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   clean-clone-generation-test:
+    name: full-npm-test
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -181,7 +182,7 @@ jobs:
           npm run repo-intel:status
           npm run test:repository-intelligence
 
-      - name: Run full test suite
+      - name: Run full npm test merge gate
         if: steps.profile.outputs.profile == 'full'
         run: |
           set +e

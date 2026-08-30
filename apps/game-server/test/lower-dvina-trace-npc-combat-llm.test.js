@@ -36,7 +36,7 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
   const calls = [];
   const output = { decision: { intent_summary: 'Сдержать противника.',
     grounded_goal: 'Не дать ему приблизиться.', adaptation: 'literal' },
-  intent_choice: 'intent_1', selected_ref_choices: ['ref_1'],
+  operation_choice: 'operation_1',
   force_choice: 'force_1', risk_choice: 'risk_1',
   combat_statement: null, reason: 'Он представляет угрозу.' };
   const model = createLowerDvinaTraceNpcCombatModel({ roleRunner: {
@@ -57,19 +57,31 @@ test('combat model assembles code-owned intent DTO for primary and repair', asyn
   for (const call of calls) {
     const prompt = call.messages[0].content;
     assert.match(prompt, /Return only the semantic NPC combat choice/u);
-    assert.match(prompt, /"choice_id":"intent_1"/u);
-    assert.match(prompt, /"choice_id":"ref_1"/u);
+    assert.match(prompt, /"choice_id":"operation_1"/u);
     assert.doesNotMatch(prompt, /Copy request_id/u);
   }
 });
 
-test('combat assembly does not default omitted semantic refs or statement', () => {
+test('combat assembly does not default omitted semantic operation or statement', () => {
   const request = combatRequest();
   const plan = assembleNpcCombatPlan({ decision: {
     intent_summary: 'Сдержать противника.', grounded_goal: 'Не подпустить.',
-    adaptation: 'literal' }, intent_choice: 'intent_1',
+    adaptation: 'literal' },
   force_choice: 'force_1', risk_choice: 'risk_1', reason: 'Угроза.' }, request);
-  assert.equal(plan.operation.target_refs, undefined);
+  assert.equal(plan.operation, undefined);
   assert.equal(plan.combat_statement, undefined);
-  assert.equal(validateNpcCombatIntentPlan(plan, request), false);
+  assert.notEqual(validateNpcCombatIntentPlan(plan, request), true);
+});
+
+test('combat operation choice binds exactly one admitted target', () => {
+  const request = combatRequest();
+  request.operation_contract.engageable_actor_refs.push(
+    ref('npc', 'npc-2'));
+  const plan = assembleNpcCombatPlan({ decision: {
+    intent_summary: 'Сдержать второго противника.',
+    grounded_goal: 'Не дать ему приблизиться.', adaptation: 'literal' },
+  operation_choice: 'operation_2', force_choice: 'force_1',
+  risk_choice: 'risk_1', combat_statement: null, reason: 'Он ближе.' }, request);
+  assert.deepEqual(plan.operation.target_refs, [ref('npc', 'npc-2')]);
+  assert.equal(validateNpcCombatIntentPlan(plan, request), true);
 });

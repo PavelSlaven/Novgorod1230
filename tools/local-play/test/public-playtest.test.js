@@ -37,6 +37,39 @@ test('runner rejects repeated pending presentation with typed local failure', as
 test('runner reports failed presentation acknowledgement without unsafe payload', async () => { const responses = [health(), catalog(), newGame(), ack(), pendingTurn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false, error: { code: 'PRESENTATION_DOWN', message: 'do not retain' } }) }]; await assert.rejects(() => runPublicPlaytest({ manifest: testManifest(), impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart, fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.deepEqual(error.report.turn_failure, { turn_id: 'probe-0', code: 'PUBLIC_HTTP_FAILED', http_status: 503, public_error_code: 'PRESENTATION_DOWN' }); assert.equal(JSON.stringify(error.report).includes('do not retain'), false); return true; }); });
 test('runner retains partial turns when a later turn fails', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false }) }]; const manifest = testManifest(); await assert.rejects(() => runPublicPlaytest({ manifest, impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.ok(error.report, error.message); assert.deepEqual(error.report.git, cleanGit()); assert.equal(error.report.turns.length, 1); assert.equal(error.report.turn_failure.turn_id, 'probe-1'); return true; }); });
 test('runner retains only safe status and public error code from failed turn', async () => { const responses = [health(), catalog(), newGame(), ack(), turn(), diagnostics(), { ok: false, status: 503, json: async () => ({ ok: false, error: { code: 'SAFE_CODE', message: 'do not retain' } }) }]; const manifest = testManifest(); await assert.rejects(() => runPublicPlaytest({ manifest, impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: async () => ({ url: 'http://local', child: { exitCode: 0, kill() {} } }), fetchImpl: async () => responses.shift(), now: counter(), log() {} }), (error) => { assert.deepEqual(error.report.turn_failure, { turn_id: 'probe-1', code: 'PUBLIC_HTTP_FAILED', http_status: 503, public_error_code: 'SAFE_CODE' }); assert.equal(JSON.stringify(error.report).includes('do not retain'), false); return true; }); });
+test('runner retains diagnostics from a failed public turn without retrying it',
+  async () => {
+    const responses = [health(), catalog(), newGame(), ack(), {
+      ok: false,
+      status: 409,
+      json: async () => ({ ok: false, error: {
+        code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',
+        message: 'do not retain'
+      } })
+    }, diagnostics({ duration: 9, deadline: 30_000,
+      role: 'gameplay_narrator_auditor', llmCalls: 3, repairCalls: 1 })];
+    const requests = [];
+    await assert.rejects(() => runPublicPlaytest({ manifest: testManifest(),
+      impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart,
+      fetchImpl: async (url, request) => {
+        requests.push({ url, method: request.method });
+        return responses.shift();
+      }, now: counter(), log() {} }), (error) => {
+      assert.deepEqual(error.report.turn_failure, {
+        turn_id: 'probe-0', code: 'PUBLIC_HTTP_FAILED', http_status: 409,
+        public_error_code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED'
+      });
+      assert.equal(error.report.turns.length, 1);
+      assert.deepEqual(error.report.turns[0].role_ids,
+        ['gameplay_narrator_auditor']);
+      assert.equal(error.report.turns[0].llm_calls, 3);
+      assert.equal(JSON.stringify(error.report).includes('do not retain'), false);
+      return true;
+    });
+    assert.equal(requests.filter(({ url, method }) =>
+      method === 'POST' && /\/turns$/u.test(url)).length, 1);
+    assert.match(requests.at(-1).url, /developer\/llm-turn-reports/u);
+  });
 test('consecutive runs keep scenario seed but use unique party and idempotency identities', async () => {
   const runs = [];
   for (const [suffix, head] of [['first', 'a'], ['second', 'b']]) {

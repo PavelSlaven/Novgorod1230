@@ -75,7 +75,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].messages[0].content.includes(
     'It never proves success, object use, a result, or a world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-  assert.equal(calls[2].messages[0].content.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+  assert.match(calls[2].messages[0].content,
+    /"kind":"<one allowed unsupported kind>"/u);
+  assert.match(calls[2].messages[0].content, /unsupported_success/u);
   assert.equal(calls[2].messages[0].content.includes(
     '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {

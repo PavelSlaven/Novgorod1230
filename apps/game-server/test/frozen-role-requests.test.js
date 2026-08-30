@@ -51,10 +51,11 @@ test('frozen narration auditor prompts retain both validator-valid forms', async
     const prompt = fixture.messages[0].content;
     assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
     assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-    assert.equal(prompt.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+    assert.match(prompt, /"kind":"<one allowed unsupported kind>"/u);
+    assert.match(prompt, /unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state/u);
     assert.match(prompt, /action_intent_context is explicitly intent-only/u);
     assert.match(prompt, /It never proves success, object use, a result, or a world\/NPC state change; those claims require visible_context\./u);
-    assert.match(prompt, /Every other concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical\. Plausibility is not evidence\. If any segment contains such a claim, pass must be false\./u);
+    assert.match(prompt, /Every other concrete sensory, event, or state claim absent from visible_context is unsupported, even if mundane, plausible, or typical\. Plausibility is not evidence\. If any segment contains such a claim, pass must be false\./u);
   }
 });
 

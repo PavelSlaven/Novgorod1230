@@ -31,13 +31,14 @@ test('sanitizer retains only allowlisted narration failure categories', () => {
   const safe = sanitizeReport({ turns: [{ llm: { failure: {
     code: 'TRACE_PHASE_2_NARRATION_REJECTED',
     phase: 'final_audit_failed', concern_count: 3,
-    concern_kinds: ['unsupported_fact', 'hidden-party-42'],
+    concern_kinds: ['unsupported_fact', 'unsupported_success',
+      'hidden-party-42'],
     prose: 'secret prose', prompt: 'secret prompt'
   } } }] });
   assert.deepEqual(safe.turns[0].llm.failure, {
     code: 'TRACE_PHASE_2_NARRATION_REJECTED',
     phase: 'final_audit_failed', concern_count: 3,
-    concern_kinds: ['unsupported_fact']
+    concern_kinds: ['unsupported_fact', 'unsupported_success']
   });
   assert.equal(JSON.stringify(safe).includes('secret'), false);
   assert.equal(JSON.stringify(safe).includes('hidden-party-42'), false);

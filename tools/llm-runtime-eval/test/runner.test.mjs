@@ -540,7 +540,7 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
     id === 'gameplay-narrator-auditor-unsupported-fact');
   assert.deepEqual(fixture?.expected?.required_values, {
     pass: false, 'concerns.0.segment_id': 's1',
-    'concerns.0.kind': 'unsupported_fact'
+    'concerns.0.kind': 'unsupported_sensory'
   });
 });
 

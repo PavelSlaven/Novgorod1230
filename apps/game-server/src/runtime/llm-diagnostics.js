@@ -21,7 +21,10 @@ const SAFE_NARRATION_PHASES = new Set([
   'final_audit_failed'
 ]);
 const SAFE_NARRATION_CONCERN_KINDS = new Set([
-  'unsupported_fact', 'contradiction', 'hidden_knowledge'
+  'unsupported_fact', 'unsupported_attempt', 'unsupported_success',
+  'unsupported_object_use', 'unsupported_result', 'unsupported_sensory',
+  'unsupported_event', 'unsupported_world_state', 'unsupported_npc_state',
+  'contradiction', 'hidden_knowledge'
 ]);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,

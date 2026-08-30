@@ -111,7 +111,8 @@ test('failed narration diagnostics retain only allowlisted audit categories', ()
     details: {
       phase: 'final_audit_failed',
       concern_count: 2,
-      concern_kinds: ['unsupported_fact', 'hidden-party-42'],
+      concern_kinds: ['unsupported_fact', 'unsupported_success',
+        'hidden-party-42'],
       concerns: [{ reason: 'secret repaired prose' }],
       prompt: 'secret prompt',
       hidden_state: { entity_id: 'hidden-ref' }
@@ -121,7 +122,7 @@ test('failed narration diagnostics retain only allowlisted audit categories', ()
     code: 'TRACE_PHASE_2_NARRATION_REJECTED',
     phase: 'final_audit_failed',
     concern_count: 2,
-    concern_kinds: ['unsupported_fact']
+    concern_kinds: ['unsupported_fact', 'unsupported_success']
   });
   const serialized = JSON.stringify(report.failure);
   assert.equal(serialized.includes('secret'), false);

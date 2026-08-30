@@ -2060,7 +2060,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"У ворот стоит телега.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, optional action_intent_context, style_policy, and segments. action_intent_context is explicitly intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. Do not reject such attempt wording merely because it is absent from visible_context. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Every other concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
+          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"<one allowed unsupported kind>\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"У ворот стоит телега.\"}]. For every unsupported claim choose the narrowest stable kind: unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state, or unsupported_fact only when none is narrower. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, optional action_intent_context, style_policy, and segments. action_intent_context is explicitly intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. Do not reject such attempt wording merely because it is absent from visible_context. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Every other concrete sensory, event, or state claim absent from visible_context is unsupported, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
         },
         {
           "role": "user",
@@ -2099,7 +2099,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"Телега скрипит у ворот.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, optional action_intent_context, style_policy, and segments. action_intent_context is explicitly intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. Do not reject such attempt wording merely because it is absent from visible_context. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Every other concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
+          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"<one allowed unsupported kind>\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"Телега скрипит у ворот.\"}]. For every unsupported claim choose the narrowest stable kind: unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state, or unsupported_fact only when none is narrower. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, optional action_intent_context, style_policy, and segments. action_intent_context is explicitly intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. Do not reject such attempt wording merely because it is absent from visible_context. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Every other concrete sensory, event, or state claim absent from visible_context is unsupported, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
         },
         {
           "role": "user",
@@ -2110,14 +2110,14 @@
         "required_values": {
           "pass": false,
           "concerns.0.segment_id": "s1",
-          "concerns.0.kind": "unsupported_fact"
+          "concerns.0.kind": "unsupported_sensory"
         }
       },
       "expected_output": {
         "pass": false,
         "concerns": [
           {
-            "kind": "unsupported_fact",
+            "kind": "unsupported_sensory",
             "reason": "Скрип не дан в visible_context.",
             "segment_choice": "segment_1"
           }
@@ -2146,7 +2146,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only {\"replacements\":[{\"prose\":\"<replacement>\"}]} in the same order as supplied flagged segments. The server assembles version, schema, and immutable segment_id values. Repair only supplied flagged segments using their concerns, read-only nearby_context, player-safe visible_context, and optional action_intent_context. action_intent_context is intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role."
+          "content": "Return only {\"replacements\":[{\"prose\":\"<replacement>\"}]} in the same order as supplied flagged segments. The server assembles version, schema, and immutable segment_id values. Repair only supplied flagged segments using their concerns, read-only nearby_context, player-safe visible_context, and optional action_intent_context. Each concern kind identifies the unsupported claim class that must be removed or recast. action_intent_context is intent-only: it may ground only that the player attempted an action, spoke, or selected an intention. It never proves success, object use, a result, or a world/NPC state change; those claims require visible_context. Return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role."
         },
         {
           "role": "user",

@@ -71,9 +71,9 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
   }).pass).map(({ item_id: id }) => id).sort();
   const allowed = [];
   if (profile.allowed_actions?.includes('start')) {
-    const fuels = admittedInputRefs(availableItems, npcSnapshot?.instance_id, scopeRef,
+    const fuels = admittedInputs(availableItems, npcSnapshot?.instance_id, scopeRef,
       profile, bound, 'fuel_unit');
-    for (const sourceRef of fuels) for (const ignitionRef of ignition) {
+    for (const { ref: sourceRef } of fuels) for (const ignitionRef of ignition) {
       allowed.push({ process_action: 'start', process_ref: null,
         process_kind: 'fire', source_refs: [sourceRef],
         target_refs: [ignitionRef] });
@@ -81,9 +81,9 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
   }
   if (profile.allowed_actions?.includes('affect')) {
     for (const process of active) {
-      const inputs = admittedInputRefs(availableItems, npcSnapshot?.instance_id,
+      const inputs = admittedInputs(availableItems, npcSnapshot?.instance_id,
         scopeRef, profile, bound, null);
-      for (const sourceRef of inputs) allowed.push({
+      for (const { ref: sourceRef } of inputs) allowed.push({
         process_action: 'affect', process_ref: process.process_ref,
         process_kind: 'fire', source_refs: [sourceRef], target_refs: []
       });
@@ -116,7 +116,7 @@ function currentFireItems(committedState, plans) {
   }).items;
 }
 
-function admittedInputRefs(items, actorRef, scopeRef, profile, bound,
+function admittedInputs(items, actorRef, scopeRef, profile, bound,
   requiredKind) {
   return items.flatMap((item) => {
     const admitted = admitLocalFireInput({ item, placement: item.placement,
@@ -128,8 +128,9 @@ function admittedInputRefs(items, actorRef, scopeRef, profile, bound,
       fuel_mass_grams_max: profile.fuel_unit_mass_grams_max,
       process_ref: null });
     return admitted.pass && (requiredKind == null
-      || admitted.input_kind === requiredKind) ? [item.item_id] : [];
-  }).sort();
+      || admitted.input_kind === requiredKind)
+      ? [{ ref: item.item_id, kind: admitted.input_kind }] : [];
+  }).sort((left, right) => left.ref.localeCompare(right.ref));
 }
 
 function playerWorldProcessOperations({profile,actorRef,scopeRef,ignition,
@@ -137,19 +138,20 @@ function playerWorldProcessOperations({profile,actorRef,scopeRef,ignition,
   if(!text(actorRef))return[];
   const allowed=[];
   if(profile.allowed_actions?.includes('start')){
-    const fuels=admittedInputRefs(items,actorRef,scopeRef,profile,bound,
+    const fuels=admittedInputs(items,actorRef,scopeRef,profile,bound,
       'fuel_unit');
-    for(const sourceRef of fuels)for(const ignitionRef of ignition)allowed.push({
+    for(const {ref:sourceRef} of fuels)for(const ignitionRef of ignition)allowed.push({
       op:'request_world_process',actor_ref:actorRef,process_action:'start',
       process_ref:null,process_kind:'fire',source_refs:[sourceRef],
       target_refs:[ignitionRef],description:'Разжечь огонь.'});
   }
   if(profile.allowed_actions?.includes('affect')){
-    const inputs=admittedInputRefs(items,actorRef,scopeRef,profile,bound,null);
-    for(const {process_ref:processRef} of active)for(const sourceRef of inputs)
+    const inputs=admittedInputs(items,actorRef,scopeRef,profile,bound,null);
+    for(const {process_ref:processRef} of active)for(const input of inputs)
       allowed.push({op:'request_world_process',actor_ref:actorRef,
         process_action:'affect',process_ref:processRef,process_kind:'fire',
-        source_refs:[sourceRef],target_refs:[],description:'Воздействовать на огонь.'});
+        source_refs:[input.ref],target_refs:[],description:input.kind==='fuel_unit'
+          ?'Добавить топливо в огонь.':'Воздействовать водой на огонь.'});
   }
   return Object.freeze(allowed.map(Object.freeze));
 }

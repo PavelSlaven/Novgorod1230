@@ -269,6 +269,34 @@ test('turn step choice ids distinguish competing admitted operation kinds',
     assert.deepEqual(plan.operations, [fire]);
   });
 
+test('turn step choice preserves the selected semantic input variant', async () => {
+  const fuel = { op: 'request_world_process', actor_ref: 'actor_mikula',
+    process_action: 'affect', process_ref: 'process:active',
+    process_kind: 'fire', source_refs: ['item:fuel'], target_refs: [],
+    description: 'Добавить топливо в огонь.' };
+  const cooling = { ...fuel, source_refs: ['item:cooling'],
+    description: 'Воздействовать водой на огонь.' };
+  const input = request({ player_safe_state: { local_world_process: {
+    allowed: [fuel, cooling] } } });
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      assert.match(call.messages[0].content, /Добавить топливо в огонь/u);
+      assert.match(call.messages[0].content, /Воздействовать водой на огонь/u);
+      return { output: {
+        interpretation: { player_goal: 'Охладить процесс.',
+          grounded_attempt: 'Применить охлаждающий состав.',
+          adaptation: 'literal' },
+        resolution: 'domain_request',
+        operation_choice: 'domain_operation_2_request_world_process_affect',
+        continuation: null, clarification: null, check: null,
+        reason_code: 'world_process_affect', reason: 'Выбран подходящий вход.'
+      } };
+    }
+  } });
+  const plan = await model(input);
+  assert.deepEqual(plan.operations, [cooling]);
+});
+
 test('turn step assembly does not invent omitted semantic fields', () => {
   const input = request();
   const semantic = output();

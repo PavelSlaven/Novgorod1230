@@ -223,10 +223,10 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
         description:'Разжечь огонь.'},{op:'request_world_process',
         actor_ref:'player',process_action:'affect',process_ref:'process:1',
         process_kind:'fire',source_refs:['item:kindling'],target_refs:[],
-        description:'Воздействовать на огонь.'},{op:'request_world_process',
+        description:'Добавить топливо в огонь.'},{op:'request_world_process',
         actor_ref:'player',process_action:'affect',process_ref:'process:1',
         process_kind:'fire',source_refs:['item:water'],target_refs:[],
-        description:'Воздействовать на огонь.'}]});
+        description:'Воздействовать водой на огонь.'}]});
     const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{
       position:{g5_anchor_id:'anchor:current'},items:[]},
       committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},

@@ -32,7 +32,10 @@ jobs:
       - name: Determine required check profile
         id: profile
         run: |
-          if git show HEAD^:tools/spatial-v3/p28-ci-profile.mjs > "$RUNNER_TEMP/p28-ci-profile.mjs"; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "profile=full" >> "$GITHUB_OUTPUT"
+            echo "full"
+          elif git show HEAD^:tools/spatial-v3/p28-ci-profile.mjs > "$RUNNER_TEMP/p28-ci-profile.mjs"; then
             node "$RUNNER_TEMP/p28-ci-profile.mjs"
           else
             echo "profile=full" >> "$GITHUB_OUTPUT"

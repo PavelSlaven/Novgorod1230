@@ -276,6 +276,49 @@ test('expired deadline during pending replay returns committed pending result',
     assert.equal(screenWrites, 0);
 });
 
+test('narration rejection during pending replay returns committed pending result',
+  async () => {
+    const input = { request_id: 'turn-request-narration-rejected',
+      idempotency_key: 'turn-idem-narration-rejected', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1', ...input });
+    const state = phase9State();
+    state.completion = { status: 'committed' };
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const screen = { screen_status: 'committed_presentation_pending',
+      party_id: 'party-1', turn_id: 'turn-narration-rejected', turn_number: 7,
+      current_projection_anchor: { committed_state_version: 25,
+        package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+    const publicResult = { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition',
+      screen: structuredClone(screen) };
+    const replay = { input_digest: inputDigest, state,
+      public_result: publicResult, screen };
+    let replayCalls = 0;
+    const runtime = createLowerDvinaTracePhase2Runtime({
+      repository: {
+        async loadPhase2Replay() { return structuredClone(replay); },
+        async replayPhase2Turn() {
+          replayCalls += 1;
+          await Promise.resolve();
+          throw Object.assign(new Error('narration rejected'), {
+            code: 'TRACE_PHASE_2_NARRATION_REJECTED'
+          });
+        },
+        async loadPhase2State() { throw new Error('unexpected load'); },
+        async commitPhase2Turn() { throw new Error('unexpected commit'); },
+        async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+        async persistPhase2Screen() { throw new Error('unexpected screen'); }
+      },
+      semanticResolver: async () => ({}), narrator: { async run() {} },
+      randomSourceFactory: () => ({}), decisionSecret: 'secret'
+    });
+
+    const result = await runtime.submitTurn({ partyId: 'party-1', input });
+    assert.deepEqual(result, publicResult);
+    assert.equal(replayCalls, 1);
+  });
+
 test('pending replay rethrows unexpected repository and contract failures',
   async () => {
     const input = { request_id: 'turn-request-unexpected',

@@ -78,7 +78,7 @@ export function createLowerDvinaTracePhase2Runtime({
               turnBudget,
             });
             return repository.replayPhase2Turn
-              ? repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
+              ? await repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
               : replay.public_result;
           } catch (error) { if (!isExpectedPostCommitPresentationFailure(error)) throw error;
             const pending = committedPendingReplayResult({

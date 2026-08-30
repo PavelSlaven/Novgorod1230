@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
+import { diagnoseNpcCombatIntentPlan } from '@rus/contracts/combat-v1';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
@@ -257,16 +258,17 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         return domainRejectedProposal(currentBoundary, currentRequest,
           currentSignals, rawPlan, domainResult);
       }
+      const structuralErrors = structuralPlanErrors(
+        rawPlan, safeRequest, mode);
       if (repair !== null) {
         fail(
           'TURN_NPC_PLAN_INVALID',
           'NPC semantic response and its format repair must match the request',
           { request_id: currentRequest.request_id,
-            boundary_id: currentBoundary.boundary_id }
+            boundary_id: currentBoundary.boundary_id,
+            validation_errors: structuralErrors }
         );
       }
-      const structuralErrors = !structurallyValid && mode === 'conversation'
-        ? diagnoseConversationPlanDominantAct(rawPlan) : [];
       repair = repairContext(rawPlan, domainResult?.errors
         ?? (structuralErrors.length > 0 ? structuralErrors : null));
     }
@@ -274,6 +276,14 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
     return plannedProposal(
       currentBoundary, currentRequest, currentSignals, rawPlan);
   }
+}
+
+function structuralPlanErrors(plan, request, mode) {
+  if (mode === 'combat') return diagnoseNpcCombatIntentPlan(plan, request);
+  if (mode === 'conversation') {
+    return diagnoseConversationPlanDominantAct(plan);
+  }
+  return [];
 }
 
 async function rebuildStaleDecision({ boundary, request, rawPlan,

@@ -46,6 +46,58 @@ export function validateNpcCombatIntentPlan(value, request = null) {
     && value.npc_ref.entity_id === request.npc_ref.entity_id));
 }
 
+export function diagnoseNpcCombatIntentPlan(value, request = null) {
+  const errors = [];
+  const add = (code, path, message) => errors.push({ code, path, message });
+  const envelopeValid = exact(value, ['schema','request_id','boundary_id','state_version','combat_id','npc_ref','decision','operation','combat_statement','reason'])
+    && value.schema === 'npc_combat_intent_plan_v1'
+    && id(value.request_id) && id(value.boundary_id) && pos(value.state_version)
+    && id(value.combat_id) && ref(value.npc_ref, 'npc')
+    && (request === null || (
+      value.request_id === request.request_id
+      && value.boundary_id === request.boundary_id
+      && value.combat_id === request.combat_id
+      && value.state_version === request.state_version
+      && value.npc_ref.entity_id === request.npc_ref.entity_id));
+  if (!envelopeValid) add('npc_combat_envelope_invalid', '$',
+    'The assembled combat plan envelope must match the request.');
+  if (!validCombatDecision(value?.decision)) add('npc_combat_decision_invalid',
+    '$.decision', 'decision must contain the complete semantic decision shape.');
+  const operation = value?.operation;
+  if (!exact(operation, ['op','intent_kind','target_refs','protected_refs','scope_ref','destination_ref','force_limit','risk_posture'])
+      || operation.op !== 'set_combat_intent') {
+    add('npc_combat_operation_shape_invalid', '$.operation',
+      'operation must contain the complete assembled combat intent shape.');
+  }
+  if (!COMBAT_INTENT_KINDS.includes(operation?.intent_kind)) {
+    add('npc_combat_intent_choice_invalid', '$.operation.intent_kind',
+      'intent_choice must select one supplied intent choice.');
+  }
+  if (!refs(operation?.target_refs) || !refs(operation?.protected_refs)
+      || !nullableRef(operation?.scope_ref)
+      || !nullableRef(operation?.destination_ref)
+      || (COMBAT_INTENT_KINDS.includes(operation?.intent_kind)
+        && !validIntentReferences(operation))) {
+    add('npc_combat_ref_choice_invalid', '$.operation',
+      'selected_ref_choices must match the selected intent cardinality.');
+  }
+  if (!COMBAT_FORCE_LIMITS.includes(operation?.force_limit)) {
+    add('npc_combat_force_choice_invalid', '$.operation.force_limit',
+      'force_choice must select one supplied force choice.');
+  }
+  if (!COMBAT_RISK_POSTURES.includes(operation?.risk_posture)) {
+    add('npc_combat_risk_choice_invalid', '$.operation.risk_posture',
+      'risk_choice must select one supplied risk choice.');
+  }
+  if (!validCombatStatement(value?.combat_statement)) {
+    add('npc_combat_statement_invalid', '$.combat_statement',
+      'combat_statement must be null or match the complete statement shape.');
+  }
+  if (!id(value?.reason)) add('npc_combat_reason_invalid', '$.reason',
+    'reason must be a non-empty string.');
+  return deepFreeze(errors);
+}
+
 function validCombatDecision(value) {
   return exact(value, ['intent_summary','grounded_goal','adaptation'])
     && id(value.intent_summary) && id(value.grounded_goal)

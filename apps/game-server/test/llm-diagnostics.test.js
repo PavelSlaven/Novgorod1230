@@ -150,6 +150,20 @@ test('completed post-commit turn can record a safe narration failure', async () 
   });
 });
 
+test('failed combat diagnostics retain only allowlisted validation codes', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TURN_NPC_PLAN_INVALID', details: { validation_errors: [
+      { code: 'npc_combat_ref_choice_invalid', path: '$.operation',
+        message: 'safe fixed message' },
+      { code: 'hidden-party-42', path: '$.secret', message: 'secret output' }
+    ], original_output: 'secret provider output', hidden_state: 'secret ref' }
+  } });
+  assert.deepEqual(report.failure, { code: 'TURN_NPC_PLAN_INVALID',
+    validation_codes: ['npc_combat_ref_choice_invalid'] });
+  assert.equal(JSON.stringify(report.failure).includes('secret'), false);
+  assert.equal(JSON.stringify(report.failure).includes('hidden-party-42'), false);
+});
+
 test('turn context groups calls and excludes probe records', async () => {
   const diagnostics = createLlmDiagnostics();
   await diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' }, async () => {

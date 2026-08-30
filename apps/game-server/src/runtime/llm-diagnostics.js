@@ -26,6 +26,13 @@ const SAFE_NARRATION_CONCERN_KINDS = new Set([
   'unsupported_event', 'unsupported_world_state', 'unsupported_npc_state',
   'contradiction', 'hidden_knowledge'
 ]);
+const SAFE_NPC_COMBAT_VALIDATION_CODES = new Set([
+  'npc_combat_envelope_invalid', 'npc_combat_decision_invalid',
+  'npc_combat_operation_shape_invalid', 'npc_combat_intent_choice_invalid',
+  'npc_combat_ref_choice_invalid', 'npc_combat_force_choice_invalid',
+  'npc_combat_risk_choice_invalid', 'npc_combat_statement_invalid',
+  'npc_combat_reason_invalid'
+]);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
@@ -183,7 +190,17 @@ export function safeWritePlanFailure(value = {}) {
   return Object.freeze({ code, detail_code: detailCode, stage, reason });
 }
 export function safeTurnFailure(value = {}) {
-  return safeWritePlanFailure(value) ?? safeNarrationFailure(value);
+  return safeWritePlanFailure(value) ?? safeNarrationFailure(value)
+    ?? safeNpcCombatFailure(value);
+}
+function safeNpcCombatFailure(value = {}) {
+  if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;
+  const codes = Array.isArray(value?.details?.validation_errors)
+    ? [...new Set(value.details.validation_errors.map(({ code }) => text(code))
+      .filter((code) => SAFE_NPC_COMBAT_VALIDATION_CODES.has(code)))] : [];
+  return codes.length === 0 ? null : Object.freeze({
+    code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes)
+  });
 }
 function safeNarrationFailure(value = {}) {
   if (text(value?.code) !== 'TRACE_PHASE_2_NARRATION_REJECTED') return null;

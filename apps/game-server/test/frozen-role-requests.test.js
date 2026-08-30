@@ -50,8 +50,8 @@ test('frozen narration auditor prompts retain both validator-valid forms', async
     role_id === 'gameplay_narrator_auditor')) {
     const prompt = fixture.messages[0].content;
     assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
-    assert.equal(prompt.includes('{"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-    assert.equal(prompt.includes('{"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+    assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
+    assert.equal(prompt.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
   }
 });
 
@@ -146,7 +146,7 @@ async function narrationMessages(fixture) {
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(next) {
     if (next.role_id === target) call = next;
     if (next.role_id === 'gameplay_narrator') {
-      return { output: target === 'gameplay_narrator_format_repair' ? payload.invalid_output
+      return { output: target === 'gameplay_narrator_format_repair' ? {}
         : target === 'gameplay_narrator_auditor' || target === 'gameplay_narrator_semantic_repair'
           ? draft : fixture.expected_output };
     }
@@ -155,9 +155,12 @@ async function narrationMessages(fixture) {
     auditCalls += 1;
     return { output: target === 'gameplay_narrator_auditor' ? fixture.expected_output
       : target === 'gameplay_narrator_semantic_repair' && auditCalls === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
-        concerns: payload.concerns, evidence: ['Unsupported sound.'] }
-        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] } };
+        ? { pass: false, concerns: [{ segment_choice: `segment_${
+          JSON.parse(next.messages[1].content).segments.findIndex(({ segment_id }) =>
+            segment_id === payload.concerns[0].segment_id) + 1}`,
+          kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }],
+        evidence: ['Unsupported sound.'] }
+        : { pass: true, concerns: [], evidence: ['Grounded.'] } };
   } } });
   await narration.run(request);
   if (!call) throw new Error(`narration role was not called: ${target}`);

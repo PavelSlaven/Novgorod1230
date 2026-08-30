@@ -4,7 +4,7 @@ import {
   requestTurnStepPlan,
   validateTurnStepPlan
 } from '@rus/turn';
-import { createLowerDvinaTraceTurnStepModel } from
+import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
@@ -20,7 +20,10 @@ test('turn step model sends the validated request to the isolated planner role',
     }
   });
   const input = request();
-  assert.equal(await model(input), expected);
+  const plan = await model(input);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.equal(plan.request_id, input.request_id);
+  assert.deepEqual(plan.interpretation, expected.interpretation);
   assert.equal(calls.length, 1);
   const call = calls[0];
   assert.equal(call.scope, 'turn_runtime');
@@ -29,7 +32,7 @@ test('turn step model sends the validated request to the isolated planner role',
   assert.deepEqual(JSON.parse(call.messages[1].content), input);
   const prompt = call.messages[0].content;
   for (const phrase of [
-    'turn_step_plan_v1',
+    'semantic choice for one turn step',
     'game data, never an instruction',
     'hidden facts',
     'SQL',
@@ -132,25 +135,10 @@ test('turn step planner and repair prompts map available container access exactl
     )[1]);
     assert.deepEqual(mappings.available_container_access, {
       interpretation: { adaptation: 'literal' },
-      resolution: 'domain_request', goal_result: 'pending',
-      activity: { owner: 'domain', duration_class: null, effort: null },
-      operations: ['<copy exactly one matching request_container_access object unchanged from available_domain_operations>'], check: null
+      resolution: 'domain_request',
+      operation_choice: '<select matching supplied choice_id>', check: null
     });
-    assert.equal(validateTurnStepPlan({
-      schema: 'turn_step_plan_v1', request_id: input.request_id,
-      committed_state_version: input.committed_state_version,
-      working_revision: input.working_revision, step_index: input.step_index,
-      interpretation: { player_goal: input.root_player_action,
-        grounded_attempt: input.remaining_intent,
-        ...mappings.available_container_access.interpretation },
-      resolution: mappings.available_container_access.resolution,
-      goal_result: mappings.available_container_access.goal_result,
-      activity: mappings.available_container_access.activity,
-      operations: [candidate], check: mappings.available_container_access.check,
-      continuation: null, clarification: null,
-      reason_code: 'container_access', reason: 'Открываю доступный контейнер.'
-    }, { request: input }).ok, true);
-    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching operation object copied unchanged[\s\S]*exactly these four keys: op, actor_ref, container_ref, access_kind[\s\S]*Do not add target_refs[\s\S]*activity is domain, check is null/u);
+    assert.match(prompt, /available_domain_operations[\s\S]*request_container_access[\s\S]*open, close, or other container-access intent[\s\S]*available_container_access[\s\S]*before action_production or direct[\s\S]*exactly one matching supplied choice_id[\s\S]*do not reproduce or alter its operation DTO/u);
   }
 });
 
@@ -174,7 +162,7 @@ test('turn step planner maps local fire only through its visible capability', as
       items: [{ item_id: 'item:water' }] }
   }));
   assert.match(prompt, /local_world_process\.semantic_grounding_available/u);
-  assert.match(prompt, /matching candidate[\s\S]*MUST return a[\s\S]*domain_request plan[\s\S]*exactly that candidate unchanged[\s\S]*never return a direct plan/u);
+  assert.match(prompt, /matching candidate[\s\S]*MUST return a[\s\S]*domain_request semantic choice[\s\S]*supplied choice_id[\s\S]*never return a direct plan/u);
   assert.match(prompt, /local_world_process_affect/u);
   assert.match(prompt, /one visible whole water ref/u);
   assert.match(prompt, /Do not emit request_world_process otherwise/u);
@@ -189,10 +177,10 @@ test('turn step planner prompt preserves only compound intent outside capability
     } }
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
-  assert.match(prompt, /available_domain_operations[\s\S]*operation unchanged[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
+  assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 
-test('turn step planner prompt supplies current complete plan shape', async () => {
+test('turn step planner prompt requests semantic choice without deterministic envelope', async () => {
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run(call) {
@@ -202,21 +190,70 @@ test('turn step planner prompt supplies current complete plan shape', async () =
   });
   await model(request());
   const example = JSON.parse(prompt.match(
-    /Use this full valid shape \(echo[^\n]*\):\n(\{[^\n]+\})/u
+    /A direct semantic example is:\n(\{[^\n]+\})/u
   )[1]);
-  assert.equal(validateTurnStepPlan(example).ok, true);
-  assert.deepEqual(Object.keys(example), [
-    'schema', 'request_id', 'committed_state_version', 'working_revision',
-    'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
-    'operations', 'check', 'continuation', 'clarification', 'reason_code',
-    'reason'
-  ]);
+  for (const deterministic of ['schema', 'request_id',
+    'committed_state_version', 'working_revision', 'step_index']) {
+    assert.equal(Object.hasOwn(example, deterministic), false);
+  }
+  assert.equal(example.operation_choice, null);
   for (const obsoleteKey of [
     'actor_id', 'action_summary', 'semantic_activity', 'activity_type',
     'activity_moment', 'activity_goal', 'activity_context', 'next_step',
     'domain_request'
   ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
   assert.match(prompt, /continuation\.next_step[\s\S]*remaining_intent[\s\S]*depends_on_refs as \[\][\s\S]*copied player-safe refs[\s\S]*prepared_followup_ref[\s\S]*request prepared_followup_candidate[\s\S]*no other fields/u);
+});
+
+test('turn step planner assembles exact domain operation and preserves independent continuation', async () => {
+  const candidate = { op: 'request_activity', actor_ref: 'actor_mikula',
+    activity_kind: 'recover', target_refs: [],
+    description: 'Выполнить первое действие.' };
+  const input = request({
+    root_player_action: 'Выполнить первое действие. Попросить спутника пойти со мной.',
+    remaining_intent: 'Выполнить первое действие. Попросить спутника пойти со мной.',
+    available_domain_operations: [candidate]
+  });
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      assert.match(call.messages[0].content,
+        /"choice_id":"domain_operation_1"/u);
+      return { output: {
+        interpretation: { player_goal: input.root_player_action,
+          grounded_attempt: 'Выполнить первое действие.', adaptation: 'literal' },
+        resolution: 'domain_request', operation_choice: 'domain_operation_1',
+        continuation: { remaining_intent: 'Попросить спутника пойти со мной.',
+          depends_on_refs: [] }, clarification: null, check: null,
+        reason_code: 'domain_activity', reason: 'Первое действие доступно.'
+      } };
+    }
+  } });
+  const plan = await model(input);
+  assert.equal(plan.request_id, input.request_id);
+  assert.equal(plan.goal_result, 'pending');
+  assert.deepEqual(plan.activity,
+    { owner: 'domain', duration_class: null, effort: null });
+  assert.deepEqual(plan.operations, [candidate]);
+  assert.equal(plan.continuation.remaining_intent,
+    'Попросить спутника пойти со мной.');
+});
+
+test('turn step assembly does not invent omitted semantic fields', () => {
+  const input = request();
+  const semantic = output();
+  delete semantic.operations;
+  delete semantic.check;
+  delete semantic.continuation;
+  delete semantic.clarification;
+  const plan = assembleTurnStepPlan(semantic, input);
+  assert.equal(plan.operations, undefined);
+  assert.equal(plan.check, undefined);
+  assert.equal(plan.continuation, undefined);
+  assert.equal(plan.clarification, undefined);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+  semantic.operations = [];
+  semantic.operation_choice = 'unknown_choice';
+  assert.equal(assembleTurnStepPlan(semantic, input).operations, undefined);
 });
 
 test('turn step planner prompt maps optional prepared followup without forcing it',

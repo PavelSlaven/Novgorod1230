@@ -360,29 +360,48 @@ function combatPlan(request, ids, choices = {}) {
     : intentKind === 'break_contact'
       ? request.operation_contract.break_contact_destination_refs[0]
       : null;
+  const refChoices = [
+    ...(request.operation_contract.engageable_actor_refs ?? []),
+    ...(request.operation_contract.controllable_actor_refs ?? []),
+    ...(request.operation_contract.protectable_refs ?? []),
+    ...(request.operation_contract.holdable_scope_refs ?? []),
+    ...(request.operation_contract.reachable_destination_refs ?? []),
+    ...(request.operation_contract.break_contact_destination_refs ?? [])
+  ].filter((ref, index, all) => all.findIndex((candidate) =>
+    candidate.entity_kind === ref.entity_kind
+      && candidate.entity_id === ref.entity_id) === index);
+  const selectedRefs = [...targetRefs, ...(scopeRef ? [scopeRef] : []),
+    ...(destinationRef ? [destinationRef] : [])];
   return {
-    schema: 'npc_combat_intent_plan_v1',
-    request_id: request.request_id,
-    boundary_id: request.boundary_id,
-    state_version: request.state_version,
-    combat_id: request.combat_id,
-    npc_ref: request.npc_ref,
     decision: {
       intent_summary: 'Выбрать ближайшее действие в столкновении.',
       grounded_goal: 'Сохранить контроль над текущим положением.',
       adaptation: 'literal'
     },
-    operation: {
-      op: 'set_combat_intent', intent_kind: intentKind,
-      target_refs: targetRefs, protected_refs: [], scope_ref: scopeRef,
-      destination_ref: destinationRef, force_limit: forceLimit,
-      risk_posture: 'ordinary'
-    },
+    intent_choice: choiceId(request.operation_contract.allowed_intent_kinds,
+      intentKind, 'intent'),
+    selected_ref_choices: selectedRefs.map((ref) => choiceId(refChoices, ref,
+      'ref', sameRef)),
+    force_choice: choiceId(request.operation_contract.allowed_force_limits,
+      forceLimit, 'force'),
+    risk_choice: choiceId(request.operation_contract.allowed_risk_postures,
+      'ordinary', 'risk'),
     combat_statement: null,
     reason: postDisarm
       ? 'Сопротивление более невозможно.'
       : 'Участник выбирает ближайшее допустимое действие.'
   };
+}
+
+function choiceId(values, selected, prefix, equals = Object.is) {
+  const index = (values ?? []).findIndex((value) => equals(value, selected));
+  if (index < 0) throw new Error(`Missing ${prefix} fixture choice.`);
+  return `${prefix}_${index + 1}`;
+}
+
+function sameRef(left, right) {
+  return left?.entity_kind === right?.entity_kind
+    && left?.entity_id === right?.entity_id;
 }
 
 function npcConversationPlan(request, {

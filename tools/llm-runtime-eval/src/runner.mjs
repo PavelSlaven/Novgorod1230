@@ -24,8 +24,20 @@ import { createTurnStepDomainOwnerPreflight } from
   '../../../packages/turn/src/turn-step-admission.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
+import {
+  assembleNarrationRoleOutput,
+  assembleNpcConversationPlan,
+  assemblePlayerConversationPlan,
+  assembleTurnStepPlan
+} from '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { createLowerDvinaTraceNpcAutonomousModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js';
+import { assembleNpcCombatPlan } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js';
+import { assembleWorldProcessStepPlan } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
+import { bindOrdinaryMaterializationPlan } from
+  '../../../apps/game-server/src/runtime/ordinary-materialization-llm.js';
 
 export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env = process.env, metadata = {} } = {}) {
   const fixtures = Array.isArray(corpus?.fixtures) ? corpus.fixtures : [];
@@ -52,7 +64,9 @@ async function runFixture(fixture, execution) {
       || fixture.repair === true) {
     const call = await executeRoleLlmCall({ scope: fixture.scope,
       roleId: fixture.role_id, messages: fixture.messages, ...execution });
-    return scoreFixture(fixture, call);
+    return scoreFixture(fixture, {
+      ...call, parsed_json: assembleFixtureOutput(fixture, call.parsed_json)
+    });
   }
   return runTurnStepPlannerWorkflow(fixture, execution);
 }
@@ -136,9 +150,15 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
   };
   const preparedChainContext = fixture.prepared_chain_context ?? null;
   try {
+    const productionModel = createLowerDvinaTraceTurnStepModel({ roleRunner });
+    const turnStepModel = async (...args) => {
+      const plan = await productionModel(...args);
+      if (calls.length > 0) calls.at(-1).assembled_json = plan;
+      return plan;
+    };
     await requestTurnStepPlanWithRepair({
       request,
-      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+      turnStepModel,
       semanticPlanValidator,
       preparedChainContext,
       allowRepair: (preparedChainContext?.prior_effect_count ?? 0) === 0
@@ -146,7 +166,9 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
   } catch (error) {
     workflowError = error;
   }
-  const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
+  const rawFinalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
+  const finalCall = { ...rawFinalCall,
+    parsed_json: rawFinalCall.assembled_json ?? rawFinalCall.parsed_json };
   const providerResult = scoreFixture(fixture, finalCall, calls);
   const primary = plannerStage(fixture, calls[0], validationErrors[0]);
   const repair = calls[1] == null ? null
@@ -188,7 +210,7 @@ async function runTurnStepPlannerWorkflow(fixture, execution) {
 
 function plannerStage(fixture, call, validationError = null) {
   if (!call) return null;
-  const output = call.parsed_json;
+  const output = call.assembled_json ?? call.parsed_json;
   return {
     role_id: call.role_id,
     status: call.status,
@@ -374,6 +396,37 @@ function isScored(expected) {
 function messagePayload(messages) {
   const content = messages?.at(-1)?.content;
   try { return JSON.parse(content); } catch { return undefined; }
+}
+
+function assembleFixtureOutput(fixture, output) {
+  if (!output || typeof output !== 'object' || Array.isArray(output)) {
+    return output;
+  }
+  const payload = fixture.request ?? messagePayload(fixture.messages);
+  const request = fixture.repair === true && payload?.request
+    ? payload.request : payload;
+  if (fixture.role_id === 'world_process_step') {
+    return assembleWorldProcessStepPlan(output, request);
+  }
+  if (fixture.role_id.startsWith('turn_step_planner')) {
+    return assembleTurnStepPlan(output, request);
+  }
+  if (fixture.role_id.startsWith('npc_combat_decider')) {
+    return assembleNpcCombatPlan(output, request);
+  }
+  if (fixture.role_id.startsWith('player_conversation_interpreter')) {
+    return assemblePlayerConversationPlan(output, request);
+  }
+  if (fixture.role_id.startsWith('npc_conversation_responder')) {
+    return assembleNpcConversationPlan(output, request);
+  }
+  if (fixture.role_id === 'ordinary_materialization') {
+    return bindOrdinaryMaterializationPlan(request, output);
+  }
+  if (fixture.role_id.startsWith('gameplay_narrator')) {
+    return assembleNarrationRoleOutput(fixture.role_id, output, payload);
+  }
+  return output;
 }
 function contains(value, needle) {
   if (value === needle) return true;

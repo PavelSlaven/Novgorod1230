@@ -3,8 +3,18 @@ import test from 'node:test';
 import { validateNarrationOutput } from '@rus/narration';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
-import { createLowerDvinaTraceNarrationService } from
+import { assembleNarrationRoleOutput,
+  createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+
+test('narration assembly does not default omitted semantic fields', () => {
+  const output = assembleNarrationRoleOutput('gameplay_narrator', {
+    prose: 'Двор тих.' }, { request_id: 'narration-1' });
+  assert.equal(output.action_options, undefined);
+  assert.equal(output.used_references, undefined);
+  assert.equal(output.self_check, undefined);
+  assert.equal(validateNarrationOutput(output).ok, false);
+});
 
 test('narration wires writer, audit, and targeted semantic repair roles', async () => {
   const calls = [];
@@ -17,13 +27,14 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       const output = call.roleId === 'gameplay_narrator'
         ? {}
         : call.roleId === 'gameplay_narrator_format_repair'
-          ? repairedOutput
+          ? { prose: repairedOutput.prose, action_options: [],
+              used_references: [], self_check: {} }
           : call.roleId === 'gameplay_narrator_auditor'
             ? calls.filter(({ roleId }) => roleId === 'gameplay_narrator_auditor').length === 1
-              ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Не подтверждено.' }], evidence: ['Нет в visible_context.'] }
-              : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Подтверждено.'] }
+              ? { pass: false, concerns: [{ segment_choice: 'segment_1', kind: 'unsupported_fact', reason: 'Не подтверждено.' }], evidence: ['Нет в visible_context.'] }
+              : { pass: true, concerns: [], evidence: ['Подтверждено.'] }
             : call.roleId === 'gameplay_narrator_semantic_repair'
-              ? { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: 'Двор тих.' }] }
+              ? { replacements: [{ prose: 'Двор тих.' }] }
               : null;
       return { status: 'ok', parsed_json: output, provider: 'deepseek',
         model: 'deepseek-v4-flash', scope: call.scope, role_id: call.roleId,
@@ -39,10 +50,11 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     }
   }));
   assert.equal(result.status, 'approved');
-  const shape = '{"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}';
-  const repairShape = shape.replace('<request_id>', '<request.request_id>');
+  const shape = '{"prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}';
+  const repairShape = shape;
   assert.equal(calls[0].messages[0].content.includes(shape), true);
-  assert.equal(calls[0].messages[0].content.includes('Copy request_id exactly into output_id'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'server assembles version, schema, and output_id'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'context.player_input only to understand attempted action or speech'), true);
   assert.equal(calls[0].messages[0].content.includes(
@@ -55,8 +67,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
   assert.equal(calls[2].messages[0].content.includes('full narration output'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
-  assert.equal(calls[2].messages[0].content.includes('{"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-  assert.equal(calls[2].messages[0].content.includes('{"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+  assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
+  assert.equal(calls[2].messages[0].content.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
     version: 1, schema: 'narration_semantic_audit_request', phase: 'initial',
     output: repairedOutput, visible_context: {
@@ -67,7 +81,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
   assert.equal(calls[3].messages[0].content.includes('flagged segments'), true);
-  assert.equal(calls[3].messages[0].content.includes('Keep every supplied segment_id immutable'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'server assembles version, schema, and immutable segment_id'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'Двор тих.', nearby_context: [] }]);
   assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);

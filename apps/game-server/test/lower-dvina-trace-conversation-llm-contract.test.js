@@ -321,7 +321,9 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
   for (const prompt of [npcConversationInstructions(false, request),
     npcConversationInstructions(true, request)]) {
     for (const candidate of candidates) {
-      assert.equal(prompt.includes(JSON.stringify(candidate)), true);
+      const { schema, request_id, boundary_id, conversation_id, exchange_id,
+        state_version, speaker_ref, ...semantic } = candidate;
+      assert.equal(prompt.includes(JSON.stringify(semantic)), true);
     }
     assert.match(prompt, /not an exhaustive choice set/u);
     assert.match(prompt, /Ordinary speech may use any allowed dominant_act/u);

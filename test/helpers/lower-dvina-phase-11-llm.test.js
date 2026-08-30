@@ -16,6 +16,28 @@ test('canonical local fixture serves the active S1 descriptor role', async () =>
   });
 });
 
+test('canonical combat fixture returns only semantic choices', async () => {
+  const response = await createCanonicalPhase11LlmResponder()({
+    model: 'fixture-npc-combat-decider', input: {
+      npc_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+      decision_reasons: { perceived_changes: [] },
+      operation_contract: {
+        allowed_intent_kinds: ['hold'], allowed_force_limits: ['avoid_harm'],
+        allowed_risk_postures: ['ordinary'], engageable_actor_refs: [],
+        controllable_actor_refs: [], protectable_refs: [],
+        holdable_scope_refs: [{ entity_kind: 'location',
+          entity_id: 'trace_ld_v1_loc_zhdanko_storehouse' }],
+        reachable_destination_refs: [], break_contact_destination_refs: []
+      }
+    }
+  });
+  assert.equal('schema' in response, false);
+  assert.equal(response.intent_choice, 'intent_1');
+  assert.deepEqual(response.selected_ref_choices, ['ref_1']);
+  assert.equal(response.force_choice, 'force_1');
+  assert.equal(response.risk_choice, 'risk_1');
+});
+
 test('canonical local fixture routes a free general look into the shared planner',
   async () => {
     const plan = await createCanonicalPhase11LlmResponder()({

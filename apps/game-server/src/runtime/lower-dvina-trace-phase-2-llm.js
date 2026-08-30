@@ -1,11 +1,9 @@
-import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
-import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions, requiredNpcConversationCandidate, requiredPlayerConversationCandidate } from './lower-dvina-trace-phase-2-llm-prompts.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
-export function createLowerDvinaTraceSemanticResolver({
-  roleRunner
-} = {}) {
+export { assembleNarrationRoleOutput, createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
+export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
   return async function resolveSemanticIntent(request) {
     const response = await roleRunner.run({
@@ -39,6 +37,7 @@ export function createLowerDvinaTraceTurnStepModel({
             structuredClone(repairContext.structural_errors ?? [])
         }
       : request;
+    const operationChoices = turnStepOperationChoices(request);
     let response;
     try {
       response = await roleRunner.run({
@@ -50,20 +49,24 @@ export function createLowerDvinaTraceTurnStepModel({
         messages: [{
           role: 'system',
           content: [
-            'Return only one JSON object with schema turn_step_plan_v1.',
+            'Return only one JSON object containing the semantic choice for one turn step.',
             'Do not add Markdown, prose outside JSON, or unknown fields.',
-             `Use this full valid shape (echo request_id, committed_state_version, working_revision, and step_index exactly from request):\n${TURN_STEP_PLAN_EXAMPLE}`,
+            'Do not return schema, request_id, committed_state_version, working_revision, step_index, goal_result pending, or code-owned domain activity; the server assembles them.',
+            'Return interpretation, resolution, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason.',
+            `A direct semantic example is:\n${semanticTurnStepExample()}`,
+            `Code-owned exact operation choices are:\n${JSON.stringify(operationChoices.map(({ choice_id, operation }) => ({ choice_id, operation })))}`,
+            'For a matching code-owned operation return operation_choice with exactly one supplied choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
-            'When available_domain_operations contains an operation that covers the intent, use that operation unchanged; use action_production only when no supplied operation covers it.',
+            'When an operation choice covers the intent, select its choice_id; use action_production only when no supplied choice covers it.',
             ...(request.prepared_followup_candidates?.length ? [
               preparedFollowupPrompt(request.prepared_followup_candidates)
             ] : []),
             'Plan exactly one executable step. Sentence boundary is a continuation boundary. Plan only the first independently executable sentence. If request.remaining_intent has later non-empty sentences, always preserve all of them in continuation, use goal_result pending, and never let one selected operation consume them. Only clauses inside the same sentence may form one composite operation, and only when that operation explicitly represents their single event. One selected domain operation covers only its own grounded event; it may cover multiple verbs only when the selected operation explicitly represents every clause. Matching one clause, shared actor, place, time, or generic owner does not extend coverage. Preserve every independent uncovered clause in continuation, and use continuation null only when none remains. Every domain_request uses goal_result pending, including a complete composite with continuation null: pending means code-owned execution, not unhandled intent. If continuation is present, goal_result must be pending and continuation.remaining_intent must preserve every independent uncovered clause. Final continuation override for direct reality_limited or make_believe: a same-sentence clause whose stated action, purpose, manner, result, or qualifier depends on the same impossible or physically limited premise is covered by the same grounding, not continuation. Preserve only clauses independently executable without that premise and every later sentence; if none remain, set continuation to null.',
             repairing
-              ? 'Repair only listed validation errors; preserve echoed request identity and unrelated fields. For domain_owner_unavailable, owner absence is not evidence of impossibility or fantasy: ordinary or unspecified intent stays literal. Do not invent a physical impossibility or absent fantastical referent; use a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
+              ? 'Repair only listed validation errors and preserve unrelated semantic fields. For domain_owner_unavailable, owner absence is not evidence of impossibility or fantasy: ordinary or unspecified intent stays literal. Do not invent a physical impossibility or absent fantastical referent; use a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
               : 'Plan only the next executable semantic step and preserve any remaining intent.'
           ].join(' ')
         }, {
@@ -83,7 +86,67 @@ export function createLowerDvinaTraceTurnStepModel({
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
     }
-    return response.output;
+    return assembleTurnStepPlan(response.output, request, operationChoices);
+  };
+}
+
+function semanticTurnStepExample() {
+  const { schema, request_id, committed_state_version, working_revision,
+    step_index, ...semantic } = JSON.parse(TURN_STEP_PLAN_EXAMPLE);
+  return JSON.stringify({ ...semantic, operation_choice: null });
+}
+
+function turnStepOperationChoices(request) {
+  const operations = [
+    ...(request.available_domain_operations ?? []),
+    ...(request.player_safe_state?.local_world_process?.allowed ?? [])
+  ];
+  const seen = new Set();
+  return operations.filter((operation) => {
+    const key = JSON.stringify(operation);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).map((operation, index) => ({
+    choice_id: `domain_operation_${index + 1}`,
+    operation: structuredClone(operation)
+  }));
+}
+
+export function assembleTurnStepPlan(choice, request,
+  operationChoices = turnStepOperationChoices(request)) {
+  const semantic = structuredClone(choice);
+  const selected = operationChoices.find(({ choice_id }) =>
+    choice_id === semantic.operation_choice);
+  const operations = semantic.operation_choice == null
+    ? structuredClone(semantic.operations)
+    : selected ? [structuredClone(selected.operation)] : undefined;
+  const domainRequest = semantic.resolution === 'domain_request';
+  const actionProduction = Array.isArray(operations) && operations.some((operation) =>
+    operation?.op === 'request_item_use'
+      && operation.action_production != null);
+  return {
+    schema: 'turn_step_plan_v1',
+    request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    step_index: request.step_index,
+    interpretation: semantic.interpretation,
+    resolution: semantic.resolution,
+    goal_result: domainRequest || semantic.resolution === 'generic_check'
+      || semantic.resolution === 'clarification_required'
+      || semantic.continuation != null
+      ? 'pending'
+      : semantic.goal_result,
+    activity: domainRequest && !actionProduction
+      ? { owner: 'domain', duration_class: null, effort: null }
+      : semantic.activity,
+    operations,
+    check: semantic.check,
+    continuation: semantic.continuation,
+    clarification: semantic.clarification,
+    reason_code: semantic.reason_code,
+    reason: semantic.reason
   };
 }
 function preparedFollowupPrompt(candidates) {
@@ -127,8 +190,57 @@ export function createLowerDvinaTracePlayerConversationModel({
       }],
       overrides: { temperature: 0, maxTokens: 8000 }
     });
-    return response.output;
+    return assemblePlayerConversationPlan(response.output, request);
   };
+}
+
+export function assemblePlayerConversationPlan(choice, request) {
+  return assembleConversationPlan(choice,
+    requiredPlayerConversationCandidate(request), {
+      schema: 'player_conversation_contribution_plan_v1',
+      request_id: request.request_id,
+      conversation_id: request.conversation_id,
+      state_version: request.state_version,
+      speaker_ref: structuredClone(request.speaker_ref)
+    });
+}
+
+export function assembleNpcConversationPlan(choice, request) {
+  return assembleConversationPlan(choice,
+    requiredNpcConversationCandidate(request), {
+      schema: 'conversation_contribution_plan_v1',
+      request_id: request.request_id,
+      boundary_id: request.boundary_id,
+      conversation_id: request.conversation_id,
+      exchange_id: request.exchange_id,
+      state_version: request.state_version,
+      speaker_ref: structuredClone(request.npc_ref)
+    });
+}
+
+function assembleConversationPlan(choice, requiredCandidate, envelope) {
+  const semantic = structuredClone(choice);
+  const bound = requiredCandidate == null
+    ? semantic
+    : bindKnownConversationValues(requiredCandidate, semantic);
+  return { ...bound, ...envelope };
+}
+
+function bindKnownConversationValues(template, semantic) {
+  if (typeof template === 'string' && template.startsWith('<')) {
+    return semantic;
+  }
+  if (Array.isArray(template)) {
+    if (template.length === 0) return [];
+    return template.map((value, index) =>
+      bindKnownConversationValues(value, semantic?.[index]));
+  }
+  if (template !== null && typeof template === 'object') {
+    return Object.fromEntries(Object.entries(template).map(([key, value]) => [
+      key, bindKnownConversationValues(value, semantic?.[key])
+    ]));
+  }
+  return structuredClone(template);
 }
 export function createLowerDvinaTraceNpcSemanticModel({
   roleRunner
@@ -155,7 +267,7 @@ export function createLowerDvinaTraceNpcSemanticModel({
       }],
       overrides: { temperature: 0, maxTokens: 8000 }
     });
-    return response.output;
+    return assembleNpcConversationPlan(response.output, request);
   };
 }
 
@@ -182,68 +294,5 @@ export function createLowerDvinaTraceNpcDecisionSelector({
   };
 }
 
-export function createLowerDvinaTraceNarrationService({
-  roleRunner
-} = {}) {
-  requireRoleRunner(roleRunner);
-  return createNarrationService({
-    writer: {
-      generate: (request) => runNarrationRole(
-        roleRunner,
-        'gameplay_narrator',
-        'Return only one JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Use context.player_input only to understand attempted action or speech. It is never evidence of success or a new world fact. Ground every factual or result claim, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
-        request
-      )
-    },
-    formatRepairer: {
-      repair: (request) => runNarrationRole(
-        roleRunner,
-        'gameplay_narrator_format_repair',
-        'Return only one repaired JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request.request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request.request_id exactly into output_id; do not emit angle brackets literally. Repair JSON shape only; prose, action_options, used_references, and self_check must remain grounded exclusively in request.visible_context.',
-        request
-      )
-    },
-    auditor: {
-      audit: (request) => runNarrationRole(
-        roleRunner,
-        'gameplay_narrator_auditor',
-        'Return only one narration_audit JSON object. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. PASS exactly: {"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}. FAIL exactly: {"version":1,"schema":"narration_audit","pass":false,"concerns":[{"segment_id":"<supplied segment_id>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role.',
-        request
-      )
-    },
-    semanticRepairer: {
-      repair: (request) => runNarrationRole(
-        roleRunner,
-        'gameplay_narrator_semantic_repair',
-        'Return only one narration_semantic_repair JSON object. Repair only supplied flagged segments using their concerns, read-only nearby_context, and player-safe visible_context. Return exactly {"version":1,"schema":"narration_semantic_repair","replacements":[{"segment_id":"<supplied flagged segment_id>","prose":"<replacement>"}]}. Keep every supplied segment_id immutable; return one replacement for each flagged segment and no others. Do not use hidden state, change neighboring segments, infer facts, add a fallback, or call any other role.',
-        request
-      )
-    }
-  });
-}
-async function runNarrationRole(roleRunner, roleId, instruction, request, maxTokens) {
-  const response = await roleRunner.run({
-    scope: 'turn_runtime',
-    role_id: roleId,
-    request_identity: request.request_id ?? request.request?.request_id,
-    messages: [{
-      role: 'system',
-      content: instruction
-    }, {
-      role: 'user',
-      content: JSON.stringify(request)
-    }],
-    overrides: { temperature: 0, ...(maxTokens ? { maxTokens } : {}) }
-  });
-  if (!response?.output || typeof response.output !== 'object') {
-    throw dependencyError(`Narration role ${roleId} returned no JSON object.`);
-  }
-  return response.output;
-}
-
-function requireRoleRunner(roleRunner) {
-  if (typeof roleRunner?.run !== 'function') {
-    throw dependencyError('Configured LLM role runner is required.');
-  }
-}
+function requireRoleRunner(roleRunner) { if (typeof roleRunner?.run !== 'function') throw dependencyError('Configured LLM role runner is required.'); }
 function dependencyError(message) { return serverError('TRACE_PHASE_2_DEPENDENCY_MISSING', message, { status: 503 }); }

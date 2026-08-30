@@ -30,9 +30,22 @@ test('custom provider keeps its model instead of turn default model', () => {
   assert.equal(config.provider, 'openai_compatible');
 });
 
-test('autonomous roles request plain semantic JSON, not a full NPC plan', () => {
-  for (const roleId of [TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
-    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR]) {
+test('semantic-choice roles do not require public DTO schemas from models', () => {
+  for (const roleId of [TurnRuntimeRoles.TURN_STEP_PLANNER,
+    TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR,
+    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
+    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR,
+    TurnRuntimeRoles.NPC_COMBAT_DECIDER,
+    TurnRuntimeRoles.NPC_COMBAT_DECIDER_REPAIR,
+    TurnRuntimeRoles.WORLD_PROCESS_STEP,
+    TurnRuntimeRoles.PLAYER_CONVERSATION_INTERPRETER,
+    TurnRuntimeRoles.PLAYER_CONVERSATION_INTERPRETER_REPAIR,
+    TurnRuntimeRoles.NPC_CONVERSATION_RESPONDER,
+    TurnRuntimeRoles.NPC_CONVERSATION_RESPONDER_REPAIR,
+    TurnRuntimeRoles.GAMEPLAY_NARRATOR,
+    TurnRuntimeRoles.GAMEPLAY_NARRATOR_REPAIR,
+    TurnRuntimeRoles.GAMEPLAY_NARRATOR_AUDITOR,
+    TurnRuntimeRoles.GAMEPLAY_NARRATOR_SEMANTIC_REPAIR]) {
     const { config } = resolveLlmExecutionConfig({
       scope: 'turn_runtime', roleId, env
     });

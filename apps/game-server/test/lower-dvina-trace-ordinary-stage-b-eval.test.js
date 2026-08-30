@@ -5,7 +5,8 @@ import {
   evaluateLowerDvinaTraceOrdinaryStageBModelOutputs,
   validateLowerDvinaTraceOrdinaryStageBEval
 } from '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
-import { createOrdinaryMaterializationModel } from
+import { bindOrdinaryMaterializationPlan,
+  createOrdinaryMaterializationModel } from
   '../src/runtime/ordinary-materialization-llm.js';
 import { buildOrdinaryMaterializationMessages } from
   '../src/runtime/ordinary-materialization-llm.js';
@@ -18,6 +19,7 @@ import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
 import { createOrdinaryMaterializationStageBQualifier } from
   '../src/runtime/ordinary-materialization-stage-b-qualification.js';
+import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -77,10 +79,10 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(prompt, /seed_scope permits only seeded or no_change/u);
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
-  assert.match(prompt, /Materialize only supplied candidate using that envelope/u);
+  assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
-  assert.match(prompt, /derive ordinary semantic descriptor only from candidate_query\.candidate_hint/u);
-  assert.match(prompt, /exact candidate_key and coverage_key/u);
+  assert.match(prompt, /derive it only from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /server assembles/u);
   assert.match(prompt, /availability_class is common or context_bound/u);
   assert.match(prompt, /authority_envelope/u);
   assert.doesNotMatch(prompt, /простая верёвка|cordage/u);
@@ -95,7 +97,7 @@ test('ordinary materialization absent prompt permits only its exact absent plan'
     schema: 'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: [{ path: 'resolution', keyword: 'enum' }]
   } })[0].content;
-  assert.match(prompt, /Return this exact absent response shape/u);
+  assert.match(prompt, /Return exactly/u);
   assert.match(prompt, /"resolution":"absent"/u);
   assert.match(prompt, /Validation errors: \[\{"path":"resolution","keyword":"enum"\}\]/u);
   assert.doesNotMatch(prompt, /seed_scope|materialize|descriptor|mechanics|authority_required|no_change/u);
@@ -190,14 +192,22 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
   assert.equal(output.entities[0].semantic_descriptor.name, 'верёвка');
 });
 
-test('production O1 turns a Stage A request-shaped no_change into a plan', async () => {
+test('ordinary assembly does not invent an omitted semantic reason', () => {
+  const request = presenceRequest('верёвка');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'absent' });
+  assert.equal(plan.reason_code, undefined);
+  assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(plan), []);
+});
+
+test('production O1 assembles a semantic Stage A no_change choice', async () => {
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
   const request = { ...presenceRequest('ложка'), mode: 'seed_scope',
     candidate_query: null };
   const output = await createOrdinaryMaterializationModel({
     stageBApprovalReceipt: approval, roleRunner: { async run() {
       return { provider_record: modelIdentity(), output: {
-        ...request, resolution: 'no_change' } };
+        resolution: 'no_change', reason_code: 'no_change' } };
     } }
   })(request, { repair: null });
   assert.deepEqual(output, { schema: 'ordinary_materialization_plan_v1',

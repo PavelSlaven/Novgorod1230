@@ -18,8 +18,13 @@ export function request(overrides = {}) {
 
 export function output() {
   return {
-    schema: 'turn_step_plan_v1',
-    request_id: 'turn-request-42'
+    interpretation: { player_goal: 'открываю сундук',
+      grounded_attempt: 'открыть сундук', adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    operation_choice: null, operations: [], check: null, continuation: null,
+    clarification: null, reason_code: 'unavailable',
+    reason: 'Нет доступной точной операции.'
   };
 }
 

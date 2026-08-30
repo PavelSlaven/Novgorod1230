@@ -3,6 +3,8 @@ import test from 'node:test';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { classifyPlannerEvalFailure, runFrozenRoleEval } from '../src/runner.mjs';
+import { createLowerDvinaTraceWorldProcessStepModel } from
+  '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
 
 const corpus = JSON.parse(await readFile(new URL('../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url), 'utf8'));
 
@@ -23,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 16);
+  assert.equal(corpus.corpus_version, 17);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -36,23 +38,23 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     const { port } = server.address();
     const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
       git: { checkout_sha: 'fixture-sha', dirty: false },
-      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 16 }
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 17 }
     } });
-    assert.equal(report.fixture_count, 27);
-    assert.equal(report.aggregates.total.passed, 27);
+    assert.equal(report.fixture_count, 28);
+    assert.equal(report.aggregates.total.passed, 28);
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 27);
+    assert.equal(report.aggregates.total.scored, 28);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 27);
-    assert.equal(report.aggregates.total.quality_denominator, 27);
+    assert.equal(report.aggregates.total.automated_passed, 28);
+    assert.equal(report.aggregates.total.quality_denominator, 28);
     assert.equal(report.aggregates.total.repairs, 8);
-    assert.equal(report.aggregates.total.input_tokens, 54);
-    assert.equal(report.aggregates.total.output_tokens, 81);
+    assert.equal(report.aggregates.total.input_tokens, 56);
+    assert.equal(report.aggregates.total.output_tokens, 84);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
     assert.deepEqual(report.metadata.corpus, {
-      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 16
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 17
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
@@ -197,7 +199,8 @@ test('planner fixture uses one production repair only after production validatio
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const invalidPrimary = structuredClone(fixture.expected_output);
   invalidPrimary.continuation = {
-    remaining_intent: 'осмотреть окрестности', depends_on_refs: []
+    remaining_intent: 'осмотреть окрестности',
+    depends_on_refs: ['unknown-ref']
   };
   const outputs = [invalidPrimary, fixture.expected_output];
   let calls = 0;
@@ -351,7 +354,8 @@ test('prepared-effect chain suppresses planner repair like production', async ()
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const invalidPrimary = structuredClone(fixture.expected_output);
   invalidPrimary.continuation = {
-    remaining_intent: 'осмотреть окрестности', depends_on_refs: []
+    remaining_intent: 'осмотреть окрестности',
+    depends_on_refs: ['unknown-ref']
   };
   let calls = 0;
   const server = createServer(async (request, response) => {
@@ -445,8 +449,18 @@ test('planner invalid repair fails after exactly two calls', async () => {
 });
 
 test('world-process semantic mismatch fails even when owner validator accepts plan', async () => {
-  const fixture = corpus.fixtures.find(({ id }) => id === 'world-process-water-affect');
-  const output = { ...fixture.expected_output, process_outcome: 'no_effect', reason_code: 'water_unaffected' };
+  const fixture = structuredClone(corpus.fixtures.find(({ id }) =>
+    id === 'world-process-water-affect'));
+  const request = JSON.parse(fixture.messages.at(-1).content);
+  request.outcome_contract.push({ process_outcome: 'no_effect',
+    reason_code: 'water_unaffected',
+    applicability: 'the supplied water does not reach the fire' });
+  let invocation;
+  await createLowerDvinaTraceWorldProcessStepModel({ roleRunner: {
+    async run(call) { invocation = call; return { output: {} }; }
+  } })(request);
+  fixture.messages = invocation.messages;
+  const output = { ...fixture.expected_output, outcome_choice: 'outcome_2' };
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
     response.setHeader('Content-Type', 'application/json');

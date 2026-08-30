@@ -9,7 +9,7 @@ test('turn runtime resolves the bounded world-process step role', () => {
     env: { DEEPSEEK_API_KEY: 'test-key' }
   });
   assert.equal(TurnRuntimeRoles.WORLD_PROCESS_STEP, 'world_process_step');
-  assert.equal(role.expectedSchema, 'world_process_step_plan_v1');
+  assert.equal(role.expectedSchema, null);
   assert.equal(role.temperature, 0);
   assert.equal(role.contextBudget.reserveRepairTokens, 0);
 });

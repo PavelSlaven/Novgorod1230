@@ -6,8 +6,21 @@ import {
 } from '@rus/npc-runtime';
 import {
   createLowerDvinaTraceNpcSemanticModel,
-  createLowerDvinaTracePlayerConversationModel
+  createLowerDvinaTracePlayerConversationModel,
+  createLowerDvinaTraceSemanticResolver
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+
+test('closed intent router returns its bounded selection unchanged', async () => {
+  const selection = { schema: 'turn_intent_route', request_id: 'route-1',
+    option_id: 'option-1', command_token: 'token-1' };
+  const resolver = createLowerDvinaTraceSemanticResolver({ roleRunner: {
+    async run(call) {
+      assert.equal(call.role_id, 'intent_router');
+      return { output: selection };
+    }
+  } });
+  assert.deepEqual(await resolver({ request_id: 'route-1' }), selection);
+});
 
 test('conversation prompts supply complete shapes and request-bound mappings',
   async () => {
@@ -21,28 +34,25 @@ test('conversation prompts supply complete shapes and request-bound mappings',
 
     const [player, npc] = calls.map(({ messages }) => messages[0].content);
     const playerShape = JSON.parse(player.match(
-      /Use this complete JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+      /Use this complete semantic JSON shape;[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const npcShape = JSON.parse(npc.match(
-      /Use this complete JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+      /Use this complete semantic JSON shape;[^\n]*:\n(\{[^\n]+\})/u
     )[1]);
     const mappings = JSON.parse(player.match(
       /Use these mappings for matching cases:\n(\{[^\n]+\})/u
     )[1]);
-    assert.equal(playerShape.schema,
-      'player_conversation_contribution_plan_v1');
+    assert.equal('schema' in playerShape, false);
     assert.equal(playerShape.input_mode, '<verbatim or intent_paraphrase>');
     assert.deepEqual(Object.keys(playerShape), [
-      'schema', 'request_id', 'conversation_id', 'state_version', 'speaker_ref',
       'input_mode', 'contribution_kind', 'primary_addressee_ref',
       'intended_addressee_refs', 'affected_actor_refs', 'speech',
       'interpretation', 'resolution', 'activity', 'supporting_operations',
       'check', 'handoff'
     ]);
-    assert.equal(npcShape.schema, 'conversation_contribution_plan_v1');
+    assert.equal('schema' in npcShape, false);
     assert.deepEqual(Object.keys(npcShape), [
-      'schema', 'request_id', 'boundary_id', 'conversation_id', 'exchange_id',
-      'state_version', 'speaker_ref', 'contribution_kind',
+      'contribution_kind',
       'primary_addressee_ref', 'intended_addressee_refs',
       'affected_actor_refs', 'speech', 'interpretation', 'resolution',
       'activity', 'supporting_operations', 'check', 'handoff', 'reason'

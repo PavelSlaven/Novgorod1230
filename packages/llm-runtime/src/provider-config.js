@@ -70,8 +70,8 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     reasoningEffort: null,
     responseFormat: 'json_object',
     maxTokens: 8000,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'turn_step_plan_v1',
+    outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null,
     parseJson: true,
     targetInputTokens: 100000,
     comfortableInputTokens: 220000,
@@ -82,31 +82,31 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR]: {
     envPrefix: 'TURN_STEP_PLANNER_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 4000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
-    expectedSchema: 'turn_step_plan_v1', parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
+    expectedSchema: null, parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'narration_output', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_REPAIR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
-    expectedSchema: 'narration_output', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_AUDITOR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'narration_audit', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 800, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_SEMANTIC_REPAIR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_SEMANTIC_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1200, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'narration_semantic_repair', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    responseFormat: 'json_object', maxTokens: 1200, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1200, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
@@ -125,8 +125,8 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     envPrefix: 'TURN_WORLD_PROCESS_STEP', model: 'deepseek-v4-flash',
     thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'world_process_step_plan_v1', parseJson: true,
+    outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null, parseJson: true,
     targetInputTokens: 6000, comfortableInputTokens: 12000,
     hardInputLimitTokens: 30000, reserveOutputTokens: 800,
     reserveRepairTokens: 0

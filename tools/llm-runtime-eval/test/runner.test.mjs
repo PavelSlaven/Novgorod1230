@@ -162,6 +162,64 @@ test('autonomous eval fails after one invalid semantic repair', async () => {
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
+test('combat eval records its single bounded production repair', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  const outputs = [{}, fixture.expected_output];
+  const requests = [];
+  const server = createServer(async (request, response) => {
+    let body = ''; for await (const chunk of request) body += chunk;
+    requests.push(JSON.parse(body));
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: {
+      content: JSON.stringify(outputs.shift())
+    } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(requests.length, 2);
+    assert.equal(requests.every(({ max_tokens }) => max_tokens === 4000), true);
+    assert.equal(report.results[0].pass, true);
+    assert.equal(report.results[0].valid, true);
+    assert.equal(report.results[0].llm_calls, 2);
+    assert.equal(report.results[0].repair_calls, 1);
+    assert.equal(report.aggregates.total.repairs, 1);
+    assert.equal(report.metadata.role_config_policy.find(({ role_id }) =>
+      role_id === 'npc_combat_decider').max_tokens, 4000);
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
+test('combat eval fails after one invalid production repair', async () => {
+  const fixture = corpus.fixtures.find(({ id }) => id === 'npc-combat-engage');
+  let calls = 0;
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    calls += 1;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const report = await runFrozenRoleEval({ corpus: { ...corpus,
+      fixtures: [fixture] }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
+    } });
+    assert.equal(calls, 2);
+    assert.equal(report.results[0].pass, false);
+    assert.equal(report.results[0].valid, false);
+    assert.equal(report.results[0].llm_calls, 2);
+    assert.equal(report.results[0].repair_calls, 1);
+    assert.ok(report.results[0].errors.includes('validator:npc_combat_plan'));
+  } finally { await new Promise((resolve) => server.close(resolve)); }
+});
+
 test('provider-ok invalid plan counts as validator failure and error in role/model aggregates', async () => {
   const fixture = corpus.fixtures.find(({ validator }) =>
     validator === 'turn_step_plan');

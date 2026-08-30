@@ -13,6 +13,7 @@ import {
 import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
 import {
   validateConversationContributionPlan,
+  validateNpcCombatIntentPlan,
   validateNpcCombatPlanApplicability,
   validateNpcStepPlan,
   validatePlayerConversationContributionPlan
@@ -32,7 +33,7 @@ import {
 } from '../../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { createLowerDvinaTraceNpcAutonomousModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js';
-import { assembleNpcCombatPlan } from
+import { assembleNpcCombatPlan, createLowerDvinaTraceNpcCombatModel } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js';
 import { assembleWorldProcessStepPlan } from
   '../../../apps/game-server/src/runtime/lower-dvina-trace-world-process-llm.js';
@@ -59,6 +60,11 @@ async function runFixture(fixture, execution) {
       && fixture.role_id.startsWith('npc_autonomous_decider')) {
     return runNpcAutonomousWorkflow(fixture, execution);
   }
+  if (fixture.validator === 'npc_combat_plan'
+      && fixture.role_id === 'npc_combat_decider'
+      && fixture.repair !== true) {
+    return runNpcCombatWorkflow(fixture, execution);
+  }
   if (fixture.validator !== 'turn_step_plan'
       || fixture.role_id !== 'turn_step_planner'
       || fixture.repair === true) {
@@ -69,6 +75,46 @@ async function runFixture(fixture, execution) {
     });
   }
   return runTurnStepPlannerWorkflow(fixture, execution);
+}
+
+async function runNpcCombatWorkflow(fixture, execution) {
+  const calls = [];
+  const roleRunner = { async run({ scope, role_id, messages, overrides }) {
+    if (calls.length === 0 && !isDeepStrictEqual(messages, fixture.messages)) {
+      throw Object.assign(new Error(
+        `Frozen combat prompt drifted for fixture ${fixture.id}.`), {
+        code: 'FROZEN_COMBAT_PROMPT_DRIFT'
+      });
+    }
+    const call = await executeRoleLlmCall({ scope, roleId: role_id, messages,
+      overrides, repair: role_id === 'npc_combat_decider_format_repair',
+      ...execution });
+    calls.push(call);
+    if (call.status !== 'ok') {
+      const error = new Error(call.error?.message ?? `${role_id} failed.`);
+      error.code = call.error?.code ?? call.status;
+      throw error;
+    }
+    return { output: call.parsed_json };
+  } };
+  const request = fixture.request ?? messagePayload(fixture.messages);
+  const model = createLowerDvinaTraceNpcCombatModel({ roleRunner });
+  let plan;
+  let workflowError = null;
+  try {
+    plan = await model(request);
+    if (!validateNpcCombatIntentPlan(plan, request)) {
+      plan = await model(request, { repair: {
+        original_output: plan,
+        validation_errors: [{ code: 'npc_combat_plan_schema_invalid', path: '$',
+          message: 'Assembled plan must match npc_combat_intent_plan_v1.' }]
+      } });
+    }
+  } catch (error) {
+    workflowError = error;
+  }
+  const finalCall = calls.at(-1) ?? missingCall(fixture, workflowError);
+  return scoreFixture(fixture, { ...finalCall, parsed_json: plan }, calls);
 }
 
 async function runNpcAutonomousWorkflow(fixture, execution) {
@@ -262,7 +308,7 @@ function missingCall(fixture, error) {
 function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
   return [...new Map(fixtures.map(({ scope, role_id }) => [`${scope}:${role_id}`, { scope, role_id }])).values()]
     .map(({ scope, role_id }) => {
-      const overrides = plannerOverrides(role_id);
+      const overrides = roleOverrides(role_id);
       const resolution = resolveLlmExecutionConfig({ scope, roleId: role_id,
         env, runtimeProviderOverride, overrides });
       if (!resolution.enabled) return { scope, role_id, status: 'unavailable', reason: resolution.reason };
@@ -278,9 +324,12 @@ function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
     });
 }
 
-function plannerOverrides(roleId) {
+function roleOverrides(roleId) {
   if (roleId === 'turn_step_planner') return { temperature: 0, maxTokens: 8000 };
   if (roleId === 'turn_step_planner_repair') return { temperature: 0, maxTokens: 4000 };
+  if (roleId.startsWith('npc_combat_decider')) {
+    return { temperature: 0, maxTokens: 4000 };
+  }
   return null;
 }
 

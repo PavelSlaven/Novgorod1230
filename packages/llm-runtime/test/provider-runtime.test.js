@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
+import { buildProviderRequestPayload } from '../src/provider-request.js';
 import { describeRoleLlmCall, executeRoleLlmCall } from '../src/runtime.js';
 
 const roleId = TurnRuntimeRoles.WORLD_PROCESS_STEP;
@@ -10,6 +11,50 @@ const customProvider = {
   baseUrl: 'http://127.0.0.1:8000/v1',
   model: 'local-model'
 };
+
+function providerPayload(compatibility, messages, responseFormat = {
+  type: 'json_object'
+}) {
+  return buildProviderRequestPayload({
+    compatibility, model: 'test-model', maxTokens: 100,
+    responseFormat
+  }, messages);
+}
+
+test('DeepSeek JSON mode adds its required format-only instruction', () => {
+  const messages = [{ role: 'user', content: 'Choose one option.' }];
+  const payload = providerPayload('deepseek', messages);
+  assert.deepEqual(payload.messages, [
+    { role: 'system', content: 'Return a valid json object.' },
+    ...messages
+  ]);
+  assert.deepEqual(messages, [{ role: 'user', content: 'Choose one option.' }]);
+});
+
+test('OpenAI-compatible JSON mode adds the same protocol instruction', () => {
+  const messages = [{ role: 'system', content: 'Return one semantic choice.' }];
+  assert.deepEqual(providerPayload('openai_compatible', messages).messages, [
+    { role: 'system', content: 'Return a valid json object.' },
+    ...messages
+  ]);
+});
+
+test('JSON mode does not duplicate an existing JSON instruction', () => {
+  for (const compatibility of ['deepseek', 'openai_compatible']) {
+    const messages = [{ role: 'user', content: 'Return one JSON object.' }];
+    assert.strictEqual(providerPayload(compatibility, messages).messages,
+      messages);
+  }
+});
+
+test('plain-text transport leaves messages unchanged', () => {
+  for (const compatibility of ['deepseek', 'openai_compatible']) {
+    const messages = [{ role: 'user', content: 'Return plain prose.' }];
+    const payload = providerPayload(compatibility, messages, null);
+    assert.strictEqual(payload.messages, messages);
+    assert.equal('response_format' in payload, false);
+  }
+});
 
 test('turn runtime defaults to 10 s, while invalid or explicit environment values keep fallback precedence', () => {
   for (const [value, expected] of [

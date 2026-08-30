@@ -1,4 +1,7 @@
 const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP', 'requestTimeoutMs']);
+const JSON_FORMAT_INSTRUCTION = Object.freeze({
+  role: 'system', content: 'Return a valid json object.'
+});
 
 export function resolveRuntimeProviderOverride(override) {
   if (override == null) return { ok: true, config: null };
@@ -69,7 +72,7 @@ export function applyProviderOverrides(config, overrides) {
 export function buildProviderRequestPayload(config, messages) {
   return {
     model: config.model,
-    messages,
+    messages: providerMessages(config, messages),
     max_tokens: config.maxTokens,
     ...(config.responseFormat ? { response_format: config.responseFormat } : {}),
     ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
@@ -77,6 +80,13 @@ export function buildProviderRequestPayload(config, messages) {
     ...(config.temperature != null ? { temperature: config.temperature } : {}),
     ...(config.topP != null ? { top_p: config.topP } : {})
   };
+}
+
+function providerMessages(config, messages) {
+  if (config.responseFormat?.type !== 'json_object'
+      || messages.some(({ content }) => typeof content === 'string'
+        && /json/iu.test(content))) return messages;
+  return [JSON_FORMAT_INSTRUCTION, ...messages];
 }
 
 function readText(value) { return String(value ?? '').trim(); }

@@ -52,6 +52,7 @@ test('frozen narration auditor prompts retain both validator-valid forms', async
     assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
     assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
     assert.equal(prompt.includes('{"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"unsupported_fact","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}'), true);
+    assert.match(prompt, /Every concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical\. Plausibility is not evidence\. If any segment contains such a claim, pass must be false\./u);
   }
 });
 

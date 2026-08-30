@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 18,
+  "corpus_version": 19,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -2060,7 +2060,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"У ворот стоит телега.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
+          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"У ворот стоит телега.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Every concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
         },
         {
           "role": "user",
@@ -2099,7 +2099,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"Телега скрипит у ворот.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
+          "content": "Return only the semantic audit: PASS {\"pass\":true,\"concerns\":[],\"evidence\":[\"visible facts only\"]}; FAIL {\"pass\":false,\"concerns\":[{\"segment_choice\":\"<supplied segment choice>\",\"kind\":\"unsupported_fact\",\"reason\":\"<brief reason>\"}],\"evidence\":[\"<brief visible-context evidence>\"]}. Choose only from these request-local segment choices: [{\"segment_choice\":\"segment_1\",\"prose\":\"Телега скрипит у ворот.\"}]. The server assembles version, schema, and immutable segment_id values. Audit only the supplied full narration output against the same player-safe visible_context, style_policy, and segments. Every concrete sensory, event, or state claim absent from visible_context is unsupported_fact, even if mundane, plausible, or typical. Plausibility is not evidence. If any segment contains such a claim, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call any other role."
         },
         {
           "role": "user",

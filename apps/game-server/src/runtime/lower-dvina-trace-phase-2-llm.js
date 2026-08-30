@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions, requiredNpcConversationCandidate, requiredPlayerConversationCandidate } from './lower-dvina-trace-phase-2-llm-prompts.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
@@ -117,11 +118,9 @@ function operationChoiceId(operation,index){const qualifier=operation.process_ac
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const semantic = structuredClone(choice);
-  const selected = operationChoices.find(({ choice_id }) =>
-    choice_id === semantic.operation_choice);
-  const operations = semantic.operation_choice == null
-    ? structuredClone(semantic.operations)
-    : selected ? [structuredClone(selected.operation)] : undefined;
+  const selected = selectedTurnStepOperation(semantic, operationChoices);
+  const operations = selected ? [structuredClone(selected.operation)]
+    : semantic.operation_choice == null ? structuredClone(semantic.operations) : undefined;
   const domainRequest = semantic.resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
@@ -150,6 +149,7 @@ export function assembleTurnStepPlan(choice, request,
     reason: semantic.reason
   };
 }
+function selectedTurnStepOperation(choice, operationChoices) { const byId = operationChoices.find(({ choice_id }) => choice_id === choice.operation_choice); if (byId != null || choice.operation_choice != null || !Array.isArray(choice.operations) || choice.operations.length !== 1) return byId; const raw = choice.operations[0]; const matches = operationChoices.filter(({ operation }) => Object.entries(operation).every(([key, value]) => isDeepStrictEqual(raw?.[key], value))); return matches.length === 1 ? matches[0] : undefined; }
 function preparedFollowupPrompt(candidates) {
   return [
     'prepared_followup_candidates is a closed code-owned mapping:',

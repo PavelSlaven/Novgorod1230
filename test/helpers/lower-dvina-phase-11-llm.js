@@ -360,28 +360,15 @@ function combatPlan(request, ids, choices = {}) {
     : intentKind === 'break_contact'
       ? request.operation_contract.break_contact_destination_refs[0]
       : null;
-  const refChoices = [
-    ...(request.operation_contract.engageable_actor_refs ?? []),
-    ...(request.operation_contract.controllable_actor_refs ?? []),
-    ...(request.operation_contract.protectable_refs ?? []),
-    ...(request.operation_contract.holdable_scope_refs ?? []),
-    ...(request.operation_contract.reachable_destination_refs ?? []),
-    ...(request.operation_contract.break_contact_destination_refs ?? [])
-  ].filter((ref, index, all) => all.findIndex((candidate) =>
-    candidate.entity_kind === ref.entity_kind
-      && candidate.entity_id === ref.entity_id) === index);
-  const selectedRefs = [...targetRefs, ...(scopeRef ? [scopeRef] : []),
-    ...(destinationRef ? [destinationRef] : [])];
+  const selectedRef = targetRefs[0] ?? scopeRef ?? destinationRef ?? null;
   return {
     decision: {
       intent_summary: 'Выбрать ближайшее действие в столкновении.',
       grounded_goal: 'Сохранить контроль над текущим положением.',
       adaptation: 'literal'
     },
-    intent_choice: choiceId(request.operation_contract.allowed_intent_kinds,
-      intentKind, 'intent'),
-    selected_ref_choices: selectedRefs.map((ref) => choiceId(refChoices, ref,
-      'ref', sameRef)),
+    operation_choice: combatOperationChoiceId(
+      request.operation_contract, intentKind, selectedRef),
     force_choice: choiceId(request.operation_contract.allowed_force_limits,
       forceLimit, 'force'),
     risk_choice: choiceId(request.operation_contract.allowed_risk_postures,
@@ -391,6 +378,34 @@ function combatPlan(request, ids, choices = {}) {
       ? 'Сопротивление более невозможно.'
       : 'Участник выбирает ближайшее допустимое действие.'
   };
+}
+
+function combatOperationChoiceId(contract, selectedIntent, selectedRef) {
+  const refsByIntent = {
+    engage: contract.engageable_actor_refs,
+    control: contract.controllable_actor_refs,
+    protect: contract.protectable_refs,
+    hold: contract.holdable_scope_refs,
+    reach: contract.reachable_destination_refs,
+    break_contact: contract.break_contact_destination_refs
+  };
+  let index = 0;
+  for (const intentKind of contract.allowed_intent_kinds ?? []) {
+    if ((intentKind === 'surrender' && contract.surrender_available !== true)
+        || (intentKind === 'cease_hostility'
+          && contract.cease_hostility_available !== true)) continue;
+    const refs = ['surrender', 'cease_hostility'].includes(intentKind)
+      || (intentKind === 'break_contact'
+        && (refsByIntent[intentKind] ?? []).length === 0)
+      ? [null] : refsByIntent[intentKind] ?? [];
+    for (const reference of refs) {
+      index += 1;
+      if (intentKind === selectedIntent
+          && (reference === null ? selectedRef === null
+            : sameRef(reference, selectedRef))) return `operation_${index}`;
+    }
+  }
+  throw new Error('Missing operation fixture choice.');
 }
 
 function choiceId(values, selected, prefix, equals = Object.is) {

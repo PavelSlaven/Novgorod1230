@@ -16,7 +16,10 @@ import {
 import {
   buildCommittedInventoryInput
 } from '../src/runtime/lower-dvina-trace-committed-inventory.js';
-import { validateInventoryTopology } from '@rus/items-property';
+import {
+  admitLocalFireInput,
+  validateInventoryTopology
+} from '@rus/items-property';
 
 test('Phase 2 pins blue wool to one non-consuming local evidence slot', async () => {
   const { binding } = await loadLowerDvinaTracePhase2Bundle();
@@ -169,6 +172,36 @@ test('initial Phase 2 state rehydrates persisted container placements', async ()
     buildCommittedInventoryInput(state)).pass, true);
 });
 
+test('initial Phase 2 item bindings remain admissible to their domain owner',
+  async () => {
+    const fuel = localFireFuel();
+    const state = await loadInitialTracePhase2State({
+      partyId: 'party:trace-phase-2',
+      row: {
+        world_revision_id: 'world:revision',
+        world_catalog_digest: 'a'.repeat(64),
+        session_state_version: 0,
+        body_state_version: 0,
+        clock_state_version: 0,
+        turn_number: 0,
+        stage26_result: { opening_screen_digest: 'b'.repeat(64) }
+      },
+      phase1A: { loadInternal: async () => initialState(null, [fuel]) },
+      partyPool: { query: async () => ({ rows: [] }) },
+      temporalSourceProof: { candidates: [] }
+    });
+    const item = state.items[0];
+    assert.equal(admitLocalFireInput({
+      item,
+      placement: item.placement,
+      ownership: item.ownership,
+      actor_ref: 'character:mikula',
+      scope_ref: 'anchor:wreck',
+      fuel_mass_grams_min: 100,
+      fuel_mass_grams_max: 1_000
+    }).pass, true);
+  });
+
 test('Phase 2 normalizes persisted journey version and rejects malformed rows', () => {
   assert.deepEqual(normalizeJourneyLocation({ id: 'journey:player',
     scene_position_id: 'position:shore', state_version: '4' }), {
@@ -238,7 +271,7 @@ function placementPlan(check) {
   };
 }
 
-function initialState(container) {
+function initialState(container, items = []) {
   return {
     player: {
       instance_id: 'character:mikula',
@@ -254,9 +287,58 @@ function initialState(container) {
     environment_snapshot: {},
     sealed_selections: {},
     policy_profile_pins: [],
-    items: [],
-    containers: [container],
+    items,
+    containers: container == null ? [] : [container],
     initial_snapshot_identity: {},
     materialization_trace: {}
+  };
+}
+
+function localFireFuel() {
+  const itemId = 'item:fuel';
+  return {
+    item_id: itemId,
+    run_id: 'run:1',
+    template_id: 'template:fuel',
+    profile_id: 'profile:fuel',
+    category_id: 'ordinary_solid_fuel_unit',
+    quantity: 1,
+    state_version: 1,
+    condition_state: 'serviceable',
+    legal_status: 'owned',
+    placement: {
+      item_id: itemId,
+      anchor_id: 'anchor:wreck',
+      container_id: null,
+      holder_npc_id: null,
+      holder_character_id: null,
+      physical_position: null,
+      equipment_slot_category_id: null,
+      attached_item_id: null
+    },
+    ownership: {
+      item_id: itemId,
+      ownership_id: 'ownership:fuel',
+      owner_npc_id: null,
+      owner_character_id: 'character:mikula',
+      owner_external_ref: null,
+      owner_party: false,
+      controller_npc_id: null,
+      controller_character_id: 'character:mikula',
+      claim_state: 'owned'
+    },
+    state: {
+      lifecycle_status: 'active',
+      inventory_profile_snapshot: {
+        item_template_ref: 'template:fuel',
+        mass_grams: 300
+      },
+      local_fire_fuel: {
+        schema: 'rus.items.local_fire_fuel.v1',
+        fuel_class: 'ordinary_solid_fuel_unit',
+        whole_unit: true,
+        provenance: { source_refs: ['source:fuel'] }
+      }
+    }
   };
 }

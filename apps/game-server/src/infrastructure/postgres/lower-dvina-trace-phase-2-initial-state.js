@@ -69,18 +69,22 @@ export async function loadInitialTracePhase2State({
       profile_id: item.profile_id,
       category_id: item.category_id,
       quantity: item.quantity,
+      state_version: item.state_version,
       condition_state: item.condition_state,
       legal_status: item.legal_status,
       placement: {
+        item_id: item.item_id,
         anchor_id: item.placement.anchor_id,
         container_id: item.placement.container_id,
         holder_npc_id: item.placement.holder_npc_id,
         holder_character_id: item.placement.holder_character_id,
         physical_position: item.placement.physical_position,
         equipment_slot_category_id:
-          item.placement.equipment_slot_category_id
+          item.placement.equipment_slot_category_id,
+        attached_item_id: item.placement.attached_item_id
       },
       ownership: {
+        item_id: item.item_id,
         ownership_id: item.ownership.ownership_id,
         owner_npc_id: item.ownership.owner_npc_id,
         owner_character_id: item.ownership.owner_character_id,

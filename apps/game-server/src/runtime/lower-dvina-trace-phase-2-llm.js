@@ -108,10 +108,11 @@ function turnStepOperationChoices(request) {
     seen.add(key);
     return true;
   }).map((operation, index) => ({
-    choice_id: `domain_operation_${index + 1}`,
+    choice_id: operationChoiceId(operation, index),
     operation: structuredClone(operation)
   }));
 }
+function operationChoiceId(operation,index){const qualifier=operation.process_action??operation.discovery_kind??operation.access_kind??operation.movement_kind??operation.use_kind??operation.activity_kind??operation.interaction_kind;return['domain_operation',index+1,operation.op,qualifier].filter((part)=>part!=null).join('_');}
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {

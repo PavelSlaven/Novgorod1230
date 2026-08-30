@@ -217,11 +217,12 @@ test('turn step planner assembles exact domain operation and preserves independe
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run(call) {
       assert.match(call.messages[0].content,
-        /"choice_id":"domain_operation_1"/u);
+        /"choice_id":"domain_operation_1_request_activity_recover"/u);
       return { output: {
         interpretation: { player_goal: input.root_player_action,
           grounded_attempt: 'Выполнить первое действие.', adaptation: 'literal' },
-        resolution: 'domain_request', operation_choice: 'domain_operation_1',
+        resolution: 'domain_request',
+        operation_choice: 'domain_operation_1_request_activity_recover',
         continuation: { remaining_intent: 'Попросить спутника пойти со мной.',
           depends_on_refs: [] }, clarification: null, check: null,
         reason_code: 'domain_activity', reason: 'Первое действие доступно.'
@@ -237,6 +238,36 @@ test('turn step planner assembles exact domain operation and preserves independe
   assert.equal(plan.continuation.remaining_intent,
     'Попросить спутника пойти со мной.');
 });
+
+test('turn step choice ids distinguish competing admitted operation kinds',
+  async () => {
+    const discovery = { op: 'request_discovery', actor_ref: 'actor_mikula',
+      discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть берег.' };
+    const fire = { op: 'request_world_process', actor_ref: 'actor_mikula',
+      process_action: 'start', process_ref: null, process_kind: 'fire',
+      source_refs: ['kindling'], target_refs: ['firesteel'],
+      description: 'Разжечь огонь.' };
+    const input = request({ available_domain_operations: [discovery],
+      player_safe_state: { local_world_process: { allowed: [fire] } } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        assert.match(call.messages[0].content,
+          /domain_operation_1_request_discovery_inspect/u);
+        assert.match(call.messages[0].content,
+          /domain_operation_2_request_world_process_start/u);
+        return { output: {
+          interpretation: { player_goal: 'Разжечь огонь.',
+            grounded_attempt: 'Разжечь огонь.', adaptation: 'literal' },
+          resolution: 'domain_request',
+          operation_choice: 'domain_operation_2_request_world_process_start',
+          continuation: null, clarification: null, check: null,
+          reason_code: 'local_world_process_start', reason: 'Огонь доступен.'
+        } };
+      }
+    } });
+    const plan = await model(input);
+    assert.deepEqual(plan.operations, [fire]);
+  });
 
 test('turn step assembly does not invent omitted semantic fields', () => {
   const input = request();

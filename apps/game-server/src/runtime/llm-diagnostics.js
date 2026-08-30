@@ -33,6 +33,13 @@ const SAFE_NPC_COMBAT_VALIDATION_CODES = new Set([
   'npc_combat_risk_choice_invalid', 'npc_combat_statement_invalid',
   'npc_combat_reason_invalid'
 ]);
+const SAFE_TURN_STEP_VALIDATION_CODES = new Set([
+  'additional_property', 'candidate', 'const', 'continuation',
+  'domain_owner_unavailable', 'echo_mismatch', 'enum', 'invalid_request',
+  'json_data', 'lineage', 'maximum', 'min_items', 'operation_shape',
+  'ordering', 'prepared_followup_binding', 'range', 'required', 'resolution',
+  'sequence', 'type', 'unique', 'unknown_ref'
+]);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
@@ -191,7 +198,17 @@ export function safeWritePlanFailure(value = {}) {
 }
 export function safeTurnFailure(value = {}) {
   return safeWritePlanFailure(value) ?? safeNarrationFailure(value)
-    ?? safeNpcCombatFailure(value);
+    ?? safeNpcCombatFailure(value) ?? safeTurnStepFailure(value);
+}
+function safeTurnStepFailure(value = {}) {
+  if (text(value?.code) !== 'TURN_STEP_PLAN_INVALID') return null;
+  const errors = value?.details?.errors;
+  const codes = Array.isArray(errors)
+    ? [...new Set(errors.map(({ code }) => text(code))
+      .filter((code) => SAFE_TURN_STEP_VALIDATION_CODES.has(code)))] : [];
+  return codes.length === 0 ? null : Object.freeze({
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes)
+  });
 }
 function safeNpcCombatFailure(value = {}) {
   if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;

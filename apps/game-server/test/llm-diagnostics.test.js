@@ -164,6 +164,22 @@ test('failed combat diagnostics retain only allowlisted validation codes', () =>
   assert.equal(JSON.stringify(report.failure).includes('hidden-party-42'), false);
 });
 
+test('failed turn-step diagnostics retain codes without model text', () => {
+  const raw = {
+    code: 'TURN_STEP_PLAN_INVALID',
+    details: { errors: [
+      { path: '$.operations', code: 'required', message: 'secret prose' },
+      { path: '$.reason', code: 'provider_dump', message: 'raw output' }
+    ], prompt: 'hidden prompt', original_output: { prose: 'hidden prose' } }
+  };
+  assert.deepEqual(buildLlmTurnReport({ failure: raw }).failure, {
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['required']
+  });
+  const serialized = JSON.stringify(buildLlmTurnReport({ failure: raw }));
+  for (const secret of ['secret prose', 'raw output', 'hidden prompt',
+    'hidden prose', 'provider_dump']) assert.equal(serialized.includes(secret), false);
+});
+
 test('turn context groups calls and excludes probe records', async () => {
   const diagnostics = createLlmDiagnostics();
   await diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' }, async () => {

@@ -64,6 +64,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'never evidence of success or a new world fact'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'Do not infer a causal bridge, exact object use, or success mechanism'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'copied verbatim from visible_context.visible_scene'), true);
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');
   assert.equal(calls[1].roleId, 'gameplay_narrator_format_repair');
@@ -77,7 +79,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].messages[0].content.includes(
     'It never proves success, object use, a result, or a world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'visible_context is evidence: do not reject a result or success claim'), true);
+    'complete sentence copied from visible_context.visible_scene is supported'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'are part of the attempted action and are not completed object use'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed unsupported kind>"/u);
@@ -101,9 +105,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'may be recast as attempt-only wording'), true);
+    'discard the original claim and rebuild the replacement only from'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'without attributing an unsupported mechanism'), true);
+    'copied verbatim from visible_context.visible_scene'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'Двор тих.', nearby_context: [] }]);
   assert.equal(JSON.parse(calls[3].messages[1].content)
     .action_intent_context.evidence_scope,

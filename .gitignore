@@ -11,6 +11,8 @@ releases/*
 legacy/data/new-game-process/
 legacy/data/regional-summary-cache/
 *.log
+logs/*
+!logs/.gitkeep
 graphify-out/
 generated/repository-intelligence/
 data/rus13-base-staging/

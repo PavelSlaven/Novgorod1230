@@ -55,8 +55,7 @@ const SAFE_NPC_VALIDATION_SCOPES = new Set(['plan', 'interpretation',
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
-  const storage = new AsyncLocalStorage();
-  const reports = new Map();
+  const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map();
   const onCall = (record) => {
     telemetry?.onCall?.(record);
     if (record?.call_type === 'probe') return;
@@ -66,9 +65,10 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       if (record?.status !== 'ok') turn.incidents.push(incident(record));
     }
   };
+  const onDetail = (record) => { const turn = storage.getStore(); if (turn) turn.details.push(record); telemetry?.onDetail?.(record); };
   return Object.freeze({
     turnBudget,
-    telemetry: Object.freeze({ onCall }),
+    telemetry: Object.freeze({ onCall, onDetail }),
     recordFailure(value) {
       const turn = storage.getStore();
       if (turn) turn.failure = safeTurnFailure(value);
@@ -77,7 +77,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       const startedAt = now();
       const turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
         started_at: startedAt, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, incidents: [] };
+        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, incidents: [], details: [] };
       if (!turn.party_id || !turn.request_id) throw new TypeError('party_id and request_id are required.');
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
@@ -87,17 +87,19 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
           .includes(error?.code)) turn.incidents.push(incident(error));
         throw error;
       } finally {
-        reports.delete(turn.party_id);
-        reports.set(turn.party_id, buildLlmTurnReport({ ...turn,
-          turn_duration_ms: Math.max(0, now() - turn.started_at) }));
-        while (reports.size > maxReports) reports.delete(reports.keys().next().value);
+        const report = buildLlmTurnReport({ ...turn, turn_duration_ms: Math.max(0, now() - turn.started_at) });
+        reports.delete(turn.party_id); reports.set(turn.party_id, report);
+        logReports.delete(turn.party_id);
+        logReports.set(turn.party_id, Object.freeze({ ...report, calls: Object.freeze([...turn.details]) }));
+        while (reports.size > maxReports) { const oldest = reports.keys().next().value; reports.delete(oldest); logReports.delete(oldest); }
       }
     },
     report({ party_id, request_id } = {}) {
       const report = reports.get(text(party_id)) ?? null;
       const requestId = text(request_id);
       return requestId === '' || report?.request_id === requestId ? report : null;
-    }
+    },
+    logReport({ party_id, request_id } = {}) { const report = logReports.get(text(party_id)) ?? null; const requestId = text(request_id); return requestId === '' || report?.request_id === requestId ? report : null; }
   });
 }
 

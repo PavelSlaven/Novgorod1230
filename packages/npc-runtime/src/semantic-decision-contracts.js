@@ -380,6 +380,86 @@ export function validateNpcStepPlan(value, request) {
     && validateNpcStepPlanShape(value, request);
 }
 
+export function diagnoseNpcStepPlan(value, request) {
+  const errors = [];
+  const add = (code, path, message) => errors.push({ code, path, message });
+  if (!validateNpcActionDecisionRequest(request)) {
+    add('npc_step_request_invalid', '$',
+      'The NPC action request must match npc_action_decision_request_v1.');
+    return freeze(errors);
+  }
+  const envelopeValid = exactKeys(value, PLAN_KEYS)
+    && value.schema === 'npc_step_plan_v1'
+    && stableId(value.request_id)
+    && stableId(value.root_turn_id)
+    && stableId(value.boundary_id)
+    && finiteInteger(value.committed_state_version, 1)
+    && finiteInteger(value.working_revision)
+    && finiteInteger(value.decision_index, 1)
+    && stableId(value.npc_ref)
+    && jsonSafe(value)
+    && matchingIdentity(value, request);
+  if (!envelopeValid) add('npc_step_envelope_invalid', '$',
+    'The assembled NPC step envelope must match the request.');
+  if (!validateInterpretation(value?.interpretation)) {
+    add('npc_step_interpretation_invalid', '$.interpretation',
+      'interpretation must contain the complete semantic attempt.');
+  }
+  if (!enumValue(value?.resolution, RESOLUTIONS)) {
+    add('npc_step_resolution_invalid', '$.resolution',
+      'resolution must select one allowed resolution.');
+  }
+  if (!enumValue(value?.goal_result, GOAL_RESULTS)) {
+    add('npc_step_goal_result_invalid', '$.goal_result',
+      'goal_result must select one allowed result.');
+  }
+  if (!stableId(value?.reason_code) || !text(value?.reason)) {
+    add('npc_step_reason_invalid', '$.reason',
+      'reason_code and reason must be non-empty strings.');
+  }
+  if (value?.resolution === 'direct') {
+    if (!validateSemanticActivity(value.activity)) add(
+      'npc_step_activity_invalid', '$.activity',
+      'Direct activity must match the semantic activity shape.');
+    if (value.check !== null) add('npc_step_check_invalid', '$.check',
+      'Direct resolution cannot contain a check.');
+    if (!validateOperations(value.operations, request, DIRECT_OPERATIONS,
+      'direct')) add('npc_step_operations_invalid', '$.operations',
+      'Direct operations must match the admitted operation contract.');
+  } else if (value?.resolution === 'generic_check') {
+    if (value.goal_result !== 'pending') add(
+      'npc_step_goal_result_invalid', '$.goal_result',
+      'Generic-check goal_result must be pending.');
+    if (!validateSemanticActivity(value.activity)) add(
+      'npc_step_activity_invalid', '$.activity',
+      'Generic-check activity must match the semantic activity shape.');
+    if (!Array.isArray(value.operations) || value.operations.length !== 0) add(
+      'npc_step_operations_invalid', '$.operations',
+      'Generic-check top-level operations must be empty.');
+    if (!validateCheck(value.check, request)) add(
+      'npc_step_check_invalid', '$.check',
+      'check must match the admitted generic-check contract.');
+  } else if (value?.resolution === 'domain_request') {
+    const operations = Array.isArray(value.operations) ? value.operations : [];
+    const actionProduction = operations.some((operation) =>
+      operation?.op === 'request_item_use'
+        && operation.action_production != null);
+    if (!(actionProduction
+      ? validateSemanticActivity(value.activity)
+      : validateDomainActivity(value.activity))) add(
+      'npc_step_activity_invalid', '$.activity',
+      'Domain activity must match the selected operation owner.');
+    if (value.check !== null) add('npc_step_check_invalid', '$.check',
+      'Domain resolution cannot contain a check.');
+    if (!validateOperations(value.operations, request, SUPPORTED_OPERATIONS,
+      'domain_request') || operations.filter((operation) =>
+      DOMAIN_OPERATIONS.has(operation?.op)).length !== 1) add(
+      'npc_step_operations_invalid', '$.operations',
+      'Domain resolution must contain one admitted domain operation.');
+  }
+  return freeze(errors);
+}
+
 export function buildNpcStepPlan(value, request) {
   if (!validateNpcStepPlan(value, request)) {
     throw new TypeError('NPC step plan must match npc_step_plan_v1 and its decision request');

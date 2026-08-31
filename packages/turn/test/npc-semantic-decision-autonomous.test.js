@@ -259,6 +259,34 @@ test('autonomous request uses one model call and returns signal consumption', as
   assert.deepEqual(result.signal_ids_to_consume, ['signal-1']);
 });
 
+test('autonomous format repair receives stable plan diagnostics', async () => {
+  const contexts = [];
+  const invalidPlan = autonomousPlan();
+  invalidPlan.activity = {
+    owner: 'semantic', duration_class: 'brief', effort: 'light'
+  };
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: autonomousBoundary(),
+    request: autonomousRequest(),
+    semanticModel: async (_request, context) => {
+      contexts.push(context);
+      return invalidPlan;
+    },
+    revalidateStateVersion: async () => 2
+  }), (error) => {
+    assert.deepEqual(error.details.validation_errors, [{
+      code: 'npc_step_activity_invalid', path: '$.activity',
+      message: 'Domain activity must match the selected operation owner.'
+    }]);
+    return error.code === 'TURN_NPC_PLAN_INVALID';
+  });
+  assert.equal(contexts.length, 2);
+  assert.deepEqual(contexts[1].repair.validation_errors, [{
+    code: 'npc_step_activity_invalid', path: '$.activity',
+    message: 'Domain activity must match the selected operation owner.'
+  }]);
+});
+
 test('applicability runs only after current state revalidation',
   async () => {
     const sourceRequest = autonomousRequest();

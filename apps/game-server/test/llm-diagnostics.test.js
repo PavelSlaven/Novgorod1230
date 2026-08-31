@@ -164,6 +164,24 @@ test('failed combat diagnostics retain only allowlisted validation codes', () =>
   assert.equal(JSON.stringify(report.failure).includes('hidden-party-42'), false);
 });
 
+test('failed autonomous diagnostics retain stable fields without model text', () => {
+  const report = buildLlmTurnReport({ failure: {
+    code: 'TURN_NPC_PLAN_INVALID', details: { validation_errors: [
+      { code: 'npc_step_activity_invalid', path: '$.activity',
+        message: 'secret provider output' },
+      { code: 'hidden-party-42', path: '$.hidden', message: 'secret prompt' }
+    ], original_output: 'secret output', hidden_state: 'secret state' }
+  } });
+  assert.deepEqual(report.failure, { code: 'TURN_NPC_PLAN_INVALID',
+    validation_codes: ['npc_step_activity_invalid'],
+    validation_scopes: ['activity'] });
+  const serialized = JSON.stringify(report.failure);
+  for (const secret of ['secret provider output', 'hidden-party-42',
+    'secret prompt', 'secret output', 'secret state']) {
+    assert.equal(serialized.includes(secret), false);
+  }
+});
+
 test('failed NPC conversation diagnostics retain only allowlisted enum scope', async () => {
   const diagnostics = createLlmDiagnostics();
   await assert.rejects(diagnostics.runTurn({ party_id: 'party-safe',

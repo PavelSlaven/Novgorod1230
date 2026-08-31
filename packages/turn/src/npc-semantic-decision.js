@@ -4,6 +4,7 @@ import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
   diagnoseConversationPlanDominantAct,
+  diagnoseNpcStepPlan,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
   validateNpcCombatDecisionRequest,
@@ -283,7 +284,7 @@ function structuralPlanErrors(plan, request, mode) {
   if (mode === 'conversation') {
     return diagnoseConversationPlanDominantAct(plan);
   }
-  return [];
+  return diagnoseNpcStepPlan(plan, request);
 }
 
 async function rebuildStaleDecision({ boundary, request, rawPlan,

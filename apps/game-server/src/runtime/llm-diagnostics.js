@@ -27,6 +27,11 @@ const SAFE_NARRATION_CONCERN_KINDS = new Set([
   'contradiction', 'hidden_knowledge'
 ]);
 const SAFE_NPC_VALIDATION_CODES = new Set([
+  'npc_step_request_invalid', 'npc_step_envelope_invalid',
+  'npc_step_interpretation_invalid', 'npc_step_resolution_invalid',
+  'npc_step_goal_result_invalid', 'npc_step_activity_invalid',
+  'npc_step_operations_invalid', 'npc_step_check_invalid',
+  'npc_step_reason_invalid',
   'npc_combat_envelope_invalid', 'npc_combat_decision_invalid',
   'npc_combat_operation_shape_invalid', 'npc_combat_intent_choice_invalid',
   'npc_combat_ref_choice_invalid', 'npc_combat_force_choice_invalid',
@@ -44,7 +49,9 @@ const SAFE_TURN_STEP_VALIDATION_SCOPES = new Set([
   'operation', 'interpretation', 'activity', 'check', 'continuation',
   'clarification', 'plan'
 ]);
-const SAFE_NPC_VALIDATION_SCOPES = new Set(['speech_dominant_act']);
+const SAFE_NPC_VALIDATION_SCOPES = new Set(['plan', 'interpretation',
+  'resolution', 'goal_result', 'activity', 'operations', 'check', 'reason',
+  'speech_dominant_act']);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
@@ -251,7 +258,11 @@ function safeNpcFailure(value = {}) {
   });
 }
 function npcValidationScope(path) {
-  return text(path) === '$.speech.dominant_act' ? 'speech_dominant_act' : null;
+  const value = text(path);
+  if (value === '$.speech.dominant_act') return 'speech_dominant_act';
+  if (value === '$') return 'plan';
+  return /^\$\.(interpretation|resolution|goal_result|activity|operations|check|reason)(?:\.|$)/u
+    .exec(value)?.[1] ?? null;
 }
 function safeNarrationFailure(value = {}) {
   if (text(value?.code) !== 'TRACE_PHASE_2_NARRATION_REJECTED') return null;

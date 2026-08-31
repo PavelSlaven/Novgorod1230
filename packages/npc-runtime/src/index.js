@@ -37,6 +37,7 @@ export {
   projectNpcSafeResourceSnapshots,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,
+  diagnoseNpcStepPlan,
   validateNpcActionDecisionRequest,
   validateNpcSemanticDecisionTrace,
   validateNpcStepPlan

@@ -164,6 +164,28 @@ test('failed combat diagnostics retain only allowlisted validation codes', () =>
   assert.equal(JSON.stringify(report.failure).includes('hidden-party-42'), false);
 });
 
+test('failed NPC conversation diagnostics retain only allowlisted enum scope', async () => {
+  const diagnostics = createLlmDiagnostics();
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party-safe',
+    request_id: 'turn-safe' }, async () => { throw Object.assign(new Error('secret'), {
+    code: 'TURN_NPC_PLAN_INVALID', details: { validation_errors: [
+      { code: 'invalid_enum', path: '$.speech.dominant_act',
+        message: 'secret provider output', allowed_values: ['secret-ref'] },
+      { code: 'hidden-party-42', path: '$.hidden', message: 'secret prompt' }
+    ], prose: 'secret prose', hidden_state: 'secret hidden state' }
+  }); }));
+  const report = diagnostics.report({ party_id: 'party-safe',
+    request_id: 'turn-safe' });
+  assert.deepEqual(report.failure, { code: 'TURN_NPC_PLAN_INVALID',
+    validation_codes: ['invalid_enum'],
+    validation_scopes: ['speech_dominant_act'] });
+  const serialized = JSON.stringify(report);
+  for (const secret of ['secret provider output', 'secret-ref', 'hidden-party-42',
+    'secret prompt', 'secret prose', 'secret hidden state']) {
+    assert.equal(serialized.includes(secret), false);
+  }
+});
+
 test('failed turn-step diagnostics retain codes without model text', () => {
   const raw = {
     code: 'TURN_STEP_PLAN_INVALID',

@@ -26,12 +26,12 @@ const SAFE_NARRATION_CONCERN_KINDS = new Set([
   'unsupported_event', 'unsupported_world_state', 'unsupported_npc_state',
   'contradiction', 'hidden_knowledge'
 ]);
-const SAFE_NPC_COMBAT_VALIDATION_CODES = new Set([
+const SAFE_NPC_VALIDATION_CODES = new Set([
   'npc_combat_envelope_invalid', 'npc_combat_decision_invalid',
   'npc_combat_operation_shape_invalid', 'npc_combat_intent_choice_invalid',
   'npc_combat_ref_choice_invalid', 'npc_combat_force_choice_invalid',
   'npc_combat_risk_choice_invalid', 'npc_combat_statement_invalid',
-  'npc_combat_reason_invalid'
+  'npc_combat_reason_invalid', 'invalid_enum'
 ]);
 const SAFE_TURN_STEP_VALIDATION_CODES = new Set([
   'additional_property', 'candidate', 'const', 'continuation',
@@ -198,7 +198,7 @@ export function safeWritePlanFailure(value = {}) {
 }
 export function safeTurnFailure(value = {}) {
   return safeWritePlanFailure(value) ?? safeNarrationFailure(value)
-    ?? safeNpcCombatFailure(value) ?? safeTurnStepFailure(value);
+    ?? safeNpcFailure(value) ?? safeTurnStepFailure(value);
 }
 function safeTurnStepFailure(value = {}) {
   if (text(value?.code) !== 'TURN_STEP_PLAN_INVALID') return null;
@@ -223,17 +223,26 @@ function turnStepValidationScope(path) {
     'clarification']) if (value === `$.${scope}` || value.startsWith(`$.${scope}.`)) return scope;
   return /^\$\.[a-z_]+$/u.test(value) ? 'plan' : null;
 }
-function safeNpcCombatFailure(value = {}) {
+function safeNpcFailure(value = {}) {
   if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;
   const source = Array.isArray(value?.validation_codes)
     ? value.validation_codes
     : value?.details?.validation_errors?.map(({ code }) => code);
   const codes = Array.isArray(source)
     ? [...new Set(source.map(text)
-      .filter((code) => SAFE_NPC_COMBAT_VALIDATION_CODES.has(code)))] : [];
+      .filter((code) => SAFE_NPC_VALIDATION_CODES.has(code)))] : [];
+  const errors = Array.isArray(value?.details?.validation_errors)
+    ? value.details.validation_errors : [];
+  const scopes = Array.isArray(value?.validation_scopes)
+    ? value.validation_scopes
+    : [...new Set(errors.map(({ path }) => npcValidationScope(path)).filter(Boolean))];
   return codes.length === 0 ? null : Object.freeze({
-    code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes)
+    code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes),
+    ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
   });
+}
+function npcValidationScope(path) {
+  return text(path) === '$.speech.dominant_act' ? 'speech_dominant_act' : null;
 }
 function safeNarrationFailure(value = {}) {
   if (text(value?.code) !== 'TRACE_PHASE_2_NARRATION_REJECTED') return null;

@@ -73,7 +73,19 @@ test('terminal prepared combat admits no player response boundary', async () => 
     null);
   assert.deepEqual(projection.envelope.visible_payload
     .allowed_action_affordances, []);
+  assert.deepEqual(projection.screen.combat_state, {
+    status: 'ended', player_response_required: false });
   assert.equal(projection.screen.main_prose, 'Боевая сцена завершена.');
+});
+
+test('ongoing combat screen exposes only its public response boundary', () => {
+  const fixture = preparedCombat({ exchange: null, duration: 0,
+    status: 'paused_for_player', playerBoundary: true });
+  const projection = terminalProjection(fixture.envelope);
+  assert.deepEqual(projection.screen.combat_state, {
+    status: 'paused_for_player', player_response_required: true });
+  assert.equal(JSON.stringify(projection.screen.combat_state)
+    .includes('npc-1'), false);
 });
 
 test('prepared combat rejects non-formal exchange and non-bijective events', () => {

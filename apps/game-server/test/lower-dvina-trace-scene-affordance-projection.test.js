@@ -9,6 +9,8 @@ import { projectLowerDvinaTraceScreenPanels } from
   '../src/infrastructure/postgres/lower-dvina-trace-screen-panels.js';
 import { buildLowerDvinaTracePendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-presentation.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
 function payload(overrides = {}) {
   return {
@@ -111,6 +113,72 @@ test('post-commit and historical screens share the active people projection', ()
     ['display_label', 'entity_ref']
   );
 });
+
+test('direct presentation persistence keeps only public combat state',
+  async () => {
+    const state = payload();
+    state.last_turn = {
+      ...state.last_turn,
+      input_digest: 'input-2',
+      option_id: 'respond_in_active_combat',
+      check_result: null,
+      time_update: null,
+      body_update: null,
+      consequence: {},
+      turn_step_commit: { loop_trace: { step_traces: [{
+        approved_plan: { resolution: 'domain_request', operations: [{
+          op: 'request_combat' }] },
+        player_response_boundary: true
+      }] } }
+    };
+    let persistedScreen = null;
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: {
+        async query(statement, values) {
+          if (statement.includes('SELECT state_payload')) {
+            return { rowCount: 1, rows: [{ state_payload: state }] };
+          }
+          persistedScreen = JSON.parse(values[1]);
+          return { rowCount: 1, rows: [] };
+        },
+        connect() { throw new Error('unexpected connection'); }
+      },
+      committer: { async commit() { throw new Error('unexpected commit'); } }
+    });
+    const result = await repository.persistPhase2Screen({
+      partyId: state.party_id,
+      inputDigest: state.last_turn.input_digest,
+      result: {
+        turn_id: 'turn-2',
+        commit: {
+          state_version: state.party_state.state_version,
+          package_id: state.last_turn.visible_package.package_id,
+          package_digest: state.last_turn.visible_package.package_digest
+        },
+        narration: { ...narration(), presentation: {
+          output_digest: 'sha256:narration' } },
+        screen: {
+          version: 1,
+          schema: 'lower_dvina_trace_turn_screen',
+          party_id: state.party_id,
+          turn_id: 'turn-2',
+          turn_number: state.party_state.turn_number,
+          screen_status: 'ready',
+          combat_state: { status: 'paused_for_player',
+            player_response_required: true,
+            participant_refs: ['hidden'] },
+          visible_context: visibleContext(),
+          main_prose: 'Бой продолжается.'
+        }
+      }
+    });
+    const expected = { status: 'paused_for_player',
+      player_response_required: true };
+    assert.deepEqual(result.screen.combat_state, expected);
+    assert.deepEqual(persistedScreen.combat_state, expected);
+    assert.deepEqual(Object.keys(persistedScreen.combat_state).sort(),
+      ['player_response_required', 'status']);
+  });
 
 test('combat presentation replay preserves only the public response boundary', () => {
   const loopTrace = { step_traces: [{ player_response_boundary: true,

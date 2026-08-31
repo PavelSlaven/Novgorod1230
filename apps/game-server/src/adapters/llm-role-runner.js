@@ -37,16 +37,43 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       }
       const effectiveOverrides = requestTimeoutMs == null ? overrides
         : { ...(overrides ?? {}), requestTimeoutMs };
-      const result = await execute({
-        scope,
-        roleId: role_id,
-        tierId: tier_id,
-        messages,
-        overrides: effectiveOverrides,
-        ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}),
-        env,
-        telemetry,
-        repair: isRepair
+      let result;
+      try {
+        result = await execute({
+          scope,
+          roleId: role_id,
+          tierId: tier_id,
+          messages,
+          overrides: effectiveOverrides,
+          ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}),
+          env,
+          telemetry,
+          repair: isRepair
+        });
+      } catch (error) {
+        emitDetail(telemetry, {
+          scope, role_id, tier_id, request_identity, repair: isRepair,
+          request: { messages, overrides: effectiveOverrides },
+          response: { status: 'threw', error: errorRecord(error) }
+        });
+        throw error;
+      }
+      emitDetail(telemetry, {
+        scope, role_id, tier_id, request_identity, repair: isRepair,
+        request: { ...(result.request_snapshot ?? { messages }),
+          overrides: effectiveOverrides },
+        response: {
+          status: result.status,
+          parsed_json: result.parsed_json ?? null,
+          raw_text: result.raw_text ?? null,
+          reasoning_content: result.reasoning_content ?? null,
+          error: result.error ?? null,
+          provider: result.provider ?? null,
+          model: result.model ?? null,
+          duration_ms: result.durationMs ?? null,
+          config_hash: result.config_hash ?? null,
+          usage: result.usage ?? null
+        }
       });
       if (result.status !== 'ok') {
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);
@@ -103,5 +130,18 @@ function safeBudgetIdentity(description, roleId) {
     provider: String(description?.provider ?? '').trim() || null,
     model: String(description?.model ?? '').trim() || null,
     config_hash: String(description?.config_hash ?? '').trim() || null,
+  };
+}
+function emitDetail(telemetry, record) {
+  try { telemetry?.onDetail?.(record); }
+  catch { /* diagnostics must not change gameplay */ }
+}
+function errorRecord(error) {
+  return {
+    name: String(error?.name ?? 'Error'),
+    message: String(error?.message ?? error),
+    code: error?.code ?? null,
+    retryable: error?.retryable === true,
+    stack: error?.stack ?? null
   };
 }

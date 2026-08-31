@@ -11,7 +11,9 @@ import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
 import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from './internal/lower-dvina-trace-ordinary-materialization-profile.js';
+import { createPartyLog, createPartyLoggingRoot } from './infrastructure/filesystem/party-log.js';
 
+const here = dirname(fileURLToPath(import.meta.url));
 const config = assertModularStartupConfig(readServerConfig());
 const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
 const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
@@ -25,14 +27,24 @@ const llmTurnBudget = createLlmTurnBudget();
 const llmDiagnostics = createLlmDiagnostics({ turnBudget: llmTurnBudget });
 const runtimeConfig = { ...config, llmSettings, llmDiagnostics, llmTurnBudget };
 const productionRoot = await loadConfiguredComposition(config.compositionModule, { env: process.env, config: runtimeConfig });
-const root = Object.freeze({
+const publicRoot = Object.freeze({
   ...productionRoot,
   getLlmSettings: () => llmSettings.read(),
   applyLlmSettings: (input) => llmSettings.apply(input),
   probeLlmSettings: (candidate) => llmSettings.probe(candidate),
   getLlmTurnReport: (input) => llmDiagnostics.report(input)
 });
-const here = dirname(fileURLToPath(import.meta.url));
+const root = createPartyLoggingRoot({
+  root: publicRoot,
+  partyLog: createPartyLog({
+    directory: config.logDirectory || resolve(here, '../../../logs')
+  }),
+  llmDiagnostics,
+  metadata: Object.freeze({
+    server: productionRoot.health(),
+    process: { node: process.version, platform: process.platform, pid: process.pid }
+  })
+});
 const webRoot = resolve(here, '../../game-web');
 const contractsRoot = resolve(here, '../../../packages/contracts/src');
 const server = createGameHttpServer({

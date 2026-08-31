@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildLlmTurnReport, createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createGameHttpServer, listen } from '../src/index.js';
 
 test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {
@@ -270,6 +271,87 @@ test('turn context groups calls and excludes probe records', async () => {
   assert.equal(report.waterfall[0].output_contract_mode, 'json_object');
   assert.equal(diagnostics.report({ party_id: 'party-1' }).request_id, 'turn-1');
   assert.equal(diagnostics.report({ party_id: 'party-1', request_id: 'other' }), null);
+});
+
+test('private party log report retains full LLM request and response', async () => {
+  const diagnostics = createLlmDiagnostics();
+  const runner = createLlmRoleRunnerAdapter({
+    telemetry: diagnostics.telemetry,
+    turnBudget: diagnostics.turnBudget,
+    execute: async () => ({
+      status: 'ok', parsed_json: { action: 'look' }, raw_text: '{"action":"look"}',
+      provider: 'fixture', model: 'fixture', durationMs: 3,
+      config_hash: 'config-1', usage: { total_tokens: 9 }
+    })
+  });
+  await diagnostics.runTurn({ party_id: 'party-log', request_id: 'turn-log' },
+    () => runner.run({
+      scope: 'turn_runtime', role_id: 'turn_step_planner',
+      request_identity: 'turn-log:step-1',
+      messages: [{ role: 'user', content: 'Осмотреться' }]
+    }));
+
+  const privateReport = diagnostics.takeLogReport({ party_id: 'party-log' });
+  assert.equal(privateReport.calls[0].request.messages[0].content, 'Осмотреться');
+  assert.equal(privateReport.calls[0].response.parsed_json.action, 'look');
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-log' }), null);
+  assert.equal(JSON.stringify(diagnostics.report({ party_id: 'party-log' }))
+    .includes('Осмотреться'), false);
+});
+
+test('private party log retains provider reasoning content', async () => {
+  const originalFetch = globalThis.fetch;
+  let providerRequest;
+  globalThis.fetch = async (_url, init) => {
+    providerRequest = JSON.parse(init.body);
+    return {
+      ok: true,
+      json: async () => ({ choices: [{ message: {
+        content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
+      } }] })
+    };
+  };
+  try {
+    const diagnostics = createLlmDiagnostics();
+    const runner = createLlmRoleRunnerAdapter({
+      env: { DEEPSEEK_API_KEY: 'test-key' },
+      telemetry: diagnostics.telemetry,
+      turnBudget: diagnostics.turnBudget
+    });
+    await diagnostics.runTurn({ party_id: 'party-reasoning',
+      request_id: 'turn-reasoning' }, () => runner.run({
+      scope: 'turn_runtime', role_id: 'turn_step_planner',
+      request_identity: 'turn-reasoning:step-1',
+      messages: [{ role: 'user', content: 'Осмотреться' }]
+    }));
+    const report = diagnostics.takeLogReport({ party_id: 'party-reasoning' });
+    assert.deepEqual(report.calls[0].request.messages, providerRequest.messages);
+    assert.equal(report.calls[0].response.reasoning_content, 'hidden reasoning');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('private reports preserve concurrent turns for one party', async () => {
+  const diagnostics = createLlmDiagnostics();
+  let finishFirst;
+  let finishSecond;
+  const firstGate = new Promise((resolve) => { finishFirst = resolve; });
+  const secondGate = new Promise((resolve) => { finishSecond = resolve; });
+  const first = diagnostics.runTurn({ party_id: 'party-concurrent',
+    request_id: 'turn-1' }, () => firstGate);
+  const second = diagnostics.runTurn({ party_id: 'party-concurrent',
+    request_id: 'turn-2' }, () => secondGate);
+
+  finishSecond();
+  await second;
+  finishFirst();
+  await first;
+
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-concurrent',
+    request_id: 'turn-1' }).request_id, 'turn-1');
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-concurrent' })
+    .request_id, 'turn-2');
 });
 
 test('developer report route is unavailable outside developer mode', async (t) => {

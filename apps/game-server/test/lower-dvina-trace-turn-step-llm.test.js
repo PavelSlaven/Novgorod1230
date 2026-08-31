@@ -325,12 +325,17 @@ test('turn step choice preserves the selected semantic input variant', async () 
     async run(call) {
       assert.match(call.messages[0].content, /Добавить топливо в огонь/u);
       assert.match(call.messages[0].content, /Воздействовать водой на огонь/u);
+      assert.match(call.messages[0].content,
+        /request_world_process_affect_добавить_топливо_в_огонь/u);
+      assert.match(call.messages[0].content,
+        /request_world_process_affect_воздействовать_водой_на_огонь/u);
       return { output: {
         interpretation: { player_goal: 'Охладить процесс.',
           grounded_attempt: 'Применить охлаждающий состав.',
           adaptation: 'literal' },
         resolution: 'domain_request',
-        operation_choice: 'domain_operation_2_request_world_process_affect',
+        operation_choice:
+          'domain_operation_2_request_world_process_affect_воздействовать_водой_на_огонь',
         continuation: null, clarification: null, check: null,
         reason_code: 'world_process_affect', reason: 'Выбран подходящий вход.'
       } };

@@ -105,17 +105,20 @@ function turnStepOperationChoices(request) {
     ...(request.player_safe_state?.local_world_process?.allowed ?? [])
   ];
   const seen = new Set();
-  return operations.filter((operation) => {
+  const unique = operations.filter((operation) => {
     const key = JSON.stringify(operation);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
-  }).map((operation, index) => ({
-    choice_id: operationChoiceId(operation, index),
+  });
+  return unique.map((operation, index) => ({
+    choice_id: operationChoiceId(operation, index, unique),
     operation: structuredClone(operation)
   }));
 }
-function operationChoiceId(operation,index){const qualifier=operation.process_action??operation.discovery_kind??operation.access_kind??operation.movement_kind??operation.use_kind??operation.activity_kind??operation.interaction_kind;return['domain_operation',index+1,operation.op,qualifier].filter((part)=>part!=null).join('_');}
+function operationChoiceId(operation,index,operations){const qualifier=operationQualifier(operation);const collision=operations.filter((candidate)=>candidate.op===operation.op&&operationQualifier(candidate)===qualifier).length>1;return['domain_operation',index+1,operation.op,qualifier,collision?semanticChoiceLabel(operation.description):null].filter((part)=>part!=null).join('_');}
+function operationQualifier(operation){return operation.process_action??operation.discovery_kind??operation.access_kind??operation.movement_kind??operation.use_kind??operation.activity_kind??operation.interaction_kind;}
+function semanticChoiceLabel(value){const label=typeof value==='string'?value.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_+|_+$/gu,''):'';return label||'variant';}
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {

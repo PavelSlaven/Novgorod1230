@@ -124,11 +124,13 @@ test('direct presentation persistence keeps only public combat state',
       check_result: null,
       time_update: null,
       body_update: null,
-      consequence: {},
+      consequence: { combat: { session_after: {
+        status: 'paused_for_player', player_response_required: true,
+        participant_refs: ['hidden-authoritative-participant'] } } },
       turn_step_commit: { loop_trace: { step_traces: [{
         approved_plan: { resolution: 'domain_request', operations: [{
           op: 'request_combat' }] },
-        player_response_boundary: true
+        player_response_boundary: false
       }] } }
     };
     let persistedScreen = null;
@@ -180,10 +182,13 @@ test('direct presentation persistence keeps only public combat state',
       ['player_response_required', 'status']);
   });
 
-test('combat presentation replay preserves only the public response boundary', () => {
-  const loopTrace = { step_traces: [{ player_response_boundary: true,
+test('combat presentation replay preserves authoritative public combat state', () => {
+  const loopTrace = { step_traces: [{ player_response_boundary: false,
     approved_plan: { resolution: 'domain_request', operations: [{
       op: 'request_combat', participant_ref: 'hidden-combat-participant' }] } }] };
+  const combat = { session_after: { status: 'paused_for_player',
+    player_response_required: true,
+    participant_refs: ['hidden-authoritative-participant'] } };
   const visiblePayload = {
     perceived_scene: visibleContext().visible_scene,
     perceived_changes: [], sensory_details: [],
@@ -191,13 +196,14 @@ test('combat presentation replay preserves only the public response boundary', (
     visible_objects: [], known_context: [], uncertainties: []
   };
   const state = payload({ last_turn: {
-    ...payload().last_turn, turn_step_commit: { loop_trace: loopTrace }
+    ...payload().last_turn, consequence: { combat },
+    turn_step_commit: { loop_trace: loopTrace }
   } });
   const pending = buildLowerDvinaTracePendingScreen({ state,
     turnId: 'turn-2', nextVersion: 3, turnNumber: 2,
     visibleEnvelope: { package_id: 'visible-1',
       package_digest: 'sha256:visible', visible_payload: visiblePayload },
-    turnStepTrace: loopTrace });
+    combatConsequence: combat });
   const replay = () => rebuildPhase2HistoricalScreen({ payload: state,
     turnId: 'turn-2', visiblePayload, narrationOutput: {
       package_digest: 'sha256:visible', flow_result: narration()
@@ -211,6 +217,8 @@ test('combat presentation replay preserves only the public response boundary', (
     ['player_response_required', 'status']);
   assert.equal(JSON.stringify(ready.combat_state)
     .includes('hidden-combat-participant'), false);
+  assert.equal(JSON.stringify(ready.combat_state)
+    .includes('hidden-authoritative-participant'), false);
 });
 
 test('nearby NPC alone does not become an interlocutor', () => {

@@ -1,7 +1,7 @@
 import {
   phase2ScreenDigest,
   phase2VisibleContextFromPayload,
-  turnStepPublicCombatState
+  publicCombatStateFromConsequence
 } from './lower-dvina-trace-phase-2-projection.js';
 
 export function buildLowerDvinaTracePendingScreen({
@@ -10,9 +10,9 @@ export function buildLowerDvinaTracePendingScreen({
   nextVersion,
   turnNumber,
   visibleEnvelope,
-  turnStepTrace = null
+  combatConsequence = null
 }) {
-  const combatState = turnStepPublicCombatState(turnStepTrace);
+  const combatState = publicCombatStateFromConsequence(combatConsequence);
   const screen = {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',

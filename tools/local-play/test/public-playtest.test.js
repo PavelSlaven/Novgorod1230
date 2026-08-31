@@ -66,6 +66,7 @@ test('combat branch accepts only committed ready typed public states', () => {
     player_response_required: false })), 'terminal_combat');
   assert.equal(releaseCombatBranch(value({ status: 'paused_for_player',
     player_response_required: true })), 'ongoing_combat');
+  assert.equal(releaseCombatBranch(value(null)), null);
   assert.equal(releaseCombatBranch(value({ status: 'paused_for_player',
     player_response_required: false })), null);
   assert.equal(releaseCombatBranch(value({ status: 'ended',
@@ -149,6 +150,33 @@ test('terminal combat continues through Phase 9 and the live impossible probe',
         true);
     }
   });
+for (const [ordinal, terminalCombatOffset] of [['first', 0], ['second', 1]]) {
+  test(`combat ending after ${ordinal} exchange skips remaining combat probes`,
+    async () => {
+      const manifest = testManifest();
+      const bodies = [];
+      const report = await runPublicPlaytest({ manifest,
+        impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart,
+        fetchImpl: branchFetch(manifest, 'terminal_combat', bodies, null,
+          terminalCombatOffset),
+        now: counter(), log() {} });
+      const combat = manifest.filter(({ scenario_class: scenarioClass }) =>
+        scenarioClass === 'combat');
+      assert.equal(report.branch_outcome, 'terminal_combat');
+      assert.equal(report.gates.pass, true);
+      assert.equal(report.turns.filter(({ scenario_class: scenarioClass }) =>
+        scenarioClass === 'combat').length, terminalCombatOffset + 1);
+      for (const skipped of combat.slice(terminalCombatOffset + 1)) {
+        assert.equal(bodies.some(({ raw_text: raw }) => raw === skipped.raw_text),
+          false);
+      }
+      for (const executed of [manifest[17], manifest[18], manifest[19],
+        IMPOSSIBLE_PROBE]) {
+        assert.equal(bodies.some(({ raw_text: raw }) => raw === executed.raw_text),
+          true);
+      }
+    });
+}
 test('repair gate permits distinct roles and rejects a repeated repair role', () => { const turn = (waterfall) => ({ turn_id: 'repair', status: 200, llm: { turn_duration_ms: 1, aggregate: { repair_calls: waterfall.length }, waterfall } }); const distinct = roleGate({ observed_role_ids: [], turns: [turn(['planner_repair', 'narrator_format_repair', 'narrator_semantic_repair'].map((role) => ({ role, repair: true })))] }); assert.equal(distinct.gaps.some((gap) => gap.includes('repair')), false); const repeated = roleGate({ observed_role_ids: [], turns: [turn(['narrator_semantic_repair', 'narrator_semantic_repair'].map((role) => ({ role, repair: true })))] }); assert.ok(repeated.gaps.includes('repeated repair role: repair: narrator_semantic_repair')); });
 test('runner snapshots clean exact git before starting', async () => { let started = false; for (const git of [() => ({ head: 'short', dirty: false }), () => ({ head: 'a'.repeat(40), dirty: true })]) await assert.rejects(() => runPublicPlaytest({ git, start: async () => { started = true; } }), { code: 'PUBLIC_PLAYTEST_GIT_EVIDENCE_INVALID' }); assert.equal(started, false); });
 test('runner reads diagnostics before pending ack and retains both attempts', async () => { const responses = [health(), catalog(), newGame(), ack(), pendingTurn(), diagnostics({ duration: 15_000, deadline: 60_000, role: 'turn_step_planner', repairCalls: 1, llmCalls: 2 }), turn(), diagnostics({ duration: 15_000, deadline: 60_000, role: 'turn_step_presenter', llmCalls: 1, budgetExhausted: true })]; const requests = []; await assert.rejects(() => runPublicPlaytest({ manifest: evidenceFirstManifest(), impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart, fetchImpl: async (url, request) => { requests.push({ url, body: request.body && JSON.parse(request.body) }); return responses.shift(); }, now: counter(), log() {} }), (error) => { const turn = error.report.turns[0]; assert.equal(turn.presentation_ack.screen_status, 'ready'); assert.deepEqual(turn.role_ids, ['turn_step_planner', 'turn_step_presenter']); assert.equal(turn.llm.turn_duration_ms, 30_000); assert.equal(turn.llm.aggregate.repair_calls, 1); assert.equal(turn.llm.aggregate.llm_calls, 3); assert.equal(turn.llm.aggregate.budget_exhausted, true); assert.deepEqual(turn.llm.attempts.map((attempt) => attempt.turn_deadline_ms), [60_000, 60_000]); assert.ok(error.report.gates.gaps.includes('deadline exceeded: probe-0')); return true; }); assert.match(requests[5].url, /developer\/llm-turn-reports/); assert.match(requests[6].url, /\/turns$/); assert.match(requests[7].url, /developer\/llm-turn-reports/); assert.deepEqual(requests[4].body, requests[6].body); });
@@ -261,30 +289,40 @@ function cleanGit() { return { head: 'a'.repeat(40), dirty: false }; }
 function testManifest() { return PUBLIC_PLAYTEST_MANIFEST.map(({ expect: _expect, ...turn }, index) => ({ ...turn, id: `probe-${index}` })); }
 function evidenceFirstManifest() { const manifest = testManifest(); return [{ ...manifest[0], expect: 'blue_wool_found' }, ...manifest.slice(1)]; }
 function surrenderFirstManifest() { const surrender = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'surrender'); return [surrender, ...PUBLIC_PLAYTEST_MANIFEST.filter(({ id }) => id !== 'surrender')]; }
-function branchFetch(manifest, outcome, bodies, branchOptionId = null) {
+function branchFetch(manifest, outcome, bodies, branchOptionId = null,
+  terminalCombatOffset = null) {
   const precombatIndex = manifest.findIndex(({ branch }) => branch != null);
-  const combatIndex = manifest.findLastIndex(
-    ({ scenario_class: scenarioClass }) => scenarioClass === 'combat');
+  const combatIndexes = manifest.flatMap((entry, index) =>
+    entry.scenario_class === 'combat' ? [index] : []);
+  const lastCombatIndex = combatIndexes.at(-1);
+  const terminalCombatIndex = terminalCombatOffset == null
+    ? lastCombatIndex : combatIndexes[terminalCombatOffset];
   const executed = outcome === 'precombat_unreached'
     ? manifest.slice(0, precombatIndex + 1)
     : outcome === 'ongoing_combat'
-      ? manifest.slice(0, combatIndex + 1) : [...manifest, IMPOSSIBLE_PROBE];
-  const state = outcome === 'ongoing_combat'
-    ? { status: 'paused_for_player', player_response_required: true }
-    : { status: 'ended', player_response_required: false };
+      ? manifest.slice(0, lastCombatIndex + 1)
+      : [...manifest.slice(0, terminalCombatIndex + 1),
+          ...manifest.slice(lastCombatIndex + 1), IMPOSSIBLE_PROBE];
+  const paused = { status: 'paused_for_player',
+    player_response_required: true };
+  const ended = { status: 'ended', player_response_required: false };
   const responses = [health(), catalog(), newGame(), ack()];
-  for (const [index, entry] of executed.entries()) {
+  for (const entry of executed) {
+    const manifestIndex = manifest.indexOf(entry);
     const optionId = entry.branch == null ? null
       : outcome === 'precombat_unreached'
         ? branchOptionId ?? entry.branch.alternate_option_id
         : entry.branch.continue_option_id;
-    responses.push(turn([], index === combatIndex ? state : null, optionId));
+    const combatState = entry.scenario_class !== 'combat' ? null
+      : outcome === 'terminal_combat' && manifestIndex === terminalCombatIndex
+        ? ended : paused;
+    responses.push(turn([], combatState, optionId));
     const roles = [...new Set([...(entry.required_role_ids ?? []),
       ...(entry.required_waterfall ?? []),
       ...(entry.expectedFailure ? ['turn_step_planner'] : [])])];
     responses.push(diagnosticsRoles(roles));
   }
-  responses.push(finalScreen(outcome === 'ongoing_combat' ? state : null));
+  responses.push(finalScreen(outcome === 'ongoing_combat' ? paused : null));
   return async (_url, request) => {
     if (request.body) bodies.push(JSON.parse(request.body));
     return responses.shift();

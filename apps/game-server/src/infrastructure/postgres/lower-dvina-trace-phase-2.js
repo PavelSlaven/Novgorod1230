@@ -6,8 +6,8 @@ import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.
 import { assertPhase2NormalizedRows, phase2IntegrityError,
   validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
-import { buildPhase2ReadyScreen, phase2PublicResult,
-  phase2ScreenDigest, turnStepPublicCombatState } from './lower-dvina-trace-phase-2-projection.js';
+import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest,
+  publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
 import { projectLowerDvinaTraceScreenPanels } from
   './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext,
@@ -259,7 +259,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (payload?.last_turn?.input_digest !== inputDigest) {
       throw phase2IntegrityError();
     }
-    const combatState = turnStepPublicCombatState(payload.last_turn?.turn_step_commit?.loop_trace);
+    const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence?.combat);
     const screen = projectLowerDvinaTraceScreenPanels({
       payload,
       screen: {

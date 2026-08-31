@@ -152,7 +152,7 @@ export async function commitLowerDvinaTraceTurnStep({
     nextVersion,
     turnNumber,
     visibleEnvelope,
-    turnStepTrace: envelope.loop_trace
+    combatConsequence: factual.consequence?.combat
   });
   const rootWrites = buildLowerDvinaTraceTurnStepRootWrites({
     partyId, state, snapshot: turnStep.snapshot, envelope, nextVersion,

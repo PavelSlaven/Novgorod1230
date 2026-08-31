@@ -40,6 +40,11 @@ const SAFE_TURN_STEP_VALIDATION_CODES = new Set([
   'ordering', 'prepared_followup_binding', 'range', 'required', 'resolution',
   'sequence', 'type', 'unique', 'unknown_ref'
 ]);
+const SAFE_TURN_STEP_VALIDATION_SCOPES = new Set([
+  'operation', 'interpretation', 'activity', 'check', 'continuation',
+  'clarification', 'plan'
+]);
+const SAFE_NPC_VALIDATION_SCOPES = new Set(['speech_dominant_act']);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
@@ -208,9 +213,11 @@ function safeTurnStepFailure(value = {}) {
     ? [...new Set(source.map(text)
       .filter((code) => SAFE_TURN_STEP_VALIDATION_CODES.has(code)))] : [];
   const errors = Array.isArray(value?.details?.errors) ? value.details.errors : [];
-  const scopes = Array.isArray(value?.validation_scopes)
+  const sourceScopes = Array.isArray(value?.validation_scopes)
     ? value.validation_scopes
     : [...new Set(errors.map(({ path }) => turnStepValidationScope(path)).filter(Boolean))];
+  const scopes = [...new Set(sourceScopes.map(text)
+    .filter((scope) => SAFE_TURN_STEP_VALIDATION_SCOPES.has(scope)))];
   return codes.length === 0 ? null : Object.freeze({
     code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes),
     ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
@@ -233,9 +240,11 @@ function safeNpcFailure(value = {}) {
       .filter((code) => SAFE_NPC_VALIDATION_CODES.has(code)))] : [];
   const errors = Array.isArray(value?.details?.validation_errors)
     ? value.details.validation_errors : [];
-  const scopes = Array.isArray(value?.validation_scopes)
+  const sourceScopes = Array.isArray(value?.validation_scopes)
     ? value.validation_scopes
     : [...new Set(errors.map(({ path }) => npcValidationScope(path)).filter(Boolean))];
+  const scopes = [...new Set(sourceScopes.map(text)
+    .filter((scope) => SAFE_NPC_VALIDATION_SCOPES.has(scope)))];
   return codes.length === 0 ? null : Object.freeze({
     code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes),
     ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })

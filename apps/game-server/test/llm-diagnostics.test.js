@@ -186,6 +186,23 @@ test('failed NPC conversation diagnostics retain only allowlisted enum scope', a
   }
 });
 
+test('explicit validation scopes retain only stable allowlisted categories', () => {
+  const npc = buildLlmTurnReport({ failure: {
+    code: 'TURN_NPC_PLAN_INVALID', validation_codes: ['invalid_enum'],
+    validation_scopes: ['speech_dominant_act', 'SECRET_PROVIDER_DATA']
+  } });
+  const turnStep = buildLlmTurnReport({ failure: {
+    code: 'TURN_STEP_PLAN_INVALID', validation_codes: ['required'],
+    validation_scopes: ['operation', 'SECRET_PROVIDER_DATA']
+  } });
+  assert.deepEqual(npc.failure, { code: 'TURN_NPC_PLAN_INVALID',
+    validation_codes: ['invalid_enum'],
+    validation_scopes: ['speech_dominant_act'] });
+  assert.deepEqual(turnStep.failure, { code: 'TURN_STEP_PLAN_INVALID',
+    validation_codes: ['required'], validation_scopes: ['operation'] });
+  assert.equal(JSON.stringify({ npc, turnStep }).includes('SECRET_PROVIDER_DATA'), false);
+});
+
 test('failed turn-step diagnostics retain codes without model text', () => {
   const raw = {
     code: 'TURN_STEP_PLAN_INVALID',

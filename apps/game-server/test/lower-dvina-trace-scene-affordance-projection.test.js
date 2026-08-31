@@ -203,7 +203,7 @@ test('combat presentation replay preserves authoritative public combat state', (
     turnId: 'turn-2', nextVersion: 3, turnNumber: 2,
     visibleEnvelope: { package_id: 'visible-1',
       package_digest: 'sha256:visible', visible_payload: visiblePayload },
-    combatConsequence: combat });
+    turnConsequence: { combat } });
   const replay = () => rebuildPhase2HistoricalScreen({ payload: state,
     turnId: 'turn-2', visiblePayload, narrationOutput: {
       package_digest: 'sha256:visible', flow_result: narration()
@@ -219,6 +219,35 @@ test('combat presentation replay preserves authoritative public combat state', (
     .includes('hidden-combat-participant'), false);
   assert.equal(JSON.stringify(ready.combat_state)
     .includes('hidden-authoritative-participant'), false);
+});
+
+test('combat initialization presentation preserves the safe session state', () => {
+  const publicState = { status: 'paused_for_player',
+    player_response_required: true };
+  const state = payload({ last_turn: { ...payload().last_turn,
+    consequence: { combat_initialization: {
+      combat_id: 'hidden-combat-id', ...publicState } } } });
+  const visiblePayload = {
+    perceived_scene: visibleContext().visible_scene,
+    perceived_changes: [], sensory_details: [],
+    visible_npcs: visibleContext().visible_npc,
+    visible_objects: [], known_context: [], uncertainties: []
+  };
+  const pending = buildLowerDvinaTracePendingScreen({ state,
+    turnId: 'turn-2', nextVersion: 3, turnNumber: 2,
+    visibleEnvelope: { package_id: 'visible-1',
+      package_digest: 'sha256:visible', visible_payload: visiblePayload },
+    turnConsequence: { combat_initialization: { session: {
+      ...publicState, combat_id: 'hidden-combat-id',
+      participant_refs: ['hidden-participant'] } } } });
+  const ready = rebuildPhase2HistoricalScreen({ payload: state,
+    turnId: 'turn-2', visiblePayload, narrationOutput: {
+      package_digest: 'sha256:visible', flow_result: narration()
+    }, narrationOutputDigest: 'sha256:narration' });
+  assert.deepEqual(pending.combat_state, publicState);
+  assert.deepEqual(ready.combat_state, publicState);
+  assert.equal(JSON.stringify({ pending: pending.combat_state,
+    ready: ready.combat_state }).includes('hidden'), false);
 });
 
 test('nearby NPC alone does not become an interlocutor', () => {

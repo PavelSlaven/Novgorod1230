@@ -83,6 +83,10 @@ test('visible Phase 8 Zhdanko can receive a player-started combat handoff', asyn
   assert.equal(runtime.state.last_turn.consequence.combat_kind, 'start');
   assert.equal(runtime.state.combat_sessions.length, 1);
   assert.equal(runtime.state.combat_sessions[0].status, 'paused_for_player');
+  assert.deepEqual(runtime.state.last_turn.consequence.combat_initialization, {
+    combat_id: runtime.state.combat_sessions[0].combat_id,
+    status: 'paused_for_player', player_response_required: true
+  });
   assert.equal(runtime.state.player_response_boundary.kind, 'combat');
   assert.equal(runtime.npcCombatCount(), 4);
 });

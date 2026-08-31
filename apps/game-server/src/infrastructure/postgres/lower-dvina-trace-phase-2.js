@@ -259,7 +259,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (payload?.last_turn?.input_digest !== inputDigest) {
       throw phase2IntegrityError();
     }
-    const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence?.combat);
+    const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence);
     const screen = projectLowerDvinaTraceScreenPanels({
       payload,
       screen: {

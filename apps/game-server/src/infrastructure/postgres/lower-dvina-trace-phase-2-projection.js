@@ -214,7 +214,7 @@ export function buildPhase2ReadyScreen({
   narrationOutputDigest
 }) {
   const combatState = publicCombatStateFromConsequence(
-    payload.last_turn?.consequence?.combat);
+    payload.last_turn?.consequence);
   const screen = projectLowerDvinaTraceScreenPanels({
     payload,
     screen: {
@@ -252,8 +252,10 @@ export function buildPhase2ReadyScreen({
   return screen;
 }
 
-export function publicCombatStateFromConsequence(combat) {
-  const session = combat?.session_after;
+export function publicCombatStateFromConsequence(consequence) {
+  const session = consequence?.combat?.session_after
+    ?? consequence?.combat_initialization?.session
+    ?? consequence?.combat_initialization;
   const paused = session?.status === 'paused_for_player'
     && session.player_response_required === true;
   const ended = session?.status === 'ended'

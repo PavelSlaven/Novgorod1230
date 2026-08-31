@@ -324,5 +324,5 @@ function terminalProjection(envelope) {
   turnStepScreen: buildLowerDvinaTracePendingScreen({ state,
     turnId: envelope.root_turn_id, nextVersion: 8, turnNumber: 1,
     visibleEnvelope: projection,
-    combatConsequence: factual.consequence?.combat }) };
+    turnConsequence: factual.consequence }) };
 }

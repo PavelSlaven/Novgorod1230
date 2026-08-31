@@ -10,9 +10,9 @@ export function buildLowerDvinaTracePendingScreen({
   nextVersion,
   turnNumber,
   visibleEnvelope,
-  combatConsequence = null
+  turnConsequence = null
 }) {
-  const combatState = publicCombatStateFromConsequence(combatConsequence);
+  const combatState = publicCombatStateFromConsequence(turnConsequence);
   const screen = {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',

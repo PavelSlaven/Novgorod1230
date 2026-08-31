@@ -82,12 +82,16 @@ function safeConsequence(consequence) {
   if (value.accusation?.combat_initialization) {
     value.accusation.combat_initialization = {
       combat_id: value.accusation.combat_initialization.session.combat_id,
-      status: value.accusation.combat_initialization.session.status };
+      status: value.accusation.combat_initialization.session.status,
+      player_response_required:
+        value.accusation.combat_initialization.session.player_response_required };
   }
   if (value.combat_initialization) {
     value.combat_initialization = {
       combat_id: value.combat_initialization.session.combat_id,
-      status: value.combat_initialization.session.status };
+      status: value.combat_initialization.session.status,
+      player_response_required:
+        value.combat_initialization.session.player_response_required };
   }
   if (value.accusation?.semantic_exchange) {
     value.accusation.semantic_exchange = {

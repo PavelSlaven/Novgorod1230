@@ -15,6 +15,8 @@ import { validTracePreparedCombatConsequence } from
   '../src/runtime/lower-dvina-trace-combat-prepared-contract.js';
 import { combatPendingScreen, combatVisibleEnvelope } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-writes.js';
+import { buildLowerDvinaTracePendingScreen } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-presentation.js';
 
 test('zero-time invalidation reaches prepared commit admission and replay',
   async () => {
@@ -75,6 +77,8 @@ test('terminal prepared combat admits no player response boundary', async () => 
     .allowed_action_affordances, []);
   assert.deepEqual(projection.screen.combat_state, {
     status: 'ended', player_response_required: false });
+  assert.deepEqual(projection.turnStepScreen.combat_state,
+    projection.screen.combat_state);
   assert.equal(projection.screen.main_prose, 'Боевая сцена завершена.');
 });
 
@@ -84,7 +88,11 @@ test('ongoing combat screen exposes only its public response boundary', () => {
   const projection = terminalProjection(fixture.envelope);
   assert.deepEqual(projection.screen.combat_state, {
     status: 'paused_for_player', player_response_required: true });
+  assert.deepEqual(projection.turnStepScreen.combat_state,
+    projection.screen.combat_state);
   assert.equal(JSON.stringify(projection.screen.combat_state)
+    .includes('npc-1'), false);
+  assert.equal(JSON.stringify(projection.turnStepScreen.combat_state)
     .includes('npc-1'), false);
 });
 
@@ -312,5 +320,8 @@ function terminalProjection(envelope) {
   const state = { party_id: 'party-1', opening_identity: {
     opening_screen_digest: 'opening-1' } };
   return { envelope: projection, screen: combatPendingScreen({ state, factual,
-    visibleEnvelope: projection, turnNumber: 1, nextVersion: 8 }) };
+    visibleEnvelope: projection, turnNumber: 1, nextVersion: 8 }),
+  turnStepScreen: buildLowerDvinaTracePendingScreen({ state,
+    turnId: envelope.root_turn_id, nextVersion: 8, turnNumber: 1,
+    visibleEnvelope: projection, turnStepTrace: envelope.loop_trace }) };
 }

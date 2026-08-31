@@ -8,8 +8,10 @@ export function buildLowerDvinaTracePendingScreen({
   turnId,
   nextVersion,
   turnNumber,
-  visibleEnvelope
+  visibleEnvelope,
+  turnStepTrace = null
 }) {
+  const combatState = turnStepCombatState(turnStepTrace);
   const screen = {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',
@@ -27,8 +29,19 @@ export function buildLowerDvinaTracePendingScreen({
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
   };
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
+}
+
+function turnStepCombatState(trace) {
+  const combatStep = trace?.step_traces?.find((step) =>
+    step?.approved_plan?.resolution === 'domain_request'
+    && step.approved_plan.operations?.some(({ op }) => op === 'request_combat'));
+  if (typeof combatStep?.player_response_boundary !== 'boolean') return null;
+  return combatStep.player_response_boundary
+    ? { status: 'paused_for_player', player_response_required: true }
+    : { status: 'ended', player_response_required: false };
 }

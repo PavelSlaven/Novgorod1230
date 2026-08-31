@@ -9,6 +9,8 @@ import { projectLowerDvinaTraceScreenPanels } from
   '../src/infrastructure/postgres/lower-dvina-trace-screen-panels.js';
 import { buildLowerDvinaTracePendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-presentation.js';
+import { phase8PendingScreen } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-8-writes.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
@@ -244,6 +246,41 @@ test('combat initialization presentation preserves the safe session state', () =
     turnId: 'turn-2', visiblePayload, narrationOutput: {
       package_digest: 'sha256:visible', flow_result: narration()
     }, narrationOutputDigest: 'sha256:narration' });
+  assert.deepEqual(pending.combat_state, publicState);
+  assert.deepEqual(ready.combat_state, publicState);
+  assert.equal(JSON.stringify({ pending: pending.combat_state,
+    ready: ready.combat_state }).includes('hidden'), false);
+});
+
+test('accusation combat initialization survives pending and ready replay', () => {
+  const publicState = { status: 'paused_for_player',
+    player_response_required: true };
+  const visiblePayload = {
+    perceived_scene: visibleContext().visible_scene,
+    perceived_changes: [], sensory_details: [],
+    visible_npcs: visibleContext().visible_npc,
+    visible_objects: [], known_context: [], uncertainties: [],
+    player_safe_interruption: 'Требуется решение в бою.'
+  };
+  const state = payload({ last_turn: { ...payload().last_turn,
+    consequence: { accusation: { combat_initialization: {
+      combat_id: 'hidden-combat-id', ...publicState } } } } });
+  const envelope = { package_id: 'visible-1',
+    package_digest: 'sha256:visible', visible_payload: visiblePayload };
+  const pending = phase8PendingScreen({ state, turnNumber: 2,
+    nextVersion: 3, envelope, factual: {
+      mode_resolution: { turn_id: 'turn-2' },
+      consequence: { accusation: { combat_initialization: { session: {
+        combat_id: 'hidden-combat-id', participant_refs: ['hidden-participant'],
+        ...publicState } } } }
+    } });
+  const replay = () => rebuildPhase2HistoricalScreen({ payload: state,
+    turnId: 'turn-2', visiblePayload, narrationOutput: {
+      package_digest: 'sha256:visible', flow_result: narration()
+    }, narrationOutputDigest: 'sha256:narration' });
+  const ready = replay();
+
+  assert.deepEqual(ready, replay());
   assert.deepEqual(pending.combat_state, publicState);
   assert.deepEqual(ready.combat_state, publicState);
   assert.equal(JSON.stringify({ pending: pending.combat_state,

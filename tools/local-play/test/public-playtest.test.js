@@ -25,6 +25,10 @@ test('default seed passes deterministic causal preflight and branch 0 fails befo
 });
 test('fire start requires causal evidence before the world-process follow-up', () => { const [start, affect] = PUBLIC_PLAYTEST_MANIFEST; assert.equal(start.id, 'fire-start'); assert.equal(start.expect, 'local_fire_started'); assert.equal(affect.id, 'fire-affect'); assert.deepEqual(affect.required_role_ids, ['turn_step_planner', 'world_process_step']); });
 test('reached combat requires live NPC combat decision evidence', () => { const combat = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'combat'); assert.deepEqual(combat.required_role_ids, ['turn_step_planner', 'npc_combat_decider']); const gate = roleGate({ observed_role_ids: [], turns: [{ ...combat, turn_id: combat.id, status: 200, role_ids: ['turn_step_planner'], llm: { turn_duration_ms: 1, aggregate: { repair_calls: 0 } } }] }); assert.ok(gate.gaps.includes('missing compound prerequisite: combat: npc_combat_decider')); });
+test('accusation validates its public combat boundary before combat probes', () => {
+  const accusation = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'accuse');
+  assert.equal(accusation.required_combat_state, true);
+});
 test('ordinary narration gates live writer then auditor, never repair', () => { const expected = ['gameplay_narrator', 'gameplay_narrator_auditor']; const ordinary = ['ordinary-use', 'carry'].map((id) => PUBLIC_PLAYTEST_MANIFEST.find((turn) => turn.id === id)); for (const turn of ordinary) assert.deepEqual(turn.required_waterfall, expected); const report = { observed_role_ids: [], turns: [{ turn_id: 'ordinary', scenario_class: 'free_form', status: 200, required_waterfall: expected, role_ids: expected, llm: { turn_duration_ms: 1, aggregate: { repair_calls: 0 }, waterfall: expected.map((role) => ({ role })) } }] }; assert.equal(roleGate(report).gaps.some((gap) => gap.includes('missing live waterfall')), false); report.turns[0].llm.waterfall = report.turns[0].llm.waterfall.slice(0, 1); assert.ok(roleGate(report).gaps.includes('missing live waterfall: ordinary: gameplay_narrator_auditor')); });
 test('repair paths remain deterministic proofs, never live waterfall claims', () => { assert.deepEqual(DETERMINISTIC_PROOFS.map(({ id, proof_kind, test }) => [id, proof_kind, test]), [['impossible-action-grounding', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-step-llm.test.js#impossible jump and absent spaceship plans stay grounded model contracts/jump'], ['narration-failure-after-factual-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-phase-2.test.js#narration failure after factual commit returns its pending public result'], ['deadline-exhaustion-before-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-budget-boundary.test.js#pre-commit reserve blocks phase 2 repository commit'], ['narration-localized-semantic-repair', 'deterministic_focused_test', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'], ['cross-workflow-gameplay-repairs', 'deterministic_focused_test', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider'], ['npc-combat-production-boundary', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-npc-combat-llm.test.js#combat model assembles code-owned intent DTO for primary and repair']]); assert.equal(PUBLIC_PLAYTEST_MANIFEST.some((turn) => turn.required_waterfall?.some((role) => role.includes('repair'))), false); const safe = sanitizeReport({ deterministic_proofs: DETERMINISTIC_PROOFS, gates: { pass: true, gaps: [], live_waterfalls: true, deterministic_proofs: DETERMINISTIC_PROOFS } }); assert.equal(safe.gates.live_waterfalls, true); assert.deepEqual(safe.gates.deterministic_proofs, DETERMINISTIC_PROOFS); assert.equal(JSON.stringify(safe.gates).includes('live_observed'), false); });
 test('sanitizer uses strict public and diagnostic allowlists', () => { const safe = sanitizeReport({ api_key: 'secret', git: cleanGit(), public_responses: { turn: { status: 200, ok: true, data: { party_id: 'p', prose: 'hidden', turn: { turn_id: 't', mode: 'attention', summary: { outcome: 'not-a-code' } } } } }, turns: [{ turn_id: 'x', public_evidence: { expected: 'blue_wool_found', pass: false, prose: 'hidden' }, response: { status: 200, ok: true, data: { party_id: 'p', message: 'hidden' } }, llm: { turn_duration_ms: 4, turn_deadline_ms: 10, failure: { code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED', detail_code: 'generated_schema_mismatch', stage: 'write_plan_invariant', reason: 'hidden_party_42' }, waterfall: [{ role: 'turn_step_planner', duration_ms: 4, provider_payload: 'hidden' }], aggregate: { llm_calls: 1, deadline_exceeded: true, secret: 'hidden' } } }] }); assert.equal(safe.public_responses.turn.domain_outcome_code, undefined); assert.deepEqual(safe.turns[0].public_evidence, { expected: 'blue_wool_found', pass: false }); assert.equal(safe.turns[0].llm.aggregate.deadline_exceeded, true); assert.equal(safe.turns[0].llm.failure, null); assert.equal(JSON.stringify(safe).includes('hidden_party_42'), false); assert.equal(safe.turns[0].llm.waterfall[0].provider_payload, undefined); assert.equal(safe.turns[0].response.message, undefined); });
@@ -86,6 +90,21 @@ test('budget, pending presentation, and missing combat role remain failures', ()
   assert.ok(gate.gaps.includes('presentation pending: combat'));
   assert.ok(gate.gaps.includes(
     'missing compound prerequisite: combat: npc_combat_decider'));
+});
+test('missing accusation combat state fails before combat probes', async () => {
+  const manifest = testManifest();
+  const bodies = [];
+  await assert.rejects(runPublicPlaytest({ manifest,
+    impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart,
+    fetchImpl: branchFetch(manifest, 'ongoing_combat', bodies, null, null,
+      true),
+    now: counter(), log() {} }), {
+      code: 'PUBLIC_PLAYTEST_COMBAT_BRANCH_INVALID'
+    });
+  const combat = manifest.find(({ scenario_class: scenarioClass }) =>
+    scenarioClass === 'combat');
+  assert.equal(bodies.some(({ raw_text: raw }) => raw === combat.raw_text),
+    false);
 });
 test('legal pre-combat branch uses deterministic combat evidence and stops',
   async () => {
@@ -291,7 +310,7 @@ function testManifest() { return PUBLIC_PLAYTEST_MANIFEST.map(({ expect: _expect
 function evidenceFirstManifest() { const manifest = testManifest(); return [{ ...manifest[0], expect: 'blue_wool_found' }, ...manifest.slice(1)]; }
 function surrenderFirstManifest() { const surrender = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'surrender'); return [surrender, ...PUBLIC_PLAYTEST_MANIFEST.filter(({ id }) => id !== 'surrender')]; }
 function branchFetch(manifest, outcome, bodies, branchOptionId = null,
-  terminalCombatOffset = null) {
+  terminalCombatOffset = null, omitRequiredCombatState = false) {
   const precombatIndex = manifest.findIndex(({ branch }) => branch != null);
   const combatIndexes = manifest.flatMap((entry, index) =>
     entry.scenario_class === 'combat' ? [index] : []);
@@ -314,7 +333,10 @@ function branchFetch(manifest, outcome, bodies, branchOptionId = null,
       : outcome === 'precombat_unreached'
         ? branchOptionId ?? entry.branch.alternate_option_id
         : entry.branch.continue_option_id;
-    const combatState = entry.scenario_class !== 'combat' ? null
+    const combatBoundary = entry.required_combat_state === true
+      || entry.scenario_class === 'combat';
+    const combatState = !combatBoundary
+      || (omitRequiredCombatState && entry.required_combat_state === true) ? null
       : outcome === 'terminal_combat' && manifestIndex === terminalCombatIndex
         ? ended : paused;
     responses.push(turn([], combatState, optionId));

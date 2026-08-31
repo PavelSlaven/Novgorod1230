@@ -254,6 +254,8 @@ export function buildPhase2ReadyScreen({
 
 export function publicCombatStateFromConsequence(consequence) {
   const session = consequence?.combat?.session_after
+    ?? consequence?.accusation?.combat_initialization?.session
+    ?? consequence?.accusation?.combat_initialization
     ?? consequence?.combat_initialization?.session
     ?? consequence?.combat_initialization;
   const paused = session?.status === 'paused_for_player'

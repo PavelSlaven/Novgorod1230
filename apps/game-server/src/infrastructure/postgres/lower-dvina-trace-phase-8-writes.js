@@ -9,7 +9,8 @@ import { appendPhase4CombatInitialization } from
 import { appendNpcSemanticConversationWrites,
   buildNpcSemanticConversationWriteInput } from
   './npc-semantic-conversation-writes.js';
-import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
+import { phase2ScreenDigest, phase2VisibleContextFromPayload,
+  publicCombatStateFromConsequence } from
   './lower-dvina-trace-phase-2-projection.js';
 
 export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
@@ -45,6 +46,7 @@ export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
 
 export function phase8PendingScreen({ state, factual, envelope, turnNumber,
   nextVersion }) {
+  const combatState = publicCombatStateFromConsequence(factual.consequence);
   const screen = { version: 1, schema: 'lower_dvina_trace_turn_screen',
     scenario_id: 'lower_dvina_trace_v1', party_id: state.party_id,
     turn_id: factual.mode_resolution.turn_id, turn_number: turnNumber,
@@ -54,6 +56,7 @@ export function phase8PendingScreen({ state, factual, envelope, turnNumber,
       package_id: envelope.package_id, package_digest: envelope.package_digest,
       narration_output_digest: null }, visible_context:
       phase2VisibleContextFromPayload(envelope.visible_payload),
+    ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: envelope.visible_payload.player_safe_interruption == null
       ? 'Разговор у клети сохранён.'
       : 'Угроза у клети сохранена; требуется решение.' };

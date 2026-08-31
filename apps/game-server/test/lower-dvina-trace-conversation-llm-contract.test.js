@@ -10,6 +10,7 @@ import { requestPlayerConversationContribution } from '@rus/turn';
 import { classifyRatshaPlan } from
   '../src/runtime/lower-dvina-trace-m2-conversation-plans.js';
 import {
+  assembleNpcConversationPlan,
   createLowerDvinaTraceNpcSemanticModel,
   createLowerDvinaTracePlayerConversationModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -330,6 +331,50 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
     assert.match(prompt, /silence and leave_conversation mappings available/u);
     assert.doesNotMatch(prompt, /Choose exactly one/u);
   }
+});
+
+test('NPC assembly restores admitted structure while preserving semantic speech', () => {
+  const request = npcRequest({ combat_handoff_available: true,
+    operation_contract: { commit_surrender: {
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender'
+    } } });
+  request.allowed_references.entity_refs = [];
+  request.allowed_references.combat_target_refs = [
+    ref('player_character', 'player-1')
+  ];
+  const [speech, , combat] = npcConversationCandidates(request);
+  const semanticSpeech = structuredClone(speech);
+  semanticSpeech.primary_addressee_ref = ref('npc', 'invented');
+  semanticSpeech.intended_addressee_refs = [ref('npc', 'invented')];
+  semanticSpeech.activity = { duration_class: 'invented', effort: 'heavy' };
+  semanticSpeech.speech.utterance_text = 'Я не согласен.';
+  semanticSpeech.speech.dominant_act = 'refuse';
+  const assembledSpeech = assembleNpcConversationPlan(semanticSpeech, request);
+  assert.equal(validateConversationContributionPlan(assembledSpeech, request), true);
+  assert.deepEqual(assembledSpeech.primary_addressee_ref,
+    ref('player_character', 'player-1'));
+  assert.deepEqual(assembledSpeech.activity,
+    { duration_class: 'domain_owned', effort: 'none' });
+  assert.equal(assembledSpeech.speech.utterance_text, 'Я не согласен.');
+  assert.equal(assembledSpeech.speech.dominant_act, 'refuse');
+
+  const semanticCombat = structuredClone(combat);
+  semanticCombat.primary_addressee_ref = ref('npc', 'invented');
+  semanticCombat.handoff.target_actor_refs = [ref('npc', 'invented')];
+  semanticCombat.handoff.intent = 'перейти к открытому противостоянию';
+  const assembledCombat = assembleNpcConversationPlan(semanticCombat, request);
+  assert.equal(validateConversationContributionPlan(assembledCombat, request), true);
+  assert.deepEqual(assembledCombat.handoff.target_actor_refs,
+    request.allowed_references.combat_target_refs);
+  assert.equal(assembledCombat.handoff.intent,
+    'перейти к открытому противостоянию');
+
+  semanticSpeech.supporting_operations = [
+    { op: 'commit_surrender' }, { op: 'invented' }
+  ];
+  assert.equal(validateConversationContributionPlan(
+    assembleNpcConversationPlan(semanticSpeech, request), request), false);
 });
 
 test('player required candidate is validator-valid and preserves operation', () => {

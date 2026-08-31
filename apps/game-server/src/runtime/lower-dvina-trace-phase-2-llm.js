@@ -1,9 +1,11 @@
 import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
-import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions, requiredNpcConversationCandidate, requiredPlayerConversationCandidate } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
 export { assembleNarrationRoleOutput, createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
+export { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
 export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
   return async function resolveSemanticIntent(request) {
@@ -195,54 +197,6 @@ export function createLowerDvinaTracePlayerConversationModel({
   };
 }
 
-export function assemblePlayerConversationPlan(choice, request) {
-  return assembleConversationPlan(choice,
-    requiredPlayerConversationCandidate(request), {
-      schema: 'player_conversation_contribution_plan_v1',
-      request_id: request.request_id,
-      conversation_id: request.conversation_id,
-      state_version: request.state_version,
-      speaker_ref: structuredClone(request.speaker_ref)
-    });
-}
-
-export function assembleNpcConversationPlan(choice, request) {
-  return assembleConversationPlan(choice,
-    requiredNpcConversationCandidate(request), {
-      schema: 'conversation_contribution_plan_v1',
-      request_id: request.request_id,
-      boundary_id: request.boundary_id,
-      conversation_id: request.conversation_id,
-      exchange_id: request.exchange_id,
-      state_version: request.state_version,
-      speaker_ref: structuredClone(request.npc_ref)
-    });
-}
-
-function assembleConversationPlan(choice, requiredCandidate, envelope) {
-  const semantic = structuredClone(choice);
-  const bound = requiredCandidate == null
-    ? semantic
-    : bindKnownConversationValues(requiredCandidate, semantic);
-  return { ...bound, ...envelope };
-}
-
-function bindKnownConversationValues(template, semantic) {
-  if (typeof template === 'string' && template.startsWith('<')) {
-    return semantic;
-  }
-  if (Array.isArray(template)) {
-    if (template.length === 0) return [];
-    return template.map((value, index) =>
-      bindKnownConversationValues(value, semantic?.[index]));
-  }
-  if (template !== null && typeof template === 'object') {
-    return Object.fromEntries(Object.entries(template).map(([key, value]) => [
-      key, bindKnownConversationValues(value, semantic?.[key])
-    ]));
-  }
-  return structuredClone(template);
-}
 export function createLowerDvinaTraceNpcSemanticModel({
   roleRunner
 } = {}) {

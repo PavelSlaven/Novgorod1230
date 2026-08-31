@@ -45,23 +45,23 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
   if (typeof partyLog?.append !== 'function') {
     throw new TypeError('partyLog.append is required.');
   }
-  const record = async (partyId, event) => {
-    try {
-      await partyLog.append(partyId, event);
-    } catch (error) {
-      onLogError?.(`Party log write failed for ${partyId}.`, error);
-    }
+  const record = (partyId, event) => {
+    void Promise.resolve().then(() => partyLog.append(partyId, event))
+      .catch((error) => {
+        try { onLogError?.(`Party log write failed for ${partyId}.`, error); }
+        catch { /* Diagnostic reporting must not affect gameplay. */ }
+      });
   };
-  const llmReport = (partyId) => llmDiagnostics?.logReport?.({
+  const llmReport = (partyId) => llmDiagnostics?.takeLogReport?.({
     party_id: partyId
-  }) ?? llmDiagnostics?.report?.({ party_id: partyId }) ?? null;
+  }) ?? null;
 
   return Object.freeze({
     ...root,
     async startNewGame(input) {
       const startedAt = clock();
       const output = await root.startNewGame(input);
-      await record(output.party_id, {
+      record(output.party_id, {
         event: 'party.created', duration_ms: duration(startedAt, clock()),
         input, output, metadata
       });
@@ -71,13 +71,13 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
       const startedAt = clock();
       try {
         const output = await root.acknowledgeOpening(partyId, input);
-        await record(partyId, {
+        record(partyId, {
           event: 'opening.acknowledged',
           duration_ms: duration(startedAt, clock()), input, output
         });
         return output;
       } catch (error) {
-        await record(partyId, {
+        record(partyId, {
           event: 'opening.failed', duration_ms: duration(startedAt, clock()),
           input, error: errorRecord(error)
         });
@@ -86,16 +86,16 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
     },
     async submitTurn(partyId, input) {
       const startedAt = clock();
-      await record(partyId, { event: 'turn.requested', input });
+      record(partyId, { event: 'turn.requested', input });
       try {
         const output = await root.submitTurn(partyId, input);
-        await record(partyId, {
+        record(partyId, {
           event: 'turn.completed', duration_ms: duration(startedAt, clock()),
           input, output, llm: llmReport(partyId)
         });
         return output;
       } catch (error) {
-        await record(partyId, {
+        record(partyId, {
           event: 'turn.failed', duration_ms: duration(startedAt, clock()),
           input, error: errorRecord(error), llm: llmReport(partyId)
         });
@@ -106,12 +106,12 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
       const startedAt = clock();
       try {
         const output = await root.getPartyScreen(partyId);
-        await record(partyId, {
+        record(partyId, {
           event: 'screen.read', duration_ms: duration(startedAt, clock()), output
         });
         return output;
       } catch (error) {
-        await record(partyId, {
+        record(partyId, {
           event: 'screen.read_failed',
           duration_ms: duration(startedAt, clock()), error: errorRecord(error)
         });

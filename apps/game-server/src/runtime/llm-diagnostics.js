@@ -99,7 +99,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       const requestId = text(request_id);
       return requestId === '' || report?.request_id === requestId ? report : null;
     },
-    logReport({ party_id, request_id } = {}) { const report = logReports.get(text(party_id)) ?? null; const requestId = text(request_id); return requestId === '' || report?.request_id === requestId ? report : null; }
+    takeLogReport({ party_id, request_id } = {}) { const partyId = text(party_id); const report = logReports.get(partyId) ?? null; const requestId = text(request_id); if (report && (requestId === '' || report.request_id === requestId)) logReports.delete(partyId); return requestId === '' || report?.request_id === requestId ? report : null; }
   });
 }
 

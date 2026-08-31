@@ -291,9 +291,10 @@ test('private party log report retains full LLM request and response', async () 
       messages: [{ role: 'user', content: 'Осмотреться' }]
     }));
 
-  const privateReport = diagnostics.logReport({ party_id: 'party-log' });
+  const privateReport = diagnostics.takeLogReport({ party_id: 'party-log' });
   assert.equal(privateReport.calls[0].request.messages[0].content, 'Осмотреться');
   assert.equal(privateReport.calls[0].response.parsed_json.action, 'look');
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-log' }), null);
   assert.equal(JSON.stringify(diagnostics.report({ party_id: 'party-log' }))
     .includes('Осмотреться'), false);
 });

@@ -8,6 +8,7 @@ import {
   createPartyLog,
   createPartyLoggingRoot
 } from '../src/infrastructure/filesystem/party-log.js';
+import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 
 test('party log records complete player flow and detailed LLM trace in one JSONL file', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-'));
@@ -31,7 +32,7 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
       screen: { main_prose: 'Текущий экран.' }
     })
   };
-  const llmDiagnostics = { logReport: () => ({
+  let llmReport = {
     request_id: 'turn-request-1',
     waterfall: [{ role: 'turn_step_planner', status: 'ok' }],
     calls: [{
@@ -39,12 +40,23 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
       request: { messages: [{ role: 'user', content: 'Осмотреться' }] },
       response: { status: 'ok', parsed_json: { outcome: 'observed' } }
     }]
-  }) };
+  };
+  const llmDiagnostics = { takeLogReport: () => {
+    const report = llmReport;
+    llmReport = null;
+    return report;
+  } };
+  const writes = [];
+  const fileLog = createPartyLog({ directory,
+    now: () => '2026-08-31T18:00:00.000Z' });
   let time = 0;
   const logged = createPartyLoggingRoot({
     root,
-    partyLog: createPartyLog({ directory,
-      now: () => '2026-08-31T18:00:00.000Z' }),
+    partyLog: { append(...args) {
+      const write = fileLog.append(...args);
+      writes.push(write);
+      return write;
+    } },
     llmDiagnostics,
     metadata: { release_id: 'release-1' },
     clock: () => { time += 5; return time; }
@@ -59,6 +71,8 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
     { code: 'TURN_FAILED' }
   );
   await logged.getPartyScreen('party:abc');
+  await new Promise(setImmediate);
+  await Promise.allSettled(writes);
 
   const path = join(directory, 'party_abc.jsonl');
   const events = (await readFile(path, 'utf8')).trim().split('\n').map(JSON.parse);
@@ -90,5 +104,58 @@ test('party log failure never converts completed gameplay into client failure', 
     onLogError: (...args) => errors.push(args)
   });
   assert.equal((await logged.startNewGame({})).party_id, 'party-1');
+  await new Promise(setImmediate);
   assert.equal(errors.length, 1);
+});
+
+test('pending party log append never delays submitTurn', async () => {
+  let release;
+  const blocked = new Promise((resolve) => { release = resolve; });
+  const logged = createPartyLoggingRoot({
+    root: {
+      startNewGame: async () => ({ party_id: 'party-1' }),
+      acknowledgeOpening: async () => ({ party_id: 'party-1' }),
+      submitTurn: async () => ({ party_id: 'party-1', screen: {} }),
+      getPartyScreen: async () => ({ party_id: 'party-1', screen: {} })
+    },
+    partyLog: { append: () => blocked }
+  });
+
+  const outcome = await Promise.race([
+    logged.submitTurn('party-1', { raw_text: 'Идти' }),
+    new Promise((resolve) => setTimeout(() => resolve('timed-out'), 20))
+  ]);
+  release();
+  assert.notEqual(outcome, 'timed-out');
+  assert.equal(outcome.party_id, 'party-1');
+});
+
+test('failed turn cannot reuse consumed LLM trace from previous turn', async () => {
+  const diagnostics = createLlmDiagnostics();
+  const events = [];
+  let turn = 0;
+  const logged = createPartyLoggingRoot({
+    root: {
+      startNewGame: async () => ({ party_id: 'party-1' }),
+      acknowledgeOpening: async () => ({ party_id: 'party-1' }),
+      async submitTurn() {
+        turn += 1;
+        if (turn > 1) throw new Error('failed before LLM');
+        return diagnostics.runTurn({ party_id: 'party-1', request_id: 'turn-1' },
+          async () => {
+            diagnostics.telemetry.onDetail({ request: 'first turn prompt' });
+            return { party_id: 'party-1', screen: {} };
+          });
+      },
+      getPartyScreen: async () => ({ party_id: 'party-1', screen: {} })
+    },
+    partyLog: { append: async (_partyId, event) => { events.push(event); } },
+    llmDiagnostics: diagnostics
+  });
+
+  await logged.submitTurn('party-1', { raw_text: 'Первый ход' });
+  await assert.rejects(logged.submitTurn('party-1', { raw_text: 'Второй ход' }),
+    /failed before LLM/u);
+  const failed = events.find(({ event }) => event === 'turn.failed');
+  assert.equal(failed.llm, null);
 });

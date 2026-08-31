@@ -125,15 +125,18 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   const configHash = hashConfig(config);
   let responseData = null;
   let callError = null;
+  let requestSnapshot = null;
 
   try {
+    const requestBody = JSON.stringify(buildProviderRequestPayload(config, messages));
+    requestSnapshot = JSON.parse(requestBody);
     const response = await fetch(config.requestUrl, {
       method: 'POST',
       headers: {
         ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(buildProviderRequestPayload(config, messages)),
+      body: requestBody,
       signal: controller.signal
     });
 
@@ -149,7 +152,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
         startedAt,
         status: 'transport_error',
         error: callError,
-        configHash
+        configHash,
+        requestSnapshot
       }, telemetry);
     }
 
@@ -165,7 +169,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
           message: 'Provider returned an invalid response.',
           retryable: false
         },
-        configHash
+        configHash,
+        requestSnapshot
       }, telemetry);
     }
     const rawText = String(responseData?.choices?.[0]?.message?.content ?? '');
@@ -185,7 +190,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
             message: parsed.error,
             retryable: false
           },
-          configHash
+          configHash,
+          requestSnapshot
         }, telemetry);
       }
       return buildResult({
@@ -196,7 +202,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
         reasoningContent,
         parsedJson: parsed.data,
         usage: responseData?.usage ?? null,
-        configHash
+        configHash,
+        requestSnapshot
       }, telemetry);
     }
 
@@ -207,7 +214,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       rawText,
       reasoningContent,
       usage: responseData?.usage ?? null,
-      configHash
+      configHash,
+      requestSnapshot
     }, telemetry);
   } catch (error) {
     callError = {
@@ -220,7 +228,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       startedAt,
       status: 'transport_error',
       error: callError,
-      configHash
+      configHash,
+      requestSnapshot
     }, telemetry);
   } finally {
     clearTimeout(timeout);
@@ -242,6 +251,7 @@ function buildResult(base, telemetry) {
     durationMs: Math.max(0, Date.now() - base.startedAt),
     status: base.status,
     ...(base.error ? { error: base.error } : {}),
+    ...(base.requestSnapshot ? { request_snapshot: base.requestSnapshot } : {}),
     config_hash: base.configHash,
     output_contract_mode: base.config.outputContractMode
   };

@@ -60,7 +60,8 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       }
       emitDetail(telemetry, {
         scope, role_id, tier_id, request_identity, repair: isRepair,
-        request: { messages, overrides: effectiveOverrides },
+        request: { ...(result.request_snapshot ?? { messages }),
+          overrides: effectiveOverrides },
         response: {
           status: result.status,
           parsed_json: result.parsed_json ?? null,

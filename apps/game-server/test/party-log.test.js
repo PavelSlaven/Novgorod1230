@@ -8,6 +8,7 @@ import {
   createPartyLog,
   createPartyLoggingRoot
 } from '../src/infrastructure/filesystem/party-log.js';
+import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { readServerConfig } from '../src/config.js';
 
@@ -164,4 +165,66 @@ test('failed turn cannot reuse consumed LLM trace from previous turn', async () 
     /failed before LLM/u);
   const failed = events.find(({ event }) => event === 'turn.failed');
   assert.equal(failed.llm, null);
+});
+
+test('party log excludes custom provider credentials and endpoint', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-secret-'));
+  const apiKey = 'SECRET_SENTINEL';
+  const baseUrl = 'https://private.example.test/v1';
+  const originalFetch = globalThis.fetch;
+  let providerCall;
+  globalThis.fetch = async (url, init) => {
+    providerCall = { url: String(url), authorization: init.headers.Authorization };
+    return {
+      ok: true,
+      json: async () => ({ choices: [{ message: { content: '{"action":"look"}' } }] })
+    };
+  };
+  try {
+    const diagnostics = createLlmDiagnostics();
+    const runner = createLlmRoleRunnerAdapter({
+      settings: { providerSnapshot: () => ({
+        mode: 'custom', baseUrl, model: 'private-model', apiKey
+      }) },
+      telemetry: diagnostics.telemetry,
+      turnBudget: diagnostics.turnBudget
+    });
+    const writes = [];
+    const fileLog = createPartyLog({ directory });
+    const logged = createPartyLoggingRoot({
+      root: {
+        startNewGame: async () => ({ party_id: 'party-secret' }),
+        acknowledgeOpening: async () => ({ party_id: 'party-secret' }),
+        submitTurn: () => diagnostics.runTurn({
+          party_id: 'party-secret', request_id: 'turn-secret'
+        }, async () => {
+          await runner.run({
+            scope: 'turn_runtime', role_id: 'turn_step_planner',
+            request_identity: 'turn-secret:step-1',
+            messages: [{ role: 'user', content: 'Осмотреться' }]
+          });
+          return { party_id: 'party-secret', screen: {} };
+        }),
+        getPartyScreen: async () => ({ party_id: 'party-secret' })
+      },
+      partyLog: { append(...args) {
+        const write = fileLog.append(...args);
+        writes.push(write);
+        return write;
+      } },
+      llmDiagnostics: diagnostics
+    });
+
+    await logged.submitTurn('party-secret', { raw_text: 'Осмотреться' });
+    await new Promise(setImmediate);
+    await Promise.allSettled(writes);
+    const serialized = await readFile(join(directory, 'party-secret.jsonl'), 'utf8');
+
+    assert.equal(providerCall.authorization, `Bearer ${apiKey}`);
+    assert.equal(providerCall.url, `${baseUrl}/chat/completions`);
+    assert.equal(serialized.includes(apiKey), false);
+    assert.equal(serialized.includes(baseUrl), false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

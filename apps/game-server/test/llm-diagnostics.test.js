@@ -301,12 +301,16 @@ test('private party log report retains full LLM request and response', async () 
 
 test('private party log retains provider reasoning content', async () => {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => ({
-    ok: true,
-    json: async () => ({ choices: [{ message: {
-      content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
-    } }] })
-  });
+  let providerRequest;
+  globalThis.fetch = async (_url, init) => {
+    providerRequest = JSON.parse(init.body);
+    return {
+      ok: true,
+      json: async () => ({ choices: [{ message: {
+        content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
+      } }] })
+    };
+  };
   try {
     const diagnostics = createLlmDiagnostics();
     const runner = createLlmRoleRunnerAdapter({
@@ -321,6 +325,7 @@ test('private party log retains provider reasoning content', async () => {
       messages: [{ role: 'user', content: 'Осмотреться' }]
     }));
     const report = diagnostics.takeLogReport({ party_id: 'party-reasoning' });
+    assert.deepEqual(report.calls[0].request.messages, providerRequest.messages);
     assert.equal(report.calls[0].response.reasoning_content, 'hidden reasoning');
   } finally {
     globalThis.fetch = originalFetch;

@@ -299,6 +299,56 @@ test('private party log report retains full LLM request and response', async () 
     .includes('Осмотреться'), false);
 });
 
+test('private party log retains provider reasoning content', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => ({ choices: [{ message: {
+      content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
+    } }] })
+  });
+  try {
+    const diagnostics = createLlmDiagnostics();
+    const runner = createLlmRoleRunnerAdapter({
+      env: { DEEPSEEK_API_KEY: 'test-key' },
+      telemetry: diagnostics.telemetry,
+      turnBudget: diagnostics.turnBudget
+    });
+    await diagnostics.runTurn({ party_id: 'party-reasoning',
+      request_id: 'turn-reasoning' }, () => runner.run({
+      scope: 'turn_runtime', role_id: 'turn_step_planner',
+      request_identity: 'turn-reasoning:step-1',
+      messages: [{ role: 'user', content: 'Осмотреться' }]
+    }));
+    const report = diagnostics.takeLogReport({ party_id: 'party-reasoning' });
+    assert.equal(report.calls[0].response.reasoning_content, 'hidden reasoning');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('private reports preserve concurrent turns for one party', async () => {
+  const diagnostics = createLlmDiagnostics();
+  let finishFirst;
+  let finishSecond;
+  const firstGate = new Promise((resolve) => { finishFirst = resolve; });
+  const secondGate = new Promise((resolve) => { finishSecond = resolve; });
+  const first = diagnostics.runTurn({ party_id: 'party-concurrent',
+    request_id: 'turn-1' }, () => firstGate);
+  const second = diagnostics.runTurn({ party_id: 'party-concurrent',
+    request_id: 'turn-2' }, () => secondGate);
+
+  finishSecond();
+  await second;
+  finishFirst();
+  await first;
+
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-concurrent',
+    request_id: 'turn-1' }).request_id, 'turn-1');
+  assert.equal(diagnostics.takeLogReport({ party_id: 'party-concurrent' })
+    .request_id, 'turn-2');
+});
+
 test('developer report route is unavailable outside developer mode', async (t) => {
   const report = buildLlmTurnReport({ party_id: 'party-1', request_id: 'turn-1' });
   const root = { getLlmTurnReport: () => report };

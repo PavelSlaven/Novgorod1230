@@ -9,6 +9,12 @@ import {
   createPartyLoggingRoot
 } from '../src/infrastructure/filesystem/party-log.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
+import { readServerConfig } from '../src/config.js';
+
+test('server config exposes LOG_DIRECTORY for party logs', () => {
+  assert.equal(readServerConfig({ LOG_DIRECTORY: 'D:\\game-logs' }).logDirectory,
+    'D:\\game-logs');
+});
 
 test('party log records complete player flow and detailed LLM trace in one JSONL file', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-'));

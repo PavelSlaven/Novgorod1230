@@ -65,6 +65,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
           status: result.status,
           parsed_json: result.parsed_json ?? null,
           raw_text: result.raw_text ?? null,
+          reasoning_content: result.reasoning_content ?? null,
           error: result.error ?? null,
           provider: result.provider ?? null,
           model: result.model ?? null,

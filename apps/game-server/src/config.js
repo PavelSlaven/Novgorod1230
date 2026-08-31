@@ -29,6 +29,7 @@ export function readServerConfig(env = process.env) {
     host,
     port,
     maxBodyBytes,
+    logDirectory: text(env.LOG_DIRECTORY) || null,
     runtimeRoute,
     cutoverStage: strictInteger(
       env.RUS_CUTOVER_STAGE,

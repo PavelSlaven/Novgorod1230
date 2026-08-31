@@ -169,6 +169,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       }, telemetry);
     }
     const rawText = String(responseData?.choices?.[0]?.message?.content ?? '');
+    const reasoningContent = responseData?.choices?.[0]?.message?.reasoning_content;
     if (config.parseJson) {
       const parsed = explainJsonObjectParse(rawText);
       if (!parsed.ok) {
@@ -177,6 +178,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
           startedAt,
           status: 'parse_error',
           rawText,
+          reasoningContent,
           usage: responseData?.usage ?? null,
           error: {
             code: 'json_parse_failed',
@@ -191,6 +193,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
         startedAt,
         status: 'ok',
         rawText,
+        reasoningContent,
         parsedJson: parsed.data,
         usage: responseData?.usage ?? null,
         configHash
@@ -202,6 +205,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       startedAt,
       status: 'ok',
       rawText,
+      reasoningContent,
       usage: responseData?.usage ?? null,
       configHash
     }, telemetry);
@@ -226,6 +230,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
 function buildResult(base, telemetry) {
   const result = {
     raw_text: base.rawText ?? '',
+    ...(typeof base.reasoningContent === 'string'
+      ? { reasoning_content: base.reasoningContent } : {}),
     ...(base.parsedJson !== undefined ? { parsed_json: base.parsedJson } : {}),
     ...(base.usage ? { usage: base.usage } : {}),
     provider: base.config.provider,

@@ -36,7 +36,9 @@ const publicRoot = Object.freeze({
 });
 const root = createPartyLoggingRoot({
   root: publicRoot,
-  partyLog: createPartyLog({ directory: resolve(here, '../../../logs') }),
+  partyLog: createPartyLog({
+    directory: config.logDirectory || resolve(here, '../../../logs')
+  }),
   llmDiagnostics,
   metadata: Object.freeze({
     server: productionRoot.health(),

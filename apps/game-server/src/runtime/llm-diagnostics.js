@@ -89,8 +89,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       } finally {
         const report = buildLlmTurnReport({ ...turn, turn_duration_ms: Math.max(0, now() - turn.started_at) });
         reports.delete(turn.party_id); reports.set(turn.party_id, report);
-        logReports.delete(turn.party_id);
-        logReports.set(turn.party_id, Object.freeze({ ...report, calls: Object.freeze([...turn.details]) }));
+        const queue = logReports.get(turn.party_id) ?? []; queue.push(Object.freeze({ ...report, calls: Object.freeze([...turn.details]) })); logReports.set(turn.party_id, queue);
         while (reports.size > maxReports) { const oldest = reports.keys().next().value; reports.delete(oldest); logReports.delete(oldest); }
       }
     },
@@ -99,7 +98,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       const requestId = text(request_id);
       return requestId === '' || report?.request_id === requestId ? report : null;
     },
-    takeLogReport({ party_id, request_id } = {}) { const partyId = text(party_id); const report = logReports.get(partyId) ?? null; const requestId = text(request_id); if (report && (requestId === '' || report.request_id === requestId)) logReports.delete(partyId); return requestId === '' || report?.request_id === requestId ? report : null; }
+    takeLogReport(input = {}) { return takeReport(logReports, input); }
   });
 }
 
@@ -296,3 +295,4 @@ function rate(value, total) { return total === 0 ? 0 : value / total; }
 function nonNegative(value) { return Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null; }
 function number(value) { return nonNegative(value) ?? 0; }
 function text(value) { return String(value ?? '').trim(); }
+function takeReport(store, { party_id, request_id } = {}) { const partyId = text(party_id); const queue = store.get(partyId) ?? []; const requestId = text(request_id); const index = requestId ? queue.findIndex((report) => report.request_id === requestId) : 0; if (index < 0 || !queue[index]) return null; const [report] = queue.splice(index, 1); if (!queue.length) store.delete(partyId); return report; }

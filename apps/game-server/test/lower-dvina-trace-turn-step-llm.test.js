@@ -239,19 +239,20 @@ test('turn step planner assembles exact domain operation and preserves independe
     'Попросить спутника пойти со мной.');
 });
 
-test('turn step adapter restores one admitted raw operation and drops model extras', async () => {
-  const candidate = { op: 'request_container_access', actor_ref: 'actor_mikula',
-    container_ref: 'container:road-bag', access_kind: 'open' };
+test('turn step adapter restores one admitted raw operation without model-owned refs', async () => {
+  const candidate = { op: 'request_item_use', actor_ref: 'actor_mikula',
+    item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };
   const input = request({ available_domain_operations: [candidate],
     player_safe_state: { visible_entities: [
-      { entity_ref: 'container:road-bag' }
+      { entity_ref: 'container:road-bag' }, { entity_ref: 'npc:zhdanko' }
     ] } });
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run() { return { output: {
       interpretation: { player_goal: 'Открыть сумку.',
         grounded_attempt: 'Открыть сумку.', adaptation: 'literal' },
       resolution: 'domain_request', operation_choice: null,
-      operations: [{ ...candidate, target_refs: ['container:road-bag'] }],
+      operations: [{ ...candidate, target_refs: ['npc:zhdanko'],
+        description: 'Забрать сумку.' }],
       check: null, continuation: null, clarification: null,
       reason_code: 'container_access', reason: 'Сумка доступна.'
     } }; }
@@ -262,19 +263,21 @@ test('turn step adapter restores one admitted raw operation and drops model extr
 });
 
 test('turn step adapter does not guess between duplicate admitted raw operations', () => {
-  const operation = { op: 'request_container_access', actor_ref: 'actor_mikula',
-    container_ref: 'container:road-bag', access_kind: 'open' };
+  const operation = { op: 'request_item_use', actor_ref: 'actor_mikula',
+    item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };
   const input = request();
   const plan = assembleTurnStepPlan({
     interpretation: { player_goal: 'Открыть сумку.',
       grounded_attempt: 'Открыть сумку.', adaptation: 'literal' },
     resolution: 'domain_request', operation_choice: null,
-    operations: [{ ...operation, target_refs: ['container:road-bag'] }],
+    operations: [{ ...operation, target_refs: ['npc:zhdanko'],
+      description: 'Забрать сумку.' }],
     check: null, continuation: null, clarification: null,
     reason_code: 'container_access', reason: 'Сумка доступна.'
   }, input, [
     { choice_id: 'choice_1', operation },
-    { choice_id: 'choice_2', operation }
+    { choice_id: 'choice_2', operation: { ...operation,
+      target_refs: ['npc:zhdanko'] } }
   ]);
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });

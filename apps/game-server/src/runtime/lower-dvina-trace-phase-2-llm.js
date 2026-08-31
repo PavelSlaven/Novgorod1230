@@ -149,7 +149,7 @@ export function assembleTurnStepPlan(choice, request,
     reason: semantic.reason
   };
 }
-function selectedTurnStepOperation(choice, operationChoices) { const byId = operationChoices.find(({ choice_id }) => choice_id === choice.operation_choice); if (byId != null || choice.operation_choice != null || !Array.isArray(choice.operations) || choice.operations.length !== 1) return byId; const raw = choice.operations[0]; const matches = operationChoices.filter(({ operation }) => Object.entries(operation).every(([key, value]) => isDeepStrictEqual(raw?.[key], value))); return matches.length === 1 ? matches[0] : undefined; }
+function selectedTurnStepOperation(choice, operationChoices) { const byId = operationChoices.find(({ choice_id }) => choice_id === choice.operation_choice); if (byId != null || choice.operation_choice != null || !Array.isArray(choice.operations) || choice.operations.length !== 1) return byId; const raw = choice.operations[0]; const matches = operationChoices.filter(({ operation }) => Object.entries(operation).filter(([, value]) => value == null || typeof value !== 'object').every(([key, value]) => isDeepStrictEqual(raw?.[key], value))); return matches.length === 1 ? matches[0] : undefined; }
 function preparedFollowupPrompt(candidates) {
   return [
     'prepared_followup_candidates is a closed code-owned mapping:',

@@ -7,6 +7,8 @@ import {
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { projectLowerDvinaTraceScreenPanels } from
   '../src/infrastructure/postgres/lower-dvina-trace-screen-panels.js';
+import { buildLowerDvinaTracePendingScreen } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-presentation.js';
 
 function payload(overrides = {}) {
   return {
@@ -108,6 +110,39 @@ test('post-commit and historical screens share the active people projection', ()
     Object.keys(postCommit.panels.people.data.active_interlocutor).sort(),
     ['display_label', 'entity_ref']
   );
+});
+
+test('combat presentation replay preserves only the public response boundary', () => {
+  const loopTrace = { step_traces: [{ player_response_boundary: true,
+    approved_plan: { resolution: 'domain_request', operations: [{
+      op: 'request_combat', participant_ref: 'hidden-combat-participant' }] } }] };
+  const visiblePayload = {
+    perceived_scene: visibleContext().visible_scene,
+    perceived_changes: [], sensory_details: [],
+    visible_npcs: visibleContext().visible_npc,
+    visible_objects: [], known_context: [], uncertainties: []
+  };
+  const state = payload({ last_turn: {
+    ...payload().last_turn, turn_step_commit: { loop_trace: loopTrace }
+  } });
+  const pending = buildLowerDvinaTracePendingScreen({ state,
+    turnId: 'turn-2', nextVersion: 3, turnNumber: 2,
+    visibleEnvelope: { package_id: 'visible-1',
+      package_digest: 'sha256:visible', visible_payload: visiblePayload },
+    turnStepTrace: loopTrace });
+  const replay = () => rebuildPhase2HistoricalScreen({ payload: state,
+    turnId: 'turn-2', visiblePayload, narrationOutput: {
+      package_digest: 'sha256:visible', flow_result: narration()
+    }, narrationOutputDigest: 'sha256:narration' });
+  const ready = replay();
+  assert.deepEqual(ready, replay());
+  assert.deepEqual(ready.combat_state, pending.combat_state);
+  assert.deepEqual(ready.combat_state, {
+    status: 'paused_for_player', player_response_required: true });
+  assert.deepEqual(Object.keys(ready.combat_state).sort(),
+    ['player_response_required', 'status']);
+  assert.equal(JSON.stringify(ready.combat_state)
+    .includes('hidden-combat-participant'), false);
 });
 
 test('nearby NPC alone does not become an interlocutor', () => {

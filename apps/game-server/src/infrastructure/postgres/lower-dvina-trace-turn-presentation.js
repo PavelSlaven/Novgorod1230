@@ -1,6 +1,7 @@
 import {
   phase2ScreenDigest,
-  phase2VisibleContextFromPayload
+  phase2VisibleContextFromPayload,
+  turnStepPublicCombatState
 } from './lower-dvina-trace-phase-2-projection.js';
 
 export function buildLowerDvinaTracePendingScreen({
@@ -11,7 +12,7 @@ export function buildLowerDvinaTracePendingScreen({
   visibleEnvelope,
   turnStepTrace = null
 }) {
-  const combatState = turnStepCombatState(turnStepTrace);
+  const combatState = turnStepPublicCombatState(turnStepTrace);
   const screen = {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',
@@ -34,14 +35,4 @@ export function buildLowerDvinaTracePendingScreen({
   };
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
-}
-
-function turnStepCombatState(trace) {
-  const combatStep = trace?.step_traces?.find((step) =>
-    step?.approved_plan?.resolution === 'domain_request'
-    && step.approved_plan.operations?.some(({ op }) => op === 'request_combat'));
-  if (typeof combatStep?.player_response_boundary !== 'boolean') return null;
-  return combatStep.player_response_boundary
-    ? { status: 'paused_for_player', player_response_required: true }
-    : { status: 'ended', player_response_required: false };
 }

@@ -213,6 +213,8 @@ export function buildPhase2ReadyScreen({
   narration,
   narrationOutputDigest
 }) {
+  const combatState = turnStepPublicCombatState(
+    payload.last_turn?.turn_step_commit?.loop_trace);
   const screen = projectLowerDvinaTraceScreenPanels({
     payload,
     screen: {
@@ -235,6 +237,7 @@ export function buildPhase2ReadyScreen({
         payload.opening_identity.opening_screen_digest,
       schema: 'lower_dvina_trace_turn_screen',
       screen_status: 'ready',
+      ...(combatState == null ? {} : { combat_state: combatState }),
       current_projection_anchor: {
         committed_state_version:
           payload.party_state.state_version,
@@ -247,6 +250,16 @@ export function buildPhase2ReadyScreen({
   });
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
+}
+
+export function turnStepPublicCombatState(trace) {
+  const combatStep = trace?.step_traces?.find((step) =>
+    step?.approved_plan?.resolution === 'domain_request'
+    && step.approved_plan.operations?.some(({ op }) => op === 'request_combat'));
+  if (typeof combatStep?.player_response_boundary !== 'boolean') return null;
+  return combatStep.player_response_boundary
+    ? { status: 'paused_for_player', player_response_required: true }
+    : { status: 'ended', player_response_required: false };
 }
 
 export function phase2VisibleContextFromPayload(payload) {

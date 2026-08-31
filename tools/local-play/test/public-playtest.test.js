@@ -25,7 +25,7 @@ test('default seed passes deterministic causal preflight and branch 0 fails befo
 });
 test('fire start requires causal evidence before the world-process follow-up', () => { const [start, affect] = PUBLIC_PLAYTEST_MANIFEST; assert.equal(start.id, 'fire-start'); assert.equal(start.expect, 'local_fire_started'); assert.equal(affect.id, 'fire-affect'); assert.deepEqual(affect.required_role_ids, ['turn_step_planner', 'world_process_step']); });
 test('ordinary narration gates live writer then auditor, never repair', () => { const expected = ['gameplay_narrator', 'gameplay_narrator_auditor']; const ordinary = ['ordinary-use', 'carry'].map((id) => PUBLIC_PLAYTEST_MANIFEST.find((turn) => turn.id === id)); for (const turn of ordinary) assert.deepEqual(turn.required_waterfall, expected); const report = { observed_role_ids: [], turns: [{ turn_id: 'ordinary', scenario_class: 'free_form', status: 200, required_waterfall: expected, role_ids: expected, llm: { turn_duration_ms: 1, aggregate: { repair_calls: 0 }, waterfall: expected.map((role) => ({ role })) } }] }; assert.equal(roleGate(report).gaps.some((gap) => gap.includes('missing live waterfall')), false); report.turns[0].llm.waterfall = report.turns[0].llm.waterfall.slice(0, 1); assert.ok(roleGate(report).gaps.includes('missing live waterfall: ordinary: gameplay_narrator_auditor')); });
-test('repair paths remain deterministic proofs, never live waterfall claims', () => { assert.deepEqual(DETERMINISTIC_PROOFS.map(({ id, proof_kind, test }) => [id, proof_kind, test]), [['impossible-action-grounding', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-step-llm.test.js#impossible jump and absent spaceship plans stay grounded model contracts/jump'], ['narration-failure-after-factual-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-phase-2.test.js#narration failure after factual commit returns its pending public result'], ['deadline-exhaustion-before-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-budget-boundary.test.js#pre-commit reserve blocks phase 2 repository commit'], ['narration-localized-semantic-repair', 'deterministic_focused_test', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'], ['cross-workflow-gameplay-repairs', 'deterministic_focused_test', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider']]); assert.equal(PUBLIC_PLAYTEST_MANIFEST.some((turn) => turn.required_waterfall?.some((role) => role.includes('repair'))), false); const safe = sanitizeReport({ deterministic_proofs: DETERMINISTIC_PROOFS, gates: { pass: true, gaps: [], live_waterfalls: true, deterministic_proofs: DETERMINISTIC_PROOFS } }); assert.equal(safe.gates.live_waterfalls, true); assert.deepEqual(safe.gates.deterministic_proofs, DETERMINISTIC_PROOFS); assert.equal(JSON.stringify(safe.gates).includes('live_observed'), false); });
+test('repair paths remain deterministic proofs, never live waterfall claims', () => { assert.deepEqual(DETERMINISTIC_PROOFS.map(({ id, proof_kind, test }) => [id, proof_kind, test]), [['impossible-action-grounding', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-step-llm.test.js#impossible jump and absent spaceship plans stay grounded model contracts/jump'], ['narration-failure-after-factual-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-phase-2.test.js#narration failure after factual commit returns its pending public result'], ['deadline-exhaustion-before-commit', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-turn-budget-boundary.test.js#pre-commit reserve blocks phase 2 repository commit'], ['narration-localized-semantic-repair', 'deterministic_focused_test', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'], ['cross-workflow-gameplay-repairs', 'deterministic_focused_test', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider'], ['npc-combat-production-boundary', 'deterministic_focused_test', 'apps/game-server/test/lower-dvina-trace-npc-combat-llm.test.js#combat model assembles code-owned intent DTO for primary and repair']]); assert.equal(PUBLIC_PLAYTEST_MANIFEST.some((turn) => turn.required_waterfall?.some((role) => role.includes('repair'))), false); const safe = sanitizeReport({ deterministic_proofs: DETERMINISTIC_PROOFS, gates: { pass: true, gaps: [], live_waterfalls: true, deterministic_proofs: DETERMINISTIC_PROOFS } }); assert.equal(safe.gates.live_waterfalls, true); assert.deepEqual(safe.gates.deterministic_proofs, DETERMINISTIC_PROOFS); assert.equal(JSON.stringify(safe.gates).includes('live_observed'), false); });
 test('sanitizer uses strict public and diagnostic allowlists', () => { const safe = sanitizeReport({ api_key: 'secret', git: cleanGit(), public_responses: { turn: { status: 200, ok: true, data: { party_id: 'p', prose: 'hidden', turn: { turn_id: 't', mode: 'attention', summary: { outcome: 'not-a-code' } } } } }, turns: [{ turn_id: 'x', public_evidence: { expected: 'blue_wool_found', pass: false, prose: 'hidden' }, response: { status: 200, ok: true, data: { party_id: 'p', message: 'hidden' } }, llm: { turn_duration_ms: 4, turn_deadline_ms: 10, failure: { code: 'TRACE_TURN_STEP_WRITE_PLAN_REJECTED', detail_code: 'generated_schema_mismatch', stage: 'write_plan_invariant', reason: 'hidden_party_42' }, waterfall: [{ role: 'turn_step_planner', duration_ms: 4, provider_payload: 'hidden' }], aggregate: { llm_calls: 1, deadline_exceeded: true, secret: 'hidden' } } }] }); assert.equal(safe.public_responses.turn.domain_outcome_code, undefined); assert.deepEqual(safe.turns[0].public_evidence, { expected: 'blue_wool_found', pass: false }); assert.equal(safe.turns[0].llm.aggregate.deadline_exceeded, true); assert.equal(safe.turns[0].llm.failure, null); assert.equal(JSON.stringify(safe).includes('hidden_party_42'), false); assert.equal(safe.turns[0].llm.waterfall[0].provider_payload, undefined); assert.equal(safe.turns[0].response.message, undefined); });
 test('sanitizer retains only allowlisted narration failure categories', () => {
   const safe = sanitizeReport({ turns: [{ llm: { failure: {
@@ -77,12 +77,34 @@ test('combat branch accepts only committed ready typed public states', () => {
 });
 test('budget, pending presentation, and missing combat role remain failures', () => {
   const gate = roleGate({ observed_role_ids: [], turns: [{ turn_id: 'combat',
-    status: 200, presentation_pending: true, llm: { turn_duration_ms: 1,
+    status: 200, presentation_pending: true,
+    required_role_ids: ['npc_combat_decider'], llm: { turn_duration_ms: 1,
       aggregate: { budget_exhausted: true } } }] });
   assert.ok(gate.gaps.includes('budget exhausted: combat'));
   assert.ok(gate.gaps.includes('presentation pending: combat'));
-  assert.ok(gate.gaps.includes('required role not observed: npc_combat_decider'));
+  assert.ok(gate.gaps.includes(
+    'missing compound prerequisite: combat: npc_combat_decider'));
 });
+test('legal pre-combat branch uses deterministic combat evidence and stops',
+  async () => {
+    const manifest = testManifest();
+    const bodies = [];
+    const report = await runPublicPlaytest({ manifest,
+      impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart,
+      fetchImpl: branchFetch(manifest, 'precombat_unreached', bodies),
+      now: counter(), log() {} });
+    const branchIndex = manifest.findIndex(({ branch }) => branch != null);
+    assert.equal(report.branch_outcome, 'precombat_unreached');
+    assert.equal(report.gates.pass, true);
+    assert.equal(report.turns.length, branchIndex + 1);
+    assert.equal(report.observed_role_ids.includes('npc_combat_decider'), false);
+    assert.equal(report.deterministic_proofs.some(({ id }) =>
+      id === 'npc-combat-production-boundary'), true);
+    for (const skipped of [...manifest.slice(branchIndex + 1), IMPOSSIBLE_PROBE]) {
+      assert.equal(bodies.some(({ raw_text: raw }) => raw === skipped.raw_text),
+        false);
+    }
+  });
 test('ongoing combat is a legal release branch and skips Phase 9', async () => {
   const manifest = testManifest();
   const bodies = [];
@@ -229,16 +251,22 @@ function testManifest() { return PUBLIC_PLAYTEST_MANIFEST.map(({ expect: _expect
 function evidenceFirstManifest() { const manifest = testManifest(); return [{ ...manifest[0], expect: 'blue_wool_found' }, ...manifest.slice(1)]; }
 function surrenderFirstManifest() { const surrender = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'surrender'); return [surrender, ...PUBLIC_PLAYTEST_MANIFEST.filter(({ id }) => id !== 'surrender')]; }
 function branchFetch(manifest, outcome, bodies) {
+  const precombatIndex = manifest.findIndex(({ branch }) => branch != null);
   const combatIndex = manifest.findLastIndex(
     ({ scenario_class: scenarioClass }) => scenarioClass === 'combat');
-  const executed = outcome === 'ongoing_combat'
-    ? manifest.slice(0, combatIndex + 1) : [...manifest, IMPOSSIBLE_PROBE];
+  const executed = outcome === 'precombat_unreached'
+    ? manifest.slice(0, precombatIndex + 1)
+    : outcome === 'ongoing_combat'
+      ? manifest.slice(0, combatIndex + 1) : [...manifest, IMPOSSIBLE_PROBE];
   const state = outcome === 'ongoing_combat'
     ? { status: 'paused_for_player', player_response_required: true }
     : { status: 'ended', player_response_required: false };
   const responses = [health(), catalog(), newGame(), ack()];
   for (const [index, entry] of executed.entries()) {
-    responses.push(turn([], index === combatIndex ? state : null));
+    const optionId = entry.branch == null ? null
+      : outcome === 'precombat_unreached' ? 'direct_attempt_not_achieved'
+        : entry.branch.continue_option_id;
+    responses.push(turn([], index === combatIndex ? state : null, optionId));
     const roles = [...new Set([...(entry.required_role_ids ?? []),
       ...(entry.required_waterfall ?? []),
       ...(entry.expectedFailure ? ['turn_step_planner'] : [])])];
@@ -258,7 +286,7 @@ function catalog() { return { ok: true, status: 200, json: json({ scenarios: [{ 
 function newGame(partyId = 'party-1') { return { ok: true, status: 201, json: json({ party_id: partyId }) }; }
 function ack() { return { ok: true, status: 200, json: json({ party_id: 'party-1' }) }; }
 function traceTurn() { return { status: 200, ok: true, data: { party_id: 'party-1', state_version: 7, option_id: 'wait', screen: { turn_id: 'turn-trace-1', turn_number: 1, screen_status: 'ready' } } }; }
-function turn(visibleChanges = [], combatState = null) { return { ok: true, status: 200, json: json({ party_id: 'party-1', turn: { turn_id: 'turn-1', status: 'resolved', mode: 'attention' }, screen: { schema: 'turn_screen', version: 1, screen_status: 'ready', ...(combatState == null ? {} : { combat_state: combatState }), visible_context: { visible_changes: visibleChanges } } }) }; }
+function turn(visibleChanges = [], combatState = null, optionId = null) { return { ok: true, status: 200, json: json({ party_id: 'party-1', ...(optionId == null ? {} : { selected_action_option_id: optionId }), turn: { turn_id: 'turn-1', status: 'resolved', mode: 'attention' }, screen: { schema: 'turn_screen', version: 1, screen_status: 'ready', ...(combatState == null ? {} : { combat_state: combatState }), visible_context: { visible_changes: visibleChanges } } }) }; }
 function finalScreen(combatState = null) { return { ok: true, status: 200,
   json: json({ party_id: 'party-1', screen: { schema: 'turn_screen',
     version: 1, screen_status: 'ready', ...(combatState == null ? {}

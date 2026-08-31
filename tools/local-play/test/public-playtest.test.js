@@ -105,6 +105,17 @@ test('legal pre-combat branch uses deterministic combat evidence and stops',
         false);
     }
   });
+test('unknown pre-combat option fails instead of becoming a legal branch',
+  async () => {
+    const manifest = testManifest();
+    await assert.rejects(runPublicPlaytest({ manifest,
+      impossibleProbe: IMPOSSIBLE_PROBE, git: cleanGit, start: localStart,
+      fetchImpl: branchFetch(manifest, 'precombat_unreached', [],
+        'unexpected_committed_option'),
+      now: counter(), log() {} }), {
+        code: 'PUBLIC_PLAYTEST_BRANCH_INVALID'
+      });
+  });
 test('ongoing combat is a legal release branch and skips Phase 9', async () => {
   const manifest = testManifest();
   const bodies = [];
@@ -250,7 +261,7 @@ function cleanGit() { return { head: 'a'.repeat(40), dirty: false }; }
 function testManifest() { return PUBLIC_PLAYTEST_MANIFEST.map(({ expect: _expect, ...turn }, index) => ({ ...turn, id: `probe-${index}` })); }
 function evidenceFirstManifest() { const manifest = testManifest(); return [{ ...manifest[0], expect: 'blue_wool_found' }, ...manifest.slice(1)]; }
 function surrenderFirstManifest() { const surrender = PUBLIC_PLAYTEST_MANIFEST.find(({ id }) => id === 'surrender'); return [surrender, ...PUBLIC_PLAYTEST_MANIFEST.filter(({ id }) => id !== 'surrender')]; }
-function branchFetch(manifest, outcome, bodies) {
+function branchFetch(manifest, outcome, bodies, branchOptionId = null) {
   const precombatIndex = manifest.findIndex(({ branch }) => branch != null);
   const combatIndex = manifest.findLastIndex(
     ({ scenario_class: scenarioClass }) => scenarioClass === 'combat');
@@ -264,7 +275,8 @@ function branchFetch(manifest, outcome, bodies) {
   const responses = [health(), catalog(), newGame(), ack()];
   for (const [index, entry] of executed.entries()) {
     const optionId = entry.branch == null ? null
-      : outcome === 'precombat_unreached' ? 'direct_attempt_not_achieved'
+      : outcome === 'precombat_unreached'
+        ? branchOptionId ?? entry.branch.alternate_option_id
         : entry.branch.continue_option_id;
     responses.push(turn([], index === combatIndex ? state : null, optionId));
     const roles = [...new Set([...(entry.required_role_ids ?? []),

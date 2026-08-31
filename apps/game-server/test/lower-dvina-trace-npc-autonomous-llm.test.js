@@ -102,6 +102,39 @@ test('autonomous adapter uses isolated plan and repair roles', async () => {
   });
 });
 
+test('autonomous repair receives closed semantic activity values', async () => {
+  const calls = [];
+  const sourceRequest = formalRequest();
+  const output = {
+    interpretation: { npc_goal: 'остаться настороже',
+      grounded_attempt: 'наблюдать за берегом', adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { duration_class: 'brief', effort: 'light' },
+    operations: [], check: null, reason_code: 'keep_watch',
+    reason: 'Нужно следить за берегом.'
+  };
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run(call) { calls.push(call); return { output }; } }
+  });
+
+  assert.equal(validateNpcStepPlan(await model(sourceRequest), sourceRequest),
+    true);
+  assert.equal(validateNpcStepPlan(await model(sourceRequest, { repair: {
+    original_output: { ...output,
+      activity: { duration_class: 'half_hour', effort: 'low' } },
+    validation_errors: [{ code: 'npc_step_activity_invalid',
+      path: '$.activity' }]
+  } }), sourceRequest), true);
+
+  for (const call of calls) {
+    assert.match(call.messages[0].content,
+      /"duration_class":"<moment\|brief\|short\|extended>"/u);
+    assert.match(call.messages[0].content,
+      /"effort":"<none\|light\|moderate\|heavy\|extreme>"/u);
+  }
+  assert.equal(calls[1].role_id, 'npc_autonomous_decider_format_repair');
+});
+
 test('autonomous adapter builds the deterministic plan around one semantic choice', async () => {
   const scopedRequest = formalRequest({ decision_scope: {
       mode: 'autonomous_action',

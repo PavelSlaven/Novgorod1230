@@ -18,8 +18,8 @@ function choiceShape(request) {
       ? '<direct|generic_check|domain_request>'
       : '<direct|domain_request>',
     goal_result: '<direct only: achieved|partially_achieved|not_achieved>',
-    activity: { duration_class: '<direct/generic only>',
-      effort: '<direct/generic only>' },
+    activity: { duration_class: '<moment|brief|short|extended>',
+      effort: '<none|light|moderate|heavy|extreme>' },
     operations: [], operation_choice: '<domain choice_id or null>', check: null,
     reason_code: '<reason_code>', reason: '<brief subjective reason>'
   });

@@ -1,21 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
 import { newDb, DataType } from 'pg-mem';
-import {
-  createPostgresPools,
-  runPartyRuntimeMigrations,
-  createPostgresSessionStore,
-  createPostgresWorldBaseReader,
-  createPostgresStage25Ports,
-  createPostgresPartyStore,
-  createProductionLlmRoleRunner
-} from '@rus/game-server/production-v2-migration-source';
-import {
-  createProductionV2RollbackSourceRoot
-} from '../../apps/game-server/src/composition/production-v2-rollback-source.js';
+import { createPostgresPools } from '../../apps/game-server/src/infrastructure/postgres/pools.js';
+import { runPartyRuntimeMigrations } from '../../apps/game-server/src/infrastructure/postgres/migrations.js';
+import { createPostgresSessionStore } from '../../apps/game-server/src/infrastructure/postgres/session-store.js';
+import { createPostgresWorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/world-base.js';
+import { createPostgresStage25Ports } from '../../apps/game-server/src/infrastructure/postgres/stage25.js';
+import { createPostgresPartyStore } from '../../apps/game-server/src/infrastructure/postgres/party-store.js';
+import { createProductionLlmRoleRunner } from '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { buildPartyRuntimeV2WritePlan } from '@rus/new-game/stages/stage-24/compat';
 import { materializeStage25PhysicalPlan } from '@rus/new-game/stages/stage-25/compat';
 import { canonicalDigest, issueBoundedDecisionRequest, materializeWorldInstances, repairWorldInstances, validateBoundedDecisionResult } from '@rus/materialization';
@@ -328,35 +321,4 @@ test('production autonomous commit verifies version pins, digests and determinis
   await assert.rejects(() => runAutonomousUpdates({ registry, partyId: 'party-auto', baseState: persistedState, stateVersion: 1, trigger: { kind: 'clock_tick', at: '2030-01-01T01:00:00Z' }, catalogPins: { ...pins, world_revision_id: 'other-revision' }, commit: (update) => store.commitAutonomousUpdate(update) }), (error) => error.code === 'AUTONOMOUS_VERSION_PINS_MISMATCH');
   await assert.rejects(() => runAutonomousUpdates({ registry, partyId: 'party-auto', baseState: { ...persistedState, existing: false }, stateVersion: 1, trigger: { kind: 'clock_tick', at: '2030-01-01T02:00:00Z' }, catalogPins: pins, commit: (update) => store.commitAutonomousUpdate(update) }), (error) => error.code === 'AUTONOMOUS_BASE_SNAPSHOT_MISMATCH');
   await pool.end();
-});
-
-test('builtin production composition runs with PostgreSQL-backed session and delivery state', async (t) => {
-  const { Pool } = createMemoryPostgres();
-  const provider = await createProviderServer(t);
-  const here = dirname(fileURLToPath(import.meta.url));
-  const bindings = resolve(here, '../fixtures/runtime-bindings/production-bindings.js');
-  const env = {
-    RUS_WORLD_DATABASE_URL: 'postgres://memory',
-    RUS_PARTY_DATABASE_URL: 'postgres://memory',
-    RUS_RUNTIME_BINDINGS_MODULE: bindings,
-    DEEPSEEK_API_KEY: 'test-key',
-    DEEPSEEK_BASE_URL: provider.baseUrl
-  };
-  const root = await createProductionV2RollbackSourceRoot({
-    env,
-    PoolClass: Pool,
-    config: { runtimeBindingsModule: bindings, runMigrations: true, probeProvider: true, requireRuntimeCatalog: false },
-    now: () => '2026-07-12T12:00:00.000Z'
-  });
-  t.after(() => root.close());
-  const health = root.health();
-  assert.equal(health.composition, 'production');
-  assert.equal(health.dependencies.world_database.ok, true);
-  assert.equal(health.dependencies.provider.ok, true);
-  const started = await root.startNewGame({ start_text: 'Начать в Новгороде', request_id: 'req-prod-1' });
-  assert.equal(started.screen.schema, 'first_game_screen');
-  await root.acknowledgeOpening(started.party_id, { client_ack_id: 'ack-prod-1' });
-  const turn = await root.submitTurn(started.party_id, { raw_text: 'Осматриваюсь' });
-  assert.equal(turn.screen.schema, 'turn_screen');
-  assert.equal((await root.getPartyScreen(started.party_id)).turn_number, 1);
 });

@@ -243,7 +243,8 @@ export async function prepareCombatExchange(input = {}) {
     exchange, session_before: session, session_after: resolvedSession,
     working_state_after: perceived?.working_state ?? state, check_results: results.checks,
     harm_packages: results.harms, body_transitions: results.body,
-    item_transitions: results.items, position_transitions: results.positions,
+    item_transitions: results.items.map(publicTransitionResult),
+    position_transitions: results.positions.map(publicTransitionResult),
     decision_results: perceived?.decision_results ?? [],
     decision_records: perceived?.decision_records ?? [],
     player_boundary: perceived?.player_boundary ?? null,
@@ -251,6 +252,12 @@ export async function prepareCombatExchange(input = {}) {
     blocked_descriptors: blockedDescriptors,
     meaningful_descriptors: meaningfulDescriptors,
     temporal_advance_results: temporalAdvanceResults }});
+}
+
+function publicTransitionResult(result) {
+  if (result == null) return result;
+  const { working_state: _workingState, ...transition } = result;
+  return transition;
 }
 
 function validateTemporalSlice(value, planned) {

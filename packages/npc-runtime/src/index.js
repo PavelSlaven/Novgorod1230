@@ -16,6 +16,7 @@ export {
   buildConversationContributionPlan,
   buildConversationSession,
   buildConversationStatementEvent,
+  diagnoseConversationPlanDominantAct,
   buildNpcConversationResponseRequest,
   buildPlayerConversationContributionPlan,
   buildPlayerConversationInput,
@@ -36,6 +37,7 @@ export {
   projectNpcSafeResourceSnapshots,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,
+  diagnoseNpcStepPlan,
   validateNpcActionDecisionRequest,
   validateNpcSemanticDecisionTrace,
   validateNpcStepPlan

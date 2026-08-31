@@ -26,6 +26,8 @@ and adds no second transaction owner.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
 - Владеет одним server-side in-memory LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Custom OpenAI-compatible base URL/model/key применяются атомарно к новым calls через `@rus/llm-runtime`; API key не входит в read model, persistence, save/replay или telemetry gameplay.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
+- Владеет одним logical context для `submitTurn`: 30 с на весь ход, из них до 25 с на критический LLM path и 5 с детерминированного резерва. Role runner применяет одинаковый clamp к default и custom provider; autonomous retry остаётся в том же context и не получает новый budget. До provider call исчерпанный budget даёт controlled `LLM_TURN_BUDGET_EXHAUSTED`. После factual commit persisted projection и screen persistence получают remaining deadline через PostgreSQL `statement_timeout`; narration и остальные стадии проверяют тот же context до и после выполнения. Diagnostics показывает union wall time параллельных calls и их sum duration; `Promise.race`, detached work и обход общего context запрещены. Это gameplay deadline, не 120-секундный transport safeguard для admin/eval и других non-gameplay calls.
+- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and, only for flagged segments, `gameplay_narrator_semantic_repair`; writer получает player-safe action-intent context (`raw_text`/selected option) только для понимания попытки, не как evidence success/world fact; auditor и semantic repair получают only visible_context. `@rus/narration` deterministically validates schema, visible context, hidden leaks, immutable segment reassembly and final audit. No router, senior cascade or narration fallback exists.
 
 ## Не владеет
 
@@ -35,7 +37,6 @@ and adds no second transaction owner.
 
 - `.` exports the activated Spatial-v3 composition root, adapters, HTTP server/handler/static resolver and startup config validation.
 - `./production-spatial-v3` exports the sole production composition.
-- `./production-v2-migration-source` exports v2 PostgreSQL helpers only for explicit migration/rollback tooling; it exports no runtime composition.
 - `createPortraitSpecNormalizer` выполняет единственный text-to-JSON вызов, повторно валидирует provider output до HTTP response и не поддерживает fallback на прежние named-garment enums.
 - Scene selector выбирается только из committed player position: zone имеет
   приоритет над location, отсутствие exact server mapping опускает поле.
@@ -195,13 +196,8 @@ execution ledger or A1-specific plan hashes.
 
 A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
 
-Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
-`start_text` snapshots are admitted by a separate fail-closed compatibility
-policy: the server verifies party/request identity, the `start_text` branch
-and the persisted effective player name. Their original raw `start_text`
-cannot be proven because legacy snapshots did not persist it; this limited
-replay never permits switching the request to a scenario-ID branch.
-Trace publications pin materializer and RNG versions as historical execution
+Public new-game replay uses an exact persisted creation identity. Trace
+publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
 Runtime release `spatial-v3-production-v10` сохраняет revision 19 appearance,
@@ -260,7 +256,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling and cannot roll back or veto an already committed deferred-presentation turn.
 
 ## Production activation и тесты
 

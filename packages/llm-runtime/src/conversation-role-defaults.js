@@ -2,37 +2,33 @@ export function conversationTurnRoleDefaults(contractModes) {
   return {
     player_conversation_interpreter: semanticRole(
       'PLAYER_CONVERSATION_INTERPRETER',
-      'player_conversation_contribution_plan_v1',
-      contractModes.JSON_OBJECT_WITH_SCHEMA
+      contractModes.JSON_OBJECT
     ),
     player_conversation_interpreter_format_repair: repairRole(
       'PLAYER_CONVERSATION_INTERPRETER_REPAIR',
-      'player_conversation_contribution_plan_v1',
       contractModes.JSON_REPAIR
     ),
     npc_conversation_responder: semanticRole(
       'NPC_CONVERSATION_RESPONDER',
-      'conversation_contribution_plan_v1',
-      contractModes.JSON_OBJECT_WITH_SCHEMA
+      contractModes.JSON_OBJECT
     ),
     npc_conversation_responder_format_repair: repairRole(
       'NPC_CONVERSATION_RESPONDER_REPAIR',
-      'conversation_contribution_plan_v1',
       contractModes.JSON_REPAIR
     )
   };
 }
 
-function semanticRole(envPrefix, expectedSchema, outputContractMode) {
+function semanticRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
     responseFormat: 'json_object',
     maxTokens: 8000,
     outputContractMode,
-    expectedSchema,
+    expectedSchema: null,
     parseJson: true,
     targetInputTokens: 100000,
     comfortableInputTokens: 220000,
@@ -42,7 +38,7 @@ function semanticRole(envPrefix, expectedSchema, outputContractMode) {
   };
 }
 
-function repairRole(envPrefix, expectedSchema, outputContractMode) {
+function repairRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
     model: 'deepseek-v4-flash',
@@ -53,7 +49,7 @@ function repairRole(envPrefix, expectedSchema, outputContractMode) {
     temperature: 0,
     topP: 1,
     outputContractMode,
-    expectedSchema,
+    expectedSchema: null,
     parseJson: true,
     targetInputTokens: 30000,
     comfortableInputTokens: 30000,

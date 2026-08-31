@@ -1,0 +1,470 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  validateConversationContributionPlan,
+  validateNpcConversationResponseRequest,
+  validatePlayerConversationContributionPlan,
+  validatePlayerConversationInput
+} from '@rus/npc-runtime';
+import { requestPlayerConversationContribution } from '@rus/turn';
+import { classifyRatshaPlan } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-plans.js';
+import {
+  assembleNpcConversationPlan,
+  createLowerDvinaTraceNpcSemanticModel,
+  createLowerDvinaTracePlayerConversationModel
+} from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import {
+  npcConversationCandidates,
+  npcConversationInstructions,
+  requiredNpcConversationCandidate,
+  requiredPlayerConversationCandidate
+} from
+  '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
+
+const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const outcomes = () => ({
+  clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+  success: { delivery_quality: 'credible', observable_effects: [] },
+  success_with_cost: {
+    delivery_quality: 'credible_with_visible_cost', observable_effects: []
+  },
+  failure_with_consequence: {
+    delivery_quality: 'unconvincing', observable_effects: []
+  },
+  severe_failure: {
+    delivery_quality: 'transparently_manipulative', observable_effects: []
+  }
+});
+
+function playerRequest(required = {}) {
+  return {
+    schema: 'player_conversation_input_v1', request_id: 'player-request',
+    conversation_id: 'conversation-1', state_version: 1,
+    speaker_ref: ref('player_character', 'player-1'),
+    raw_text: 'попросить рассказать правду', received_at: 'turn-1',
+    player_safe_context: {
+      allowed_duration_classes: ['domain_owned'],
+      allowed_references: {
+        actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
+        entity_refs: [ref('item', 'item-1')], knowledge_refs: [],
+        combat_target_refs: []
+      },
+      ...required
+    },
+    operation_contract: { emit_interaction: {} }
+  };
+}
+
+function playerPlan(request, overrides = {}) {
+  const required = request.player_safe_context;
+  return {
+    schema: 'player_conversation_contribution_plan_v1',
+    request_id: request.request_id, conversation_id: request.conversation_id,
+    state_version: request.state_version, speaker_ref: request.speaker_ref,
+    input_mode: 'intent_paraphrase', contribution_kind: 'speech',
+    primary_addressee_ref: ref('npc', 'npc-1'),
+    intended_addressee_refs: [ref('npc', 'npc-1')], affected_actor_refs: [],
+    speech: { utterance_text: 'Скажи, что ты видел.', dominant_act: 'request',
+      interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'попросить правду',
+      grounded_contribution: 'обратиться с просьбой', adaptation: 'literal' },
+    resolution: required.required_resolution ?? 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: required.required_supporting_operation === undefined
+      ? [] : [structuredClone(required.required_supporting_operation)],
+    check: required.required_check === undefined ? null : {
+      purpose: 'code-owned social delivery', ...required.required_check,
+      outcomes: outcomes()
+    },
+    handoff: null,
+    ...overrides
+  };
+}
+
+function npcRequest(required = {}) {
+  return {
+    schema: 'npc_conversation_response_request_v1', request_id: 'npc-request',
+    boundary_id: 'boundary-1', conversation_id: 'conversation-1',
+    exchange_id: 'exchange-1', state_version: 1,
+    requested_at: { whole_minutes: '1', subminute_numerator: '0',
+      subminute_denominator: '1' }, npc_ref: ref('npc', 'npc-1'),
+    decision_reasons: { significance: 'material', categories: ['communication'],
+      signal_refs: [ref('npc_decision_signal', 'signal-1')],
+      perceived_changes: ['Игрок обратился к NPC.'] },
+    npc: {}, perceived_message: {
+      source_statement_ref: ref('conversation_statement', 'statement-1'),
+      perception_result_ref: ref('perception_result', 'perception-1')
+    }, public_conversation_history: [], knowledge: {}, memory: {},
+    social_context: {}, available_resources: [],
+    allowed_references: {
+      actor_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')],
+      entity_refs: [ref('item', 'item-1')], knowledge_refs: [],
+      combat_target_refs: []
+    },
+    decision_scope: {
+      conversation_mode: true, action_handoff_available: false,
+      combat_handoff_available: false, allowed_attribute_refs: ['influence'],
+      allowed_skill_refs: ['conversation'], allowed_check_profile_refs: ['hard'],
+      allowed_duration_classes: ['domain_owned'],
+      operation_contract: { emit_interaction: {} }, ...required
+    }
+  };
+}
+
+function npcPlan(request) {
+  const required = request.decision_scope;
+  return {
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: ref('player_character', 'player-1'),
+    intended_addressee_refs: [ref('player_character', 'player-1')],
+    affected_actor_refs: [], speech: { utterance_text: 'Я отвечу.',
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: 'ответить', grounded_contribution: 'дать ответ',
+      adaptation: 'literal' },
+    resolution: required.required_resolution ?? 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: required.required_supporting_operation === undefined
+      ? [] : [structuredClone(required.required_supporting_operation)],
+    check: required.required_check === undefined ? null : {
+      purpose: 'code-owned social delivery', ...required.required_check,
+      outcomes: outcomes()
+    }, handoff: null, reason: 'NPC chooses to answer.'
+  };
+}
+
+function runner(output) {
+  const calls = [];
+  return {
+    calls,
+    roleRunner: { async run(call) {
+      calls.push(structuredClone(call));
+      return { output: await output(call) };
+    } }
+  };
+}
+
+test('intent paraphrase keeps literal adaptation', async () => {
+  const request = playerRequest();
+  const fixture = runner(() => playerPlan(request));
+  const plan = await createLowerDvinaTracePlayerConversationModel(
+    fixture)(request);
+  assert.equal(validatePlayerConversationInput(request), true);
+  assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
+  assert.equal(plan.input_mode, 'intent_paraphrase');
+  assert.equal(plan.interpretation.adaptation, 'literal');
+});
+
+test('verbatim player request emits required check and operation once', async () => {
+  const required = {
+    verbatim_utterance_text: 'Скажи правду.',
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'),
+      target_ref: ref('npc', 'npc-1'), entity_ref: ref('item', 'item-1') }
+  };
+  const request = playerRequest(required);
+  const fixture = runner(() => playerPlan(request, {
+    input_mode: 'verbatim', speech: { ...playerPlan(request).speech,
+      utterance_text: required.verbatim_utterance_text }
+  }));
+  const plan = await createLowerDvinaTracePlayerConversationModel(
+    fixture)(request);
+  assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
+  assert.equal(plan.supporting_operations.length, 1);
+  assert.deepEqual(plan.check.attribute_ref, required.required_check.attribute_ref);
+  const omitted = structuredClone(plan);
+  omitted.supporting_operations = [];
+  assert.equal(validatePlayerConversationContributionPlan(omitted, request), false);
+  assert.match(fixture.calls[0].messages[0].content, /required_resolution/u);
+});
+
+test('NPC request emits required check and operation once', async () => {
+  const required = {
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('npc', 'npc-1'), target_ref: ref('player_character', 'player-1'),
+      entity_ref: ref('item', 'item-1') }
+  };
+  const request = npcRequest(required);
+  const fixture = runner(() => npcPlan(request));
+  const plan = await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
+  assert.equal(validateNpcConversationResponseRequest(request), true);
+  assert.equal(validateConversationContributionPlan(plan, request), true);
+  assert.equal(plan.supporting_operations.length, 1);
+  const wrongCheck = structuredClone(plan);
+  wrongCheck.check.skill_ref = 'other';
+  assert.equal(validateConversationContributionPlan(wrongCheck, request), false);
+  assert.match(fixture.calls[0].messages[0].content, /required_supporting_operation/u);
+});
+
+test('NPC required candidate is validator-valid and preserves operation', async () => {
+  const required = {
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('npc', 'npc-1'), target_ref: ref('player_character', 'player-1'),
+      entity_ref: ref('item', 'item-1'), interaction_kind: 'offer',
+      instrument_ref: ref('item', 'tool-1') }
+  };
+  const request = npcRequest(required);
+  request.allowed_references.entity_refs.push(ref('item', 'tool-1'));
+  const candidate = requiredNpcConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  candidate.speech.utterance_text = 'Я предлагаю предмет.';
+  candidate.speech.dominant_act = 'offer';
+  candidate.interpretation.intent = 'предложить предмет';
+  candidate.interpretation.grounded_contribution = 'предложить предмет игроку';
+  candidate.check.purpose = 'оценить убедительность предложения';
+  candidate.reason = 'NPC хочет предложить предмет.';
+  assert.equal(validateConversationContributionPlan(candidate, request), true);
+  assert.deepEqual(candidate.primary_addressee_ref,
+    required.required_supporting_operation.target_ref);
+  assert.deepEqual(candidate.intended_addressee_refs,
+    [required.required_supporting_operation.target_ref]);
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+
+  const fixture = runner(() => npcPlan(request));
+  const plan = await createLowerDvinaTraceNpcSemanticModel(fixture)(request, {
+    repair: { original_output: { schema: 'invalid' }, validation_errors: [] }
+  });
+  assert.equal(validateConversationContributionPlan(plan, request), true);
+  assert.equal(fixture.calls.length, 1);
+  assert.match(fixture.calls[0].messages[0].content,
+    /"resolution":"check_required"/u);
+  assert.match(fixture.calls[0].messages[0].content,
+    /"attribute_ref":"influence"/u);
+  assert.match(fixture.calls[0].messages[0].content,
+    /"op":"emit_interaction"/u);
+});
+
+test('NPC route disclosure candidate is validator-valid and preserves route refs', async () => {
+  const required = {
+    required_supporting_operation: { op: 'disclose_known_route',
+      route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1' }
+  };
+  const request = npcRequest(required);
+  request.allowed_references.entity_refs.push(ref('route', 'route-1'));
+  request.allowed_references.knowledge_refs.push(
+    ref('knowledge_scope', 'knowledge-1'));
+  request.decision_scope.operation_contract = { disclose_known_route: {} };
+  const candidate = requiredNpcConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  assert.equal(validateConversationContributionPlan(candidate, request), true);
+  assert.deepEqual(candidate.primary_addressee_ref,
+    ref('player_character', 'player-1'));
+  assert.equal(candidate.speech.dominant_act, 'inform');
+  assert.deepEqual(candidate.speech.interaction_tags, ['route_disclosure']);
+  assert.deepEqual(candidate.speech.claims[0].source_knowledge_refs,
+    [ref('knowledge_scope', 'knowledge-1')]);
+  assert.deepEqual(candidate.speech.claims[0].mentioned_entity_refs,
+    [ref('route', 'route-1')]);
+  assert.equal(candidate.speech.claims[0].speaker_posture, 'believed_true');
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+  const fixture = runner(() => npcPlan(request));
+  await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
+  assert.match(fixture.calls[0].messages[0].content,
+    /"route_ref":"route-1"/u);
+});
+
+test('NPC participation request states acceptance binding choice', async () => {
+  const request = npcRequest();
+  request.decision_scope.operation_contract = {
+    commit_route_participation: { allowed_bindings: [{ role: 'escort' }] }
+  };
+  const fixture = runner(() => npcPlan(request));
+
+  await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
+
+  assert.match(fixture.calls[0].messages[0].content,
+    /accepting, promising, or agreeing means choose exactly one allowed binding/u);
+  assert.match(fixture.calls[0].messages[0].content,
+    /The NPC chooses the binding/u);
+});
+
+test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', () => {
+  const request = npcRequest({ combat_handoff_available: true,
+    operation_contract: { commit_surrender: {
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender'
+    } } });
+  request.allowed_references.entity_refs = [];
+  request.allowed_references.combat_target_refs = [
+    ref('player_character', 'player-1')
+  ];
+  assert.equal(validateNpcConversationResponseRequest(request), true);
+  const candidates = npcConversationCandidates(request);
+  assert.equal(candidates.length, 3);
+  assert.equal(candidates.every((candidate) =>
+    validateConversationContributionPlan(candidate, request)), true);
+  const [speech, surrender, combat] = candidates;
+  assert.equal(classifyRatshaPlan(speech).kind, 'speech');
+  assert.deepEqual(speech.supporting_operations, []);
+  assert.equal(classifyRatshaPlan(surrender).kind, 'surrender');
+  assert.deepEqual(surrender.supporting_operations, [{ op: 'commit_surrender' }]);
+  assert.equal(surrender.speech.dominant_act, 'accept');
+  assert.equal(classifyRatshaPlan(combat).kind, 'combat_handoff');
+  const malformedRefs = structuredClone(request);
+  delete malformedRefs.allowed_references.combat_target_refs;
+  assert.equal(npcConversationCandidates(malformedRefs).length, 2);
+  for (const prompt of [npcConversationInstructions(false, request),
+    npcConversationInstructions(true, request)]) {
+    for (const candidate of candidates) {
+      const { schema, request_id, boundary_id, conversation_id, exchange_id,
+        state_version, speaker_ref, ...semantic } = candidate;
+      assert.equal(prompt.includes(JSON.stringify(semantic)), true);
+    }
+    assert.match(prompt, /not an exhaustive choice set/u);
+    assert.match(prompt, /Ordinary speech may use any allowed dominant_act/u);
+    assert.match(prompt, /silence and leave_conversation mappings available/u);
+    assert.doesNotMatch(prompt, /Choose exactly one/u);
+  }
+});
+
+test('NPC assembly restores admitted structure while preserving semantic speech', () => {
+  const request = npcRequest({ combat_handoff_available: true,
+    operation_contract: { commit_surrender: {
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender'
+    } } });
+  request.allowed_references.entity_refs = [];
+  request.allowed_references.combat_target_refs = [
+    ref('player_character', 'player-1')
+  ];
+  const [speech, , combat] = npcConversationCandidates(request);
+  const semanticSpeech = structuredClone(speech);
+  semanticSpeech.primary_addressee_ref = ref('npc', 'invented');
+  semanticSpeech.intended_addressee_refs = [ref('npc', 'invented')];
+  semanticSpeech.activity = { duration_class: 'invented', effort: 'heavy' };
+  semanticSpeech.speech.utterance_text = 'Я не согласен.';
+  semanticSpeech.speech.dominant_act = 'refuse';
+  const assembledSpeech = assembleNpcConversationPlan(semanticSpeech, request);
+  assert.equal(validateConversationContributionPlan(assembledSpeech, request), true);
+  assert.deepEqual(assembledSpeech.primary_addressee_ref,
+    ref('player_character', 'player-1'));
+  assert.deepEqual(assembledSpeech.activity,
+    { duration_class: 'domain_owned', effort: 'none' });
+  assert.equal(assembledSpeech.speech.utterance_text, 'Я не согласен.');
+  assert.equal(assembledSpeech.speech.dominant_act, 'refuse');
+
+  const semanticCombat = structuredClone(combat);
+  semanticCombat.primary_addressee_ref = ref('npc', 'invented');
+  semanticCombat.handoff.target_actor_refs = [ref('npc', 'invented')];
+  semanticCombat.handoff.intent = 'перейти к открытому противостоянию';
+  const assembledCombat = assembleNpcConversationPlan(semanticCombat, request);
+  assert.equal(validateConversationContributionPlan(assembledCombat, request), true);
+  assert.deepEqual(assembledCombat.handoff.target_actor_refs,
+    request.allowed_references.combat_target_refs);
+  assert.equal(assembledCombat.handoff.intent,
+    'перейти к открытому противостоянию');
+
+  semanticSpeech.supporting_operations = [
+    { op: 'commit_surrender' }, { op: 'invented' }
+  ];
+  assert.equal(validateConversationContributionPlan(
+    assembleNpcConversationPlan(semanticSpeech, request), request), false);
+});
+
+test('player required candidate is validator-valid and preserves operation', () => {
+  const required = {
+    verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'npc-1'),
+      entity_ref: ref('item', 'item-1') }
+  };
+  const request = playerRequest(required);
+  const candidate = requiredPlayerConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  candidate.speech.dominant_act = 'request';
+  candidate.interpretation.intent = 'попросить правду';
+  candidate.interpretation.grounded_contribution = 'обратиться с просьбой';
+  candidate.check.purpose = 'code-owned social delivery';
+  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
+  assert.equal(candidate.input_mode, 'verbatim');
+  assert.equal(candidate.speech.utterance_text, required.verbatim_utterance_text);
+  assert.deepEqual(candidate.primary_addressee_ref,
+    required.required_supporting_operation.target_ref);
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+});
+
+test('player promise candidate is validator-valid with target from safe context', () => {
+  const required = {
+    verbatim_utterance_text: 'Предложить Ратше условную защиту и потребовать сдачи.',
+    target_npc_ref: ref('npc', 'npc-1'), required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'offer_conditional_protection' }
+  };
+  const request = playerRequest(required);
+  request.operation_contract = { offer_conditional_protection: {} };
+  const candidate = requiredPlayerConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
+  assert.deepEqual(candidate.primary_addressee_ref, required.target_npc_ref);
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+  assert.deepEqual(candidate.check.attribute_ref, required.required_check.attribute_ref);
+});
+
+test('player required candidate is omitted for target outside allowed actors', () => {
+  const request = playerRequest({
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'other-npc'),
+      entity_ref: ref('item', 'item-1') }
+  });
+  assert.equal(requiredPlayerConversationCandidate(request), null);
+});
+
+test('NPC required candidate is omitted for target outside allowed actors', () => {
+  const request = npcRequest({
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('npc', 'npc-1'), target_ref: ref('npc', 'other-npc'),
+      entity_ref: ref('item', 'item-1') }
+  });
+  assert.equal(requiredNpcConversationCandidate(request), null);
+});
+
+test('player repair receives and preserves required contract', async () => {
+  const required = {
+    required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'emit_interaction',
+      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'npc-1'),
+      entity_ref: ref('item', 'item-1') }
+  };
+  const request = playerRequest(required);
+  const fixture = runner((call) => call.role_id.endsWith('_format_repair')
+    ? playerPlan(request) : { schema: 'invalid' });
+  const plan = (await requestPlayerConversationContribution({ request,
+    conversationModel: createLowerDvinaTracePlayerConversationModel(fixture),
+    revalidateStateVersion: async () => 1 })).plan;
+  assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
+  assert.equal(fixture.calls.length, 2);
+  const repairPayload = JSON.parse(fixture.calls[1].messages[1].content);
+  assert.deepEqual(repairPayload.request.player_safe_context
+    .required_supporting_operation, required.required_supporting_operation);
+  assert.match(fixture.calls[1].messages[0].content,
+    /Required conversation candidate/u);
+});

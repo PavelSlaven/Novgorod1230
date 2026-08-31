@@ -19,12 +19,15 @@ import {
   uniqueRefsOfKind,
   validateContributionBody
 } from './conversation-contract-core.js';
+import { validateContributionRequirement } from
+  './conversation-contribution-requirements.js';
 import { validateAllowedContributionReferences } from
   './conversation-reference-contracts.js';
 
 export {
   buildConversationSession,
   buildConversationStatementEvent,
+  diagnoseConversationPlanDominantAct,
   buildPlayerConversationContributionPlan,
   buildPlayerConversationInput,
   validateConversationSession,
@@ -54,7 +57,7 @@ function validatePerceivedMessage(value) {
 }
 
 function validateDecisionScope(value) {
-  return exactKeys(value, [
+  const keys = [
     'conversation_mode',
     'action_handoff_available',
     'combat_handoff_available',
@@ -63,7 +66,12 @@ function validateDecisionScope(value) {
     'allowed_check_profile_refs',
     'allowed_duration_classes',
     'operation_contract'
-  ])
+  ];
+  return plainRecord(value)
+    && keys.every((key) => Object.hasOwn(value, key))
+    && Object.keys(value).every((key) => keys.includes(key)
+      || ['required_resolution', 'required_check',
+        'required_supporting_operation'].includes(key))
     && value.conversation_mode === true
     && typeof value.action_handoff_available === 'boolean'
     && typeof value.combat_handoff_available === 'boolean'
@@ -77,6 +85,12 @@ function validateDecisionScope(value) {
     && new Set(value.allowed_duration_classes).size
       === value.allowed_duration_classes.length
     && plainRecord(value.operation_contract)
+    && validateContributionRequirement(value, value.operation_contract)
+    && (value.required_check === undefined
+      || value.allowed_attribute_refs.includes(value.required_check.attribute_ref)
+        && value.allowed_skill_refs.includes(value.required_check.skill_ref)
+        && value.allowed_check_profile_refs.includes(
+          value.required_check.difficulty_band))
     && jsonSafe(value.operation_contract);
 }
 

@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import {serverError} from '../../errors.js';
 import { assertPhase2CurrentStateVersion } from
   './lower-dvina-trace-phase-2-commit-admission.js';
@@ -124,10 +126,13 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
-  const built = await buildPhase7P16Plan({
-    partyId, writePlan, inputDigest, phase7Contracts, state, factual,
-    turnNumber, changeSetId, idemId, visibleEnvelope, writes, operationBatch,
-    ordinaryPlan, actionProductionPlans, localFirePlans, spatialSemanticPlan
+    const built = await buildPhase7P16Plan({
+      partyId, writePlan, inputDigest, phase7Contracts, state, factual,
+      turnNumber, changeSetId, idemId, visibleEnvelope, writes, operationBatch,
+      ordinaryPlan, actionProductionPlans, localFirePlans, spatialSemanticPlan
+  });
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: next, screen: pendingScreen
   });
   const committed = await committer.commit({
     plan: built.plan,
@@ -141,7 +146,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }
 function selectedCarrierPlan(phase7) {

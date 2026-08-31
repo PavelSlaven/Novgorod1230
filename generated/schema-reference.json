@@ -231,6 +231,11 @@
       "source": "packages/narration/src/contracts.js"
     },
     {
+      "constant": "NARRATION_SEMANTIC_REPAIR_SCHEMA",
+      "schema": "narration_semantic_repair",
+      "source": "packages/narration/src/contracts.js"
+    },
+    {
       "constant": "STAGE23_AUDIT_SCHEMA",
       "schema": "narrator_prose_audit",
       "source": "packages/contracts/src/narrator-boundary.js"

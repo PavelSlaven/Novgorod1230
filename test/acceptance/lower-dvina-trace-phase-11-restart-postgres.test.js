@@ -46,6 +46,8 @@ test('revision 25 survives production restart and exact replay through Phase 10'
         );
         assert.equal(environment.llm.requests.length, calls,
           'replay after restart must not invoke the provider');
+        environment.llm.requests.length = 0;
+        environment.llm.responses.length = 0;
       }
     }
     const [lastId, lastText] = PHASE11_CANONICAL_TURNS.at(-1);
@@ -81,25 +83,9 @@ test('revision 25 survives production restart and exact replay through Phase 10'
 
     const catalog = await get(environment, '/api/v1/scenarios');
     assert.ok(catalog.scenarios.some(({ scenario_id: id }) =>
-      id === 'lower_dvina_late_summer_open_water_v1'));
-    const boatman = await post(environment, '/api/v1/new-games', {
-      scenario_id: 'lower_dvina_late_summer_open_water_v1',
-      request_id: 'phase11-boatman-new-game'
-    });
-    await post(environment,
-      `/api/v1/parties/${encodeURIComponent(boatman.party_id)}/opening-ack`, {
-        client_ack_id: 'phase11-boatman-opening-ack'
-      });
-    const optionId = boatman.screen.action_panel.suggested_actions[0]
-      .option_id;
-    const boatmanTurn = await post(environment,
-      `/api/v1/parties/${encodeURIComponent(boatman.party_id)}/turns`, {
-        request_id: 'phase11-boatman-turn',
-        idempotency_key: 'phase11-boatman-turn',
-        selected_action_option_id: optionId
-      });
-    assert.equal(boatmanTurn.screen.schema, 'turn_screen');
-    assert.equal(boatmanTurn.screen.screen_status, 'ready');
+      id === 'lower_dvina_trace_v1'));
+    assert.equal(catalog.scenarios.some(({ scenario_id: id }) =>
+      id === 'lower_dvina_late_summer_open_water_v1'), false);
   });
 
 test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alternatives',
@@ -118,6 +104,8 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     for (const [id, text] of PHASE11_CANONICAL_TURNS.slice(0, 10)) {
       eremeyResult = await submit(environment, eremey, `eremey-${id}`, text);
     }
+    environment.llm.requests.length = 0;
+    environment.llm.responses.length = 0;
     for (let ordinal = 1; ordinal <= 5; ordinal += 1) {
       const state = await latestState(environment, eremey);
       if (state.player_response_boundary == null) break;
@@ -155,7 +143,8 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     });
     const ratsha = await startTraceParty(environment, 'phase11-ratsha');
     for (const [id, text] of PHASE11_CANONICAL_TURNS.slice(0, 5)) {
-      await submit(environment, ratsha, `ratsha-${id}`, text);
+      await submit(environment, ratsha, `ratsha-${id}`, text,
+        id === 'surrender' ? { maxFirstRngRoll: 0.29 } : undefined);
     }
     let combatState = await latestState(environment, ratsha);
     assert.equal(combatState.combat_sessions[0].status, 'paused_for_player');
@@ -167,7 +156,7 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     const combatCalls = environment.llm.requests.length;
     await environment.restartRoot();
     await submit(environment, ratsha, 'ratsha-surrender',
-      PHASE11_CANONICAL_TURNS[4][1]);
+      PHASE11_CANONICAL_TURNS[4][1], { maxFirstRngRoll: 0.29 });
     assert.equal(environment.llm.requests.length, combatCalls);
     await submit(environment, ratsha, 'ratsha-combat',
       'Сдержать Ратшу вместе с рыбаками, не убивая его.');
@@ -178,6 +167,9 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
          FROM party_runtime.party_temporal_events
         WHERE party_id=$1 AND event_kind LIKE 'combat_%'`, [ratsha]
     )).rows[0].count > 0, true);
+
+    environment.llm.requests.length = 0;
+    environment.llm.responses.length = 0;
 
     responder = createCanonicalPhase11LlmResponder({
       zhdankoCombatChoice: 'break_contact',
@@ -244,16 +236,17 @@ async function latestState(environment, partyId) {
   )).rows[0].state_payload;
 }
 
-async function submit(environment, partyId, id, rawText) {
+async function submit(environment, partyId, id, rawText, identityOptions) {
   try {
-    const identity = environment.requestIdentity(partyId, id);
-    return await post(environment,
-      `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, {
-        ...identity,
-        raw_text: rawText
-      });
+    const identity = environment.requestIdentity(partyId, id, identityOptions);
+    const pathname = `/api/v1/parties/${encodeURIComponent(partyId)}/turns`;
+    const input = { ...identity, raw_text: rawText };
+    const result = await post(environment, pathname, input);
+    return result.screen?.screen_status === 'committed_presentation_pending'
+      ? post(environment, pathname, input)
+      : result;
   } catch (error) {
-    const recentRequests = environment.llm.requests.map((entry) => ({
+    const recentRequests = environment.llm.requests.slice(-20).map((entry) => ({
       model: entry.body?.model,
       schema: entry.input?.schema,
       npc_ref: entry.input?.npc_ref,

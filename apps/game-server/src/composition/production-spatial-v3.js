@@ -53,8 +53,6 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v12',
-  rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
       'novgorod_spatial_v3_production_v5_candidate_001',
@@ -230,9 +228,6 @@ export async function createSpatialV3ProductionCompositionRoot({
         npc_conversation_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_conversation_capability,
         npc_autonomous_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_autonomous_capability,
         npc_combat_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_combat_capability,
-        rollback_source_release_id:
-          SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-        rollback_runtime_selectable: false,
         temporal_contract_id:
           SPATIAL_V3_PRODUCTION_RELEASE.temporal_contract_id,
         world_revision_id:

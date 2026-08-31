@@ -53,6 +53,7 @@ import { serverError } from '../../errors.js';
 import { runLowerDvinaTraceNpcConversationExchange } from
   '../lower-dvina-trace-npc-initiated-conversation.js';
 import { createLlmDiagnostics } from '../llm-diagnostics.js';
+import { createLlmTurnBudget } from '../llm-turn-budget.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -71,10 +72,12 @@ export function createTraceTurnRuntime({
         { status: 503 });
     }
   });
+  const turnBudget = config.llmTurnBudget ?? config.llmDiagnostics?.turnBudget
+    ?? createLlmTurnBudget();
   const llmDiagnostics = config.llmDiagnostics
-    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null });
+    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null, turnBudget });
   const roleRunner = createProductionLlmRoleRunner({
-    env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null
+    env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null, turnBudget
   });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
@@ -132,7 +135,7 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner });
-  return createPhase2RuntimeFactory({
+  const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
     }),
@@ -177,16 +180,32 @@ export function createTraceTurnRuntime({
       revalidateStateVersion: input.revalidateStateVersion
     }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
-      partyPool, narrationService
+      partyPool, narrationService,
+      recordDiagnosticFailure: (error) => llmDiagnostics.recordFailure(error)
     }),
-    randomSourceFactory: (identity) => createSeededRandomSource(
-      canonicalDigest({
-        schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1', ...identity
-      })
-    ),
+    randomSourceFactory: createTraceRandomSourceFactory({ env }),
     temporalAdvanceOwner,
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
+    llmTurnBudget: turnBudget,
     llmDiagnostics
   });
+  return Object.freeze({ ...runtime, llmDiagnostics });
+}
+
+export function createTraceRandomSourceFactory({ env = {} } = {}) {
+  const scenarioSeed = env.RUS_DEVELOPER_MODE === 'true'
+    ? String(env.RUS_PUBLIC_PLAYTEST_SCENARIO_SEED ?? '').trim() : '';
+  return (identity) => createSeededRandomSource(canonicalDigest(scenarioSeed
+    ? {
+        schema: 'rus.lower_dvina_trace_public_playtest_rng_identity.v1',
+        scenario_seed: scenarioSeed,
+        request_id: identity.request_id,
+        ...(identity.check_profile_ref == null ? {} : {
+          check_profile_ref: identity.check_profile_ref
+        })
+      }
+    : {
+        schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1', ...identity
+      }));
 }

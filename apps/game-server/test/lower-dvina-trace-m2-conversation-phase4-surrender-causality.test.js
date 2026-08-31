@@ -53,6 +53,41 @@ test('Ratsha surrender remains factual without a protection promise', async () =
     table === 'party_obligation_transitions'), false);
 });
 
+test('surrender keeps an unspecified knife carry position', async () => {
+  const fixture = phase4ArrivalState();
+  const state = structuredClone(fixture.state);
+  const contracts = structuredClone(fixture.contracts);
+  state.items.push({
+    item_id: 'retired-water-portion',
+    template_id: 'trace_ld_v1_item_player_water_portion',
+    condition_state: 'retired',
+    placement: { anchor_id: state.position.g5_anchor_id },
+    ownership: {}
+  });
+  delete contracts.knifeTransition.requires.physical_position;
+  delete contracts.knifeTransition.requires.accessibility;
+  delete contracts.knifeTransition.writes.physical_position;
+  const exchange = await runPhase4({ state, contracts,
+    rawText: 'Ратша, сдавайся и брось нож.', inputDigest: digest('f'),
+    responseKind: 'surrender', checkResult: null, offerStage: null,
+    checkRequest: null });
+  const next = projectPhase4Negotiation({ state, contracts,
+    result: exchange.result, inputDigest: digest('f') });
+  const knife = state.items.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_item_ratsha_knife');
+  assert.equal(next.items.find(({ item_id: id }) => id === knife.item_id)
+    .placement.physical_position, knife.placement.physical_position);
+  const factual = phase4Factual({ state, contracts, result: exchange.result,
+    inputDigest: digest('f') });
+  assert.doesNotThrow(() => appendSemanticNegotiation({
+    inserts: [], updates: [], appends: [], partyId: state.party_id, state,
+    next, factual, turnNumber: state.party_state.turn_number + 1,
+    changeSetId: 'change:surrender-unspecified-position',
+    idemId: 'idem:surrender-unspecified-position', contracts,
+    rootTurnId: 'turn:surrender-unspecified-position', workingRevision: 0
+  }));
+});
+
 test('unperceived acceptance preserves surrender but not promise activation',
   async () => {
     const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();

@@ -215,7 +215,7 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
         }];
       }
       next.items = next.items.map((item) => item.template_id !== 'trace_ld_v1_item_ratsha_knife' ? item : ({ ...item,
-        placement: { ...item.placement, holder_npc_id: n.participating_fisher_id, holder_character_id: null, physical_position: knifeWrites.physical_position },
+        placement: { ...item.placement, holder_npc_id: n.participating_fisher_id, holder_character_id: null, physical_position: knifeWrites.physical_position ?? item.placement.physical_position },
         ownership: { ...item.ownership, controller_npc_id: n.participating_fisher_id, controller_character_id: null },
         state: { ...item.state, property_state: { ...item.state.property_state, holder_ref: n.participating_fisher_id, controller_ref: n.participating_fisher_id, accessibility: knifeWrites.accessibility } } }));
     } else if (n.threat) {

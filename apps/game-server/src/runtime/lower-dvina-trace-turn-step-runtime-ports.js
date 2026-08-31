@@ -221,7 +221,9 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
     local_fire_atomic_write_plans: structuredClone(
       input.local_fire_atomic_write_plans ?? []),
     root_turn_id: input.root_turn_id,
-    step_index: input.step_index
+    step_index: input.step_index,
+    change_set_id: `change:${committedState.party_id}:turn-step:${
+      committedState.party_state.turn_number + 1}`
   });
   return Object.freeze({
     version: 2,

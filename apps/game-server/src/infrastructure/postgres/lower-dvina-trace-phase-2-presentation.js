@@ -5,11 +5,15 @@ import {
 import {
   createTemporalPresentationPostgresStore
 } from './temporal-presentation-store.js';
+import { queryWithTurnDeadline } from './query-with-turn-deadline.js';
+import { phase2VisibleContextFromPayload } from
+  './lower-dvina-trace-phase-2-projection.js';
 
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
   narrationService,
-  presentationStore = null
+  presentationStore = null,
+  recordDiagnosticFailure = null
 } = {}) {
   if (!partyPool?.query || typeof narrationService?.run !== 'function') {
     throw new TypeError(
@@ -20,10 +24,14 @@ export function createLowerDvinaTracePhase2DurableNarrator({
     ?? createTemporalPresentationPostgresStore({ pool: partyPool });
   return Object.freeze({
     async run(request) {
+      const turnBudget = request.turnBudget ?? null;
+      const narrationRequest = { ...request };
+      delete narrationRequest.turnBudget;
       const envelope = await loadEnvelope(
         partyPool,
         request.request_id,
-        request.visible_context
+        request.visible_context,
+        turnBudget
       );
       const identity = {
         party_id: envelope.party_id,
@@ -32,7 +40,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         presentation_idempotency_key:
           `presentation:${envelope.package_id}:${envelope.package_digest}`
       };
-      const claimed = await store.claimPresentationAttempt(identity);
+      const claimed = await store.claimPresentationAttempt({ ...identity, turnBudget });
       if (!claimed?.ok) throw presentationError();
       if (claimed.disposition === 'delivered'
           || claimed.disposition === 'output_ready') {
@@ -41,7 +49,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
           throw presentationError();
         }
         if (claimed.disposition === 'output_ready') {
-          await finalize(store, identity, claimed, envelope);
+          await finalize(store, identity, claimed, envelope, turnBudget);
         }
         return withPresentation(flow, claimed.narration_result);
       }
@@ -52,24 +60,28 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       }
       let flow;
       try {
-        flow = await narrationService.run(request);
+        flow = await narrationService.run(narrationRequest);
       } catch (error) {
         await store.finalizePresentationAttempt({
           ...identity,
+          turnBudget,
           attempt_id: claimed.attempt_id,
           claim_token: claimed.claim_token,
           presentation_status: 'failed_retryable',
           failure: {
             stage: 'narration',
-            message: String(error?.message ?? 'Narration failed.')
+            message: 'Narration provider failed.'
           }
-        }).catch(() => {});
-        throw error;
+        });
+        const rejected = presentationError();
+        rejected.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+        throw rejected;
       }
       if (flow?.status !== 'approved' || flow.pass !== true
           || !flow.approved_output?.prose) {
         await store.finalizePresentationAttempt({
           ...identity,
+          turnBudget,
           attempt_id: claimed.attempt_id,
           claim_token: claimed.claim_token,
           presentation_status: 'failed_retryable',
@@ -80,14 +92,19 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         });
         const error = presentationError();
         error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+        error.details = narrationFailureDetails(flow);
+        try { recordDiagnosticFailure?.(error); } catch {
+          // Diagnostics must not replace the typed presentation failure.
+        }
         throw error;
       }
-      const persistedNarration = sealNarration({
+      const persistedNarration = sealApprovedNarration({
         envelope,
         flow
       });
       const persisted = await store.persistNarrationOutput({
         ...identity,
+        turnBudget,
         attempt_id: claimed.attempt_id,
         claim_token: claimed.claim_token,
         narration_result: persistedNarration,
@@ -99,27 +116,35 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       await finalize(store, identity, {
         attempt_id: claimed.attempt_id,
         output_digest: persistedNarration.canonical_digest
-      }, envelope);
+      }, envelope, turnBudget);
       return withPresentation(flow, persistedNarration);
     }
   });
 }
 
-async function loadEnvelope(pool, turnId, visibleContext) {
-  const result = await pool.query(
-    `SELECT package_id,party_id,turn_id,committed_state_version,
+function narrationFailureDetails(flow) {
+  const audit = flow?.audit_history?.at(-1)?.value;
+  const concerns = Array.isArray(audit?.concerns) ? audit.concerns : [];
+  return {
+    phase: flow?.diagnostics?.phase,
+    concern_count: concerns.length,
+    concern_kinds: concerns.map(({ kind }) => kind)
+  };
+}
+
+async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {
+  const result = await queryWithTurnDeadline(pool, { text: `SELECT package_id,party_id,turn_id,committed_state_version,
             change_set_id,package_digest,visible_payload,
             presentation_status,projection_policy_ref,dependency_pins,
             idempotency_record_id
        FROM party_runtime.party_visible_packages
       WHERE turn_id=$1`,
-    [turnId]
-  );
+    values: [turnId] }, turnBudget);
   const expectedContextDigest = canonicalDigest(visibleContext);
   const matches = result.rows.filter((candidate) =>
     candidate.package_digest
       === computeSpatialV3CanonicalDigest(candidate.visible_payload)
-    && canonicalDigest(visibleContextFromPayload(candidate.visible_payload))
+    && canonicalDigest(phase2VisibleContextFromPayload(candidate.visible_payload))
       === expectedContextDigest);
   if (matches.length !== 1) {
     throw presentationError();
@@ -127,10 +152,12 @@ async function loadEnvelope(pool, turnId, visibleContext) {
   return matches[0];
 }
 
-function sealNarration({ envelope, flow }) {
+export function sealApprovedNarration({ envelope, flow }) {
   const payload = {
     kind: 'approved_narration',
     party_id: envelope.party_id,
+    request_id: envelope.turn_id,
+    package_id: envelope.package_id,
     package_digest: envelope.package_digest,
     dependency_pins: envelope.dependency_pins,
     text: flow.approved_output.prose,
@@ -142,11 +169,12 @@ function sealNarration({ envelope, flow }) {
   };
 }
 
-async function finalize(store, identity, attempt, envelope) {
+async function finalize(store, identity, attempt, envelope, turnBudget = null) {
   const outputDigest =
     attempt.output_digest ?? attempt.narration_result?.canonical_digest;
   const finalized = await store.finalizePresentationAttempt({
     ...identity,
+    turnBudget,
     attempt_id: attempt.attempt_id,
     presentation_status: 'delivered',
     output_digest: outputDigest
@@ -178,22 +206,6 @@ function withPresentation(flow, narration) {
       output_digest: narration.canonical_digest
     }
   });
-}
-
-function visibleContextFromPayload(payload) {
-  return {
-    version: 1,
-    schema: 'visible_context_package',
-    visible_scene: payload.perceived_scene,
-    visible_changes: structuredClone(payload.perceived_changes),
-    sensory_details: structuredClone(payload.sensory_details),
-    visible_npc: structuredClone(payload.visible_npcs),
-    visible_objects: structuredClone(payload.visible_objects),
-    known_context: structuredClone(payload.known_context),
-    uncertainties: structuredClone(payload.uncertainties),
-    allowed_tensions: [],
-    do_not_imply: []
-  };
 }
 
 function presentationError() {

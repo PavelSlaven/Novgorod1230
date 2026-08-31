@@ -2,15 +2,16 @@
 
 ## Назначение
 
-Единый безопасный workflow генерации, аудита и ремонта прозы для первого экрана и обычного хода.
+Единый безопасный workflow генерации и ограниченного ремонта прозы для первого экрана и обычного хода.
 
 ## Владеет
 
-- versioned `narration_request`, `narration_output`, `narration_audit` и `narration_flow_result`;
+- versioned `narration_request`, `narration_output` и `narration_flow_result`;
 - проверкой visible-only входа;
-- bounded generation → audit → repair → senior audit;
-- историей генераций, аудитов и ремонтов;
-- typed upstream repair request при невозможности утвердить прозу.
+- writer → deterministic structural validation → at most one format repair → semantic audit;
+- stable deterministic prose segments, один local semantic repair только flagged segments и code-owned reassembly;
+- full final semantic audit после semantic repair;
+- историей генераций и ремонтов.
 
 ## Не делает
 
@@ -29,12 +30,15 @@
 
 ## Порты
 
-`writer.generate`, `auditor.audit`, `formatRepairer.repair`, `seniorWriter.repair`, `seniorAuditor.audit`, `router.route`.
+`writer.generate`, `formatRepairer.repair`, `auditor.audit`, `semanticRepairer.repair`.
 
 ## Инварианты
 
-- narrator получает только validated visible context;
+- writer, auditor и semantic repair получают validated visible context и optional player-safe action-intent context; action intent доказывает только попытку/реплику/выбранное намерение и никогда не является evidence успеха или нового world fact;
 - semantic failure не превращается в deterministic prose fallback;
-- repair ограничен счётчиком и всегда повторно аудируется;
+- format repair и semantic repair независимы: каждый максимум один раз;
+- malformed audit/repair, unflagged/duplicate/missing replacement и final audit failure блокируют flow;
+- unflagged segments reassembly сохраняет byte-for-byte;
+- normal gameplay вызывает один LLM auditor, без router/senior cascade;
 - approved result содержит ровно один утверждённый output;
 - upstream repair не вызывает persistence.

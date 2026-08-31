@@ -6,10 +6,10 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 export const TRACE_NPC_ACTOR_STEP_PHASE_1A_MANIFEST_DIGEST =
-  'f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505';
+  '0baa2032acba1b72ad1c6144f7fce0a428a6d02fa03fc12d6a0b77303bf8af2c';
 const PINS = Object.freeze({
-  manifest: '0e639ff09f902d21041b64d5cba5ff6e4b9a2bf48f954701b8109ecf302bd87d',
-  binding: '36f7b738100c1fe1b21b8917da9b683efc1c87e34ccf0229814334614413fd30',
+  manifest: '9a11bf0d2976df85bd5f9d6871e8fed7793ba3cf89da8b57bcae529a425459ce',
+  binding: '88e319f2e0b020c4eeb2c1cae3e287a2e1edb3a604859d3ad5c78efd035236a8',
   definition: '3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711'
 });
 

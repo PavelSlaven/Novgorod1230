@@ -34,7 +34,14 @@ export function createTraceTurn10ConversationContext({ state, contracts,
     playerConversationModel,
     npcSemanticModel,
     revalidateStateVersion,
+    validateNpcPlan: (plan, request) => validateParticipationPlan(
+      plan, byActor.get(request.npc_ref.entity_id)),
     playerOperationContract: {},
+    requiredIntendedAddresseeRefs: [
+      contracts.actors.eremey,
+      contracts.actors.participatingFisher,
+      contracts.actors.otherFisher
+    ].map(({ instance_id: instanceId }) => ref('npc', instanceId)),
     mapping: contracts.binding.signal_mapping,
     npcOperationContract: operationContract([operations.eremey_guide]),
     npcDecisionScope: noHandoff(),
@@ -60,7 +67,7 @@ export function createTraceTurn10ConversationContext({ state, contracts,
         contracts.binding.conversation_activity.parent_activity_ref,
       contribution_slots:
         contracts.binding.conversation_activity.contribution_slots,
-      parent_temporal: parentTemporalContract(state)
+      parent_temporal: requireTraceTurn10ParentTemporal(state)
     },
     temporalAdvanceOwner,
     playerPlan
@@ -120,7 +127,7 @@ export async function resolveTraceTurn10ConversationExchange(input) {
   });
 }
 
-function parentTemporalContract(state) {
+export function requireTraceTurn10ParentTemporal(state) {
   const parent = state.phase7_parent_temporal;
   if (parent?.execution_id == null || parent.limit_timestamp == null
       || parent.completion_effect == null
@@ -161,7 +168,13 @@ function classifyParticipationPlan(plan, allowed) {
   }
   if (plan.contribution_kind !== 'speech') fail();
   const operation = plan.supporting_operations?.[0] ?? null;
-  if (operation == null) return { kind: 'speech', statementRef: null };
+  if (operation == null) {
+    if (['accept', 'promise'].includes(plan.speech.dominant_act)
+        || plan.speech.interaction_tags.includes('agreement')) {
+      fail('TRACE_TURN10_PARTICIPATION_BINDING_REQUIRED');
+    }
+    return { kind: 'speech', statementRef: null };
+  }
   const matched = allowed.find((expected) =>
     Object.keys(expected).every((key) => operation[key] === expected[key])
       && Object.keys(operation).length === Object.keys(expected).length);
@@ -179,6 +192,19 @@ function classifyParticipationPlan(plan, allowed) {
     protected_actor_slot: matched.protected_actor_slot ?? null,
     statementRef: null
   };
+}
+
+function validateParticipationPlan(plan, allowed) {
+  if (allowed === undefined) return true;
+  try {
+    classifyParticipationPlan(plan, allowed);
+    return true;
+  } catch (error) {
+    return { pass: false, errors: [{
+      code: error.code ?? 'TRACE_TURN10_NPC_PLAN_INVALID',
+      category: 'semantic_consistency', retryable: true
+    }] };
+  }
 }
 
 function operationContract(operations) {
@@ -209,8 +235,8 @@ function noHandoff() {
   return { action_handoff_available: false, combat_handoff_available: false };
 }
 
-function fail() {
-  throw Object.assign(new Error(
-    'NPC participation must match one exact approved Turn 10 binding.'),
-  { code: 'TRACE_TURN10_NPC_PLAN_INVALID' });
+function fail(code = 'TRACE_TURN10_NPC_PLAN_INVALID') {
+  throw Object.assign(new Error(code === 'TRACE_TURN10_NPC_PLAN_INVALID'
+    ? 'NPC participation must match one exact approved Turn 10 binding.' : code),
+  { code });
 }

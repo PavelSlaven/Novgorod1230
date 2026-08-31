@@ -38,7 +38,7 @@
       "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
-      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
+      "digest": "33f373759271afd0339264c14bfefde693b48f0bb864a34e7c8e480250d06e0e"
     },
     "input_admission": "current_item_owner_state",
     "water_extinguish": "semantic_existing_whole_portion",

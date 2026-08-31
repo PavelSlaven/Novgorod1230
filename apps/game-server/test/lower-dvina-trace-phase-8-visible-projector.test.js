@@ -8,6 +8,10 @@ import { createTracePhase8VisibleProjector } from
 
 const contracts = Object.freeze({
   actors: Object.freeze({
+    zhdanko: Object.freeze({
+      instance_id: 'npc-zhdanko',
+      participant_slot_ref: 'zhdanko_storehouse_controller'
+    }),
     eremey: Object.freeze({
       instance_id: 'npc-eremey',
       participant_slot_ref: 'eremey_fisher',
@@ -15,11 +19,15 @@ const contracts = Object.freeze({
         identity: Object.freeze({ canonical_name: 'Еремей' })
       })
     }),
-    fisher: Object.freeze({
+    ratsha: Object.freeze({
+      instance_id: 'npc-ratsha',
+      participant_slot_ref: 'ratsha_storehouse_helper'
+    })
+  }),
+  participatingFishers: Object.freeze([Object.freeze({
       instance_id: 'npc-fisher',
       participant_slot_ref: 'background_fisher'
-    })
-  })
+    })])
 });
 
 test('Phase 8 projects NPCs through the player-safe entity contract',
@@ -46,8 +54,14 @@ test('Phase 8 projects NPCs through the player-safe entity contract',
     };
     assert.deepEqual(validatePlayerSafeVisiblePayload(payload), []);
     assert.deepEqual(projected.visible_npc, [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-zhdanko' },
+      display_label: 'zhdanko_storehouse_controller', recognition: 'recognized'
+    }, {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
       display_label: 'Еремей', recognition: 'known'
+    }, {
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-ratsha' },
+      display_label: 'ratsha_storehouse_helper', recognition: 'recognized'
     }, {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-fisher' },
       display_label: 'background_fisher', recognition: 'recognized'

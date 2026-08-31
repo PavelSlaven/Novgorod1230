@@ -9,16 +9,27 @@ export async function revalidateTurnContextStage({
   actionSet,
   commandRegistry,
   stateReader,
+  retrievedState,
   finalCommit = false
 }) {
-  const state = await stateReader.read({
+  const request = {
     party_id: playerInput.party_id,
     turn_number: playerInput.turn_number,
     requested_blocks: structuredClone(commandRegistry.stateBlocks()),
     routing_context: structuredClone(routingContext),
     revalidation: true,
     ...(finalCommit ? { final_commit: true } : {})
-  });
+  };
+  const revalidated = typeof stateReader.revalidate === 'function'
+    ? await stateReader.revalidate(request)
+    : await stateReader.read(request);
+  if (Number.isSafeInteger(revalidated)
+      && revalidated !== actionSet.state_version) {
+    throw staleError();
+  }
+  const state = Number.isSafeInteger(revalidated)
+    ? retrievedState
+    : revalidated;
   if (!state || typeof state !== 'object' || Array.isArray(state)) {
     throw new TypeError('stateReader.read must return an object');
   }

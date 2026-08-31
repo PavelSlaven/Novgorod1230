@@ -35,6 +35,10 @@ test('heterogeneous combat steps stop at the earliest temporal boundary',
       .active_combat_step_progress[0];
     assert.equal(progress.actor_ref.entity_id, 'escape');
     assert.equal(progress.elapsed_duration.exact_minutes.numerator, '2');
+    assert.equal(Object.hasOwn(result.prepared.item_transitions[0],
+      'working_state'), false);
+    assert.equal(Object.hasOwn(result.prepared.position_transitions[0],
+      'working_state'), false);
   });
 
 test('a due effect invalidates pending movement before its owner persists it',

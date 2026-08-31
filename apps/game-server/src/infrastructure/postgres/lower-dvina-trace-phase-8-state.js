@@ -8,8 +8,10 @@ import { projectCombatDecisionState } from
 
 export function nextPhase8AccusationState({ state, factual, nextVersion,
   turnNumber, changeSetId, inputDigest }) {
-  const accusation = factual.consequence.accusation;
-  const semantic = accusation.semantic_exchange;
+  const accusation = factual.consequence.accusation ?? null;
+  const semantic = accusation?.semantic_exchange ?? null;
+  const initialization = accusation?.combat_initialization
+    ?? factual.consequence.combat_initialization ?? null;
   let next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
@@ -21,8 +23,8 @@ export function nextPhase8AccusationState({ state, factual, nextVersion,
   next.clock = structuredClone(factual.time_update.clock_after);
   next.clock_weather_light = { ...structuredClone(next.clock_weather_light),
     clock: structuredClone(next.clock) };
-  if (semantic.exchange.applied_contribution_count > 0
-      || semantic.exchange.stop_reason === 'npc_unavailable') {
+  if (semantic != null && (semantic.exchange.applied_contribution_count > 0
+      || semantic.exchange.stop_reason === 'npc_unavailable')) {
     next = projectSemanticConversationSnapshot({ state: next,
       semanticExchange: semantic,
       rootTurnId: factual.mode_resolution.turn_id,
@@ -31,7 +33,6 @@ export function nextPhase8AccusationState({ state, factual, nextVersion,
       appliedChangeSetId: changeSetId });
     applyConversationTemporalNpcWrites(next, semantic);
   }
-  const initialization = accusation.combat_initialization;
   if (initialization != null) {
     next.combat_sessions = [{ ...structuredClone(initialization.session),
       last_change_set_ref: { entity_kind: 'party_change_set',
@@ -42,7 +43,7 @@ export function nextPhase8AccusationState({ state, factual, nextVersion,
       decisionRecords: initialization.decision_records, changeSetId,
       rootTurnId: factual.mode_resolution.turn_id, workingRevision:
         factual.mode_resolution.decision_trace?.working_revision ?? 1 });
-  } else if (semantic.response_kind === 'surrender') {
+  } else if (semantic?.response_kind === 'surrender') {
     next.npcs = next.npcs.map((npc) => npc.participant_slot_ref
       !== 'zhdanko_storehouse_controller' ? npc : { ...npc,
       machine_state: { ...npc.machine_state,
@@ -52,16 +53,16 @@ export function nextPhase8AccusationState({ state, factual, nextVersion,
     next.player_response_boundary = null;
   }
   next.activity_history = [...(next.activity_history ?? []), {
-    activity_execution_id:
-      `activity:${state.party_id}:trace-phase8:${turnNumber}:accusation`,
-    activity_snapshot: { activity_ref: accusation.activity_ref,
-      consequence: 'accusation' }, option_id: factual.mode_resolution.option_id,
+    activity_execution_id: `activity:${state.party_id}:trace-phase8:${turnNumber}:${
+      accusation == null ? 'combat-start' : 'accusation'}`,
+    activity_snapshot: { activity_ref: accusation?.activity_ref ?? null,
+      consequence: accusation == null ? 'combat_start' : 'accusation' }, option_id: factual.mode_resolution.option_id,
     request_id: factual.player_input.request_id, input_digest: inputDigest,
     change_set_id: changeSetId,
-    duration_minutes: semantic.exact_elapsed_minutes,
+    duration_minutes: factual.consequence.duration_minutes,
     started_at: structuredClone(factual.time_update.clock_before),
     ended_at: structuredClone(next.clock),
-    execution_result: { response_kind: semantic.response_kind,
+    execution_result: { response_kind: semantic?.response_kind ?? 'combat_start',
       combat_session_id: initialization?.session.combat_id ?? null } }];
   next.last_turn = { request_id: factual.player_input.request_id,
     idempotency_key: factual.player_input.idempotency_key,
@@ -81,7 +82,16 @@ function safeConsequence(consequence) {
   if (value.accusation?.combat_initialization) {
     value.accusation.combat_initialization = {
       combat_id: value.accusation.combat_initialization.session.combat_id,
-      status: value.accusation.combat_initialization.session.status };
+      status: value.accusation.combat_initialization.session.status,
+      player_response_required:
+        value.accusation.combat_initialization.session.player_response_required };
+  }
+  if (value.combat_initialization) {
+    value.combat_initialization = {
+      combat_id: value.combat_initialization.session.combat_id,
+      status: value.combat_initialization.session.status,
+      player_response_required:
+        value.combat_initialization.session.player_response_required };
   }
   if (value.accusation?.semantic_exchange) {
     value.accusation.semantic_exchange = {

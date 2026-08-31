@@ -67,9 +67,9 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         [partyId, run?.run_id]
       )).rows;
       const items = (await query(
-        `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,i.quantity,i.condition_state,i.legal_status,i.state,
+        `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,i.quantity,i.state_version,i.condition_state,i.legal_status,i.state,
                 ip.anchor_id,ip.container_id AS placement_container_id,ip.holder_npc_id,ip.holder_character_id,
-                ip.physical_position,ip.equipment_slot_category_id,
+                ip.physical_position,ip.equipment_slot_category_id,ip.attached_item_id,
                 o.ownership_id,o.container_id AS ownership_container_id,o.owner_npc_id,o.owner_character_id,o.owner_party,o.owner_external_ref,
                 o.controller_npc_id,o.controller_character_id,o.claim_state
            FROM party_runtime.party_items i
@@ -166,18 +166,22 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         profile_id: item.profile_id,
         category_id: item.category_id,
         quantity: item.quantity,
+        state_version: Number(item.state_version),
         condition_state: item.condition_state,
         legal_status: item.legal_status,
         state: item.state,
         placement: {
+          item_id: item.item_id,
           anchor_id: item.anchor_id,
           container_id: item.placement_container_id,
           holder_npc_id: item.holder_npc_id,
           holder_character_id: item.holder_character_id,
           physical_position: item.physical_position,
-          equipment_slot_category_id: item.equipment_slot_category_id
+          equipment_slot_category_id: item.equipment_slot_category_id,
+          attached_item_id: item.attached_item_id
         },
         ownership: {
+          item_id: item.item_id,
           ownership_id: item.ownership_id,
           owner_npc_id: item.owner_npc_id,
           owner_character_id: item.owner_character_id,

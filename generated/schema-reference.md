@@ -53,6 +53,7 @@ Release: `0.23.0-migration.24`
 | `narration_output` | `NARRATION_OUTPUT_SCHEMA` | `packages/narration/src/contracts.js` |
 | `narration_repair_route` | `NARRATION_REPAIR_ROUTE_SCHEMA` | `packages/narration/src/contracts.js` |
 | `narration_request` | `NARRATION_REQUEST_SCHEMA` | `packages/narration/src/contracts.js` |
+| `narration_semantic_repair` | `NARRATION_SEMANTIC_REPAIR_SCHEMA` | `packages/narration/src/contracts.js` |
 | `narrator_prose_audit` | `STAGE23_AUDIT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |
 | `narrator_prose_audit_approval` | `NARRATOR_PROSE_AUDIT_APPROVAL_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `narrator_prose_audit_input` | `STAGE23_INPUT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |

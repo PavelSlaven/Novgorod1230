@@ -35,6 +35,13 @@
       "mass_grams": 700
     }
   ],
+  "water_portion": {
+    "authored_ref": "trace_ld_v1_f1_player_water_portion",
+    "template_id": "trace_ld_v1_item_player_water_portion",
+    "profile_id": "trace_ld_v1_inventory_profile_player_water_portion",
+    "display_name": "целая порция воды",
+    "mass_grams": 750
+  },
   "allowed_actions": ["start", "affect"],
   "water_extinguish_policy": "semantic_existing_whole_portion",
   "process_owner": "@rus/world-processes",

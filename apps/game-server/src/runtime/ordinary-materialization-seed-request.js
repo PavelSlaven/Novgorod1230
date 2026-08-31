@@ -27,7 +27,8 @@ const PROPERTY_ITEM_KINDS = new Set(['man_made', 'natural_resource_portion']);
  * This boundary intentionally has no action, candidate, narration, or actor input.
  */
 export function buildOrdinaryMaterializationSeedScopeRequest(input = {}) {
-  const outer = exactRecord(input, ['objective_context'],
+  const outer = exactRecord(input, Object.hasOwn(input ?? {}, 'authority_context')
+    ? ['objective_context', 'authority_context'] : ['objective_context'],
     'ORDINARY_SEED_REQUEST_INPUT_INVALID');
   const context = exactRecord(outer.objective_context, [
     'request_id', 'scope_ref', 'context_refs', 'policy_refs',
@@ -42,6 +43,9 @@ export function buildOrdinaryMaterializationSeedScopeRequest(input = {}) {
     policy_refs: context.policy_refs,
     ordinary_state: context.ordinary_state,
     candidate_query: null,
+    ...(outer.authority_context == null ? {} : {
+      authority_envelope: copyJson(outer.authority_context,
+        'ORDINARY_SEED_REQUEST_OBJECTIVE_INVALID') }),
     technical_limits: context.technical_limits
   }, 'ORDINARY_SEED_REQUEST_OBJECTIVE_INVALID');
   try {
@@ -56,7 +60,8 @@ export function buildOrdinaryMaterializationSeedScopeRequest(input = {}) {
 
 /** Builds the closed Stage B request from server-classified candidate data. */
 export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
-  const outer = exactRecord(input, ['objective_context', 'candidate_context'],
+  const outer = exactRecord(input, ['objective_context', 'candidate_context',
+    'selected_supporting_basis_ref'],
     'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   const context = exactRecord(outer.objective_context, [
     'request_id', 'scope_ref', 'context_refs', 'policy_refs',
@@ -125,6 +130,9 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     policy_refs: policyRefs, ordinary_state: context.ordinary_state,
     candidate_query: { candidate_key, candidate_hint: candidate.candidate_hint,
       coverage_key, evidence_weight: 0 }, technical_limits: context.technical_limits
+    , authority_envelope: presenceAuthorityEnvelope({ candidate, policyRefs,
+      contextRefs, propertyPlacementContext, scopeRef,
+      selectedSupportingBasisRef: outer.selected_supporting_basis_ref })
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   try { assertOrdinaryMaterializationRequestV1(request); } catch (error) {
     throw Object.assign(new TypeError('Committed ordinary presence context is invalid.'), {
@@ -155,6 +163,25 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     property_placement_context: propertyPlacementContext,
     property_placement_context_digest: propertyPlacementContextDigest
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID'));
+}
+
+function presenceAuthorityEnvelope({ candidate, policyRefs, contextRefs,
+  propertyPlacementContext, scopeRef, selectedSupportingBasisRef }) {
+  return { stage: 'resolve_presence', candidate: {
+    semantic_type: candidate.semantic_type,
+    functional_bucket: candidate.functional_bucket,
+    admission_class: candidate.admission_class,
+    availability_class: candidate.availability_class,
+    coverage_kind: candidate.coverage_kind, coverage_ref: candidate.coverage_ref
+  }, allowed_supporting_bases: structuredClone(policyRefs.allowed_supporting_bases),
+  selected_supporting_basis_ref: selectedSupportingBasisRef,
+  property_basis_ref: contextRefs.property_context_ref,
+  placement_refs: propertyPlacementContext.placement_catalog
+    .filter((entry) => entry?.state === 'committed'
+      && entry?.scope_ref?.entity_kind === scopeRef.entity_kind
+      && entry?.scope_ref?.entity_id === scopeRef.entity_id
+      && typeof entry.position_ref === 'string')
+    .map(({ position_ref }) => position_ref) };
 }
 
 function propertyContext(value) {

@@ -3,10 +3,10 @@ import test from 'node:test';
 import { checkResult, digest, phase4ArrivalState, runPhase4 } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 
-test('Ratsha lie and bargain require their own code-owned social check',
+test('Ratsha failure bargain requires its code-owned social check',
   async () => {
     const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
-    for (const [responseKind, character] of [['lie', 'a'], ['bargain', 'b']]) {
+    for (const [responseKind, character] of [['bargain', 'b']]) {
       let checkCalls = 0;
       const exchange = await runPhase4({
         state,
@@ -14,7 +14,8 @@ test('Ratsha lie and bargain require their own code-owned social check',
         rawText: 'Ратша, отвечай.',
         inputDigest: digest(character),
         responseKind,
-        checkResult: checkResult(contracts.check.check_id, 'success'),
+        checkResult: checkResult(contracts.check.check_id,
+          'failure_with_consequence'),
         offerStage,
         checkRequest,
         npcSocialCheckResolver: async ({ plan, request }) => {

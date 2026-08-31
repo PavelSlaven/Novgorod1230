@@ -18,6 +18,8 @@ import {
   pendingScreenFor,
   visibleEnvelopeFor
 } from './lower-dvina-trace-phase-3-read-projection.js';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -214,12 +216,12 @@ export async function commitLowerDvinaTracePhase3({
   });
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === operationKind
-        && candidate.canonical_input_digest
-          === integratedInput.canonical_input_digest
-    })
-  });
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === operationKind
+          && candidate.canonical_input_digest
+            === integratedInput.canonical_input_digest
+      })
+    });
   const built = await builder.build(integratedInput);
   if (!built.ok) {
     throw serverError(
@@ -228,6 +230,9 @@ export async function commitLowerDvinaTracePhase3({
       { status: 409, details: built.error }
     );
   }
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: next, screen: pendingScreen
+  });
   const committed = await committer.commit({
     plan: built.plan,
     created_at_turn: turnNumber
@@ -245,6 +250,7 @@ export async function commitLowerDvinaTracePhase3({
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }

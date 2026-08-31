@@ -215,7 +215,7 @@ function applySemanticSurrender({
   const decisionRequestId = semantic.decision_request?.request_id
     ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
   const knifeWrites = contracts?.knifeTransition?.writes;
-  if (!knifeWrites?.physical_position || !knifeWrites?.accessibility) {
+  if (!knifeWrites?.accessibility) {
     semanticFail('TRACE_PHASE_4_KNIFE_TRANSITION_WRITES_MISSING');
   }
   next.ratsha_surrendered = true;
@@ -254,6 +254,7 @@ function applySemanticSurrender({
             holder_npc_id: contracts.actors.participating_fisher.instance_id,
             holder_character_id: null,
             physical_position: knifeWrites.physical_position
+              ?? item.placement.physical_position
           },
           ownership: {
             ...item.ownership,

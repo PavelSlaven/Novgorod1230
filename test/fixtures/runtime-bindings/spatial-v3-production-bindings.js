@@ -35,8 +35,6 @@ const releaseBinding = Object.freeze({
   target_migration_chain_digest:
     '1e075ca34cda4c00fe7d9acc051c8c902785d2adcf604e695f70d18167d11d8f',
   compatible_world_pin_manifest_digest: 'e'.repeat(64),
-  rollback_source_release_id: 'spatial-v3-production-v2',
-  rollback_runtime_selectable: false,
   release_status: 'active',
   production_activation: true,
   runtime_selectable_in_canonical_production: true,

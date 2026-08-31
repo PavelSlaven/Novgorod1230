@@ -18,7 +18,7 @@
       "id": "lower_dvina_trace_phase_1b_publication_v20",
       "revision": 20,
       "schema": "rus.lower_dvina_trace_publication_binding.v1",
-      "digest": "36f7b738100c1fe1b21b8917da9b683efc1c87e34ccf0229814334614413fd30"
+      "digest": "88e319f2e0b020c4eeb2c1cae3e287a2e1edb3a604859d3ad5c78efd035236a8"
     }
   },
   "fallback_policy": "forbidden"

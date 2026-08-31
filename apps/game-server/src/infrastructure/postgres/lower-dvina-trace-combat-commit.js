@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { integrateSpatialV3TemporalWriteFragments } from
   '@rus/turn/spatial-v3-temporal-write-integration';
@@ -45,10 +47,10 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   const writes = mergeLowerDvinaTraceTurnStepWrites(combatWrites({ partyId,
     state, next, factual, turnNumber, changeSetId, idemId, visibleEnvelope,
     pendingScreen }), turnStep.writes);
-  const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({ ok:
-      candidate.party_id === partyId
-      && candidate.operation_kind === 'combat_exchange' }) });
+    const builder = createCombinedWritePlanBuilder({
+      verifyApproval: async (candidate) => ({ ok:
+        candidate.party_id === partyId
+        && candidate.operation_kind === 'combat_exchange' }) });
   let buildInput = {
     plan_id: `p16:${partyId}:combat:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit', operation_kind: 'combat_exchange',
@@ -101,12 +103,16 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   }
   const built = await builder.build(buildInput);
   if (!built.ok) fail('TRACE_COMBAT_WRITE_PLAN_REJECTED', built.error);
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: next, screen: pendingScreen
+  });
   const committed = await committer.commit({ plan: built.plan,
     created_at_turn: turnNumber });
   if (!committed.ok) fail('TRACE_COMBAT_COMMIT_FAILED', committed.error);
   return { ...committed, state_version: nextVersion,
     turn_number: turnNumber, package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest };
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult };
 }
 
 function expectedVersions({ partyId, state, factual }) {

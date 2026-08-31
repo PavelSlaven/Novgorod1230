@@ -106,6 +106,45 @@ test('a code-owned authority gate records the negative resolution without invoki
     'authority_required');
 });
 
+test('a request-classified forbidden admission records authority_required without Stage B', async () => {
+  const restricted = { ...structuredClone(candidate), semantic_type: 'letter',
+    functional_bucket: 'personal_effect', admission_class: 'document_like',
+    availability_class: 'context_bound' };
+  Object.assign(restricted, {
+    candidate_key: createOrdinaryCandidateKey({ scope_ref,
+      normalized_candidate_ref: restricted.normalized_candidate_ref,
+      normalizer_version: restricted.normalizer_version,
+      functional_bucket: restricted.functional_bucket,
+      admission_class: restricted.admission_class,
+      availability_class: restricted.availability_class,
+      policy_version: restricted.policy_version }),
+    category_key: createOrdinaryCategoryKey({ scope_ref,
+      functional_bucket: restricted.functional_bucket,
+      admission_class: restricted.admission_class,
+      availability_class: restricted.availability_class,
+      policy_version: restricted.policy_version })
+  });
+  const forbidden = envelope();
+  forbidden.identity = restricted;
+  forbidden.request.candidate_query.candidate_key = restricted.candidate_key;
+  forbidden.request.authority_envelope = { stage: 'resolve_presence', candidate: {
+    semantic_type: restricted.semantic_type,
+    functional_bucket: restricted.functional_bucket,
+    admission_class: restricted.admission_class,
+    availability_class: restricted.availability_class,
+    coverage_kind: restricted.coverage_kind, coverage_ref: restricted.coverage_ref
+  }, allowed_supporting_bases: structuredClone(forbidden.request.policy_refs.allowed_supporting_bases),
+  selected_supporting_basis_ref: null,
+  property_basis_ref: 'property', placement_refs: ['bench'] };
+  let calls = 0;
+  const output = await resolveOrdinaryMaterializationPresence(input(async () => {
+    calls += 1;
+    return materialize();
+  }, { envelope: forbidden }));
+  assert.equal(calls, 0);
+  assert.equal(output.status, 'authority_required');
+});
+
 test('O2a context-bound presence requires the exact approved permission set and committed basis', async () => {
   const contextCandidate = { semantic_type: 'ordinary_weapon', coverage_kind: 'visible_surface',
     coverage_ref: 'weapon-rack', policy_version: 'presence', functional_bucket: 'arms',

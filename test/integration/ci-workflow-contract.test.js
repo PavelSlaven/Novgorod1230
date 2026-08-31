@@ -6,10 +6,12 @@ import { resolve } from 'node:path';
 test('GitHub Actions clean-clone workflow keeps all required gates in order', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
   const requiredFragments = [
+    'name: full-npm-test',
     'ref: ${{ github.event.pull_request.head.sha || github.sha }}',
     'name: Determine required check profile',
+    'if [ "${{ github.event_name }}" = "pull_request" ]; then',
+    'echo "profile=full" >> "$GITHUB_OUTPUT"',
     'git show HEAD^:tools/spatial-v3/p28-ci-profile.mjs',
-    'echo "profile=full"',
     'name: Normalize lockfile registry',
     'packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
     'https://registry.npmjs.org/',
@@ -51,7 +53,7 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'npm run repo-intel:build',
     'npm run repo-intel:status',
     'npm run test:repository-intelligence',
-    'name: Run full test suite',
+    'name: Run full npm test merge gate',
     'npm test',
     'name: Run evidence-only checks',
     'npm run spatial-v3:p28-local-evidence'

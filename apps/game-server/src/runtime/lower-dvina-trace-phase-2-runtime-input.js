@@ -3,11 +3,17 @@ import { serverError } from '../errors.js';
 export function createStateVersionRevalidator({
   repository,
   partyId,
-  idempotencyKey
+  idempotencyKey,
+  turnBudget = null
 }) {
   return async function revalidateStateVersion() {
+    if (typeof repository.loadPhase2StateVersion === 'function') {
+      return repository.loadPhase2StateVersion(partyId, {
+        presentationIdempotencyKey: idempotencyKey, turnBudget
+      });
+    }
     const current = await repository.loadPhase2State(partyId, {
-      presentationIdempotencyKey: idempotencyKey
+      presentationIdempotencyKey: idempotencyKey, turnBudget
     });
     return current.party_state?.state_version;
   };
@@ -27,6 +33,7 @@ export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
 export function executeTraceTurnWithDiagnostics(llmDiagnostics, context,
   executeAttempt) {
   const run = () => executeTraceTurnWithAutonomousRetry(executeAttempt);
+  if (llmDiagnostics?.turnBudget?.current?.()) return run();
   return llmDiagnostics?.runTurn ? llmDiagnostics.runTurn(context, run) : run();
 }
 

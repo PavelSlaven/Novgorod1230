@@ -1,4 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
+import { setTrustedTurnWorkflowStage } from './context.js';
 import { normalizeTurnIntent } from './stages/normalize-intent.js';
 import { resolveTurnModeStage } from './stages/resolve-mode.js';
 import { loadTurnContextStage } from './stages/load-context.js';
@@ -64,7 +65,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
           rawInput.routing_context ?? rawInput.routingContext ?? {},
         actionSet: state.actionSet,
         commandRegistry: services.commandRegistry,
-        stateReader: services.stateReader
+        stateReader: services.stateReader,
+        retrievedState: state.retrievedState
       }),
       context
     )),
@@ -144,9 +146,12 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       action_production_atomic_write_plans:
         turnStepDraftActionProductionAtomicWritePlans(
           getTurnStepWorkflowDraft(state.modeResolution)),
-      local_fire_atomic_write_plans: turnStepDraftLocalFireAtomicWritePlans(
-        getTurnStepWorkflowDraft(state.modeResolution))
-          ?? state.consequence?.local_fire_atomic_write_plans ?? [],
+      local_fire_atomic_write_plans: [
+        ...turnStepDraftLocalFireAtomicWritePlans(
+          getTurnStepWorkflowDraft(state.modeResolution)),
+        ...(state.consequence?.local_fire_atomic_write_plans ?? []),
+        ...(state.timeUpdate?.local_fire_atomic_write_plans ?? [])
+      ],
       spatial_semantic_atomic_write_plan:
         turnStepDraftSpatialSemanticAtomicWritePlan(
           getTurnStepWorkflowDraft(state.modeResolution)),
@@ -162,6 +167,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
           actionSet: state.actionSet,
           commandRegistry: services.commandRegistry,
           stateReader: services.stateReader,
+          retrievedState: state.retrievedState,
           finalCommit: true
         });
       }
@@ -212,21 +218,25 @@ function approved(artifact) {
 }
 
 function next(state, key, value, context) {
-  context.setStage(stageNameForKey(key), value);
+  const carriesCapability = ['actionSet', 'modeResolution', 'writePlan']
+    .includes(key);
+  // These values have module-private capability seals, so their identity must
+  // survive between stages. All other stage output is copied before freezing.
+  const appended = carriesCapability ? deepFreeze(value)
+    : deepFreeze(structuredClone(value));
+  setTrustedTurnWorkflowStage(context, stageNameForKey(key), appended);
   // The action set, semantic mode and write plan carry in-process capability
   // seals. Cloning deliberately strips the corresponding validation capability.
-  const serializable = Object.fromEntries(
+  const previous = Object.fromEntries(
     Object.entries(state).filter(([name]) =>
       !['actionSet', 'modeResolution', 'writePlan'].includes(name))
   );
-  return deepFreeze({
-    ...structuredClone(serializable),
+  return Object.freeze({
+    ...previous,
     ...(state.actionSet ? { actionSet: state.actionSet } : {}),
     ...(state.modeResolution ? { modeResolution: state.modeResolution } : {}),
     ...(state.writePlan ? { writePlan: state.writePlan } : {}),
-    [key]: ['actionSet', 'modeResolution', 'writePlan'].includes(key)
-      ? value
-      : structuredClone(value)
+    [key]: appended
   });
 }
 

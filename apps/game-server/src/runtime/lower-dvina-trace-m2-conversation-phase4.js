@@ -51,6 +51,7 @@ export async function resolveTracePhase4ConversationExchange({
   const effectiveInputDigest = (pendingExecution ?? persistedPlayer)
     ?.source_input_digest
     ?? inputDigest;
+  const followupAdmission = phase4FollowupAdmission(effectiveCheckResult);
   const initialContext = createM2ConversationContext({
     phase: 'phase_4', state, contracts, playerInput,
     inputDigest: effectiveInputDigest, checkResult: effectiveCheckResult,
@@ -62,6 +63,65 @@ export async function resolveTracePhase4ConversationExchange({
         owner: '@rus/social-law', policy_ref: contracts.promisePolicy.policy_id
       }
     },
+    ...followupAdmission,
+    npcSocialCheckProfile: contracts.npcSocialCheckProfile,
+    npcContributionReferencePolicy: {
+      entity_refs: [], knowledge_refs: [],
+      combat_target_refs: followupAdmission.npcDecisionScope
+        .combat_handoff_available ? [ref('player_character', state.actor_id)] : []
+    },
+    offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
+    classifyNpcPlan: (plan) => classifyRatshaFollowup(plan, {
+      checkResult: effectiveCheckResult,
+      confessionAssertionId: contracts.confessionStatement.assertion.assertion_id
+    }),
+    playerPlan
+  });
+  const effectivePlayerPlan = pendingExecution !== null ? null
+    : pendingPlayer?.plan
+      ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
+  const context = { ...initialContext, playerPlan: effectivePlayerPlan };
+  return resultProjection(
+    await executeM2ConversationExchange(context),
+    context,
+    state,
+    effectiveOfferStage,
+    effectiveCheckRequest,
+    effectiveInputDigest
+  );
+}
+
+function phase4FollowupAdmission(checkResult) {
+  const band = checkResult?.outcome?.band ?? null;
+  if (['clean_success', 'success', 'success_with_cost'].includes(band)) {
+    return {
+      npcOperationContract: {
+        [SURRENDER_OPERATION]: {
+          required_dominant_acts: ['accept', 'promise', 'confess'],
+          required_interaction_tag: 'surrender'
+        }
+      },
+      npcDecisionScope: {
+        action_handoff_available: false,
+        combat_handoff_available: false,
+        required_supporting_operation: { op: SURRENDER_OPERATION }
+      }
+    };
+  }
+  if (['failure_with_consequence', 'severe_failure'].includes(band)) {
+    return {
+      npcOperationContract: {
+        [BARGAIN_OPERATION]: {
+          required_dominant_acts: ['negotiate', 'offer', 'threaten'],
+          required_interaction_tag: 'bargain'
+        }
+      },
+      npcDecisionScope: {
+        action_handoff_available: false, combat_handoff_available: true
+      }
+    };
+  }
+  return {
     npcOperationContract: {
       [SURRENDER_OPERATION]: {
         required_dominant_acts: ['accept', 'promise', 'confess'],
@@ -78,32 +138,22 @@ export async function resolveTracePhase4ConversationExchange({
     },
     npcDecisionScope: {
       action_handoff_available: false, combat_handoff_available: true
-    },
-    npcSocialCheckProfile: contracts.npcSocialCheckProfile,
-    npcContributionReferencePolicy: {
-      entity_refs: [],
-      knowledge_refs: [],
-      combat_target_refs: [ref('player_character', state.actor_id)]
-    },
-    offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
-    classifyNpcPlan: (plan) => classifyRatshaPlan(plan, {
-      confessionAssertionId:
-        contracts.confessionStatement.assertion.assertion_id
-    }),
-    playerPlan
-  });
-  const effectivePlayerPlan = pendingExecution !== null ? null
-    : pendingPlayer?.plan
-      ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
-  const context = { ...initialContext, playerPlan: effectivePlayerPlan };
-  return resultProjection(
-    await executeM2ConversationExchange(context),
-    context,
-    state,
-    effectiveOfferStage,
-    effectiveCheckRequest,
-    effectiveInputDigest
-  );
+    }
+  };
+}
+
+function classifyRatshaFollowup(plan, { checkResult, confessionAssertionId }) {
+  const outcome = classifyRatshaPlan(plan, { confessionAssertionId });
+  const band = checkResult?.outcome?.band ?? null;
+  const admitted = ['clean_success', 'success', 'success_with_cost'].includes(band)
+    ? ['surrender']
+    : ['failure_with_consequence', 'severe_failure'].includes(band)
+      ? ['bargain', 'combat_handoff'] : null;
+  if (admitted !== null && !admitted.includes(outcome.kind)) {
+    fail('TRACE_M2_RATSHA_FOLLOWUP_NOT_ADMITTED',
+      'Ratsha response is outside the check-admitted follow-up set.');
+  }
+  return outcome;
 }
 
 function requireCausalInput({ checkResult, checkRequest, offerStage, contracts }) {

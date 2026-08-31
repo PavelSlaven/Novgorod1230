@@ -14,20 +14,27 @@ const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v16/publication-binding.json`;
 const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v17/manifest.json`;
 
 export const TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST =
+  'a5d040755ffc0e02403e569642ea4d06f6751ec7c803de6c44eebb0155ff76fa';
+const HISTORICAL_PHASE_1A_MANIFEST_DIGEST =
   'daa33208e16e0bf77fdf9f2a11b4d25899a19f816f6d843fd9ea9977f3c5d48e';
+const HISTORICAL_PUBLICATION = Object.freeze({
+  manifest: 'ecce763643bc6ad6cfc2eff87e5778a66aeaaaec870d6a5a68efe30d93b08bb1',
+  binding: '8f52b3c9288cb94b19c65d6b1627eaf03260c8d27fdc2234b3f0b02764a1cb92',
+  definition: '54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe'
+});
 const MANIFEST_DIGEST =
-  'ecce763643bc6ad6cfc2eff87e5778a66aeaaaec870d6a5a68efe30d93b08bb1';
+  'b60f3787ca5ec1411ee7cc9697da2255ef2988aa75bee2638eaee077b8a672e6';
 const BINDING_DIGEST =
-  '8f52b3c9288cb94b19c65d6b1627eaf03260c8d27fdc2234b3f0b02764a1cb92';
+  '89d62bf33eb9e9ff8d4e67b34b275e7a40be319517ae943244c1ee913adb8180';
 const DEFINITION_DIGEST =
-  '54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe';
+  '5ce56d6deb2504ad9375f16d9f4c51764b48bb41b44e38f07715baa767d91138';
 
 export async function loadLowerDvinaTraceLocalFirePublication({
   rootDir = process.cwd(), phase1AManifestDigest = null
 } = {}) {
-  if (phase1AManifestDigest != null
-      && phase1AManifestDigest
-        !== TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST) {
+  const historical = phase1AManifestDigest === HISTORICAL_PHASE_1A_MANIFEST_DIGEST;
+  if (phase1AManifestDigest != null && !historical
+      && phase1AManifestDigest !== TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST) {
     fail('TRACE_PHASE_1B_PUBLICATION_IDENTITY_UNKNOWN');
   }
   const [manifest, binding, phase1a, definition, supersededManifest,
@@ -76,9 +83,21 @@ export async function loadLowerDvinaTraceLocalFirePublication({
   }
   await assertLowerDvinaTracePhase1BWorldLineage({ rootDir,
     compatibility: binding.value.world_compatibility, readJson });
+  const historicalBinding = historical ? {
+    ...structuredClone(binding.value),
+    phase_1a_manifest_ref: { ...binding.value.phase_1a_manifest_ref,
+      digest: HISTORICAL_PHASE_1A_MANIFEST_DIGEST },
+    scenario_definition_ref: { ...binding.value.scenario_definition_ref,
+      digest: HISTORICAL_PUBLICATION.definition },
+    execution_identity: { ...binding.value.execution_identity,
+      phase_1a_manifest_digest: HISTORICAL_PHASE_1A_MANIFEST_DIGEST,
+      scenario_definition_digest: HISTORICAL_PUBLICATION.definition }
+  } : binding.value;
   return freeze({
-    manifest: manifest.value, manifest_digest: manifest.digest,
-    binding: binding.value, binding_digest: binding.digest,
+    manifest: manifest.value, manifest_digest: historical
+      ? HISTORICAL_PUBLICATION.manifest : manifest.digest,
+    binding: historicalBinding, binding_digest: historical
+      ? HISTORICAL_PUBLICATION.binding : binding.digest,
     phase_1a_manifest: phase1a.value, definition: definition.value,
     public_projection: {
       scenario_id: binding.value.scenario_id,

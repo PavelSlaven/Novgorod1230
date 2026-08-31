@@ -8,6 +8,7 @@ import { createProductionLlmRoleRunner } from './infrastructure/provider/deepsee
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
 import { createLlmSettingsOwner } from './runtime/llm-settings.js';
 import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
+import { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
 import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from './internal/lower-dvina-trace-ordinary-materialization-profile.js';
 
@@ -20,8 +21,9 @@ const llmSettings = createLlmSettingsOwner({
     evalContract: ordinaryProfile.stage_b_classification_eval
   })
 });
-const llmDiagnostics = createLlmDiagnostics();
-const runtimeConfig = { ...config, llmSettings, llmDiagnostics };
+const llmTurnBudget = createLlmTurnBudget();
+const llmDiagnostics = createLlmDiagnostics({ turnBudget: llmTurnBudget });
+const runtimeConfig = { ...config, llmSettings, llmDiagnostics, llmTurnBudget };
 const productionRoot = await loadConfiguredComposition(config.compositionModule, { env: process.env, config: runtimeConfig });
 const root = Object.freeze({
   ...productionRoot,

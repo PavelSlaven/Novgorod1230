@@ -11,7 +11,8 @@ export const TRACE_PHASE7_PROVIDER = versioned(
 export function buildTracePhase7TemporalRequest({ state, contracts,
   executionId, limit, commandIdempotencyKey, rootTurnId,
   clockBefore = state.clock,
-  sourceCandidates = state.temporal_boundary_candidates ?? [],
+  sourceCandidates = state.temporal_boundary_candidates ?? [], changeSetId =
+    `change:${state.party_id}:trace-phase7:${state.party_state.turn_number + 1}`,
   projection = null, segment = 'waiting' }) {
   const pins = sealed({ pins: [{
     dependency_role: 'dynamic_recheck_policy',
@@ -43,8 +44,7 @@ export function buildTracePhase7TemporalRequest({ state, contracts,
       record_id:
         `idem:${state.party_id}:trace-phase7:${commandIdempotencyKey}:${segment}`,
       idempotency_key: `${commandIdempotencyKey}:${segment}`,
-      change_set_id:
-        `change:${state.party_id}:trace-phase7:${state.party_state.turn_number + 1}`
+      change_set_id: changeSetId
     },
     provider_versions: [TRACE_PHASE7_EXTERNAL_PROVIDER, TRACE_PHASE7_PROVIDER]
   };

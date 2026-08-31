@@ -1,7 +1,10 @@
 import { isDeepStrictEqual } from 'node:util';
+import { diagnoseNpcCombatIntentPlan } from '@rus/contracts/combat-v1';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
+  diagnoseConversationPlanDominantAct,
+  diagnoseNpcStepPlan,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
   validateNpcCombatDecisionRequest,
@@ -87,10 +90,10 @@ function safeModelOutput(rawPlan) {
   }
 }
 
-function repairContext(rawPlan) {
+function repairContext(rawPlan, validationErrors = null) {
   return immutable({
     original_output: safeModelOutput(rawPlan),
-    validation_errors: [{
+    validation_errors: validationErrors ?? [{
       code: 'conversation_contribution_schema_invalid',
       path: '$',
       message: 'Response must match the requested NPC semantic plan schema exactly.'
@@ -245,26 +248,43 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         continue decisionLoop;
       }
 
-      if (validatePlanForMode(rawPlan, safeRequest, mode)) break;
+      const structurallyValid = validatePlanForMode(
+        rawPlan, safeRequest, mode);
+      const domainResult = structurallyValid
+        ? planDomainResult(rawPlan, safeRequest, validatePlan) : null;
+      if (structurallyValid && domainResult?.pass !== false) break;
+      if (domainResult?.pass === false && !domainResult.errors.every(
+        ({ retryable }) => retryable === true
+      )) {
+        return domainRejectedProposal(currentBoundary, currentRequest,
+          currentSignals, rawPlan, domainResult);
+      }
+      const structuralErrors = structuralPlanErrors(
+        rawPlan, safeRequest, mode);
       if (repair !== null) {
         fail(
           'TURN_NPC_PLAN_INVALID',
           'NPC semantic response and its format repair must match the request',
           { request_id: currentRequest.request_id,
-            boundary_id: currentBoundary.boundary_id }
+            boundary_id: currentBoundary.boundary_id,
+            validation_errors: structuralErrors }
         );
       }
-      repair = repairContext(rawPlan);
+      repair = repairContext(rawPlan, domainResult?.errors
+        ?? (structuralErrors.length > 0 ? structuralErrors : null));
     }
 
-    const domainResult = planDomainResult(rawPlan, safeRequest, validatePlan);
-    if (domainResult !== null && domainResult.pass === false) {
-      return domainRejectedProposal(currentBoundary, currentRequest,
-        currentSignals, rawPlan, domainResult);
-    }
     return plannedProposal(
       currentBoundary, currentRequest, currentSignals, rawPlan);
   }
+}
+
+function structuralPlanErrors(plan, request, mode) {
+  if (mode === 'combat') return diagnoseNpcCombatIntentPlan(plan, request);
+  if (mode === 'conversation') {
+    return diagnoseConversationPlanDominantAct(plan);
+  }
+  return diagnoseNpcStepPlan(plan, request);
 }
 
 async function rebuildStaleDecision({ boundary, request, rawPlan,

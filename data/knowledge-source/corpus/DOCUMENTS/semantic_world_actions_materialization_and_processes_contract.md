@@ -2787,11 +2787,13 @@ trigger:
 subject_state:
 environment_state:
 
-allowed_outcomes:
-  - no_effect
-  - start
-  - continue
-  - complete
+outcome_contract:
+  - process_outcome: no_effect
+    reason_code: "..."
+    applicability: "..."
+  - process_outcome: start | continue | complete
+    reason_code: "..."
+    applicability: "..."
 ```
 
 Regular `temporal_boundary` не требует LLM в F1: consumption и lifecycle следуют code policy.
@@ -2830,6 +2832,11 @@ reason_code:
 
 - start attempt использует `process_ref = null`;
 - existing process ref/version должны exact match request;
+- LLM выбирает только один качественный `(process_outcome, reason_code)` pair из
+  переданного code-owned `outcome_contract`; `applicability` объясняет, когда
+  конкретная пара допустима, а не даёт LLM право изобрести новую;
+- validator связывает `process_outcome` и `reason_code` как одну contract entry,
+  поэтому допустимый outcome с другим reason code не проходит;
 - `affected_refs` могут ссылаться только на request refs;
 - `fact_changes` проходят ordinary fact admission и не меняют item quantity;
 - plan не содержит `resource_deltas`;
@@ -2838,7 +2845,9 @@ reason_code:
 - plan не применяет body damage;
 - plan не раскрывает informational truth.
 
-После validation `@rus/world-processes` и item/time owners строят exact lifecycle/resource proposal.
+После validation `@rus/world-processes` и item/time owners строят exact
+lifecycle/resource proposal. Exact mechanics, resource transitions, state,
+timestamps, versions и persisted process identity остаются code-owned.
 
 Successful start получает code-owned process ref.
 

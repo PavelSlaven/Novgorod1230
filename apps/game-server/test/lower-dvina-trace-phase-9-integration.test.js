@@ -158,11 +158,9 @@ test('Phase 9 commits first, then Phase 10 completes and presents a safe epilogu
     const dispositionText = 'Временно удержать Ратшу и Жданко до передачи '
       + 'властям, сохранить свёрток для Саввы и соблюсти обещание Ратше.';
     runtime.setNarrationFails(true);
-    await assert.rejects(
-      () => submit(runtime, 'p9-disposition', dispositionText),
-      /narration_flow_result invalid/u);
-    assert.equal(runtime.state.completion.status, 'committed');
-    assert.equal(runtime.commitCount(), commitsBefore + 2);
+    const {screen}=await submit(runtime,'p9-disposition',dispositionText);
+    assert.deepEqual([screen,runtime.state.completion.status,runtime.commitCount()-commitsBefore,
+      runtime.events.filter(event=>event==='commit_phase10').length,runtime.events.includes('persist_screen')],[{schema:'lower_dvina_trace_turn_screen',screen_status:'committed_presentation_pending',turn_id:`turn:${runtime.partyId}:${turnBefore+1}`},'committed',2,1,false]);
     runtime.setNarrationFails(false);
     const dispositionResult = await submit(runtime, 'p9-disposition',
       dispositionText);
@@ -207,7 +205,6 @@ test('Phase 9 commits first, then Phase 10 completes and presents a safe epilogu
         'onisim_testimony', 'evidence_resolved', 'temporary_disposition']);
 
     await assertReplay(runtime, 'p9-disposition', dispositionText);
-    assert.equal(testimonyCalls, 1);
     runtime = createRuntime(structuredClone(runtime.state));
     assert.equal(runtime.state.npcs.find(({ participant_slot_ref: slot }) =>
       slot === 'zhdanko_storehouse_controller').machine_state

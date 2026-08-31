@@ -34,10 +34,23 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
       || semanticExchange.combat_handoff?.kind !== 'combat') {
     return null;
   }
+  const exchangeId = semanticExchange.exchange?.exchange_id
+    ?? semanticExchange.exchange_id;
+  return initializeTraceCombat({ state, binding, actor, participantBindings,
+    playerInput, npcCombatModel, revalidateStateVersion, combatLabel,
+    movementBindings, perceivedChangeSummary,
+    startedAt: semanticExchange.clock_after,
+    sourceEventRef: ref('conversation_exchange', exchangeId
+      ?? `combat:${state.party_id}:handoff`) });
+}
+
+export async function initializeTraceCombat({ state, binding, actor,
+  participantBindings = [], playerInput, npcCombatModel,
+  revalidateStateVersion, combatLabel, perceivedChangeSummary,
+  movementBindings, startedAt, sourceEventRef }) {
   if (!binding || typeof npcCombatModel !== 'function') {
     fail('TRACE_COMBAT_HANDOFF_DEPENDENCY_MISSING');
   }
-  const startedAt = semanticExchange.clock_after;
   const rootTurnId = [
     'turn', state.party_id, Number(state.party_state.turn_number) + 1
   ].join(':');
@@ -59,8 +72,6 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
     ]
   });
   const batchRef = ref('temporal_batch', `${combatId}:initial`);
-  const exchangeId = semanticExchange.exchange?.exchange_id
-    ?? semanticExchange.exchange_id;
   const contexts = buildCombatInitializationDecisionContexts({
     session,
     same_time_batch_ref: batchRef,
@@ -72,10 +83,7 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
       occurred_at: startedAt,
       category: binding.signal_descriptor.category,
       significance: binding.signal_descriptor.significance,
-      source_event_ref: ref(
-        'conversation_exchange',
-        exchangeId ?? `${combatId}:handoff`
-      ),
+      source_event_ref: structuredClone(sourceEventRef),
       subject_ref: ref('npc', subject.instance_id),
       perception_required: binding.signal_descriptor.perception_required,
       perceived_change_summary: summary

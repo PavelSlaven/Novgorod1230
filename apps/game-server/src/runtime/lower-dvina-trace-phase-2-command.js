@@ -73,7 +73,8 @@ export function createTracePhase2InspectionCommand({
         contracts,
         state
       });
-      if (!temporalWindow.ok) {
+      if (!temporalWindow.ok
+          && state.temporal_source_proof?.version !== 2) {
         return availability('blocked', false, [], [
           'temporal_boundary_precedes_activity_completion'
         ]);

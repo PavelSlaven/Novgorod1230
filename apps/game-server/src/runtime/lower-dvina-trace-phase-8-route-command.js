@@ -109,7 +109,8 @@ function routeAvailable(state, contracts) {
 function routeParticipants(contracts) { return [contracts.stateActorId,
   contracts.actors.eremey.instance_id,
   contracts.actors.ratsha.instance_id,
-  contracts.actors.participatingFisher.instance_id].filter(Boolean); }
+  ...contracts.participatingFishers.map(({ instance_id: id }) => id)]
+  .filter(Boolean); }
 function normalize(value) { return String(value ?? '').trim().toLowerCase()
   .replace(/\s+/gu, ' '); }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

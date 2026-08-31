@@ -121,14 +121,14 @@ test('Phase 7 applicability rejection stops the production workflow',
     assert.deepEqual(persistedProjection, stateBefore);
   });
 
-test('Phase 7 defers completion from contract continuation dependencies',
+test('Phase 7 defers completion only for its prepared followup marker',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
     const consequence = await phase7Command({
       state,
       contracts,
-      continuationTargetRefs: ['eremey', 'fisher-1', 'fisher-2'],
+      preparedFollowupRef: 'turn10-companion',
       model: async (request) => phase7AutonomousPlan(request, 'wait')
     }).consequence({
       retrievedState: state,
@@ -136,10 +136,33 @@ test('Phase 7 defers completion from contract continuation dependencies',
       semanticPlan: {
         continuation: {
           remaining_intent: 'Осмотреть берег.',
-          depends_on_refs: ['eremey', 'fisher-1', 'fisher-2']
+          depends_on_refs: [],
+          prepared_followup_ref: 'turn10-companion'
         }
       }
     });
     assert.equal(consequence.duration_minutes, 25);
     assert.equal(consequence.phase7.schedule_temporal.rest_completed, false);
   });
+
+test('Phase 7 completes an unrelated empty continuation', async () => {
+  const state = phase7CommittedState();
+  const contracts = approvedPhase7Contracts(state);
+  const consequence = await phase7Command({
+    state,
+    contracts,
+    preparedFollowupRef: 'turn10-companion',
+    model: async (request) => phase7AutonomousPlan(request, 'wait')
+  }).consequence({
+    retrievedState: state,
+    playerInput: phase7PlayerInput(state, 'unrelated-declared-continuation'),
+    semanticPlan: {
+      continuation: {
+        remaining_intent: 'Осмотреть берег.',
+        depends_on_refs: []
+      }
+    }
+  });
+  assert.equal(consequence.duration_minutes, 30);
+  assert.equal(consequence.phase7.schedule_temporal.rest_completed, true);
+});

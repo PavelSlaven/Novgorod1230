@@ -119,11 +119,8 @@ test(
     assert.equal(health.authoritative_reads, 'spatial_v3_only');
     assert.equal(health.authoritative_writes, 'spatial_v3_only');
     assert.equal(health.runtime_fallback, 'forbidden');
-    assert.equal(
-      health.rollback_source_release_id,
-      'spatial-v3-production-v2'
-    );
-    assert.equal(health.rollback_runtime_selectable, false);
+    assert.equal('rollback_source_release_id' in health, false);
+    assert.equal('rollback_runtime_selectable' in health, false);
     assert.equal(health.temporal_contract_id, 'temporal-world-v1.1');
     assert.equal(
       health.world_revision_id,

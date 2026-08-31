@@ -17,7 +17,8 @@ import {
 import { enterG4WithMaterialization } from './first-entry-materialization.js';
 import { resolveOrdinaryMaterializationSeedScope } from
   './ordinary-materialization-seed.js';
-import { resolveOrdinaryMaterializationPresence } from
+import { resolveOrdinaryMaterializationPresence,
+  selectOrdinaryMaterializationSupportingBasis } from
   './ordinary-materialization-presence.js';
 import { resolveWorldProcessStep, validateWorldProcessStepPlan } from './world-process-step.js';
 import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
@@ -148,6 +149,7 @@ export {
   enterG4WithMaterialization,
   resolveOrdinaryMaterializationSeedScope,
   resolveOrdinaryMaterializationPresence,
+  selectOrdinaryMaterializationSupportingBasis,
   resolveWorldProcessStep,
   validateWorldProcessStepPlan,
   resolveSpatialSemanticDescriptor,

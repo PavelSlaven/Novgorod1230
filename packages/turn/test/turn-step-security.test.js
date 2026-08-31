@@ -11,6 +11,21 @@ import {
 
 const HIDDEN_SENTINEL = 'hidden-handler-sentinel';
 
+test('semantic binding operation DTO is schema-valid at registry creation', () => {
+  const command = semanticDomainServices({ hiddenUpdate: () => ({
+    approved_update: {} }) }).services.commandRegistry.get('inspect_gate');
+  const dto = { op: 'request_discovery', actor_ref: 'party-1',
+    discovery_kind: 'inspect', target_refs: ['place-gate'], query: 'осмотреть' };
+  const register = (operation_dto) => createTurnCommandRegistry([{ ...command,
+    semantic_binding: { binding_id: 'dto', operation: 'request_discovery',
+      operation_dto, matches: () => false } }]);
+  assert.doesNotThrow(() => register(dto));
+  for (const invalid of [{ ...dto, query: undefined }, { ...dto, extra: true },
+    { ...dto, discovery_kind: 'invalid' }]) {
+    assert.throws(() => register(invalid), TypeError);
+  }
+});
+
 test('handler summaries never enter a later player-safe step request', async () => {
   const requests = [];
   const executionRegistry = createTurnStepExecutionRegistry({

@@ -108,8 +108,6 @@ check(
     === 'b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45',
   'target migration chain digest mismatch'
 );
-check(boundary.release?.rollback_source_release_id === 'spatial-v3-production-v2', 'rollback source identity mismatch');
-check(boundary.release?.rollback_runtime_selectable === false, 'rollback source must not be runtime selectable');
 check(
   serverConfig.includes(
     "text(env.RUS_COMPOSITION_MODULE) || 'builtin:production-spatial-v3'"
@@ -150,9 +148,8 @@ check(
   'production v3 public export mismatch'
 );
 check(
-  serverPackage.exports?.['./production-v2-migration-source']
-    === './src/production-v2-migration-source.js',
-  'explicit production-v2 migration/rollback source export mismatch'
+  !serverPackage.exports?.['./production-v2-migration-source'],
+  'legacy production-v2 migration/rollback export remains public'
 );
 check(
   !serverPublicApi.includes("from './production.js'"),

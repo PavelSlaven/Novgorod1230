@@ -37,11 +37,9 @@ import {
 import { makeStage24Fixture } from '../fixtures/stage24-fixtures.mjs';
 import { buildPartyRuntimeV2WritePlan } from '@rus/new-game/stages/stage-24/compat';
 import { materializeStage25PhysicalPlan } from '@rus/new-game/stages/stage-25/compat';
-import {
-  createPostgresPartyStore,
-  createPostgresStage25Ports,
-  createRuntimeCatalogCoordinator
-} from '@rus/game-server/production-v2-migration-source';
+import { createPostgresPartyStore } from '../../apps/game-server/src/infrastructure/postgres/party-store.js';
+import { createPostgresStage25Ports } from '../../apps/game-server/src/infrastructure/postgres/stage25.js';
+import { createRuntimeCatalogCoordinator } from '../../apps/game-server/src/runtime/runtime-catalog.js';
 import { materializeWorldInstances } from '@rus/materialization';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });

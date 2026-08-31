@@ -123,7 +123,7 @@ export function appendApprovedRatshaKnife({ updates, state, next, n, partyId,
       ratsha_storehouse_helper: contracts.actors.ratsha_storehouse_helper.instance_id,
       trace_ld_v1_audience_slot_participating_fisher: n.participating_fisher_id
     },
-    items: state.items,
+    items: committedInventory.items,
     item_profiles: committedInventory.item_profiles,
     item_placements: committedInventory.item_placements,
     containers: committedInventory.containers,
@@ -135,14 +135,19 @@ export function appendApprovedRatshaKnife({ updates, state, next, n, partyId,
     })),
     source: { actor_kind: 'npc', actor_id: contracts.actors.ratsha_storehouse_helper.instance_id,
       controller_actor_id: contracts.actors.ratsha_storehouse_helper.instance_id,
-      physical_position: contracts.knifeTransition.requires.physical_position,
-      accessibility: contracts.knifeTransition.requires.accessibility },
+      physical_position: contracts.knifeTransition.requires.physical_position
+        ?? item.placement.physical_position,
+      accessibility: contracts.knifeTransition.requires.accessibility
+        ?? item.state.accessibility
+        ?? item.state.property_state?.accessibility },
     destination: { actor_kind: 'npc', actor_id: n.participating_fisher_id,
       controller_actor_id: n.participating_fisher_id,
-      physical_position: contracts.knifeTransition.writes.physical_position,
+      physical_position: contracts.knifeTransition.writes.physical_position
+        ?? item.placement.physical_position,
       accessibility: contracts.knifeTransition.writes.accessibility }, actor_strengths: {} });
   if (!plan.pass || plan.proposal.placement.physical_position
-      !== contracts.knifeTransition.writes.physical_position) {
+      !== (contracts.knifeTransition.writes.physical_position
+        ?? item.placement.physical_position)) {
     throw new Error('TRACE_PHASE_4_KNIFE_TRANSITION_REJECTED');
   }
   updates.push(row('party_item_placements', item.item_id, { party_id: partyId,

@@ -188,6 +188,8 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
       semantic_binding: {
         binding_id: record.binding_id,
         operation: record.operation,
+        operation_dto: plannerOperation({ command, expected, actorRef, targetRef,
+          evidenceRef: targetRefs?.evidence }),
         matches: ({ operation }) =>
           matchesOperation({
             operation,
@@ -217,7 +219,6 @@ function normalizeExactText(value) {
     .toLowerCase()
     .replace(/\s+/gu, ' ');
 }
-
 function validRecord(record, expected) {
   return (
     record?.operation === expected.operation &&
@@ -229,7 +230,19 @@ function validRecord(record, expected) {
     (expected.instrumentSemantic == null || record.instrument_semantics?.includes(expected.instrumentSemantic) === true)
   );
 }
-
+function plannerOperation({ command, expected, actorRef, targetRef, evidenceRef }) {
+  const operation = { op: expected.operation, actor_ref: actorRef, [expected.kindField]: expected.kind };
+  if (expected.operation === 'request_movement') return { ...operation, target_ref: targetRef };
+  if (expected.operation === 'request_container_access') return { ...operation, container_ref: targetRef };
+  if (expected.operation === 'request_item_use') return { ...operation, item_ref: targetRef, target_refs: [] };
+  if (expected.operation === 'request_combat') return typeof targetRef !== 'string' || targetRef.length === 0 ? null
+    : { ...operation, target_refs: [targetRef], protected_refs: [], scope_ref: null, destination_ref: null, force_limit: 'ordinary', risk_posture: 'ordinary' };
+  if (expected.operation === 'emit_interaction') return { ...operation, target_actor_refs: Array.isArray(targetRef) ? targetRef : [targetRef], instrument_refs: expected.instrument === 'evidence' ? [evidenceRef] : [], content: command.label };
+  if (expected.operation === 'request_activity') return expected.closedSelection === true ? null
+    : { ...operation, target_refs: Array.isArray(targetRef) ? targetRef : [targetRef], description: command.label };
+  if (expected.operation === 'request_discovery') return { ...operation, target_refs: Array.isArray(targetRef) ? targetRef : [targetRef], query: command.label };
+  return null;
+}
 function matchesOperation({ operation, expected, allowedKinds, actorRef, targetRef, evidenceRef }) {
   if (operation?.op !== expected.operation || operation.actor_ref !== actorRef || !allowedKinds.includes(operation[expected.kindField])) {
     return false;

@@ -42,10 +42,6 @@ export function assertNewGameCreationIdentity({
       isDeepStrictEqual(stored, expected))) return;
     conflict();
   }
-  if (isLegacyStartTextSnapshot(statePayload)) {
-    assertLegacyStartTextReplay(partyId, statePayload, expected);
-    return;
-  }
   if (isDeepStrictEqual(
     legacyScenarioCreationIdentity(partyId, statePayload),
     expected
@@ -88,27 +84,6 @@ function legacyScenarioCreationIdentity(partyId, statePayload) {
     effective_player_name: null,
     branch_input_digest: scenarioBranchDigest(statePayload.scenario_id)
   };
-}
-
-function isLegacyStartTextSnapshot(statePayload) {
-  return statePayload?.schema === 'lower_dvina_first_playable_state.v1'
-    && statePayload.creation_identity == null
-    && statePayload.scenario_id == null;
-}
-
-function assertLegacyStartTextReplay(partyId, statePayload, expected) {
-  // Pre-PR snapshots did not persist raw start_text. The compatibility
-  // policy therefore proves only the immutable fields that still exist.
-  if (statePayload.party_id !== partyId
-    || expected?.version !== 1
-    || expected.schema !== 'rus.first_playable_public_creation_identity.v1'
-    || expected.party_id !== partyId
-    || expected.request_id_digest !== hash(statePayload.request_id)
-    || expected.launch_branch !== 'start_text'
-    || expected.scenario_id !== null
-    || expected.effective_player_name !== statePayload.player?.name) {
-    conflict();
-  }
 }
 
 function conflict() {

@@ -5,7 +5,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
-import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+import { createLowerDvinaTracePublicRuntime } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
@@ -102,7 +102,8 @@ async function runtimePins() {
 function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
   treatmentRandomValue = randomValue, counters = null }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: firstPlayableCommitRecheck, now: () => new Date('2026-07-30T08:00:00.000Z') });
-  const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer });
+  const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer,
+    narrationService: { async run(request) { return narration(request.request_id); } } });
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels();
   const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
@@ -123,7 +124,7 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
         lowerDvinaTraceConversationTemporalEffectRegistrations()
     }),
     now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
-  return createFirstPlayablePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 
 function semanticOption(raw, options) { const text = raw.toLowerCase(); const id = text.includes('осмотр') ? 'inspect_wreck_in_detail' : text.includes('показ') ? 'show_clue_and_seek_eremey_cooperation' : text.includes('сушиль') ? 'follow_known_route_to_drying_shed' : text.includes('стан') ? 'follow_path_to_fishing_camp' : text.includes('помощ') || text.includes('лечени') ? 'attempt_risky_first_aid_onisim' : 'offer_conditional_protection_and_seek_surrender'; assert.ok(options.some(({ option_id }) => option_id === id), `${id}: ${options.map(({ option_id }) => option_id)}`); return id; }
@@ -464,7 +465,7 @@ async function resolveTreatmentBoundary(pool, partyId) {
       `event:${partyId}:phase5-interruption:resolved`, partyId]
   );
 }
-function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
+function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible_context'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
 async function waitForPostgres(name) {
   for (let i = 0; i < 30; i += 1) {

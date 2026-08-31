@@ -8,15 +8,18 @@ import { createTraceTurnRuntime } from
 
 test('runtime injects owner adapters and handoffs', async () => {
   let captured;
+  const turnBudget = {};
   createTraceTurnRuntime({ partyPool: { query() {}, connect() {} },
     committer: { commit() {} }, env: {},
-    config: { traceTurnDecisionSecret: 'test-secret' },
+    config: { traceTurnDecisionSecret: 'test-secret', llmTurnBudget: turnBudget,
+      llmDiagnostics: { telemetry: null, turnBudget: {} } },
     ordinaryMaterializationProfile: null, ordinaryContainerContentsProfile: null,
     ordinaryStageBApproval: { model_identity: { provider: 'test', model: 'test',
       scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'test' } }, actionProductionProfile: null,
     localFireProfile: null, spatialSemanticProfile: null,
     createNpcRuntimePorts: () => ({}),
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; } });
+  assert.equal(captured.llmTurnBudget, turnBudget);
   assert.equal(typeof captured.createNpcOwnerCapabilities, 'function');
   const npc = { instance_id: 'npc', machine_state: {}, perception_snapshot: {
     present_actors: [{ actor_ref: 'visible',

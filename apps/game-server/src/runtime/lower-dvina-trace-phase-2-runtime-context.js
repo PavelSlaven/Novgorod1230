@@ -65,6 +65,7 @@ export function buildTracePhase2Registry(context) {
     revalidateStateVersion,
     state,
     temporalAdvanceOwner,
+    turnBudget,
     turn10,
     turnRandomSource,
   } = context;
@@ -77,7 +78,8 @@ export function buildTracePhase2Registry(context) {
           playerConversationModel,
           npcSemanticModel,
           temporalAdvanceOwner,
-          revalidateStateVersion: createStateVersionRevalidator({ repository, partyId, idempotencyKey }),
+          revalidateStateVersion: createStateVersionRevalidator({ repository,
+            partyId, idempotencyKey, turnBudget }),
         })
       : []),
     ...(phase4Contracts
@@ -100,6 +102,7 @@ export function buildTracePhase2Registry(context) {
             repository,
             partyId,
             idempotencyKey,
+            turnBudget,
           }),
         })
       : []),
@@ -126,7 +129,7 @@ export function buildTracePhase2Registry(context) {
             contracts: phase7Contracts,
             conversationBindings: phase3Contracts?.conversationBindings ?? null,
             conversationActivity: phase3Contracts?.talk ?? null,
-            continuationTargetRefs: turn10?.companionTargetRefs ?? [],
+            preparedFollowupRef: turn10?.command.command_id ?? null,
             inputDigest,
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,

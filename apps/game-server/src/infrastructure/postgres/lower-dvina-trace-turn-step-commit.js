@@ -19,6 +19,8 @@ import {
 import {
   buildLowerDvinaTracePendingScreen
 } from './lower-dvina-trace-turn-presentation.js';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { applyOrdinaryMaterializationProjection, ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
 import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
@@ -149,7 +151,8 @@ export async function commitLowerDvinaTraceTurnStep({
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,
-    visibleEnvelope
+    visibleEnvelope,
+    turnConsequence: factual.consequence
   });
   const rootWrites = buildLowerDvinaTraceTurnStepRootWrites({
     partyId, state, snapshot: turnStep.snapshot, envelope, nextVersion,
@@ -163,14 +166,17 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: turnStep.snapshot, screen: pendingScreen
+  });
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
-  const built = await buildLowerDvinaTraceTurnStepCommitPlan({
-    partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlans, spatialSemanticPlan
-  });
+    const built = await buildLowerDvinaTraceTurnStepCommitPlan({
+      partyId, state, envelope, inputDigest, visibleEnvelope, writes,
+      turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
+      localFirePlans, spatialSemanticPlan
+    });
   const committed = await committer.commit({
     plan: built.plan,
     created_at_turn: turnNumber
@@ -189,7 +195,8 @@ export async function commitLowerDvinaTraceTurnStep({
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }
 

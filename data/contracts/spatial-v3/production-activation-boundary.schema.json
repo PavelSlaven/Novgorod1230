@@ -55,9 +55,7 @@
         "party_runtime_catalog_migration_digest",
         "party_runtime_catalog_target_fingerprint",
         "target_migration_count",
-        "target_migration_chain_digest",
-        "rollback_source_release_id",
-        "rollback_runtime_selectable"
+        "target_migration_chain_digest"
       ],
       "properties": {
         "release_id": {
@@ -110,12 +108,6 @@
         },
         "target_migration_chain_digest": {
           "const": "b7a9eb899b5d302dc27bff6797f1bb6abf31b245ace3e7c285f94543e3039d45"
-        },
-        "rollback_source_release_id": {
-          "const": "spatial-v3-production-v2"
-        },
-        "rollback_runtime_selectable": {
-          "const": false
         }
       }
     },

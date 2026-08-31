@@ -50,6 +50,11 @@ function fixture({
   localFireProfile = null,
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
+  llmDiagnostics = null,
+  beforeSemanticResolve = null,
+  beforeRandomSource = null,
+  afterCommittedVisibleRead = null,
+  afterNarration = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -246,7 +251,7 @@ function fixture({
             contracts: phase9Contracts,
           }),
         );
-      } else if (factual.consequence.combat_kind != null) {
+      } else if (factual.consequence.combat_kind === 'exchange') {
         replaceState(
           state,
           nextCombatState({
@@ -258,7 +263,8 @@ function fixture({
             inputDigest,
           }),
         );
-      } else if (factual.consequence.phase8_kind === 'accusation') {
+      } else if (['accusation', 'combat_start'].includes(
+        factual.consequence.phase8_kind)) {
         replaceState(
           state,
           nextPhase8AccusationState({
@@ -401,6 +407,17 @@ function fixture({
         package_digest: committedVisible.package_digest ?? committedVisible.canonical_digest ?? null,
         visible_package_digest: committedVisible.canonical_digest ?? null,
       };
+      commit.committed_public_result = {
+        party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        option_id: factual.mode_resolution.option_id,
+        screen: {
+          schema: 'lower_dvina_trace_turn_screen',
+          screen_status: 'committed_presentation_pending',
+          turn_id: factual.mode_resolution.turn_id
+        }
+      };
       replays.set(factual.player_input.idempotency_key, {
         input_digest: inputDigest,
         factual,
@@ -414,7 +431,9 @@ function fixture({
     },
     async loadPhase2VisibleContext() {
       events.push('read_committed_visible');
-      return committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      const visible = committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      afterCommittedVisibleRead?.();
+      return visible;
     },
     async persistPhase2Screen({ inputDigest, result }) {
       events.push('persist_screen');
@@ -495,6 +514,7 @@ function fixture({
     now: () => '2026-07-30T08:00:00.000Z',
     semanticResolver: async (input) => {
       semanticInput = structuredClone(input);
+      beforeSemanticResolve?.(input);
       if (semantic === 'unknown' || semantic === 'ambiguous') {
         return {
           status: 'unknown',
@@ -512,10 +532,10 @@ function fixture({
           },
         }
       : {}),
-    playerConversationModel: async (input) => {
+    playerConversationModel: async (input, repairContext) => {
       playerConversationCount += 1;
       playerConversationInput = structuredClone(input);
-      return playerConversationModel(input);
+      return playerConversationModel(input, repairContext);
     },
     npcSemanticModel: async (input) => {
       npcSemanticCount += 1;
@@ -544,6 +564,7 @@ function fixture({
       };
     },
     randomSourceFactory: () => {
+      beforeRandomSource?.();
       const source = createSeededRandomSource('lower-dvina-trace-phase-2-acceptance');
       return {
         next() {
@@ -555,7 +576,8 @@ function fixture({
     },
     narrator: {
       async run(input) {
-        narratorInput = structuredClone(input);
+        const { turnBudget: _turnBudget, ...cloneableInput } = input;
+        narratorInput = structuredClone(cloneableInput);
         if (shouldFailNarration) {
           return {
             version: 1,
@@ -568,9 +590,12 @@ function fixture({
             final_audit: null,
           };
         }
-        return approvedNarration(input.request_id);
+        const narration = approvedNarration(input.request_id);
+        afterNarration?.();
+        return narration;
       },
     },
+    ...(llmDiagnostics ? { llmDiagnostics } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

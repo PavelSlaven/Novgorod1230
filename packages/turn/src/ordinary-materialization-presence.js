@@ -11,12 +11,13 @@ const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
 
 export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
-  const early = preflight(input, projection, basisCatalog, codeOwnedResolution); if (early) return early;
-  if (codeOwnedResolution !== null) {
-    if (!['absent', 'no_change', 'authority_required'].includes(codeOwnedResolution)) {
+  const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
+  const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
+  if (codeResolution !== null) {
+    if (!['absent', 'no_change', 'authority_required'].includes(codeResolution)) {
       fail('TURN_ORDINARY_PRESENCE_CODE_OWNED_RESOLUTION_INVALID');
     }
-    return negative(input, { resolution: codeOwnedResolution }, projection, false);
+    return negative(input, { resolution: codeResolution }, projection, false);
   }
   if (beforeModel != null) {
     if (typeof beforeModel !== 'function') fail('TURN_ORDINARY_PRESENCE_CUTOVER_INVALID');
@@ -61,6 +62,16 @@ function positive(input, plan, projection, bases) {
       || (identity.availability_class === 'context_bound'
         && entity.semantic_descriptor.facts.length !== 0)
       || permission_refs === null) reject('ORDINARY_PRESENCE_ENTITY_INVALID');
+  const authority = request.authority_envelope;
+  if (authority?.stage === 'resolve_presence'
+      && (!authority.allowed_supporting_bases.some((basis) =>
+        basis.basis_ref === entity.supporting_basis_ref)
+      || !entity.causal_basis.basis_refs.every((ref) =>
+        authority.allowed_supporting_bases.some((basis) => basis.basis_ref === ref))
+      || entity.property_basis_ref !== authority.property_basis_ref
+      || !authority.placement_refs.includes(entity.placement_proposal.position_ref))) {
+    reject('ORDINARY_PRESENCE_ENVELOPE_SELECTION_INVALID');
+  }
   if (!propertyOK(input) || entity.property_basis_ref !== request.context_refs.property_context_ref) reject('ORDINARY_PRESENCE_PROPERTY_INVALID');
   if (entity.placement_proposal.scope_ref !== request.scope_ref.entity_id || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref) && v.position_ref === entity.placement_proposal.position_ref)) reject('ORDINARY_PRESENCE_PLACEMENT_INVALID');
   try { validate(entity.supporting_basis_ref); for (const ref of entity.causal_basis.basis_refs) validate(ref); } catch (error) { reject('ORDINARY_PRESENCE_BASIS_INVALID', message(error)); }
@@ -116,16 +127,29 @@ function envelopeOf(value) {
       property_basis_ref:e.request.context_refs.property_context_ref,
       property_placement_context_digest:e.property_placement_context_digest,
       ...source});
+    const authority = e.request.authority_envelope;
     if (i.candidate_key !== candidate_key || i.coverage_key !== coverage_key
         || i.category_key !== category_key || i.context_version !== context_version
         || i.policy_version !== e.request.policy_refs.ordinary_presence_policy_ref
-        || !e.request.policy_refs.allowed_admission_classes.includes(i.admission_class)
-        || permissionsFor(i, e.request) === null) {
+        || authority?.stage === 'resolve_presence' && !sameCandidateAuthority(
+          authority.candidate, i)) {
       fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID');
     }
   } catch { fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID'); }
   return freeze(e);
 }
+function forbiddenAdmission(input) {
+  const { identity, request } = input;
+  return !request.policy_refs.allowed_admission_classes.includes(
+    identity.admission_class) || permissionsFor(identity, request) === null
+    ? 'authority_required' : null;
+}
+function sameCandidateAuthority(authority, identity) { return authority.semantic_type
+  === identity.semantic_type && authority.functional_bucket === identity.functional_bucket
+  && authority.admission_class === identity.admission_class
+  && authority.availability_class === identity.availability_class
+  && authority.coverage_kind === identity.coverage_kind
+  && authority.coverage_ref === identity.coverage_ref; }
 function propertyContext(value) {
   const v1 = record(value,['scope_ref','item_kind','property_catalog_version_ref',
     'placement_catalog_version_ref','personal_communal_refs','occupied_site_refs',
@@ -150,7 +174,27 @@ function propertyOK(input) { return scope(input.property_placement_context.scope
 function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && aggregate.remaining_identity_budget===state.remaining_identity_budget && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
 function sameRefs(a,b) { return Array.isArray(b) && a.length===b.length && a.every((v,i)=>v===b[i]); }
 function placementOK(v, s) { return v && v.state === 'committed' && scope(v.scope_ref, s); }
-function compatible(input, bases) { if (!Array.isArray(bases) || permissionsFor(input.identity,input.request) === null) return false; return bases.some((b) => { const p = record(b, Object.getOwnPropertyNames(b)); if (!p) return false; try { validateSupportingBasisAdmission({ request: input.request, candidate: { supporting_basis_ref: p.basis_ref, functional_bucket: input.identity.functional_bucket, admission_class: input.identity.admission_class, availability_class: input.identity.availability_class }, basis_catalog: bases }); return true; } catch { return false; } }); }
+function compatible(input, bases) { return selectOrdinaryMaterializationSupportingBasis({ request: input.request, identity: input.identity, basisCatalog: bases }) !== null; }
+export function selectOrdinaryMaterializationSupportingBasis({ request, identity,
+  basisCatalog } = {}) {
+  if (!Array.isArray(basisCatalog) || permissionsFor(identity, request) === null) return null;
+  for (const basis of [...basisCatalog].sort((left, right) =>
+    (left.state === 'prepared_seed' ? 0 : 1) - (right.state === 'prepared_seed' ? 0 : 1)
+      || left.basis_ref.localeCompare(right.basis_ref))) {
+    const candidate = record(basis, Object.getOwnPropertyNames(basis));
+    if (!candidate) continue;
+    try {
+      validateSupportingBasisAdmission({ request, candidate: {
+        supporting_basis_ref: candidate.basis_ref,
+        functional_bucket: identity.functional_bucket,
+        admission_class: identity.admission_class,
+        availability_class: identity.availability_class
+      }, basis_catalog: basisCatalog });
+      return candidate.basis_ref;
+    } catch {}
+  }
+  return null;
+}
 function permissionsFor(identity, request) { if (identity.admission_class === 'common_mundane') return identity.availability_class === 'common' ? [] : null; if (identity.admission_class === 'container_capable' || identity.availability_class !== 'context_bound') return null; const refs = request?.policy_refs?.context_bound_permission_refs; return Array.isArray(refs) && refs.length > 0 && new Set(refs).size === refs.length ? [...refs].sort() : null; }
 function record(v, keys) { if (!v || typeof v !== 'object' || Array.isArray(v) || Object.getPrototypeOf(v) !== Object.prototype || Object.getOwnPropertySymbols(v).length) return null; const n = Object.getOwnPropertyNames(v); if (n.length !== keys.length || keys.some((k) => !n.includes(k))) return null; const out = {}; for (const k of keys) { const d = Object.getOwnPropertyDescriptor(v,k); if (d?.enumerable !== true || !Object.hasOwn(d,'value')) return null; out[k]=d.value; } return out; }
 function jsonData(value, seen = new Set()) { if (value === null || typeof value === 'string' || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value))) return true; if (!value || typeof value !== 'object' || seen.has(value) || Object.getOwnPropertySymbols(value).length) return false; const array = Array.isArray(value); if (array ? Object.getPrototypeOf(value) !== Array.prototype : Object.getPrototypeOf(value) !== Object.prototype) return false; seen.add(value); for (const key of Object.getOwnPropertyNames(value)) { if (array && key === 'length') continue; const descriptor = Object.getOwnPropertyDescriptor(value,key); if (descriptor?.enumerable !== true || !Object.hasOwn(descriptor,'value') || !jsonData(descriptor.value,seen)) return false; } seen.delete(value); return true; }

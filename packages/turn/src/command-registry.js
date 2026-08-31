@@ -8,6 +8,7 @@ import {
   isDomainStepOperation,
   resolveBoundTurnStepCommand
 } from './turn-step-admission.js';
+import { validateTurnStepOperationDto } from './turn-step-contracts/operations.js';
 
 const registries = new WeakSet();
 const actionSets = new WeakMap();
@@ -64,14 +65,15 @@ export async function createTurnAvailableActionSet({
   const included = [];
   const handlers = new Map();
   const availabilityDecisions = new Map();
+  const availabilityContext = deepFreeze({
+    committed_state: structuredClone(committedState),
+    actor_id: actorId,
+    policy_pins: structuredClone(policyPins),
+    action_set_evaluation: true
+  });
   for (const command of registry.registered()) {
     assertApprovedRecordBinding(command, policyPins);
-    const availability = await command.availability(deepFreeze({
-      committed_state: structuredClone(committedState),
-      actor_id: actorId,
-      policy_pins: structuredClone(policyPins),
-      action_set_evaluation: true
-    }));
+    const availability = await command.availability(availabilityContext);
     if (availability?.can_attempt !== true || availability.status === 'blocked') continue;
     const option = {
       option_id: command.option_id,
@@ -94,7 +96,7 @@ export async function createTurnAvailableActionSet({
       deepFreeze(structuredClone(availability)));
   }
   included.sort((left, right) => left.option_id.localeCompare(right.option_id));
-  if (included.length === 0) {
+  if (included.length === 0 && (stepBindings.get(registry)?.length ?? 0) === 0) {
     throw turnCommandError('TURN_AVAILABLE_ACTION_SET_EMPTY', 'No registered action is available in committed state.');
   }
   const actionSet = deepFreeze({
@@ -410,16 +412,25 @@ function structuredCloneHandlers(value) {
 }
 function normalizeSemanticBinding(value) {
   if (value == null) return null;
+  let operationDto = null;
+  if (value.operation_dto != null) {
+    try { operationDto = structuredClone(value.operation_dto); }
+    catch { throw new TypeError('semantic_binding operation_dto must be cloneable.'); }
+  }
   if (!plain(value) || !stable(value.binding_id)
       || !isDomainStepOperation(value.operation)
       || typeof value.matches !== 'function'
       || Object.keys(value).some((key) =>
-        !['binding_id', 'operation', 'matches'].includes(key))) {
+        !['binding_id', 'operation', 'operation_dto', 'matches'].includes(key))
+      || (operationDto != null && (!plain(operationDto)
+        || operationDto.op !== value.operation
+        || !validateTurnStepOperationDto(operationDto).ok))) {
     throw new TypeError('semantic_binding requires binding_id, domain operation and code matcher.');
   }
   return {
     binding_id: value.binding_id,
     operation: value.operation,
+    operation_dto: operationDto,
     matches: value.matches
   };
 }

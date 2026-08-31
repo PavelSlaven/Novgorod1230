@@ -1,83 +1,29 @@
+import { isDeepStrictEqual } from 'node:util';
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { turnFailure } from './errors.js';
-import { requestTurnStepPlan } from './turn-step-contracts.js';
-import {
-  executeTurnStepActorStep,
-  TURN_STEP_DIRECT_OPERATIONS,
-  TURN_STEP_DOMAIN_OPERATIONS
-} from './turn-step-actor-step.js';
+import { executeTurnStepActorStep } from './turn-step-actor-step.js';
 import {
   buildTurnStepPreparedChainContext,
   buildTurnStepPreparedEffectLedger
 } from './turn-step-prepared-effects.js';
+import {
+  createTurnStepExecutionRegistry,
+  requireTurnStepExecutionRegistry
+} from './turn-step-execution-registry.js';
+import {
+  requestAndValidateTurnStepPlan,
+  requestTurnStepPlanWithRepair
+} from './turn-step-plan-repair.js';
 
-const DIRECT_OPS = new Set(TURN_STEP_DIRECT_OPERATIONS);
-const DOMAIN_OPS = new Set(TURN_STEP_DOMAIN_OPERATIONS);
-const executionRegistries = new WeakSet();
-export function createTurnStepExecutionRegistry({
-  direct = {},
-  domain = {},
-  applySemanticActivity = null,
-  operationContract = {}
-} = {}) {
-  const directHandlers = handlers(direct, DIRECT_OPS, 'direct');
-  const domainHandlers = handlers(domain, DOMAIN_OPS, 'domain');
-  if (applySemanticActivity != null
-      && typeof applySemanticActivity !== 'function') {
-    throw new TypeError('applySemanticActivity must be a function.');
-  }
-  const contract = normalizeOperationContract(
-    operationContract, directHandlers, domainHandlers
-  );
-  const registry = Object.freeze({
-    direct(operation) {
-      return directHandlers.get(operation?.op) ?? null;
-    },
-    domain(operation) {
-      return domainHandlers.get(operation?.op) ?? null;
-    },
-    semanticActivity() {
-      return applySemanticActivity;
-    },
-    operationContract() {
-      return structuredClone(contract);
-    }
-  });
-  executionRegistries.add(registry);
-  return registry;
-}
-
-function normalizeOperationContract(value, directHandlers, domainHandlers) {
-  if (!plain(value)) {
-    throw new TypeError('operationContract must be a JSON object.');
-  }
-  const output = {};
-  for (const [operation, descriptor] of Object.entries(value)) {
-    const registered = directHandlers.has(operation)
-      || domainHandlers.has(operation);
-    if (!registered || !plain(descriptor)) {
-      throw new TypeError(
-        `Operation contract requires a registered handler: ${operation}.`
-      );
-    }
-    try {
-      output[operation] = structuredClone(descriptor);
-    } catch {
-      throw new TypeError(
-        `Operation contract descriptor must be cloneable: ${operation}.`
-      );
-    }
-  }
-  return deepFreeze(output);
-}
-
-export function requireTurnStepExecutionRegistry(registry) {
-  return requireRegistry(registry);
-}
+export {
+  createTurnStepExecutionRegistry,
+  requireTurnStepExecutionRegistry
+};
+export { requestTurnStepPlanWithRepair };
 
 export async function runTurnStepLoop(input = {}, ports = {}) {
   const identity = normalizeInput(input);
-  const registry = requireRegistry(ports.executionRegistry);
+  const registry = requireTurnStepExecutionRegistry(ports.executionRegistry);
   requireFunction(ports.turnStepModel, 'TURN_STEP_MODEL_MISSING',
     'turnStepModel');
   requireFunction(ports.projectPlayerSafeState,
@@ -107,14 +53,21 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const spatialSemanticPlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
+  let preparedFollowup = null;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
-    const playerSafeState = await ports.projectPlayerSafeState(deepFreeze({
+    const projectedPlayerSafeState = deepFreeze(await ports.projectPlayerSafeState(deepFreeze({
       working_projection: structuredClone(workingProjection),
       completed_steps: structuredClone(completedSteps),
-      local_fire_atomic_write_plans: structuredClone(localFirePlans)
-    }));
+      local_fire_atomic_write_plans: structuredClone(localFirePlans),
+      prepared_chain_context: structuredClone(preparedChainContext),
+      remaining_intent: remainingIntent
+    })));
+    const playerSafeState = projectedPlayerSafeState?.player_safe_state
+      ?? projectedPlayerSafeState;
+    const availableDomainOperations =
+      projectedPlayerSafeState?.available_domain_operations ?? [];
     const request = {
       schema: 'turn_step_request_v1',
       request_id: `${identity.requestId}:step:${stepIndex}`,
@@ -126,12 +79,20 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       root_player_action: identity.rootPlayerAction,
       remaining_intent: remainingIntent,
       completed_steps: structuredClone(completedSteps),
-      actor: structuredClone(identity.actor),
-      player_safe_state: structuredClone(playerSafeState)
+      actor: identity.actor,
+      player_safe_state: playerSafeState,
+      available_domain_operations: availableDomainOperations,
+      ...(projectedPlayerSafeState?.prepared_followup_candidates?.length
+        ? { prepared_followup_candidates:
+          structuredClone(projectedPlayerSafeState.prepared_followup_candidates) }
+        : {})
     };
     const inputDigest = sha256({
       remaining_intent: remainingIntent,
-      player_safe_state: playerSafeState
+      player_safe_state: playerSafeState,
+      available_domain_operations: availableDomainOperations,
+      prepared_followup_candidates:
+        projectedPlayerSafeState?.prepared_followup_candidates ?? []
     });
     if (seen.has(inputDigest)) {
       stopReason = 'no_progress';
@@ -139,18 +100,30 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     seen.add(inputDigest);
 
-    const { plan, repaired } = await requestTurnStepPlanWithRepair({
-      request,
-      turnStepModel: ports.turnStepModel,
-      allowRepair: preparedEffects.length === 0
-    });
-    await revalidateBaseVersion({
+    const preparedPlan = await requestPreparedFollowupPlan({ request,
+      preparedFollowup, semanticPlanValidator: ports.semanticPlanValidator,
+      admitPreparedDomainPlan: ports.admitPreparedDomainPlan,
       revalidateCommittedState: ports.revalidateCommittedState,
       expectedVersion: identity.committedStateVersion,
-      request,
-      plan
-    });
-    const preparedContinuationAllowed = preparedEffects.length === 0
+      workingProjection, preparedChainContext });
+    const { plan, repaired } = preparedPlan == null
+      ? await requestTurnStepPlanWithRepair({ request,
+          turnStepModel: ports.turnStepModel,
+          semanticPlanValidator: ports.semanticPlanValidator,
+          preparedChainContext,
+          allowRepair: preparedEffects.length === 0
+        })
+      : { plan: preparedPlan, repaired: false };
+    if (preparedPlan == null) {
+      await revalidateBaseVersion({
+        revalidateCommittedState: ports.revalidateCommittedState,
+        expectedVersion: identity.committedStateVersion,
+        request,
+        plan
+      });
+    }
+    const preparedContinuationAllowed = preparedPlan != null
+      || preparedEffects.length === 0
       || preparedDirectContinuation(plan)
       || (plan.resolution === 'domain_request'
         && typeof ports.admitPreparedDomainPlan === 'function'
@@ -224,16 +197,6 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'A turn-step loop can prepare at most route and direct effect slices.');
     }
     const preparedSequenceComplete = preparedEffects.length === 2;
-    if (execution.preparedEffects.length > 0) {
-      if (repaired && execution.goalResult === 'pending'
-          && execution.continuation != null) {
-        throw turnFailure('TURN_STEP_PLAN_INVALID',
-          'A repaired plan cannot start a pending prepared-effect chain.', {
-            repair_attempted: true,
-            prepared_chain_started: true
-          });
-      }
-    }
     if (execution.checkResult) {
       checkResults.push(execution.checkResult);
       checkRequests.push(execution.checkRequest);
@@ -267,6 +230,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       remainingIntent = continuation.remaining_intent;
       break;
     }
+    preparedFollowup = selectedPreparedFollowup({ plan, request,
+      continuation });
     remainingIntent = continuation.remaining_intent;
     stepIndex += 1;
     if (stepIndex > identity.maxInternalSteps) {
@@ -308,59 +273,81 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   });
 }
 
-export async function requestTurnStepPlanWithRepair({
-  request,
-  turnStepModel,
-  allowRepair = true
-}) {
+async function requestPreparedFollowupPlan({ request, preparedFollowup,
+  semanticPlanValidator, admitPreparedDomainPlan, workingProjection,
+  preparedChainContext, revalidateCommittedState, expectedVersion }) {
+  if (typeof semanticPlanValidator !== 'function'
+    || typeof admitPreparedDomainPlan !== 'function'
+    || preparedFollowup == null || !request.available_domain_operations?.some(
+    (operation) => sameJson(operation, preparedFollowup.operation)
+  )) return null;
+  const plan = {
+    schema: 'turn_step_plan_v1',
+    request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    step_index: request.step_index,
+    interpretation: {
+      player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent,
+      adaptation: preparedFollowup.adaptation
+    },
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [structuredClone(preparedFollowup.operation)],
+    check: null,
+    continuation: null,
+    clarification: null,
+    reason_code: 'prepared_followup',
+    reason: 'Prepared code-owned continuation remains applicable.'
+  };
   try {
-    return {
-      plan: await requestTurnStepPlan({ request, turnStepModel }),
-      repaired: false
-    };
+    await requestAndValidateTurnStepPlan({ request,
+      turnStepModel: async () => plan,
+      semanticPlanValidator,
+      preparedChainContext });
   } catch (error) {
-    if (error?.code !== 'TURN_STEP_PLAN_INVALID') throw error;
-    if (allowRepair !== true) {
-      error.details = deepFreeze({
-        ...error.details,
-        repair_attempted: false,
-        repair_suppressed: 'prepared_effect_chain_active'
-      });
-      throw error;
-    }
-    const repairContext = deepFreeze({
-      schema: 'turn_step_repair_context_v1',
-      attempt: 2,
-      structural_errors: structuredClone(error.details?.errors ?? [])
-    });
-    try {
-      return {
-        plan: await requestTurnStepPlan({
-          request,
-          turnStepModel: (safeRequest) =>
-            turnStepModel(safeRequest, repairContext)
-        }),
-        repaired: true
-      };
-    } catch (repairError) {
-      if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
-        repairError.details = deepFreeze({
-          ...repairError.details,
-          repair_attempted: true
-        });
-      }
-      throw repairError;
-    }
+    if (error?.code === 'TURN_STEP_PLAN_INVALID') return null;
+    throw error;
   }
+  await revalidateBaseVersion({ revalidateCommittedState, expectedVersion,
+    request, plan });
+  try {
+    return await admitPreparedDomainPlan(deepFreeze({
+      plan: structuredClone(plan),
+      request: structuredClone(request),
+      working_projection: structuredClone(workingProjection),
+      prepared_chain_context: structuredClone(preparedChainContext)
+    })) === true ? plan : null;
+  } catch (error) {
+    if (error?.code === 'TURN_STEP_PREPARED_DOMAIN_PLAN_UNSUPPORTED') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+function selectedPreparedFollowup({ plan, request, continuation }) {
+  const marker = continuation?.prepared_followup_ref;
+  if (typeof marker !== 'string' || plan.operations?.length !== 1) return null;
+  const candidates = request.prepared_followup_candidates?.filter((value) =>
+    value.prepared_followup_ref === marker
+      && sameJson(value.precursor_operation, plan.operations[0])) ?? [];
+  return candidates.length !== 1 ? null : {
+    operation: structuredClone(candidates[0].operation),
+    adaptation: plan.interpretation.adaptation
+  };
+}
+
+function sameJson(left, right) {
+  return isDeepStrictEqual(left, right);
 }
 
 function initialPreparedChainContext(value) {
   if (value == null) return null;
-  return buildTurnStepPreparedChainContext({
-    priorEffectCount: 0,
-    currentClock: value.current_clock,
-    currentBodyState: value.current_body_state
-  });
+  return buildTurnStepPreparedChainContext({ priorEffectCount: 0,
+    currentClock: value.current_clock, currentBodyState: value.current_body_state });
 }
 
 async function revalidateBaseVersion({
@@ -443,43 +430,19 @@ function normalizeInput(input) {
     rootPlayerAction,
     committedStateVersion,
     maxInternalSteps,
-    actor: cloneObject(input.actor, 'TURN_STEP_LOOP_INPUT_INVALID')
+    actor: deepFreeze(cloneObject(input.actor, 'TURN_STEP_LOOP_INPUT_INVALID'))
   };
 }
 
-function handlers(value, allowed, label) {
-  const entries = value instanceof Map ? [...value.entries()]
-    : Object.entries(value ?? {});
-  const result = new Map();
-  for (const [name, handler] of entries) {
-    if (!allowed.has(name) || typeof handler !== 'function') {
-      throw new TypeError(`Invalid ${label} step handler: ${name}.`);
-    }
-    result.set(name, handler);
-  }
-  return result;
-}
-
-function requireRegistry(registry) {
-  if (!executionRegistries.has(registry)) {
-    throw turnFailure('TURN_STEP_EXECUTION_REGISTRY_INVALID',
-      'Execution registry must be created by its factory.');
-  }
-  return registry;
-}
-
 function requireFunction(value, code, label) {
-  if (typeof value !== 'function') {
-    throw turnFailure(code, `${label} must be an injected function.`);
-  }
+  if (typeof value !== 'function') throw turnFailure(code,
+    `${label} must be an injected function.`);
   return value;
 }
 
 function cloneObject(value, code) {
   if (!plain(value)) throw turnFailure(code, 'Expected a JSON object.');
-  try {
-    return structuredClone(value);
-  } catch {
+  try { return structuredClone(value); } catch {
     throw turnFailure(code, 'Expected cloneable JSON data.');
   }
 }
@@ -489,6 +452,4 @@ function plain(value) {
     && !Array.isArray(value);
 }
 
-function text(value) {
-  return String(value ?? '').trim();
-}
+function text(value) { return String(value ?? '').trim(); }

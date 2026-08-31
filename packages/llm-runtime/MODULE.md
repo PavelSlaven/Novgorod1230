@@ -13,6 +13,10 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
+Production `turn_runtime` по умолчанию использует Flash-first роли без heavy reasoning: primary — `deepseek-v4-flash` с выключенным thinking и timeout 10 с, structural repair — тот же Flash с timeout 6 с. Runtime per-call override может только ужесточить эти игровые лимиты в composition owner; он не расширяет их. Transport fallback 120 с относится только к non-gameplay scope, включая admin и eval, а не к gameplay deadline. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
+
+Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are Flash JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
+
 ## Не делает
 
 - не пишет prompts доменных этапов;
@@ -22,7 +26,7 @@
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`/`requestTimeoutMs`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`/`requestTimeoutMs`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 
@@ -40,7 +44,7 @@ Domain modules, apps, legacy runtime, БД и UI.
 
 ## Инварианты
 
-Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ.
+Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ и не создаёт fallback chain. Gameplay timeout — это роль/turn policy внешнего runtime owner, не общий 120-секундный transport safeguard.
 
 ## Ошибки
 

@@ -17,6 +17,12 @@ export async function buildNarrationStage({ playerInput, modeResolution, visible
     style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
     max_repairs: 1
   });
+  if (output?.schema === 'narration_flow_result'
+      && (output.status !== 'approved' || output.pass !== true)) {
+    const error = new Error('Narration did not produce an approved presentation.');
+    error.code = 'TURN_NARRATION_REJECTED';
+    throw error;
+  }
   assertValid('narration_flow_result', validateNarrationResult(output));
   return freezeOutput(output);
 }

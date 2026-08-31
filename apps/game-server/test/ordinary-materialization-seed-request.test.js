@@ -65,15 +65,39 @@ test('ordinary Stage A builder rejects non-data values, aliases, symbols and exo
 test('ordinary Stage B builder deterministically owns candidate and coverage identity', () => {
   const objective_context = { ...objective(), ordinary_state_version: 0,
     property_placement_context: propertyPlacementContext() };
-  const input = { objective_context, candidate_context: candidateContext() };
+  const input = { objective_context, candidate_context: candidateContext(),
+    selected_supporting_basis_ref: null };
   const first = buildOrdinaryMaterializationPresenceRequest(input);
   const second = buildOrdinaryMaterializationPresenceRequest(input);
   assert.deepEqual(first, second);
   assert.equal(first.request.mode, 'resolve_presence');
   assert.equal(first.request.candidate_query.evidence_weight, 0);
+  assert.deepEqual(first.request.authority_envelope, {
+    stage: 'resolve_presence', candidate: {
+      semantic_type: 'spoon', functional_bucket: 'household',
+      admission_class: 'common_mundane', availability_class: 'common',
+      coverage_kind: 'visible_surface', coverage_ref: 'bench' },
+    allowed_supporting_bases: [], selected_supporting_basis_ref: null,
+    property_basis_ref: 'property',
+    placement_refs: ['bench'] });
   assert.match(first.identity.candidate_key, /^ordinary_candidate_/);
   assert.match(first.identity.coverage_key, /^ordinary_coverage_/);
   assert.equal(JSON.stringify(first).includes('desired_use'), false);
+  assert.equal(JSON.stringify(first.request.authority_envelope)
+    .includes('простая ложка'), false);
+});
+
+test('ordinary Stage A builder carries only committed group constraints', () => {
+  const request = buildOrdinaryMaterializationSeedScopeRequest({
+    objective_context: objective(), authority_context: {
+      stage: 'seed_scope', density_bands: ['ordinary'],
+      disclosure_policy_refs: ['disclosure'], group_bases: [{
+        basis_ref: 'basis', basis_state: 'committed',
+        functional_buckets: ['household'],
+        allowed_admission_classes: ['common_mundane'], permission_refs: []
+      }] } });
+  assert.equal(request.authority_envelope.stage, 'seed_scope');
+  assert.equal(JSON.stringify(request.authority_envelope).includes('candidate_hint'), false);
 });
 
 test('ordinary Stage B builder rejects a property-basis getter without invoking it', () => {
@@ -84,7 +108,7 @@ test('ordinary Stage B builder rejects a property-basis getter without invoking 
     enumerable: true, get() { reads += 1; return 'property'; }
   });
   assert.throws(() => buildOrdinaryMaterializationPresenceRequest({ objective_context,
-    candidate_context: candidateContext() }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
+    candidate_context: candidateContext(), selected_supporting_basis_ref: null }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
   assert.equal(reads, 0);
 });
 

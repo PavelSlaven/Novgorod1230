@@ -200,13 +200,15 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       || computeSpatialV3CanonicalDigest(visibleWrites[0].record) !== computeSpatialV3CanonicalDigest(envelope)
       || narrationJobs.length !== 1
       || narrationJobs[0].id !== expectedJobId
-      || computeSpatialV3CanonicalDigest(narrationJobs[0].record) !== computeSpatialV3CanonicalDigest({
-        job_id: expectedJobId,
-        party_id: plan.party_id,
-        package_id: envelope?.package_id,
-        status: 'pending',
-        idempotency_key: `presentation:${envelope?.package_id}:${envelope?.package_digest}`
-      })) return false;
+      || computeSpatialV3CanonicalDigest(narrationJobs[0].record)
+        !== computeSpatialV3CanonicalDigest({
+          job_id: expectedJobId,
+          party_id: plan.party_id,
+          package_id: envelope?.package_id,
+          status: 'pending',
+          idempotency_key:
+            `presentation:${envelope?.package_id}:${envelope?.package_digest}`
+        })) return false;
   } else if (plan.visible_package_envelope != null || visibleWrites.length || narrationJobs.length) {
     return false;
   }

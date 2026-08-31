@@ -205,6 +205,59 @@ test('current production revision keeps exact fast path and sends free input to 
     );
   });
 
+test('current temporal proof keeps detailed wreck inspection available across fire due boundary',
+  async () => {
+    let temporalCalls = 0;
+    const f = fixture({
+      scenarioBundle: bundle25,
+      materializationBundle: bundle25,
+      worldBaseReferenceSnapshot: currentWorldBaseReferenceSnapshot(),
+      rollValue: 0,
+      turnStepModel: async () => assert.fail('exact command reached planner'),
+      temporalAdvanceOwner: {
+        advance() {
+          temporalCalls += 1;
+          return { result: { clock_after: { whole_minutes: '333075',
+            subminute_numerator: '0', subminute_denominator: '1' },
+            combined_change_set: { proposals: [] },
+            trace: { processed_boundary_ids: ['local-fire:active:state:2'] } } };
+        }
+      }
+    });
+    const candidate = {
+      boundary_id: 'local-fire:active:state:2',
+      idempotency_key: 'local-fire:active:state:2',
+      scheduled_at: { whole_minutes: '333065', subminute_numerator: '0',
+        subminute_denominator: '1' },
+      source_ref: { entity_kind: 'propagation_process', entity_id: 'fire:active' },
+      primary_subject_ref: { entity_kind: 'item', entity_id: 'fuel:active' },
+      scope_ref: { entity_kind: 'party', entity_id: f.partyId },
+      resolution_class: 'propagation_background', subject_refs: [],
+      causal_parent_refs: []
+    };
+    f.state.temporal_boundary_candidates = [candidate];
+    f.state.temporal_source_proof = {
+      schema: 'lower_dvina_trace_temporal_source_proof', version: 2,
+      owner: '@rus/time-events-history/temporal-boundaries',
+      same_time_cascade_owner:
+        '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
+      admission_policy: 'pass_exact_candidates_to_temporal_activity_owner',
+      pending_event_count: 0, active_schedule_count: 0, candidate_count: 1,
+      candidates: [candidate]
+    };
+
+    const result = await submit(f, {
+      request_id: 'turn-step-current-exact-fire-boundary',
+      idempotency_key: 'turn-step-current-exact-fire-boundary',
+      raw_text: 'Осмотреть место крушения подробно.'
+    });
+
+    assert.equal(result.option_id, 'inspect_wreck_in_detail');
+    assert.equal(result.check.outcome.success, false);
+    assert.equal(f.turnStepCount(), 0);
+    assert.equal(temporalCalls, 1);
+  });
+
 test('revision 13 Phase 3 movement envelope reaches production persistence',
   async () => {
     const bootstrap = fixture({

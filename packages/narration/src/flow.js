@@ -1,184 +1,106 @@
 import { deepFreeze } from '@rus/kernel';
-import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
-import {
-  NARRATION_FLOW_RESULT_SCHEMA,
-  NARRATION_REPAIR_ROUTE_SCHEMA
-} from './contracts.js';
+import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
+import { NARRATION_FLOW_RESULT_SCHEMA } from './contracts.js';
 import { validateNarrationPorts } from './ports.js';
-import {
-  assertNarrationValid,
-  validateNarrationAudit,
-  validateNarrationFlowResult,
-  validateNarrationOutput,
-  validateNarrationRepairRoute,
-  validateNarrationRequest
-} from './validators.js';
+import { assertNarrationValid, validateNarrationAudit, validateNarrationFlowResult, validateNarrationOutput, validateNarrationRequest, validateNarrationSemanticRepair } from './validators.js';
 
 export async function runNarrationFlow(request, ports, options = {}) {
   assertNarrationValid('narration_request', validateNarrationRequest(request));
   validateNarrationPorts(ports);
   rejectHidden(request.visible_context, 'visible_context');
   rejectHidden(request.context ?? {}, 'context');
-
-  const maxRepairs = Number(options.maxRepairs ?? request.max_repairs ?? 1);
-  const generationHistory = [];
-  const auditHistory = [];
-  const repairHistory = [];
-  let repairsUsed = 0;
-
+  assertNarrationValid('visible_context', validateVisibleContext(request.visible_context));
+  const maxFormatRepairs = Math.min(1, Number(options.maxRepairs ?? request.max_repairs ?? 1));
+  const generationHistory = [], repairHistory = [], auditHistory = [];
   let draft = await ports.writer.generate(clone(request));
   generationHistory.push(record('writer', draft));
-
-  let outputValidation = validateNarrationOutput(draft);
-  if (!outputValidation.ok && maxRepairs > 0) {
-    draft = await ports.formatRepairer.repair({
-      version: 1,
-      schema: 'narration_format_repair_request',
-      request: clone(request),
-      invalid_output: clone(draft),
-      validation_errors: [...outputValidation.errors],
-      attempt: 1
-    });
-    repairsUsed += 1;
+  let errors = outputErrors(draft, request.request_id);
+  if (errors.length && maxFormatRepairs > 0) {
+    draft = await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(request), invalid_output: clone(draft), validation_errors: errors, attempt: 1 });
     repairHistory.push(record('format_repair', draft));
     generationHistory.push(record('format_repairer', draft));
-    outputValidation = validateNarrationOutput(draft);
+    errors = outputErrors(draft, request.request_id);
   }
-  if (!outputValidation.ok) {
-    return finish(buildResult({ request, status: 'blocked', generationHistory, auditHistory, repairHistory,
-      diagnostics: { phase: 'output_validation', errors: outputValidation.errors } }));
-  }
-  rejectHidden(draft, 'narration_output');
+  if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'output_validation', errors);
 
-  let audit = await ports.auditor.audit(buildAuditRequest(request, draft, false));
+  const segments = segmentProse(draft.prose);
+  const audit = await audited(ports.auditor, request, draft, segments, 'initial');
   auditHistory.push(record('auditor', audit));
-  let auditValidation = validateNarrationAudit(audit);
-  if (!auditValidation.ok) {
-    audit = await ports.seniorAuditor.audit(buildAuditRequest(request, draft, true, auditValidation.errors));
-    auditHistory.push(record('senior_auditor_format_recovery', audit));
-    auditValidation = validateNarrationAudit(audit);
-  }
-  if (!auditValidation.ok) {
-    return finish(buildResult({ request, status: 'blocked', generationHistory, auditHistory, repairHistory,
-      diagnostics: { phase: 'audit_validation', errors: auditValidation.errors } }));
-  }
-  if (audit.pass === true) {
-    return finish(buildResult({ request, status: 'approved', draft, audit, generationHistory, auditHistory, repairHistory }));
-  }
+  const auditErrors = validateNarrationAudit(audit, segmentIds(segments)).errors;
+  if (auditErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
+  if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
 
-  const route = await ports.router.route({
+  const flaggedIds = [...new Set(audit.concerns.map((concern) => concern.segment_id))];
+  const actionIntent = actionIntentContext(request);
+  const repair = await ports.semanticRepairer.repair({
     version: 1,
-    schema: NARRATION_REPAIR_ROUTE_SCHEMA,
-    request: clone(request),
-    draft: clone(draft),
-    audit: clone(audit),
-    repairs_remaining: Math.max(0, maxRepairs - repairsUsed)
+    schema: 'narration_semantic_repair_request',
+    request_id: request.request_id,
+    visible_context: clone(request.visible_context),
+    ...(actionIntent ? { action_intent_context: actionIntent } : {}),
+    style_policy: clone(request.style_policy ?? {}),
+    concerns: clone(audit.concerns),
+    segments: segments.filter((segment) => flaggedIds.includes(segment.segment_id)).map((segment) => ({ ...clone(segment), nearby_context: nearbySegments(segments, segment.segment_id) }))
   });
-  assertNarrationValid('narration_repair_route', validateNarrationRepairRoute(route));
-  repairHistory.push(record('route', route));
+  generationHistory.push(record('semantic_repairer', repair));
+  repairHistory.push(record('semantic_repair', repair));
+  const repairErrors = validateNarrationSemanticRepair(repair, flaggedIds).errors;
+  if (repairErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'semantic_repair_validation', repairErrors);
+  const repaired = { ...draft, prose: reassemble(segments, repair.replacements) };
+  errors = outputErrors(repaired, request.request_id);
+  if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'reassembled_output_validation', errors);
 
-  const repairsRemaining = Math.max(0, maxRepairs - repairsUsed);
-  if (route.route === 'upstream_repair' || route.route === 'block' || repairsRemaining === 0) {
-    return finish(buildResult({
-      request,
-      status: route.route === 'block' ? 'blocked' : 'repair_required',
-      generationHistory,
-      auditHistory,
-      repairHistory,
-      repairRequest: route.route === 'block' ? null : upstreamRepair(request, audit, route),
-      diagnostics: { phase: 'routing', route: route.route }
-    }));
-  }
-
-  const repairRequest = {
-    version: 1,
-    schema: 'narration_repair_request',
-    request: clone(request),
-    prior_output: clone(draft),
-    prior_audit: clone(audit),
-    route: clone(route),
-    attempt: 1
-  };
-  draft = route.route === 'format_repair'
-    ? await ports.formatRepairer.repair(repairRequest)
-    : await ports.seniorWriter.repair(repairRequest);
-  repairsUsed += 1;
-  repairHistory.push(record(route.route, draft));
-  generationHistory.push(record(route.route === 'format_repair' ? 'format_repairer' : 'senior_writer', draft));
-  assertNarrationValid('repaired_narration_output', validateNarrationOutput(draft));
-  rejectHidden(draft, 'repaired_narration_output');
-
-  audit = await ports.seniorAuditor.audit(buildAuditRequest(request, draft, true));
-  auditHistory.push(record('senior_auditor', audit));
-  assertNarrationValid('senior_narration_audit', validateNarrationAudit(audit));
-  if (audit.pass !== true) {
-    return finish(buildResult({
-      request,
-      status: 'repair_required',
-      generationHistory,
-      auditHistory,
-      repairHistory,
-      repairRequest: upstreamRepair(request, audit, route),
-      diagnostics: { phase: 'senior_audit', route: route.route }
-    }));
-  }
-  return finish(buildResult({ request, status: 'approved', draft, audit, generationHistory, auditHistory, repairHistory }));
+  const finalSegments = segmentProse(repaired.prose);
+  const finalAudit = await audited(ports.auditor, request, repaired, finalSegments, 'final');
+  auditHistory.push(record('auditor', finalAudit));
+  const finalErrors = validateNarrationAudit(finalAudit, segmentIds(finalSegments)).errors;
+  if (finalErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_validation', finalErrors);
+  if (!finalAudit.pass) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_failed', finalAudit.concerns);
+  return approved(request, repaired, finalAudit, generationHistory, repairHistory, auditHistory);
 }
 
 export function createNarrationService(ports, defaults = {}) {
   validateNarrationPorts(ports);
-  return Object.freeze({
-    run(request, options = {}) {
-      return runNarrationFlow({ ...clone(defaults.request ?? {}), ...clone(request) }, ports, { ...defaults.options, ...options });
-    }
-  });
+  return Object.freeze({ run(request, options = {}) { return runNarrationFlow({ ...clone(defaults.request ?? {}), ...clone(request) }, ports, { ...defaults.options, ...options }); } });
 }
 
-function buildAuditRequest(request, draft, senior, validationErrors = []) {
+export function segmentProse(prose) {
+  const chunks = String(prose).match(/[^.!?…]+(?:[.!?…]+|$)(?:\s*)/g) ?? [String(prose)];
+  return chunks.filter(Boolean).map((text, index) => ({ segment_id: `s${index + 1}`, prose: text }));
+}
+
+function audited(auditor, request, draft, segments, phase) {
+  const actionIntent = actionIntentContext(request);
+  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), ...(actionIntent ? { action_intent_context: actionIntent } : {}), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
+}
+function actionIntentContext(request) {
+  const source = request.context ?? {};
+  if (source.player_input == null && source.mode_resolution == null) return null;
   return {
-    version: 1,
-    schema: 'narration_audit_request',
-    request: clone(request),
-    draft: clone(draft),
-    senior,
-    validation_errors: [...validationErrors]
+    evidence_scope: 'intent_only_non_evidence_of_success',
+    ...(source.player_input == null ? {} : { player_input: clone(source.player_input) }),
+    ...(source.mode_resolution == null ? {} : { mode_resolution: clone(source.mode_resolution) })
   };
 }
-
-function buildResult({ request, status, draft = null, audit = null, generationHistory, auditHistory, repairHistory, repairRequest = null, diagnostics = {} }) {
-  return {
-    version: 1,
-    schema: NARRATION_FLOW_RESULT_SCHEMA,
-    request_id: request.request_id,
-    surface: request.surface,
-    status,
-    pass: status === 'approved',
-    approved_output: status === 'approved' ? clone(draft) : null,
-    final_audit: status === 'approved' ? clone(audit) : null,
-    repair_request: clone(repairRequest),
-    generation_history: clone(generationHistory),
-    audit_history: clone(auditHistory),
-    repair_history: clone(repairHistory),
-    diagnostics: { ...clone(diagnostics), repairs_used: repairHistory.filter((entry) => entry.role !== 'route').length }
-  };
+function nearbySegments(segments, id) {
+  const index = segments.findIndex((segment) => segment.segment_id === id);
+  return [segments[index - 1], segments[index + 1]].filter(Boolean).map(clone);
 }
-
-function upstreamRepair(request, audit, route) {
-  return {
-    version: 1,
-    schema: 'narration_upstream_repair_request',
-    request_id: request.request_id,
-    return_to: route.return_to ?? 'visible_projection',
-    concerns: clone(audit.concerns),
-    evidence: clone(audit.evidence),
-    reason: route.reason
-  };
+function reassemble(segments, replacements) {
+  const byId = new Map(replacements.map((replacement) => [replacement.segment_id, replacement.prose]));
+  return segments.map((segment) => byId.get(segment.segment_id) ?? segment.prose).join('');
 }
-
-function finish(result) {
-  assertNarrationValid('narration_flow_result', validateNarrationFlowResult(result));
-  return deepFreeze(result);
+function segmentIds(segments) { return segments.map((segment) => segment.segment_id); }
+function approved(request, draft, audit, generationHistory, repairHistory, auditHistory) {
+  return finish(buildResult({ request, status: 'approved', draft, finalAudit: audit, generationHistory, repairHistory, auditHistory }));
 }
+function blocked(request, generationHistory, repairHistory, auditHistory, phase, errors) {
+  return finish(buildResult({ request, status: 'blocked', generationHistory, repairHistory, auditHistory, diagnostics: { phase, errors: clone(errors) } }));
+}
+function buildResult({ request, status, draft = null, finalAudit = null, generationHistory, repairHistory, auditHistory, diagnostics = {} }) {
+  return { version: 1, schema: NARRATION_FLOW_RESULT_SCHEMA, request_id: request.request_id, surface: request.surface, status, pass: status === 'approved', approved_output: status === 'approved' ? clone(draft) : null, final_audit: status === 'approved' ? clone(finalAudit) : null, repair_request: null, generation_history: clone(generationHistory), audit_history: clone(auditHistory), repair_history: clone(repairHistory), diagnostics: { ...clone(diagnostics), repairs_used: repairHistory.filter((entry) => entry.role !== 'route').length } };
+}
+function finish(result) { assertNarrationValid('narration_flow_result', validateNarrationFlowResult(result)); return deepFreeze(result); }
 function rejectHidden(value, label) {
   const leaks = detectHiddenLeaks(value);
   if (!leaks.length) return;
@@ -186,6 +108,15 @@ function rejectHidden(value, label) {
   error.code = 'NARRATION_HIDDEN_LEAK';
   error.details = { leaks };
   throw error;
+}
+function outputErrors(value, requestId) {
+  const errors = [...validateNarrationOutput(value).errors];
+  if (value?.output_id != null && value.output_id !== requestId) errors.push('output_id must match request_id');
+  if (Array.isArray(value?.action_options) && value.action_options.length) errors.push('action_options must be empty until visible_context defines action candidates');
+  if (Array.isArray(value?.used_references) && value.used_references.length) errors.push('used_references must be empty until visible_context defines reference vocabulary');
+  const leaks = detectHiddenLeaks(value);
+  if (leaks.length) errors.push(...leaks.map((leak) => `hidden leak: ${leak}`));
+  return errors;
 }
 function record(role, value) { return { role, value: clone(value) }; }
 function clone(value) { return value == null ? value : structuredClone(value); }

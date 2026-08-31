@@ -53,13 +53,14 @@ function contextFor({ state, contracts, playerInput, inputDigest,
   playerConversationModel, npcSemanticModel, temporalAdvanceOwner,
   revalidateStateVersion, playerPlan = null }) {
   const target = contracts.actors.zhdanko;
-  const actualNpcActors = Object.entries(contracts.actors).map(([refName, actor]) =>
-    ({ ref: refName, ...structuredClone(actor) }));
+  const actualNpcActors = [{ ref: 'zhdanko', ...structuredClone(target) }];
   return createM2ConversationContext({ phase: 'phase_8', state, contracts,
     playerInput, inputDigest, checkResult: null,
     mapping: contracts.combatBindings.conversation.signal_mapping,
     targetActor: { ref: 'zhdanko_storehouse_controller', ...target },
-    actualNpcActors, playerConversationModel, npcSemanticModel,
+    actualNpcActors,
+    requiredIntendedAddresseeRefs: [ref('npc', target.instance_id)],
+    playerConversationModel, npcSemanticModel,
     revalidateStateVersion, temporalAdvanceOwner,
     playerOperationContract: {},
     npcOperationContract: { [SURRENDER_OPERATION]: {

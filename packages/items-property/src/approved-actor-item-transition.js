@@ -126,11 +126,14 @@ function validateExactPolicyState({
       || item.template_id !== transition.subject_ref
       || source.actor_id !== refs[required.holder_ref]
       || source.controller_actor_id !== refs[required.controller_ref]
-      || source.physical_position !== required.physical_position
-      || normalizeEquipmentSlot(source.equipment_slot_category_id,
-        source.physical_position) !== normalizeEquipmentSlot(
-          required.equipment_slot_category_id, required.physical_position)
-      || source.accessibility !== required.accessibility
+      || (required.physical_position != null
+        && source.physical_position !== required.physical_position)
+      || (required.equipment_slot_category_id != null
+        && normalizeEquipmentSlot(source.equipment_slot_category_id,
+          source.physical_position) !== normalizeEquipmentSlot(
+            required.equipment_slot_category_id, required.physical_position))
+      || (required.accessibility != null
+        && source.accessibility !== required.accessibility)
       || (required.condition_state != null
         && (source.condition_state !== required.condition_state
           || item.condition_state !== required.condition_state))
@@ -139,11 +142,14 @@ function validateExactPolicyState({
           || item.state?.use_state !== required.use_state))
       || destination.actor_id !== refs[writes.holder_ref]
       || destination.controller_actor_id !== refs[writes.controller_ref]
-      || destination.physical_position !== writes.physical_position
-      || normalizeEquipmentSlot(destination.equipment_slot_category_id,
-        destination.physical_position) !== normalizeEquipmentSlot(
-          writes.equipment_slot_category_id, writes.physical_position)
-      || destination.accessibility !== writes.accessibility
+      || (writes.physical_position != null
+        && destination.physical_position !== writes.physical_position)
+      || (writes.equipment_slot_category_id != null
+        && normalizeEquipmentSlot(destination.equipment_slot_category_id,
+          destination.physical_position) !== normalizeEquipmentSlot(
+            writes.equipment_slot_category_id, writes.physical_position))
+      || (writes.accessibility != null
+        && destination.accessibility !== writes.accessibility)
       || (writes.condition_state != null
         && destination.condition_state !== writes.condition_state)
       || (writes.use_state != null

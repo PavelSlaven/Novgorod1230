@@ -1,6 +1,7 @@
 import {
   phase2ScreenDigest,
-  phase2VisibleContextFromPayload
+  phase2VisibleContextFromPayload,
+  publicCombatStateFromConsequence
 } from './lower-dvina-trace-phase-2-projection.js';
 
 export function buildLowerDvinaTracePendingScreen({
@@ -8,8 +9,10 @@ export function buildLowerDvinaTracePendingScreen({
   turnId,
   nextVersion,
   turnNumber,
-  visibleEnvelope
+  visibleEnvelope,
+  turnConsequence = null
 }) {
+  const combatState = publicCombatStateFromConsequence(turnConsequence);
   const screen = {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',
@@ -27,6 +30,7 @@ export function buildLowerDvinaTracePendingScreen({
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
   };
   screen.screen_digest = phase2ScreenDigest(screen);

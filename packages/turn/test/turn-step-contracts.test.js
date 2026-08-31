@@ -168,6 +168,14 @@ test('request validation accepts JSON projections and enforces strict step linea
     completed_steps: [{ step_index: 1, summary: 'сундук открыт' }]
   });
   assert.equal(validateTurnStepRequest(second).ok, true);
+  const prepared = request({ prepared_followup_candidates: [{
+    prepared_followup_ref: 'continue-work',
+    precursor_operation: { op: 'request_activity', description: 'prepare' },
+    operation: { op: 'request_activity', description: 'continue' }
+  }] });
+  assert.equal(validateTurnStepRequest(prepared).ok, true);
+  delete prepared.prepared_followup_candidates[0].precursor_operation;
+  assert.equal(validateTurnStepRequest(prepared).ok, false);
   const invalid = request({
     max_internal_steps: 9,
     working_revision: 2,

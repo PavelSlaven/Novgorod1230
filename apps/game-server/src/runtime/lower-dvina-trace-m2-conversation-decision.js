@@ -7,7 +7,9 @@ import {
   ownKnowledgeProjection,
   ownMemoryProjection,
   ownNpcProjection,
-  perceivedChanges
+  perceivedChanges,
+  receivedConversationMessage,
+  visibleConversationContributionFor
 } from './lower-dvina-trace-m2-conversation-projections.js';
 import {
   fail,
@@ -50,6 +52,10 @@ export function buildNpcDecision(context, working, boundary,
   );
   const presentedEvidenceRecognized = resolvedRecords.some(({ signal }) =>
     recognizedPresentedEvidenceSignal(context, working, signal));
+  const requiredSupportingOperation = context.phase === 'phase_3'
+    && !presentedEvidenceRecognized
+    ? undefined
+    : context.npcDecisionScope.required_supporting_operation;
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
   );
@@ -129,7 +135,14 @@ export function buildNpcDecision(context, working, boundary,
       allowed_check_profile_refs: socialCheckProfile === null
         ? [] : [socialCheckProfile.profile_id],
       allowed_duration_classes: ['domain_owned'],
-      operation_contract: context.npcOperationContract
+      operation_contract: context.npcOperationContract,
+      ...(context.npcDecisionScope.required_resolution === undefined ? {} : {
+        required_resolution: context.npcDecisionScope.required_resolution,
+        required_check: structuredClone(context.npcDecisionScope.required_check)
+      }),
+      ...(requiredSupportingOperation === undefined
+        ? {} : { required_supporting_operation: structuredClone(
+          requiredSupportingOperation) })
     }
   });
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
@@ -169,7 +182,7 @@ function perceivedBoundaryMessage(context, working, resolvedRecords) {
     fail('TRACE_M2_CONVERSATION_SIGNAL_STATEMENT_MISSING',
       'A communication boundary requires its exact perceived statement.');
   }
-  return messageForStatement(context, working, statement);
+  return receivedConversationMessage(context, working, statement);
 }
 
 function recognizedPresentedEvidenceSignal(context, working, signal) {
@@ -195,17 +208,6 @@ function recognizedPresentedEvidenceSignal(context, working, signal) {
         perception.subject_ref,
         context.evidencePresentation.entity_ref
       ));
-}
-
-function messageForStatement(context, working, statement) {
-  const audiences = [
-    ...(context.state.conversation_audiences ?? []),
-    ...(working.audiences ?? [])
-  ];
-  return audiences.find(({ statement_ref: reference }) =>
-    reference?.entity_id === statement.statement_id)
-    ?.received_messages.find(({ listener_ref: listenerRef }) =>
-      sameRef(listenerRef, context.targetRef));
 }
 
 function publicConversationHistory(
@@ -236,7 +238,7 @@ function publicConversationHistory(
       conversationId === context.conversationId)
     .flatMap((contribution) => {
       if (contribution.schema === 'conversation_non_statement_contribution_v1') {
-        const visible = visibleContributionFor(
+        const visible = visibleConversationContributionFor(
           context,
           working,
           contribution
@@ -257,7 +259,7 @@ function publicConversationHistory(
     history.push(structuredClone(currentMessage));
   }
   if (latestContribution !== null) {
-    const latestVisible = visibleContributionFor(
+    const latestVisible = visibleConversationContributionFor(
       context,
       working,
       latestContribution
@@ -276,20 +278,4 @@ function publicConversationHistory(
     }
   }
   return history;
-}
-
-function visibleContributionFor(context, working, contribution) {
-  if (sameRef(contribution.speaker_ref, context.targetRef)) {
-    if (contribution.schema
-        === 'conversation_non_statement_contribution_v1') {
-      return { ...contribution, nonverbal_audience: null };
-    }
-    return contribution;
-  }
-  if (contribution.schema === 'conversation_statement_event_v1') {
-    return messageForStatement(context, working, contribution);
-  }
-  return contribution.nonverbal_audience?.observations?.find(
-    ({ observer_ref: observerRef }) => sameRef(observerRef, context.targetRef)
-  );
 }

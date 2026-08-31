@@ -5,6 +5,7 @@ import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infra
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3CombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { validateSpatialV3CombinedWritePlan } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-write-plan-validation.js';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { batchInput } from '../../apps/game-server/test/ordinary-materialization-container-batch-plan.test.js';
 const digest = 'a'.repeat(64);
@@ -242,6 +243,42 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
     { verifyApproval: approval }
   );
   assert.equal(forbiddenPortrait.error.code, 'generated_schema_mismatch');
+});
+
+test('P16 admits facts with a pending narration job', async () => {
+  const base = input();
+  let narrationCalls = 0;
+  const built = await buildCombinedWritePlan(input(), {
+    verifyApproval: approval,
+    async approveNarration() { narrationCalls += 1; }
+  });
+  assert.equal(built.ok, true);
+  assert.equal(narrationCalls, 0);
+  const job = built.plan.inserts.find(({ target_table }) =>
+    target_table === 'party_narration_jobs');
+  assert.deepEqual(job.record, {
+    job_id: 'narration-job:visible-cs', party_id: 'p', package_id: 'visible-cs',
+    status: 'pending',
+    idempotency_key:
+      `presentation:visible-cs:${base.visible_package_envelope.package_digest}`
+  });
+  assert.equal(validateSpatialV3CombinedWritePlan(built.plan), true);
+
+  const forged = structuredClone(built.plan);
+  const forgedJob = forged.inserts.find(({ target_table }) =>
+    target_table === 'party_narration_jobs');
+  forgedJob.record.status = 'delivered';
+  assert.equal(validateSpatialV3CombinedWritePlan(forged), false);
+
+  const afterNarration = input();
+  afterNarration.lock_context.physical_keys = [];
+  const failedInvariant = await buildCombinedWritePlan(afterNarration,
+    { verifyApproval: approval });
+  assert.equal(failedInvariant.error.code, 'lock_order_violation');
+  assert.equal(failedInvariant.error.diagnostics.stage,
+    'write_plan_invariant');
+  assert.equal(failedInvariant.error.diagnostics.reason,
+    'physical_lock_key_missing');
 });
 
 test('P16 builder snapshots outer ordinary plan input without executing accessors', async () => {
@@ -565,6 +602,7 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
   }
 
   const calls = [];
+  let lockQueryCount = 0;
   const committer = createSpatialV3CombinedAtomicCommitter({
     recheck: async ({ transaction, check }) => {
       calls.push(`recheck:${check.kind}`);
@@ -602,7 +640,10 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
     },
     withTransaction: async (work) => work({
       query: async (sql, params = []) => {
-        if (sql.includes('pg_advisory_xact_lock')) calls.push(`lock:${params[0]}`);
+        if (sql.includes('pg_advisory_xact_lock')) {
+          lockQueryCount += 1;
+          calls.push(...params[0].map((key) => `lock:${key}`));
+        }
         else if (sql.includes('FROM party_runtime.preparation_snapshots')) calls.push('preparation-read');
         else if (sql.includes('party_command_idempotency') && sql.startsWith('SELECT')) return { rows: [] };
         else if ((sql.startsWith('INSERT INTO party_runtime.') || sql.startsWith('UPDATE party_runtime.'))
@@ -618,6 +659,7 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
   const baselineReadIndex = calls.indexOf('preparation-read');
   const firstWriteIndex = calls.indexOf('domain-write');
   assert.ok(baselineLockIndex >= 0);
+  assert.equal(lockQueryCount, 1);
   assert.ok(baselineReadIndex > baselineLockIndex);
   assert.ok(firstWriteIndex > baselineReadIndex);
   assert.ok(committed.lock_keys.includes('06:idempotency:p:first_entry:key'));

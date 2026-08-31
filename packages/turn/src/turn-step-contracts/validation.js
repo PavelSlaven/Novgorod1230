@@ -97,12 +97,12 @@ export function cloneTrace(trace) {
   };
 }
 
-export function strict(value, path, keys, errors) {
+export function strict(value, path, keys, errors, { optional = [] } = {}) {
   if (!plain(value)) {
     add(errors, path, 'type', 'must be an object');
     return false;
   }
-  const allowed = new Set(keys);
+  const allowed = new Set([...keys, ...optional]);
   for (const key of Object.keys(value)) {
     if (!allowed.has(key)) {
       add(errors, `${path}.${key}`, 'additional_property', 'is forbidden');

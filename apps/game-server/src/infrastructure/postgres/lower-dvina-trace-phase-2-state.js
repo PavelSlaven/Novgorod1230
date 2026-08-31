@@ -25,7 +25,9 @@ export function buildPhase2Snapshot({
   }];
   return {
     ...runtimeState,
-    schema: 'rus.lower_dvina_trace_phase_2_snapshot.v1',
+    schema: state.schema === 'rus.lower_dvina_trace_turn_snapshot.v2'
+      ? 'rus.lower_dvina_trace_turn_snapshot.v2'
+      : 'rus.lower_dvina_trace_phase_2_snapshot.v1',
     party_state: {
       ...state.party_state,
       state_version: nextVersion,
@@ -73,7 +75,8 @@ export function buildPhase2Snapshot({
   };
 }
 
-export function commitPhase2BodyState({ before, proposed }) {
+export function commitPhase2BodyState({ before, proposed,
+  transitionedConditionIds = null }) {
   const prior = new Map((before.active_conditions ?? []).map(
     (condition) => [condition.storage_condition_id, condition]
   ));
@@ -90,9 +93,13 @@ export function commitPhase2BodyState({ before, proposed }) {
       return {
         ...structuredClone(condition),
         status: 'active',
-        state_version: condition.condition_outcome
+        state_version: transitionedConditionIds?.has(
+          condition.storage_condition_id
+        )
           ? previous.state_version + 1
-          : previous.state_version
+          : transitionedConditionIds == null && condition.condition_outcome
+            ? previous.state_version + 1
+            : previous.state_version
       };
     }
   );

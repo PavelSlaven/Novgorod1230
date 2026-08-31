@@ -66,6 +66,36 @@ export function ownMemoryProjection(actor, state, targetRef) {
   };
 }
 
+export function receivedConversationMessage(context, working, statement) {
+  const audiences = [
+    ...(context.state.conversation_audiences ?? []),
+    ...(working.audiences ?? [])
+  ];
+  return audiences.find(({ statement_ref: reference }) =>
+    reference?.entity_id === statement.statement_id)
+    ?.received_messages.find(({ listener_ref: listenerRef }) =>
+      sameRef(listenerRef, context.targetRef));
+}
+
+export function visibleConversationContributionFor(
+  context,
+  working,
+  contribution
+) {
+  if (sameRef(contribution.speaker_ref, context.targetRef)) {
+    if (contribution.schema === 'conversation_non_statement_contribution_v1') {
+      return { ...contribution, nonverbal_audience: null };
+    }
+    return contribution;
+  }
+  if (contribution.schema === 'conversation_statement_event_v1') {
+    return receivedConversationMessage(context, working, contribution);
+  }
+  return contribution.nonverbal_audience?.observations?.find(
+    ({ observer_ref: observerRef }) => sameRef(observerRef, context.targetRef)
+  );
+}
+
 export function committedPlayerKnowledgeRefs(state) {
   const refs = [];
   for (const record of state.knowledge ?? []) {

@@ -94,19 +94,18 @@ export function createCanonicalPhase11LlmResponder({
           .filter(Boolean)
           .map((entity_id) => ({ entity_kind: 'npc', entity_id }))
         : null;
-      return playerPlan(request, {
+      const plan = playerPlan(request, {
         checkRequired: Boolean(
           request.player_safe_context.required_supporting_operation
           || request.player_safe_context.offer_policy_ref
         ),
         offer: Boolean(request.player_safe_context.offer_policy_ref),
-        evidence: request.player_safe_context.required_supporting_operation
-          === 'present_item_as_evidence',
         primaryAddresseeRef: turn10Addressees?.[0]
           ?? request.player_safe_context.target_npc_ref,
         intendedAddresseeRefs: turn10Addressees
           ?? [request.player_safe_context.target_npc_ref]
       });
+      return plan;
     }
     if (['fixture-npc-conversation-responder',
       'fixture-npc-conversation-responder-repair'].includes(model)) {
@@ -123,7 +122,17 @@ export function createCanonicalPhase11LlmResponder({
     if (['fixture-npc-autonomous-decider',
       'fixture-npc-autonomous-decider-repair'].includes(model)) {
       turn10Actors = { ...turn10Actors, zhdanko: input.npc_ref };
-      return phase7AutonomousPlan(input, phase7Choice);
+      const plan = phase7AutonomousPlan(input, phase7Choice);
+      return {
+        interpretation: plan.interpretation,
+        resolution: plan.resolution,
+        operation_choice: phase7Choice === 'move_bag'
+          ? 'request_activity:1' : 'request_activity:0',
+        operations: [],
+        check: plan.check,
+        reason_code: plan.reason_code,
+        reason: plan.reason
+      };
     }
     if (['fixture-npc-combat-decider',
       'fixture-npc-combat-decider-repair'].includes(model)) {
@@ -133,12 +142,11 @@ export function createCanonicalPhase11LlmResponder({
         companions: companionCombatChoice
       });
     }
-    if (model === 'fixture-narrator-writer') {
+    if (['fixture-gameplay-narrator', 'fixture-gameplay-narrator-repair']
+      .includes(model)) {
       return narrationOutput(input);
     }
-    if (model === 'fixture-narrator-auditor') {
-      return narrationAudit(input);
-    }
+    if (model === 'fixture-gameplay-narrator-auditor') return narrationAudit();
     throw new Error(`Unexpected production LLM model: ${model}`);
   };
 }
@@ -232,7 +240,11 @@ function turn10Plan(request, ids) {
       ids.eremey,
       ids.fisher,
       ids.otherFisher
-    ]
+    ],
+    ...(request.prepared_followup_candidates?.[0] == null ? {} : {
+      prepared_followup_ref:
+        request.prepared_followup_candidates[0].prepared_followup_ref
+    })
   } : null;
   return turnStepPlan(request, operation, continuation,
     first ? 'rest_then_request_companions' : 'request_companions');
@@ -348,29 +360,63 @@ function combatPlan(request, ids, choices = {}) {
     : intentKind === 'break_contact'
       ? request.operation_contract.break_contact_destination_refs[0]
       : null;
+  const selectedRef = targetRefs[0] ?? scopeRef ?? destinationRef ?? null;
   return {
-    schema: 'npc_combat_intent_plan_v1',
-    request_id: request.request_id,
-    boundary_id: request.boundary_id,
-    state_version: request.state_version,
-    combat_id: request.combat_id,
-    npc_ref: request.npc_ref,
     decision: {
       intent_summary: 'Выбрать ближайшее действие в столкновении.',
       grounded_goal: 'Сохранить контроль над текущим положением.',
       adaptation: 'literal'
     },
-    operation: {
-      op: 'set_combat_intent', intent_kind: intentKind,
-      target_refs: targetRefs, protected_refs: [], scope_ref: scopeRef,
-      destination_ref: destinationRef, force_limit: forceLimit,
-      risk_posture: 'ordinary'
-    },
+    operation_choice: combatOperationChoiceId(
+      request.operation_contract, intentKind, selectedRef),
+    force_choice: choiceId(request.operation_contract.allowed_force_limits,
+      forceLimit, 'force'),
+    risk_choice: choiceId(request.operation_contract.allowed_risk_postures,
+      'ordinary', 'risk'),
     combat_statement: null,
     reason: postDisarm
       ? 'Сопротивление более невозможно.'
       : 'Участник выбирает ближайшее допустимое действие.'
   };
+}
+
+function combatOperationChoiceId(contract, selectedIntent, selectedRef) {
+  const refsByIntent = {
+    engage: contract.engageable_actor_refs,
+    control: contract.controllable_actor_refs,
+    protect: contract.protectable_refs,
+    hold: contract.holdable_scope_refs,
+    reach: contract.reachable_destination_refs,
+    break_contact: contract.break_contact_destination_refs
+  };
+  let index = 0;
+  for (const intentKind of contract.allowed_intent_kinds ?? []) {
+    if ((intentKind === 'surrender' && contract.surrender_available !== true)
+        || (intentKind === 'cease_hostility'
+          && contract.cease_hostility_available !== true)) continue;
+    const refs = ['surrender', 'cease_hostility'].includes(intentKind)
+      || (intentKind === 'break_contact'
+        && (refsByIntent[intentKind] ?? []).length === 0)
+      ? [null] : refsByIntent[intentKind] ?? [];
+    for (const reference of refs) {
+      index += 1;
+      if (intentKind === selectedIntent
+          && (reference === null ? selectedRef === null
+            : sameRef(reference, selectedRef))) return `operation_${index}`;
+    }
+  }
+  throw new Error('Missing operation fixture choice.');
+}
+
+function choiceId(values, selected, prefix, equals = Object.is) {
+  const index = (values ?? []).findIndex((value) => equals(value, selected));
+  if (index < 0) throw new Error(`Missing ${prefix} fixture choice.`);
+  return `${prefix}_${index + 1}`;
+}
+
+function sameRef(left, right) {
+  return left?.entity_kind === right?.entity_kind
+    && left?.entity_id === right?.entity_id;
 }
 
 function npcConversationPlan(request, {
@@ -408,7 +454,7 @@ function npcConversationPlan(request, {
   const routeOperation = request.decision_scope?.operation_contract
     ?.disclose_known_route;
   if (routeOperation && eremeyRouteResponse === 'route_disclosure') {
-    return npcSpeechPlan(request, {
+    return requiredNpcSpeechPlan(request, {
       utteranceText: 'От лагеря иди к старой сушильне по тропе.',
       dominantAct: 'inform',
       interactionTags: ['route_disclosure'],
@@ -457,6 +503,34 @@ function npcConversationPlan(request, {
       : nonSpeechPlan(request, onisimResponse);
   }
   return conversation.npcSemanticModel(request);
+}
+
+function requiredNpcSpeechPlan(request, options) {
+  const plan = npcSpeechPlan(request, options);
+  const scope = request.decision_scope;
+  if (scope?.required_resolution !== 'check_required') return plan;
+  return {
+    ...plan,
+    resolution: scope.required_resolution,
+    supporting_operations: [structuredClone(scope.required_supporting_operation)],
+    check: {
+      purpose: 'resolve social delivery',
+      ...structuredClone(scope.required_check),
+      outcomes: {
+        clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+        success: { delivery_quality: 'credible', observable_effects: [] },
+        success_with_cost: {
+          delivery_quality: 'credible_with_visible_cost', observable_effects: []
+        },
+        failure_with_consequence: {
+          delivery_quality: 'unconvincing', observable_effects: []
+        },
+        severe_failure: {
+          delivery_quality: 'transparently_manipulative', observable_effects: []
+        }
+      }
+    }
+  };
 }
 
 function companionPlan(request, actors, utteranceText = 'Согласен.') {
@@ -578,10 +652,11 @@ function entityByTemplate(entities, templateId, idField) {
 }
 
 function narrationOutput(request) {
+  const narrationRequest = request.request ?? request;
   return {
     version: 1,
     schema: 'narration_output',
-    output_id: `narration:${request.request_id}`,
+    output_id: narrationRequest.request_id,
     prose: 'События хода завершены; видимые последствия сохранены.',
     action_options: [], used_references: [],
     self_check: { no_new_world_facts: true }
@@ -590,7 +665,10 @@ function narrationOutput(request) {
 
 function narrationAudit() {
   return {
-    version: 1, schema: 'narration_audit', pass: true,
-    concerns: [], evidence: ['Только persisted visible context.']
+    version: 1,
+    schema: 'narration_audit',
+    pass: true,
+    concerns: [],
+    evidence: ['Нарратив основан на видимом контексте.']
   };
 }

@@ -7,6 +7,8 @@ import { commitLowerDvinaTracePhase10 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-10-commit.js';
 import { buildTracePhase10Completion, resolveTracePhase10Contracts } from
   '../src/runtime/lower-dvina-trace-phase-10-completion.js';
+import { committedPendingReplayResult, completePendingTracePhase10Replay } from
+  '../src/runtime/lower-dvina-trace-phase-10-replay.js';
 import { createLowerDvinaTracePhase2Runtime } from
   '../src/runtime/lower-dvina-trace-phase-2.js';
 
@@ -84,11 +86,17 @@ test('keeps objective evidence conclusions hidden without visible lineage',
   });
 
 test('commits one zero-time follow-up and exact retry is a no-op', async () => {
-  let current = phase9State(), commitCalls = 0, capturedPlan = null;
-  const loadState = async () => structuredClone(current);
-  const committer = { async commit({ plan }) {
+  let current = phase9State(), commitCalls = 0, capturedPlan = null,
+    capturedTurnBudget = null;
+  const turnBudget = {};
+  const loadState = async (_partyId, options) => {
+    assert.equal(options.turnBudget, turnBudget);
+    return structuredClone(current);
+  };
+  const committer = { async commit({ plan, turnBudget: budget }) {
     commitCalls += 1;
     capturedPlan = plan;
+    capturedTurnBudget = budget;
     const snapshot = plan.inserts.find(({ target_table: table }) =>
       table === 'party_state_snapshots').record.state_payload;
     current = structuredClone(snapshot);
@@ -96,9 +104,13 @@ test('commits one zero-time follow-up and exact retry is a no-op', async () => {
   } };
   const first = await commitLowerDvinaTracePhase10({ partyId: 'party-1',
     phase10Contracts: contracts, loadState, committer,
-    presentationIdempotencyKey: 'turn-idem-7' });
+    presentationIdempotencyKey: 'turn-idem-7', turnBudget });
   assert.equal(first.state_version, 26);
   assert.equal(first.turn_number, 7);
+  assert.equal(first.committed_public_result.state_version, 26);
+  assert.equal(first.committed_public_result.turn_number, 7);
+  assert.equal(first.committed_public_result.screen.current_projection_anchor
+    .package_id, first.package_id);
   assert.equal(commitCalls, 1);
   assert.deepEqual(Object.keys(current.completion).sort(), [
     'change_set_id', 'outcome', 'source_commit_version', 'status']);
@@ -113,13 +125,48 @@ test('commits one zero-time follow-up and exact retry is a no-op', async () => {
   assert.equal(capturedPlan.visible_package_envelope.visible_payload
     .known_context.some((line) => line.includes('продолжают существовать')),
   true);
+  assert.equal(capturedTurnBudget, turnBudget);
 
   const replay = await commitLowerDvinaTracePhase10({ partyId: 'party-1',
     phase10Contracts: contracts, loadState, committer,
-    presentationIdempotencyKey: 'turn-idem-7' });
+    presentationIdempotencyKey: 'turn-idem-7', turnBudget });
   assert.equal(replay.replayed, true);
   assert.equal(commitCalls, 1);
   assert.equal(replay.package_digest, first.package_digest);
+  assert.deepEqual(replay.committed_public_result,
+    first.committed_public_result);
+});
+
+test('Phase 10 commits a pending narration job without presentation', async () => {
+  let approvals = 0;
+  const plans = [];
+  await commitLowerDvinaTracePhase10({ partyId: 'party-1',
+    phase10Contracts: contracts, loadState: async () => phase9State(),
+    committer: {
+      async approveNarration() {
+        approvals += 1;
+        throw new Error('presentation must follow factual commit');
+      },
+      async commit({ plan }) {
+        plans.push(plan);
+        return { ok: true, plan_digest: plan.digest };
+      }
+    } });
+  assert.equal(approvals, 0);
+  assert.equal(plans[0].inserts.find(({ target_table: table }) =>
+    table === 'party_narration_jobs').record.status, 'pending');
+});
+
+test('failed Phase 10 commit leaves Phase 9 state intact', async () => {
+  const current = phase9State();
+  await assert.rejects(commitLowerDvinaTracePhase10({ partyId: 'party-1',
+    phase10Contracts: contracts, loadState: async () => structuredClone(current),
+    committer: { async commit() { return { ok: false,
+      error: { code: 'write_failed' } }; } } }),
+  { code: 'TRACE_PHASE_10_COMMIT_FAILED' });
+  assert.equal(current.party_state.state_version, 25);
+  assert.equal(current.completion, undefined);
+  assert.equal(current.last_turn.visible_package.package_id, 'visible-phase9');
 });
 
 test('restart after Phase 9 resumes completion before replay narration',
@@ -131,11 +178,13 @@ test('restart after Phase 9 resumes completion before replay narration',
       request_id: input.request_id, idempotency_key: input.idempotency_key,
       raw_text: input.raw_text });
     let state = phase9State(), completionCalls = 0, replayCalls = 0;
+    const turnBudget = { assertWithinDeadline() {} };
     const repository = {
       async loadPhase2Replay() { return { input_digest: inputDigest,
         state: structuredClone(state), public_result: { premature: true },
         screen: { screen_status: 'committed_presentation_pending' } }; },
-      async commitPhase10FollowUp() {
+      async commitPhase10FollowUp({ turnBudget: budget }) {
+        assert.equal(budget, turnBudget);
         completionCalls += 1;
         state.completion = { status: 'committed', outcome: { schema:
           'rus.trace_composite_completion_outcome.v1' },
@@ -160,13 +209,247 @@ test('restart after Phase 9 resumes completion before replay narration',
       playerConversationModel: model, npcSemanticModel: model,
       npcAutonomousModel: model, npcCombatModel: model,
       narrator: { run: model }, randomSourceFactory: () => {
-        rngCalls += 1; return {}; }, decisionSecret: 'secret' });
+        rngCalls += 1; return {}; }, decisionSecret: 'secret',
+      llmTurnBudget: turnBudget });
     const result = await runtime.submitTurn({ partyId: 'party-1', input });
     assert.deepEqual(result, { completion_replayed: true });
     assert.equal(completionCalls, 1);
     assert.equal(replayCalls, 1);
     assert.equal(modelCalls, 0);
     assert.equal(rngCalls, 0);
+  });
+
+test('expired deadline during pending replay returns committed pending result',
+  async () => {
+    const input = { request_id: 'turn-request-8',
+      idempotency_key: 'turn-idem-8', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1',
+      request_id: input.request_id, idempotency_key: input.idempotency_key,
+      raw_text: input.raw_text });
+    let expired = false, commitCalls = 0, replayCalls = 0;
+    let narratorCalls = 0, screenWrites = 0;
+    const turnBudget = { assertWithinDeadline() {
+      if (!expired) return;
+      const error = new Error('Gameplay LLM turn budget is exhausted.');
+      error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
+      throw error;
+    } };
+    const state = phase9State();
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const screen = { screen_status: 'committed_presentation_pending',
+      party_id: 'party-1', turn_id: 'turn-8', turn_number: 7,
+      current_projection_anchor: { committed_state_version: 25,
+        package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+    const publicResult = { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition', screen };
+    const repository = {
+      async loadPhase2Replay() { return { input_digest: inputDigest,
+        state: structuredClone(state), public_result: structuredClone(publicResult),
+        screen: structuredClone(screen) }; },
+      async commitPhase10FollowUp() { commitCalls += 1; },
+      async replayPhase2Turn() { replayCalls += 1; },
+      async loadPhase2State() { throw new Error('unexpected load'); },
+      async commitPhase2Turn() { throw new Error('unexpected commit'); },
+      async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+      async persistPhase2Screen() { screenWrites += 1; }
+    };
+    const model = async () => ({});
+    const runtime = createLowerDvinaTracePhase2Runtime({ repository,
+      semanticResolver: model, turnStepModel: model,
+      playerConversationModel: model, npcSemanticModel: model,
+      npcAutonomousModel: model, npcCombatModel: model,
+      narrator: { async run() { narratorCalls += 1; return model(); } },
+      randomSourceFactory: () => ({}),
+      decisionSecret: 'secret', llmTurnBudget: turnBudget,
+      bundleLoader: async () => {
+        await Promise.resolve();
+        expired = true;
+        return bundle;
+      } });
+
+    const result = await runtime.submitTurn({ partyId: 'party-1', input });
+    assert.deepEqual(result, publicResult);
+    assert.equal(commitCalls, 0);
+    assert.equal(replayCalls, 0);
+    assert.equal(narratorCalls, 0);
+    assert.equal(screenWrites, 0);
+});
+
+test('narration rejection during pending replay returns committed pending result',
+  async () => {
+    const input = { request_id: 'turn-request-narration-rejected',
+      idempotency_key: 'turn-idem-narration-rejected', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1', ...input });
+    const state = phase9State();
+    state.completion = { status: 'committed' };
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const screen = { screen_status: 'committed_presentation_pending',
+      party_id: 'party-1', turn_id: 'turn-narration-rejected', turn_number: 7,
+      current_projection_anchor: { committed_state_version: 25,
+        package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+    const publicResult = { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition',
+      screen: structuredClone(screen) };
+    const replay = { input_digest: inputDigest, state,
+      public_result: publicResult, screen };
+    let replayCalls = 0;
+    const runtime = createLowerDvinaTracePhase2Runtime({
+      repository: {
+        async loadPhase2Replay() { return structuredClone(replay); },
+        async replayPhase2Turn() {
+          replayCalls += 1;
+          await Promise.resolve();
+          throw Object.assign(new Error('narration rejected'), {
+            code: 'TRACE_PHASE_2_NARRATION_REJECTED'
+          });
+        },
+        async loadPhase2State() { throw new Error('unexpected load'); },
+        async commitPhase2Turn() { throw new Error('unexpected commit'); },
+        async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+        async persistPhase2Screen() { throw new Error('unexpected screen'); }
+      },
+      semanticResolver: async () => ({}), narrator: { async run() {} },
+      randomSourceFactory: () => ({}), decisionSecret: 'secret'
+    });
+
+    const result = await runtime.submitTurn({ partyId: 'party-1', input });
+    assert.deepEqual(result, publicResult);
+    assert.equal(replayCalls, 1);
+  });
+
+test('pending replay rethrows unexpected repository and contract failures',
+  async () => {
+    const input = { request_id: 'turn-request-unexpected',
+      idempotency_key: 'turn-idem-unexpected', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1', ...input });
+    const state = phase9State();
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const screen = { screen_status: 'committed_presentation_pending',
+      party_id: 'party-1', turn_id: 'turn-unexpected', turn_number: 7,
+      current_projection_anchor: { committed_state_version: 25,
+        package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+    const publicResult = { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition',
+      screen: structuredClone(screen) };
+    const replay = { input_digest: inputDigest, state,
+      public_result: publicResult, screen };
+    const failures = [{ source: 'repository', error: Object.assign(
+      new Error('database unavailable'), { code: 'DATABASE_UNAVAILABLE' }) },
+    { source: 'contract', error: Object.assign(
+      new Error('phase 10 contract invalid'),
+      { code: 'TRACE_PHASE_10_CONTRACT_INVALID' }) }];
+
+    for (const failure of failures) {
+      const runtime = createLowerDvinaTracePhase2Runtime({
+        repository: {
+          async loadPhase2Replay() { return structuredClone(replay); },
+          async commitPhase10FollowUp() {
+            if (failure.source === 'repository') throw failure.error;
+          },
+          async loadPhase2State() { throw new Error('unexpected load'); },
+          async commitPhase2Turn() { throw new Error('unexpected commit'); },
+          async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+          async persistPhase2Screen() { throw new Error('unexpected screen'); }
+        },
+        semanticResolver: async () => ({}), narrator: { async run() {} },
+        randomSourceFactory: () => ({}), decisionSecret: 'secret',
+        bundleLoader: async () => {
+          if (failure.source === 'contract') throw failure.error;
+          return bundle;
+        }
+      });
+      await assert.rejects(runtime.submitTurn({ partyId: 'party-1', input }),
+        (actual) => actual === failure.error, failure.source);
+    }
+  });
+
+test('pending replay requires complete matching committed anchors', () => {
+  const state = phase9State();
+  state.last_turn.idempotency_key = 'turn-idem-8';
+  state.last_turn.input_digest = 'input-digest-8';
+  const screen = { screen_status: 'committed_presentation_pending',
+    party_id: 'party-1', turn_id: 'turn-8', turn_number: 7,
+    current_projection_anchor: { committed_state_version: 25,
+      package_id: 'visible-phase9', package_digest: 'phase9-digest' } };
+  const replay = { input_digest: 'input-digest-8', state,
+    screen, public_result: { party_id: 'party-1', turn_number: 7,
+      state_version: 25, option_id: 'commit_temporary_disposition',
+      screen: structuredClone(screen) } };
+  const replayResult = (candidate) => committedPendingReplayResult({
+    partyId: 'party-1', idempotencyKey: 'turn-idem-8',
+    inputDigest: 'input-digest-8', replay: candidate });
+  assert.deepEqual(replayResult(replay), replay.public_result);
+
+  for (const corrupt of [
+    (candidate) => { delete candidate.state.last_turn.visible_package.package_id;
+      delete candidate.screen.current_projection_anchor.package_id; },
+    (candidate) => { delete candidate.state.last_turn.visible_package.package_digest;
+      delete candidate.screen.current_projection_anchor.package_digest; },
+    (candidate) => { delete candidate.state.last_turn.option_id;
+      delete candidate.public_result.option_id; },
+    (candidate) => { candidate.public_result.screen.party_id = 'party-2'; },
+    (candidate) => { candidate.public_result.screen.turn_number = 8; },
+  ]) {
+    const candidate = structuredClone(replay);
+    corrupt(candidate);
+    assert.equal(replayResult(candidate), null);
+  }
+});
+
+test('pending replay checks deadline immediately before Phase 10 follow-up commit',
+  async () => {
+    let checks = 0, commitCalls = 0;
+    const turnBudget = { assertWithinDeadline() {
+      if (++checks < 3) return;
+      const error = new Error('Gameplay LLM turn budget is exhausted.');
+      error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
+      throw error;
+    } };
+    await assert.rejects(completePendingTracePhase10Replay({
+      partyId: 'party-1', idempotencyKey: 'turn-idem-8',
+      replay: { state: phase9State() }, turnBudget,
+      bundleLoader: async () => bundle,
+      repository: {
+        async commitPhase10FollowUp() { commitCalls += 1; },
+        async loadPhase2Replay() { throw new Error('unexpected replay'); }
+      }
+    }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    assert.equal(commitCalls, 0);
+  });
+
+test('pending replay preserves failure without a provable committed pending result',
+  async () => {
+    const input = { request_id: 'turn-request-9', idempotency_key: 'turn-idem-9',
+      raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1', ...input });
+    const state = phase9State();
+    state.last_turn.idempotency_key = input.idempotency_key;
+    state.last_turn.input_digest = inputDigest;
+    const error = Object.assign(new Error('Gameplay LLM turn budget is exhausted.'),
+      { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    const runtime = createLowerDvinaTracePhase2Runtime({
+      repository: {
+        async loadPhase2Replay() { return { input_digest: inputDigest, state,
+          screen: { screen_status: 'committed_presentation_pending',
+            party_id: 'party-1', turn_id: 'turn-9', turn_number: 7,
+            current_projection_anchor: { committed_state_version: 25,
+              package_id: 'wrong-package', package_digest: 'phase9-digest' } },
+          public_result: {} }; },
+        async commitPhase10FollowUp() { throw new Error('unexpected commit'); },
+        async loadPhase2State() { throw new Error('unexpected load'); },
+        async commitPhase2Turn() { throw new Error('unexpected commit'); },
+        async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+        async persistPhase2Screen() { throw new Error('unexpected screen'); }
+      },
+      semanticResolver: async () => ({}), narrator: { async run() {} },
+      randomSourceFactory: () => ({}), decisionSecret: 'secret',
+      llmTurnBudget: { assertWithinDeadline() { throw error; } }
+    });
+    await assert.rejects(runtime.submitTurn({ partyId: 'party-1', input }),
+      (actual) => actual === error);
   });
 
 function phase9State() {

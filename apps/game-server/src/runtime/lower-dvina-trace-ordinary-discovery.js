@@ -60,7 +60,9 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       const selected = selectDiscoveryContext({
         execution: enabled?.execution_context,
         objective: enabled?.objective_context,
-        targetRef: request?.operation?.target_refs?.[0]
+        targetRef: request?.operation?.target_refs?.[0],
+        locationRef: request?.committed_state?.position?.location_ref,
+        scopeRef
       });
       const execution = selected?.execution;
       if (!validExecution(execution)) return null;
@@ -110,9 +112,11 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     }
   });
 }
-function selectDiscoveryContext({ execution, objective, targetRef }) {
+function selectDiscoveryContext({ execution, objective, targetRef, locationRef, scopeRef }) {
   if (!validExecution(execution) || typeof targetRef !== 'string') return null;
-  if (execution.candidate_context.target_ref === targetRef) {
+  if (execution.candidate_context.target_ref === targetRef
+      || targetRef === locationRef
+        && execution.candidate_context.target_ref === scopeRef?.entity_id) {
     const basisRefs = new Set(execution.supporting_bases.map(({ basis_ref }) =>
       basis_ref));
     return { execution: bindCommittedFiniteSource(execution),

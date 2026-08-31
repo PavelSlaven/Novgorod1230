@@ -18,10 +18,9 @@ const ROLE_MODELS = Object.freeze({
     'fixture-npc-autonomous-decider-repair',
   NPC_COMBAT_DECIDER_MODEL: 'fixture-npc-combat-decider',
   NPC_COMBAT_DECIDER_REPAIR_MODEL: 'fixture-npc-combat-decider-repair',
-  LEGACY_NARRATOR_DOSSIER_MODEL: 'fixture-narrator-writer',
-  LEGACY_NARRATOR_AUDIT_MODEL: 'fixture-narrator-auditor',
-  LEGACY_NARRATOR_DOSSIER_REPAIR_MODEL: 'fixture-narrator-format-repair',
-  LEGACY_NARRATOR_REPAIR_MODEL: 'fixture-narrator-senior-writer'
+  TURN_GAMEPLAY_NARRATOR_MODEL: 'fixture-gameplay-narrator',
+  TURN_GAMEPLAY_NARRATOR_REPAIR_MODEL: 'fixture-gameplay-narrator-repair',
+  TURN_GAMEPLAY_NARRATOR_AUDITOR_MODEL: 'fixture-gameplay-narrator-auditor'
 });
 
 export function localLlmProductionEnv(baseUrl) {

@@ -424,7 +424,7 @@ test('ordinary resolver is not called outside enabled physical discovery scope',
         turnStepModel: discoveryPlan
       }).services;
       await assert.rejects(() => runTurnWorkflow(input(), disabledCapability), {
-        code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+        code: 'TURN_STEP_PLAN_INVALID'
       });
     }
     assert.equal(ordinaryCalls, 0);
@@ -458,7 +458,7 @@ test('ordinary resolver is not called outside enabled physical discovery scope',
       turnStepModel: discoveryPlan
     }).services;
     await assert.rejects(() => runTurnWorkflow(input(), missingPort), {
-      code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+      code: 'TURN_STEP_PLAN_INVALID'
     });
   });
 
@@ -478,7 +478,7 @@ test('listen and remember never reach ordinary resolver, even when enabled',
           `unseen ${discoveryKind} request`, discoveryKind)
       });
       await assert.rejects(() => runTurnWorkflow(input(), services), {
-        code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+        code: 'TURN_STEP_PLAN_INVALID'
       });
     }
     assert.equal(ordinaryCalls, 0);

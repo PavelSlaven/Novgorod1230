@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { serverError } from '../../errors.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
@@ -110,11 +112,15 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest })] });
   if (!built.ok) fail('TRACE_PHASE_9_WRITE_PLAN_REJECTED', built.error);
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: next, screen
+  });
   const committed = await committer.commit({ plan: built.plan,
     created_at_turn: turnNumber });
   if (!committed.ok) fail('TRACE_PHASE_9_COMMIT_FAILED', committed.error);
   return { ...committed, state_version: nextVersion, turn_number: turnNumber,
-    package_id: envelope.package_id, package_digest: envelope.package_digest };
+    package_id: envelope.package_id, package_digest: envelope.package_digest,
+    committed_public_result: committedPublicResult };
 }
 
 const target = (plan, name) => plan.write_targets.find(

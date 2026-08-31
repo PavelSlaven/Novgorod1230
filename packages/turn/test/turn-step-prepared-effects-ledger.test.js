@@ -1,0 +1,442 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  createTurnStepExecutionRegistry,
+  runTurnStepLoop
+} from '../src/turn-step-loop.js';
+import {
+  buildTurnStepPreparedTimeUpdate,
+  requireTurnStepPreparedEffectLedger
+} from '../src/turn-step-prepared-effects.js';
+import {
+  at, available, body, clarificationPlan, directOperationPlan, directPlan,
+  followup, genericPlan, input, minutes, ports, preparedFollowupOperation,
+  preparedRegistry, routePlan, secondDomainPlan, worldProcessPlan
+} from './turn-step-prepared-effects-fixture.js';
+
+test('common prepared orchestration chains arbitrary domain and semantic owners',
+  async () => {
+    const calls = [];
+    const registry = createTurnStepExecutionRegistry({
+      domain: {
+        request_movement: async (execution) => {
+          calls.push(['domain', execution.prepared_chain_context]);
+          return {
+            working_projection: {
+              ...execution.working_projection, position: 'camp'
+            },
+            summary: 'arbitrary domain',
+            write_fragments: [],
+            prepared_effect_request: {
+              effect_kind: 'domain_command',
+              owner_ref: 'arbitrary_domain_owner',
+              operation_ref: 'request_movement',
+              availability: available(),
+              consequence: { duration_minutes: 8 }
+            }
+          };
+        }
+      },
+      applySemanticActivity: async (execution) => {
+        calls.push(['semantic', execution.prepared_chain_context]);
+        return {
+          working_projection: execution.working_projection,
+          summary: 'arbitrary semantic',
+          write_fragments: [],
+          prepared_effect_request: {
+            effect_kind: 'semantic_activity',
+            owner_ref: 'arbitrary_semantic_owner',
+            operation_ref: 'activity:2',
+            availability: null,
+            consequence: { duration_minutes: 1 }
+          }
+        };
+      }
+    });
+    const ownerCalls = { time: 0, body: 0 };
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: registry,
+      preparedEffectContext: {
+        current_clock: at(0), current_body_state: body()
+      },
+      async preparedEffectTimeOwner({ prepared_chain_context: context,
+        consequence }) {
+        ownerCalls.time += 1;
+        const duration = consequence.duration_minutes;
+        return {
+          version: 2, schema: 'turn_time_update',
+          owner: '@rus/time-events-history',
+          clock_before: context.current_clock,
+          clock_after: at(Number(context.current_clock.whole_minutes)
+            + duration),
+          exact_elapsed: minutes(duration), nearest_boundary: null
+        };
+      },
+      async preparedEffectBodyOwner({ prepared_chain_context: context }) {
+        ownerCalls.body += 1;
+        return {
+          version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+          applied: context.prior_effect_count === 0,
+          proposal: context.prior_effect_count === 0 ? { id: 'route' } : null,
+          state_after: context.current_body_state
+        };
+      },
+      turnStepModel: (request) => request.step_index === 1
+        ? routePlan(request) : directPlan(request)
+    }));
+
+    assert.deepEqual(calls.map(([owner, context]) => ({
+      owner,
+      prior: context.prior_effect_count,
+      clock: context.current_clock.whole_minutes
+    })), [
+      { owner: 'domain', prior: 0, clock: '0' },
+      { owner: 'semantic', prior: 1, clock: '8' }
+    ]);
+    assert.deepEqual(ownerCalls, { time: 2, body: 2 });
+    assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
+  });
+test('prepared time sees cumulative F1 plans without duplicating prior output',
+  async () => {
+    const actorPlan = { plan: 'actor' }, duePlan = { plan: 'due' };
+    const seen = [];
+    const registry = createTurnStepExecutionRegistry({ domain: {
+      request_world_process: async ({ working_projection: projection }) => ({
+        working_projection: projection, summary: 'fire', write_fragments: [],
+        local_fire_atomic_write_plans: [actorPlan]
+      }),
+      request_movement: async ({ working_projection: projection }) => ({
+        working_projection: { ...projection, position: 'camp' },
+        summary: 'route', write_fragments: [], prepared_effect_request: {
+          effect_kind: 'domain_command', owner_ref: 'route_owner',
+          operation_ref: 'request_movement', availability: available(),
+          consequence: { duration_minutes: 8 }
+        }
+      })
+    }, applySemanticActivity:async({working_projection:projection})=>({
+      working_projection:projection,summary:'done',write_fragments:[],
+      player_response_boundary:true}) });
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: registry,
+      preparedEffectContext: { current_clock: at(0),
+        current_body_state: body() },
+      async preparedEffectTimeOwner(value) {
+        seen.push(value.local_fire_atomic_write_plans);
+        return { version: 2, schema: 'turn_time_update',
+          owner: '@rus/time-events-history', clock_before: at(0),
+          clock_after: at(8), exact_elapsed: minutes(8), nearest_boundary: null,
+          local_fire_atomic_write_plans: [duePlan] };
+      },
+      async preparedEffectBodyOwner() {
+        return { version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+          applied: false, proposal: null, state_after: body() };
+      },
+      async preparedEffectProjectionOwner(value) {
+        assert.equal(value.actor.actor_id, 'actor-1');
+        return value.working_projection;
+      },
+      turnStepModel(request) {
+        if (request.step_index === 1) return worldProcessPlan(request);
+        if (request.step_index === 2) return routePlan(request);
+        return directPlan(request);
+      }
+    }));
+
+    assert.deepEqual(seen, [[actorPlan]]);
+    assert.deepEqual(outcome.local_fire_atomic_write_plans,
+      [actorPlan, duePlan]);
+  });
+
+test('prepared chain suppresses step-two schema repair but permits a repaired start',
+  async (t) => {
+    await t.test('invalid step two makes exactly two model calls', async () => {
+      let calls = 0;
+      let semanticCalls = 0;
+      const registry = preparedRegistry();
+      const semantic = registry.semanticActivity();
+      const guarded = createTurnStepExecutionRegistry({
+        domain: { request_movement: registry.domain({ op: 'request_movement' }) },
+        applySemanticActivity: async (execution) => {
+          semanticCalls += 1;
+          return semantic(execution);
+        }
+      });
+      await assert.rejects(runTurnStepLoop(input(), ports({
+        executionRegistry: guarded,
+        turnStepModel(request) {
+          calls += 1;
+          return request.step_index === 1 ? routePlan(request)
+            : { ...directPlan(request), request_id: 'forged' };
+        }
+      })), { code: 'TURN_STEP_PLAN_INVALID' });
+      assert.equal(calls, 2);
+      assert.equal(semanticCalls, 0);
+    });
+
+    await t.test('a repaired pending start continues the prepared chain', async () => {
+      let calls = 0;
+      const outcome = await runTurnStepLoop(input(), ports({
+        executionRegistry: preparedRegistry(),
+        turnStepModel(request) {
+          calls += 1;
+          if (calls === 1) return { ...routePlan(request), request_id: 'forged' };
+          return calls === 2 ? routePlan(request) : directPlan(request);
+        }
+      }));
+      assert.equal(calls, 3);
+      assert.equal(outcome.stop_reason, 'player_response');
+      assert.deepEqual(outcome.step_traces.map(({ repaired, applied }) =>
+        ({ repaired, applied })), [
+        { repaired: true, applied: true }, { repaired: false, applied: true }
+      ]);
+      assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) =>
+        [slice.step_index, slice.effect_kind]), [
+        [1, 'domain_command'], [2, 'semantic_activity']
+      ]);
+    });
+  });
+
+test('prepared effect ledger rejects forged, reordered and missing slices',
+  async (t) => {
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: preparedRegistry(),
+      turnStepModel: (request) => request.step_index === 1
+        ? routePlan(request) : directPlan(request)
+    }));
+    const cases = {
+      forged(value) {
+        value.slices[1].consequence.duration_minutes = 7;
+      },
+      reordered(value) {
+        value.slices.reverse();
+      },
+      missing(value) {
+        value.slices.pop();
+      }
+    };
+    for (const [name, mutate] of Object.entries(cases)) {
+      await t.test(name, () => {
+        const value = structuredClone(outcome.prepared_effect_ledger);
+        mutate(value);
+        assert.throws(() => requireTurnStepPreparedEffectLedger(value), {
+          code: 'TURN_STEP_PREPARED_EFFECT_INVALID'
+        });
+      });
+    }
+  });
+
+test('two positive prepared domain segments form one ordered ledger',
+  async () => {
+  let secondDomainCalls = 0;
+  const registry = preparedRegistry({ extraDomain: {
+    request_activity: async (execution) => {
+      secondDomainCalls += 1;
+      return {
+        working_projection: {
+          ...execution.working_projection,
+          interaction_status: 'companions_committed'
+        },
+        summary: 'prepared companion conversation',
+        write_fragments: [],
+        prepared_effect_request: {
+          effect_kind: 'domain_command',
+          owner_ref: 'companion_conversation_owner',
+          operation_ref: 'request_activity',
+          availability: available(),
+          consequence: { duration_minutes: 5 }
+        }
+      };
+    }
+  } });
+  const outcome = await runTurnStepLoop(input(), ports({
+    executionRegistry: registry,
+    admitPreparedDomainPlan: async () => true,
+    preparedEffectContext: {
+      current_clock: at(0), current_body_state: body()
+    },
+    async preparedEffectTimeOwner({ prepared_chain_context: context,
+      consequence }) {
+      const duration = consequence.duration_minutes;
+      const before = Number(context.current_clock.whole_minutes);
+      return {
+        version: 2, schema: 'turn_time_update',
+        owner: '@rus/time-events-history',
+        clock_before: context.current_clock,
+        clock_after: at(before + duration),
+        exact_elapsed: minutes(duration), nearest_boundary: null
+      };
+    },
+    async preparedEffectBodyOwner({ prepared_chain_context: context }) {
+      return {
+        version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+        applied: false, proposal: null,
+        state_after: context.current_body_state
+      };
+    },
+    turnStepModel: (request) => request.step_index === 1
+      ? routePlan(request) : secondDomainPlan(request)
+  }));
+
+  assert.equal(secondDomainCalls, 1);
+  assert.equal(outcome.working_revision, 2);
+  assert.equal(outcome.stop_reason, 'player_response');
+  assert.equal(outcome.working_projection.interaction_status,
+    'companions_committed');
+  const aggregateTime = buildTurnStepPreparedTimeUpdate(
+    outcome.prepared_effect_ledger);
+  assert.deepEqual(aggregateTime.exact_elapsed, minutes(13));
+  assert.equal(outcome.prepared_effect_ledger.slices[1]
+    .consequence.duration_minutes, 5);
+  assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) => ({
+    ordinal: slice.ordinal,
+    kind: slice.effect_kind,
+    owner: slice.owner_ref,
+    from: slice.time_update.clock_before.whole_minutes,
+    to: slice.time_update.clock_after.whole_minutes
+  })), [{
+    ordinal: 1,
+    kind: 'domain_command',
+    owner: 'route_owner',
+    from: '0',
+    to: '8'
+  }, {
+    ordinal: 2,
+    kind: 'domain_command',
+    owner: 'companion_conversation_owner',
+    from: '8',
+    to: '13'
+  }]);
+});
+
+test('after a prepared route a generic check is a boundary',
+  async (t) => {
+    for (const resolution of ['generic_check']) {
+      await t.test(resolution, async () => {
+        let delegated = 0;
+        let rolls = 0;
+        const registry = preparedRegistry({ extraDomain: {
+          request_activity: async () => {
+            delegated += 1;
+            throw new Error('second domain owner must not run');
+          }
+        } });
+        const outcome = await runTurnStepLoop(input(), ports({
+          executionRegistry: registry,
+          randomSource: { next() { rolls += 1; return 0.5; } },
+          resolveCheckContext: async () => ({
+            attribute_value: 10,
+            skill_bonus: 0,
+            state_modifier: 0,
+            equipment_modifier: 0,
+            circumstance_modifier: 0,
+            policy_profile_ref: 'test_profile',
+            policy_profile_pin: {
+              artifact_id: 'test_profile', revision: 1,
+              digest: 'a'.repeat(64)
+            },
+            check_policy_ref: { entity_kind: 'check_policy',
+              entity_id: 'test_profile', authoring_version: '1' },
+            consequence_policy_ref: { entity_kind: 'consequence_policy',
+              entity_id: 'test_consequence', authoring_version: '1' }
+          }),
+          turnStepModel: (request) => request.step_index === 1
+            ? routePlan(request)
+            : resolution === 'domain_request'
+              ? secondDomainPlan(request)
+              : genericPlan(request)
+        }));
+        assert.equal(outcome.working_revision, 1);
+        assert.equal(outcome.stop_reason, 'player_response');
+        assert.equal(outcome.step_traces[1].applied, false);
+        assert.equal(outcome.step_traces[1].player_response_boundary, true);
+        assert.equal(outcome.prepared_effect_ledger.slices.length, 1);
+        assert.equal(delegated, 0);
+        assert.equal(rolls, 0);
+      });
+    }
+  });
+
+test('after a prepared route direct operations stop before every handler',
+  async () => {
+    let directCalls = 0;
+    const counters = { routeHandler: 0, semanticActivityHandler: 0 };
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: preparedRegistry({
+        counters,
+        extraDirect: {
+          move_entity: async () => {
+            directCalls += 1;
+            throw new Error('direct operation handler must not run');
+          }
+        }
+      }),
+      turnStepModel: (request) => request.step_index === 1
+        ? routePlan(request) : directOperationPlan(request)
+    }));
+
+    assert.equal(outcome.working_revision, 1);
+    assert.equal(outcome.step_traces[1].applied, false);
+    assert.equal(outcome.step_traces[1].player_response_boundary, true);
+    assert.equal(outcome.prepared_effect_ledger.slices.length, 1);
+    assert.equal(directCalls, 0);
+    assert.deepEqual(counters,
+      { routeHandler: 1, semanticActivityHandler: 0 });
+  });
+
+test('clarification after a prepared route is one persisted boundary trace',
+  async () => {
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: preparedRegistry(),
+      turnStepModel: (request) => request.step_index === 1
+        ? routePlan(request) : clarificationPlan(request)
+    }));
+
+    assert.equal(outcome.stop_reason, 'clarification_required');
+    assert.equal(outcome.working_revision, 1);
+    assert.equal(outcome.step_traces.length, 2);
+    assert.equal(outcome.step_traces[1].applied, false);
+    assert.equal(outcome.step_traces[1].player_response_boundary, true);
+    assert.deepEqual(outcome.clarification,
+      { question: 'Где именно осматриваться?', target_refs: ['camp'] });
+    assert.equal(outcome.prepared_effect_ledger.slices.length, 1);
+  });
+
+test('prepared world-process continuation sees evolving state before terminal step',
+  async () => {
+    const requests = [];
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: preparedRegistry({
+        semanticBoundary: false,
+        extraDomain: {
+          request_world_process: async ({ plan,
+            working_projection: projection }) => ({
+            working_projection: {
+              ...projection,
+              local_fire_processes: [{ process_ref: 'fire-1',
+                status: 'active', fuel_refs: ['fuel-1'] }]
+            },
+            summary: 'fuel added to fire',
+            write_fragments: []
+          })
+        }
+      }),
+      admitPreparedDomainPlan: async ({ plan }) =>
+        plan.operations[0]?.op === 'request_world_process',
+      turnStepModel(request) {
+        requests.push(request);
+        if (request.step_index === 1) return routePlan(request);
+        if (request.step_index === 2) return worldProcessPlan(request);
+        return directPlan(request);
+      }
+    }));
+
+    assert.equal(requests.length, 3);
+    assert.equal(outcome.stop_reason, 'player_response');
+    assert.equal(outcome.working_revision, 3);
+    assert.equal(outcome.step_traces[1].player_response_boundary, false);
+    assert.deepEqual(requests[2].player_safe_state.local_fire_processes,
+      [{ process_ref: 'fire-1', status: 'active', fuel_refs: ['fuel-1'] }]);
+    assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
+    assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) =>
+      slice.time_update.clock_after.whole_minutes), ['8', '9']);
+  });

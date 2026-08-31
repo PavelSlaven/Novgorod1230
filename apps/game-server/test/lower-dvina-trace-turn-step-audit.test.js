@@ -21,6 +21,8 @@ import {
   commitEnvelope
 } from './lower-dvina-trace-turn-step-envelope-fixture.js';
 
+const unusedNarrationService = { async run() { throw new Error('unexpected narration'); } };
+
 test('turn-step commit rejects extra nested player, completed-step and trace fields',
   () => {
     const cases = [
@@ -67,7 +69,8 @@ test('replay looks up idempotency before loading committed mechanics',
         },
         async connect() { throw new Error('unexpected connection'); }
       },
-      committer: { async commit() { throw new Error('unexpected commit'); } }
+      committer: { async commit() { throw new Error('unexpected commit'); } },
+      narrationService: unusedNarrationService
     });
     const replay = await repository.loadPhase2Replay({
       partyId: 'p', idempotencyKey: 'missing'
@@ -76,6 +79,28 @@ test('replay looks up idempotency before loading committed mechanics',
     assert.equal(queries.length, 1);
     assert.match(queries[0], /party_command_idempotency/u);
   });
+
+test('Phase 2 revalidation reads only the committed state version', async () => {
+  const queries = [];
+  const repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: {
+      async query(statement) {
+        queries.push(statement);
+        return {
+          rowCount: 1,
+          rows: [{ party_state_version: '17', delivery_ack_result: { pass: true } }]
+        };
+      },
+      async connect() { throw new Error('unexpected connection'); }
+    },
+    committer: { async commit() { throw new Error('unexpected commit'); } },
+    narrationService: unusedNarrationService
+  });
+  assert.equal(await repository.loadPhase2StateVersion('party'), 17);
+  assert.equal(queries.length, 1);
+  assert.match(queries[0], /SELECT p\.state_version/u);
+  assert.doesNotMatch(queries[0], /party_state_snapshots/u);
+});
 
 test('Phase 2 load projects first-entry committed container inventory',
   async () => {

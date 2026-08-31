@@ -14,6 +14,9 @@ import {
   assertPhase2CurrentStateVersion
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit-admission.js';
 import {
+  buildPhase2Snapshot
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-state.js';
+import {
   bundle,
   bundle9,
   fixture
@@ -44,6 +47,15 @@ test('Phase 2 execution package is immutable, exact and excludes Phase 3', async
     () => loadLowerDvinaTracePhase2Bundle({ rootDir }),
     { code: 'TRACE_PHASE_2_BUNDLE_ROOT_MISMATCH' }
   );
+});
+
+test('inspection preserves turn-step snapshot schema after an F1 turn', () => {
+  const state = inspectionSnapshotState('rus.lower_dvina_trace_turn_snapshot.v2');
+  assert.equal(buildPhase2Snapshot(inspectionSnapshotInput(state)).schema,
+    'rus.lower_dvina_trace_turn_snapshot.v2');
+  assert.equal(buildPhase2Snapshot(inspectionSnapshotInput(
+    inspectionSnapshotState('rus.lower_dvina_trace_phase_2_snapshot.v1')
+  )).schema, 'rus.lower_dvina_trace_phase_2_snapshot.v1');
 });
 
 test('ranges-only body effect fails closed before resolver, roll or commit', async () => {
@@ -561,24 +573,61 @@ test('new repeated inspection follows the pinned retry policy without duplicatin
   );
 });
 
-test('narration failure happens after factual commit and cannot roll it back', async () => {
+test('narration failure after factual commit returns its pending public result', async () => {
   const f = fixture({ narrationFails: true });
-  await assert.rejects(
-    () => f.runtime.submitTurn({
-      partyId: f.partyId,
-      input: {
-        request_id: 'phase2-narration-failure',
-        idempotency_key: 'phase2-narration-failure',
-        raw_text:
-          'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-      }
-    }),
-    /narration_flow_result invalid/u
-  );
+  const result = await f.runtime.submitTurn({
+    partyId: f.partyId,
+    input: {
+      request_id: 'phase2-narration-failure',
+      idempotency_key: 'phase2-narration-failure',
+      raw_text:
+        'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+    }
+  });
+  assert.equal(result.turn_number, 1);
+  assert.equal(result.state_version, 2);
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
   assert.equal(f.commitCount(), 1);
   assert.equal(f.rollCount(), 1);
   assert.equal(f.state.party_state.state_version, 2);
 });
+
+function inspectionSnapshotState(schema) {
+  return {
+    schema,
+    party_id: 'party:inspection',
+    party_state: {
+      state_version: 2, session_state_version: 2, body_state_version: 2,
+      clock_state_version: 2, turn_number: 2
+    },
+    body_state: { active_conditions: [] },
+    body_effect_history: [],
+    clock: { whole_minutes: '10', subminute_numerator: '0',
+      subminute_denominator: '1' },
+    clock_weather_light: {}, items: [], knowledge: []
+  };
+}
+
+function inspectionSnapshotInput(state) {
+  const clock = { whole_minutes: '25', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  return {
+    state, nextVersion: 3, turnNumber: 3, nextItems: [], nextKnowledge: [],
+    nextBodyState: { active_conditions: [] }, changeSetId: 'change:inspection',
+    inputDigest: 'input', visibleEnvelope: {
+      package_id: 'visible:inspection', package_digest: 'digest'
+    }, factual: {
+      player_input: { request_id: 'request:inspection',
+        idempotency_key: 'idem:inspection', raw_text: 'Осмотреть крушение.',
+        received_at: '1230-01-01T00:00:00Z' },
+      mode_resolution: { option_id: 'inspect_wreck_in_detail',
+        decision_trace: { action_set_digest: 'actions' } },
+      availability: { check_requests: [{}] },
+      consequence: { check_result: null }, time_update: { clock_after: clock },
+      body_update: { proposal: { execution_variant_id: 'inspection' } }
+    }
+  };
+}
 
 function temporalBoundary(id, wholeMinutes) {
   const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });

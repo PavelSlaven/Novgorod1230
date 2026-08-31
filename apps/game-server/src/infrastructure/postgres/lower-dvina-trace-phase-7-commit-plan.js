@@ -25,10 +25,10 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
   visibleEnvelope, writes, operationBatch, ordinaryPlan, actionProductionPlans,
   localFirePlans, spatialSemanticPlan }) {
   const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_phase_7_fire_rest'
-    })
+      verifyApproval: async (candidate) => ({
+        ok: candidate.party_id === partyId
+          && candidate.operation_kind === 'trace_phase_7_fire_rest'
+      })
   });
   const baseInput = {
     plan_id: `p16:${partyId}:trace-phase7:${turnNumber}`,

@@ -6,8 +6,8 @@ import pg from 'pg';
 import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
-import { createFirstPlayablePublicRuntime } from
-  '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+import { createLowerDvinaTracePublicRuntime } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
@@ -244,7 +244,9 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
     recheck: firstPlayableCommitRecheck,
     now: () => new Date('2026-08-12T08:00:00.000Z') });
   const repository = createLowerDvinaTracePhase2PostgresRepository({
-    partyPool: pool, committer });
+    partyPool: pool, committer, narrationService: { async run(request) {
+      return approvedNarration(request.request_id);
+    } } });
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
     turnStepModel: (request) => phase9Plan(request, ids),
     playerConversationModel: (request) => playerPlan(request, {}),
@@ -268,7 +270,7 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
       effect_registrations:
         lowerDvinaTraceConversationTemporalEffectRegistrations() }),
     now: () => '2026-08-12T08:00:00.000Z' });
-  return createFirstPlayablePublicRuntime({ partyPool: pool, committer,
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer,
     release, runtimeCatalogPin,
     traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool, worldPool: pool, release, runtimeCatalogPin }),
@@ -323,7 +325,8 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
     partyPool: pool,
     committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool,
       recheck: firstPlayableCommitRecheck,
-      now: () => new Date('2026-08-12T08:00:00.000Z') })
+      now: () => new Date('2026-08-12T08:00:00.000Z') }),
+    narrationService: { async run(request) { return approvedNarration(request.request_id); } }
   }).loadPhase2State(partyId);
   const bySlot = Object.fromEntries(state.npcs.map((npc) => [
     npc.participant_slot_ref, npc.instance_id]));
@@ -440,7 +443,7 @@ function approvedNarration(requestId) {
       action_options: [], used_references: [],
       self_check: { no_new_world_facts: true } },
     final_audit: { version: 1, schema: 'narration_audit', pass: true,
-      concerns: [], evidence: [] }, repair_request: null,
+      concerns: [], evidence: ['visible_context'] }, repair_request: null,
     generation_history: [], audit_history: [], repair_history: [],
     diagnostics: {} };
 }

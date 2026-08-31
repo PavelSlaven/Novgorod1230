@@ -43,6 +43,11 @@ export function phase2PublicResult({ payload, screen }) {
   });
 }
 
+export function committedPendingPhase2PublicResult({ payload, screen }) {
+  return phase2PublicResult({ payload: structuredClone(payload),
+    screen: structuredClone(screen) });
+}
+
 function semanticNegotiationCandidate(negotiation) {
   return negotiation?.semantic_exchange_projection != null
       || negotiation?.semantic_exchange != null
@@ -208,6 +213,8 @@ export function buildPhase2ReadyScreen({
   narration,
   narrationOutputDigest
 }) {
+  const combatState = publicCombatStateFromConsequence(
+    payload.last_turn?.consequence);
   const screen = projectLowerDvinaTraceScreenPanels({
     payload,
     screen: {
@@ -230,6 +237,7 @@ export function buildPhase2ReadyScreen({
         payload.opening_identity.opening_screen_digest,
       schema: 'lower_dvina_trace_turn_screen',
       screen_status: 'ready',
+      ...(combatState == null ? {} : { combat_state: combatState }),
       current_projection_anchor: {
         committed_state_version:
           payload.party_state.state_version,
@@ -242,6 +250,20 @@ export function buildPhase2ReadyScreen({
   });
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
+}
+
+export function publicCombatStateFromConsequence(consequence) {
+  const session = consequence?.combat?.session_after
+    ?? consequence?.accusation?.combat_initialization?.session
+    ?? consequence?.accusation?.combat_initialization
+    ?? consequence?.combat_initialization?.session
+    ?? consequence?.combat_initialization;
+  const paused = session?.status === 'paused_for_player'
+    && session.player_response_required === true;
+  const ended = session?.status === 'ended'
+    && session.player_response_required === false;
+  return paused || ended ? { status: session.status,
+    player_response_required: session.player_response_required } : null;
 }
 
 export function phase2VisibleContextFromPayload(payload) {

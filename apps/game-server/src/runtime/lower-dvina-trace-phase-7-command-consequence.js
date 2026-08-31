@@ -16,7 +16,7 @@ import { projectTracePhase7CurrentBoundaryState } from
 
 export async function resolveTracePhase7FireRestConsequence({
   state, playerInput, semanticPlan, modeResolution, rootTurnId, contracts,
-  continuationTargetRefs, inputDigest, npcAutonomousModel,
+  preparedFollowupRef, inputDigest, npcAutonomousModel,
   semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
   worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
   directHandlers, directOperationContract,
@@ -36,7 +36,7 @@ export async function resolveTracePhase7FireRestConsequence({
   }
   let actorStepRuntime = null;
   const deferRestCompletion = continuationTargetsMatch(
-    semanticPlan?.continuation, continuationTargetRefs
+    semanticPlan?.continuation, preparedFollowupRef
   );
   const flow = await advanceTemporalNpcDecisionBoundary({
     advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
@@ -151,12 +151,9 @@ function temporalLocalFirePlans(temporal) {
     (proposal) => proposal.local_fire_atomic_write_plans ?? []) ?? [];
 }
 
-function continuationTargetsMatch(continuation, requiredRefs) {
-  if (continuation == null || requiredRefs.length === 0
-      || typeof continuation.remaining_intent !== 'string'
-      || continuation.remaining_intent.length === 0) return false;
-  const declared = new Set(continuation.depends_on_refs ?? []);
-  return requiredRefs.every((ref) => declared.has(ref));
+function continuationTargetsMatch(continuation, preparedFollowupRef) {
+  return typeof preparedFollowupRef === 'string'
+    && continuation?.prepared_followup_ref === preparedFollowupRef;
 }
 
 function blockedDomainResult(domainResult) {

@@ -71,7 +71,11 @@ test('production-v6 trace runtime wires canonical packing and semantic NPC model
   assert.match(traceRuntimeSource, /from '@rus\/items-property'/u);
   assert.match(
     traceRuntimeSource,
-    /\.\.\.createNpcRuntimePorts\(\{ roleRunner \}\)/u
+    /const npcRuntimePorts = createNpcRuntimePorts\(\{ roleRunner \}\)/u
+  );
+  assert.match(
+    traceRuntimeSource,
+    /\.\.\.npcRuntimePorts/u
   );
   assert.match(
     releaseSource,
@@ -128,11 +132,9 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad');
 });
 
-test('production-v13 is direct non-selectable child of v12', () => {
+test('production-v13 is the sole release', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.release_id,
     'spatial-v3-production-v13');
-  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v12');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.runtime_selectable_in_canonical_production,
     false);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
@@ -283,7 +285,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v13 root is sole owner with production-v12 rollback identity', async () => {
+test('production-v13 root is sole owner', async () => {
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
     world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
     world_catalog_digest:
@@ -315,15 +317,6 @@ test('production-v13 root is sole owner with production-v12 rollback identity', 
     health.npc_combat_capability,
     'ready_for_runtime_acceptance'
   );
-  assert.equal(
-    SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v12'
-  );
-  assert.equal(
-    health.rollback_source_release_id,
-    SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id
-  );
-  assert.equal(health.rollback_runtime_selectable, false);
   assert.equal(health.temporal_contract_id, 'temporal-world-v1.1');
   assert.equal(
     health.world_revision_id,

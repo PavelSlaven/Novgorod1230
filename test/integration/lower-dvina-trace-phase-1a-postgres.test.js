@@ -194,6 +194,14 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   assert.deepEqual(rehydrated.policy_profile_pins, first.instance.policy_profile_pins);
   assert.equal(rehydrated.hidden_truth.digest, first.instance.hidden_truth.digest);
   assert.equal(rehydrated.initial_snapshot_identity.state_digest, first.instance.initial_snapshot_identity.state_digest);
+  assert.equal(rehydrated.items.every((item) =>
+    Number.isSafeInteger(item.state_version)), true);
+  assert.equal(rehydrated.items.every((item) =>
+    item.placement.item_id === item.item_id), true);
+  assert.equal(rehydrated.items.every((item) =>
+    Object.hasOwn(item.placement, 'attached_item_id')), true);
+  assert.equal(rehydrated.items.every((item) =>
+    item.ownership.item_id === item.item_id), true);
   const visible = await recreated.loadVisible(request.party_id);
   const visibleJson = JSON.stringify(visible);
   for (const forbidden of ['hidden_truth', 'culprit', 'motive', 'hidden_sequence', 'sealed_selections', 'lies_and_statements']) assert.doesNotMatch(visibleJson, new RegExp(forbidden, 'u'));

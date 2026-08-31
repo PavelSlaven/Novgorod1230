@@ -10,7 +10,7 @@ const EXACT = new Set([
 
 export function createTracePhase7FireRestCommand({
   contracts,
-  continuationTargetRefs = [],
+  preparedFollowupRef = null,
   inputDigest,
   npcAutonomousModel,
   semanticActivityScheduleOwner,
@@ -41,6 +41,8 @@ export function createTracePhase7FireRestCommand({
     known_risks: [],
     reason_visible_to_actor:
       'После переноски у огня можно немного обсохнуть и восстановить силы.',
+    ...(typeof preparedFollowupRef === 'string' && preparedFollowupRef.length > 0
+      ? { prepared_followup_ref: preparedFollowupRef } : {}),
     mode: {
       selected_primary_mode: 'body_recovery',
       secondary_modes: ['time_progression', 'npc_interaction'],
@@ -74,7 +76,7 @@ export function createTracePhase7FireRestCommand({
       modeResolution = null, rootTurnId = null }) {
       return resolveTracePhase7FireRestConsequence({
         state, playerInput, semanticPlan, modeResolution, rootTurnId,
-        contracts, continuationTargetRefs, inputDigest, npcAutonomousModel,
+        contracts, preparedFollowupRef, inputDigest, npcAutonomousModel,
         semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
         worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
         directHandlers, directOperationContract,

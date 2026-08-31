@@ -21,8 +21,10 @@ import {
 } from './lower-dvina-trace-turn-10-prepared-validation.js';
 import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
   './lower-dvina-trace-phase-8-prepared-validation.js';
-import { validTracePreparedCombatConsequence } from
-  '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
+import {
+  validTraceCombatStartConsequence,
+  validTracePreparedCombatConsequence
+} from '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
 import { PHASE9_PREPARED_COMMANDS, validatePreparedPhase9 } from
   './lower-dvina-trace-phase-9-prepared-validation.js';
 
@@ -168,15 +170,16 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   const operation = trace?.approved_plan?.operations?.[0];
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
   const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const combatStart = validTraceCombatStartConsequence(slice.consequence);
   if (ledger.root_turn_id !== (batch?.root_turn_id ?? envelope.root_turn_id)
       || ledger.committed_state_version !== (batch?.committed_state_version
         ?? envelope.base_state_version)
       || slice.effect_kind !== 'domain_command'
       || slice.operation_ref !== 'request_combat'
       || slice.step_index !== 1
-      || !validTracePreparedCombatConsequence(slice.consequence, {
-        playerResponseBoundary: trace?.player_response_boundary
-      })
+      || !(combatStart || validTracePreparedCombatConsequence(
+        slice.consequence, { playerResponseBoundary:
+          trace?.player_response_boundary }))
       || trace?.applied !== true
       || trace?.approved_plan?.resolution !== 'domain_request'
       || operation?.op !== 'request_combat'
@@ -185,7 +188,8 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
       || !samePreparedValue(envelope.body_update, factual?.body_update)
       || !samePreparedValue(expectedBody, envelope.body_update)
       || !samePreparedTimeBase(expectedTime, envelope.time_update)
-      || trace.plan_request?.player_safe_state?.combat_sessions?.length !== 1
+      || trace.plan_request?.player_safe_state?.combat_sessions?.length
+        !== (combatStart ? 0 : 1)
       || !samePreparedValue(trace.plan_request.player_safe_state.clock,
         state.clock)) {
     preparedEffectFail('combat prepared ledger is not authoritative');

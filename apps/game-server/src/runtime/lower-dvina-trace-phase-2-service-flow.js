@@ -83,7 +83,7 @@ export function createLowerDvinaTracePhase2ServiceFlow({
       return createLowerDvinaTraceTurnStepVisibleProjector({
         fallback: createTracePhase9VisibleProjector({
           contracts: phase9Contracts, fallback: createTracePhase8VisibleProjector({
-            contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
+            contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ scenePresentation, fallback: createTracePhase5VisibleProjector({
               phase4Projector: createTracePhase4VisibleProjector({
                 contracts: phase4Contracts,
                 phase3Projector: createTracePhase3VisibleProjector({

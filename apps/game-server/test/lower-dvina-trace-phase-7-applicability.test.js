@@ -12,6 +12,31 @@ import {
   phase7PlayerInput
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
 
+test('Phase 7 requires the committed camp fire environment', () => {
+  const state = phase7CommittedState();
+  const contracts = approvedPhase7Contracts(state);
+  const command = phase7Command({ state, contracts,
+    model: async () => assert.fail('blocked rest must not call the NPC') });
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    true);
+  state.local_fire_runtime = [{ process_state: {
+    status: 'active', scope_ref: 'storehouse-anchor'
+  } }];
+  state.position.g5_anchor_id = 'foreign-camp-anchor';
+  state.environment_snapshot.scope.g5_anchor_id = 'foreign-camp-anchor';
+  state.npcs.find(({ participant_slot_ref: slot }) => slot === 'onisim_boatman')
+    .anchor_id = 'foreign-camp-anchor';
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    false);
+  state.position.g5_anchor_id = 'camp-anchor';
+  state.environment_snapshot = {
+    ...structuredClone(contracts.bodyEnvironment),
+    environment_profile_id: 'trace_ld_v1_env_storehouse_yard'
+  };
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    false);
+});
+
 test('Phase 7 preserves the boundary causality chain', async () => {
   const state = phase7CommittedState();
   const contracts = approvedPhase7Contracts(state);

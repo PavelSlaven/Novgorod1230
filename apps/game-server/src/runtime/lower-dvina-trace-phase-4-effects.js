@@ -218,8 +218,14 @@ export function createTracePhase4VisibleProjector({ phase3Projector,
             ? 'Стоящий рядом мужчина прекращает разговор.'
           : 'Стоящий рядом мужчина переводит столкновение в открытый бой.';
     return { version: 1, schema: 'visible_context_package', visible_scene: visibleScene, visible_changes: [
-      ...(semantic?.statements.map(({ statement_id: statementId }) => statementId) ?? []),
-      ...(responseKind === 'surrender' ? ['ratsha_surrendered'] : [])
+      ...(semantic == null ? [] : [responseKind === 'silence'
+        ? 'Стоящий рядом мужчина промолчал.'
+        : responseKind === 'leave_conversation'
+          ? 'Стоящий рядом мужчина прекратил разговор.'
+          : speechResponse
+            ? 'Стоящий рядом мужчина ответил.'
+            : 'Разговор перешёл в действие.']),
+      ...(responseKind === 'surrender' ? ['Стоящий рядом мужчина сдался.'] : [])
     ], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth', 'canonical_identity'] };
   } };
 }

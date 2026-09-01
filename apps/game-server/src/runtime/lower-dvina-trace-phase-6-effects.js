@@ -1,4 +1,6 @@
 import { applyBodyStateChange } from '@rus/body-state';
+import { scenePresentationForLocation } from
+  './lower-dvina-trace-scene-presentation.js';
 
 export function createTracePhase6TemporalAdvance({ fallback }) {
   return async (input) => {
@@ -49,6 +51,60 @@ export function createTracePhase6BodyEffect({ fallback, contracts }) {
   } };
 }
 
-export function createTracePhase6VisibleProjector({ fallback }) {
-  return { async project(input) { if (input.consequence?.phase6_kind !== 'synchronized_carry') return fallback.project(input); const intent = input.consequence.carry.intent; const terminal = intent.execution_after.status === 'completed'; return { version: 1, schema: 'visible_context_package', visible_scene: terminal ? 'Группа доставила Онисима в рыбацкий стан.' : 'Переноска остановлена на внешней временной границе; пройденный путь сохранён.', visible_changes: terminal ? ['onisim_carried_to_camp_committed'] : [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [`Пройдено ${intent.cumulative_elapsed_after.numerator} из 20 минут.`], uncertainties: [], allowed_tensions: [], do_not_imply: ['independent_onisim_movement', 'rerolled_carrier_replacement', 'uncommitted_terminal_arrival'] }; } };
+export function createTracePhase6VisibleProjector({
+  fallback, scenePresentation = null
+}) {
+  return { async project(input) {
+    if (input.consequence?.phase6_kind !== 'synchronized_carry') {
+      return fallback.project(input);
+    }
+    const intent = input.consequence.carry.intent;
+    const terminal = intent.execution_after.status === 'completed';
+    const current = currentScene(input);
+    if (!terminal) return {
+      ...current,
+      visible_scene: current.visible_scene || 'Переноска остановилась в пути.',
+      visible_changes: unique([...current.visible_changes,
+        'Переноска с Онисимом остановилась в пути.']),
+      known_context: unique([...current.known_context,
+        'До рыбацкого стана ещё не дошли.']),
+      do_not_imply: unique([...current.do_not_imply,
+        'independent_onisim_movement', 'rerolled_carrier_replacement',
+        'uncommitted_terminal_arrival'])
+    };
+    const profile = scenePresentation == null ? null
+      : scenePresentationForLocation({ scenePresentation,
+        locationRef: intent.terminal_group_position.location_ref });
+    const group = new Set(intent.terminal_group_ids);
+    return {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: profile?.display_name
+        ?? 'Группа доставила Онисима в рыбацкий стан.',
+      visible_changes: ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.'],
+      sensory_details: profile?.player_visible_physical_facts ?? [],
+      visible_npc: current.visible_npc.filter(
+        ({ entity_ref: ref }) => group.has(ref?.entity_id)),
+      visible_objects: [],
+      known_context: profile == null ? [] : [profile.display_name],
+      uncertainties: [], allowed_tensions: [],
+      do_not_imply: [
+        'independent_onisim_movement', 'rerolled_carrier_replacement',
+        'uncommitted_terminal_arrival'
+      ]
+    };
+  } };
+}
+
+function currentScene(input) {
+  const current = input?.retrieved_state?.current_visible_context;
+  return current?.schema === 'visible_context_package'
+    ? structuredClone(current)
+    : { version: 1, schema: 'visible_context_package', visible_scene: '',
+      visible_changes: [], sensory_details: [], visible_npc: [],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] };
+}
+
+function unique(values) {
+  return [...new Set(values)];
 }

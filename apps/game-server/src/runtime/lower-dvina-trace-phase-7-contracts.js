@@ -7,7 +7,7 @@ import {
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 30
+      || bundle.definition_revision < 15 || bundle.definition_revision > 31
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
@@ -22,6 +22,13 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const bodyEffectSource = exact(
     bundle.body_environment_profiles?.effect_profiles,
     'effect_profile_id', 'trace_ld_v1_body_fire_rest_30m');
+  const bodyEnvironment = exact(
+    bundle.body_environment_profiles?.environment_profiles,
+    'environment_profile_id', bodyEffectSource.environment_ref);
+  const carryRoute = exact(bundle.movement_bindings?.route_bindings,
+    'route_id', 'trace_ld_v1_route_shed_to_camp_carry_onisim');
+  const campPlacement = carryRoute.terminal_placement_contract;
+  const campScope = resolveCampScope(state, campPlacement);
   const bodyEffect = resolveFireRestEffect(bodyEffectSource, state);
   const npcPolicy = exact(bundle.npc_decision_schedule_policies
     ?.decision_policies, 'policy_id', 'trace_ld_v1_npc_zhdanko_decisions');
@@ -97,6 +104,16 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || restActivity.duration_minutes !== 30
       || restActivity.time_profile_ref !== 'trace_ld_v1_time_30m'
       || bodyEffect.activity_ref !== restActivity.profile_id
+      || bodyEnvironment.source !== 'party_environment_snapshot'
+      || canonicalDigest(bodyEnvironment.facts) !== canonicalDigest([
+        'sheltered_from_wind', 'lit_fire', 'drying_place'
+      ])
+      || campPlacement?.group?.location_ref
+        !== 'trace_ld_v1_loc_fishing_camp'
+      || campPlacement.group.zone_ref !== 'working_camp'
+      || campPlacement.group.anchor_template_ref
+        !== campPlacement.carried_actor?.anchor_template_ref
+      || campPlacement.carried_actor?.zone_ref !== 'fire_rest_area'
       || bodyEffect.elapsed_minutes !== 30
       || bodyEffect.selection_policy !== 'code_owned_within_approved_bounds'
       || bodyEffect.rng_consumption !== 'forbidden'
@@ -116,6 +133,10 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     restActivity: structuredClone(restActivity),
     waitActivity: structuredClone(waitActivity),
     bodyEffect: structuredClone(bodyEffect),
+    bodyEnvironment: structuredClone(bodyEnvironment),
+    campPlacement: structuredClone(campPlacement),
+    campScope: structuredClone(campScope),
+    campRouteRef: carryRoute.route_id,
     npcPolicy: structuredClone(npcPolicy),
     schedulePolicy: structuredClone(schedulePolicy),
     roadBag: structuredClone(roadBag),
@@ -141,6 +162,49 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       digest: canonicalDigest(restActivity)
     }
   });
+}
+
+export function tracePhase7FireEnvironmentSatisfied(state, contracts) {
+  const snapshot = state?.environment_snapshot;
+  if (snapshot == null) return false;
+  const { scope, causal_basis: causalBasis, ...profile } = snapshot;
+  return contracts?.bodyEnvironment?.environment_profile_id
+      === contracts?.bodyEffect?.environment_ref
+    && canonicalDigest(profile) === canonicalDigest(
+      contracts.bodyEnvironment)
+    && canonicalDigest(scope) === canonicalDigest(contracts.campScope)
+    && canonicalDigest(scope) === canonicalDigest(presentScope(state))
+    && causalBasis?.kind === 'authored_terminal_environment'
+    && causalBasis.environment_profile_ref
+      === contracts.bodyEnvironment.environment_profile_id
+    && causalBasis.route_ref === contracts.campRouteRef
+    && causalBasis.anchor_template_ref
+      === contracts.campPlacement.group.anchor_template_ref;
+}
+
+function resolveCampScope(state, placement) {
+  const matches = (state?.prepared_scenes ?? []).filter((scene) =>
+    scene?.location_profile_ref === placement?.group?.location_ref
+      && scene?.anchor?.template_id === placement?.group?.anchor_template_ref);
+  if (matches.length !== 1 || !matches[0]?.node?.instance_id
+      || !matches[0]?.anchor?.instance_id) {
+    gap('TRACE_PHASE_7_CAMP_SCOPE_GAP');
+  }
+  return {
+    location_ref: placement.group.location_ref,
+    g5_node_id: matches[0].node.instance_id,
+    g5_anchor_id: matches[0].anchor.instance_id,
+    zone_ref: placement.group.zone_ref
+  };
+}
+
+function presentScope(state) {
+  return {
+    location_ref: state?.position?.location_ref,
+    g5_node_id: state?.position?.g5_node_id,
+    g5_anchor_id: state?.position?.g5_anchor_id,
+    zone_ref: state?.position?.zone_ref
+  };
 }
 
 function exactNpcSemanticProfile(profile, targetNpcRef) {
@@ -208,12 +272,10 @@ function resolveFireRestEffect(source, state) {
       ])) {
     gap('TRACE_PHASE_7_BODY_PROFILE_INVALID');
   }
-  const coldState = (state.body_state?.active_conditions ?? []).find(
-    ({ id }) => ['mild_shivering', 'strong_shivering'].includes(id)
-  )?.id;
-  if (coldState == null) {
-    gap('TRACE_PHASE_7_BODY_COLD_CONDITION_GAP');
-  }
+  const conditions = new Set((state.body_state?.active_conditions ?? [])
+    .map(({ id }) => id));
+  const coldState = ['strong_shivering', 'mild_shivering']
+    .find((id) => conditions.has(id));
   return {
     ...structuredClone(source),
     source_profile_digest: canonicalDigest(source),
@@ -225,13 +287,13 @@ function resolveFireRestEffect(source, state) {
       from: 'wet',
       to: 'damp',
       outcome: 'wet_clothing_reduced_to_damp'
-    }, {
+    }, ...(coldState == null ? [] : [{
       condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
       from: coldState,
       to: 'mild_shivering',
       outcome: coldState === 'strong_shivering'
         ? 'strong_shivering_reduced' : 'persists'
-    }, {
+    }]), {
       condition_profile_ref: 'trace_ld_v1_condition_headache',
       from: 'headache',
       to: 'headache',
@@ -241,23 +303,30 @@ function resolveFireRestEffect(source, state) {
       from: 'shoulder_bruise',
       to: 'shoulder_bruise',
       outcome: 'shoulder_bruise_persists'
-    }]
+    }].filter(({ from }) => conditions.has(from))
   };
 }
 
 function approvedRestOutcomes(outcomes) {
-  const byProfile = new Map((outcomes ?? []).map(
-    (outcome) => [outcome.condition_profile_ref, outcome]
-  ));
-  return byProfile.get('trace_ld_v1_condition_wet_clothing')?.from === 'wet'
-    && byProfile.get('trace_ld_v1_condition_wet_clothing')?.to === 'damp'
-    && [['strong_shivering', 'mild_shivering'],
-      ['mild_shivering', 'mild_shivering']].some(([from, to]) =>
-      byProfile.get('trace_ld_v1_condition_cold_shivering')?.from === from
-        && byProfile.get('trace_ld_v1_condition_cold_shivering')?.to === to)
-    && byProfile.get('trace_ld_v1_condition_headache')?.to === 'headache'
-    && byProfile.get('trace_ld_v1_condition_shoulder_bruise')?.to
-      === 'shoulder_bruise';
+  const allowed = new Map([
+    ['trace_ld_v1_condition_wet_clothing', [['wet', 'damp']]],
+    ['trace_ld_v1_condition_cold_shivering', [
+      ['strong_shivering', 'mild_shivering'],
+      ['mild_shivering', 'mild_shivering']
+    ]],
+    ['trace_ld_v1_condition_headache', [['headache', 'headache']]],
+    ['trace_ld_v1_condition_shoulder_bruise', [
+      ['shoulder_bruise', 'shoulder_bruise']
+    ]]
+  ]);
+  const seen = new Set();
+  return Array.isArray(outcomes) && outcomes.every((outcome) => {
+    const profile = outcome?.condition_profile_ref;
+    if (seen.has(profile)) return false;
+    seen.add(profile);
+    return (allowed.get(profile) ?? []).some(([from, to]) =>
+      outcome.from === from && outcome.to === to);
+  });
 }
 
 function actor(state, slot) {

@@ -91,6 +91,14 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   ].includes(state.participant_slot_ref));
   assert.equal(campNpcRecords.length, 3);
   assert.ok(campNpcRecords.every(({ anchor_id: anchorId }) => anchorId === null));
+  const zhdankoRecord = npcRecords.find(({ semantic_state: state }) =>
+    state.participant_slot_ref === 'zhdanko_storehouse_controller');
+  assert.ok(zhdankoRecord.semantic_state.relationships.some(
+    ({ actor_ref, relation, status }) =>
+      actor_ref === 'ratsha_storehouse_helper'
+        && relation === 'work_supervisor_of'
+        && status === 'active'
+  ));
   for (const table of ['party_g5_nodes', 'party_g5_anchors']) {
     const records = stage24.party_db_write_plan.write_batches.find(
       ({ target_table: target }) => target === table
@@ -261,6 +269,26 @@ test('revision 26 Stage 24 persists deterministic drying-shed preparation', asyn
         location_ref: 'trace_ld_v1_loc_old_drying_shed' } } } } });
   assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
   assert.equal(firstEntry.expected_state_versions.length, 2);
+});
+
+test('revision 31 Stage 24 persists inherited NPC context', async () => {
+  const revision31 = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 31
+  });
+  const fixture = await stage24Fixture({ revision: 31, bundle: revision31,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision31) });
+  const stage24 = await runStage24PartyDbWritePlan({ input: fixture.input,
+    builder: buildLowerDvinaTracePhase1AWritePlan,
+    auditor: (request) => auditPartyDbWritePlanByCode({ ...request,
+      stage24_input: fixture.input }) });
+  const zhdanko = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npcs'
+  ).records.find(({ semantic_state: state }) =>
+    state.participant_slot_ref === 'zhdanko_storehouse_controller');
+  assert.ok(zhdanko.semantic_state.relationships.some(
+    ({ actor_ref, relation }) => actor_ref === 'ratsha_storehouse_helper'
+      && relation === 'work_supervisor_of'
+  ));
 });
 
 test('unknown table and forbidden operation fail before the transaction executor', async () => {
@@ -459,7 +487,7 @@ async function stage24Fixture({ revision = 24, bundle: active = bundle,
     sealed_selections_digest: computeStage24ArtifactDigest(materialization.sealed_selections)
   };
   const artifacts = {
-    scenario_definition: bundle.definition,
+    scenario_definition: active.definition,
     materialization_result: materialization,
     player_character_audit: {
       version: 1,

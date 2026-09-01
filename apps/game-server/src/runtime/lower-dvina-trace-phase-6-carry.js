@@ -146,6 +146,23 @@ export function planTracePhase6SynchronizedCarry({ state, contracts,
     carried_actor_id: finalOnisim.instance_id, assembly_snapshot: finalAssembly, carrier_inventory_snapshots: finalInventoryAdmission.snapshots, inventory_admission_checkpoints: finalInventoryAdmission.checkpoints, body_effect_profile_refs: structuredClone(contracts.route.body_effect_profile_refs), body_effects_by_subject: bodyEffects, terminal_location_ref: terminal ? contracts.route.terminal_position_outcome : null,
     terminal_group_ids: terminal ? [state.actor_id, ...initial.slice(1), finalReplacement.instance_id, finalOnisim.instance_id] : [],
     terminal_group_position: terminal ? { g4_id: state.position.g4_id, location_ref: contracts.terminalPlacement.group.location_ref, g5_node_id: camp.node.instance_id, g5_anchor_id: camp.anchor.instance_id, zone_ref: contracts.terminalPlacement.group.zone_ref } : null,
+    terminal_environment_snapshot: terminal ? {
+      ...structuredClone(contracts.terminalEnvironment),
+      scope: {
+        location_ref: contracts.terminalPlacement.group.location_ref,
+        g5_node_id: camp.node.instance_id,
+        g5_anchor_id: camp.anchor.instance_id,
+        zone_ref: contracts.terminalPlacement.group.zone_ref
+      },
+      causal_basis: {
+        kind: 'authored_terminal_environment',
+        environment_profile_ref:
+          contracts.terminalEnvironment.environment_profile_id,
+        route_ref: contracts.route.route_id,
+        anchor_template_ref:
+          contracts.terminalPlacement.group.anchor_template_ref
+      }
+    } : null,
     onisim_camp_fire_position: terminal ? { location_ref: contracts.terminalPlacement.carried_actor.location_ref, g5_node_id: camp.node.instance_id, g5_anchor_id: camp.anchor.instance_id, zone_ref: contracts.terminalPlacement.carried_actor.zone_ref, independent_movement_history: 'forbidden' } : null,
     ratsha_observation: terminal ? { npc_id: finalRatsha.instance_id, state: contracts.terminalPlacement.ratsha_observation.state, committed_fact_output: contracts.terminalPlacement.ratsha_observation.committed_fact_output } : null
   };

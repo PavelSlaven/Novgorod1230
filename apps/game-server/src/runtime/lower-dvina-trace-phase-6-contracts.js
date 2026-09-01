@@ -1,8 +1,8 @@
 import { serverError } from '../errors.js';
 
 export function resolveTracePhase6Contracts({ bundle }) {
-  if (![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)
-      || ![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition?.revision)) {
+  if (![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(bundle.definition_revision)
+      || ![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_6_REVISION_MISMATCH');
   }
   const route = exact(bundle.movement_bindings?.route_bindings, 'route_id', 'trace_ld_v1_route_shed_to_camp_carry_onisim');
@@ -11,6 +11,9 @@ export function resolveTracePhase6Contracts({ bundle }) {
   const sourceEndpoint = exact(bundle.location_topology_set?.endpoints, 'endpoint_id', route.source_endpoint);
   const destinationEndpoint = exact(bundle.location_topology_set?.endpoints, 'endpoint_id', route.destination_endpoint);
   const capacity = (bundle.location_capacity_contracts?.capacity_contracts ?? []).find((value) => value.location_ref === route.terminal_position_outcome);
+  const terminalEnvironment = exact(
+    bundle.body_environment_profiles?.environment_profiles,
+    'environment_profile_id', 'trace_ld_v1_env_camp_fire');
   const activity = exact(bundle.activity_check_consequence_profiles
     ?.activity_profiles, 'profile_id',
   'trace_ld_v1_activity_make_stretcher_and_carry');
@@ -35,6 +38,9 @@ export function resolveTracePhase6Contracts({ bundle }) {
       || terminal?.group?.zone_ref !== 'working_camp'
       || terminal.carried_actor?.zone_ref !== 'fire_rest_area'
       || terminal.carried_actor.independent_movement_history !== 'forbidden'
+      || terminalEnvironment.source !== 'party_environment_snapshot'
+      || JSON.stringify(terminalEnvironment.facts)
+        !== JSON.stringify(['sheltered_from_wind', 'lit_fire', 'drying_place'])
       || terminal.ratsha_observation?.committed_fact_output
         !== 'ratsha_under_group_observation_committed') {
     gap('TRACE_PHASE_6_CAPACITY_GAP');
@@ -48,6 +54,7 @@ export function resolveTracePhase6Contracts({ bundle }) {
     capacity: structuredClone(capacity),
     accessPolicy: structuredClone(accessPolicy),
     terminalPlacement: structuredClone(terminal),
+    terminalEnvironment: structuredClone(terminalEnvironment),
     shed_location_ref: 'trace_ld_v1_loc_old_drying_shed',
     activity: structuredClone(activity)
   });

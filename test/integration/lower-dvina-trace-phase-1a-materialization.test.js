@@ -227,8 +227,16 @@ test('revision 25 loads NPC actor-step profile and materializes inherited state'
   }));
   assert.equal(revision25Bundle.npc_actor_step_profile.activation_boundary
     .npc_participant_slot_ref, 'zhdanko_storehouse_controller');
-  assert.ok(result.immediate.npcs.some(({ participant_slot_ref }) =>
-    participant_slot_ref === 'zhdanko_storehouse_controller'));
+  const zhdanko = result.immediate.npcs.find(({ participant_slot_ref }) =>
+    participant_slot_ref === 'zhdanko_storehouse_controller');
+  assert.ok(zhdanko);
+  assert.ok(zhdanko.relationships.some(({ actor_ref, relation, status }) =>
+    actor_ref === 'ratsha_storehouse_helper'
+      && relation === 'kinship_uncle_of'
+      && status === 'active'));
+  assert.ok(zhdanko.relationships.some(({ actor_ref, relation }) =>
+    actor_ref === 'ratsha_storehouse_helper'
+      && relation === 'work_supervisor_of'));
 });
 
 function worldSnapshot() {

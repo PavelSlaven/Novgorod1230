@@ -177,7 +177,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       location_profile_ref: npc.location_profile_ref,
       zone_ref: npc.zone_ref,
       profile_revision: npc.profile_revision,
-      profile_record_digest: npc.profile_record_digest
+      profile_record_digest: npc.profile_record_digest,
+      relationships: structuredClone(npc.relationships ?? [])
     }
   })), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_containers', preparedContainers.map((container) => ({
@@ -440,7 +441,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -451,7 +452,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(
+  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(
     result.request_identity.scenario_definition_revision
   );
   const firstEntry = result.request_identity.scenario_definition_revision >= 24;
@@ -481,7 +482,7 @@ function assertInput(input) {
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
   }
-  if ([19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(result.request_identity.scenario_definition_revision)) {
+  if ([19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(result.request_identity.scenario_definition_revision)) {
     assertRevision19CharacterState(result);
   }
 }

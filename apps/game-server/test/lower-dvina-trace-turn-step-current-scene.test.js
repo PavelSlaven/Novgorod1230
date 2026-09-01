@@ -18,18 +18,31 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
   const state = committedState();
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
-  assert.deepEqual(current.current_visible_context.visible_npc, [{
+  assert.deepEqual(current.current_visible_context.visible_npc.map((npc) => ({
+    entity_ref: npc.entity_ref,
+    display_label: npc.display_label,
+    recognition: npc.recognition
+  })), [{
     entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
     display_label: 'раненый мужчина',
     recognition: 'unrecognized'
   }]);
-  assert.equal(current.current_visible_context.known_context.includes(
-    'раненый мужчина: injured_unable_to_walk'), true);
+  const cues = current.current_visible_context.visible_npc[0].observable_cues;
+  assert.equal(cues.identity.age_category, 'middle_aged');
+  assert.equal(cues.identity.appearance.build, 'stocky');
+  assert.equal(cues.equipment[0].visual_profile_snapshot.visible_fabric,
+    'light_linen');
+  assert.equal(cues.outward_presentation.gaze, 'down');
+  assert.equal(Object.hasOwn(cues.outward_presentation, 'emotion'), false);
+  assert.equal(JSON.stringify(current.current_visible_context).includes(
+    'injured_unable_to_walk'), false);
   const projected = projectLowerDvinaTracePlayerSafeState({
     committed_state: current, actor_id: state.actor_id
   }).player_safe_state;
   assert.equal(projected.npcs.find(({ instance_id: id }) => id === 'onisim')
     .body_condition, 'injured_unable_to_walk');
+  assert.equal(projected.current_visible_context.visible_npc[0]
+    .observable_cues.identity.appearance.build, 'stocky');
   assert.equal(projected.npcs.some(({ instance_id: id }) => id === 'moved'), false);
   assert.equal(projected.npcs.some(({ instance_id: id }) => id === 'hidden'), false);
   assert.equal(current.party_state.state_version, 9);
@@ -42,12 +55,37 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
-  assert.equal(direct.known_context.includes(
-    'раненый мужчина: injured_unable_to_walk'),
-    true);
+  assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
   assert.deepEqual(direct.visible_changes,
     ['Прошло некоторое время.']);
   assert.deepEqual(direct.uncertainties, ['Задуманное не удалось.']);
+});
+
+test('current scene never promotes an authored NPC name into player knowledge', () => {
+  const state = committedState();
+  state.npcs.push({
+    instance_id: 'unknown', location_ref: 'shed', anchor_id: 'shed-anchor',
+    zone_ref: 'yard', identity_state: { display_name: 'Незнакомое имя' }
+  });
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  assert.equal(current.current_visible_context.visible_npc.some(
+    ({ entity_ref: ref }) => ref.entity_id === 'unknown'), false);
+});
+
+test('version zero scene retains safe labels and gains observable cues', () => {
+  const state = committedState();
+  state.party_state.state_version = 0;
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  assert.equal(current.current_visible_context.visible_npc[0]
+    .display_label, 'раненый мужчина');
+  assert.equal(current.current_visible_context.visible_npc[0]
+    .recognition, 'unrecognized');
+  assert.equal(current.current_visible_context.visible_npc[0]
+    .observable_cues.identity.appearance.build, 'stocky');
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
@@ -98,11 +136,27 @@ function committedState() {
       allowed_tensions: [], do_not_imply: [] },
     route_history: [{ route_ref: 'camp-shed' }], npcs: [{ instance_id: 'onisim',
       location_ref: 'shed', anchor_id: 'shed-anchor', zone_ref: 'yard',
-      identity_state: { canonical_name: 'Онисим' }, machine_state: {
+      identity_state: { canonical_name: 'Онисим', sex_category: 'male',
+        age_category: 'middle_aged', appearance: { build: 'stocky',
+          skin_tone: 'light', face_shape: 'angular', hair: { color: 'dark_brown',
+            length: 'short', style: 'straight', facial_hair: 'full_beard' },
+          eyes: { color: 'gray' } } },
+      player_safe_presentation: { gaze: 'down', body_pose: 'three_quarter',
+        emotion: 'private_motive' },
+      machine_state: {
         body_condition: { state: 'injured_unable_to_walk' }
       } }, { instance_id: 'moved', location_ref: 'camp', anchor_id: 'shed-anchor',
       zone_ref: 'yard', identity_state: { canonical_name: 'Еремей' } },
     { instance_id: 'hidden', location_ref: 'shed', anchor_id: 'shed-anchor',
       zone_ref: 'yard', visibility_state: 'hidden',
-      identity_state: { canonical_name: 'Ратша' } }] };
+      identity_state: { canonical_name: 'Ратша' } }],
+    items: [{ holder_npc_id: 'onisim', physical_position: 'worn',
+      equipment_slot_category_id: 'base_garment', state: {
+        visual_profile_snapshot: { schema: 'item_visual_profile_snapshot_v1',
+          version: 1, equipment_slot: 'base_garment', neckline: 'round',
+          sleeve_form: 'narrow', outer_form: 'none',
+          visible_fabric: 'light_linen', trim: 'none',
+          main_visible_color: 'undyed_linen',
+          secondary_visible_color: 'undyed_linen', headwear_kind: 'none' }
+      } }] };
 }

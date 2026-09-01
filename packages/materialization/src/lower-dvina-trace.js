@@ -178,10 +178,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
-  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
   const revision26S1Preparation=revision>=26?materializeLowerDvinaTraceFirstEntryPreparationMembers({input,bundle,camp:phase3Prepared,shed:phase4Prepared,locationSelections}):null;
-  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
     bundle.item_inventory_profiles,
@@ -251,7 +251,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const materializedNpcs = phase3Prepared ? [...phase3Prepared.npcs,
     ...(phase4Prepared ? phase4Prepared.npcs : []),
     ...(phase7Prepared ? [phase7Prepared.npc] : [])] : [];
-    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
+    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
   const revision19EquipmentHandoff = revision19Actors
     ? {
       party_id: input.party_id,

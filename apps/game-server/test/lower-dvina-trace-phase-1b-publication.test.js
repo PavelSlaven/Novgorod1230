@@ -134,6 +134,27 @@ test('revision 28 selects the new public presentation over the shared Phase 1A p
   ).flat().some((fact) => /cold|wet|exposed|landscape_basis|economic_basis/i.test(fact)), false);
 });
 
+test('revision 31 pins scene presentation v2 without scene authority', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 31
+  });
+  const camp = publication.scene_presentation.locations.find(
+    ({ location_ref }) => location_ref === 'trace_ld_v1_loc_fishing_camp'
+  );
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v26');
+  assert.equal(publication.definition.revision, 31);
+  assert.equal(publication.scene_presentation.presentation_id,
+    'lower_dvina_trace_scene_presentation_v2');
+  assert.deepEqual(camp.player_visible_physical_facts.slice(-5), [
+    'Сухой песчаный берег тянется вдоль воды.',
+    'Сети развешены на кольях и между навесами.',
+    'Лодки стоят у воды.',
+    'Под навесом сложены свёрнутые снасти.',
+    'В воздухе держится речная сырость.'
+  ]);
+  assert.equal(/entity|inventory|affordance/i.test(JSON.stringify(camp)), false);
+});
+
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {
   for (const [relative, code] of [
     [

@@ -1,0 +1,189 @@
+{
+  "schema": "rus.lower_dvina_trace_scene_presentation.v1",
+  "presentation_id": "lower_dvina_trace_scene_presentation_v2",
+  "revision": 2,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "source_basis": {
+    "kind": "authoritative_location_profile",
+    "scope": "stable_player_safe_physical_environment"
+  },
+  "locations": [
+    {
+      "location_ref": "trace_ld_v1_loc_wreck_shore",
+      "display_name": "берег крушения",
+      "player_visible_physical_facts": [
+        "Мокрый песок и ивняк тянутся вдоль берега реки.",
+        "У самой воды лежат разбитые доски и обрывки снастей.",
+        "Над открытым берегом тянется низкое сырое небо."
+      ],
+      "source_basis": "stable_authoritative_location_environment"
+    },
+    {
+      "location_ref": "trace_ld_v1_loc_fishing_camp",
+      "display_name": "рыбацкий стан",
+      "player_visible_physical_facts": [
+        "На сухом берегу стоят навес и очаговая площадка.",
+        "Под навесом есть место укрыться от речной сырости.",
+        "От стана видна вода Нижней Двины.",
+        "Сухой песчаный берег тянется вдоль воды.",
+        "Сети развешены на кольях и между навесами.",
+        "Лодки стоят у воды.",
+        "Под навесом сложены свёрнутые снасти.",
+        "В воздухе держится речная сырость."
+      ],
+      "source_basis": "stable_authoritative_location_environment"
+    },
+    {
+      "location_ref": "trace_ld_v1_loc_old_drying_shed",
+      "display_name": "старая сушильня",
+      "player_visible_physical_facts": [
+        "Старая сушильня стоит на сухом пригорке над сырой низиной.",
+        "Доски стен дают полное укрытие от ветра.",
+        "Вход в сушильню виден с тропы."
+      ],
+      "source_basis": "stable_authoritative_location_environment"
+    },
+    {
+      "location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+      "display_name": "клеть Жданко",
+      "player_visible_physical_facts": [
+        "Деревянная клеть стоит на приподнятой площадке у протоки.",
+        "Площадка сухо поднимается над береговой травой.",
+        "У протоки слышна тихая вода."
+      ],
+      "source_basis": "stable_authoritative_location_environment"
+    }
+  ],
+  "fact_presentations": [
+    {
+      "fact_ref": "visible:wreck_present",
+      "text": "На берегу лежат обломки разбитой лодки.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_onisim_barefoot_tracks",
+      "text": "В мокром песке видны босые следы.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_boot_track",
+      "text": "Рядом заметен отдельный след сапога.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "visible:road_bag_missing",
+      "text": "Дорожной сумки, о которой было известно, здесь нет.",
+      "source_basis": "committed_player_visible_knowledge",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "visible:debris_layering_indicates_sequence",
+      "text": "Слои обломков и следов различимы.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_cut_fastening",
+      "text": "Кожаная застёжка разрезана.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_side_dent",
+      "text": "На борту лодки заметна вмятина сбоку.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_second_boat_trace",
+      "text": "Среди обломков есть следы ещё одной небольшой лодки.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    },
+    {
+      "fact_ref": "trace_ld_v1_evidence_blue_wool",
+      "text": "На ветке у места крушения найден клочок синей шерсти.",
+      "source_basis": "committed_player_visible_observation",
+      "perception_requirement": "committed_observation"
+    }
+  ],
+  "route_presentations": [
+    {
+      "route_fact_ref": "trace_ld_v1_route_wreck_to_camp_committed",
+      "route_ref": "trace_ld_v1_route_wreck_to_camp",
+      "visible_scene": "рыбацкий стан",
+      "visible_change": "Вы дошли до рыбацкого стана.",
+      "known_context": "К месту крушения можно вернуться по приметной тропе.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_camp_to_wreck_committed",
+      "route_ref": "trace_ld_v1_route_camp_to_wreck",
+      "visible_scene": "берег крушения",
+      "visible_change": "Тропа вывела обратно к берегу крушения.",
+      "known_context": "К рыбацкому стану можно вернуться по знакомой тропе.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_camp_to_shed_committed",
+      "route_ref": "trace_ld_v1_route_camp_to_shed",
+      "visible_scene": "старая сушильня",
+      "visible_change": "Тропа вывела к старой сушильне.",
+      "known_context": "К рыбацкому стану можно вернуться той же тропой.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_shed_to_camp_committed",
+      "route_ref": "trace_ld_v1_route_shed_to_camp",
+      "visible_scene": "рыбацкий стан",
+      "visible_change": "Вы вернулись к рыбацкому стану.",
+      "known_context": "Сушильня остаётся по знакомой тропе.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_shed_to_camp_carry_onisim_committed",
+      "route_ref": "trace_ld_v1_route_shed_to_camp_carry_onisim",
+      "visible_scene": "рыбацкий стан",
+      "visible_change": "Группа добралась с Онисимом до рыбацкого стана.",
+      "known_context": "Сушильня остаётся по знакомой тропе.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_camp_to_storehouse_committed",
+      "route_ref": "trace_ld_v1_route_camp_to_storehouse",
+      "visible_scene": "клеть Жданко",
+      "visible_change": "Тропа вывела ко двору клети Жданко.",
+      "known_context": "К рыбацкому стану можно вернуться известной дорогой.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_storehouse_to_camp_committed",
+      "route_ref": "trace_ld_v1_route_storehouse_to_camp",
+      "visible_scene": "рыбацкий стан",
+      "visible_change": "Группа вернулась к рыбацкому стану.",
+      "known_context": "Клеть Жданко остаётся по знакомой дороге.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    },
+    {
+      "route_fact_ref": "trace_ld_v1_route_storehouse_to_camp_guarded_return_committed",
+      "route_ref": "trace_ld_v1_route_storehouse_to_camp_guarded_return",
+      "visible_scene": "рыбацкий стан",
+      "visible_change": "Группа вернулась к рыбацкому стану.",
+      "known_context": "Клеть Жданко остаётся по знакомой дороге.",
+      "source_basis": "committed_route_arrival",
+      "perception_requirement": "committed_route_movement"
+    }
+  ],
+  "fallback_policy": "forbidden"
+}

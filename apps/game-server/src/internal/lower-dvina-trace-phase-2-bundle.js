@@ -33,11 +33,18 @@ const V30 = Object.freeze({
   bindingDigest: '446e795a370408bb4b8d953cbd1669e01e3e665187e3163cd6739e8e1a721c15',
   packageId: 'lower_dvina_trace_phase_2_v30', scenarioRevision: 30, bindingRevision: 30
 });
+const V31 = Object.freeze({
+  manifest: `${ROOT}/phase-2-v31/manifest.json`,
+  binding: `${ROOT}/phase-2-v31/wreck-inspection-execution-binding.json`,
+  manifestDigest: 'acdeda78600635b50c2a4360dda60cc5dc2d38c493ce5f6bf0fdcc84dda4ad87',
+  bindingDigest: 'e4450ec310929514faf6817fe99ecd6792211a974cfa264de61fd71df069a29b',
+  packageId: 'lower_dvina_trace_phase_2_v31', scenarioRevision: 31, bindingRevision: 31
+});
 
 export async function loadLowerDvinaTracePhase2Bundle({
   rootDir = process.cwd(), scenarioDefinitionRevision = null
 } = {}) {
-  const selected = scenarioDefinitionRevision === 30 ? V30 : scenarioDefinitionRevision === 29 ? V29
+  const selected = scenarioDefinitionRevision === 31 ? V31 : scenarioDefinitionRevision === 30 ? V30 : scenarioDefinitionRevision === 29 ? V29
     : [27, 28].includes(scenarioDefinitionRevision) ? V27 : {
     manifest: MANIFEST_PATH, binding: BINDING_PATH,
     manifestDigest: APPROVED_MANIFEST_DIGEST,

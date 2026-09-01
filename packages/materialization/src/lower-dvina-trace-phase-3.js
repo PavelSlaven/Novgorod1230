@@ -176,7 +176,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     use_state: rope.use_state
   };
   if (input.scenario_definition_revision >= 12
-      && input.scenario_definition_revision <= 30) {
+      && input.scenario_definition_revision <= 31) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -374,7 +374,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
       content_materialization: 'deferred_until_exact_inventory_profiles_are_approved'
     }
   };
-  if (input.scenario_definition_revision === 30) {
+  if (input.scenario_definition_revision >= 30) {
     const profile = binding.packet_placement?.parent_container_inventory_profile;
     if (profile?.id !== containerTemplate.base_catalog_ref?.inventory_profile_id
         || profile.container_template_id !== containerTemplate.container_template_id
@@ -382,7 +382,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
         || profile.carry_form !== 'regular' || profile.external_hand_cost !== 1
         || profile.inventory_role !== 'primary_container' || profile.status !== 'approved') {
       fail('TRACE_REVISION_30_ROAD_BAG_PROFILE_INVALID',
-        'Revision 30 requires the exact approved road-bag inventory profile.');
+        'Revision 30 or later requires the exact approved road-bag inventory profile.');
     }
     container.state.inventory_profile_snapshot = structuredClone(profile);
   }
@@ -563,10 +563,25 @@ function materializeNpc({
       scenario_function: profile.scenario_function,
       causal_basis: profile.causal_basis
     },
+    relationships: materializeNpcRelationships(
+      bundle.participant_profile_set,
+      placement.participant_slot_ref
+    ),
     knowledge_profile_snapshot: structuredClone(knowledgeScope),
     profile_candidate_set_digest: selection.candidate_set_digest,
     profile_record_digest: selection.record_digest
   };
+}
+
+function materializeNpcRelationships(profileSet, participantSlotRef) {
+  return (profileSet.relations ?? [])
+    .filter(({ source }) => source === participantSlotRef)
+    .map(({ source, relation_type_id: relation, target }) => ({
+      relationship_ref: `${source}:${relation}:${target}`,
+      actor_ref: target,
+      relation,
+      status: 'active'
+    }));
 }
 
 function requiredById(values, key, id) {

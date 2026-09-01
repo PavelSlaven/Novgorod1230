@@ -61,6 +61,12 @@ const contracts = {
   destinationEndpoint: { endpoint_id: 'camp-endpoint' },
   accessPolicy: { policy_id: 'carry-access' },
   capacity: { contract_id: 'camp-capacity' },
+  terminalEnvironment: {
+    environment_profile_id: 'trace_ld_v1_env_camp_fire',
+    schema: 'rus.trace_environment_profile.v1', version: 1,
+    facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+    source: 'party_environment_snapshot'
+  },
   terminalPlacement: {
     group: {
       location_ref: 'trace_ld_v1_loc_fishing_camp',
@@ -163,6 +169,16 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   ], [79, 35, 57]);
   assert.equal(snapshot.position.zone_ref, 'working_camp');
   assert.equal(snapshot.phase6_carry_execution.progress_ppm, 1000000);
+  assert.equal(snapshot.environment_snapshot.environment_profile_id,
+    contracts.terminalEnvironment.environment_profile_id);
+  assert.equal(snapshot.environment_snapshot.scope.g5_anchor_id,
+    'camp-anchor');
+  assert.equal(snapshot.environment_snapshot.causal_basis.kind,
+    'authored_terminal_environment');
+  assert.equal(snapshot.environment_snapshot.causal_basis.route_ref,
+    contracts.route.route_id);
+  assert.equal(snapshot.environment_snapshot.causal_basis.anchor_template_ref,
+    contracts.terminalPlacement.group.anchor_template_ref);
   const physical = plan.commit_rechecks.find(({ kind }) => kind === 'physical');
   assert.equal(physical.physical_model,
     'trace_phase6_targeted_admission');

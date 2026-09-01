@@ -117,7 +117,7 @@ function applyExactConditionOutcomes(activeConditions, outcomes) {
 
 export function createTracePhase2VisibleProjector({ contracts, scenePresentation }) {
   return Object.freeze({
-    async project({ consequence, time_update: timeUpdate, body_update: body }) {
+    async project({ consequence }) {
       const visibleObjects = consequence.clue_materialization
         ? [{
             entity_ref: {
@@ -143,12 +143,7 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
         sensory_details: [],
         visible_npc: [],
         visible_objects: visibleObjects,
-        known_context: [
-          `GameTimestamp: ${timeUpdate.clock_after.whole_minutes}`,
-          `health:${body.state_after.health}`,
-          `satiety:${body.state_after.satiety}`,
-          `energy:${body.state_after.energy}`
-        ],
+        known_context: [],
         uncertainties: [
           'Наблюдения сами по себе не устанавливают виновника или мотив.'
         ],

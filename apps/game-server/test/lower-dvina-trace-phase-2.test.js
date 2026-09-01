@@ -49,6 +49,16 @@ test('Phase 2 execution package is immutable, exact and excludes Phase 3', async
   );
 });
 
+test('revision 31 Phase 2 package pins revision 31 publication chain', async () => {
+  const phase2 = await loadLowerDvinaTracePhase2Bundle({
+    scenarioDefinitionRevision: 31
+  });
+  assert.equal(phase2.manifest.package_id, 'lower_dvina_trace_phase_2_v31');
+  assert.equal(phase2.manifest.definition_ref.revision, 31);
+  assert.equal(phase2.manifest.phase_1b_manifest_ref.revision, 26);
+  assert.equal(phase2.binding.scenario_definition_revision, 31);
+});
+
 test('inspection preserves turn-step snapshot schema after an F1 turn', () => {
   const state = inspectionSnapshotState('rus.lower_dvina_trace_turn_snapshot.v2');
   assert.equal(buildPhase2Snapshot(inspectionSnapshotInput(state)).schema,

@@ -123,7 +123,8 @@ export function buildLowerDvinaTracePersistedProjection({
           location_profile_ref: npc.location_profile_ref,
           zone_ref: npc.zone_ref,
           profile_revision: npc.profile_revision,
-          profile_record_digest: npc.profile_record_digest
+          profile_record_digest: npc.profile_record_digest,
+          relationships: structuredClone(npc.relationships ?? [])
         },
         role_ref: structuredClone(npc.role_ref),
         occupation_ref: structuredClone(npc.occupation_ref),

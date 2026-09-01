@@ -75,7 +75,7 @@ export function buildLowerDvinaTraceSealedSelections(bundle, selected) {
       bundle.knowledge_lie_memory_rules.audience_candidate_slots[0]
     )]]
   ];
-  if ([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+  if ([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     .includes(bundle.definition_revision)) {
     groups.push(
       ['interaction_persistence_mappings', exactRecordRefs(

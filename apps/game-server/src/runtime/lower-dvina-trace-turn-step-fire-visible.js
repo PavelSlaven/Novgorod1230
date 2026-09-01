@@ -1,5 +1,6 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import {
+  enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
   projectDirectSeedChanges
@@ -30,7 +31,12 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
-        return projectWithoutFire({ input, consequence, seedEntries, fallback });
+        return enrichLowerDvinaTraceVisibleNpcCues({
+          visibleContext: await projectWithoutFire({
+            input, consequence, seedEntries, fallback
+          }),
+          committedState: input.retrieved_state
+        });
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
@@ -42,7 +48,10 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             directSeedKeys: directSeedKeys(seedEntries),
             body
           });
-      return overlayFireVisible(base, fireVisible);
+      return enrichLowerDvinaTraceVisibleNpcCues({
+        visibleContext: overlayFireVisible(base, fireVisible),
+        committedState: input.retrieved_state
+      });
     }
   });
 }

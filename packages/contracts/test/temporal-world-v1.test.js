@@ -119,6 +119,41 @@ test('Factual visible envelope rejects hidden fields and combined write plans re
   };
   assert.deepEqual(validateSpatialV3Contract('visible_package_persistence_envelope', envelope), []);
 
+  const observable = validateSpatialV3Contract(
+    'visible_package_persistence_envelope', {
+      ...envelope,
+      visible_payload: { ...envelope.visible_payload, visible_npcs: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+        display_label: 'Раненый мужчина', recognition: 'unrecognized',
+        observable_cues: {
+          identity: { age_category: 'middle_aged', appearance: {
+            build: 'stocky', hair: { color: 'dark_brown' }
+          } },
+          equipment: [{ physical_position: 'worn',
+            visual_profile_snapshot: {
+              schema: 'rus.actor_equipment_visual_profile.v1', version: 1,
+              visible_fabric: 'light_linen'
+            } }],
+          outward_presentation: { gaze: 'down', body_pose: 'frontal' }
+        }
+      }] }
+    });
+  assert.deepEqual(observable, []);
+
+  const privateCue = validateSpatialV3Contract(
+    'visible_package_persistence_envelope', {
+      ...envelope,
+      visible_payload: { ...envelope.visible_payload, visible_npcs: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+        display_label: 'Раненый мужчина', recognition: 'unrecognized',
+        observable_cues: {
+          outward_presentation: { emotion: 'private_motive' }
+        }
+      }] }
+    });
+  assert.ok(privateCue.some(({ code }) =>
+    code === 'generated_schema_mismatch'));
+
   const hidden = validateSpatialV3Contract('visible_package_persistence_envelope', {
     ...envelope,
     visible_payload: { ...envelope.visible_payload, hidden_event_queue: ['secret'] }

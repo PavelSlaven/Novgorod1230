@@ -241,9 +241,22 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       contracts,
       fallback: { apply() { throw new Error('unexpected fallback'); } }
     }).apply({ committed_state: state, consequence, time_update: timeUpdate });
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Рыбацкий стан на песчаном берегу.',
+      visible_changes: [], sensory_details: ['На кольях сохнут сети.'],
+      visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'onisim-1' },
+        display_label: 'раненый мужчина', recognition: 'unrecognized',
+        observable_cues: { identity: { sex_category: 'male' } }
+      }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
     const visible = await createTracePhase7VisibleProjector({
       fallback: { async project() { throw new Error('unexpected fallback'); } }
-    }).project({ consequence, body_update: bodyUpdate });
+    }).project({ consequence, body_update: bodyUpdate,
+      retrieved_state: state });
 
     assert.deepEqual([
       bodyUpdate.state_after.health,
@@ -255,6 +268,13 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       'damp', 'mild_shivering', 'headache', 'shoulder_bruise'
     ]);
     const visibleJson = JSON.stringify(visible);
+    assert.equal(visible.visible_scene,
+      'Рыбацкий стан на песчаном берегу.');
+    assert.equal(visible.sensory_details.includes(
+      'На кольях сохнут сети.'), true);
+    assert.equal(visible.visible_npc[0].display_label, 'раненый мужчина');
+    assert.equal(visible.visible_npc[0].observable_cues.identity.sex_category,
+      'male');
     for (const hidden of ['npc_decision_signal',
       'npc_action_decision_request', 'zhdanko_plan',
       'road_bag_new_location']) {
@@ -273,6 +293,9 @@ test('revision 15 materialized state resolves the approved Phase 7 chain',
     assert.equal(revision15.definition_revision, 15);
     assert.equal(contracts.zhdanko.participant_slot_ref,
       'zhdanko_storehouse_controller');
+    assert.deepEqual(contracts.bodyEffect.condition_outcomes.map(
+      ({ condition_profile_ref: ref }) => ref),
+    ['trace_ld_v1_condition_cold_shivering']);
     assert.equal(contracts.roadBag.item_ref,
       'trace_ld_v1_container_road_bag');
     assert.deepEqual(contracts.bodyEffect.condition_outcomes.find(

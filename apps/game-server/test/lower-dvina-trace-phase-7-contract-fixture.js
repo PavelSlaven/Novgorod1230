@@ -28,6 +28,7 @@ export function approvedPhase7Contracts(state) {
     },
     bodyEffect: {
       effect_profile_id: 'trace_ld_v1_body_fire_rest_30m',
+      environment_ref: 'trace_ld_v1_env_camp_fire',
       elapsed_minutes: 30,
       exact_deltas: { health: 0, energy: 3, satiety: -1 },
       selection_policy: 'fixed_approved_effect',
@@ -43,6 +44,27 @@ export function approvedPhase7Contracts(state) {
           'shoulder_bruise', 'shoulder_bruise_persists')
       ]
     },
+    bodyEnvironment: {
+      environment_profile_id: 'trace_ld_v1_env_camp_fire',
+      schema: 'rus.trace_environment_profile.v1', version: 1,
+      facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+      source: 'party_environment_snapshot'
+    },
+    campPlacement: {
+      group: {
+        location_ref: 'trace_ld_v1_loc_fishing_camp',
+        zone_ref: 'working_camp', anchor_template_ref: 'camp-anchor-template'
+      },
+      carried_actor: {
+        zone_ref: 'fire_rest_area', anchor_template_ref: 'camp-anchor-template'
+      }
+    },
+    campScope: {
+      location_ref: 'trace_ld_v1_loc_fishing_camp',
+      g5_node_id: 'camp-node', g5_anchor_id: 'camp-anchor',
+      zone_ref: 'working_camp'
+    },
+    campRouteRef: 'trace_ld_v1_route_shed_to_camp_carry_onisim',
     npcPolicy: {
       goals: [
         'conceal_committed_shortage_if_selected_truth',

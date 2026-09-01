@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createTracePhase6TemporalAdvance } from
+import {
+  createTracePhase6TemporalAdvance,
+  createTracePhase6VisibleProjector
+} from
   '../src/runtime/lower-dvina-trace-phase-6-effects.js';
 import { REBIND_BOUNDARY, boundary, contracts,
   planTracePhase6SynchronizedCarry, profile, state } from
@@ -56,6 +59,46 @@ test('Phase 6 terminal carry uses one root attempt, exact assembly and committed
     'eremey_fisher', 'ratsha_storehouse_helper', 'background_fisher_2'
   ]);
 });
+
+test('Phase 6 terminal carry presents the new physical scene and retained group',
+  async () => {
+    const value = state();
+    value.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Старая сушильня.', visible_changes: [],
+      sensory_details: [], visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'eremey_fisher' },
+        display_label: 'Еремей', recognition: 'known',
+        observable_cues: { identity: { sex_category: 'male' } }
+      }, {
+        entity_ref: { entity_kind: 'npc', entity_id: 'not-in-group' },
+        display_label: 'Сторонний человек', recognition: 'unrecognized'
+      }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
+    const intent = planTracePhase6SynchronizedCarry({
+      state: value, contracts, inputDigest: 'visible-terminal'
+    });
+    const visible = await createTracePhase6VisibleProjector({
+      fallback: { project: () => assert.fail('unexpected fallback') },
+      scenePresentation: { locations: [{
+        location_ref: 'camp', display_name: 'Рыбацкий стан',
+        player_visible_physical_facts: [
+          'На песчаном берегу сохнут сети; у воды вытянуты лодки.'
+        ]
+      }] }
+    }).project({ retrieved_state: value, consequence: {
+      phase6_kind: 'synchronized_carry', carry: { intent }
+    } });
+    assert.equal(visible.visible_scene, 'Рыбацкий стан');
+    assert.deepEqual(visible.sensory_details,
+      ['На песчаном берегу сохнут сети; у воды вытянуты лодки.']);
+    assert.deepEqual(visible.visible_npc.map(
+      ({ entity_ref: ref }) => ref.entity_id), ['eremey_fisher']);
+    assert.equal(visible.visible_npc[0].observable_cues.identity.sex_category,
+      'male');
+  });
 
 test('Phase 6 accepts prepared Rev24 first-entry camp target and rejects duplicates', () => {
   const value = state();

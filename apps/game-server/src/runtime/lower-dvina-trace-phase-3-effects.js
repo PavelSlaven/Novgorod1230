@@ -152,10 +152,15 @@ export function createTracePhase3VisibleProjector({
             'TRACE_M2_PHASE_3_VISIBLE_GAP'
           )
         : null;
-      const visibleChanges = semantic
-        ? semantic.statements.map(({ statement_id: statementId }) =>
-            statementId)
-        : [conversation.statement_ref];
+      const visibleChanges = [responseKind === 'silence'
+        ? 'Еремей промолчал.'
+        : responseKind === 'leave_conversation'
+          ? 'Еремей прекратил разговор.'
+          : disclosed
+            ? 'Еремей ответил и указал путь к сушильне.'
+            : semantic != null
+              ? 'Еремей ответил.'
+              : 'Разговор с Еремеем продолжился.'];
       return {
         version: 1,
         schema: 'visible_context_package',
@@ -200,7 +205,7 @@ function historicalMovementProjection(contracts) {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: 'Микула пришёл в рыбацкий стан.',
-    visible_changes: ['trace_ld_v1_route_wreck_to_camp_committed'],
+    visible_changes: ['Вы добрались от места крушения до рыбацкого стана.'],
     sensory_details: ['Рабочий стан стоит у берега Нижней Двины.'],
     visible_npc: contracts.actors.map(playerSafeNpc),
     visible_objects: [],

@@ -85,6 +85,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       'State uncertainty only when it is explicitly supplied'), true);
     assert.equal(call.messages[0].content.includes(
       'ground every adjective, adverb, sensory quality, temporal relation'), true);
+    assert.equal(call.messages[0].content.includes(
+      'do not turn source arrays into a one-fact-per-sentence catalogue'), true);
   }
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');

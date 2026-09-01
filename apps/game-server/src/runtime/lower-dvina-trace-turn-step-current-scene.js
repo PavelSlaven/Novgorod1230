@@ -1,5 +1,8 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import { projectLowerDvinaTracePlayerSafeState } from
+import {
+  projectLowerDvinaTracePlayerSafeState,
+  projectLowerDvinaTraceVisibleNpcDetails
+} from
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
@@ -17,15 +20,18 @@ export function withLowerDvinaTraceCurrentScene({
   scenePresentation = null
 }) {
   const initial = committedState?.current_visible_context;
+  const projectionSource = structuredClone(committedState);
+  delete projectionSource.current_visible_context;
   if (Number(committedState?.party_state?.state_version) === 0
       && validCurrentScene(initial)) {
     return {
       ...committedState,
-      current_visible_context: structuredClone(initial)
+      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
+        visibleContext: initial,
+        committedState: projectionSource
+      })
     };
   }
-  const projectionSource = structuredClone(committedState);
-  delete projectionSource.current_visible_context;
   const playerSafe = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     actor_id: projectionSource.actor_id
@@ -40,7 +46,7 @@ export function withLowerDvinaTraceCurrentScene({
   ]));
   const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
     playerSafe.position, visibleLabels)).filter(Boolean);
-  const current = {
+  const current = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
@@ -48,12 +54,11 @@ export function withLowerDvinaTraceCurrentScene({
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: [],
-    known_context: [profile.display_name, ...(playerSafe.npcs ?? []).map((npc) =>
-      visibleNpcCondition(npc, playerSafe.position, visibleLabels)).filter(Boolean)],
+    known_context: [profile.display_name],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
-  };
+  }, committedState: projectionSource });
   if (!validCurrentScene(current)) failCurrentScene();
   return {
     ...committedState,
@@ -177,8 +182,7 @@ function validCurrentScene(value) {
 function visibleNpc(npc, position, visibleLabels) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
   const prior = visibleLabels?.get(entityId);
-  const displayLabel = prior?.display_label
-    ?? npc?.identity_state?.display_name;
+  const displayLabel = prior?.display_label;
   if (!samePositionScope(npc, position) || !text(entityId) || !text(displayLabel)) {
     return null;
   }
@@ -191,6 +195,36 @@ function visibleNpc(npc, position, visibleLabels) {
   };
 }
 
+export function enrichLowerDvinaTraceVisibleNpcCues({
+  visibleContext,
+  committedState
+}) {
+  if (!validCurrentScene(visibleContext)) failCurrentScene();
+  const projectedNpcs = visibleContext.visible_npc.flatMap((npc) =>
+    npc?.entity_ref?.entity_kind === 'npc' && text(npc.entity_ref.entity_id)
+      ? [{ instance_id: npc.entity_ref.entity_id }] : []);
+  const details = new Map(projectLowerDvinaTraceVisibleNpcDetails({
+    visibleContext,
+    projectedNpcs,
+    committedNpcs: committedState?.npcs,
+    committedItems: committedState?.items
+  }).map((npc) => [npc.instance_id, npc]));
+  return deepFreeze({
+    ...structuredClone(visibleContext),
+    visible_npc: visibleContext.visible_npc.map((npc) => {
+      const detail = details.get(npc?.entity_ref?.entity_id);
+      return detail == null ? structuredClone(npc) : {
+        ...structuredClone(npc),
+        observable_cues: {
+          identity: structuredClone(detail.identity_state),
+          equipment: structuredClone(detail.visible_equipment),
+          outward_presentation: structuredClone(detail.presentation)
+        }
+      };
+    })
+  });
+}
+
 function samePositionScope(npc, position) {
   const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
     ['g5_anchor_id', 'g5_anchor_id'], ['zone_ref', 'zone_ref']]
@@ -198,13 +232,6 @@ function samePositionScope(npc, position) {
       && text(position?.[positionKey]));
   return scopes.length > 0 && scopes.every(([npcKey, positionKey]) =>
     npc[npcKey] === position?.[positionKey]);
-}
-
-function visibleNpcCondition(npc, position, visibleLabels) {
-  const visible = visibleNpc(npc, position, visibleLabels);
-  const condition = npc?.body_condition;
-  return visible != null && text(condition)
-    ? `${visible.display_label}: ${condition}` : null;
 }
 
 function text(value) {

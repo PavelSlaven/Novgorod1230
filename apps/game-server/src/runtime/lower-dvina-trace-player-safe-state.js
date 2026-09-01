@@ -27,6 +27,8 @@ import { applyLowerDvinaTraceWorkingProjection } from
   './lower-dvina-trace-player-safe-working.js';
 import { projectActiveConversationInterlocutor } from
   '@rus/visibility-knowledge-memory';
+import { validateActorBaseAppearance } from '@rus/actors';
+import { PORTRAIT_SPEC_V1_ENUMS } from '@rus/contracts';
 
 export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
@@ -61,7 +63,7 @@ export function projectLowerDvinaTracePlayerSafeState({
     conversation_statements: committedState.conversation_statements ?? [],
     player_ref: { entity_kind: 'player_character', entity_id: actorId },
     current_location_ref: position?.location_ref,
-    visible_npcs: conversationVisibleNpcs({
+    visible_npcs: projectLowerDvinaTraceVisibleNpcDetails({
       visibleContext: currentVisibleContext ?? visibleContext ?? visibleContextPackage,
       projectedNpcs: npcs,
       committedNpcs: committedState.npcs,
@@ -123,7 +125,7 @@ export function projectLowerDvinaTracePlayerSafeState({
       === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
   });
 }
-function conversationVisibleNpcs({ visibleContext, projectedNpcs,
+export function projectLowerDvinaTraceVisibleNpcDetails({ visibleContext, projectedNpcs,
   committedNpcs, committedItems }) {
   if (!Array.isArray(projectedNpcs)) return [];
   const labels = Array.isArray(visibleContext?.visible_npc)
@@ -158,6 +160,9 @@ function conversationVisibleNpcs({ visibleContext, projectedNpcs,
   }).filter(Boolean);
 }
 function safeConversationIdentity(value, displayName) {
+  if (!validateActorBaseAppearance(value, { requireComplete: true }).ok) {
+    return { display_name: displayName };
+  }
   return {
     display_name: displayName,
     sex_category: safeText(value?.sex_category),
@@ -195,7 +200,24 @@ function safeConversationEquipment(items, npcIds) {
   }).filter((item) => item.visual_profile_snapshot !== null);
 }
 function safeVisualProfile(value) {
-  if (!plain(value)) return null;
+  if (!plain(value)
+      || value.schema !== 'item_visual_profile_snapshot_v1'
+      || value.version !== 1
+      || !['base_garment', 'base', 'outer_garment', 'outer',
+        'headwear'].includes(value.equipment_slot)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.neckline.includes(value.neckline)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.sleeve.includes(value.sleeve_form)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.outer.includes(value.outer_form)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.fabric.includes(value.visible_fabric)
+      || !['none', null].includes(value.trim)
+        && !PORTRAIT_SPEC_V1_ENUMS.clothing.trim.includes(value.trim)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.main_color.includes(
+        value.main_visible_color)
+      || value.secondary_visible_color != null
+        && !PORTRAIT_SPEC_V1_ENUMS.clothing.secondary_color.includes(
+          value.secondary_visible_color)
+      || !PORTRAIT_SPEC_V1_ENUMS.clothing.headwear.includes(
+        value.headwear_kind)) return null;
   return {
     schema: safeText(value.schema), version: Number(value.version),
     equipment_slot: safeText(value.equipment_slot), neckline: safeText(value.neckline),
@@ -209,9 +231,19 @@ function safeVisualProfile(value) {
 
 function safeConversationPresentation(value) {
   if (!plain(value)) return {};
-  return Object.fromEntries(['emotion', 'intensity', 'gaze', 'body_pose',
-    'head_pose', 'background'].map((key) => [key, safeText(value[key])])
-    .filter(([, value]) => value !== null));
+  const allowed = {
+    emotion: PORTRAIT_SPEC_V1_ENUMS.expression.emotion,
+    intensity: PORTRAIT_SPEC_V1_ENUMS.expression.intensity,
+    gaze: PORTRAIT_SPEC_V1_ENUMS.eyes.gaze,
+    body_pose: PORTRAIT_SPEC_V1_ENUMS.pose.body,
+    head_pose: PORTRAIT_SPEC_V1_ENUMS.pose.head,
+    background: PORTRAIT_SPEC_V1_ENUMS.background
+  };
+  return Object.fromEntries(Object.entries(allowed).flatMap(([key, values]) => {
+    const candidate = safeText(value[key]);
+    return candidate !== null && values.includes(candidate)
+      ? [[key, candidate]] : [];
+  }));
 }
 
 function safeText(value) {

@@ -114,6 +114,8 @@ function applyTemporalNpcWrites(next, temporalResult) {
 
 function applyTerminalState(next, intent, changeSetId) {
   next.position = structuredClone(intent.terminal_group_position);
+  next.environment_snapshot = structuredClone(
+    intent.terminal_environment_snapshot);
   const target = next.first_entry_preparation?.spatial_v3?.target;
   if (target?.status === 'prepared') {
     next.position.position_id = target.position_id;

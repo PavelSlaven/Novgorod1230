@@ -62,7 +62,7 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
     if (consequence?.phase8_kind === 'movement') return {
       version: 1, schema: 'visible_context_package',
       visible_scene: 'Группа пришла во двор клети.',
-      visible_changes: ['trace_ld_v1_route_camp_to_storehouse_committed'],
+      visible_changes: ['Группа дошла от рыбацкого стана до двора клети.'],
       sensory_details: ['Клеть и двор видны с конца известной тропы.'],
       visible_npc: visibleNpcSummaries(contracts),
       visible_objects: [], known_context: [
@@ -79,8 +79,9 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
             ? 'Хозяин клети ответил на предъявленное обвинение.'
             : `Хозяин клети говорит: «${npcSpeech}»`
           : 'Разговор прерван непосредственной угрозой; требуется решение.',
-        visible_changes: combat == null ? ['accusation_delivered']
-          : ['combat_session_opened'], sensory_details: [],
+        visible_changes: combat == null
+          ? ['Обвинение высказано хозяину клети.']
+          : ['Разговор перешёл в открытую угрозу.'], sensory_details: [],
         visible_npc: visibleNpcSummaries(contracts),
         visible_objects: [], known_context: [], uncertainties: [],
         allowed_tensions: ['armed_confrontation'],
@@ -90,7 +91,7 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
     if (consequence?.phase8_kind === 'combat_start') return {
       version: 1, schema: 'visible_context_package',
       visible_scene: 'Вы вступаете в непосредственное противостояние с хозяином клети.',
-      visible_changes: ['combat_session_opened'], sensory_details: [],
+      visible_changes: ['Началось открытое противостояние.'], sensory_details: [],
       visible_npc: visibleNpcSummaries(contracts), visible_objects: [],
       known_context: [], uncertainties: [], allowed_tensions: ['armed_confrontation'],
       do_not_imply: ['npc_decision_request', 'npc_combat_intent_plan',

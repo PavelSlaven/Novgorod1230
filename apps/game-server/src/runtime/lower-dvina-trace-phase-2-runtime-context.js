@@ -20,9 +20,9 @@ import { createTraceKnownRouteCommands } from
 
 export function resolveTracePhase2InheritedContracts({ state, bundle }) {
   const revision = bundle.definition_revision;
-  const ready = ![24, 25, 26, 27, 28, 29, 30].includes(revision)
+  const ready = ![24, 25, 26, 27, 28, 29, 30, 31].includes(revision)
     || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
-  const enabled = (first) => revision >= first && revision <= 30;
+  const enabled = (first) => revision >= first && revision <= 31;
   return {
     phase3Contracts: enabled(9) ? resolveTracePhase3Contracts({ state, bundle }) : null,
     phase4Contracts: enabled(10) && ready ? resolveTracePhase4Contracts({ state, bundle }) : null,
@@ -138,9 +138,11 @@ export function buildTracePhase2Registry(context) {
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
             genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-            localFireProfile: [22, 23, 24, 25, 26].includes(bundle.definition_revision) ? localFireProfile : null,
+            localFireProfile,
             worldProcessResolver:
-              [22, 23, 24, 25, 26].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
+              typeof createTurnStepWorldProcessResolver === 'function'
+                && [22, 23, 24, 25, 26].includes(bundle.definition_revision)
+                && localFireProfile?.profile?.status === 'approved'
                 ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest })
                 : null,
             projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,

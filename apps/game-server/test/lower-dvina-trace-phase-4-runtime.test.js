@@ -139,7 +139,8 @@ test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
       phase4_kind: 'negotiation', negotiation: { semantic_exchange:
         semanticExchange(responseKind) }
     } });
-    assert.equal(visible.visible_changes.includes('ratsha_surrendered'),
+    assert.equal(visible.visible_changes.includes(
+      'Стоящий рядом мужчина сдался.'),
       responseKind === 'surrender');
   }
   const legacy = await projector.project({ consequence: {
@@ -147,7 +148,7 @@ test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
       outcome: 'surrender'
     } }
   } });
-  assert.ok(legacy.visible_changes.includes('ratsha_surrendered'));
+  assert.ok(legacy.visible_changes.includes('Стоящий рядом мужчина сдался.'));
 });
 
 test('Phase 4 arrival exposes perceived actors without leaking canonical names',

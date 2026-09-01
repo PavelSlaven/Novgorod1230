@@ -36,28 +36,28 @@ export function createTracePhase9VisibleProjector({ fallback, contracts }) {
     const phase9 = input.consequence.phase9;
     const detail = {
       bag_recovery: () => ['Дорожная сумка теперь под вашим контролем.',
-        ['road_bag_recovered'], []],
+        ['Вы забрали дорожную сумку.'], []],
       bag_opened: () => ['Сумка открыта; внутри виден свёрток.',
-        ['road_bag_opened'], [{ entity_ref: { entity_kind: 'item',
+        ['Сумка открыта; внутри оказался свёрток.'], [{ entity_ref: { entity_kind: 'item',
           entity_id: contracts.packet.item_id },
         display_label: 'Запечатанный свёрток', recognition: 'recognized' }]],
       packet_recovered: () => [phase9.seal_observation.seal_state === 'intact'
         ? 'Свёрток извлечён; печать цела, содержимое не вскрыто.'
         : 'Свёрток извлечён; печать повреждена.',
-      ['sealed_packet_observed'], [{ entity_ref: { entity_kind: 'item',
+      ['Вы извлекли свёрток и увидели состояние печати.'], [{ entity_ref: { entity_kind: 'item',
         entity_id: contracts.packet.item_id },
       display_label: 'Свёрток Саввы', recognition: 'recognized' }]],
       return_to_camp: () => ['Группа вернулась к Онисиму в рыбацкий стан.',
-        ['guarded_return_completed'], []],
+        ['Группа вернулась к Онисиму.'], []],
       onisim_testimony: () => [phase9.semantic_exchange.testimony_committed
         ? 'Показание Онисима сохранено как его слова.'
         : 'Ответ Онисима сохранён как речь; показанием он не признан.',
-      ['onisim_statement_committed'], []],
+      ['Слова Онисима сохранены без превращения их в доказанный факт.'], []],
       evidence_resolved: () => ['Собранные доказательства сопоставлены.',
-        ['evidence_resolution_committed'], []],
+        ['Собранные сведения сопоставлены.'], []],
       temporary_disposition: () => [
         'Временное решение о людях и имуществе сохранено.',
-        ['temporary_disposition_committed'], []]
+        ['Временное решение о людях и имуществе принято.'], []]
     }[kind]?.();
     if (!detail) fail('TRACE_PHASE_9_VISIBLE_KIND_INVALID');
     return { version: 1, schema: 'visible_context_package',

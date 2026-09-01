@@ -37,12 +37,13 @@ test('exact approved route effects preserve canonical body continuity into Phase
   assert.equal(afterShed.proposal.rng_consumption, 'forbidden');
 });
 
-test('range-only historical route profile delegates without a retroactive body charge', () => {
-  const fallback = { apply: (value) => ({ fallback: value }) };
-  const effect = createTraceRouteBodyEffect({ phase2BodyEffect: fallback,
+test('route without an approved effect leaves body state untouched', () => {
+  const effect = createTraceRouteBodyEffect({ phase2BodyEffect: {
+    apply: () => assert.fail('route must not receive a retroactive Phase 2 charge') },
     phase3Contracts: { routeBodyEffect: null }, phase4Contracts: null });
   const value = input('phase3_kind', { health: 80, satiety: 38, energy: 60, active_conditions: conditions() }, 8);
-  assert.deepEqual(effect.apply(value), { fallback: value });
+  assert.deepEqual(effect.apply(value), { owner: '@rus/body-state', applied: false,
+    proposal: null, state_after: value.committed_state.body_state });
 });
 
 function input(kind, bodyState, minutes) {

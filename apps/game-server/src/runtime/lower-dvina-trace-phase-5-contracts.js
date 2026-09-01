@@ -15,8 +15,8 @@ export const TRACE_PHASE_5_IDS = Object.freeze({
 });
 
 export function resolveTracePhase5Contracts({ state, bundle }) {
-  if (![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision)
-      || ![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition?.revision)) {
+  if (![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
+      || ![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_5_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_5_IDS;
@@ -75,14 +75,14 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )]));
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision)) {
+  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)) {
     resourceInventoryProfiles.water = exact(
       bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
       'trace_ld_v1_inventory_profile_eremey_drinking_water_vessel'
     );
   }
-  const ropeInventoryProfile = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision)
+  const ropeInventoryProfile = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
     ? exact(bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
       'trace_ld_v1_inventory_profile_ratsha_binding_rope')
@@ -91,6 +91,7 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     ?.phase_5_initial_state_binding?.phase_5_resource_arrival_binding;
   const stages = activity.treatment_stages;
   const danger = activity.danger_predicate;
+  const bodyOutcomes = bodyEffect.outcome_effects ?? phase5BodyOutcomes(bodyEffect);
   if (activity.duration_minutes !== 25
     || canonicalDigest(stages?.map(({ stage_id: id, ordinal,
       duration_minutes: duration }) => ({ id, ordinal, duration })))
@@ -106,13 +107,11 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     || check.dc !== 12 || check.modifiers.state !== -1
     || check.modifiers.item_or_evidence !== 1
     || check.modifiers.circumstance !== 0
-    || bodyEffect.selection_policy !== 'fixed_by_committed_check_outcome'
-    || bodyEffect.rng_consumption !== 'forbidden'
-    || canonicalDigest(bodyEffect.outcome_effects?.success?.exact_deltas)
+    || canonicalDigest(bodyOutcomes?.success?.exact_deltas)
       !== canonicalDigest({ health: 0, satiety: 0, energy: 0 })
-    || bodyEffect.outcome_effects.success.condition_outcomes?.[0]?.to
+    || bodyOutcomes?.success?.condition_outcomes?.[0]?.to
       !== 'stabilized_unable_to_walk'
-    || bodyEffect.outcome_effects.failure.condition_outcomes?.[0]?.to
+    || bodyOutcomes?.failure?.condition_outcomes?.[0]?.to
       !== 'injured_unable_to_walk'
     || !injury.permitted_transitions.includes('stabilized_unable_to_walk')
     || itemTemplate.source_resource_only !== true
@@ -137,13 +136,13 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
         && profile.external_hand_cost === 1
         && profile.status === 'approved';
     })
-    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision)
+    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
       && (resourceInventoryProfiles.water.item_template_ref !== ids.water
         || resourceInventoryProfiles.water.mass_grams !== 100
         || resourceInventoryProfiles.water.carry_form !== 'compact'
         || resourceInventoryProfiles.water.external_hand_cost !== 0
         || resourceInventoryProfiles.water.status !== 'approved'))
-    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision)
+    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
       && (ropeInventoryProfile.item_template_ref !== ids.rope
         || ropeInventoryProfile.mass_grams !== 1200
         || ropeInventoryProfile.carry_form !== 'long'
@@ -161,6 +160,7 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     gap('TRACE_PHASE_5_APPROVED_CHAIN_INVALID');
   }
   return Object.freeze({ ids, activity, check, success, failure, bodyEffect,
+    bodyOutcomes,
     injury, itemTemplate, inventoryProfile, transition, consentPolicy,
     consentExecution, actors, resourceTransitions, itemTemplates,
     resourceInventoryProfiles, ropeInventoryProfile, resourceArrivalBinding,
@@ -184,6 +184,38 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
       version: record.version,
       digest: canonicalDigest(record)
     })) });
+}
+
+function phase5BodyOutcomes(bodyEffect) {
+  const bounds = bodyEffect.delta_bounds;
+  if (bodyEffect.selection_policy != null || bodyEffect.rng_consumption != null
+      || !['health', 'satiety', 'energy'].every((metric) =>
+        Array.isArray(bounds?.[metric]) && bounds[metric][0] <= 0
+          && bounds[metric][1] >= 0)
+      || !bodyEffect.condition_transitions?.includes('onisim_may_be_stabilized')
+      || !bodyEffect.condition_transitions?.includes('onisim_remains_unable_to_walk')) {
+    return null;
+  }
+  return {
+    success: {
+      exact_deltas: { health: 0, satiety: 0, energy: 0 },
+      condition_outcomes: [{
+        condition_profile_ref: 'trace_ld_v1_condition_onisim_injury',
+        from: 'injured_unable_to_walk', to: 'stabilized_unable_to_walk',
+        outcome: 'stabilizes'
+      }],
+      committed_fact: 'onisim_stabilized_unable_to_walk'
+    },
+    failure: {
+      exact_deltas: { health: 0, satiety: 0, energy: 0 },
+      condition_outcomes: [{
+        condition_profile_ref: 'trace_ld_v1_condition_onisim_injury',
+        from: 'injured_unable_to_walk', to: 'injured_unable_to_walk',
+        outcome: 'persists'
+      }],
+      committed_fact: 'onisim_first_aid_completed_without_stabilization'
+    }
+  };
 }
 
 function actor(state, ref) {

@@ -9,8 +9,8 @@ export function resolveFirstEntry({
   memberOrdinal = 0
 }) {
   const additionalMember = memberOrdinal > 0;
-  if (!(additionalMember ? scenarioRevision === 26
-    : [24, 25, 26].includes(scenarioRevision)) || !routeMovement(factual)) {
+  if (!(additionalMember ? [26, 27, 28].includes(scenarioRevision)
+    : [24, 25, 26, 27, 28].includes(scenarioRevision)) || !routeMovement(factual)) {
     return null;
   }
   const prepared = state.first_entry_preparation;
@@ -91,8 +91,9 @@ export function resolveFirstEntry({
         terminal_change_set_id: null
       }),
       journey_location: write('party_journey_locations',
-        spatial.journey_location_id, 1, {
-          id: spatial.journey_location_id,
+        state.journey_location?.id ?? spatial.journey_location_id,
+        state.journey_location?.state_version ?? 1, {
+          id: state.journey_location?.id ?? spatial.journey_location_id,
           party_id: partyId,
           owner_kind: 'actor',
           owner_id: state.actor_id,

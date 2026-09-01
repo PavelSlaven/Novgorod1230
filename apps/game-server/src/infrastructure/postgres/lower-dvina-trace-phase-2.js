@@ -34,6 +34,8 @@ import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-co
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
+import { loadLowerDvinaTraceScenePresentation } from
+  '../../internal/lower-dvina-trace-scene-presentation.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
@@ -108,7 +110,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         initial,
         phase2InitialCurrentVisibleContext({
           screen: row.screen,
-          openingScreenDigest: row.stage26_result.opening_screen_digest
+          openingScreenDigest: row.stage26_result.opening_screen_digest,
+          initialState: initial,
+          scenePresentation: await loadLowerDvinaTraceScenePresentation({
+            scenarioDefinitionRevision: initial.materialization_trace?.seed_context
+              ?.scenario_definition_revision
+          })
         })
       );
       const journeyLocation = await loadPhase2JourneyLocation(

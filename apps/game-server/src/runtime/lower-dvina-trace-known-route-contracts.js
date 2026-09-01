@@ -23,5 +23,5 @@ export function resolveGenericKnownRouteContracts({ state, phase3Contracts,
 export function destinationRouteActors(state, scene) {
   const anchorId = scene?.anchor?.instance_id, locationRef = scene?.location_profile_ref;
   if (!anchorId || !locationRef) return [];
-  return [...(state.npcs ?? []), ...(state.first_entry_preparation?.npcs ?? [])].filter((npc) => npc?.instance_id && npc.anchor_id === anchorId && npc.location_profile_ref === locationRef && typeof npc.participant_slot_ref === 'string').map((npc) => ({ ref: npc.participant_slot_ref, ...structuredClone(npc) }));
+  return [...(state.npcs ?? []), ...(state.first_entry_preparation?.npcs ?? [])].filter((npc) => npc?.instance_id && npc.anchor_id === anchorId && typeof npc.participant_slot_ref === 'string').map((npc) => ({ ref: npc.participant_slot_ref, ...structuredClone(npc) }));
 }

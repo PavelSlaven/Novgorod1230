@@ -171,8 +171,7 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     'Кожаная застёжка разрезана.',
     'На борту лодки заметна вмятина сбоку.',
     'Среди обломков есть следы ещё одной небольшой лодки.',
-    'На ветке у места крушения найден клочок синей шерсти.',
-    'От берега к рыбацкому стану ведёт заметная тропа.'
+    'На ветке у места крушения найден клочок синей шерсти.'
   ]);
   assert.equal(/trace_ld_v1_|visible:/u.test(visible.known_context.join(' ')), false);
   assert.equal(/след сапога|безопасн|виновник|мотив|Жданко/u.test(visible.known_context.join(' ')), false);

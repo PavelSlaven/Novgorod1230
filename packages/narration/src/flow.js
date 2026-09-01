@@ -75,11 +75,11 @@ function audited(auditor, request, draft, segments, phase) {
 }
 function actionIntentContext(request) {
   const source = request.context ?? {};
-  if (source.player_input == null && source.mode_resolution == null) return null;
+  if (source.attempt == null && source.outcome == null) return null;
   return {
     evidence_scope: 'intent_only_non_evidence_of_success',
-    ...(source.player_input == null ? {} : { player_input: clone(source.player_input) }),
-    ...(source.mode_resolution == null ? {} : { mode_resolution: clone(source.mode_resolution) })
+    ...(source.attempt == null ? {} : { attempt: clone(source.attempt) }),
+    ...(source.outcome == null ? {} : { outcome: clone(source.outcome) })
   };
 }
 function nearbySegments(segments, id) {

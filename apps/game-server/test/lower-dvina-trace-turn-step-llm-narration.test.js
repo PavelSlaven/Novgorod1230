@@ -50,8 +50,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       known_context: ['A marked path leads toward the settlement.', 'health:5'],
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, context: {
-      player_input: { raw_text: 'Постучать в закрытую дверь.' },
-      mode_resolution: { option_id: 'ordinary-attempt' }
+      attempt: { text: 'Постучать в закрытую дверь.' },
+      outcome: { position_changed: false, movement_committed: false }
     }
   }));
   assert.equal(result.status, 'approved');
@@ -61,7 +61,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(
     'server assembles version, schema, and output_id'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'context.player_input only to state the attempted action or speech'), true);
+    'context.attempt only to state the attempted action or speech'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'never evidence of success or a new world fact'), true);
   assert.equal(calls[0].messages[0].content.includes(
@@ -106,8 +106,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, action_intent_context: {
       evidence_scope: 'intent_only_non_evidence_of_success',
-      player_input: { raw_text: 'Постучать в закрытую дверь.' },
-      mode_resolution: { option_id: 'ordinary-attempt' }
+      attempt: { text: 'Постучать в закрытую дверь.' },
+      outcome: { position_changed: false, movement_committed: false }
     }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');

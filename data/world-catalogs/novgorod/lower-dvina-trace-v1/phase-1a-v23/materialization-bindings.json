@@ -13,6 +13,11 @@
     "digest": "83c221c8554316512e547c68498a7b9a3b352d1c70807dad5468a9cd7e413548"
   },
   "fallback_policy": "forbidden",
+  "sealed_selection_inventory_patch": {
+    "inventory_id": "lower_dvina_trace_phase_1a_sealed_selection_inventory_v11",
+    "body_source_digest": "5c733e706b143889f9705a223896e3f6dcf79e718d9abcf5c70c244f7c7bc272",
+    "body_records_digest": "05e4304b57cde3d67dc347f2931b122ca5f3174f039b184f55cafecd2ecfd638"
+  },
   "first_entry_preparation": {
     "members": [
       {

@@ -157,7 +157,7 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
   }), false, 'revision 13 paraphrases must use the step planner');
 });
 
-test('revision 15 keeps the exact fast path and maps a free rest phrase', () => {
+test('revision 15 maps both registered and free rest prose through semantic bindings', () => {
   const revision15Commands = revision15Bindings.domain_bindings.map(
     ({ command_id: commandId }) => ({
       command_id: commandId,
@@ -176,7 +176,7 @@ test('revision 15 keeps the exact fast path and maps a free rest phrase', () => 
     id === 'lower_dvina_trace.rest_by_fire_and_dry_clothing');
   assert.equal(rest.matches({
     raw_text: 'Отдохнуть у огня полчаса и подсушить одежду.'
-  }), true, 'registered Russian text must remain on the code fast path');
+  }), false, 'only historical revision 13 owns exact text matching');
   assert.equal(rest.matches({
     raw_text: 'Давайте немного погреемся у костра и просушим одежду'
   }), false, 'a free phrase must enter the common player-step planner');
@@ -267,6 +267,25 @@ test('revision 24 keeps inherited inactive bindings unbound', () => {
   });
   assert.equal(bound.length, activeCommands.length);
   assert.equal(bound.every(({ semantic_binding: binding }) => binding), true);
+});
+
+test('revision 28 keeps paraphrases on semantic bindings, not revision 13 text matches', () => {
+  const activeCommands = revision17Bindings.domain_bindings.map(
+    ({ command_id: commandId }) => ({ command_id: commandId,
+      label: commandId, matches: () => false, ...handlers }));
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: activeCommands,
+    bundle: { definition_revision: 28, turn_step_bindings: revision17Bindings },
+    targetRefs
+  });
+  const route = bound.find(({ command_id: id }) =>
+    id === 'lower_dvina_trace.follow_known_route_to_drying_shed');
+  assert.equal(route.matches({ raw_text: 'пройти известной тропой к старой сушильне.' }),
+    false);
+  assert.equal(route.semantic_binding.matches({ operation: {
+    op: 'request_movement', actor_ref: targetRefs.actor, movement_kind: 'route',
+    target_ref: targetRefs.dryingShed
+  } }), true);
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

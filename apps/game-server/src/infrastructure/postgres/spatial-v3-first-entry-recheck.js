@@ -31,7 +31,7 @@ export async function recheckSpatialV3PostgresFirstEntry({
   plan
 } = {}) {
   if (!transaction?.query
-    || plan?.operation_kind !== 'first_entry'
+    || !['first_entry', 'trace_phase_4_turn'].includes(plan?.operation_kind)
     || check?.kind !== 'physical') {
     return failed('generated_schema_mismatch');
   }

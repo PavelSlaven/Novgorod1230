@@ -34,6 +34,7 @@ export function createLowerDvinaTracePublicRuntime({
   traceTurnRuntime = null,
   publicationLoader = loadLowerDvinaTracePhase1BPublication,
   activePhase1AManifestDigest = null,
+  activeScenarioDefinitionRevision = null,
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
   partyRepository = null
 } = {}) {
@@ -54,7 +55,10 @@ export function createLowerDvinaTracePublicRuntime({
       production_activation: release.production_activation === true
     }),
     listScenarios: async () => {
-      const publication = await publicationLoader();
+      const publication = await publicationLoader({
+        phase1AManifestDigest: activePhase1AManifestDigest,
+        scenarioDefinitionRevision: activeScenarioDefinitionRevision
+      });
       return {
         version: 1,
         schema: 'public_scenario_catalog',
@@ -72,6 +76,7 @@ export function createLowerDvinaTracePublicRuntime({
       traceStartAdapter,
       publicationLoader,
       activePhase1AManifestDigest,
+      activeScenarioDefinitionRevision,
       traceOpeningProjector
     }),
     acknowledgeOpening: (partyId, input) => acknowledgeOpening({
@@ -156,7 +161,8 @@ async function startNewGame({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
-  activePhase1AManifestDigest
+  activePhase1AManifestDigest,
+  activeScenarioDefinitionRevision
 }) {
   const scenario = String(input.scenario_id ?? '').trim();
   if (scenario !== TRACE_SCENARIO_ID || String(input.start_text ?? '').trim()) {
@@ -203,6 +209,7 @@ async function startNewGame({
     traceStartAdapter,
     publicationLoader,
     activePhase1AManifestDigest,
+    activeScenarioDefinitionRevision,
     traceOpeningProjector
   });
 }

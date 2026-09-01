@@ -3,6 +3,8 @@ import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { assertLowerDvinaTracePublicScreen } from
   '../../runtime/lower-dvina-trace-opening.js';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
+import { scenePresentationForLocation } from
+  '../../runtime/lower-dvina-trace-scene-presentation.js';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -11,7 +13,9 @@ const ARRAY_FIELDS = [
 
 export function phase2InitialCurrentVisibleContext({
   screen,
-  openingScreenDigest
+  openingScreenDigest,
+  initialState,
+  scenePresentation = null
 }) {
   try {
     assertLowerDvinaTracePublicScreen(screen);
@@ -22,11 +26,15 @@ export function phase2InitialCurrentVisibleContext({
     throw phase2IntegrityError();
   }
   const visibleContext = screen.visible_context;
-  const environmentFacts = visibleContext?.environment?.facts;
+  const presented = scenePresentation == null ? null : scenePresentationForLocation({
+    scenePresentation, locationRef: initialState?.position?.location_ref
+  });
+  const environmentFacts = presented?.player_visible_physical_facts
+    ?? visibleContext?.environment?.facts;
   return requirePhase2CurrentVisibleContext({
     version: 1,
     schema: 'visible_context_package',
-    visible_scene: visibleContext?.place,
+    visible_scene: presented?.display_name ?? visibleContext?.place,
     visible_changes: [],
     sensory_details: Array.isArray(environmentFacts)
       ? environmentFacts.filter((value) =>
@@ -34,7 +42,8 @@ export function phase2InitialCurrentVisibleContext({
       : [],
     visible_npc: [],
     visible_objects: [],
-    known_context: [visibleContext?.place, visibleContext?.calendar]
+    known_context: [presented?.display_name ?? visibleContext?.place,
+      visibleContext?.calendar]
       .filter((value) => typeof value === 'string' && value.length > 0),
     uncertainties: [],
     allowed_tensions: [],

@@ -1,0 +1,57 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_2_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_2_v27",
+  "revision": 27,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 27,
+  "publication_status": "runtime_internal",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m15-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 27,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "88870ab8813cd3a67d0b1af02d471051f3dd78fcdf0955d1d6d435c0f9f4de35"
+  },
+  "phase_1a_manifest_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v23/manifest.json",
+    "id": "lower_dvina_trace_phase_1a_v23",
+    "revision": 23,
+    "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
+    "digest": "6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101"
+  },
+  "phase_1b_manifest_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v22/manifest.json",
+    "id": "lower_dvina_trace_phase_1b_v22",
+    "revision": 22,
+    "schema": "rus.lower_dvina_trace_phase_1b_manifest.v1",
+    "digest": "826c0cdadabe8671ab5397d9a113c2b5fbaf9baddec4d52df64768630292054b"
+  },
+  "source_refs": {
+    "activity_check_consequence_profiles": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/activity-check-consequence-profiles.json",
+      "digest": "5eefc71c6a73c1604f606d1f84862cf5f6d7a774a957f10ad9ead7e950717654"
+    },
+    "body_environment_profiles": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v5/body-environment-profiles.json",
+      "digest": "5c733e706b143889f9705a223896e3f6dcf79e718d9abcf5c70c244f7c7bc272"
+    },
+    "clue_evidence_graph_set": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0c/clue-evidence-graph-set.json",
+      "digest": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222"
+    }
+  },
+  "content_refs": {
+    "wreck_inspection_execution_binding": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-2-v27/wreck-inspection-execution-binding.json",
+      "id": "lower_dvina_trace_phase_2_wreck_inspection_v1",
+      "revision": 27,
+      "schema": "rus.lower_dvina_trace_phase_2_wreck_inspection_binding.v1",
+      "digest": "0231ded307485da2f125d4d5516ecb43f16e6a225f5cffe1ab0cabf0244d2a1d"
+    }
+  },
+  "phase_3_content": "forbidden"
+}

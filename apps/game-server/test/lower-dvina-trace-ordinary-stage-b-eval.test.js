@@ -450,4 +450,4 @@ function absentPlan(request) { return {
 }
 function modelIdentity() { return { provider: 'deepseek', model: 'deepseek-v4-flash',
   scope: 'turn_runtime', role_id: 'ordinary_materialization',
-  config_hash: 'af6b22db5449f13e' }; }
+  config_hash: 'c43b0590a85401c2' }; }

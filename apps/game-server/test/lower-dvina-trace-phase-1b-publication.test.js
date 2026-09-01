@@ -114,11 +114,24 @@ test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 NPC acto
 
 test('explicit revision 27 identity resolves only the revision 27 publication', async () => {
   const publication = await loadLowerDvinaTracePhase1BPublication({
-    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST
+    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 27
   });
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v22');
   assert.equal(publication.binding.execution_identity.scenario_definition_revision, 27);
   assert.equal(publication.definition.resolved_policy_refs.body_environment_profiles.revision, 7);
+});
+
+test('revision 28 selects the new public presentation over the shared Phase 1A pin', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 28
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v23');
+  assert.equal(publication.definition.revision, 28);
+  assert.deepEqual(publication.scene_presentation.locations.map(
+    ({ player_visible_physical_facts: facts }) => facts
+  ).flat().some((fact) => /cold|wet|exposed|landscape_basis|economic_basis/i.test(fact)), false);
 });
 
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {

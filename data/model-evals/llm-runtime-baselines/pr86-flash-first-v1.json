@@ -28,7 +28,7 @@
       { "role": "player_conversation_interpreter_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "0cd6897c25213b4b" },
       { "role": "npc_conversation_responder", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "5af7b2219ba9c8d7" },
       { "role": "npc_conversation_responder_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "36eacffefd0dd807" },
-      { "role": "ordinary_materialization", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "af6b22db5449f13e" },
+      { "role": "ordinary_materialization", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "c43b0590a85401c2" },
       { "role": "turn_step_planner_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "46b30324698bed48" }
     ],
     "failures": {

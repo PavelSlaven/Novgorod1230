@@ -11,13 +11,14 @@ const customProvider = {
   model: 'local-model'
 };
 
-test('all production turn roles use Flash no-reasoning defaults and bounded timeouts', () => {
+test('all production turn roles use Flash no-reasoning defaults and shared execution limits', () => {
   for (const roleId of Object.values(TurnRuntimeRoles)) {
     const { config } = resolveLlmExecutionConfig({ scope: 'turn_runtime', roleId, env });
     assert.equal(config.model, 'deepseek-v4-flash', roleId);
     assert.deepEqual(config.thinking, { type: 'disabled' }, roleId);
     assert.equal(config.reasoningEffort, null, roleId);
-    assert.equal(config.requestTimeoutMs, roleId.includes('repair') ? 6000 : 10000, roleId);
+    assert.equal(config.maxTokens, 20_000, roleId);
+    assert.equal(config.requestTimeoutMs, 120_000, roleId);
   }
 });
 

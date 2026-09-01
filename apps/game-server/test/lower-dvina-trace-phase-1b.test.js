@@ -392,7 +392,7 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
   assert.equal(session.delivery_ack_result, null);
 });
 
-test('public turn deadline includes initial session read', async () => {
+test('initial session read does not impose an obsolete whole-turn deadline', async () => {
   let now = 0;
   let exhaustRead = false;
   const budget = createLlmTurnBudget({ now: () => now });
@@ -412,10 +412,10 @@ test('public turn deadline includes initial session read', async () => {
     llmDiagnostics: diagnostics,
     async submitTurn() { submitted += 1; }
   });
-  await assert.rejects(() => runtime.submitTurn(opening.party_id, {
+  await runtime.submitTurn(opening.party_id, {
     request_id: 'deadline-initial-read', raw_text: 'Осматриваюсь'
-  }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
-  assert.equal(submitted, 0);
+  });
+  assert.equal(submitted, 1);
   assert.equal(diagnostics.report({ party_id: opening.party_id,
     request_id: 'deadline-initial-read' }).turn_duration_ms, 30_000);
 });

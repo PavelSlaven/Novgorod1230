@@ -93,6 +93,9 @@ export function nextState({
         factual.consequence.movement.destination.location_ref,
       g5_anchor_id:
         factual.consequence.movement.destination.g5_anchor_id,
+      ...(factual.consequence.phase8_kind === 'movement' ? {
+        zone_ref: factual.consequence.movement.destination.zone_ref
+      } : {}),
       g5_node_id: preparedScene(next,
         factual.consequence.movement.destination.location_ref).node.instance_id
     };
@@ -120,7 +123,15 @@ export function nextState({
     const moved = new Set(factual.consequence.movement.participants ?? []);
     next.npcs = (next.npcs ?? []).map((npc) => moved.has(npc.instance_id)
       ? { ...npc, anchor_id:
-          factual.consequence.movement.destination.g5_anchor_id }
+          factual.consequence.movement.destination.g5_anchor_id,
+        ...(factual.consequence.phase8_kind === 'movement' ? {
+          location_profile_ref:
+            factual.consequence.movement.destination.location_ref,
+          zone_ref: factual.consequence.movement.destination.zone_ref,
+          machine_state: { ...npc.machine_state,
+            location_ref: factual.consequence.movement.destination.location_ref,
+            spatial_zone_ref: factual.consequence.movement.destination.zone_ref }
+        } : {}) }
       : npc);
   } else {
     const conversation = factual.consequence.conversation;

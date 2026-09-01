@@ -144,7 +144,7 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
     evidence_refs: row.evidence
   }));
   const currentPosition = position.rows[0];
-  const expectedJourneyPosition = payload.position?.position_id ?? null;
+  const expectedJourneyPosition = payload.position?.position_id;
   const npcProof = phase3NpcReadProof(payload, npcs.rows);
   const expectedClue = (payload.items ?? []).find((item) =>
     item.template_id === 'trace_ld_v1_item_blue_wool_fragment');

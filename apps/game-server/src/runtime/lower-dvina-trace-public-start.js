@@ -17,7 +17,8 @@ export async function startLowerDvinaTrace({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
-  activePhase1AManifestDigest = null
+  activePhase1AManifestDigest = null,
+  activeScenarioDefinitionRevision = null
 }) {
   if (!traceStartAdapter
     || typeof traceStartAdapter.materialize !== 'function'
@@ -38,7 +39,10 @@ export async function startLowerDvinaTrace({
   const publication = await publicationLoader({
     phase1AManifestDigest:
       committedBeforeStart?.request_identity?.scenario_manifest_digest
-        ?? activePhase1AManifestDigest
+        ?? activePhase1AManifestDigest,
+    scenarioDefinitionRevision:
+      committedBeforeStart?.request_identity?.scenario_definition_revision
+        ?? activeScenarioDefinitionRevision
   });
   const binding = publication.binding;
   const expectedWorld = committedBeforeStart?.request_identity ?? release;

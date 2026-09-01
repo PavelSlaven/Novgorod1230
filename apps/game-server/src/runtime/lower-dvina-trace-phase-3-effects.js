@@ -1,6 +1,8 @@
 import { addElapsedTime } from '@rus/time-events-history';
 import { projectConversationTemporalAdvance } from
   './lower-dvina-trace-m2-conversation-time.js';
+import { routePresentationForFact, routePresentationForRoute, scenePresentationForLocation } from
+  './lower-dvina-trace-scene-presentation.js';
 
 export function createTracePhase3TemporalAdvance({ phase2Advance }) {
   return async function advance(input) {
@@ -80,7 +82,8 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
 
 export function createTracePhase3VisibleProjector({
   phase2Projector,
-  contracts
+  contracts,
+  scenePresentation
 }) {
   return Object.freeze({
     async project(input) {
@@ -89,6 +92,9 @@ export function createTracePhase3VisibleProjector({
         return phase2Projector.project(input);
       }
       if (consequence.phase3_kind === 'movement') {
+        if (scenePresentation == null) {
+          return historicalMovementProjection(contracts);
+        }
         if (consequence.generic_known_route === true) {
           const destination = consequence.movement?.destination;
           if (typeof destination?.display_name !== 'string'
@@ -96,25 +102,34 @@ export function createTracePhase3VisibleProjector({
               || typeof consequence.movement?.route_ref !== 'string') {
             throw visibleGap('TRACE_KNOWN_ROUTE_VISIBLE_DESTINATION_INVALID');
           }
+          const route = routePresentationForRoute({ scenePresentation,
+            routeRef: consequence.movement.route_ref });
+          const scene = scenePresentationForLocation({ scenePresentation,
+            locationRef: destination.location_ref });
           return {
             version: 1,
             schema: 'visible_context_package',
-            visible_scene: destination.display_name,
-            visible_changes: [`${consequence.movement.route_ref}:completed`],
-            sensory_details: [], visible_npc: [], visible_objects: [],
-            known_context: [], uncertainties: [], allowed_tensions: [],
+            visible_scene: route.visible_scene,
+            visible_changes: [route.visible_change],
+            sensory_details: scene.player_visible_physical_facts,
+            visible_npc: [], visible_objects: [],
+            known_context: [route.known_context], uncertainties: [], allowed_tensions: [],
             do_not_imply: []
           };
         }
+        const route = routePresentationForFact({ scenePresentation,
+          routeFactRef: 'trace_ld_v1_route_wreck_to_camp_committed' });
+        const scene = scenePresentationForLocation({ scenePresentation,
+          locationRef: consequence.movement.destination.location_ref });
         return {
           version: 1,
           schema: 'visible_context_package',
-          visible_scene: 'Микула пришёл в рыбацкий стан.',
-          visible_changes: ['trace_ld_v1_route_wreck_to_camp_committed'],
-          sensory_details: ['Рабочий стан стоит у берега Нижней Двины.'],
+          visible_scene: route.visible_scene,
+          visible_changes: [route.visible_change],
+          sensory_details: scene.player_visible_physical_facts,
           visible_npc: contracts.actors.map(playerSafeNpc),
           visible_objects: [],
-          known_context: ['Обратная тропа к месту крушения теперь известна.'],
+          known_context: [route.known_context],
           uncertainties: [],
           allowed_tensions: [],
           do_not_imply: [
@@ -180,6 +195,21 @@ export function createTracePhase3VisibleProjector({
   });
 }
 
+function historicalMovementProjection(contracts) {
+  return {
+    version: 1,
+    schema: 'visible_context_package',
+    visible_scene: 'Микула пришёл в рыбацкий стан.',
+    visible_changes: ['trace_ld_v1_route_wreck_to_camp_committed'],
+    sensory_details: ['Рабочий стан стоит у берега Нижней Двины.'],
+    visible_npc: contracts.actors.map(playerSafeNpc),
+    visible_objects: [],
+    known_context: ['Обратная тропа к месту крушения теперь известна.'],
+    uncertainties: [], allowed_tensions: [],
+    do_not_imply: ['hidden_truth', 'zhdanko_motive', 'ratsha_culprit_identity']
+  };
+}
+
 function perceivedNpcUtterance(semantic, code) {
   const primaryNpcRef = semantic?.resumed_npc_execution?.plan?.speaker_ref
     ?? semantic?.decision_request?.npc_ref;
@@ -218,9 +248,6 @@ function playerSafeNpc(actor) {
       entity_id: actor.instance_id
     },
     display_label: actor.ref === 'eremey_fisher' ? 'Еремей' : 'рыбак',
-    recognition: actor.ref === 'eremey_fisher' ? 'known' : 'unrecognized',
-    visible_status: actor.ref === 'eremey_fisher'
-      ? 'находится в рабочей зоне стана'
-      : 'занят работой в стане'
+    recognition: actor.ref === 'eremey_fisher' ? 'known' : 'unrecognized'
   };
 }

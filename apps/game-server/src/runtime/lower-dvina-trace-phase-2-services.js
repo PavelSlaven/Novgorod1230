@@ -16,7 +16,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    turnStepModel, playerSafeStateProjector, locationProfiles,
+    turnStepModel, playerSafeStateProjector, locationProfiles, scenePresentation,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -55,12 +55,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     );
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({ committedState, locationProfiles });
+  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
+    committedState, locationProfiles, scenePresentation
+  });
   const { temporalAdvance, bodyEffect, evaluatePrecondition, createVisibleProjector } =
     createLowerDvinaTracePhase2ServiceFlow({
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
-      temporalAdvanceOwner, turnStepGenericBodyEffect
+      temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation
     });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,

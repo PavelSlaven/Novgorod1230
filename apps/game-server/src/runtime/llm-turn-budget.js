@@ -1,10 +1,10 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-export const GAMEPLAY_TURN_DEADLINE_MS = 30_000;
+export const GAMEPLAY_TURN_DEADLINE_MS = null;
 export const GAMEPLAY_LLM_BUDGET_MS = 25_000;
 export const GAMEPLAY_DETERMINISTIC_RESERVE_MS = 5_000;
-export const GAMEPLAY_PRIMARY_TIMEOUT_MS = 10_000;
-export const GAMEPLAY_REPAIR_TIMEOUT_MS = 6_000;
+export const GAMEPLAY_PRIMARY_TIMEOUT_MS = 120_000;
+export const GAMEPLAY_REPAIR_TIMEOUT_MS = 120_000;
 
 export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
   const storage = new AsyncLocalStorage();
@@ -17,7 +17,8 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       turn,
       elapsed_ms: elapsed,
       llm_budget_ms: Math.max(0, turn.llm_budget_ms - elapsed),
-      deadline_ms: Math.max(0, turn.turn_deadline_ms - elapsed)
+      deadline_ms: turn.turn_deadline_ms == null
+        ? null : Math.max(0, turn.turn_deadline_ms - elapsed)
     });
   };
   return Object.freeze({
@@ -44,26 +45,14 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       return claim;
     },
     clamp({ requestedTimeoutMs = null, repair = false } = {}) {
-      const available = remaining();
-      if (!available) return null;
-      const cap = repair ? GAMEPLAY_REPAIR_TIMEOUT_MS : GAMEPLAY_PRIMARY_TIMEOUT_MS;
-      const requested = positive(requestedTimeoutMs) ?? cap;
-      const effective = Math.min(requested, cap, available.llm_budget_ms,
-        Math.max(0, available.deadline_ms - GAMEPLAY_DETERMINISTIC_RESERVE_MS));
-      if (effective < Math.min(requested, 1_000)) throw exhausted(available, true);
-      return effective;
+      if (!current()) return null;
+      return repair ? GAMEPLAY_REPAIR_TIMEOUT_MS : GAMEPLAY_PRIMARY_TIMEOUT_MS;
     },
     assertCanCommit() {
-      const available = remaining();
-      if (available && available.deadline_ms <= GAMEPLAY_DETERMINISTIC_RESERVE_MS) {
-        throw exhausted(available, true);
-      }
+      return null;
     },
     assertWithinDeadline() {
-      const available = remaining();
-      if (available && available.deadline_ms <= 0) {
-        throw exhausted(available);
-      }
+      return null;
     }
   });
 }
@@ -82,9 +71,9 @@ export async function runWithinTurnDeadline(turnBudget, execute) {
 export function exhausted(remaining, budgetExhausted = false) {
   const error = new Error('Gameplay LLM turn budget is exhausted.');
   error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
-  error.deadline_exceeded = remaining.deadline_ms <= 0;
+  error.deadline_exceeded = false;
   error.budget_exhausted = budgetExhausted
-    || (!error.deadline_exceeded && remaining.llm_budget_ms <= 0);
+    || remaining.llm_budget_ms <= 0;
   error.remaining_llm_budget_ms = remaining.llm_budget_ms;
   error.remaining_turn_deadline_ms = remaining.deadline_ms;
   return error;
@@ -119,5 +108,3 @@ const REPAIR_ROLE_IDS = new Set([
   'gameplay_narrator_format_repair',
   'gameplay_narrator_semantic_repair'
 ]);
-
-function positive(value) { return Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : null; }

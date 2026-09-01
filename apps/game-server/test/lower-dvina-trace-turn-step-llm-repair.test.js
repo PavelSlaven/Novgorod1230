@@ -229,6 +229,24 @@ test('invalid repaired plan does not receive a second repair', async () => {
   ]);
 });
 
+test('empty unrecoverable domain request becomes a normal no-result', async () => {
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run() { return { output: {
+      ...output(), resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [], operation_choice: null
+    } }; } }
+  });
+  const result = await requestTurnStepPlanWithRepair({
+    request: request({ available_domain_operations: [] }), turnStepModel: model
+  });
+  assert.equal(result.repaired, true);
+  assert.equal(result.plan.resolution, 'direct');
+  assert.equal(result.plan.goal_result, 'not_achieved');
+  assert.deepEqual(result.plan.operations, []);
+  assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
+});
+
 test('turn step model fails closed for missing runner or non-object output', async () => {
   assert.throws(
     () => createLowerDvinaTraceTurnStepModel(),

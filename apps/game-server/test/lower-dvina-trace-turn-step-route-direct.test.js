@@ -14,6 +14,10 @@ import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
 import { createTraceKnownRouteCommands, routeCandidates } from
   '../src/runtime/lower-dvina-trace-known-route-command.js';
+import { destinationRouteActors } from
+  '../src/runtime/lower-dvina-trace-known-route-contracts.js';
+import { recheckTracePhase3LocationCapacity } from
+  '../src/infrastructure/postgres/first-playable/recheck-location-capacity.js';
 import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { projectLowerDvinaTracePlayerSafeState } from
@@ -327,6 +331,33 @@ test('known-route candidates admit a prepared first-entry scene and keep paralle
     ['parallel-reverse', 'trace_ld_v1_route_shed_to_camp']);
   });
 
+test('known-route capacity counts a visitor at the committed destination anchor', () => {
+  const actors = destinationRouteActors({ npcs: [{
+    instance_id: 'npc:visitor', participant_slot_ref: 'fisher',
+    anchor_id: 'anchor:shed', location_profile_ref: 'camp'
+  }] }, { anchor: { instance_id: 'anchor:shed' },
+    location_profile_ref: 'shed' });
+  assert.deepEqual(actors.map(({ instance_id: id }) => id), ['npc:visitor']);
+});
+
+test('known-route capacity accepts a visitor without rewriting their home profile',
+  async () => {
+    const check = { destination_anchor_id: 'anchor:shed',
+      destination_location_ref: 'shed', capacity_contract_ref: 'capacity:shed',
+      access_policy_ref: 'access:shed', zone_ref: 'approach', max_actors: 2,
+      incoming_participant_slot: 'player_clerk',
+      allowed_participant_slots: ['player_clerk', 'fisher'],
+      expected_present_npcs: [{ npc_id: 'npc:visitor',
+        participant_slot_ref: 'fisher' }] };
+    const transaction = { query: async (sql) => sql.includes('party_g5_anchors')
+      ? { rowCount: 1, rows: [{ state: { capacity_contract_ref: 'capacity:shed',
+        access_policy_ref: 'access:shed', zone_ref: 'approach' } }] }
+      : { rowCount: 1, rows: [{ npc_id: 'npc:visitor', semantic_state: {
+        participant_slot_ref: 'fisher', location_profile_ref: 'camp' } }] } };
+    assert.equal((await recheckTracePhase3LocationCapacity({ transaction,
+      partyId: 'party:test', check })).ok, true);
+  });
+
 test('generic known route awaits matching authored route availability', async () => {
   const bundle = await loadScenarioBundle(13);
   const seed = fixture({ scenarioBundle: bundle,
@@ -358,10 +389,21 @@ test('generic known route awaits matching authored route availability', async ()
     .availability({ committed_state: state }), /authored availability failed/u);
 });
 
-test('generic known-route projection does not fabricate the fishing camp', async () => {
+test('generic known-route projection uses the authored route and location presentation', async () => {
   const projector = createTracePhase3VisibleProjector({
     phase2Projector: { project: async () => assert.fail('phase2 fallback') },
-    contracts: { actors: [] }
+    contracts: { actors: [] },
+    scenePresentation: {
+      locations: [{ location_ref: 'unseen_destination',
+        display_name: 'незнакомая пристань',
+        player_visible_physical_facts: ['Сухой настил поднимается над водой.'] }],
+      route_presentations: [{ route_ref: 'unseen_route',
+        visible_scene: 'незнакомая пристань',
+        visible_change: 'Тропа вывела к незнакомой пристани.',
+        known_context: 'Обратный путь отмечен приметами на берегу.',
+        source_basis: 'committed_route_arrival',
+        perception_requirement: 'committed_route_movement' }]
+    }
   });
   const visible = await projector.project({ consequence: {
     phase3_kind: 'movement', generic_known_route: true, movement: {
@@ -372,8 +414,10 @@ test('generic known-route projection does not fabricate the fishing camp', async
   assert.deepEqual(visible, {
     version: 1, schema: 'visible_context_package',
     visible_scene: 'незнакомая пристань',
-    visible_changes: ['unseen_route:completed'], sensory_details: [],
-    visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+    visible_changes: ['Тропа вывела к незнакомой пристани.'],
+    sensory_details: ['Сухой настил поднимается над водой.'],
+    visible_npc: [], visible_objects: [],
+    known_context: ['Обратный путь отмечен приметами на берегу.'], uncertainties: [],
     allowed_tensions: [], do_not_imply: []
   });
 });

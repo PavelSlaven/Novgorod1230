@@ -7,6 +7,8 @@ import {
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
+import { factPresentationForRef } from
+  '../src/runtime/lower-dvina-trace-scene-presentation.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
@@ -39,6 +41,42 @@ test('fresh current scene keeps canonical co-located NPC observations only', () 
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(direct.known_context.includes('Онисим: injured_unable_to_walk'),
     true);
+});
+
+test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
+  const state = committedState();
+  state.environment_snapshot = { facts: ['sheltered_from_wind', 'lit_fire'] };
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles, scenePresentation: { locations: [{ location_ref: 'shed',
+      display_name: 'Старая сушильня',
+      player_visible_physical_facts: ['На досках лежит мокрая трава.'] }] } });
+  assert.deepEqual(current.current_visible_context.sensory_details,
+    ['На досках лежит мокрая трава.']);
+  assert.equal(JSON.stringify(current.current_visible_context).includes(
+    'sheltered_from_wind'), false);
+  assert.equal(JSON.stringify(current.current_visible_context).includes(
+    'lit_fire'), false);
+});
+
+test('current scene reads arbitrary authored location facts without code phrases', () => {
+  const state = committedState();
+  state.position.location_ref = 'unseen-bank';
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles: [], scenePresentation: { locations: [{
+      location_ref: 'unseen-bank', display_name: 'тихий берег',
+      player_visible_physical_facts: ['Ольха растёт над тёмной водой.']
+    }] } });
+  assert.deepEqual(current.current_visible_context.sensory_details,
+    ['Ольха растёт над тёмной водой.']);
+});
+
+test('fact presentation reads an unseen committed fact generically', () => {
+  const presentation = factPresentationForRef({ scenePresentation: {
+    fact_presentations: [{ fact_ref: 'unseen:fact', text: 'На камне видна свежая зарубка.',
+      source_basis: 'committed_player_visible_observation',
+      perception_requirement: 'committed_observation' }]
+  }, factRef: 'unseen:fact' });
+  assert.equal(presentation.text, 'На камне видна свежая зарубка.');
 });
 
 function committedState() {

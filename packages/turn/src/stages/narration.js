@@ -12,9 +12,8 @@ export async function buildNarrationStage({ playerInput, modeResolution, visible
     surface: 'turn',
     visible_context: structuredClone(visibleContext),
     context: {
-      player_input: structuredClone(playerInput),
-      mode_resolution: structuredClone(modeResolution),
-      spatial_result: spatialResult({ consequence, retrievedState })
+      attempt: attemptOnly(playerInput),
+      outcome: spatialResult({ consequence, retrievedState })
     },
     style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
     max_repairs: 1
@@ -35,8 +34,14 @@ export function spatialResult({ consequence, retrievedState }) {
   return {
     position_changed: typeof before === 'string' && typeof after === 'string'
       ? before !== after : false,
-    current_location_ref: after ?? before ?? null
+    movement_committed: typeof before === 'string' && typeof after === 'string'
+      ? before !== after : false
   };
+}
+
+function attemptOnly(playerInput) {
+  const text = playerInput?.raw_text ?? playerInput?.text ?? null;
+  return typeof text === 'string' && text.length > 0 ? { text } : null;
 }
 
 function movementDestination(consequence) {

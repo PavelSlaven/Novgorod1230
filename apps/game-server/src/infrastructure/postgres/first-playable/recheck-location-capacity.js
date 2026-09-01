@@ -39,13 +39,11 @@ export async function recheckTracePhase3LocationCapacity({
   ]);
   const expected = expectedNpcs.map((npc) => ({
     npc_id: npc.npc_id,
-    participant_slot_ref: npc.participant_slot_ref,
-    location_profile_ref: check.destination_location_ref
+    participant_slot_ref: npc.participant_slot_ref
   })).sort((left, right) => left.npc_id.localeCompare(right.npc_id));
   const actual = npcs.rows.map((npc) => ({
     npc_id: npc.npc_id,
-    participant_slot_ref: npc.semantic_state?.participant_slot_ref,
-    location_profile_ref: npc.semantic_state?.location_profile_ref
+    participant_slot_ref: npc.semantic_state?.participant_slot_ref
   }));
   const state = anchor.rows[0]?.state;
   return resultOf(

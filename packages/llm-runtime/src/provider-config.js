@@ -4,7 +4,7 @@ import { autonomousTurnRoleDefaults } from
   './autonomous-role-defaults.js';
 import { CombatTurnRuntimeRoles, combatTurnRoleDefaults } from
   './combat-role-defaults.js';
-import { applyProviderOverrides, normalizeBaseUrl, normalizeRequestUrl, resolveRuntimeProviderOverride } from
+import { applyProviderOverrides, normalizeBaseUrl, normalizeExecutionLimits, normalizeRequestUrl, resolveRuntimeProviderOverride } from
   './provider-request.js';
 
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
@@ -194,7 +194,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     tier_id: tierId ?? null,
     provider: provider?.provider ?? (shared.enabled ? shared.provider : 'deepseek'),
     compatibility: provider?.compatibility ?? 'deepseek',
-    apiKey: provider?.apiKey ?? (shared.enabled ? shared.apiKey : null),
+    apiKey: provider ? provider.apiKey : (shared.enabled ? shared.apiKey : null),
     baseUrl: provider?.baseUrl ?? (shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
     requestUrl: provider?.requestUrl ?? normalizeRequestUrl(shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
     requestTimeoutMs: provider?.requestTimeoutMs ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`]) ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? (scopeKey !== LLM_SCOPES.TURN_RUNTIME ? 120000 : String(roleId).includes('repair') ? 6000 : 10000),
@@ -223,6 +223,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
 
   applyProviderOverrides(config, overrides);
   applyRuntimeSafetyNormalization(config);
+  normalizeExecutionLimits(config);
 
   if (!config.enabled) {
     return {

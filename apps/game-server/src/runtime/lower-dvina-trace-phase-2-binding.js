@@ -20,7 +20,11 @@ export function assertTracePhase2ExecutionBinding({
   const zone = capacityContract?.zones?.find(
     ({ zone_id: zoneId }) => zoneId === anchorBinding?.zone_ref
   );
-  if (phase2Bundle?.manifest?.scenario_definition_revision !== 7
+  const revision = phase2Bundle?.manifest?.scenario_definition_revision;
+  const initialCold = revision >= 27 ? {
+    from: 'mild_shivering', to: 'mild_shivering', outcome: 'worsens'
+  } : { from: 'cold_with_possible_shivering', to: 'mild_shivering', outcome: 'worsens' };
+  if (![7, 27, 28].includes(revision)
       || activityRef?.id !== activity.profile_id
       || activityRef?.version !== activity.version
       || activityRef?.record_digest !== canonicalDigest(activity)
@@ -31,7 +35,7 @@ export function assertTracePhase2ExecutionBinding({
       || bodyRef?.record_digest !== canonicalDigest(bodyEffect)
       || bodyRef?.profile_set_id
         !== 'trace_ld_v1_body_environment_profiles'
-      || bodyRef?.profile_set_revision !== 4
+      || bodyRef?.profile_set_revision !== (revision >= 27 ? 7 : 4)
       || bodyRef?.profile_set_digest
         !== phase2Bundle.source_digests?.body_environment_profiles
       || binding?.attempt_policy?.new_attempt_elapsed_minutes
@@ -78,9 +82,9 @@ export function assertTracePhase2ExecutionBinding({
   const repeated = exactVariant(variants, 'repeated_mild_shivering');
   assertBodyVariant(initial, {
     prior: 'not_committed_for_actor',
-    coldFrom: 'cold_with_possible_shivering',
-    coldTo: 'mild_shivering',
-    coldOutcome: 'worsens'
+    coldFrom: initialCold.from,
+    coldTo: initialCold.to,
+    coldOutcome: initialCold.outcome
   });
   assertBodyVariant(repeated, {
     prior: 'committed_for_actor',

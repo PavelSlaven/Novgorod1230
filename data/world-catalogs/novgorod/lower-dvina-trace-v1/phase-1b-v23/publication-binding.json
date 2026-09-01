@@ -1,0 +1,20 @@
+{
+  "schema": "rus.lower_dvina_trace_publication_binding.v1",
+  "binding_id": "lower_dvina_trace_phase_1b_publication_v23",
+  "revision": 23,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "superseded_binding_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v22/publication-binding.json","id":"lower_dvina_trace_phase_1b_publication_v22","revision":22,"schema":"rus.lower_dvina_trace_publication_binding.v1","digest":"b773277623afa3e89b87dc8b44eb3bebe36ea025fb4864aef73211389f46bf7a"},
+  "public_metadata": {"title":"След на Нижней Двине","description":"Младший приказчик приходит в себя после крушения на Нижней Двине.","available":true},
+  "phase_1a_manifest_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v23/manifest.json","id":"lower_dvina_trace_phase_1a_v23","revision":23,"schema":"rus.lower_dvina_trace_phase_1a_manifest.v1","digest":"6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101"},
+  "scenario_definition_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m16-content/definition.json","id":"lower_dvina_trace_v1","revision":28,"schema":"rus.trace_scenario_definition.v1","digest":"77b2814ad4b871279c0b88e45e3d3da8c1754784c1acc3da1b444b78157b3a2c"},
+  "content_refs": {
+    "scene_presentation": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v23/scene-presentation-v1.json","id":"lower_dvina_trace_scene_presentation_v1","revision":1,"schema":"rus.lower_dvina_trace_scene_presentation.v1","digest":"3f502cb872f662c74fdace184111b1ded2f3af286ce258a6707d4940ddd2d347"}
+  },
+  "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v23",
+  "opening_projection": {"projection_id":"lower_dvina_trace_phase_1b_opening_projection_v15","schema":"first_game_screen","version":1,"visible_field_allowlist":["party_id","player.name","player.social_status","position","timestamp","body","environment"],"place_label":"берег крушения на Нижней Двине","calendar_label":"20 августа 1230 года по юлианскому календарю, 07:00 LMST","opening_prose":"Ты приходишь в себя на берегу Нижней Двины после крушения. Одежда промокла; холод, головная боль и ушиб плеча напоминают о случившемся."},
+  "execution_identity": {"materializer_version":"code_materializer_v2","rng_algorithm_id":"mulberry32_v1","seed_context":"lower_dvina_trace_phase_1a_mikula_v1","trigger":"new_game","occurrence":0,"scenario_definition_revision":28,"phase_1a_manifest_digest":"6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101","scenario_definition_digest":"77b2814ad4b871279c0b88e45e3d3da8c1754784c1acc3da1b444b78157b3a2c"},
+  "world_compatibility_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v22/publication-binding.json","digest":"b773277623afa3e89b87dc8b44eb3bebe36ea025fb4864aef73211389f46bf7a"},
+  "publication_availability": "public",
+  "fallback_policy": "forbidden"
+}

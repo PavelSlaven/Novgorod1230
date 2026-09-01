@@ -25,7 +25,8 @@ import { attachPendingConversationActivity } from
   './lower-dvina-trace-pending-activity-state.js';
 
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
-  inputDigest, changeSetId, contracts, rootTurnId, workingRevision }) {
+  inputDigest, changeSetId, contracts, rootTurnId, workingRevision,
+  firstEntry = null }) {
   let next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
@@ -64,12 +65,33 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   if (c.phase4_kind === 'movement') {
     const scene = next.prepared_scenes.find((entry) => entry.location_profile_ref === c.movement.destination_location_ref);
     if (!scene) throw new Error('TRACE_PHASE_4_DRYING_SHED_MISSING');
+    const firstEntryTarget = state.first_entry_spatial_v3?.members?.[0]?.target
+      ?? state.first_entry_preparation?.spatial_v3?.members?.[0]?.target;
+    const enteredPreparedScene = firstEntry?.operation_kind === 'first_entry'
+      && firstEntryTarget?.position_id != null
+      && scene.location_profile_ref === c.movement.destination_location_ref;
     delete next.position.position_id;
     delete next.position.g6_id;
     next.position = { ...next.position, location_ref: c.movement.destination_location_ref,
-      g5_anchor_id: scene.anchor.instance_id, g5_node_id: scene.node.instance_id };
+      g5_anchor_id: scene.anchor.instance_id, g5_node_id: scene.node.instance_id,
+      ...(enteredPreparedScene ? {
+        position_id: firstEntryTarget.position_id,
+        g6_id: firstEntryTarget.g6_instance_id
+      } : {}) };
+    if (enteredPreparedScene) {
+      const existing = new Set(next.npcs.map(({ instance_id: id }) => id));
+      next.npcs.push(...(state.first_entry_preparation?.members?.[1]?.npcs ?? [])
+        .filter(({ instance_id: id }) => !existing.has(id)));
+    }
     next.npcs = next.npcs.map((npc) => c.movement.participants.includes(npc.instance_id)
       ? { ...npc, anchor_id: scene.anchor.instance_id } : npc);
+    next.route_history = [...(next.route_history ?? []), {
+      route_ref: c.movement.route_ref,
+      activity_ref: c.movement.activity_ref,
+      started_at: structuredClone(c.movement.traversal.clock_before),
+      ended_at: structuredClone(factual.time_update.clock_after),
+      change_set_id: changeSetId
+    }];
     if (contracts.resourceArrivalBinding != null) {
       const resourceTemplates = new Set([
         'trace_ld_v1_item_fishing_net',

@@ -5,7 +5,7 @@ import { spatialResult } from '../src/stages/narration.js';
 test('spatial result does not invent movement without a committed destination', () => {
   assert.deepEqual(spatialResult({ retrievedState: { position: {
     location_ref: 'camp' } }, consequence: { movement: null } }), {
-    position_changed: false, current_location_ref: 'camp'
+    position_changed: false, movement_committed: false
   });
 });
 
@@ -16,6 +16,6 @@ test('spatial result recognizes committed active movement shapes', () => {
     { phase9: { movement: { destination: { location_ref: 'shed' } } } }
   ]) assert.deepEqual(spatialResult({ retrievedState: { position: {
     location_ref: 'camp' } }, consequence }), {
-    position_changed: true, current_location_ref: 'shed'
+    position_changed: true, movement_committed: true
   });
 });

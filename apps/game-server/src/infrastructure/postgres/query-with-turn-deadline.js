@@ -17,7 +17,7 @@ export function withTurnDeadlineQueryPool(pool, turnBudget = null) {
 
 function hasActiveTurnDeadline(turnBudget) {
   return typeof turnBudget?.remaining === 'function'
-    && turnBudget.remaining() != null;
+    && Number.isFinite(turnBudget.remaining()?.deadline_ms);
 }
 
 async function readQueryWithTurnDeadline(pool, query, turnBudget) {

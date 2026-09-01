@@ -79,8 +79,7 @@ export function createTracePhase5BodyEffect({ phase2BodyEffect, contracts }) {
           exact_deltas: structuredClone(outcome.exact_deltas),
           condition_transitions:
             structuredClone(outcome.condition_outcomes),
-          selection_policy:
-            contracts.bodyEffect.selection_policy,
+          selection_policy: 'fixed_by_committed_check_outcome',
           rng_consumption: 'forbidden'
         },
         state_after: structuredClone(input.committed_state.body_state)

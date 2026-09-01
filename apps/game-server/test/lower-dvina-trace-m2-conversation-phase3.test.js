@@ -184,7 +184,7 @@ test('action-set evaluation does not require player input or invoke the interpre
   assert.equal(playerCalls, 0);
 });
 
-test('revisions 14 and 15 bind exact semantic persistence to the root turn', () => {
+test('supported semantic revisions bind exact semantic persistence to the root turn', () => {
   const semanticExchange = { response_kind: 'withhold' };
   const factual = {
     mode_resolution: { turn_id: 'turn:party-1:3' },
@@ -193,7 +193,7 @@ test('revisions 14 and 15 bind exact semantic persistence to the root turn', () 
       conversation: { semantic_exchange: semanticExchange }
     }
   };
-  for (const scenarioRevision of [14, 15]) {
+  for (const scenarioRevision of [14, 15, 27]) {
     assert.deepEqual(phase3SemanticCommitContext({
       scenarioRevision,
       factual,

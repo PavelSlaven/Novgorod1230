@@ -168,8 +168,8 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
 
 test('shares intent-only player context with audit and semantic repair', async () => {
   const actionIntent = {
-    player_input: { raw_text: 'Постучать в закрытую дверь.' },
-    mode_resolution: { option_id: 'ordinary-attempt' }
+    attempt: { text: 'Постучать в закрытую дверь.' },
+    outcome: { position_changed: false }
   };
   const seen = [];
   const result = await runNarrationFlow(request({ context: actionIntent }), ports({
@@ -205,7 +205,7 @@ test('shares intent-only player context with audit and semantic repair', async (
 test('intent-only context does not ground an unsupported success claim', async () => {
   let repairCalls = 0;
   const result = await runNarrationFlow(request({ context: {
-    player_input: { raw_text: 'Открыть закрытую дверь.' }
+    attempt: { text: 'Открыть закрытую дверь.' }
   } }), ports({
     writer: { async generate() { return output('Вы открыли закрытую дверь.'); } },
     auditor: { async audit(input) {

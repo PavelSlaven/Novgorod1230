@@ -6,19 +6,18 @@ import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/de
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
-test('turn budget clamps calls, preserves lower override, and isolates contexts', async () => {
+test('turn budget never shortens an active LLM call', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   assert.equal(budget.clamp({ requestedTimeoutMs: 99_999 }), null);
   await budget.runTurn(async () => {
-    assert.equal(budget.clamp({ requestedTimeoutMs: 12_000 }), 10_000);
-    assert.equal(budget.clamp({ requestedTimeoutMs: 500 }), 500);
-    assert.equal(budget.clamp({ requestedTimeoutMs: 12_000, repair: true }), 6_000);
+    assert.equal(budget.clamp({ requestedTimeoutMs: 12_000 }), 120_000);
+    assert.equal(budget.clamp({ requestedTimeoutMs: 500 }), 120_000);
+    assert.equal(budget.clamp({ requestedTimeoutMs: 12_000, repair: true }), 120_000);
     now = 20_000;
-    assert.equal(budget.clamp({ requestedTimeoutMs: 10_000 }), 5_000);
+    assert.equal(budget.clamp({ requestedTimeoutMs: 10_000 }), 120_000);
     now = 25_000;
-    assert.throws(() => budget.clamp({ requestedTimeoutMs: 1 }),
-      { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    assert.equal(budget.clamp({ requestedTimeoutMs: 1 }), 120_000);
   });
   await Promise.resolve();
   assert.equal(budget.current(), null);
@@ -102,7 +101,7 @@ test('same-role repairs for independent requests execute and duplicate request i
   assert.equal(calls.length, 2);
 });
 
-test('role runner does not call exhausted provider and clamps custom providers', async () => {
+test('role runner forces shared execution limits for custom providers', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const calls = [];
@@ -111,16 +110,16 @@ test('role runner does not call exhausted provider and clamps custom providers',
     execute: async (input) => { calls.push(input); return { status: 'ok', parsed_json: {}, provider: 'openai_compatible', model: 'local', durationMs: 1 }; } });
   await budget.runTurn(async () => {
     await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner', overrides: { requestTimeoutMs: 400 } });
-    assert.equal(calls[0].overrides.requestTimeoutMs, 400);
+    assert.equal(calls[0].overrides.requestTimeoutMs, 120_000);
+    assert.equal(calls[0].overrides.maxTokens, 20_000);
     assert.equal(calls[0].runtimeProviderOverride.model, 'local');
     now = 25_000;
-    await assert.rejects(runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' }),
-      { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' });
   });
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 2);
 });
 
-test('gameplay narrator calls clamp turn-runtime defaults and retain custom provider', async () => {
+test('gameplay narrator and repair retain custom provider and shared limits', async () => {
   const calls = [];
   const budget = createLlmTurnBudget();
   const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
@@ -136,34 +135,45 @@ test('gameplay narrator calls clamp turn-runtime defaults and retain custom prov
       role_id: 'gameplay_narrator_format_repair',
       request_identity: 'narration-1' });
   });
-  assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs), [10_000, 6_000]);
+  assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs), [120_000, 120_000]);
+  assert.deepEqual(calls.map((call) => call.overrides.maxTokens), [20_000, 20_000]);
   assert.deepEqual(calls.map((call) => call.runtimeProviderOverride.model),
     ['local-narrator', 'local-narrator']);
 });
 
-test('budget rejects default calls with less than one second remaining', async () => {
+test('every active role and an unseen role receive shared execution limits', async () => {
+  const calls = [];
+  const runner = createLlmRoleRunnerAdapter({
+    execute: async (input) => {
+      calls.push(input);
+      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+    }
+  });
+  for (const role_id of ['turn_step_planner', 'turn_step_planner_repair',
+    'gameplay_narrator', 'gameplay_narrator_auditor', 'future_runtime_role']) {
+    await runner.run({ scope: 'turn_runtime', role_id,
+      overrides: { maxTokens: 1, requestTimeoutMs: 1 } });
+  }
+  for (const call of calls) assert.deepEqual(call.overrides,
+    { maxTokens: 20_000, requestTimeoutMs: 120_000 });
+});
+
+test('budget retains commit reserve without changing call timeout', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   await budget.runTurn(async () => {
     now = 24_500;
-    assert.throws(() => budget.clamp(), (error) => {
-      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-      assert.equal(error.budget_exhausted, true);
-      return true;
-    });
-    assert.equal(budget.clamp({ requestedTimeoutMs: 400 }), 400);
-    now = 25_000;
-    assert.throws(() => budget.assertCanCommit(), (error) => {
-      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-      assert.equal(error.budget_exhausted, true);
-      assert.equal(error.deadline_exceeded, false);
-      return true;
-    });
+    assert.equal(budget.clamp(), 120_000);
+    assert.equal(budget.clamp({ requestedTimeoutMs: 400 }), 120_000);
+    now = 60_000;
+    assert.equal(budget.remaining().deadline_ms, null);
+    assert.doesNotThrow(() => budget.assertCanCommit());
+    assert.doesNotThrow(() => budget.assertWithinDeadline());
   });
   assert.doesNotThrow(() => budget.assertCanCommit());
 });
 
-test('production role runner forwards turn budget to adapter', async () => {
+test('production role runner ignores legacy turn clamp for active calls', async () => {
   const calls = [];
   const runner = createProductionLlmRoleRunner({ turnBudget: {
     clamp: ({ requestedTimeoutMs }) => Math.min(requestedTimeoutMs, 321)
@@ -173,10 +183,11 @@ test('production role runner forwards turn budget to adapter', async () => {
   } });
   await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner',
     overrides: { requestTimeoutMs: 500 } });
-  assert.equal(calls[0].overrides.requestTimeoutMs, 321);
+  assert.equal(calls[0].overrides.requestTimeoutMs, 120_000);
+  assert.equal(calls[0].overrides.maxTokens, 20_000);
 });
 
-test('planner JSON repair keeps the shared repair budget', async () => {
+test('planner and repair each receive shared execution limits', async () => {
   let now = 0;
   const calls = [];
   const budget = createLlmTurnBudget({ now: () => now });
@@ -198,11 +209,12 @@ test('planner JSON repair keeps the shared repair budget', async () => {
   assert.deepEqual(calls.map(({ roleId }) => roleId), [
     'turn_step_planner', 'turn_step_planner_repair'
   ]);
-  assert.equal(calls[0].overrides.requestTimeoutMs, 10_000);
-  assert.equal(calls[1].overrides.requestTimeoutMs, 5_000);
+  assert.equal(calls[0].overrides.requestTimeoutMs, 120_000);
+  assert.equal(calls[1].overrides.requestTimeoutMs, 120_000);
+  assert.deepEqual(calls.map((call) => call.overrides.maxTokens), [20_000, 20_000]);
 });
 
-test('production runner clamps executor then blocks exhausted next call', async () => {
+test('production runner starts later calls with full transport timeout', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const calls = [];
@@ -215,17 +227,10 @@ test('production runner clamps executor then blocks exhausted next call', async 
     } });
   await budget.runTurn(async () => {
     await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' });
-    await assert.rejects(runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' }),
-      (error) => {
-        assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-        assert.equal(error.budget_exhausted, true);
-        assert.deepEqual(Object.keys(error).filter((key) => ['role_id', 'provider', 'model', 'config_hash', 'remaining_llm_budget_ms', 'remaining_turn_deadline_ms'].includes(key)).sort(),
-          ['config_hash', 'model', 'provider', 'remaining_llm_budget_ms', 'remaining_turn_deadline_ms', 'role_id']);
-        return true;
-      });
+    await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' });
   });
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].overrides.requestTimeoutMs, 10_000);
+  assert.equal(calls.length, 2);
+  assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs), [120_000, 120_000]);
 });
 
 test('admin probe keeps transport timeout outside gameplay default', async () => {

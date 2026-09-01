@@ -9,6 +9,11 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
         ? phase3Contracts?.routeBodyEffect
         : input.consequence?.phase4_kind === 'movement'
           ? phase4Contracts?.routeBodyEffect : null;
+      if (effect == null && (input.consequence?.phase3_kind === 'movement'
+          || input.consequence?.phase4_kind === 'movement')) {
+        return { owner: '@rus/body-state', applied: false, proposal: null,
+          state_after: structuredClone(input.committed_state.body_state) };
+      }
       return effect == null ? phase2BodyEffect.apply(input)
         : applyApprovedTraceRouteBodyEffect({ ...input, effect });
     }

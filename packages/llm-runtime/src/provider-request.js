@@ -1,4 +1,6 @@
 const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP', 'requestTimeoutMs']);
+export const LLM_MAX_OUTPUT_TOKENS = 20_000;
+export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
   role: 'system', content: 'Return a valid json object.'
 });
@@ -67,6 +69,11 @@ export function applyProviderOverrides(config, overrides) {
     const parsed = readPositiveInt(value);
     if (parsed) config.requestTimeoutMs = parsed;
   }
+}
+
+export function normalizeExecutionLimits(config) {
+  config.maxTokens = LLM_MAX_OUTPUT_TOKENS;
+  config.requestTimeoutMs = LLM_REQUEST_TIMEOUT_MS;
 }
 
 export function buildProviderRequestPayload(config, messages) {

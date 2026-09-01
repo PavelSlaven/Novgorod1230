@@ -258,7 +258,9 @@ export async function commitLowerDvinaTracePhase3({
     fail(
       committed.error?.code === 'idempotency_conflict'
         ? 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT'
-        : 'TRACE_PHASE_3_COMMIT_FAILED',
+        : `TRACE_PHASE_3_COMMIT_${String(
+          committed.error?.code ?? 'FAILED'
+        ).toUpperCase()}`,
       { commit_error: committed.error }
     );
   }

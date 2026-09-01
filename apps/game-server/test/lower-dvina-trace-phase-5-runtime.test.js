@@ -31,6 +31,9 @@ const bundle = await loadLowerDvinaTraceMaterializationBundle({
 const revision24Bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 24
 });
+const revision28Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 28
+});
 const initial = state();
 const contracts = resolveTracePhase5Contracts({ state: initial, bundle });
 
@@ -40,6 +43,9 @@ test('Phase 5 and 6 accept inherited revision 24 profile', () => {
   'trace_ld_v1_activity_first_aid_onisim');
   assert.equal(resolveTracePhase6Contracts({ bundle: revision24Bundle })
     .activity.profile_id, 'trace_ld_v1_activity_make_stretcher_and_carry');
+  assert.equal(resolveTracePhase5Contracts({ state: initial,
+    bundle: revision28Bundle }).bodyOutcomes.success.committed_fact,
+  'onisim_stabilized_unable_to_walk');
 });
 
 test('Phase 5 admits treatment only from the exact safe committed state', () => {

@@ -17,7 +17,7 @@ export function validateAuthoritativePreparedRoute({
   const exactElapsed = route.time_update?.exact_elapsed?.exact_minutes;
   const generic = consequence?.generic_known_route === true;
   const destinationZone = generic ? phase3Contracts?.destinationZone : 'working_camp';
-  if (authoritativeRoute == null || activity == null || (!generic && effect == null)
+  if (authoritativeRoute == null || activity == null
       || consequence.phase3_kind !== 'movement'
       || consequence.duration_minutes !== authoritativeRoute.duration_minutes
       || consequence.duration_minutes !== activity.duration_minutes
@@ -25,7 +25,9 @@ export function validateAuthoritativePreparedRoute({
       || !samePreparedValue(route.time_update?.clock_before, state.clock)
       || exactElapsed?.numerator !== String(authoritativeRoute.duration_minutes)
       || exactElapsed?.denominator !== '1'
-      || (!generic && consequence.body_effect_ref !== effect.effect_profile_id)
+      || (!generic && effect != null
+        && consequence.body_effect_ref !== effect.effect_profile_id)
+      || (!generic && effect == null && consequence.body_effect_ref != null)
       || (generic && consequence.body_effect_ref != null)
       || movement?.owner !== '@rus/movement-routes'
       || movement.activity_ref !== activity.profile_id
@@ -141,7 +143,8 @@ export function validatePreparedBodyReplay({
   const routeBody = route.body_update;
   const directBody = direct?.body_update ?? null;
   const proposal = routeBody.proposal;
-  if (route.consequence?.generic_known_route === true) {
+  if (route.consequence?.generic_known_route === true
+      || phase3Contracts?.routeBodyEffect == null) {
     if (routeBody.applied !== false || proposal !== null
         || !samePreparedValue(routeBody.state_after, state.body_state)
         || !samePreparedValue(factual.body_update.state_after,

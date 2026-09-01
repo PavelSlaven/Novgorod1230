@@ -350,3 +350,16 @@ export const M14_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ],
   definition: ['rus.trace_scenario_definition.v1', 26]
 });
+export const M15_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M14_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 23],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 23
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 27],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 7]
+});
+export const M16_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M15_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 28]
+});

@@ -99,7 +99,7 @@ export function createTracePhase5Command({ contracts, inputDigest }) {
         ? (success ? contracts.success : contracts.failure)
         : null;
       const bodyOutcome = slice.final
-        ? contracts.bodyEffect.outcome_effects[success ? 'success' : 'failure']
+        ? contracts.bodyOutcomes[success ? 'success' : 'failure']
         : null;
       return {
         version: 1,

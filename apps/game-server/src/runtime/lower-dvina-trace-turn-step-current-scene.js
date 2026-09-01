@@ -3,6 +3,8 @@ import { projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { scenePresentationForLocation } from
+  './lower-dvina-trace-scene-presentation.js';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -11,7 +13,8 @@ const ARRAY_FIELDS = [
 
 export function withLowerDvinaTraceCurrentScene({
   committedState,
-  locationProfiles
+  locationProfiles,
+  scenePresentation = null
 }) {
   const initial = committedState?.current_visible_context;
   if (Number(committedState?.party_state?.state_version) === 0
@@ -28,22 +31,10 @@ export function withLowerDvinaTraceCurrentScene({
     actor_id: projectionSource.actor_id
   }).player_safe_state;
   const locationRef = playerSafe.position?.location_ref;
-  const matches = Array.isArray(locationProfiles)
-    ? locationProfiles.filter(({ location_profile_id: id }) =>
-        id === locationRef)
-    : [];
-  if (matches.length !== 1) failCurrentScene();
-  const profile = matches[0];
-  const committedEnvironmentFacts = locationRef
-      === 'trace_ld_v1_loc_wreck_shore'
-    ? projectionSource.environment_snapshot?.facts?.filter(text) ?? []
-    : [];
-  const sensoryDetails = committedEnvironmentFacts.length > 0
-    ? committedEnvironmentFacts
-    : [profile.landscape_basis, profile.economic_basis].filter(text);
-  if (!text(profile.display_name) || sensoryDetails.length === 0) {
-    failCurrentScene();
-  }
+  const profile = scenePresentation == null
+    ? historicalLocationProfile(locationProfiles, locationRef)
+    : scenePresentationForLocation({ scenePresentation, locationRef });
+  const sensoryDetails = profile.player_visible_physical_facts ?? [];
   const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
     playerSafe.position)).filter(Boolean);
   const current = {
@@ -65,6 +56,15 @@ export function withLowerDvinaTraceCurrentScene({
     ...committedState,
     current_visible_context: deepFreeze(current)
   };
+}
+
+function historicalLocationProfile(locationProfiles, locationRef) {
+  const matches = Array.isArray(locationProfiles)
+    ? locationProfiles.filter(({ location_profile_id: id }) => id === locationRef)
+    : [];
+  if (matches.length !== 1 || !text(matches[0].display_name)) failCurrentScene();
+  return { display_name: matches[0].display_name,
+    player_visible_physical_facts: [] };
 }
 
 export function projectCurrentSceneForNoOperationDirect({

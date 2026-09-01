@@ -140,7 +140,7 @@ export function buildLlmTurnReport(input = {}) {
     party_id: text(party_id),
     request_id: text(request_id),
     turn_duration_ms: number(turn_duration_ms),
-    turn_deadline_ms: number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS,
+    turn_deadline_ms: turn_deadline_ms == null ? null : nonNegative(turn_deadline_ms),
     llm_budget_ms: number(llm_budget_ms) || GAMEPLAY_LLM_BUDGET_MS,
     failure: safeTurnFailure(failure),
     waterfall: Object.freeze(waterfall),
@@ -155,8 +155,7 @@ export function buildLlmTurnReport(input = {}) {
       slowest_llm_call_ms: durations.at(-1) ?? 0,
       llm_calls: count,
       repair_calls: repairs,
-      deadline_exceeded: number(turn_duration_ms) >= (number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS)
-        || incidents.some((incident) => incident.deadline_exceeded),
+      deadline_exceeded: incidents.some((incident) => incident.deadline_exceeded),
       budget_exhausted: incidents.some((incident) => incident.budget_exhausted),
       incidents: Object.freeze(incidents.map((incident) => Object.freeze({ ...incident }))),
       p50_ms: percentile(durations, 0.5),

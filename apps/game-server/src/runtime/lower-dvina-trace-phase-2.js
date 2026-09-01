@@ -89,14 +89,14 @@ export function createLowerDvinaTracePhase2Runtime({
             throw error;
           }
         }
-        const [state, phase2Bundle] = await Promise.all([
-          repository.loadPhase2State(partyId, {
-            presentationIdempotencyKey: idempotencyKey,
-            turnBudget,
-          }),
-          runWithinTurnDeadline(turnBudget, () => phase2BundleLoader()),
-        ]);
+        const state = await repository.loadPhase2State(partyId, {
+          presentationIdempotencyKey: idempotencyKey,
+          turnBudget,
+        });
         const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
+        const phase2Bundle = await runWithinTurnDeadline(turnBudget, () =>
+          phase2BundleLoader({ scenarioDefinitionRevision })
+        );
         validateConversationDependencies({
           scenarioDefinitionRevision,
           playerConversationModel,
@@ -161,8 +161,8 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
-        const turn10 = createTraceTurn10Runtime({
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const turn10 = bundle.definition_revision <= 26 ? createTraceTurn10Runtime({
           state,
           bundle,
           phase3Contracts,
@@ -173,7 +173,7 @@ export function createLowerDvinaTracePhase2Runtime({
           npcSemanticModel,
           temporalAdvanceOwner,
           revalidateStateVersion,
-        });
+        }) : null;
         const turn10Contracts = turn10?.contracts ?? null;
         const combatCommand = createTraceCombatCommand({
           state,
@@ -237,12 +237,13 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel, npcCombatModel,
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
+          scenePresentation: bundle.scene_presentation ?? null,
           turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
-          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? actionProductionProfile : null,
-          createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26].includes(bundle.definition_revision) ? localFireProfile : null,
+          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26, 28].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26, 28].includes(bundle.definition_revision) ? actionProductionProfile : null,
+          createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28].includes(bundle.definition_revision) ? localFireProfile : null,
           createTurnStepSpatialSemanticResolver:
             activeSpatialSemanticProfile == null
               ? null : createTurnStepSpatialSemanticResolver,

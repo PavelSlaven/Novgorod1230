@@ -35,7 +35,7 @@ import { exactActivityRoots, validPersistedOfferStage } from './lower-dvina-trac
 
 export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts,
-  scenarioRevision, rootTurnId, workingRevision }) {
+  scenarioRevision, rootTurnId, workingRevision, firstEntry = null }) {
   const inserts = [];
   const updates = [
     row('parties', partyId, { party_id: partyId, status: 'active' }),
@@ -55,14 +55,16 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   const deletes = [];
 
   if (factual.consequence.phase4_kind === 'movement') {
-    appendWorldRouteJourney({ writes: { inserts, updates, deletes }, partyId,
-      state, movement: { destination: { scene_position_id: null } }, changeSetId });
+    if (firstEntry?.operation_kind !== 'first_entry') appendWorldRouteJourney({
+      writes: { inserts, updates, deletes }, partyId,
+      state, movement: { destination: { scene_position_id: null } }, changeSetId
+    });
     appendPhase4Movement({ inserts, updates, appends, partyId, state, next, factual,
       turnNumber, changeSetId, idemId, contracts });
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase4:${turnNumber}` });
   } else if (factual.consequence.phase4_kind === 'negotiation') {
-    if ([14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(scenarioRevision)) {
+    if ([14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(scenarioRevision)) {
       appendSemanticNegotiation({
         inserts, updates, appends, partyId, state, next, factual,
         turnNumber, changeSetId, idemId, contracts, rootTurnId,

@@ -4,10 +4,10 @@ import test from 'node:test';
 import { resolveLlmExecutionConfig } from '../src/provider-config.js';
 
 const gameplayNarrationRoles = {
-  gameplay_narrator: ['json_object', null, 10000],
-  gameplay_narrator_format_repair: ['json_repair', null, 6000],
-  gameplay_narrator_auditor: ['json_object', null, 10000],
-  gameplay_narrator_semantic_repair: ['json_object', null, 6000]
+  gameplay_narrator: ['json_object', null, 120000],
+  gameplay_narrator_format_repair: ['json_repair', null, 120000],
+  gameplay_narrator_auditor: ['json_object', null, 120000],
+  gameplay_narrator_semantic_repair: ['json_object', null, 120000]
 };
 
 for (const [roleId, [outputContractMode, expectedSchema, requestTimeoutMs]] of Object.entries(gameplayNarrationRoles)) {
@@ -53,6 +53,6 @@ test('NPC conversation grounding auditor uses Flash JSON role', () => {
   });
   assert.equal(resolution.enabled, true);
   assert.equal(resolution.config.model, 'deepseek-v4-flash');
-  assert.equal(resolution.config.maxTokens, 800);
+  assert.equal(resolution.config.maxTokens, 20_000);
   assert.equal(resolution.config.outputContractMode, 'json_object');
 });

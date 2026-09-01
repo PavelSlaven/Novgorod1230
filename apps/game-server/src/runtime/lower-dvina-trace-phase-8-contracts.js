@@ -17,7 +17,7 @@ const IDS = Object.freeze({
 
 export function resolveTracePhase8Contracts({ state, bundle,
   conversationBindings }) {
-  if (![16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(bundle?.definition_revision)
+  if (![16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle?.definition_revision)
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_8_REVISION_GAP');
   }
@@ -83,6 +83,7 @@ export function resolveTracePhase8Contracts({ state, bundle,
     route, routeActivity,
     accusationActivity, access, capacity, sourceEndpoint,
     destinationEndpoint, storehouseAnchor: scene.anchor.instance_id,
+    destinationZone: scene.anchor.state.zone_ref,
     actors: { zhdanko: actor, eremey: companions[0], ratsha: companions[1] },
     participatingFishers: participants,
     combatBindings: structuredClone(binding),

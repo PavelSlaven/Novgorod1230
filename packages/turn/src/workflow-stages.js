@@ -26,6 +26,7 @@ import {
   turnStepDraftActionProductionAtomicWritePlans,
   turnStepDraftLocalFireAtomicWritePlans,
   turnStepDraftSpatialSemanticAtomicWritePlan,
+  turnStepDraftBackgroundNpcSemanticAtomicWritePlan,
   turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
   turnStepDraftPreparedEffectLedger
@@ -154,6 +155,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       ],
       spatial_semantic_atomic_write_plan:
         turnStepDraftSpatialSemanticAtomicWritePlan(
+          getTurnStepWorkflowDraft(state.modeResolution)),
+      background_npc_semantic_atomic_write_plan:
+        turnStepDraftBackgroundNpcSemanticAtomicWritePlan(
           getTurnStepWorkflowDraft(state.modeResolution)),
       commandRegistry: services.commandRegistry
     }), context)),

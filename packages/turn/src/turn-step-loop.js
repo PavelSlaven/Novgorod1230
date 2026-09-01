@@ -51,6 +51,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const actionProducedPlans = [];
   const localFirePlans = [];
   const spatialSemanticPlans = [];
+  const backgroundNpcSemanticPlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   let preparedFollowup = null;
@@ -193,6 +194,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'Only one spatial semantic atomic plan is allowed per turn.');
       spatialSemanticPlans.push(execution.spatial_semantic_atomic_write_plan);
     }
+    if (execution.background_npc_semantic_atomic_write_plan != null) {
+      if (backgroundNpcSemanticPlans.length !== 0) throw turnFailure(
+        'TURN_STEP_BACKGROUND_NPC_SEMANTIC_PLAN_DUPLICATE',
+        'Only one background NPC semantic atomic plan is allowed per turn.');
+      backgroundNpcSemanticPlans.push(
+        execution.background_npc_semantic_atomic_write_plan);
+    }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
       throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
@@ -272,6 +280,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     action_production_atomic_write_plans: actionProducedPlans,
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
+    background_npc_semantic_atomic_write_plan:
+      backgroundNpcSemanticPlans[0] ?? null,
     clarification
   });
 }

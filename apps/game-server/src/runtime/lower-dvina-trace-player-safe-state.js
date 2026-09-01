@@ -29,6 +29,7 @@ import { projectActiveConversationInterlocutor } from
   '@rus/visibility-knowledge-memory';
 import { validateActorBaseAppearance } from '@rus/actors';
 import { PORTRAIT_SPEC_V1_ENUMS } from '@rus/contracts';
+import { validateNpcOrdinarySemanticRemainder } from '@rus/npc-runtime';
 
 export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
@@ -155,9 +156,19 @@ export function projectLowerDvinaTraceVisibleNpcDetails({ visibleContext, projec
       identity_state: safeConversationIdentity(
         committed?.identity_state, names[0]),
       visible_equipment: safeConversationEquipment(committedItems, ids),
-      presentation: safeConversationPresentation(committed?.player_safe_presentation)
+      presentation: safeConversationPresentation(committed?.player_safe_presentation),
+      ordinary_remainder: safeOrdinaryRemainder(
+        committed?.semantic_state?.n1_remainder)
     };
   }).filter(Boolean);
+}
+
+function safeOrdinaryRemainder(value) {
+  if (!validateNpcOrdinarySemanticRemainder(value)) return null;
+  return {
+    ordinary_descriptor: value.ordinary_descriptor,
+    ordinary_activity: value.ordinary_activity
+  };
 }
 function safeConversationIdentity(value, displayName) {
   if (!validateActorBaseAppearance(value, { requireComplete: true }).ok) {

@@ -33,6 +33,9 @@ import { createSpatialSemanticAtomicWritePlan } from
 import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
 import { projectLowerDvinaTraceS1Resolutions } from
   '../../runtime/releases/lower-dvina-trace-s1-production.js';
+import { applyBackgroundNpcSemanticPlan,
+  createBackgroundNpcSemanticAtomicWritePlan } from
+  './background-npc-semantic-atomic-write-plan.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -99,6 +102,21 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_SPATIAL_SEMANTIC_PLAN_INVALID',
       'Spatial semantic atomic plan failed its sealed contract.', { status: 409 });
   }
+  let backgroundNpcSemanticPlan = null;
+  try {
+    if (writePlan.background_npc_semantic_atomic_write_plan != null) {
+      backgroundNpcSemanticPlan = createBackgroundNpcSemanticAtomicWritePlan(
+        writePlan.background_npc_semantic_atomic_write_plan);
+      if (backgroundNpcSemanticPlan.party_id !== partyId
+          || backgroundNpcSemanticPlan.change_set_id !== changeSetId) {
+        throw new Error();
+      }
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_BACKGROUND_NPC_SEMANTIC_PLAN_INVALID',
+      'Background NPC semantic plan failed its sealed contract.',
+      { status: 409 });
+  }
   const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
     : applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
@@ -108,8 +126,12 @@ export async function commitLowerDvinaTraceTurnStep({
   const committedSpatialResolutions = (state.spatial_semantic ?? [])
     .flatMap(({ resolutions = [] }) => resolutions)
     .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
+  const npcVisibleContext = projectBackgroundNpcRemainder({
+    visibleContext: ordinaryVisibleContext,
+    remainder: backgroundNpcSemanticPlan?.remainder
+  });
   const visibleContext = projectLowerDvinaTraceS1Resolutions({
-    playerSafeState: ordinaryVisibleContext,
+    playerSafeState: npcVisibleContext,
     resolutions: [...committedSpatialResolutions,
       ...(spatialSemanticPlan == null ? [] : [{
         local_ref: spatialSemanticPlan.resolution.local_ref,
@@ -135,6 +157,9 @@ export async function commitLowerDvinaTraceTurnStep({
   }
   for(const plan of localFirePlans)
     applyLocalFireProjection({ next: base.snapshot, plan });
+  const backgroundNpcWrite = backgroundNpcSemanticPlan == null ? null
+    : applyBackgroundNpcSemanticPlan({ plan: backgroundNpcSemanticPlan,
+      state, snapshot: base.snapshot });
   const factual = {
     player_input: envelope.player_input,
     mode_resolution: envelope.mode_resolution,
@@ -166,6 +191,7 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  if (backgroundNpcWrite != null) writes.updates.push(backgroundNpcWrite);
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: turnStep.snapshot, screen: pendingScreen
   });
@@ -175,7 +201,8 @@ export async function commitLowerDvinaTraceTurnStep({
     const built = await buildLowerDvinaTraceTurnStepCommitPlan({
       partyId, state, envelope, inputDigest, visibleEnvelope, writes,
       turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-      localFirePlans, spatialSemanticPlan
+      localFirePlans, spatialSemanticPlan,
+      temporalResults: envelope.time_update.temporal_results ?? []
     });
   const committed = await committer.commit({
     plan: built.plan,
@@ -197,6 +224,25 @@ export async function commitLowerDvinaTraceTurnStep({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
+  };
+}
+
+function projectBackgroundNpcRemainder({ visibleContext, remainder }) {
+  if (remainder == null) return visibleContext;
+  return {
+    ...structuredClone(visibleContext),
+    visible_npc: (visibleContext.visible_npc ?? []).map((entry) =>
+      entry?.entity_ref?.entity_kind === 'npc'
+        && entry.entity_ref.entity_id === remainder.npc_ref ? {
+          ...structuredClone(entry),
+          observable_cues: {
+            ...structuredClone(entry.observable_cues ?? {}),
+            ordinary_remainder: {
+              ordinary_descriptor: remainder.ordinary_descriptor,
+              ordinary_activity: remainder.ordinary_activity
+            }
+          }
+        } : structuredClone(entry))
   };
 }
 

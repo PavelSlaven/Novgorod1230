@@ -74,7 +74,7 @@ function validateObservableCues(value, path) {
   if (!isObject(value)) return [issue('generated_schema_mismatch', path,
     `${path} must be a player-safe observable cue object.`)];
   const errors = unexpected(value,
-    ['identity', 'equipment', 'outward_presentation'], path);
+    ['identity', 'equipment', 'outward_presentation', 'ordinary_remainder'], path);
   if (value.identity != null) errors.push(...validateObservableIdentity(
     value.identity, `${path}.identity`));
   if (value.equipment != null) errors.push(...validateObservableEquipment(
@@ -88,6 +88,17 @@ function validateObservableCues(value, path) {
       head_pose: PORTRAIT_SPEC_V1_ENUMS.pose.head,
       background: PORTRAIT_SPEC_V1_ENUMS.background
     }));
+  if (value.ordinary_remainder != null) errors.push(...validateTextRecord(
+    value.ordinary_remainder, `${path}.ordinary_remainder`,
+    ['ordinary_descriptor', 'ordinary_activity']));
+  return errors;
+}
+
+function validateTextRecord(value, path, keys) {
+  if (!isObject(value)) return [issue('generated_schema_mismatch', path,
+    `${path} must be a player-safe text cue record.`)];
+  const errors = unexpected(value, keys, path);
+  for (const key of keys) optionalText(value, key, path, errors);
   return errors;
 }
 

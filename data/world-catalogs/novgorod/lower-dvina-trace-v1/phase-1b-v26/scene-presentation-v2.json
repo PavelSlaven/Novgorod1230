@@ -15,8 +15,11 @@
       "player_visible_physical_facts": [
         "Мокрый песок и ивняк тянутся вдоль берега реки.",
         "У самой воды лежат разбитые доски и обрывки снастей.",
+        "У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.",
         "Над открытым берегом тянется низкое сырое небо."
       ],
+      "ordinary_background_descriptor": "полоса камыша и осоки у воды, вынесенные течением ветви среди обломков",
+      "ordinary_density_band": "ordinary",
       "source_basis": "stable_authoritative_location_environment"
     },
     {
@@ -32,6 +35,8 @@
         "Под навесом сложены свёрнутые снасти.",
         "В воздухе держится речная сырость."
       ],
+      "ordinary_background_descriptor": "сети на кольях, вытянутые к воде лодки и свёрнутые под навесом снасти",
+      "ordinary_density_band": "dense",
       "source_basis": "stable_authoritative_location_environment"
     },
     {
@@ -42,6 +47,8 @@
         "Доски стен дают полное укрытие от ветра.",
         "Вход в сушильню виден с тропы."
       ],
+      "ordinary_background_descriptor": "щепа, короткие жерди и старые плетёные связки у сушильни",
+      "ordinary_density_band": "ordinary",
       "source_basis": "stable_authoritative_location_environment"
     },
     {
@@ -52,6 +59,8 @@
         "Площадка сухо поднимается над береговой травой.",
         "У протоки слышна тихая вода."
       ],
+      "ordinary_background_descriptor": "хворост, кора и обломки деревянной тары в береговой траве у клети",
+      "ordinary_density_band": "ordinary",
       "source_basis": "stable_authoritative_location_environment"
     }
   ],

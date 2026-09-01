@@ -8,6 +8,8 @@ import {
 } from '@rus/items-property';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
+import { computeSpatialV3CanonicalDigest } from
+  '@rus/contracts/spatial-v3/registry';
 import {
   createTurnStepExecutionRegistry,
   runTurnStepLoop
@@ -63,6 +65,29 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       table === 'party_server_sessions').record;
     assert.equal(session.screen.screen_status,
       'committed_presentation_pending');
+  });
+
+test('semantic activity commits owner-mapped temporal writes in the same P16 root',
+  async () => {
+    const write = {
+      target_schema: 'party_runtime',
+      target_table: 'party_perception_records',
+      id: 'perception:elapsed',
+      record: { perception_id: 'perception:elapsed', party_id: 'p' }
+    };
+    const proposal = sealTemporal({ proposal_id: 'elapsed:perception',
+      write_target: 'perception:elapsed', write_set: {
+        appends: [write], inserts: [], updates: [], deletes: []
+      }, expected_state_versions: [],
+      physical_keys: ['party_runtime.party_perception_records:perception:elapsed'] });
+    const f = fixture({ direct: true, temporalResults: [sealTemporal({
+      combined_change_set: { proposals: [proposal] }
+    })] });
+
+    await f.commit();
+
+    assert.equal(f.plans[0].appends.some(({ target_table: table, id }) =>
+      table === 'party_perception_records' && id === 'perception:elapsed'), true);
   });
 
 test('authored placement move seals parent item with its P16 child row',
@@ -347,10 +372,14 @@ test('operation batch exactly covers approved physical plan fragments',
   });
 
 function fixture({ direct = false, clarification = false, check = false,
-  bodyEvent = false, authoredMove = false, envelopeOverride = null }) {
+  bodyEvent = false, authoredMove = false, envelopeOverride = null,
+  temporalResults = [] }) {
   const state = baseState();
   if (authoredMove) state.items.push(authoredItem());
   const envelope = envelopeOverride ?? commitEnvelope({ clarification, check });
+  if (temporalResults.length > 0) {
+    envelope.time_update.temporal_results = structuredClone(temporalResults);
+  }
   if (authoredMove) {
     envelope.loop_trace.step_traces[0].plan_request.player_safe_state
       .visible_entities.push({ entity_ref: 'authored-item' });
@@ -396,6 +425,10 @@ function fixture({ direct = false, clarification = false, check = false,
       } }
     })
   };
+}
+
+function sealTemporal(value) {
+  return { ...value, canonical_digest: computeSpatialV3CanonicalDigest(value) };
 }
 
 function markDomainOnly(envelope) {

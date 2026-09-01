@@ -184,6 +184,8 @@ test('ordinary seed prompt receives a player-safe scene basis without reading re
   assert.match(prompt, /one to three concrete co-present mundane physical groups/u);
   assert.match(prompt, /Never answer with an abstract category/u);
   assert.match(prompt, /never invent a visit, owner, action, purpose, origin, or past event/u);
+  assert.match(prompt, /propose one distinct new ordinary group/u);
+  assert.match(prompt, /do not restate, paraphrase, combine, or summarize/u);
 });
 
 test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {

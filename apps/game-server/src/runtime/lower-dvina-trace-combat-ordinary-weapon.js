@@ -20,7 +20,7 @@ export function createLowerDvinaTraceActionProducedWeaponClassifier({
       'Return only schema, request_id and qualitative_class.',
       'Never return damage, weapon_danger, identity, facts, or mechanics.'
     ].join(' ') }, { role: 'user', content: JSON.stringify(request) }],
-    overrides: { temperature: 0, maxTokens: 500 }
+    overrides: { temperature: 0, maxTokens: 20_000 }
   }))?.output ?? null;
 }
 

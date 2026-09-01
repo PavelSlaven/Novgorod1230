@@ -12,7 +12,7 @@ export async function probeLlmProvider(runner, { scope = 'turn_runtime', roleId 
     scope,
     role_id: roleId,
     messages: [{ role: 'system', content: 'Return a JSON object with {"ok":true}.' }],
-    overrides: { maxTokens: 32, temperature: 0 }
+    overrides: { maxTokens: 20_000, temperature: 0 }
   });
   return Object.freeze({ ok: response.output?.ok === true || response.output === '{"ok":true}', duration_ms: Date.now() - started, provider_record: response.provider_record });
 }

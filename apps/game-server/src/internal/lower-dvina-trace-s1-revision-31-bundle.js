@@ -2,7 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { ROOT, readBundleArtifact } from './lower-dvina-trace-s1-bundle-utils.js';
 
 const DEFINITION_PATH = `${ROOT}/phase-m19-content/definition.json`;
-const DEFINITION_DIGEST = 'fad6da017a7c7e488c849ea9d6e59dee79ded729e27e01eab0c24622b71a74ed';
+const DEFINITION_DIGEST = '4494bde28c4b8ba74c8fcfe72c72356e50cd2fa03b0076c58fa5000f6498abfe';
 
 export async function loadLowerDvinaTraceRevision31Bundle({ rootDir,
   historicalBundle, fail = (code) => { throw new Error(code); },

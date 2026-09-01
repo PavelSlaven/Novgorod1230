@@ -4,7 +4,8 @@ import { resolveTurnStepDomainOwner } from './turn-step-domain-owner-resolution.
 export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   semanticBindings, availableOptions, actor, committedState, services,
   isDomainStepOperation, isOrdinaryDiscoveryInScope,
-  isSpatialSemanticRemainderInScope, isActionProductionOwnerInScope,
+  isSpatialSemanticRemainderInScope, isBackgroundNpcSemanticRemainderInScope,
+  isActionProductionOwnerInScope,
   turnCommandError }) {
   const cachedOwners = new Map();
   const resolve = ({ operation, plan, request, preparedChainContext }) => {
@@ -15,6 +16,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
       playerSafeState: request.player_safe_state, committedState,
       externalRegistry, semanticBindings, availableOptions, preparedChainContext,
       services, isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+      isBackgroundNpcSemanticRemainderInScope,
       isActionProductionOwnerInScope });
     cachedOwners.set(key, owner);
     return owner;

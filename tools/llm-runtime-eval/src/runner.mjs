@@ -325,10 +325,10 @@ function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
 }
 
 function roleOverrides(roleId) {
-  if (roleId === 'turn_step_planner') return { temperature: 0, maxTokens: 8000 };
-  if (roleId === 'turn_step_planner_repair') return { temperature: 0, maxTokens: 4000 };
+  if (roleId === 'turn_step_planner') return { temperature: 0, maxTokens: 20_000 };
+  if (roleId === 'turn_step_planner_repair') return { temperature: 0, maxTokens: 20_000 };
   if (roleId.startsWith('npc_combat_decider')) {
-    return { temperature: 0, maxTokens: 4000 };
+    return { temperature: 0, maxTokens: 20_000 };
   }
   return null;
 }

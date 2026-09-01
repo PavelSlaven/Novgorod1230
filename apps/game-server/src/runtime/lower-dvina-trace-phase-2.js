@@ -44,6 +44,8 @@ export function createLowerDvinaTracePhase2Runtime({
   actionProductionProfile = null,
   createTurnStepWorldProcessResolver = null, localFireProfile = null,
   createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null,
+  createTurnStepBackgroundNpcResolver = null,
+  npcSemanticRemainderProfile = null,
   llmTurnBudget = null, llmDiagnostics = null,
   temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
@@ -250,6 +252,11 @@ export function createLowerDvinaTracePhase2Runtime({
             activeSpatialSemanticProfile == null
               ? null : createTurnStepSpatialSemanticResolver,
           spatialSemanticProfile: activeSpatialSemanticProfile,
+          createTurnStepBackgroundNpcResolver:
+            bundle.definition_revision === 31
+              ? createTurnStepBackgroundNpcResolver : null,
+          npcSemanticRemainderProfile: bundle.definition_revision === 31
+            ? npcSemanticRemainderProfile : null,
           admitAmbientOrdinaryPortion:
             typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
               ? createTurnStepAmbientOrdinaryPortionAdmission({

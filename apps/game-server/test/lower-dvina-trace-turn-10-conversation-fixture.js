@@ -40,7 +40,26 @@ export function turn10State({ completedRest = true } = {}) {
     ...state.position,
     location_ref: phase3.ids.campLocation,
     g5_anchor_id: phase3.campAnchor,
-    g5_node_id: camp.node.instance_id
+    g5_node_id: camp.node.instance_id,
+    zone_ref: 'working_camp'
+  };
+  state.environment_snapshot = {
+    environment_profile_id: 'trace_ld_v1_env_camp_fire',
+    schema: 'rus.trace_environment_profile.v1', version: 1,
+    facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+    source: 'party_environment_snapshot',
+    scope: {
+      location_ref: state.position.location_ref,
+      g5_node_id: state.position.g5_node_id,
+      g5_anchor_id: state.position.g5_anchor_id,
+      zone_ref: state.position.zone_ref
+    },
+    causal_basis: {
+      kind: 'authored_terminal_environment',
+      environment_profile_ref: 'trace_ld_v1_env_camp_fire',
+      route_ref: 'trace_ld_v1_route_shed_to_camp_carry_onisim',
+      anchor_template_ref: camp.anchor.template_id
+    }
   };
   for (const npc of state.npcs) {
     if (![

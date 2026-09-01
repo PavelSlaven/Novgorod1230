@@ -76,6 +76,12 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'relevant player-safe known_context'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'not a report of game state'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'When perception itself is the action'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'do not add that nothing else was noticed'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'unless that exact bodily effect is supplied'), true);
   for (const call of calls) {
     assert.equal(call.messages[0].content.includes(
       'Narrate the player in second-person Russian'), true);
@@ -114,6 +120,12 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'remain intent-only'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'a wet surface alone is insufficient'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'requires an explicit supplied uncertainty'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'repeating how or why the player looked is technical_presentation'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed concern kind>"/u);

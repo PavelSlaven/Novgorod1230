@@ -21,7 +21,7 @@ export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
         role: 'user',
         content: JSON.stringify(request)
       }],
-      overrides: { temperature: 0, maxTokens: 1200 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     if (!response?.output || typeof response.output !== 'object') {
       throw dependencyError('Semantic resolver returned no JSON object.');
@@ -46,7 +46,9 @@ export function createLowerDvinaTraceTurnStepModel({
     const operationChoices = turnStepOperationChoices(request);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
-    const response = await roleRunner.run({
+    let response;
+    try {
+      response = await roleRunner.run({
         scope: 'turn_runtime',
         role_id: repairing
           ? 'turn_step_planner_repair'
@@ -94,6 +96,14 @@ export function createLowerDvinaTraceTurnStepModel({
           maxTokens: 20_000
         }
       });
+    } catch (error) {
+      if (!repairing && error?.code === 'json_parse_failed') {
+        return model(request, { original_output: null,
+          structural_errors: [{ path: '$', code: 'json_parse_failed',
+            message: 'Planner response was not valid JSON.' }] });
+      }
+      throw error;
+    }
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
@@ -271,7 +281,7 @@ export function createLowerDvinaTracePlayerConversationModel({
           validation_errors: repair.validation_errors
         } : request)
       }],
-      overrides: { temperature: 0, maxTokens: 8000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     return assemblePlayerConversationPlan(response.output, request);
   };
@@ -300,7 +310,7 @@ export function createLowerDvinaTraceNpcSemanticModel({
           validation_errors: repair.validation_errors
         } : request)
       }],
-      overrides: { temperature: 0, maxTokens: 8000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     return assembleNpcConversationPlan(response.output, request);
   };
@@ -324,7 +334,7 @@ export function createLowerDvinaTraceNpcDecisionSelector({
       }, {
         role: 'user', content: JSON.stringify(request)
       }],
-      overrides: { temperature: 0, maxTokens: 800 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     if (!response?.output || typeof response.output !== 'object') {
       throw dependencyError('NPC decision selector returned no JSON object.');

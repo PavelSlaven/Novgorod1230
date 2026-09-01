@@ -9,7 +9,7 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
     request_identity: request.request_id,
     messages: [{ role: 'system', content: PROMPT }, {
       role: 'user', content: JSON.stringify({ request, plan })
-    }], overrides: { temperature: 0, maxTokens: 800 }
+    }], overrides: { temperature: 0, maxTokens: 20_000 }
   });
   if (!valid(response?.output)) throw serverError(
     'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID',

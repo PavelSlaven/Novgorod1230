@@ -28,6 +28,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createTurnStepWorldProcessResolver,
     localFireProfile,
     createTurnStepSpatialSemanticResolver,
+    createTurnStepBackgroundNpcResolver,
+    npcSemanticRemainderProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -92,6 +94,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       localFireProfile,
       createTurnStepWorldProcessResolver,
       createTurnStepSpatialSemanticResolver,
+      createTurnStepBackgroundNpcResolver,
+      npcSemanticRemainderProfile,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryScopeBinding,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
@@ -134,6 +138,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     } : {}),
     ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
       turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    } : {}),
+    ...(typeof createTurnStepBackgroundNpcResolver === 'function'
+        && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {
+      turnStepBackgroundNpcResolver: createTurnStepBackgroundNpcResolver({
+        partyId, requestId, inputDigest,
+        applyWorkingProjection: workingProjectionAuthority.admit
+      })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

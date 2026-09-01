@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
+import { integrateSpatialV3TemporalWriteFragments } from
+  '@rus/turn/spatial-v3-temporal-write-integration';
 import { serverError } from '../../errors.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
 import { TABLES } from './spatial-v3-write-layout.js';
@@ -18,7 +20,8 @@ import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } fro
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null
+  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null,
+  temporalResults = []
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
@@ -32,14 +35,11 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
     );
   }
   const canonicalInputDigest = normalizeDigest(inputDigest);
-  const builder = createCombinedWritePlanBuilder({
-      verifyApproval: async (candidate) => ({
-        ok: candidate.party_id === partyId
-          && candidate.operation_kind === 'trace_turn_step'
-          && candidate.canonical_input_digest === canonicalInputDigest
-      })
-  });
-  const built = await builder.build({
+  if (!Array.isArray(temporalResults)) {
+    throw serverError('TRACE_TURN_STEP_TEMPORAL_RESULT_INVALID',
+      'Temporal results must be an ordered array.', { status: 409 });
+  }
+  let integrated = { ok: true, input: {
     plan_id: `p16:${partyId}:turn-step:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -97,7 +97,27 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })
+  } };
+  for (const temporalResult of temporalResults) {
+    integrated = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: integrated.input,
+      temporal_result: temporalResult
+    });
+    if (!integrated.ok) {
+      throw serverError('TRACE_TURN_STEP_TEMPORAL_WRITE_CONFLICT',
+        'Temporal result conflicts with the semantic turn write plan.',
+        { status: 409, details: integrated.error });
+    }
+  }
+  const approvedInputDigest = integrated.input.canonical_input_digest;
+  const builder = createCombinedWritePlanBuilder({
+    verifyApproval: async (candidate) => ({
+      ok: candidate.party_id === partyId
+        && candidate.operation_kind === 'trace_turn_step'
+        && candidate.canonical_input_digest === approvedInputDigest
+    })
   });
+  const built = await builder.build(integrated.input);
   if (!built.ok) {
     throw serverError(
       'TRACE_TURN_STEP_WRITE_PLAN_REJECTED',

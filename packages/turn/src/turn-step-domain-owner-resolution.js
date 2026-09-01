@@ -4,7 +4,7 @@ export function resolveTurnStepDomainOwner({
   operation, plan, request, actor, playerSafeState, committedState,
   externalRegistry, semanticBindings, availableOptions, preparedChainContext,
   services, isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
-  isActionProductionOwnerInScope
+  isBackgroundNpcSemanticRemainderInScope, isActionProductionOwnerInScope
 }) {
   const externalHandler = externalRegistry?.domain?.(operation);
   if (typeof externalHandler === 'function') {
@@ -27,6 +27,9 @@ export function resolveTurnStepDomainOwner({
       && isOrdinaryDiscoveryInScope({ operation, playerSafeState })) {
     return { kind: 'ordinary_discovery' };
   }
+  if (typeof services.turnStepBackgroundNpcResolver === 'function'
+      && isBackgroundNpcSemanticRemainderInScope({ operation,
+        playerSafeState })) return { kind: 'background_npc_remainder' };
   if (operation.op === 'request_world_process'
       && typeof services.turnStepWorldProcessResolver === 'function') {
     return { kind: 'world_process' };

@@ -87,7 +87,7 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
     },
     npcAutonomousModel(request) {
       autonomousCalls += 1;
-      return phase7AutonomousPlan(request, 'move_bag');
+      return phase7AutonomousPlan(request, 'wait');
     }
   });
   const input = {
@@ -145,11 +145,11 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
     String(Number(state.clock.whole_minutes) + 30));
   assert.equal(runtimeFixture.state.containers.find(
     ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag')
-    .state.zone_ref, 'river_access');
+    .state.zone_ref, 'storehouse_interior');
   assert.equal(runtimeFixture.state.npcs.find(
     ({ participant_slot_ref: slot }) =>
       slot === 'zhdanko_storehouse_controller')
-    .machine_state.spatial_zone_ref, 'river_access');
+    .machine_state.spatial_zone_ref, 'storehouse_yard');
   assert.deepEqual(runtimeFixture.state.route_participant_commitments.map(
     ({ role }) => role).sort(), [
       'escort', 'guide', 'stay_with_onisim', 'witness'
@@ -192,10 +192,10 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
   assert.equal(persisted.body_effect_history.length, 1);
   assert.equal(persisted.containers.find(
     ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag')
-    .state.zone_ref, 'river_access');
+    .state.zone_ref, 'storehouse_interior');
   assert.equal(persisted.npcs.find(({ participant_slot_ref: slot }) =>
     slot === 'zhdanko_storehouse_controller')
-    .machine_state.spatial_zone_ref, 'river_access');
+    .machine_state.spatial_zone_ref, 'storehouse_yard');
   assert.deepEqual(persisted.route_participant_commitments.map(
     ({ role }) => role).sort(), [
       'escort', 'guide', 'stay_with_onisim', 'witness'

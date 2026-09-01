@@ -5,7 +5,7 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from './lower-dvina-trace-ph
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 export const TRACE_REVISION31_PHASE_1A_MANIFEST_DIGEST = '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101';
-const PINS = Object.freeze({ manifest: '0cc9ac2b07b4570aaf1f4bc1c58e89235f3d368349327745a3e40f725aaf713f', binding: '0ecfef800fa35873e0090eef3e5113eaa2ec8d953ceedee28425a5467a9ab946', definition: 'fad6da017a7c7e488c849ea9d6e59dee79ded729e27e01eab0c24622b71a74ed', presentation: '9ef043906e102a5db14f197cd97ef30dcd7891530f77d19a3cb9fececdaacdee', priorBinding: '9d56686a0ef04c10bc62ed79227b5171a9cdd8e5292d73a0a217cf46bb2e29bc' });
+const PINS = Object.freeze({ manifest: '3b616e20b7b3512b0651d217b2650b3ed5a4ad0bcf6f10511dc3d8cde4dfe150', binding: '2bcb6c037926a662d2fc3707561038bdd988746904f235c1ad146c87e29a00bf', definition: '4494bde28c4b8ba74c8fcfe72c72356e50cd2fa03b0076c58fa5000f6498abfe', presentation: 'b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c', priorBinding: '9d56686a0ef04c10bc62ed79227b5171a9cdd8e5292d73a0a217cf46bb2e29bc' });
 
 export async function loadLowerDvinaTraceRevision31Publication({ rootDir = process.cwd(), phase1AManifestDigest = null } = {}) {
   if (phase1AManifestDigest != null && phase1AManifestDigest !== TRACE_REVISION31_PHASE_1A_MANIFEST_DIGEST) fail();

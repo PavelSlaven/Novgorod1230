@@ -5,6 +5,9 @@ import { assertValid, validateAvailabilityDecision, validateConsequencePackage }
 import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 import { createTurnStepDomainOwnerPreflight as createPreflight } from './turn-step-domain-owner-preflight.js';
 import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
+import { isBackgroundNpcSemanticRemainderInScope,
+  resolveBackgroundNpcSemanticRemainder } from
+  './turn-step-background-npc-remainder.js';
 import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } from './turn-step-spatial-semantic-remainder.js';
 import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
@@ -103,6 +106,7 @@ export async function resolveBoundTurnStepCommand({
   const preflightDomainPlan = createPreflight({ externalRegistry,
     semanticBindings, availableOptions, actor: projected.actor, committedState, services,
     isDomainStepOperation, isOrdinaryDiscoveryInScope,
+    isBackgroundNpcSemanticRemainderInScope,
     isSpatialSemanticRemainderInScope, isActionProductionOwnerInScope,
     turnCommandError });
   const direct = Object.fromEntries([...DIRECT_STEP_OPERATIONS].map((op) => [
@@ -126,6 +130,7 @@ export async function resolveBoundTurnStepCommand({
         externalRegistry, semanticBindings, availableOptions,
         preparedChainContext: execution.prepared_chain_context, services,
         isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+        isBackgroundNpcSemanticRemainderInScope,
         isActionProductionOwnerInScope });
       if (owner.kind === 'external') return owner.handler(execution);
       if (owner.kind === 'ordinary_discovery') {
@@ -147,6 +152,12 @@ export async function resolveBoundTurnStepCommand({
         const worldProcess = resolveWorldProcessRemainder({ operation,
           execution, projected, committedState, services });
         if (worldProcess !== null) return worldProcess;
+      }
+      if (owner.kind === 'background_npc_remainder') {
+        return resolveBackgroundNpcSemanticRemainder({
+          resolver: services.turnStepBackgroundNpcResolver,
+          execution, actor: projected.actor, committedState
+        });
       }
       if (owner.kind === 'spatial') {
         const spatialResolver = services.turnStepSpatialSemanticResolver;
@@ -469,6 +480,7 @@ function plain(value) { return Boolean(value) && typeof value === 'object' && !A
 export function createTurnStepDomainOwnerPreflight(input) {
   return createPreflight({ ...input, isDomainStepOperation,
     isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+    isBackgroundNpcSemanticRemainderInScope,
     isActionProductionOwnerInScope, turnCommandError });
 }
 

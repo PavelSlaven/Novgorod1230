@@ -36,7 +36,7 @@ const V30 = Object.freeze({
 const V31 = Object.freeze({
   manifest: `${ROOT}/phase-2-v31/manifest.json`,
   binding: `${ROOT}/phase-2-v31/wreck-inspection-execution-binding.json`,
-  manifestDigest: 'acdeda78600635b50c2a4360dda60cc5dc2d38c493ce5f6bf0fdcc84dda4ad87',
+  manifestDigest: '83a428a71d5c9e89ec5e806cfda3203ced5f6ed334c19a1e62e4e15d7c8fbfa9',
   bindingDigest: 'e4450ec310929514faf6817fe99ecd6792211a974cfa264de61fd71df069a29b',
   packageId: 'lower_dvina_trace_phase_2_v31', scenarioRevision: 31, bindingRevision: 31
 });

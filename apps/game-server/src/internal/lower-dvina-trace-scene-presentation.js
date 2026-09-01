@@ -7,7 +7,7 @@ const V2_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v26/
 export const TRACE_SCENE_PRESENTATION_DIGEST =
   '3f502cb872f662c74fdace184111b1ded2f3af286ce258a6707d4940ddd2d347';
 export const TRACE_SCENE_PRESENTATION_V2_DIGEST =
-  '9ef043906e102a5db14f197cd97ef30dcd7891530f77d19a3cb9fececdaacdee';
+  'b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c';
 
 export async function loadLowerDvinaTraceScenePresentation({
   rootDir = process.cwd(), scenarioDefinitionRevision
@@ -32,9 +32,12 @@ export async function loadLowerDvinaTraceScenePresentation({
       || new Set(value.locations.map(({ location_ref: ref }) => ref)).size
         !== value.locations.length
       || value.locations.some(({ location_ref: ref, display_name: name,
-        player_visible_physical_facts: facts, source_basis: basis }) =>
+        player_visible_physical_facts: facts,
+        ordinary_background_descriptor: ordinary,
+        ordinary_density_band: density, source_basis: basis }) =>
         !text(ref) || !text(name) || !text(basis) || !Array.isArray(facts)
-          || facts.some((fact) => !text(fact)))) {
+          || facts.some((fact) => !text(fact)) || !text(ordinary)
+          || !['sparse', 'ordinary', 'dense'].includes(density))) {
     fail();
   }
   return Object.freeze(structuredClone(value));

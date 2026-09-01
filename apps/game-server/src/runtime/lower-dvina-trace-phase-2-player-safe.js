@@ -17,6 +17,8 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   localFireProfile,
   createTurnStepWorldProcessResolver,
   createTurnStepSpatialSemanticResolver,
+  createTurnStepBackgroundNpcResolver,
+  npcSemanticRemainderProfile,
   ordinaryDiscoveryEnablementMarker,
   ordinaryDiscoveryResolver,
   ordinaryDiscoveryScopeBinding,
@@ -58,11 +60,18 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       playerSafeState, committedState,
       resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function'
     });
+    const npcState = projectLowerDvinaTraceN1Capability({
+      playerSafeState: spatialState,
+      committedState,
+      loadedProfile: npcSemanticRemainderProfile,
+      resolverAvailable:
+        typeof createTurnStepBackgroundNpcResolver === 'function'
+    });
     const base = { ...projected,
       initial_working_projection: initialWorkingProjection };
     if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
         || typeof ordinaryDiscoveryResolver !== 'function') {
-      return { ...base, player_safe_state: spatialState };
+      return { ...base, player_safe_state: npcState };
     }
     const scopeId = committedState.position?.g6_id
       ?? committedState.position?.g6_ref
@@ -70,15 +79,15 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
           === ordinaryDiscoveryScopeBinding?.position_ref
         ? ordinaryDiscoveryScopeBinding.g6_ref : null);
     if (typeof scopeId !== 'string' || !scopeId) {
-      return { ...base, player_safe_state: spatialState };
+      return { ...base, player_safe_state: npcState };
     }
     const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
       scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
     if (enabled !== true && enabled?.discovery_available !== true) {
-      return { ...base, player_safe_state: spatialState };
+      return { ...base, player_safe_state: npcState };
     }
     const withSources = projectLowerDvinaTraceO2aDiscoverySources({
-      projected:{...base,player_safe_state:spatialState},
+      projected:{...base,player_safe_state:npcState},
       sources:enabled === true ? [] : enabled.sources });
     const withScene = projectPreparedOrdinaryScene(
       withSources.player_safe_state,
@@ -94,6 +103,36 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     return {...withSources,initial_working_projection:initialWorkingProjection,
       player_safe_state:{...withScene,...capability}};
+  };
+}
+
+function projectLowerDvinaTraceN1Capability({ playerSafeState,
+  committedState, loadedProfile, resolverAvailable }) {
+  if (!resolverAvailable
+      || loadedProfile?.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1'
+      || loadedProfile.profile?.status !== 'approved') return playerSafeState;
+  const eligible = new Set(loadedProfile.profile.eligible_participant_profiles
+    .map(({ profile_id: id, revision }) => `${id}@${revision}`));
+  const visible = new Set((playerSafeState.current_visible_context
+    ?.visible_npc ?? []).flatMap((entry) =>
+      entry?.entity_ref?.entity_kind === 'npc'
+        ? [entry.entity_ref.entity_id] : []));
+  const refs = (committedState.npcs ?? []).flatMap((npc) => {
+    const id = npc.npc_id ?? npc.instance_id;
+    const profileId = npc.profile_set_id ?? npc.profile_id;
+    const revision = npc.semantic_state?.profile_revision
+      ?? npc.profile_revision;
+    return typeof id === 'string' && visible.has(id)
+      && npc.profile_level === 'background'
+      && eligible.has(`${profileId}@${revision}`)
+      && npc.semantic_state?.n1_remainder == null ? [id] : [];
+  });
+  return refs.length === 0 ? playerSafeState : {
+    ...playerSafeState,
+    background_npc_remainder: {
+      semantic_grounding_available: true,
+      eligible_npc_refs: [...new Set(refs)].sort()
+    }
   };
 }
 

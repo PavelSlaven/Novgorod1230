@@ -91,10 +91,15 @@
       "revision": 1,
       "digest": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
     },
+    "npc_semantic_remainder_profile": {
+      "id": "lower_dvina_trace_n1_background_npc_v1",
+      "revision": 1,
+      "digest": "0e44bc05cd6e27aa962eee7d3114209a1b9959d447fc72679e743c16176d4aeb"
+    },
     "scene_presentation": {
       "id": "lower_dvina_trace_scene_presentation_v2",
       "revision": 2,
-      "digest": "9ef043906e102a5db14f197cd97ef30dcd7891530f77d19a3cb9fececdaacdee"
+      "digest": "b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c"
     }
   },
   "resolved_policy_refs": {

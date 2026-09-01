@@ -22,7 +22,8 @@ export function collectTurnStepExecutionResult({
   ordinaryPlans,
   actionProducedPlans,
   localFirePlans,
-  spatialSemanticPlans
+  spatialSemanticPlans,
+  backgroundNpcSemanticPlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -92,6 +93,15 @@ export function collectTurnStepExecutionResult({
         'A turn step can carry at most one spatial semantic atomic plan.');
     }
     spatialSemanticPlans.push(structuredClone(applied.spatial_semantic_atomic_write_plan));
+  }
+  if (applied.background_npc_semantic_atomic_write_plan != null) {
+    if (!Array.isArray(backgroundNpcSemanticPlans)
+        || backgroundNpcSemanticPlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one background NPC semantic plan.');
+    }
+    backgroundNpcSemanticPlans.push(structuredClone(
+      applied.background_npc_semantic_atomic_write_plan));
   }
   return {
     projection: structuredClone(applied.working_projection),

@@ -243,7 +243,9 @@ function projectVisibleRefs(records, strict, path) {
 
 function projectObservableCues(value, strict, path) {
   if (!plain(value)) return undefined;
-  const allowed = new Set(['identity', 'equipment', 'outward_presentation']);
+  const allowed = new Set([
+    'identity', 'equipment', 'outward_presentation', 'ordinary_remainder'
+  ]);
   if (strict) assertAllowedKeys(value, allowed, path, invalidCode());
   return compact({
     identity: projectObservableIdentity(value.identity, strict,
@@ -252,7 +254,10 @@ function projectObservableCues(value, strict, path) {
       `${path}.equipment`),
     outward_presentation: projectTextRecord(value.outward_presentation,
       ['emotion', 'intensity', 'gaze', 'body_pose', 'head_pose', 'background'],
-      strict, `${path}.outward_presentation`)
+      strict, `${path}.outward_presentation`),
+    ordinary_remainder: projectTextRecord(value.ordinary_remainder,
+      ['ordinary_descriptor', 'ordinary_activity'], strict,
+      `${path}.ordinary_remainder`)
   });
 }
 

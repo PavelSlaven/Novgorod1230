@@ -1,9 +1,15 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadLowerDvinaTraceScenePresentation } from
+  '../internal/lower-dvina-trace-scene-presentation.js';
+import { ordinaryBackgroundSeedForLocation } from
+  '../runtime/lower-dvina-trace-scene-presentation.js';
 import { createSpatialSemanticFirstEntryProvisioner } from '../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
 import { loadLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
+import { loadLowerDvinaTraceN1Profile } from
+  '../internal/lower-dvina-trace-n1-profile.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -112,15 +118,24 @@ export async function createSpatialV3ProductionCompositionRoot({
     }
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
-    const [profiles, spatialSemanticProfile] = await Promise.all([
+    const [profiles, spatialSemanticProfile, scenePresentation,
+      npcSemanticRemainderProfile] = await Promise.all([
       loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
-      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() })
+      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
+      loadLowerDvinaTraceScenePresentation({
+        rootDir: config.rootDir ?? process.cwd(),
+        scenarioDefinitionRevision: 31
+      }),
+      loadLowerDvinaTraceN1Profile({
+        rootDir: config.rootDir ?? process.cwd()
+      })
     ]);
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
       spatialSemanticProfile,
+      npcSemanticRemainderProfile,
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -140,7 +155,10 @@ export async function createSpatialV3ProductionCompositionRoot({
     const initialOrdinaryProvisioner =
       createOrdinaryMaterializationFirstEntryProvisioner({
         profile: profiles.ordinaryMaterializationProfile,
-        includeContextBoundCapabilities: false
+        includeContextBoundCapabilities: false,
+        initialSceneSeed: ordinaryBackgroundSeedForLocation({ scenePresentation,
+          locationRef: profiles.ordinaryMaterializationProfile
+            .o2a_ambient.scope_binding.position_ref })
       });
     const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({

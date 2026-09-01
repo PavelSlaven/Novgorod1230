@@ -265,6 +265,7 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       const informative = detail != null
         && (detail.visible_equipment.length > 0
           || Object.keys(detail.presentation).length > 0
+          || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
       return !informative ? structuredClone(npc) : {
@@ -272,7 +273,10 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
         observable_cues: {
           identity: structuredClone(detail.identity_state),
           equipment: structuredClone(detail.visible_equipment),
-          outward_presentation: structuredClone(detail.presentation)
+          outward_presentation: structuredClone(detail.presentation),
+          ...(detail.ordinary_remainder == null ? {} : {
+            ordinary_remainder: structuredClone(detail.ordinary_remainder)
+          })
         }
       };
     })

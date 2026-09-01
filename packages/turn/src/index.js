@@ -22,6 +22,11 @@ import { resolveOrdinaryMaterializationPresence,
   './ordinary-materialization-presence.js';
 import { resolveWorldProcessStep, validateWorldProcessStepPlan } from './world-process-step.js';
 import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
+import { resolveNpcOrdinarySemanticRemainder } from
+  './npc-ordinary-semantic-remainder.js';
+export { isBackgroundNpcSemanticRemainderInScope,
+  resolveBackgroundNpcSemanticRemainder } from
+  './turn-step-background-npc-remainder.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from
   './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
@@ -153,6 +158,7 @@ export {
   resolveWorldProcessStep,
   validateWorldProcessStepPlan,
   resolveSpatialSemanticDescriptor,
+  resolveNpcOrdinarySemanticRemainder,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

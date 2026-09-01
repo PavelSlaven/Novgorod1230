@@ -14,6 +14,24 @@ export function scenePresentationForLocation({ scenePresentation, locationRef })
   };
 }
 
+export function ordinaryBackgroundSeedForLocation({
+  scenePresentation,
+  locationRef
+}) {
+  const locations = scenePresentation?.locations;
+  const matches = Array.isArray(locations)
+    ? locations.filter(({ location_ref: ref }) => ref === locationRef)
+    : [];
+  if (matches.length !== 1
+      || !text(matches[0].ordinary_background_descriptor)
+      || !['sparse', 'ordinary', 'dense'].includes(
+        matches[0].ordinary_density_band)) fail();
+  return Object.freeze({
+    descriptor: matches[0].ordinary_background_descriptor,
+    density_band: matches[0].ordinary_density_band
+  });
+}
+
 export function factPresentationForRef({ scenePresentation, factRef }) {
   return presentationFor(scenePresentation?.fact_presentations, 'fact_ref', factRef);
 }

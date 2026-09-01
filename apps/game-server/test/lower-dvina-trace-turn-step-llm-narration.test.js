@@ -126,6 +126,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'Remove unsupported claims'), true);
   assert.equal(calls[3].messages[0].content.includes(
+    'remove every unsupported claim in the flagged segment'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'do not prove that nobody or nothing is present'), true);
+  assert.equal(calls[3].messages[0].content.includes(
     'faithful natural paraphrase of visible_context is allowed'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(JSON.parse(calls[3].messages[1].content)

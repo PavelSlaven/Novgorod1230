@@ -16,7 +16,9 @@ test('action-production grounding audit receives only each source own evidence',
       plan: { operations: [{ op: 'request_item_use', action_production: {
         source_refs: ['item:knife'] } }] },
       request: { request_id: 'request-1',
+        root_player_action: 'Сделать опору из доски и снасти.',
         remaining_intent: 'Сделать опору из доски и снасти.',
+        completed_steps: [],
         player_safe_state: {
           items: [{ item_id: 'item:knife', category_id: 'utility_knife' },
             { item_id: 'item:coat', name: 'кафтан' }],
@@ -32,6 +34,8 @@ test('action-production grounding audit receives only each source own evidence',
     const payload = JSON.parse(call.messages[1].content);
     assert.deepEqual(payload.sources, [{ source_ref: 'item:knife',
       item: { category_id: 'utility_knife' }, visible: null }]);
+    assert.equal(payload.root_player_action,
+      'Сделать опору из доски и снасти.');
     assert.doesNotMatch(call.messages[1].content, /кафтан/u);
   });
 

@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]}. Audit only whether every selected action-production source denotes the ordinary material named in remaining_intent. Use only that source own supplied player-safe descriptors. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Fail when a named ordinary material has no semantically matching selected source. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]}. Audit only whether every selected action-production source denotes the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Fail when a named ordinary material has no semantically matching selected source. Do not plan, repair, invent refs, or judge mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
@@ -13,7 +13,9 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     request_identity: request.request_id,
     messages: [{ role: 'system', content: PROMPT }, {
       role: 'user', content: JSON.stringify({
+        root_player_action: request.root_player_action,
         remaining_intent: request.remaining_intent,
+        completed_steps: request.completed_steps ?? [],
         source_refs: operation.action_production.source_refs,
         sources: sourceDescriptors(request.player_safe_state,
           operation.action_production.source_refs),

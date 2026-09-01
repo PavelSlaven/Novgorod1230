@@ -106,7 +106,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general look remains the mapped direct result/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are visible_general_look/u);
-    assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform ordinary physical material[\s\S]*current visible sensory facts[\s\S]*no item entity_ref[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+    assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform ordinary physical material[\s\S]*current visible sensory facts[\s\S]*no semantically matching item entity_ref[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
   }
 });
 

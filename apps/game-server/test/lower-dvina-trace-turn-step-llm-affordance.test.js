@@ -66,6 +66,8 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed visible material or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete intended handling or transformation>"/u);
   assert.match(prompt,
     /take, use, or transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
+  assert.match(prompt,
+    /MUST win over action_production[\s\S]*Never substitute an unrelated inventory, worn, held, or merely listed item_ref/u);
 });
 
 test('action production prompt matches the active qualitative DTO', async () => {

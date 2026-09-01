@@ -175,6 +175,55 @@ test('preserved A1 source exposes its physical change now and after reload', () 
     ['один конец жерди заострён']);
 });
 
+test('A1 hydrates a same-turn prepared ordinary source from its exact pin', () => {
+  const snapshot = {
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
+    provenance: { source_kind: 'ordinary_world_materialization',
+      request_id: 'turn:party:1:ordinary:presence',
+      causal_ref: 'shore:driftwood', candidate_key: 'driftwood',
+      coverage_key: 'shore:material', context_version: 'shore:1',
+      policy_ref: 'ordinary:shore', source_refs: ['shore'] },
+    mechanics: { mass_grams: 800, external_hand_cost: 1,
+      carry_form: 'long', packing_slot_cost: 3,
+      quantity: { value: 1, unit: 'item' }, container: null }
+  };
+  const placement = { anchor_id: 'shore', container_id: null,
+    holder_npc_id: null, holder_character_id: null, physical_position: null,
+    equipment_slot_category_id: null, attached_item_id: null };
+  const before = { item_id: 'driftwood', template_id: null, profile_id: null,
+    category_id: 'ordinary_object_candidate', quantity: 1,
+    condition_state: 'serviceable', legal_status: 'unowned', state_version: 1,
+    state: { lifecycle_status: 'active',
+      runtime_instance_mechanics_snapshot: snapshot,
+      ordinary_metadata: { semantic_type: 'ordinary_object_candidate',
+        name: 'длинный обломок доски', semantic_facts: [],
+        physical_inscriptions: [], operation_history: [] } } };
+  const after = structuredClone(before);
+  after.state.ordinary_metadata.semantic_facts = [{
+    fact_id: 'support:fact:1', text: 'приспособлен как опора для плеча',
+    operation_id: 'support'
+  }];
+  const authority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const ports = createLowerDvinaTraceTurnStepRuntimePorts({
+    workingProjectionAuthority: authority });
+  const result = ports.applyActionProductionProjection({
+    working_projection: { actor_id: 'mikula', items: [], inventory: {
+      items: [], total_weight: { grams: 0 }, load_category: 'light',
+      occupied_hands: 0 } },
+    actor: { actor_id: 'mikula', attributes: { strength: { value: 9 } } },
+    action_production_atomic_write_plan: {
+      source_pins: [{ item_id: 'driftwood', item: before, placement,
+        prepared_ordinary: { schema:
+          'action_production_prepared_ordinary_pin_v2' } }],
+      source_updates: [{ item_id: 'driftwood', after_item: after }],
+      result_items: []
+    }
+  });
+  assert.equal(result.items[0].placement.anchor_id, 'shore');
+  assert.deepEqual(result.items[0].physical_facts,
+    ['приспособлен как опора для плеча']);
+});
+
 function preparedState(snapshot) {
   return {
     lifecycle_status: 'active', runtime_instance_mechanics_snapshot: snapshot,

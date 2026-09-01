@@ -23,6 +23,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
   let next = structuredClone(workingProjection);
   for (const update of plan.source_updates) {
     const itemId = text(update?.item_id);
+    next = hydratePreparedSource(next, plan, itemId, state);
     const current = requireProjectedItem(next, itemId);
     const runtime = state.entities.get(itemId);
     const beforeMechanics = runtime?.mechanics
@@ -83,22 +84,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       fail('TRACE_TURN_STEP_ACTION_PRODUCTION_PLAN_INVALID');
     }
     const runtime = runtimeEntity(itemId, row.state);
-    const metadata = row.state?.ordinary_metadata;
-    const projected = {
-      item_id: itemId, instance_id: itemId,
-      template_id: row.template_id, profile_id: row.profile_id,
-      category_id: row.category_id ?? metadata?.semantic_type ?? null,
-      name: metadata?.name ?? null,
-      semantic_type: metadata?.semantic_type ?? null, quantity: row.quantity,
-      physical_facts: actionProducedPhysicalFactTexts(
-        metadata?.semantic_facts ?? []),
-      physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
-      physical_inscriptions: physicalFactRecords(
-        metadata?.physical_inscriptions) ?? [],
-      quantity_unit_id: runtime.mechanics.quantity?.unit,
-      condition_state: row.condition_state, legal_status: row.legal_status,
-      placement: structuredClone(placement)
-    };
+    const projected = projectRuntimeItem(itemId, row, placement, runtime);
     next.items = [...(next.items ?? []), projected];
     next = applyInventoryTransition({ projection: next, actor,
       beforePlacement: null, afterPlacement: placement,
@@ -111,6 +97,46 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
     });
   }
   return next;
+}
+
+function hydratePreparedSource(projection, plan, itemId, state) {
+  if ((projection.items ?? []).some((item) => matchesItem(item, itemId))) {
+    return projection;
+  }
+  const pins = (plan.source_pins ?? []).filter((pin) => pin?.item_id === itemId
+    && (pin.prepared_ordinary != null || pin.prepared_action != null));
+  if (pins.length !== 1 || !plain(pins[0].item)
+      || !plain(pins[0].placement)) return projection;
+  const pin = pins[0];
+  const runtime = runtimeEntity(itemId, pin.item.state);
+  state.entities.set(itemId, runtime);
+  state.materializedItems.set(itemId, {
+    ...structuredClone(pin.item), item_id: itemId,
+    placement: structuredClone(pin.placement)
+  });
+  return { ...projection, items: [
+    ...(projection.items ?? []),
+    projectRuntimeItem(itemId, pin.item, pin.placement, runtime)
+  ] };
+}
+
+function projectRuntimeItem(itemId, row, placement, runtime) {
+  const metadata = row.state?.ordinary_metadata;
+  return {
+    item_id: itemId, instance_id: itemId,
+    template_id: row.template_id, profile_id: row.profile_id,
+    category_id: row.category_id ?? metadata?.semantic_type ?? null,
+    name: metadata?.name ?? null,
+    semantic_type: metadata?.semantic_type ?? null, quantity: row.quantity,
+    physical_facts: actionProducedPhysicalFactTexts(
+      metadata?.semantic_facts ?? []),
+    physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
+    physical_inscriptions: physicalFactRecords(
+      metadata?.physical_inscriptions) ?? [],
+    quantity_unit_id: runtime.mechanics.quantity?.unit,
+    condition_state: row.condition_state, legal_status: row.legal_status,
+    placement: structuredClone(placement)
+  };
 }
 
 function physicalFactRecords(values) {
@@ -128,7 +154,8 @@ function runtimeEntity(itemId, itemState) {
     instance: { template_id: null,
       runtime_instance_mechanics_snapshot: snapshot }, profiles: {}
   });
-  if (!resolved.pass || resolved.source !== 'runtime_instance_snapshot') {
+  if (!resolved.pass || !['runtime_instance_snapshot',
+    'ordinary_world_materialization_snapshot'].includes(resolved.source)) {
     fail('TRACE_TURN_STEP_ACTION_PRODUCTION_PLAN_INVALID');
   }
   return {
@@ -136,7 +163,8 @@ function runtimeEntity(itemId, itemState) {
     snapshot: structuredClone(resolved.snapshot),
     semantic_type: text(metadata?.semantic_type) || null,
     name: text(metadata?.name) || null,
-    origin_kind: resolved.snapshot.provenance.origin_kind,
+    origin_kind: resolved.snapshot.provenance.origin_kind
+      ?? resolved.snapshot.provenance.source_kind,
     source_refs: [...resolved.snapshot.provenance.source_refs]
   };
 }

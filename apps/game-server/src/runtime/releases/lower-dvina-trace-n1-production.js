@@ -62,13 +62,6 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
         request_id: `n1:${request.request_id}:${target}`,
         npc_ref: target,
         profile_ref: profileRef,
-        formal_facets: {
-          participant_profile_ref: `${profileId}@${profileRevision}`,
-          profile_level: npc.profile_level,
-          role_ref: roleRef,
-          occupation_ref: occupationRef,
-          location_ref: locationRef
-        },
         observable_context: {
           display_label: visible.display_label,
           observable_cues: snapshot(visible.observable_cues ?? {}),
@@ -80,7 +73,8 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
         request: modelRequest, roleRunner
       });
       const remainder = buildNpcOrdinarySemanticRemainder({
-        request: modelRequest, proposal, profileRef
+        request: modelRequest, proposal, profileRef,
+        causalBasisRefs: [`${profileId}@${profileRevision}`, locationRef]
       });
       const plan = createBackgroundNpcSemanticAtomicWritePlan({
         schema: 'background_npc_semantic_atomic_write_plan_v1',

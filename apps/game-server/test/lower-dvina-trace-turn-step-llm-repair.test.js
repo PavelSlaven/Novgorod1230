@@ -95,7 +95,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'owner absence is not evidence of impossibility or fantasy'), true);
   assert.equal(seen.messages[0].content.includes(
-    'do not combine move_entity and action production in one step'), true);
+    'neither operation replaces the other'), true);
   assert.equal(seen.messages[0].content.includes('Do not re-plan or invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
@@ -216,6 +216,33 @@ test('repair preserves invalid output and supplied choices without inventing an 
     }
     assert.match(calls[1].messages[0].content,
       /replace an invalid object wrapper[\s\S]*with its inner supplied ID string/u);
+  });
+
+test('repair accepts an exact copied code-owned choice without trusting a new DTO',
+  async () => {
+    const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',
+      discovery_kind: 'inspect', target_refs: ['location:wreck'],
+      query: 'Осмотреть место крушения' };
+    const input = request({ available_domain_operations: [operation] });
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() {
+        calls += 1;
+        if (calls === 1) return { output: {
+          ...output(), resolution: 'domain_request', operations: undefined,
+          operation_choice: undefined
+        } };
+        return { output: { ...output(), resolution: 'domain_request',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [structuredClone(operation)], operation_choice: null } };
+      }
+    } });
+
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+
+    assert.equal(result.repaired, true);
+    assert.deepEqual(result.plan.operations, [operation]);
   });
 
 test('planner errors other than primary JSON parsing do not repair', async () => {

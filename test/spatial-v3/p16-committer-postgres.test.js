@@ -682,6 +682,43 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     now: () => later,
     recheck: async () => ({ ok: true })
   });
+  await client.query(`INSERT INTO party_runtime.party_npcs
+    (party_id,npc_id,run_id,profile_set_id,profile_level,anchor_id,
+     identity_state,machine_state,semantic_state)
+    VALUES ('p','npc:n1','ordinary-run','trace_ld_v1_background_fisher_v1',
+      'background','ordinary-anchor',$1::jsonb,$2::jsonb,$3::jsonb)`, [
+    JSON.stringify({ appearance_profile_ref: 'appearance:fisher' }),
+    JSON.stringify({ schedule_state: 'working' }),
+    JSON.stringify({ profile_revision: 2, participant_slot_ref: 'slot:fisher',
+      location_profile_ref: 'shore', zone_ref: 'water' })
+  ]);
+  const n1SemanticState = { profile_revision: 2,
+    participant_slot_ref: 'slot:fisher', location_profile_ref: 'shore',
+    zone_ref: 'water', n1_remainder: {
+      schema: 'npc_ordinary_semantic_remainder_v1', npc_ref: 'npc:n1',
+      profile_ref: 'lower_dvina_trace_n1_background_npc_v1@1',
+      ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
+      ordinary_activity: 'Он перебирает край сети.' } };
+  const n1Persistence = await makePlan({
+    planId: 'n1-persistence-plan', idempotencyId: 'n1-persistence-idem',
+    idempotencyKey: 'n1-persistence-key', changeSetId: 'n1-persistence-cs',
+    updates: [{ target_table: 'party_npcs', id: 'npc:n1', record: {
+      party_id: 'p', npc_id: 'npc:n1', semantic_state: n1SemanticState,
+      updated_change_set_id: 'n1-persistence-cs' } }],
+    physicalKeys: ['party_runtime.party_npcs:npc:n1']
+  });
+  assert.equal((await concurrentCommitter.commit({ plan: n1Persistence })).ok,
+    true);
+  const n1Reload = (await client.query(`SELECT identity_state,machine_state,
+      semantic_state FROM party_runtime.party_npcs
+    WHERE party_id='p' AND npc_id='npc:n1'`)).rows[0];
+  assert.deepEqual(n1Reload, {
+    identity_state: { appearance_profile_ref: 'appearance:fisher' },
+    machine_state: { schedule_state: 'working' },
+    semantic_state: n1SemanticState
+  });
+  assert.equal((await concurrentCommitter.commit({ plan: n1Persistence })).replay,
+    true, 'committed N1 retry replays without a second write');
   const concurrentA = await makePlan({
     planId: 'concurrent-plan-a',
     idempotencyId: 'concurrent-idem-a',

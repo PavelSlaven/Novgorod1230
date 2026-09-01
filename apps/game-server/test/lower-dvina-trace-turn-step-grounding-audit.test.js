@@ -32,12 +32,31 @@ test('action-production grounding audit receives only each source own evidence',
     assert.equal(result.errors[0].code, 'source_semantic_grounding');
     assert.equal(call.role_id, 'turn_step_grounding_auditor');
     const payload = JSON.parse(call.messages[1].content);
-    assert.deepEqual(payload.sources, [{ source_ref: 'item:knife',
+    assert.deepEqual(payload.action_productions[0].sources, [{ source_ref: 'item:knife',
       item: { category_id: 'utility_knife' }, visible: null,
       placement: null }]);
     assert.equal(payload.root_player_action,
       'Сделать опору из доски и снасти.');
     assert.doesNotMatch(call.messages[1].content, /кафтан/u);
+  });
+
+test('grounding audit includes every direct and checked action production',
+  async () => {
+    let payload;
+    await auditTurnStepSourceGrounding({ roleRunner: { async run(call) {
+      payload = JSON.parse(call.messages[1].content);
+      return { output: { pass: true, concerns: [] } };
+    } }, plan: { operations: [{ op: 'request_item_use', action_production: {
+      source_refs: ['item:a'] } }], check: { outcomes: { success: {
+      operations: [{ op: 'request_item_use', action_production: {
+        source_refs: ['item:b'] } }] } } } }, request: { request_id: 'all',
+      root_player_action: 'обработать обе вещи',
+      remaining_intent: 'обработать обе вещи', completed_steps: [],
+      player_safe_state: { items: [{ item_id: 'item:a', name: 'доска' },
+        { item_id: 'item:b', name: 'верёвка' }] } } });
+    assert.deepEqual(payload.action_productions.map(({ path }) => path), [
+      '$.operations.0', '$.check.outcomes.success.operations.0'
+    ]);
   });
 
 test('grounding audit reports an explicit source relocation omitted by plan',

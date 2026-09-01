@@ -4,10 +4,8 @@ const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concer
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
-  const operation = plan?.operations?.find((candidate) =>
-    candidate?.op === 'request_item_use'
-      && candidate.action_production != null);
-  if (operation == null) return true;
+  const productions = actionProductions(plan, request.player_safe_state);
+  if (productions.length === 0) return true;
   const response = await roleRunner.run({
     scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
     request_identity: request.request_id,
@@ -17,10 +15,11 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
         remaining_intent: request.remaining_intent,
         completed_steps: request.completed_steps ?? [],
         actor_ref: request.actor?.actor_id,
-        planned_operations: plan.operations,
-        source_refs: operation.action_production.source_refs,
-        sources: sourceDescriptors(request.player_safe_state,
-          operation.action_production.source_refs),
+        planned_operations: { direct: plan.operations ?? [],
+          check_outcomes: Object.fromEntries(Object.entries(
+            plan.check?.outcomes ?? {}).map(([band, outcome]) => [band,
+            outcome.operations ?? []])) },
+        action_productions: productions,
         sensory_details: request.player_safe_state?.current_visible_context
           ?.sensory_details ?? []
       })
@@ -41,6 +40,26 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
       ? 'explicit source relocation requires a matching move_entity'
       : 'each source must denote its named material from its own player-safe evidence'
   }] };
+}
+
+function actionProductions(plan, state) {
+  const found = [];
+  const add = (operation, path) => {
+    if (operation?.op !== 'request_item_use'
+        || operation.action_production == null) return;
+    const refs = operation.action_production.source_refs;
+    found.push({ path, source_refs: structuredClone(refs),
+      sources: sourceDescriptors(state, refs) });
+  };
+  for (const [index, operation] of (plan?.operations ?? []).entries()) {
+    add(operation, `$.operations.${index}`);
+  }
+  for (const [band, outcome] of Object.entries(plan?.check?.outcomes ?? {})) {
+    for (const [index, operation] of (outcome.operations ?? []).entries()) {
+      add(operation, `$.check.outcomes.${band}.operations.${index}`);
+    }
+  }
+  return found;
 }
 
 function sourceDescriptors(state, refs) {
@@ -78,5 +97,6 @@ function valid(value) {
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
       && Object.keys(concern).length === 1
-      && typeof concern.kind === 'string' && concern.kind.trim());
+      && ['source_semantic_mismatch', 'missing_required_source_move']
+        .includes(concern.kind));
 }

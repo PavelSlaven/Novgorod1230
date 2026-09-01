@@ -108,7 +108,9 @@ export async function commitLowerDvinaTraceTurnStep({
       backgroundNpcSemanticPlan = createBackgroundNpcSemanticAtomicWritePlan(
         writePlan.background_npc_semantic_atomic_write_plan);
       if (backgroundNpcSemanticPlan.party_id !== partyId
-          || backgroundNpcSemanticPlan.change_set_id !== changeSetId) {
+          || backgroundNpcSemanticPlan.change_set_id !== changeSetId
+          || !backgroundNpcPlanMatchesEnvelope(
+            backgroundNpcSemanticPlan, envelope, state)) {
         throw new Error();
       }
     }
@@ -225,6 +227,21 @@ export async function commitLowerDvinaTraceTurnStep({
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
   };
+}
+
+function backgroundNpcPlanMatchesEnvelope(plan, envelope, state) {
+  const identity = plan.causal_identity;
+  const matches = (envelope.loop_trace?.step_traces ?? []).filter((trace) => {
+    const request = trace?.plan_request;
+    const actorRef = request?.actor?.actor_id ?? request?.actor?.actor_ref;
+    return request?.request_id === identity.request_id
+      && request?.root_turn_id === identity.root_turn_id
+      && request?.step_index === identity.step_index
+      && actorRef === identity.actor_ref;
+  });
+  return matches.length === 1
+    && identity.root_turn_id === envelope.root_turn_id
+    && identity.actor_ref === state.actor_id;
 }
 
 function projectBackgroundNpcRemainder({ visibleContext, remainder }) {

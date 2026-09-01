@@ -15,6 +15,8 @@ test('N1 grounds one existing visible background NPC and replays without model',
     loadedProfile, roleRunner: {},
     async resolveNpcOrdinarySemanticRemainder({ request }) {
       calls += 1;
+      assert.equal(Object.hasOwn(request, 'formal_facets'), false);
+      assert.equal(JSON.stringify(request).includes('occupation_ref'), false);
       return { schema: 'npc_ordinary_semantic_remainder_proposal_v1',
         request_id: request.request_id,
         ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',

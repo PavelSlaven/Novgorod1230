@@ -22,14 +22,14 @@ export function resolveTurnStepDomainOwner({
     })) === true);
   if (matches.length === 1) return { kind: 'binding', command: matches[0].command };
   if (matches.length > 1) return { kind: 'ambiguous' };
+  if (typeof services.turnStepBackgroundNpcResolver === 'function'
+      && isBackgroundNpcSemanticRemainderInScope({ operation,
+        playerSafeState })) return { kind: 'background_npc_remainder' };
   if (operation.op === 'request_discovery'
       && typeof services.turnStepOrdinaryDiscoveryResolver === 'function'
       && isOrdinaryDiscoveryInScope({ operation, playerSafeState })) {
     return { kind: 'ordinary_discovery' };
   }
-  if (typeof services.turnStepBackgroundNpcResolver === 'function'
-      && isBackgroundNpcSemanticRemainderInScope({ operation,
-        playerSafeState })) return { kind: 'background_npc_remainder' };
   if (operation.op === 'request_world_process'
       && typeof services.turnStepWorldProcessResolver === 'function') {
     return { kind: 'world_process' };

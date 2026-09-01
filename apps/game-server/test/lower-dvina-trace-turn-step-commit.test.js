@@ -17,6 +17,9 @@ import {
 import {
   commitLowerDvinaTracePhase2
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
+import { backgroundNpcFormalStateDigest,
+  createBackgroundNpcSemanticAtomicWritePlan } from
+  '../src/infrastructure/postgres/background-npc-semantic-atomic-write-plan.js';
 import {
   assertCommittedTurnStepChecks
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-replay.js';
@@ -88,6 +91,43 @@ test('semantic activity commits owner-mapped temporal writes in the same P16 roo
 
     assert.equal(f.plans[0].appends.some(({ target_table: table, id }) =>
       table === 'party_perception_records' && id === 'perception:elapsed'), true);
+  });
+
+test('N1 remainder joins the same P16 root without changing formal NPC state',
+  async () => {
+    const npc = backgroundNpc();
+    const remainder = {
+      schema: 'rus.n1_npc_semantic_remainder.v1', version: 1,
+      npc_ref: npc.npc_id,
+      profile_ref: 'lower_dvina_trace_n1_background_npc_v1@1',
+      ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
+      ordinary_activity: 'Он перебирает край сети.',
+      causal_basis_refs: [
+        'trace_ld_v1_background_fisher_v1@2', 'shore'
+      ]
+    };
+    const n1Plan = createBackgroundNpcSemanticAtomicWritePlan({
+      schema: 'background_npc_semantic_atomic_write_plan_v1',
+      party_id: 'p', base_party_state_version: 3,
+      change_set_id: 'change:p:turn-step:1',
+      causal_identity: { request_id: 'request-1:step:1', root_turn_id: 'turn:p:1',
+        step_index: 1, actor_ref: 'actor-1', npc_ref: npc.npc_id },
+      npc_ref: npc.npc_id,
+      formal_state_digest: backgroundNpcFormalStateDigest(npc), remainder
+    });
+    const f = fixture({ backgroundNpcSemanticPlan: n1Plan });
+
+    await f.commit();
+
+    const update = f.plans[0].updates.find(({ target_table: table }) =>
+      table === 'party_npcs');
+    assert.deepEqual(update.record.semantic_state.n1_remainder, remainder);
+    const snapshot = f.plans[0].inserts.find(({ target_table: table }) =>
+      table === 'party_state_snapshots').record.state_payload;
+    const committed = snapshot.npcs.find(({ npc_id: id }) => id === npc.npc_id);
+    assert.deepEqual(committed.semantic_state.n1_remainder, remainder);
+    assert.equal(backgroundNpcFormalStateDigest(committed),
+      backgroundNpcFormalStateDigest(npc));
   });
 
 test('authored placement move seals parent item with its P16 child row',
@@ -373,10 +413,29 @@ test('operation batch exactly covers approved physical plan fragments',
 
 function fixture({ direct = false, clarification = false, check = false,
   bodyEvent = false, authoredMove = false, envelopeOverride = null,
-  temporalResults = [] }) {
+  temporalResults = [], backgroundNpcSemanticPlan = null }) {
   const state = baseState();
+  if (backgroundNpcSemanticPlan != null) state.npcs.push(backgroundNpc());
   if (authoredMove) state.items.push(authoredItem());
   const envelope = envelopeOverride ?? commitEnvelope({ clarification, check });
+  if (backgroundNpcSemanticPlan != null) {
+    for (const trace of [envelope.loop_trace.step_traces[0],
+      envelope.mode_resolution.decision_trace.step_traces[0]]) {
+      trace.resolution = 'domain_request';
+      trace.goal_result = 'pending';
+      trace.approved_plan.resolution = 'domain_request';
+      trace.approved_plan.goal_result = 'pending';
+      trace.approved_plan.activity = {
+        owner: 'domain', duration_class: null, effort: null
+      };
+      trace.approved_plan.operations = [{ op: 'request_discovery',
+        actor_ref: 'actor-1', discovery_kind: 'inspect',
+        target_refs: ['npc:fisher'], query: 'присмотреться' }];
+      trace.plan_request.player_safe_state.visible_entities.push({
+        entity_ref: 'npc:fisher'
+      });
+    }
+  }
   if (temporalResults.length > 0) {
     envelope.time_update.temporal_results = structuredClone(temporalResults);
   }
@@ -404,7 +463,10 @@ function fixture({ direct = false, clarification = false, check = false,
     base_state_version: 3,
     write_targets: writeTargets,
     command_trace: envelope.mode_resolution.decision_trace,
-    turn_step_commit: envelope
+    turn_step_commit: envelope,
+    ...(backgroundNpcSemanticPlan == null ? {} : {
+      background_npc_semantic_atomic_write_plan: backgroundNpcSemanticPlan
+    })
   };
   const inputDigest = canonicalDigest({
     party_id: 'p', request_id: 'request-1',
@@ -634,6 +696,16 @@ function baseState() {
     container_compatibility: [],
     knowledge: [{ fact_id: 'shore', knowledge_state: 'known' }],
     opening_identity: { opening_screen_digest: 'opening-digest' } };
+}
+
+function backgroundNpc() {
+  return { npc_id: 'npc:fisher', profile_set_id:
+    'trace_ld_v1_background_fisher_v1', profile_level: 'background',
+  anchor_id: 'anchor-shore', role_ref: 'fisher', occupation_ref: 'fishing',
+  identity_state: { appearance_profile_ref: 'appearance:fisher' },
+  machine_state: { schedule_state: 'working' }, semantic_state: {
+    profile_revision: 2, participant_slot_ref: 'slot:fisher',
+    location_profile_ref: 'shore', zone_ref: 'water' } };
 }
 
 function authoredItem() {

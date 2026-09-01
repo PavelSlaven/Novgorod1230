@@ -21,8 +21,8 @@ export async function resolveNpcOrdinarySemanticRemainder({ request,
         'Return only one JSON object with exactly schema, request_id, ordinary_descriptor, ordinary_activity.',
         'schema must be npc_ordinary_semantic_remainder_proposal_v1 and request_id must be copied exactly.',
         'Write concise natural Russian phrases about one ordinary person as currently observable in a XIII-century scene.',
-        'Use only supplied observable_context and code-owned formal_facets. Do not invent a name, biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, or new entity.',
-        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues; ordinary_activity is one visible ordinary action consistent with the scene and occupation, without changing formal schedule or world state.'
+        'Use only supplied player-safe observable_context. Do not infer meaning from IDs or invent a name, biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, or new entity.',
+        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues; ordinary_activity is one visible ordinary action consistent with the display label and scene, without changing formal schedule or world state.'
       ].join(' ') }, { role: 'user', content: JSON.stringify(safeRequest) }],
       overrides: { temperature: 0, maxTokens: 20_000 }
     });

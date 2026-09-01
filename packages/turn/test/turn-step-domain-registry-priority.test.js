@@ -8,6 +8,8 @@ import {
 import { isOrdinaryDiscoveryInScope } from '../src/turn-step-admission.js';
 import { isSpatialSemanticRemainderInScope } from
   '../src/turn-step-spatial-semantic-remainder.js';
+import { resolveTurnStepDomainOwner } from
+  '../src/turn-step-domain-owner-resolution.js';
 import {
   createServices,
   input,
@@ -383,6 +385,35 @@ test('unresolved in-scope inspect and search reach the ordinary seam without que
     assert.equal(requests.length, 2);
     assert.equal(requests[1].operation.discovery_kind, 'search');
   });
+
+test('eligible visible NPC remainder precedes generic ordinary discovery', () => {
+  const playerSafeState = {
+    position: { location_ref: 'shore' },
+    visible_entities: [{ entity_ref: 'npc:fisher' }],
+    ordinary_resolution: { discovery_available: true,
+      container_resolution_available: false, scene_seed_available: false },
+    background_npc_remainder: { semantic_grounding_available: true,
+      eligible_npc_refs: ['npc:fisher'] },
+    current_visible_context: { visible_npc: [{ entity_ref: {
+      entity_kind: 'npc', entity_id: 'npc:fisher' } }] }
+  };
+  const owner = resolveTurnStepDomainOwner({
+    operation: { op: 'request_discovery', actor_ref: 'party-1',
+      discovery_kind: 'inspect', target_refs: ['npc:fisher'],
+      query: 'присмотреться' }, plan: {}, request: {}, actor: {},
+    playerSafeState, committedState: {}, externalRegistry: { domain: () => null },
+    semanticBindings: [], availableOptions: new Set(), preparedChainContext: null,
+    services: { turnStepOrdinaryDiscoveryResolver() {},
+      turnStepBackgroundNpcResolver() {} },
+    isOrdinaryDiscoveryInScope,
+    isSpatialSemanticRemainderInScope: () => false,
+    isBackgroundNpcSemanticRemainderInScope: ({ operation, playerSafeState: state }) =>
+      operation.target_refs[0] === state.background_npc_remainder
+        .eligible_npc_refs[0],
+    isActionProductionOwnerInScope: () => false
+  });
+  assert.equal(owner.kind, 'background_npc_remainder');
+});
 
 test('ordinary resolver is not called outside enabled physical discovery scope',
   async () => {

@@ -1,9 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 
 const REQUEST_KEYS = ['schema', 'request_id', 'npc_ref', 'profile_ref',
-  'formal_facets', 'observable_context'];
-const FORMAL_KEYS = ['participant_profile_ref', 'profile_level', 'role_ref',
-  'occupation_ref', 'location_ref'];
+  'observable_context'];
 const CONTEXT_KEYS = ['display_label', 'observable_cues', 'scene_details'];
 const PROPOSAL_KEYS = ['schema', 'request_id', 'ordinary_descriptor',
   'ordinary_activity'];
@@ -12,9 +10,6 @@ export function validateNpcOrdinarySemanticRemainderRequest(value) {
   return exact(value, REQUEST_KEYS)
     && value.schema === 'npc_ordinary_semantic_remainder_request_v1'
     && text(value.request_id) && text(value.npc_ref) && text(value.profile_ref)
-    && exact(value.formal_facets, FORMAL_KEYS)
-    && FORMAL_KEYS.every((key) => text(value.formal_facets[key]))
-    && value.formal_facets.profile_level === 'background'
     && exact(value.observable_context, CONTEXT_KEYS)
     && text(value.observable_context.display_label)
     && plain(value.observable_context.observable_cues)
@@ -31,9 +26,11 @@ export function validateNpcOrdinarySemanticRemainderProposal(value, request) {
 }
 
 export function buildNpcOrdinarySemanticRemainder({ request, proposal,
-  profileRef }) {
+  profileRef, causalBasisRefs }) {
   if (!validateNpcOrdinarySemanticRemainderProposal(proposal, request)
-      || profileRef !== request.profile_ref) fail();
+      || profileRef !== request.profile_ref
+      || !textArray(causalBasisRefs, 2)
+      || causalBasisRefs.length !== 2) fail();
   return deepFreeze({
     schema: 'rus.n1_npc_semantic_remainder.v1',
     version: 1,
@@ -41,8 +38,7 @@ export function buildNpcOrdinarySemanticRemainder({ request, proposal,
     npc_ref: request.npc_ref,
     ordinary_descriptor: proposal.ordinary_descriptor,
     ordinary_activity: proposal.ordinary_activity,
-    causal_basis_refs: [request.formal_facets.participant_profile_ref,
-      request.formal_facets.location_ref]
+    causal_basis_refs: structuredClone(causalBasisRefs)
   });
 }
 

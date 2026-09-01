@@ -131,6 +131,8 @@ test('024 admits only the separate closed O1 v2 runtime snapshot', () => {
     /source_kind' <> 'ordinary_world_materialization'/u);
   assert.match(ordinaryWorldItemsSql,
     /runtime_instance_mechanics_snapshot_valid[\s\S]+OR party_runtime[\s\S]+ordinary_world_runtime_instance/u);
+  assert.match(ordinaryWorldItemsSql,
+    /to_regprocedure\([\s\S]*ordinary_container_runtime_mechanics_snapshot_valid\(jsonb\)[\s\S]*IS NULL THEN[\s\S]*DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check/u);
   assert.doesNotMatch(ordinaryWorldItemsSql, /^\s*(?:BEGIN|COMMIT)\s*;/imu);
 });
 

@@ -42,6 +42,8 @@ test('M1 forward DDL admits only authored or strict direct-runtime item mechanic
   assert.match(sql, /AND NOT state \? 'runtime_instance_mechanics_snapshot'/u);
   assert.match(sql, /run_id IS NULL[\s\S]*template_id IS NULL[\s\S]*profile_id IS NULL[\s\S]*category_id IS NULL[\s\S]*runtime_instance_mechanics_snapshot_valid/u);
   assert.match(sql, /DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check/u);
+  assert.match(sql,
+    /to_regprocedure\([\s\S]*ordinary_world_runtime_instance_mechanics_snapshot_valid\(jsonb\)[\s\S]*IS NULL THEN[\s\S]*DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check/u);
   assert.doesNotMatch(sql, /sentinel/iu);
 });
 

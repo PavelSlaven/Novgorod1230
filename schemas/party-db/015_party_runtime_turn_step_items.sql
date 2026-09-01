@@ -204,27 +204,34 @@ ALTER TABLE party_runtime.party_items
   ALTER COLUMN profile_id DROP NOT NULL,
   ALTER COLUMN category_id DROP NOT NULL;
 
-ALTER TABLE party_runtime.party_items
-  DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check;
-ALTER TABLE party_runtime.party_items
-  ADD CONSTRAINT party_items_mechanics_source_check CHECK (
-    (
-      run_id IS NOT NULL
-      AND template_id IS NOT NULL
-      AND profile_id IS NOT NULL
-      AND category_id IS NOT NULL
-      AND NOT state ? 'runtime_instance_mechanics_snapshot'
-    )
-    OR (
-      run_id IS NULL
-      AND template_id IS NULL
-      AND profile_id IS NULL
-      AND category_id IS NULL
-      AND party_runtime.runtime_instance_mechanics_snapshot_valid(
-        state->'runtime_instance_mechanics_snapshot'
-      )
-    )
-  );
+DO $$
+BEGIN
+  IF to_regprocedure(
+    'party_runtime.ordinary_world_runtime_instance_mechanics_snapshot_valid(jsonb)'
+  ) IS NULL THEN
+    ALTER TABLE party_runtime.party_items
+      DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check;
+    ALTER TABLE party_runtime.party_items
+      ADD CONSTRAINT party_items_mechanics_source_check CHECK (
+        (
+          run_id IS NOT NULL
+          AND template_id IS NOT NULL
+          AND profile_id IS NOT NULL
+          AND category_id IS NOT NULL
+          AND NOT state ? 'runtime_instance_mechanics_snapshot'
+        )
+        OR (
+          run_id IS NULL
+          AND template_id IS NULL
+          AND profile_id IS NULL
+          AND category_id IS NULL
+          AND party_runtime.runtime_instance_mechanics_snapshot_valid(
+            state->'runtime_instance_mechanics_snapshot'
+          )
+        )
+      );
+  END IF;
+END $$;
 
 ALTER TABLE party_runtime.party_item_placements
   ADD COLUMN IF NOT EXISTS attached_item_id text;

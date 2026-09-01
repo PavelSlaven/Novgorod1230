@@ -86,6 +86,10 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     assert.equal(call.messages[0].content.includes(
       'ground every adjective, adverb, sensory quality, temporal relation'), true);
     assert.equal(call.messages[0].content.includes(
+      'does not authorize an unstated direction, destination, route'), true);
+    assert.equal(call.messages[0].content.includes(
+      'grounds only an attempt unless visible_context or context.outcome confirms'), true);
+    assert.equal(call.messages[0].content.includes(
       'do not turn source arrays into a one-fact-per-sentence catalogue'), true);
   }
   assert.equal(calls[0].scope, 'turn_runtime');

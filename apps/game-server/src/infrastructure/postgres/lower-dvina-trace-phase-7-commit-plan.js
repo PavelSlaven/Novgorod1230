@@ -103,10 +103,12 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: spatialSemanticPlan
   };
-  const firstIntegrated = integrateSpatialV3TemporalWriteFragments({
-    base_write_plan_input: baseInput,
-    temporal_result: factual.consequence.phase7.temporal.result
-  });
+  const firstIntegrated = factual.consequence.phase7.resumed === true
+    ? { ok: true, input: baseInput }
+    : integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: baseInput,
+      temporal_result: factual.consequence.phase7.temporal.result
+    });
   if (!firstIntegrated.ok) {
     fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', firstIntegrated.error);
   }
@@ -130,6 +132,7 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
 
 function phase7IdempotencyBinding(input) {
   const binding = bindLowerDvinaTraceFactualTurnStepIdempotency(input);
+  if (input.factual.consequence.phase7.resumed === true) return binding;
   const plan = input.factual.consequence.phase7.autonomous.proposal.plan;
   const operation = plan.operations.find(
     ({ op }) => op === 'request_world_process');

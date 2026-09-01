@@ -175,6 +175,123 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       'reaction_decision');
   });
 
+test('Phase 7 preserves an external pause and resumes without a second NPC decision',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const ruleRef = versioned('action_contract', 'external-pause');
+    const policyRef = versioned('activity_contract', 'external-pause');
+    state.temporal_boundary_candidates = [externalBoundary(
+      state.party_id, ruleRef, policyRef, '127')];
+    const temporalAdvanceOwner = createTemporalAdvanceOwner({
+      source_registrations: [{
+        rule_ref: ruleRef,
+        policy_ref: policyRef,
+        resolve(candidate, context) {
+          return {
+            disposition: 'execute', proposals: [],
+            state_projection: structuredClone(context.projection),
+            follow_up_candidates: [], stop_after_current_batch: true
+          };
+        }
+      }],
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
+    });
+    let modelCalls = 0;
+    const first = await commandFor({ state, contracts,
+      temporalAdvanceOwner,
+      model: async (request) => {
+        modelCalls += 1;
+        return autonomousPlan(request, 'wait');
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'external-pause')
+    });
+    assert.equal(first.duration_minutes, 27);
+    assert.equal(first.phase7.schedule_temporal.rest_completed, false);
+    const firstTime = timeUpdate(state, first, 27);
+    const firstBody = createTracePhase7BodyEffect({ contracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: state, consequence: first,
+      time_update: firstTime });
+    assert.equal(firstBody.applied, false);
+    const firstCommit = await buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id,
+      factual: factualTurn(state, first, firstTime, firstBody),
+      state, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: contracts
+    });
+    const paused = rows(firstCommit.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    const pausedExecution = rows(firstCommit.plan,
+      'party_timed_activity_executions')[0].record;
+    const pausedAttempt = rows(firstCommit.plan,
+      'party_timed_activity_attempts')[0].record;
+    assert.equal(paused.phase7_fire_rest.status, 'paused');
+    assert.equal(paused.clock.whole_minutes, '127');
+    assert.equal(pausedExecution.status, 'paused');
+    assert.equal(pausedExecution.cumulative_elapsed_numerator, 27);
+    assert.equal(pausedExecution.remaining_time_numerator, 3);
+    assert.equal(pausedAttempt.result_kind, 'paused');
+    assert.equal(rows(firstCommit.plan, 'party_body_temporal_history').length,
+      0);
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool(firstCommit.plan, paused), paused));
+
+    const resumedContracts = approvedContracts(paused);
+    const second = await commandFor({ state: paused,
+      contracts: resumedContracts, temporalAdvanceOwner,
+      model: async () => {
+        modelCalls += 1;
+        throw new Error('resume must not ask the NPC model again');
+      }
+    }).consequence({
+      retrievedState: paused,
+      playerInput: playerInput(paused, 'external-resume')
+    });
+    assert.equal(second.duration_minutes, 3);
+    assert.equal(second.phase7.resumed, true);
+    assert.equal(second.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(modelCalls, 1);
+    const secondTime = timeUpdate(paused, second, 3);
+    const secondBody = createTracePhase7BodyEffect({
+      contracts: resumedContracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: paused, consequence: second,
+      time_update: secondTime });
+    assert.equal(secondBody.applied, true);
+    const secondCommit = await buildLowerDvinaTracePhase7Commit({
+      partyId: paused.party_id,
+      factual: factualTurn(paused, second, secondTime, secondBody),
+      state: paused, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: resumedContracts
+    });
+    const completed = rows(secondCommit.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    const completedExecution = rows(secondCommit.plan,
+      'party_timed_activity_executions')[0].record;
+    const completedAttempt = rows(secondCommit.plan,
+      'party_timed_activity_attempts')[0].record;
+    assert.equal(completed.phase7_fire_rest.status, 'completed');
+    assert.equal(completed.clock.whole_minutes, '130');
+    assert.equal(completedExecution.status, 'completed');
+    assert.equal(completedExecution.cumulative_elapsed_numerator, 30);
+    assert.equal(completedExecution.remaining_time_numerator, 0);
+    assert.equal(completedAttempt.attempt_ordinal, 1);
+    assert.equal(completedAttempt.actual_time_numerator, 3);
+    assert.equal(rows(secondCommit.plan,
+      'party_npc_decision_traces').length, 0);
+    assert.equal(rows(secondCommit.plan,
+      'party_body_temporal_history').length, 1);
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool([firstCommit.plan, secondCommit.plan], completed),
+      completed));
+  });
+
 test('Phase 7 delegates an autonomous concealment attempt to the item owner',
   async () => {
     const state = committedState();
@@ -571,7 +688,7 @@ function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
     player_input: playerInput(state, 'persist'),
     mode_resolution: {
       option_id: 'rest_by_fire_and_dry_clothing',
-      turn_id: consequence.phase7.autonomous.request.root_turn_id,
+      turn_id: `turn:${state.party_id}:${state.party_state.turn_number + 1}`,
       decision_trace: {
         state_version: state.party_state.state_version,
         action_set_digest: 'action-set'
@@ -580,6 +697,46 @@ function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
     consequence,
     time_update: timeUpdate,
     body_update: bodyUpdate
+  };
+}
+
+function timeUpdate(state, consequence, minutes) {
+  return {
+    clock_before: structuredClone(state.clock),
+    clock_after: structuredClone(
+      consequence.phase7.schedule_temporal.result.clock_after),
+    exact_elapsed: {
+      exact_minutes: { numerator: String(minutes), denominator: '1' }
+    }
+  };
+}
+
+function versioned(entityKind, entityId) {
+  return {
+    entity_ref: { entity_kind: entityKind, entity_id: entityId },
+    authoring_version: '1'
+  };
+}
+
+function externalBoundary(partyId, ruleRef, policyRef, wholeMinutes) {
+  return {
+    boundary_id: 'phase7-external-pause',
+    boundary_kind: 'exact_timer',
+    scheduled_at: { whole_minutes: wholeMinutes,
+      subminute_numerator: '0', subminute_denominator: '1' },
+    source_ref: { entity_kind: 'party_route_plan_execution_event',
+      entity_id: 'phase7-external-event' },
+    primary_subject_ref: { entity_kind: 'party', entity_id: partyId },
+    subject_refs: [],
+    scope_ref: { entity_kind: 'party', entity_id: partyId },
+    rule_ref: ruleRef,
+    policy_ref: policyRef,
+    preconditions_digest: 'b'.repeat(64),
+    resolution_class: 'execution_outcome',
+    interrupt_effect: 'background',
+    visibility_policy_ref: versioned('visibility_modifier', 'hidden'),
+    idempotency_key: 'phase7-external-pause',
+    causal_parent_refs: []
   };
 }
 
@@ -601,25 +758,34 @@ function rows(plan, table) {
 }
 
 function phase7ReadPool(plan, snapshot) {
-  const one = (table) => rows(plan, table)[0]?.record;
+  const plans = Array.isArray(plan) ? plan : [plan];
+  const records = (table) => plans.flatMap((candidate) =>
+    rows(candidate, table).map(({ record }) => record));
+  const one = (table) => records(table).at(-1);
   return {
     async query(sql) {
       let resultRows;
       if (sql.includes('party_timed_activity_executions')) {
-        resultRows = [one('party_timed_activity_executions')];
+        resultRows = [one('party_timed_activity_executions')].filter(Boolean);
       } else if (sql.includes('party_timed_activity_attempts')) {
-        resultRows = [one('party_timed_activity_attempts')];
+        resultRows = records('party_timed_activity_attempts');
       } else if (sql.includes('party_npc_decision_traces')) {
-        resultRows = [one('party_npc_decision_traces')];
+        resultRows = [records('party_npc_decision_traces')[0]].filter(Boolean);
       } else if (sql.includes('party_npcs')) {
         const persisted = one('party_npcs');
-        const npc = snapshot.npcs.find(
-          ({ instance_id: id }) => id === persisted.npc_id);
+        const npc = persisted == null
+          ? snapshot.npcs.find(({ participant_slot_ref: slot }) =>
+            slot === 'zhdanko_storehouse_controller')
+          : snapshot.npcs.find(
+            ({ instance_id: id }) => id === persisted.npc_id);
         resultRows = [{ ...npc, ...persisted }];
       } else if (sql.includes('party_containers')) {
         const persisted = one('party_containers');
-        const container = snapshot.containers.find(
-          ({ container_id: id }) => id === persisted.container_id);
+        const container = persisted == null
+          ? snapshot.containers.find(({ template_id: id }) =>
+            id === 'trace_ld_v1_container_road_bag')
+          : snapshot.containers.find(
+            ({ container_id: id }) => id === persisted.container_id);
         resultRows = [{ ...container, ...persisted }];
       } else if (sql.includes('party_actor_active_conditions')) {
         resultRows = snapshot.body_state.active_conditions.map(
@@ -631,7 +797,7 @@ function phase7ReadPool(plan, snapshot) {
           })).sort((left, right) => left.condition_id.localeCompare(
             right.condition_id));
       } else if (sql.includes('party_body_temporal_history')) {
-        resultRows = [one('party_body_temporal_history')];
+        resultRows = records('party_body_temporal_history');
       } else {
         throw new Error(`Unexpected Phase 7 read query: ${sql}`);
       }

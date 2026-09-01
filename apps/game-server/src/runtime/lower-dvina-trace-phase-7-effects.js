@@ -74,7 +74,9 @@ export function createTracePhase7BodyEffect({ fallback, contracts }) {
       }
       return applyApprovedTraceRouteBodyEffect({
         ...input,
-        ...(parentCompleted ? {
+        ...(parentCompleted
+          || schedule?.rest_completed === true
+            && input.consequence.phase7?.resumed === true ? {
           time_update: {
             ...structuredClone(input.time_update),
             exact_elapsed: {

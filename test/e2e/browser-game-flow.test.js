@@ -338,7 +338,7 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(records.screenReads.length, 0, 'landing must not auto-load a party');
 
   await page.click('[data-start-new-game]');
-  await page.waitForSelector('[data-new-game-form]');
+  await page.waitForSelector('[data-new-game-screen]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-retry-opening-ack]');
   assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);

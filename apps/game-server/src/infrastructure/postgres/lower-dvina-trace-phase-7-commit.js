@@ -24,14 +24,23 @@ import { applyPhase7OwnerOutputProjection, phase7OwnerOutputPlans,
   './lower-dvina-trace-phase-7-owner-output.js';
 import { projectLowerDvinaTraceS1Resolutions } from
   '../../runtime/releases/lower-dvina-trace-s1-production.js';
+import { createLocalFireAtomicWritePlan } from
+  './local-fire-atomic-write-plan.js';
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
   const persistedFactual = target(writePlan, 'party_state');
   const factual = completeTurn10Phase7Factual(persistedFactual);
   const visibleContext = target(writePlan, 'party_visible_context_package');
+  const phase7 = factual?.consequence?.phase7;
+  const duration = Number(factual?.consequence?.duration_minutes);
+  const restCompleted = phase7?.schedule_temporal?.rest_completed === true;
+  const resumed = phase7?.resumed === true;
+  const validDuration = Number.isSafeInteger(duration) && duration > 0
+    && (resumed ? duration <= 5
+      : restCompleted ? duration === 30 : duration >= 25 && duration < 30);
   if (factual?.consequence?.phase7_kind !== 'fire_rest'
-      || factual.consequence.duration_minutes !== 30
-      || !factual.consequence.phase7
+      || !validDuration
+      || !phase7
       || !visibleContext) {
     fail('TRACE_PHASE_7_WRITE_PLAN_INVALID');
   }
@@ -46,8 +55,9 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
   assertPhase7OwnerResult({ factual, state, phase7Contracts, changeSetId });
-  const plans = phase7OwnerOutputPlans({
-    ownerOutputs: factual.consequence.phase7.actor_step_owner_outputs, partyId,
+  const plans = resumed ? resumedOwnerPlans({ phase7, partyId, changeSetId })
+    : phase7OwnerOutputPlans({
+    ownerOutputs: phase7.actor_step_owner_outputs, partyId,
     changeSetId, npcRef: factual.consequence.phase7.autonomous.request.npc_ref,
     rootTurnId: factual.consequence.phase7.autonomous.request.root_turn_id,
     committedStateVersion: state.party_state.state_version,
@@ -61,8 +71,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
         'apply_body_event'].includes(op)).map(({ op }) => factual.consequence
           .phase7.autonomous.request.decision_scope.operation_contract[op]?.owner)
       .at(0) ?? null,
-    temporalPlans: [...temporalLocalFirePlans(factual.consequence.phase7.temporal.result),
-      ...temporalLocalFirePlans(factual.consequence.phase7.schedule_temporal.result)], fail
+    temporalPlans: [...temporalLocalFirePlans(phase7.temporal.result),
+      ...temporalLocalFirePlans(phase7.schedule_temporal.result)], fail
   });
   const { operationBatch, ordinaryPlan, actionProductionPlans, localFirePlans,
     spatialSemanticPlan } = plans;
@@ -149,6 +159,23 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
   };
+}
+function resumedOwnerPlans({ phase7, partyId, changeSetId }) {
+  try {
+    const localFirePlans = temporalLocalFirePlans(
+      phase7.schedule_temporal.result).map(createLocalFireAtomicWritePlan);
+    if (localFirePlans.some((plan) => plan.party_id !== partyId
+        || plan.change_set_id !== changeSetId)) throw new Error();
+    return {
+      operationBatch: null,
+      ordinaryPlan: null,
+      actionProductionPlans: [],
+      localFirePlans,
+      spatialSemanticPlan: null
+    };
+  } catch {
+    return fail('TRACE_PHASE_7_OWNER_OUTPUT_PLAN_INVALID');
+  }
 }
 function selectedCarrierPlan(phase7) {
   const plan = phase7.autonomous.proposal.plan;

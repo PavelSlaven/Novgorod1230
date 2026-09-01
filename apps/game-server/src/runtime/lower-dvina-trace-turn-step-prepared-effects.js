@@ -88,8 +88,13 @@ function applyPreparedPhase7Rest(input) {
   const consequence = input?.consequence;
   const restCompleted = consequence?.phase7?.schedule_temporal
     ?.rest_completed === true;
+  const resumed = consequence?.phase7?.resumed === true;
+  const duration = Number(consequence?.duration_minutes);
+  const validDuration = Number.isSafeInteger(duration) && duration > 0
+    && (resumed ? duration <= 5
+      : restCompleted ? duration === 30 : duration >= 25 && duration < 30);
   if (consequence?.phase7_kind !== 'fire_rest'
-      || consequence.duration_minutes !== (restCompleted ? 30 : 25)
+      || !validDuration
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_PHASE7_INVALID');
   }

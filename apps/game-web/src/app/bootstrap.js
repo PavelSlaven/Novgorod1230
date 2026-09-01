@@ -56,18 +56,6 @@ export function bootstrapGameWeb({
       return;
     }
     if (flowNavigationBlocked(store.getState())) return;
-    if (form.matches('[data-new-game-form]')) {
-      const raw = String(new root.ownerDocument.defaultView.FormData(form)
-        .get('start_text') ?? '');
-      store.setDraft('new_game', raw);
-      const startText = raw.trim();
-      if (!startText) {
-        store.setError(uiError('START_TEXT_REQUIRED', 'Опиши начало истории.'));
-        return;
-      }
-      await startParty({ start_text: startText });
-      return;
-    }
     if (form.matches('[data-turn-form]')) {
       const raw = String(new root.ownerDocument.defaultView.FormData(form)
         .get('raw_text') ?? '');
@@ -295,4 +283,7 @@ function flowNavigationBlocked(state) {
 function availableLocalStorage() {
   try { return globalThis.localStorage; }
   catch { return null; }
+}
+function uiError(code, message) {
+  return Object.assign(new Error(message), { code });
 }

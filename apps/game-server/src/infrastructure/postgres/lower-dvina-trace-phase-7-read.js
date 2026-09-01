@@ -13,8 +13,14 @@ import { assertPhase7BodyHistory } from
 export async function assertPhase7NormalizedRows(pool, payload) {
   const phase7 = payload.phase7_fire_rest;
   if (phase7 == null) return;
-  if (phase7.status !== 'completed'
-      || phase7.exact_elapsed_minutes !== 30
+  const completed = phase7.status === 'completed';
+  const paused = phase7.status === 'paused';
+  if ((!completed && !paused)
+      || (completed && phase7.exact_elapsed_minutes !== 30)
+      || (paused && (phase7.exact_elapsed_minutes < 25
+        || phase7.exact_elapsed_minutes >= 30
+        || phase7.resume_state == null
+        || phase7.body_effect_ref !== null))
       || !phase7.activity_execution_id
       || !phase7.decision_request_id) fail();
 
@@ -83,20 +89,31 @@ export async function assertPhase7NormalizedRows(pool, payload) {
   assertActivity(payload, activity, attempts, decision);
   assertNpcAndContainer(payload, phase7, zhdanko, bag, npc, container);
   assertConditions(payload, conditions);
-  assertPhase7BodyHistory(payload, bodyHistory);
+  if (completed) {
+    assertPhase7BodyHistory(payload, bodyHistory);
+  } else if (bodyHistory.rowCount !== 0
+      || (payload.body_effect_history ?? []).some(
+        ({ activity_attempt_id: id }) =>
+          id === phase7.activity_execution_id)) fail();
 }
 
 function assertActivity(payload, activity, attempts, decision) {
   const phase7 = payload.phase7_fire_rest;
   const execution = activity.rows[0];
-  const attempt = attempts.rows[0];
+  const completed = phase7.status === 'completed';
+  const records = attempts.rows;
+  const finalAttempt = records.at(-1);
+  const actualElapsed = records.reduce((sum, attempt) =>
+    sum + Number(attempt.actual_time_numerator), 0);
   const completedAt = (payload.body_effect_history ?? []).find(
     ({ effect_ref: effectRef }) => effectRef === phase7.body_effect_ref
   )?.occurred_at;
-  if (activity.rowCount !== 1 || attempts.rowCount !== 1
+  if (activity.rowCount !== 1
+      || attempts.rowCount !== phase7.next_attempt_ordinal
+      || attempts.rowCount < 1
       || execution.id !== phase7.activity_execution_id
-      || execution.status !== 'completed'
-      || Number(execution.state_version) !== 2
+      || execution.status !== phase7.status
+      || Number(execution.state_version) !== attempts.rowCount + 1
       || execution.activity_snapshot?.activity_profile_ref
         !== 'trace_ld_v1_activity_fire_rest'
       || Number(execution.activity_snapshot?.exact_duration_minutes) !== 30
@@ -104,32 +121,41 @@ function assertActivity(payload, activity, attempts, decision) {
         !== phase7.decision_boundary_id
       || execution.execution_context_snapshot?.decision_request_id
         !== phase7.decision_request_id
-      || Number(execution.cumulative_elapsed_numerator) !== 30
+      || Number(execution.cumulative_elapsed_numerator)
+        !== phase7.exact_elapsed_minutes
       || Number(execution.cumulative_elapsed_denominator) !== 1
-      || Number(execution.remaining_time_numerator) !== 0
+      || Number(execution.remaining_time_numerator)
+        !== 30 - phase7.exact_elapsed_minutes
       || Number(execution.remaining_time_denominator) !== 1
-      || Number(execution.next_attempt_ordinal) !== 1
-      || execution.terminal_change_set_id !== phase7.change_set_id
-      || Number(attempt.attempt_ordinal) !== 0
-      || Number(attempt.actual_time_numerator) !== 30
-      || Number(attempt.actual_time_denominator) !== 1
-      || attempt.result_kind !== 'completed'
-      || attempt.result_code !== 'phase_7_fire_rest_completed'
-      || attempt.clock_commit_mode !== 'direct_party_clock'
-      || attempt.trace?.autonomous_decision_request_id
-        !== phase7.decision_request_id
+      || Number(execution.next_attempt_ordinal) !== attempts.rowCount
+      || execution.terminal_change_set_id
+        !== (completed ? phase7.change_set_id : null)
+      || actualElapsed !== phase7.exact_elapsed_minutes
+      || records.some((attempt, index) =>
+        Number(attempt.attempt_ordinal) !== index
+          || Number(attempt.actual_time_denominator) !== 1
+          || attempt.clock_commit_mode !== 'direct_party_clock'
+          || attempt.trace?.autonomous_decision_request_id
+            !== phase7.decision_request_id
+          || (index < records.length - 1
+            && (attempt.result_kind !== 'paused'
+              || attempt.body_effect_refs?.length !== 0)))
+      || finalAttempt.result_kind !== (completed ? 'completed' : 'paused')
+      || finalAttempt.result_code !== (completed
+        ? 'phase_7_fire_rest_completed' : 'external_temporal_boundary')
       || !validPersistedCausality(
-        attempt.trace?.causality, phase7, decision, payload.party_id
+        finalAttempt.trace?.causality, phase7, decision, payload.party_id
       )
-      || canonicalDigest(attempt.trace?.npc_schedule_result)
+      || canonicalDigest(finalAttempt.trace?.npc_schedule_result)
         !== canonicalDigest(phase7.schedule_result)
-      || attempt.result_change_set_id !== phase7.change_set_id
-      || attempt.body_effect_refs?.length !== 1
-      || attempt.body_effect_refs[0] !== phase7.body_effect_ref
+      || finalAttempt.result_change_set_id !== phase7.change_set_id
+      || finalAttempt.body_effect_refs?.length !== (completed ? 1 : 0)
+      || (completed
+        && finalAttempt.body_effect_refs[0] !== phase7.body_effect_ref)
       || String(execution.last_processed_at_whole_minutes)
-        !== String(completedAt?.whole_minutes)
-      || String(attempt.ended_at_whole_minutes)
-        !== String(completedAt?.whole_minutes)) fail();
+        !== String(finalAttempt.ended_at_whole_minutes)
+      || (completed && String(finalAttempt.ended_at_whole_minutes)
+        !== String(completedAt?.whole_minutes))) fail();
 }
 
 function validPersistedCausality(

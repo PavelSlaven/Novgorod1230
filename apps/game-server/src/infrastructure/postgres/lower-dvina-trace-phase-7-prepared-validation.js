@@ -15,7 +15,8 @@ const REST_COMMAND = 'lower_dvina_trace.rest_by_fire_and_dry_clothing';
 export function isPreparedPhase7RestLedger(ledger) {
   return ledger?.slices?.length === 1
     && ledger.slices[0]?.owner_ref === REST_COMMAND
-    && ledger.slices[0]?.consequence?.duration_minutes === 30;
+    && (ledger.slices[0]?.consequence?.phase7_kind === 'fire_rest'
+      || ledger.slices[0]?.consequence?.duration_minutes === 30);
 }
 
 export function validatePreparedPhase7Rest({ ledger, traces, envelope, factual,
@@ -23,6 +24,13 @@ export function validatePreparedPhase7Rest({ ledger, traces, envelope, factual,
   const rest = ledger.slices[0];
   const trace = traces?.[0];
   const operation = trace?.approved_plan?.operations?.[0];
+  const restCompleted = rest.consequence?.phase7?.schedule_temporal
+    ?.rest_completed === true;
+  const resumed = rest.consequence?.phase7?.resumed === true;
+  const duration = Number(rest.consequence?.duration_minutes);
+  const validDuration = Number.isSafeInteger(duration) && duration > 0
+    && (resumed ? duration <= 5
+      : restCompleted ? duration === 30 : duration >= 25 && duration < 30);
   if (batch != null
       || traces?.length !== 1
       || ledger.committed_state_version !== state.party_state.state_version
@@ -34,13 +42,13 @@ export function validatePreparedPhase7Rest({ ledger, traces, envelope, factual,
       || rest.operation_ref !== 'request_activity'
       || rest.step_index !== 1
       || rest.consequence?.phase7_kind !== 'fire_rest'
-      || rest.consequence.duration_minutes !== 30
+      || !validDuration
       || operation?.op !== 'request_activity'
       || trace.applied !== true
       || trace.player_response_boundary !== false
-      || rest.body_update.applied !== true
+      || rest.body_update.applied !== restCompleted
       || !samePreparedValue(rest.time_update.clock_before, state.clock)) {
-    preparedEffectFail('Phase 7 must be one completed fire-rest slice');
+    preparedEffectFail('Phase 7 must be one valid fire-rest slice');
   }
   const draft = {
     selected_command_ids: [REST_COMMAND],

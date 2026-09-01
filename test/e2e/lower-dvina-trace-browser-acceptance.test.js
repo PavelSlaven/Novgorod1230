@@ -66,7 +66,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   await page.goto(environment.baseUrl);
   await page.waitForSelector('[data-start-new-game]');
   await page.click('[data-start-new-game]');
-  await page.waitForSelector('[data-new-game-form]');
+  await page.waitForSelector('[data-new-game-screen]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
   await page.waitForSelector('[data-landscape]');
@@ -122,7 +122,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   await page.click('[data-return-start]');
   await page.waitForSelector('[data-start-new-game]');
   await page.click('[data-start-new-game]');
-  await page.waitForSelector('[data-new-game-form]');
+  await page.waitForSelector('[data-new-game-screen]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
   partyId = [...rawResponses].reverse().map(parseJson).find(

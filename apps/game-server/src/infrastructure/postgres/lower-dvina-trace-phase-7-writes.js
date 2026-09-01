@@ -111,6 +111,8 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
   changeSetId, idemId, visibleEnvelope, pendingScreen }) {
   assertSharedSemanticSnapshotSafe(next);
   const phase7 = factual.consequence.phase7;
+  const restCompleted = phase7.schedule_temporal.rest_completed === true;
+  const resumed = phase7.resumed === true;
   const inserts = [row('party_state_snapshots',
     `${partyId}:${next.party_state.state_version}`, {
       party_id: partyId,
@@ -131,8 +133,9 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
       party_id: partyId,
       ...next.clock,
       updated_change_set_id: changeSetId
-    }),
-    row('party_actor_body_states',
+    })
+  ];
+  if (restCompleted) updates.push(row('party_actor_body_states',
       `player_character:${state.actor_id}`, {
         party_id: partyId,
         actor_kind: 'player_character',
@@ -141,22 +144,26 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
         energy: next.body_state.energy,
         satiety: next.body_state.satiety,
         updated_change_set_id: changeSetId
-      })
-  ];
+      }));
   const appends = [row('party_v3_change_sets', changeSetId, {
     id: changeSetId,
     party_id: partyId,
     operation_kind: 'trace_phase_7_fire_rest',
     idempotency_record_id: idemId
   })];
-  appendConditionUpdates({ updates, partyId, state, next });
-  appendBodyHistory({ appends, partyId, state, factual, changeSetId, idemId });
-  appendPhase7Activities({ inserts, appends, partyId, state, factual, next,
+  if (restCompleted) {
+    appendConditionUpdates({ updates, partyId, state, next });
+    appendBodyHistory({ appends, partyId, state, factual, changeSetId, idemId });
+  }
+  appendPhase7Activities({ inserts, updates, appends, partyId, state, factual, next,
     turnNumber, changeSetId, idemId });
-  appendScheduleProjection({
-    updates, partyId, state, next, phase7, changeSetId
-  });
-  appendNpcDecisionTraceWrites({
+  if (resumed !== true
+      || phase7.schedule_applied_in_this_attempt === true) {
+    appendScheduleProjection({
+      updates, partyId, state, next, phase7, changeSetId
+    });
+  }
+  if (!resumed) appendNpcDecisionTraceWrites({
     appends,
     decisionRecords: phase7.autonomous.decision_records,
     partyId,
@@ -164,8 +171,8 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
     rootTurnId: phase7.autonomous.request.root_turn_id,
     workingRevision: phase7.autonomous.request.working_revision
   });
-  appendPhase7ConversationWrites({ inserts, updates, appends, partyId, state,
-    next, phase7, changeSetId, idemId });
+  if (!resumed) appendPhase7ConversationWrites({ inserts, updates, appends,
+    partyId, state, next, phase7, changeSetId, idemId });
   appendTurn10ConversationWrites({
     inserts, updates, appends, partyId, state, next, factual,
     changeSetId, idemId

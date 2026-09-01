@@ -16,8 +16,10 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   const temporal = phase7.temporal;
   const scheduleTemporal = phase7.schedule_temporal;
   const schedule = phase7.schedule_execution;
-  if (phase7.autonomous.request.root_turn_id
-        !== factual.mode_resolution?.turn_id
+  const resumed = phase7.resumed === true;
+  if ((!resumed && phase7.autonomous.request.root_turn_id
+        !== factual.mode_resolution?.turn_id)
+      || (resumed && !validResume({ phase7, factual, state, phase7Contracts }))
       || temporal.elapsed_before_decision !== 25
       || temporal.result.temporal_status !== 'paused'
       || !['completed', 'paused'].includes(
@@ -32,19 +34,27 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
           factual.time_update.clock_after))
       || !sameClock(scheduleTemporal.result.clock_before,
         temporal.result.clock_after)
-      || !sameClock(temporal.result.clock_before, state.clock)
+      || (!resumed
+        && !sameClock(temporal.result.clock_before, state.clock))
       || !['executed', 'started'].includes(schedule.status)
       || schedule.exact_elapsed.exact_minutes.denominator !== '1'
       || schedule.root_clock_write_count !== 0
-      || schedule.parent_state_version !== state.party_state.state_version
+      || schedule.parent_state_version !== (resumed
+        ? state.phase7_fire_rest.resume_state.schedule_execution
+          .parent_state_version
+        : state.party_state.state_version)
       || !validActorStepCompletion(phase7)
       || !validCausality(phase7)
       || !validScheduleExecution(schedule, phase7Contracts,
         phase7.autonomous.request, phase7.autonomous.proposal.plan,
         phase7.actor_step_check)
-      || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
-        state)
-      || temporal.result.combined_change_set.change_set_id !== changeSetId
+      || (resumed
+        ? !sameValue(phase7.actor_step_check,
+          state.phase7_fire_rest.resume_state.actor_step_check)
+        : !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
+          state))
+      || (!resumed
+        && temporal.result.combined_change_set.change_set_id !== changeSetId)
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
       || (scheduleTemporal.result.temporal_status === 'completed'
@@ -59,6 +69,40 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
     );
   }
 }
+
+function validResume({ phase7, factual, state, phase7Contracts }) {
+  const rest = state.phase7_fire_rest;
+  const prior = rest?.resume_state;
+  const before = prior?.schedule_execution;
+  const after = phase7.schedule_execution;
+  if (prior?.temporal == null || prior?.autonomous == null
+      || prior?.actor_step == null || prior?.actor_step_owner_outputs == null
+      || prior?.schedule_temporal == null || before == null) return false;
+  const changed = before?.status !== after?.status;
+  return rest?.status === 'paused'
+    && rest.activity_execution_id === factual.consequence.activity_attempt_id
+    && Number.isSafeInteger(rest.exact_elapsed_minutes)
+    && rest.exact_elapsed_minutes >= 25
+    && rest.exact_elapsed_minutes < 30
+    && rest.approved_body_effect_ref
+      === phase7Contracts.bodyEffect.effect_profile_id
+    && phase7.approved_body_effect_ref
+      === phase7Contracts.bodyEffect.effect_profile_id
+    && sameValue(state.clock, prior?.schedule_temporal?.result?.clock_after)
+    && sameValue(phase7.temporal, prior?.temporal)
+    && sameValue(phase7.autonomous, prior?.autonomous)
+    && sameValue(phase7.actor_step, prior?.actor_step)
+    && sameValue(phase7.actor_step_owner_outputs,
+      prior?.actor_step_owner_outputs)
+    && before?.status != null
+    && ['started', 'executed'].includes(before.status)
+    && ['started', 'executed'].includes(after?.status)
+    && (before.status !== 'executed' || after.status === 'executed')
+    && phase7.schedule_applied_in_this_attempt === changed;
+}
+
+const sameValue = (left, right) =>
+  canonicalDigest(left) === canonicalDigest(right);
 
 function validCausality(phase7) {
   const candidate = phase7.temporal.terminal_candidate;

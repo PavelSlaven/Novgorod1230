@@ -25,8 +25,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   const phase7 = factual.consequence.phase7;
   const autonomous = phase7.autonomous;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
-  const restCompleted =
-    phase7.schedule_temporal.result.temporal_status === 'completed';
+  const restCompleted = phase7.schedule_temporal.rest_completed === true;
   next.party_state = {
     ...next.party_state,
     state_version: nextVersion,
@@ -61,7 +60,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     ...(next.consumed_npc_decision_signal_ids ?? []),
     ...autonomous.consumed_signal_ids
   ])].sort();
-  if (autonomous.proposal.status === 'planned') {
+  if (phase7.resumed !== true && autonomous.proposal.status === 'planned') {
     const trace = buildNpcSemanticDecisionTrace({
       request: autonomous.request,
       plan: autonomous.proposal.plan,
@@ -74,13 +73,16 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       'TRACE_PHASE_7_DECISION_TRACE_CONFLICT'
     );
   }
-  next = applyTracePhase7ScheduleState({
-    state: next,
-    execution: phase7.schedule_execution,
-    changeSetId,
-    activeActorStep: tracePhase7ActorStep(
-      phase7.schedule_temporal.projection, phase7.actor_step)
-  });
+  if (phase7.resumed !== true
+      || phase7.schedule_applied_in_this_attempt === true) {
+    next = applyTracePhase7ScheduleState({
+      state: next,
+      execution: phase7.schedule_execution,
+      changeSetId,
+      activeActorStep: tracePhase7ActorStep(
+        phase7.schedule_temporal.projection, phase7.actor_step)
+    });
+  }
   next.active_npc_actor_steps = structuredClone(
     phase7.schedule_temporal.projection.active_npc_actor_steps ?? []);
   applyNpcDirectBodyState(next, phase7);
@@ -103,13 +105,25 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       };
     }
   }
+  const priorRest = state.phase7_fire_rest?.status === 'paused'
+    ? state.phase7_fire_rest : null;
+  const segmentElapsed = Number(
+    factual.time_update.exact_elapsed.exact_minutes.numerator
+  );
+  const cumulativeElapsed = (priorRest?.exact_elapsed_minutes ?? 0)
+    + segmentElapsed;
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: restCompleted ? 'completed' : 'paused',
     activity_execution_id: factual.consequence.activity_attempt_id,
-    exact_elapsed_minutes: restCompleted
-      ? 30
-      : Number(factual.time_update.exact_elapsed.exact_minutes.numerator),
+    started_at: structuredClone(priorRest?.started_at ?? state.clock),
+    exact_elapsed_minutes: cumulativeElapsed,
+    next_attempt_ordinal: (priorRest?.next_attempt_ordinal ?? 0) + 1,
+    approved_body_effect_ref: priorRest?.approved_body_effect_ref
+      ?? phase7.approved_body_effect_ref
+      ?? factual.consequence.body_effect_ref
+      ?? factual.body_update?.proposal?.profile_ref
+      ?? null,
     body_effect_ref: restCompleted
       ? factual.body_update.proposal.profile_ref
       : null,
@@ -129,9 +143,24 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       phase7.schedule_execution.exact_elapsed
     ),
     schedule_result: tracePhase7ScheduleHistoryEntry(
-      phase7.schedule_execution, changeSetId
+      phase7.schedule_execution,
+      phase7.schedule_applied_in_this_attempt === false
+        ? priorRest?.schedule_result?.change_set_id ?? changeSetId
+        : changeSetId
     ),
-    change_set_id: changeSetId
+    change_set_id: changeSetId,
+    ...(restCompleted ? {} : {
+      resume_state: {
+        temporal: structuredClone(phase7.temporal),
+        autonomous: structuredClone(phase7.autonomous),
+        actor_step: structuredClone(phase7.actor_step),
+        actor_step_owner_outputs:
+          structuredClone(phase7.actor_step_owner_outputs),
+        actor_step_check: structuredClone(phase7.actor_step_check),
+        schedule_temporal: structuredClone(phase7.schedule_temporal),
+        schedule_execution: structuredClone(phase7.schedule_execution)
+      }
+    })
   };
   next.phase7_history = [...(next.phase7_history ?? []), {
     turn_number: turnNumber,

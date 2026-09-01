@@ -124,7 +124,6 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     row: future?.row ?? byId.get(itemId),
     role: input.source_refs.includes(itemId) ? 'source' : 'tool',
     actorRef: input.actor_ref,
-    contextVersion,
     finite: resources.get(itemId) ?? null,
     accessAnchorId: outputDestinationPin?.anchor_id ?? null,
     accessScenePositionId: outputDestinationPin?.scene_position_id ?? null,
@@ -176,7 +175,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   });
 }
 
-function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
+function rowPin({ row, role, actorRef, finite, accessAnchorId,
   accessScenePositionId,
   accessContainer = null, preparedOrdinary = null, preparedAction = null }) {
   if (!row || !text(row.item_id)
@@ -244,7 +243,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     entity_snapshot: {
       schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
       commit_state: 'committed', role, entity_ref: row.item_id,
-      state_version: contextVersion,
+      state_version: String(row.state_version),
       lifecycle_state: 'active', access_state: access,
       holder_ref: holderRef,
       controller_ref: actionProducedControllerRef(row),

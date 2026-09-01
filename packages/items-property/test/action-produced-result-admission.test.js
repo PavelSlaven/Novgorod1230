@@ -195,7 +195,7 @@ test('source, tool, access and version membership are exact', () => {
     (value) => { value.committed_context.entities[0].access_state = 'restricted'; },
     (value) => { value.committed_context.entities.find(({ entity_ref: ref }) =>
       ref === 'item:knife').controller_ref = 'actor:other'; },
-    (value) => { value.committed_context.entities[0].state_version = '6'; },
+    (value) => { value.committed_context.entities[0].state_version = '0'; },
     (value) => { value.proposal.committed_state_version = '6'; },
     (value) => { value.profile.context_state_version = '6'; }
   ];
@@ -203,6 +203,21 @@ test('source, tool, access and version membership are exact', () => {
     const value = input(); mutate(value);
     assert.equal(admitActionProducedResult(value).pass, false);
   }
+});
+
+test('entity versions are pinned independently from party context version', () => {
+  const value = input();
+  value.committed_context.state_version = '0';
+  value.profile.context_state_version = '0';
+  value.proposal.committed_state_version = '0';
+  value.committed_context.entities.forEach((entry, index) => {
+    entry.state_version = String(index + 1);
+  });
+  const admitted = admitActionProducedResult(value);
+  assert.equal(admitted.pass, true);
+  assert.equal(admitted.handoff.context_state_version, '0');
+  assert.equal(admitted.handoff.source_pins[0].state_version, '1');
+  assert.equal(admitted.handoff.tool_pins[0].state_version, '2');
 });
 
 test('context, profile and causal pins cannot be drifted or jointly swapped', () => {

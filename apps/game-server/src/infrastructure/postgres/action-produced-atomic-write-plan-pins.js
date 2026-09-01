@@ -99,7 +99,7 @@ export function actionProducedOwnerOutputDestination(destinationPin,
 }
 
 export function validateActionProducedRowPins(pins, role, actorRef,
-  contextVersion, causalIdentity, accessAnchorId = null) {
+  causalIdentity, accessAnchorId = null) {
   const seenItems = new Set();
   const seenResources = new Set();
   for (const pin of pins) {
@@ -149,8 +149,8 @@ export function validateActionProducedRowPins(pins, role, actorRef,
     }
     const finite = finiteSnapshot(pin.finite_resource_row, pin.item_id,
       role, seenResources);
-    const expected = expectedEntity(pin, role, actorRef, contextVersion,
-      finite, accessAnchorId, accessContainer);
+    const expected = expectedEntity(pin, role, actorRef, finite,
+      accessAnchorId, accessContainer);
     if (!isDeepStrictEqual(pin.entity_snapshot, expected)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
@@ -185,7 +185,7 @@ function validScenePlacement(value) {
     && Number.isSafeInteger(value.state_version) && value.state_version >= 0;
 }
 
-function expectedEntity(pin, role, actorRef, contextVersion, finite,
+function expectedEntity(pin, role, actorRef, finite,
   accessAnchorId, accessContainer) {
   const { item, placement, ownership } = pin;
   const prepared = pin.prepared_ordinary != null
@@ -208,7 +208,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
   return {
     schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state: 'committed', role, entity_ref: pin.item_id,
-    state_version: contextVersion, lifecycle_state: 'active',
+    state_version: String(item.state_version), lifecycle_state: 'active',
     access_state: accessState, holder_ref: holderRef,
     controller_ref: actionProducedControllerRef(ownership),
     ownership_snapshot: structuredClone(ownership),

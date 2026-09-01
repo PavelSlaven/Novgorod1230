@@ -32,6 +32,17 @@ const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'
 });
 
+test('active publication has an exact readable session identity', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 31
+  });
+  const identity = TRACE_PHASE_1B_SESSION_IDENTITIES.find((candidate) =>
+    candidate.publication_manifest_digest === publication.manifest_digest);
+  assert.equal(identity?.publication_binding_digest,
+    publication.binding_digest);
+  assert.equal(identity?.scenario_definition_revision, 31);
+});
+
 test('Phase 1B publishes only trace metadata', async () => {
   const runtime = createRuntime(fixture());
   const catalog = await runtime.listScenarios();

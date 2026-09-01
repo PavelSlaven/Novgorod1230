@@ -9,6 +9,7 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
   const anchorId = item.runtime_placement?.anchor_id;
   const semanticType = item.item_proposal?.semantic_descriptor?.semantic_type;
   const name = item.item_proposal?.semantic_descriptor?.name;
+  const ownership = ordinaryWorldOwnership(item);
   if (![partyId, item.item_id, anchorId, semanticType, name]
     .every(exactText)) {
     throw code('ORDINARY_RUNTIME_ITEM_PROJECTION_INVALID');
@@ -82,6 +83,12 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
       party_id: partyId,
       item_id: item.item_id,
       ...structuredClone(placement)
+    }),
+    ownership_record: Object.freeze({
+      party_id: partyId,
+      ownership_id: `ownership:${item.item_id}`,
+      item_id: item.item_id,
+      ...structuredClone(ownership)
     })
   });
 }
@@ -111,7 +118,40 @@ export async function insertOrdinaryMaterializedRuntimeItem({
       placement.holder_character_id, placement.physical_position,
       placement.equipment_slot_category_id, placement.attached_item_id]
   );
+  const ownership = runtime.ownership_record;
+  await client.query(
+    `INSERT INTO party_runtime.party_ownership
+      (party_id,ownership_id,item_id,container_id,owner_npc_id,
+       owner_character_id,owner_party,owner_external_ref,controller_npc_id,
+       controller_character_id,claim_state)
+     VALUES ($1,$2,$3,NULL,NULL,NULL,false,$4::jsonb,NULL,NULL,$5)`,
+    [ownership.party_id, ownership.ownership_id, ownership.item_id,
+      JSON.stringify(ownership.owner_external_ref), ownership.claim_state]
+  );
   return runtime;
+}
+
+function ordinaryWorldOwnership(item) {
+  const evidence = item.item_proposal?.property_placement_evidence;
+  const unowned = evidence?.property_basis_class === 'genuinely_unowned';
+  const entityId = unowned
+    ? evidence?.unowned_cause_ref : evidence?.property_source_ref;
+  if (!exactText(entityId)) {
+    throw code('ORDINARY_RUNTIME_ITEM_PROJECTION_INVALID');
+  }
+  return {
+    owner_npc_id: null,
+    owner_character_id: null,
+    owner_party: false,
+    owner_external_ref: {
+      entity_kind: unowned
+        ? 'ordinary_unowned_cause' : 'ordinary_property_source',
+      entity_id: entityId
+    },
+    controller_npc_id: null,
+    controller_character_id: null,
+    claim_state: unowned ? 'unowned' : 'property_bound'
+  };
 }
 
 function exactText(value) {

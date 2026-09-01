@@ -12,6 +12,7 @@ const OWNERSHIP_KEYS = [
   'ownership_id', 'owner_npc_id', 'owner_character_id', 'owner_party',
   'controller_npc_id', 'controller_character_id', 'claim_state'
 ];
+const EXTERNAL_OWNERSHIP_KEYS = [...OWNERSHIP_KEYS, 'owner_external_ref'];
 
 export function createActionProducedOutputAuthority(identityKind) {
   if (identityKind === 'preserved_source') {
@@ -55,10 +56,14 @@ export function validateActionProducedOutputAuthority(value, identityKind) {
 export function deriveActionProducedOutputProperty(ownershipValue,
   outputEntityRef, controllerCharacterRef = undefined) {
   const source = snapshot(ownershipValue);
-  if (!exact(source, OWNERSHIP_KEYS) || !text(source.ownership_id)
+  if (!(exact(source, OWNERSHIP_KEYS)
+        || exact(source, EXTERNAL_OWNERSHIP_KEYS))
+      || !text(source.ownership_id)
       || !nullableText(source.owner_npc_id)
       || !nullableText(source.owner_character_id)
       || typeof source.owner_party !== 'boolean'
+      || Object.hasOwn(source, 'owner_external_ref')
+        && !validExternalOwner(source.owner_external_ref)
       || !nullableText(source.controller_npc_id)
       || !nullableText(source.controller_character_id)
       || !text(source.claim_state) || !text(outputEntityRef)
@@ -77,6 +82,11 @@ export function deriveActionProducedOutputProperty(ownershipValue,
     property_state: propertyState,
     ownership
   });
+}
+
+function validExternalOwner(value) {
+  return value === null || exact(value, ['entity_kind', 'entity_id'])
+    && text(value.entity_kind) && text(value.entity_id);
 }
 
 function exact(value, keys) {

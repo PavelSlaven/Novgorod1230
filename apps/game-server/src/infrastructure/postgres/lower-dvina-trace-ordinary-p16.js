@@ -25,6 +25,9 @@ export function ordinaryPhysicalKeys(plan) {
   const materializationItemIds = batch
     ? plan.items.map(({item_id}) => item_id)
     : [plan.item?.item_id ?? plan.request_identity];
+  const committedItemIds = batch
+    ? plan.items.map(({item_id}) => item_id)
+    : plan.item == null ? [] : [plan.item.item_id];
   const ledgerItemIds = materializationItemIds.length === 0
     ? [plan.request_identity] : materializationItemIds;
   return [
@@ -32,6 +35,9 @@ export function ordinaryPhysicalKeys(plan) {
     `party_runtime.party_ordinary_materialization_contexts:${scope}`,
     `party_runtime.party_ordinary_materialization_enablements:${scope}`,
     `party_runtime.party_ordinary_materialization_commits:${plan.party_id}:${plan.request_identity}`,
+    ...committedItemIds.flatMap((itemId) => [
+      `party_runtime.party_ordinary_materialization_commit_items:${plan.party_id}:${plan.request_identity}:${itemId}`
+    ]),
     `party_runtime.party_ordinary_materialization_basis_catalog:${scope}`,
     ...ledgerItemIds.flatMap((itemId) => [
       `party_runtime.party_ordinary_materialization_items:${plan.party_id}:${itemId}`,
@@ -48,7 +54,8 @@ export function ordinaryPhysicalKeys(plan) {
     ...(plan.item == null ? [] : [
       `party_runtime.party_positions:${plan.party_id}`,
       `party_runtime.party_items:${plan.item.item_id}`,
-      `party_runtime.party_item_placements:${plan.item.item_id}`
+      `party_runtime.party_item_placements:${plan.item.item_id}`,
+      `party_runtime.party_ownership:ownership:${plan.item.item_id}`
     ])
   ];
 }

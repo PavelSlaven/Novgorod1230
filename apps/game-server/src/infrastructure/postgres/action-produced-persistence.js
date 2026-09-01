@@ -73,6 +73,7 @@ async function lockAndVerifyPins(client, plan) {
          p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
          p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
          o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
+         o.owner_external_ref,
          o.controller_npc_id,o.controller_character_id,o.claim_state
        FROM party_runtime.party_items i
        JOIN party_runtime.party_item_placements p
@@ -202,12 +203,13 @@ async function insertResult(client, partyId, result, changeSetId,
   await client.query(
     `INSERT INTO party_runtime.party_ownership
       (party_id,ownership_id,item_id,container_id,owner_npc_id,
-       owner_character_id,owner_party,controller_npc_id,
+       owner_character_id,owner_party,owner_external_ref,controller_npc_id,
        controller_character_id,claim_state)
-     VALUES ($1,$2,$3,NULL,$4,$5,$6,$7,$8,$9)`,
+     VALUES ($1,$2,$3,NULL,$4,$5,$6,$7::jsonb,$8,$9,$10)`,
   [partyId, ownership.ownership_id, result.item_id,
     ownership.owner_npc_id, ownership.owner_character_id,
-    ownership.owner_party, ownership.controller_npc_id,
+    ownership.owner_party, JSON.stringify(ownership.owner_external_ref ?? null),
+    ownership.controller_npc_id,
     ownership.controller_character_id, ownership.claim_state]);
   if (scenePositionId !== null) await client.query(
     `INSERT INTO party_runtime.entity_placements
@@ -238,6 +240,9 @@ function normalizedRows(row) {
       ownership_id: row.ownership_id, owner_npc_id: row.owner_npc_id,
       owner_character_id: row.owner_character_id,
       owner_party: row.owner_party,
+      ...(row.owner_external_ref == null ? {} : {
+        owner_external_ref: row.owner_external_ref
+      }),
       controller_npc_id: row.controller_npc_id,
       controller_character_id: row.controller_character_id,
       claim_state: row.claim_state

@@ -118,20 +118,8 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       : accessContainer !== null ? exact(pin, [...baseKeys, 'access_container'])
         : exact(pin, baseKeys);
     if (!exactPin
-        || prepared !== null && (!exact(prepared,
-          ['schema', 'request_identity', 'root_turn_id',
-            'step_index'])
-          || prepared.schema
-            !== 'action_production_prepared_ordinary_pin_v1'
-          || !text(prepared.request_identity)
-          || prepared.root_turn_id !== causalIdentity.root_turn_id
-          || !Number.isSafeInteger(prepared.step_index)
-          || prepared.step_index < 1
-          || prepared.step_index >= causalIdentity.step_index
-          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
-            ?.root_turn_id !== prepared.root_turn_id
-          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
-            ?.step_index !== prepared.step_index)
+        || prepared !== null && !validPreparedOrdinary(prepared, pin,
+          causalIdentity)
         || preparedAction !== null && (!exact(preparedAction,
           ['schema', 'root_turn_id', 'step_index'])
           || preparedAction.schema
@@ -167,6 +155,26 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
   }
+}
+
+function validPreparedOrdinary(value, pin, causalIdentity) {
+  if (!text(value.request_identity)
+      || value.root_turn_id !== causalIdentity.root_turn_id) return false;
+  const provenance = pin.item.state
+    ?.runtime_instance_mechanics_snapshot?.provenance;
+  if (value.schema === 'action_production_prepared_ordinary_pin_v1') {
+    return exact(value, ['schema', 'request_identity', 'root_turn_id',
+      'step_index'])
+      && Number.isSafeInteger(value.step_index) && value.step_index >= 1
+      && value.step_index < causalIdentity.step_index
+      && provenance?.root_turn_id === value.root_turn_id
+      && provenance?.step_index === value.step_index;
+  }
+  return value.schema === 'action_production_prepared_ordinary_pin_v2'
+    && exact(value, ['schema', 'request_identity', 'root_turn_id'])
+    && causalIdentity.step_index > 1
+    && value.request_identity === `${value.root_turn_id}:ordinary:presence`
+    && provenance?.request_id === value.request_identity;
 }
 
 function validScenePlacement(value) {
@@ -210,9 +218,15 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
 
 function validOwnership(value) {
   const owners = Number(text(value.owner_character_id))
-    + Number(text(value.owner_npc_id)) + Number(value.owner_party === true);
+    + Number(text(value.owner_npc_id)) + Number(value.owner_party === true)
+    + Number(validExternalOwner(value.owner_external_ref));
   return owners === 1 && typeof value.owner_party === 'boolean'
     && text(value.claim_state);
+}
+
+function validExternalOwner(value) {
+  return exact(value, ['entity_kind', 'entity_id'])
+    && text(value.entity_kind) && text(value.entity_id);
 }
 
 function finiteSnapshot(row, itemId, role, seenResources) {

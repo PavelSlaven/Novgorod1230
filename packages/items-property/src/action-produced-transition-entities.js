@@ -21,6 +21,7 @@ const OWNERSHIP_KEYS = [
   'ownership_id', 'owner_npc_id', 'owner_character_id', 'owner_party',
   'controller_npc_id', 'controller_character_id', 'claim_state'
 ];
+const EXTERNAL_OWNERSHIP_KEYS = [...OWNERSHIP_KEYS, 'owner_external_ref'];
 
 export function validateActionProducedEntitySnapshots(values, role, pins) {
   if (!Array.isArray(values) || values.length !== pins.length) fail();
@@ -50,10 +51,13 @@ export function validateActionProducedEntitySnapshots(values, role, pins) {
 }
 
 function validOwnership(value) {
-  return exact(value, OWNERSHIP_KEYS) && text(value.ownership_id)
+  return (exact(value, OWNERSHIP_KEYS)
+      || exact(value, EXTERNAL_OWNERSHIP_KEYS)) && text(value.ownership_id)
     && nullableText(value.owner_npc_id)
     && nullableText(value.owner_character_id)
     && typeof value.owner_party === 'boolean'
+    && (!Object.hasOwn(value, 'owner_external_ref')
+      || validExternalOwner(value.owner_external_ref))
     && nullableText(value.controller_npc_id)
     && nullableText(value.controller_character_id)
     && text(value.claim_state);
@@ -104,14 +108,23 @@ function ownershipBasis(source) {
   if (!validOwnership(value)) fail();
   return { owner_npc_id: value.owner_npc_id,
     owner_character_id: value.owner_character_id,
-    owner_party: value.owner_party, claim_state: value.claim_state };
+    owner_party: value.owner_party,
+    owner_external_ref: structuredClone(value.owner_external_ref ?? null),
+    claim_state: value.claim_state };
 }
 
 function sameBasis(left, right) {
   return left.owner_npc_id === right.owner_npc_id
     && left.owner_character_id === right.owner_character_id
     && left.owner_party === right.owner_party
+    && JSON.stringify(left.owner_external_ref)
+      === JSON.stringify(right.owner_external_ref)
     && left.claim_state === right.claim_state;
+}
+
+function validExternalOwner(value) {
+  return value === null || exact(value, ['entity_kind', 'entity_id'])
+    && text(value.entity_kind) && text(value.entity_id);
 }
 
 function validateFinite(value) {

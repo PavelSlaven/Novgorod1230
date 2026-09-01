@@ -72,6 +72,17 @@ test('output property source must contribute and ownership must agree',
       sources));
   });
 
+test('external ordinary property ownership survives production', () => {
+  const external = { ...ownership(), owner_character_id: null,
+    controller_character_id: null, claim_state: 'property_bound',
+    owner_external_ref: { entity_kind: 'ordinary_property_source',
+      entity_id: 'wreck-site' } };
+  const output = deriveActionProducedOutputProperty(external,
+    'result:adapted-board');
+  assert.deepEqual(output.ownership.owner_external_ref,
+    external.owner_external_ref);
+});
+
 function ownership(ownershipId = 'ownership:source') {
   return { ownership_id: ownershipId, owner_npc_id: null,
     owner_character_id: 'actor:mikula', owner_party: false,

@@ -76,6 +76,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
        e.occupies_capacity_units AS scene_occupies_capacity_units,
        e.state_version AS scene_state_version,
        o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
+       o.owner_external_ref,
        o.controller_npc_id,o.controller_character_id,o.claim_state
      FROM party_runtime.party_items i
      JOIN party_runtime.party_item_placements p
@@ -227,6 +228,9 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     owner_npc_id: row.owner_npc_id,
     owner_character_id: row.owner_character_id,
     owner_party: row.owner_party,
+    ...(row.owner_external_ref == null ? {} : {
+      owner_external_ref: row.owner_external_ref
+    }),
     controller_npc_id: row.controller_npc_id,
     controller_character_id: row.controller_character_id,
     claim_state: row.claim_state
@@ -287,9 +291,15 @@ function validProfiles(input) {
 
 function validOwnership(row) {
   const owners = Number(text(row.owner_character_id))
-    + Number(text(row.owner_npc_id)) + Number(row.owner_party === true);
+    + Number(text(row.owner_npc_id)) + Number(row.owner_party === true)
+    + Number(validExternalOwner(row.owner_external_ref));
   return owners === 1 && typeof row.owner_party === 'boolean'
     && text(row.claim_state);
+}
+
+function validExternalOwner(value) {
+  return exact(value, ['entity_kind', 'entity_id'])
+    && text(value.entity_kind) && text(value.entity_id);
 }
 
 function refs(value, empty) {

@@ -4,6 +4,8 @@ import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { ordinaryContainerRuntimeItemState } from
   './ordinary-materialization-container-batch-item.js';
+import { buildOrdinaryMaterializedRuntimeItem } from
+  './ordinary-materialization-runtime-item.js';
 import { failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
 
@@ -14,10 +16,15 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
     plan = createOrdinaryMaterializationAtomicWritePlan(
       input.prepared_ordinary_plan);
   } catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
-  if (plan.schema !== 'ordinary_container_contents_atomic_write_plan_v2'
-      || plan.party_id !== input.party_id
+  if (plan.party_id !== input.party_id
       || plan.expected_versions.party_state_version
         !== input.expected_party_state_version) {
+    fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  }
+  if (plan.schema === 'ordinary_materialization_atomic_write_plan_v1') {
+    return preparedWorldRows(plan, input, requested);
+  }
+  if (plan.schema !== 'ordinary_container_contents_atomic_write_plan_v2') {
     fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
   }
   const byId = new Map();
@@ -43,6 +50,48 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
     });
   }
   return byId;
+}
+
+function preparedWorldRows(plan, input, requested) {
+  const item = plan.item;
+  if (item == null || plan.resolution !== 'materialize'
+      || plan.request_identity !== `${input.root_turn_id}:ordinary:presence`) {
+    fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  }
+  if (!requested.includes(item.item_id)) return new Map();
+  let runtime;
+  try {
+    runtime = buildOrdinaryMaterializedRuntimeItem({
+      partyId: input.party_id, item
+    });
+  } catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+  const record = runtime.item_record;
+  const placement = runtime.placement_record;
+  const ownership = runtime.ownership_record;
+  return new Map([[item.item_id, {
+    row: {
+      ...structuredClone(record), state_version: 1,
+      anchor_id: placement.anchor_id, container_id: placement.container_id,
+      holder_npc_id: placement.holder_npc_id,
+      holder_character_id: placement.holder_character_id,
+      physical_position: placement.physical_position,
+      equipment_slot_category_id: placement.equipment_slot_category_id,
+      attached_item_id: placement.attached_item_id,
+      ownership_id: ownership.ownership_id,
+      owner_npc_id: ownership.owner_npc_id,
+      owner_character_id: ownership.owner_character_id,
+      owner_party: ownership.owner_party,
+      owner_external_ref: structuredClone(ownership.owner_external_ref),
+      controller_npc_id: ownership.controller_npc_id,
+      controller_character_id: ownership.controller_character_id,
+      claim_state: ownership.claim_state
+    },
+    preparedOrdinary: {
+      schema: 'action_production_prepared_ordinary_pin_v2',
+      request_identity: plan.request_identity,
+      root_turn_id: input.root_turn_id
+    }
+  }]]);
 }
 
 export function actionProducedPreparedActionRows(input) {

@@ -72,7 +72,7 @@ export function createLowerDvinaTraceTurnStepModel({
               })}`
             ]),
             ...(activeConversationExample == null ? [] : [activeConversationExample]),
-            `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
+            `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${turnStepPlanMappings(request)}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
@@ -128,6 +128,14 @@ function semanticTurnStepExample() {
   const { schema, request_id, committed_state_version, working_revision,
     step_index, ...semantic } = JSON.parse(TURN_STEP_PLAN_EXAMPLE);
   return JSON.stringify({ ...semantic, operation_choice: null });
+}
+
+function turnStepPlanMappings(request) {
+  const mappings = JSON.parse(TURN_STEP_PLAN_MAPPINGS);
+  if (request.player_safe_state?.ordinary_resolution
+      ?.scene_seed_available === true) delete mappings.visible_general_look;
+  else delete mappings.ordinary_scene_seed;
+  return JSON.stringify(mappings);
 }
 
 function turnStepOperationChoices(request) {

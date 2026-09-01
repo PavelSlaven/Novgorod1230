@@ -456,17 +456,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
       operations: [], check: null
     });
-    assert.deepEqual(mappings.ordinary_scene_seed, {
-      interpretation: { adaptation: 'literal' },
-      resolution: 'domain_request', goal_result: 'pending',
-      activity: { owner: 'domain', duration_class: null, effort: null },
-      operations: [{ op: 'request_discovery',
-        actor_ref: '<copy current actor ref from request>',
-        discovery_kind: 'look',
-        target_refs: ['<copy current position ref from request>'],
-        query: 'общий вид ближайшего окружения' }],
-      check: null
-    });
+    assert.equal(mappings.ordinary_scene_seed, undefined);
     assert.match(prompt,
       /ordinary_resolution\.scene_seed_available is true[\s\S]*candidate-free scene seed/u);
     assert.deepEqual(mappings.spatial_grounded_look, {
@@ -481,6 +471,36 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     });
     assert.match(prompt, /use only request or operation-contract enum values/u);
     assert.match(prompt, /do not substitute or invent refs/u);
+  });
+
+test('turn step planner offers scene seed instead of direct look while unseeded',
+  async () => {
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      }
+    } });
+    await model(request({ player_safe_state: { position: {
+      location_ref: 'location:shore' }, ordinary_resolution: {
+      discovery_available: true, container_resolution_available: false,
+      scene_seed_available: true } } }));
+    const mappings = JSON.parse(prompt.match(
+      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
+    )[1]);
+    assert.equal(mappings.visible_general_look, undefined);
+    assert.deepEqual(mappings.ordinary_scene_seed, {
+      interpretation: { adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [{ op: 'request_discovery',
+        actor_ref: '<copy current actor ref from request>',
+        discovery_kind: 'look',
+        target_refs: ['<copy current position ref from request>'],
+        query: 'общий вид ближайшего окружения' }],
+      check: null
+    });
   });
 
 test('turn step planner prompt has stated-goal adaptation triage',

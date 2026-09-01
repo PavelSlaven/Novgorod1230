@@ -159,7 +159,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           return Object.freeze({
             working_projection: structuredClone(envelope.working_projection),
             summary: 'action_production:no_useful_result', write_fragments: [],
-            duration_minutes: 0,
+            duration_minutes: 0, goal_result: 'not_achieved',
             action_production_atomic_write_plan: null
           });
         }
@@ -180,6 +180,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
             ? 'action_production:no_useful_result'
             : 'action_production:physical_change',
           write_fragments: [], duration_minutes: 0,
+          goal_result: semantic.identity_mode === 'no_useful_result'
+            ? 'not_achieved' : 'achieved',
           action_production_atomic_write_plan: atomicPlan,
           consequence_fragment: createActionProductionVisibleConsequence({
             actionRef, stepIndex, semantic

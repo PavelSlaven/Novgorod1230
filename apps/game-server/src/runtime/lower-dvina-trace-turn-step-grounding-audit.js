@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]}. Audit only whether every selected action-production source denotes the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Fail when a named ordinary material has no semantically matching selected source. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} or the same failure with kind "missing_required_source_move". Audit two things only. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, when remaining_intent explicitly says the actor takes, picks up, drops, wears, attaches, or otherwise relocates that selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement merely because physical handling is needed for transformation. Do not plan, repair, invent refs, or judge mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
@@ -16,6 +16,8 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
         root_player_action: request.root_player_action,
         remaining_intent: request.remaining_intent,
         completed_steps: request.completed_steps ?? [],
+        actor_ref: request.actor?.actor_id,
+        planned_operations: plan.operations,
         source_refs: operation.action_production.source_refs,
         sources: sourceDescriptors(request.player_safe_state,
           operation.action_production.source_refs),
@@ -28,10 +30,16 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',
     'Turn-step grounding auditor returned an invalid result.', { status: 503 }
   );
-  return response.output.pass ? true : { pass: false, errors: [{
-    path: '$.operations.0.action_production.source_refs',
-    rule: 'source_semantic_grounding', code: 'source_semantic_grounding',
-    message: 'each source must denote its named material from its own player-safe evidence'
+  if (response.output.pass) return true;
+  const moveMissing = response.output.concerns.some(({ kind }) =>
+    kind === 'missing_required_source_move');
+  const code = moveMissing
+    ? 'source_placement_grounding' : 'source_semantic_grounding';
+  return { pass: false, errors: [{
+    path: '$.operations', rule: code, code,
+    message: moveMissing
+      ? 'explicit source relocation requires a matching move_entity'
+      : 'each source must denote its named material from its own player-safe evidence'
   }] };
 }
 
@@ -42,7 +50,9 @@ function sourceDescriptors(state, refs) {
   return refs.map((sourceRef) => ({ source_ref: sourceRef,
     item: descriptors(items.find(({ item_id: id }) => id === sourceRef)),
     visible: descriptors(visible.find(({ entity_ref: ref }) =>
-      ref?.entity_kind === 'item' && ref.entity_id === sourceRef)) }));
+      ref?.entity_kind === 'item' && ref.entity_id === sourceRef)),
+    placement: structuredClone(items.find(({ item_id: id }) =>
+      id === sourceRef)?.placement ?? null) }));
 }
 
 function descriptors(value) {

@@ -33,10 +33,29 @@ test('action-production grounding audit receives only each source own evidence',
     assert.equal(call.role_id, 'turn_step_grounding_auditor');
     const payload = JSON.parse(call.messages[1].content);
     assert.deepEqual(payload.sources, [{ source_ref: 'item:knife',
-      item: { category_id: 'utility_knife' }, visible: null }]);
+      item: { category_id: 'utility_knife' }, visible: null,
+      placement: null }]);
     assert.equal(payload.root_player_action,
       'Сделать опору из доски и снасти.');
     assert.doesNotMatch(call.messages[1].content, /кафтан/u);
+  });
+
+test('grounding audit reports an explicit source relocation omitted by plan',
+  async () => {
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run() { return { output: { pass: false,
+        concerns: [{ kind: 'missing_required_source_move' }] } }; } },
+      plan: { operations: [{ op: 'request_item_use', action_production: {
+        source_refs: ['item:board'] } }] },
+      request: { request_id: 'request-2', actor: { actor_id: 'actor' },
+        root_player_action: 'Подбираю доску и делаю опору.',
+        remaining_intent: 'Подбираю доску и делаю опору.',
+        completed_steps: [], player_safe_state: { items: [{
+          item_id: 'item:board', name: 'доска',
+          placement: { anchor_id: 'shore' }
+        }] } }
+    });
+    assert.equal(result.errors[0].code, 'source_placement_grounding');
   });
 
 test('non-production turn skips grounding model', async () => {

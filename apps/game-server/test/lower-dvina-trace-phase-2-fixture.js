@@ -194,8 +194,7 @@ function fixture({
         surface: 'turn',
         visible_context: visibleContext,
         context: {
-          player_input: structuredClone(replay.factual.player_input),
-          mode_resolution: structuredClone(replay.factual.mode_resolution),
+          attempt: { text: replay.factual.player_input.raw_text }
         },
         style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
         max_repairs: 1,
@@ -369,6 +368,8 @@ function fixture({
             quantity: clue.quantity,
             placement: structuredClone(clue.placement),
             state: {
+              semantic_category: clue.semantic_category,
+              display_name: 'клочок синей шерсти',
               evidence_ref: 'trace_ld_v1_evidence_blue_wool',
               property_state: structuredClone(clue.property_state),
               inventory_profile_snapshot: structuredClone(clue.inventory_profile),

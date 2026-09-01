@@ -7,6 +7,7 @@ export function mergePhase2Items(items, clue) {
         quantity: clue.quantity } : {}),
       placement: structuredClone(clue.placement), state: exactPickup ? {
         semantic_category: clue.semantic_category,
+        display_name: 'клочок синей шерсти',
         property_state: structuredClone(clue.property_state),
         causal_basis: clue.causal_basis,
         evidence_ref: 'trace_ld_v1_evidence_blue_wool',

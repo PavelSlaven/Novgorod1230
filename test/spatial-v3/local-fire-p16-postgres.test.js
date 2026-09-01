@@ -366,14 +366,17 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
             waterStart.transition_proposal.process_after));
           semanticQuantities.push(request.subject_state.quantities[0]);
           const sourceRef=request.subject_state.source_refs[0];
+          const processOutcome=sourceRef==='water-1'?'no_effect'
+            :sourceRef==='water-continue'?'continue':'complete';
           return {schema:'world_process_step_plan_v1',request_id:request.request_id,
             process_ref:request.process.process_ref,
             process_state_version:request.process_state_version,
             interpretation:{grounded_transition:'whole water portion extinguishes fire'},
-            process_outcome:sourceRef==='water-1'?'no_effect'
-              :sourceRef==='water-continue'?'continue':'complete',
+            process_outcome:processOutcome,
             affected_refs:request.subject_state.source_refs,
-            fact_changes:[],reason_code:'water_affects_fire'};
+            fact_changes:[],reason_code:processOutcome==='no_effect'
+              ?'affect_no_effect':processOutcome==='continue'
+                ?'affect_continues_process':'affect_completes_process'};
         }})({partyId:'party-fire',
           applyWorkingProjection:keepWorkingProjection});
     const waterResult=await waterResolver({operation:{op:'request_world_process',
@@ -585,7 +588,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     const multiCommitted=await committer.commit({plan:multiCombined});
     assert.equal(multiCommitted.ok,true,JSON.stringify(multiCommitted));
     assert.deepEqual(await committer.commit({plan:multiCombined}),{
-      ok:true,replay:true,change_set_id:'change:party-fire:trace-phase7:11'});
+      ok:true,replay:true,change_set_id:'change:party-fire:trace-phase2:11'});
     assert.deepEqual((await pool.query(`SELECT status,next_boundary_at,
       process_state->'fuel_bindings' AS fuels FROM
       party_runtime.party_local_world_processes WHERE party_id='party-fire'
@@ -616,7 +619,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
           process_state_version:request.process_state_version,
           interpretation:{grounded_transition:'whole water portion extinguishes fire'},
           process_outcome:'complete',affected_refs:request.subject_state.source_refs,
-          fact_changes:[],reason_code:'water_extinguishes'})})({
+          fact_changes:[],reason_code:'affect_completes_process'})})({
       partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
     const preparedEnvelope={operation:{op:'request_world_process',actor_ref:'pc',
       process_action:'affect',process_ref:preparedProcess,process_kind:'fire',
@@ -756,7 +759,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         process_state_version:request.process_state_version,
         interpretation:{grounded_transition:'whole water portion extinguishes fire'},
         process_outcome:'complete',affected_refs:request.subject_state.source_refs,
-        fact_changes:[],reason_code:'water_extinguishes'})})({
+        fact_changes:[],reason_code:'affect_completes_process'})})({
       partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
     const chainEnvelope=(step,operation,prior=[],currentClock=clock(90))=>({operation,
       actor:{actor_id:'pc'},plan:{schema:'turn_step_plan_v1'},request:{
@@ -998,7 +1001,7 @@ function preparedA1Fuel(partyVersion,changeSetId,usedItemIds=[]){
     equipment_slot_category_id:null,attached_item_id:null};
   const entity={schema:'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state:'committed',role:'source',entity_ref:sourceRef,
-    state_version:String(partyVersion),lifecycle_state:'active',
+    state_version:String(item.state_version),lifecycle_state:'active',
     access_state:'immediate',holder_ref:'pc',controller_ref:'pc',
     ownership_snapshot:structuredClone(ownership),finite_resource:null};
   const resultRef=createActionProducedOutputIdentity({root_turn_id:root,
@@ -1017,7 +1020,7 @@ function preparedA1Fuel(partyVersion,changeSetId,usedItemIds=[]){
     schema:'rus.items.action_produced_mechanics_request.v1',
     causal_identity:causal,identity_mode:'independent_outputs',
     origin:'direct_partition',result_class:'partial_transformation',
-    source_inputs:[{entity_ref:sourceRef,state_version:String(partyVersion),
+    source_inputs:[{entity_ref:sourceRef,state_version:String(item.state_version),
       holder_ref:'pc',controller_ref:'pc',ownership_snapshot:ownership,
       finite_resource:null}],tool_inputs:[],qualitative_intent:qualitative,
     technical_limits:{policy_ref:
@@ -1055,7 +1058,7 @@ function preparedA1Fuel(partyVersion,changeSetId,usedItemIds=[]){
       'lower_dvina_trace:a1:personal_tool_transform',
     state_version:String(partyVersion),commit_state:'committed',
     root_turn_id:root,action_ref:actionRef,step_index:step,actor_ref:'pc',
-    entities:[{entity_ref:sourceRef,state_version:String(partyVersion),
+    entities:[{entity_ref:sourceRef,state_version:String(item.state_version),
       lifecycle_state:'active',access_state:'immediate',
       accessible_actor_ref:'pc',holder_ref:'pc',controller_ref:'pc',
       role_membership:['source']}]},source_snapshots:[structuredClone(entity)],
@@ -1073,8 +1076,8 @@ function preparedA1Fuel(partyVersion,changeSetId,usedItemIds=[]){
       max_new_entities:4},identity_mode:'independent_outputs',
     origin:'direct_partition',result_class:'partial_transformation',
     actual_output_count:1,source_transitions:[{entity_ref:sourceRef,before:{
-      state_version:String(partyVersion),holder_ref:'pc',controller_ref:'pc'},
-    after:{state_version:String(partyVersion+1),mechanics_snapshot:owner
+      state_version:String(item.state_version),holder_ref:'pc',controller_ref:'pc'},
+    after:{state_version:String(item.state_version+1),mechanics_snapshot:owner
       .source_effects[0].mechanics_snapshot_after,
       holder_ref:'pc',controller_ref:'pc'},finite_resource_transition:null}],
     tool_state_pins:[],results:[{entity_ref:resultRef,

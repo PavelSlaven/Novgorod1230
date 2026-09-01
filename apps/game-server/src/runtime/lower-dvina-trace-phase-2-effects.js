@@ -127,7 +127,7 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
             },
             display_label: 'клочок синей шерсти',
             recognition: 'recognized',
-            visible_status: 'замечен на ветке у места крушения'
+            visible_status: 'у вас в руках'
           }]
         : [];
       return {
@@ -138,7 +138,10 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
           ...consequence.observations.map(({ fact_id: factId }) =>
             scenePresentation == null
               ? historicalFactPresentation(factId)
-              : factPresentationForRef({ scenePresentation, factRef: factId }).text)
+              : factPresentationForRef({ scenePresentation, factRef: factId }).text),
+          ...(consequence.clue_materialization == null ? [] : [
+            'Клочок синей шерсти теперь у вас в руках.'
+          ])
         ],
         sensory_details: [],
         visible_npc: [],

@@ -183,7 +183,14 @@ export function tracePhase7FireEnvironmentSatisfied(state, contracts) {
 }
 
 function resolveCampScope(state, placement) {
-  const matches = (state?.prepared_scenes ?? []).filter((scene) =>
+  const prepared = [...(state?.prepared_scenes ?? [])];
+  const firstEntry = state?.first_entry_preparation?.scene;
+  if (firstEntry?.location_profile_ref === placement?.group?.location_ref
+      && !prepared.some((scene) => scene.location_profile_ref
+        === firstEntry.location_profile_ref)) {
+    prepared.push(firstEntry);
+  }
+  const matches = prepared.filter((scene) =>
     scene?.location_profile_ref === placement?.group?.location_ref
       && scene?.anchor?.template_id === placement?.group?.anchor_template_ref);
   if (matches.length !== 1 || !matches[0]?.node?.instance_id

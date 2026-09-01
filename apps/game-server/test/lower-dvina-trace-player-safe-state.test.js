@@ -83,6 +83,19 @@ test('canonical NPC names stay hidden without player-safe acquisition', () => {
     'Скрытое каноническое имя'), false);
 });
 
+test('projects a committed player-safe item display name from item state', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'held-clue', placement: {
+    holder_character_id: state.actor_id, physical_position: 'hands'
+  }, state: { semantic_category: 'textile_clue',
+    display_name: 'клочок окрашенной шерсти' } });
+  const item = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state.items.find(({ item_id: id }) => id === 'held-clue');
+  assert.equal(item.name, 'клочок окрашенной шерсти');
+  assert.equal(item.state.display_name, 'клочок окрашенной шерсти');
+});
+
 test('combat projection does not disclose private NPC intents', () => {
   const committedState = richCommittedState();
   committedState.combat_sessions = [{ combat_id: 'combat-1',

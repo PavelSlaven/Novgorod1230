@@ -175,17 +175,13 @@ function activeConversationChoiceExample(request, choices) {
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const semantic = structuredClone(choice);
-  const copiedChoice = semantic.operation_choice == null
-    && semantic.operations?.length === 1
-    ? operationChoices.find(({ operation }) =>
-        isDeepStrictEqual(semantic.operations[0], operation))
-    : undefined;
-  const selected = selectedTurnStepOperation(semantic, operationChoices)
-    ?? selectedTurnStepOperation({ ...semantic,
-      operation_choice: copiedChoice?.choice_id }, operationChoices);
+  const selected = selectedTurnStepOperation(semantic, operationChoices);
+  const copiedExactOperation = semantic.operation_choice == null
+    && semantic.operations?.some((operation) => operationChoices.some(
+      (choice) => isDeepStrictEqual(operation, choice.operation)));
   const operations = bindActionProductionCarrierRefs(selected
     ? [structuredClone(selected.operation)]
-    : semantic.operation_choice == null
+    : semantic.operation_choice == null && !copiedExactOperation
       ? structuredClone(semantic.operations) : undefined);
   const domainRequest = semantic.resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>

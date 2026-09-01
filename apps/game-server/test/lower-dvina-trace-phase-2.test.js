@@ -181,8 +181,10 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     'Кожаная застёжка разрезана.',
     'На борту лодки заметна вмятина сбоку.',
     'Среди обломков есть следы ещё одной небольшой лодки.',
-    'На ветке у места крушения найден клочок синей шерсти.'
+    'На ветке у места крушения найден клочок синей шерсти.',
+    'Клочок синей шерсти теперь у вас в руках.'
   ]);
+  assert.equal(visible.visible_objects[0].visible_status, 'у вас в руках');
   assert.equal(/trace_ld_v1_|visible:/u.test(visible.known_context.join(' ')), false);
   assert.equal(/след сапога|безопасн|виновник|мотив|Жданко/u.test(visible.known_context.join(' ')), false);
   assert.equal(JSON.stringify(visible.visible_changes)
@@ -254,6 +256,9 @@ test('revision 9 success atomically picks up blue wool with exact owner-preservi
       item.template_id === 'trace_ld_v1_item_blue_wool_fragment').length,
     1
   );
+  assert.equal(f.state.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_blue_wool_fragment')
+    .state.display_name, 'клочок синей шерсти');
 });
 
 test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {

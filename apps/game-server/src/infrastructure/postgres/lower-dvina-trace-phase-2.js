@@ -190,13 +190,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       surface: 'turn',
       visible_context: visibleContext,
       context: {
-        player_input: {
-          party_id: partyId,
-          raw_text: replay.state.last_turn.raw_text
-        },
-        mode_resolution: {
-          option_id: replay.state.last_turn.option_id
-        }
+        attempt: { text: replay.state.last_turn.raw_text }
       },
       style_policy: {
         preserve_uncertainty: true,

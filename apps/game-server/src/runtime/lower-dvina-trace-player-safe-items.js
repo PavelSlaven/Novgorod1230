@@ -172,7 +172,8 @@ function projectItem(item, strict) {
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: text(item.name), semantic_type: text(item.semantic_type),
+    name: text(item.name ?? item.state?.display_name),
+    semantic_type: text(item.semantic_type),
     physical_facts: projectPhysicalFacts(item, strict),
     physical_fact_records: physicalFactRecords(item.physical_fact_records
       ?? item.state?.ordinary_metadata?.semantic_facts?.map?.((fact) => ({
@@ -250,7 +251,7 @@ function projectContents(value, strict) {
 function projectItemState(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
-    'semantic_category', 'evidence_ref', 'condition', 'condition_state',
+    'semantic_category', 'display_name', 'evidence_ref', 'condition', 'condition_state',
     'property_state', 'accessibility', 'access_state', 'visibility_state',
     'use_state'
   ]);
@@ -259,6 +260,7 @@ function projectItemState(value, strict) {
     path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS });
   return compact({
     semantic_category: text(value.semantic_category),
+    display_name: text(value.display_name),
     evidence_ref: text(value.evidence_ref),
     condition: typeof value.condition === 'string' ? value.condition
       : scalarRecord(value.condition, { strict, path: 'item.state.condition',

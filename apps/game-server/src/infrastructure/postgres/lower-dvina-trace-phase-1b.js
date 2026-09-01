@@ -298,13 +298,20 @@ export async function readWorldBaseReferenceSnapshot(
     );
   }
   const reader = createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) });
+  const sceneIds = ['trace_ld_v1_tpl_wreck_shore',
+    'trace_ld_v1_tpl_fishing_camp'];
+  const canonicalIds = ['trace_ld_v1_g5_wreck_shore',
+    'trace_ld_v1_g5_fishing_camp'];
+  if (compatibility.lineage.some(({ world_revision_id: id }) =>
+    id === 'novgorod_spatial_v3_production_v6_candidate_001')) {
+    sceneIds.push('trace_ld_v1_tpl_old_drying_shed');
+    canonicalIds.push('trace_ld_v1_g5_old_drying_shed');
+  }
   const [closures, canonicalG5] = await Promise.all([
-    Promise.all(['trace_ld_v1_tpl_wreck_shore', 'trace_ld_v1_tpl_fishing_camp',
-      'trace_ld_v1_tpl_old_drying_shed']
+    Promise.all(sceneIds
       .map((id) => reader.readPinnedSceneTemplateClosure({ id, version: 1,
         world_revision_id: compatibility.production_world_revision_id }))),
-    Promise.all(['trace_ld_v1_g5_wreck_shore', 'trace_ld_v1_g5_fishing_camp',
-      'trace_ld_v1_g5_old_drying_shed']
+    Promise.all(canonicalIds
       .map((id) => reader.readPinnedCanonicalG5SceneBinding({ id, version: 1,
         world_revision_id: compatibility.production_world_revision_id })))
   ]);

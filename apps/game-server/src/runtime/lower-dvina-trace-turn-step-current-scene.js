@@ -53,7 +53,8 @@ export function withLowerDvinaTraceCurrentScene({
     visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
-    visible_objects: visibleSceneObjects(playerSafe.items, playerSafe.position),
+    visible_objects: visibleSceneObjects(
+      playerSafe.items, playerSafe.position, playerSafe.actor_id),
     known_context: [profile.display_name],
     uncertainties: [],
     allowed_tensions: [],
@@ -66,17 +67,18 @@ export function withLowerDvinaTraceCurrentScene({
   };
 }
 
-function visibleSceneObjects(items, position) {
+function visibleSceneObjects(items, position, actorId) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
     const coLocated = placement.location_ref === position?.location_ref
       || [position?.g5_anchor_id, position?.anchor_id]
         .includes(placement.g5_anchor_id ?? placement.anchor_id);
+    const held = placement.holder_character_id === actorId;
     const itemId = item?.item_id ?? item?.instance_id;
-    if (!coLocated || !text(itemId) || !text(item?.name)) return [];
+    if ((!coLocated && !held) || !text(itemId) || !text(item?.name)) return [];
     return [{ entity_ref: { entity_kind: 'item', entity_id: itemId },
       display_label: item.name, recognition: 'recognized',
-      visible_status: 'available' }];
+      visible_status: held ? 'у вас в руках' : 'available' }];
   });
 }
 

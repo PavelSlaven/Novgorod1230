@@ -132,6 +132,7 @@ function operationFor(request) {
 }
 
 function domainPlan(request, operation) {
+  operation = exactAvailableOperation(request, operation) ?? operation;
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
@@ -153,6 +154,29 @@ function domainPlan(request, operation) {
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
   };
+}
+
+function exactAvailableOperation(request, intended) {
+  const matches = (request.available_domain_operations ?? []).filter(
+    (candidate) => candidate.op === intended.op
+      && sameScalar(candidate, intended, 'discovery_kind')
+      && sameScalar(candidate, intended, 'movement_kind')
+      && sameScalar(candidate, intended, 'activity_kind')
+      && sameScalar(candidate, intended, 'interaction_kind')
+      && sameScalar(candidate, intended, 'target_ref')
+      && sameRefs(candidate.target_refs, intended.target_refs)
+      && sameRefs(candidate.target_actor_refs, intended.target_actor_refs));
+  return matches.length === 1 ? matches[0] : null;
+}
+
+function sameScalar(left, right, key) {
+  return right[key] == null || left[key] === right[key];
+}
+
+function sameRefs(left, right) {
+  return right == null || Array.isArray(left)
+    && left.length === right.length
+    && right.every((ref) => left.includes(ref));
 }
 
 function directPlan(request) {

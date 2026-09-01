@@ -77,6 +77,16 @@ test('current scene never promotes an authored NPC name into player knowledge', 
     ({ entity_ref: ref }) => ref.entity_id === 'unknown'), false);
 });
 
+test('current scene maps actor age into the player-safe portrait vocabulary', () => {
+  const state = committedState();
+  state.npcs[0].identity_state.age_category = 'young_adult';
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  assert.equal(current.current_visible_context.visible_npc[0]
+    .observable_cues.identity.age_category, 'young');
+});
+
 test('version zero scene retains safe labels and gains observable cues', () => {
   const state = committedState();
   state.party_state.state_version = 0;
@@ -130,6 +140,21 @@ test('current scene retains committed co-located physical objects', () => {
     entity_ref: { entity_kind: 'item', entity_id: 'reed-bundle' },
     display_label: 'пучок камыша', recognition: 'recognized',
     visible_status: 'available'
+  }]);
+});
+
+test('current scene retains a named item held by the player', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'held-wool', state: {
+    display_name: 'клочок шерсти' }, placement: {
+    holder_character_id: state.actor_id, physical_position: 'hands'
+  } });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'held-wool' },
+    display_label: 'клочок шерсти', recognition: 'recognized',
+    visible_status: 'у вас в руках'
   }]);
 });
 

@@ -201,6 +201,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'owner_preserved_evidence_held');
   assert.deepEqual(persistedCluePlacement.state.property_state,
     result.clue.property_state);
+  assert.equal(persistedCluePlacement.state.display_name,
+    'клочок синей шерсти');
   assert.deepEqual(persistedCluePlacement.state.inventory_profile_snapshot,
     result.clue.inventory_profile);
   assert.equal(
@@ -282,6 +284,9 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     [opened.party_id]
   )).rows[0].state_payload;
   assert.equal('relevant_hidden_state' in firstSnapshot, false);
+  assert.equal(firstSnapshot.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_blue_wool_fragment')
+    .state.display_name, 'клочок синей шерсти');
   assert.equal(
     containsObjectKey(firstSnapshot, 'hidden_truth'),
     false
@@ -883,10 +888,7 @@ async function assertGeneralLookAfterInspection({
     opened.screen.visible_context.place);
   assert.notEqual(campLookContext.visible_scene,
     narrationRequests[2].visible_context.visible_scene);
-  assert.deepEqual([...campLookContext.sensory_details].sort(), [
-    'dry_bank_near_working_water',
-    'local_fishing_work_site'
-  ]);
+  assert.deepEqual(campLookContext.sensory_details, []);
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);

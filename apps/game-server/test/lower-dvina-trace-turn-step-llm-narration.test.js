@@ -202,3 +202,47 @@ test('narration treats exact known context as visible evidence and still blocks 
       .messages[0].content.includes('visible_context.known_context'), true);
   });
 });
+
+test('narration removes technical prose derived from a negative movement invariant',
+  async () => {
+    let auditCount = 0;
+    const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+      async run(call) {
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose: 'Отдых не привёл к перемещению.', action_options: [],
+          used_references: [], self_check: {}
+        } };
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          auditCount += 1;
+          const input = JSON.parse(call.messages[1].content);
+          assert.equal(input.action_intent_context.outcome.position_changed,
+            false);
+          return { output: auditCount === 1 ? { pass: false, concerns: [{
+            segment_choice: 'segment_1', kind: 'technical_presentation',
+            reason: 'Negative movement invariant is not prose material.'
+          }], evidence: ['False outcome is a silent constraint.'] } : {
+            pass: true, concerns: [], evidence: ['Visible change only.']
+          } };
+        }
+        return { output: { replacements: [{
+          prose: 'У огня одежда немного подсохла.'
+        }] } };
+      }
+    } });
+    const result = await narration.run({
+      version: 1, schema: 'narration_request', request_id: 'silent-negative',
+      surface: 'turn', visible_context: {
+        version: 1, schema: 'visible_context_package',
+        visible_scene: 'У костра.',
+        visible_changes: ['У огня одежда немного подсохла.'],
+        sensory_details: [], visible_npc: [], visible_objects: [],
+        known_context: [], uncertainties: [], allowed_tensions: [],
+        do_not_imply: []
+      }, context: { attempt: { text: 'Отдохнуть у костра.' },
+        outcome: { position_changed: false } }
+    });
+    assert.equal(result.status, 'approved');
+    assert.equal(result.approved_output.prose,
+      'У огня одежда немного подсохла.');
+    assert.equal(result.approved_output.prose.includes('перемещ'), false);
+  });

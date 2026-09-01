@@ -177,7 +177,8 @@ function safeConversationIdentity(value, displayName) {
   return {
     display_name: displayName,
     sex_category: safeText(value?.sex_category),
-    age_category: safeText(value?.age_category),
+    age_category: value?.age_category === 'young_adult'
+      ? 'young' : safeText(value?.age_category),
     appearance: {
       build: safeText(value?.appearance?.build),
       skin_tone: safeText(value?.appearance?.skin_tone),

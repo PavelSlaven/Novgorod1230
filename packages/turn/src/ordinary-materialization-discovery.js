@@ -119,7 +119,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       basisCatalog: admissionBases(bases), beforeModel: () =>
         verifyStageBCutover({
           eval_contract: execution.stage_b_classification_eval
-        }), codeOwnedResolution: enabled.code_owned_resolution ?? null });
+        }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
+      mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
     if (presence.status === 'no_change' && presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
@@ -181,7 +182,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         } };
       const admitted = admitOrdinaryWorldMaterialization(
         structuredClone(admissionInput));
-      if (!admitted.pass) return ordinaryNoop(request);
+      if (!admitted.pass) throw turnFailure(
+        'TURN_ORDINARY_ITEM_ADMISSION_REJECTED',
+        'Code-owned ordinary item admission rejected the model proposal.');
       const identityKey = `ordinary_identity_${canonicalDigest({
         candidate_key: envelope.identity.candidate_key,
         coverage_key: envelope.identity.coverage_key,

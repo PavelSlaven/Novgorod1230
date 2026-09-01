@@ -21,11 +21,12 @@ export function createOrdinaryMaterializationModel({ roleRunner,
   const requestCalls = new WeakMap();
   const model = async function resolveOrdinaryMaterialization(request,
     context = {}) {
-    const repair = exactRepairContext(context);
+    const { repair, mechanicsPolicy } = exactModelContext(context);
     admitCallSequence(requestCalls, request, repair);
     const expectedIdentity = approvedIdentity({ roleRunner, defaultApprovedIdentity,
       qualifiedO1Identity });
-    const response = await runRole({ roleRunner, request, repair });
+    const response = await runRole({ roleRunner, request, repair,
+      mechanicsPolicy });
     const output = ordinaryMaterializationResponseOf(response);
     bindIdentity(expectedIdentity, exactModelIdentity(output.provider_record));
     return bindOrdinaryMaterializationPlan(request, output.output);
@@ -59,14 +60,16 @@ function approvedIdentity({ roleRunner, defaultApprovedIdentity,
     ? qualifiedO1Identity() : null);
 }
 
-async function runRole({ roleRunner, request, repair }) {
+async function runRole({ roleRunner, request, repair, mechanicsPolicy }) {
   return roleRunner.run({ ...modelInvocation(),
     request_identity: request.request_id,
     repair: repair !== null,
-    messages: buildOrdinaryMaterializationMessages(request, { repair }) });
+    messages: buildOrdinaryMaterializationMessages(request, { repair,
+      mechanicsPolicy }) });
 }
 
-export function buildOrdinaryMaterializationMessages(request, { repair = null } = {}) {
+export function buildOrdinaryMaterializationMessages(request, { repair = null,
+  mechanicsPolicy = null } = {}) {
   const responseShape = ordinaryMaterializationResponseShape(request);
   const instructions = [
     'Return only one JSON object containing the ordinary semantic choice.',
@@ -88,6 +91,7 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null } 
       'resolve_presence permits materialize, absent, no_change, or authority_required. Negative choices return only resolution and reason_code.',
       'For materialize return resolution, one entity containing only semantic_descriptor, presence_expectation, and mechanics_proposal, plus reason_code.',
       'Closed literal enums: density_band_proposal is null, sparse, ordinary, or dense; availability_class is common or context_bound; functional_bucket is household, work, storage, stock, furnishing_textile, maintenance_material, waste_scrap, personal_effect, arms, or other_ordinary; presence_expectation is routine, plausible, or exceptional.',
+      ...(mechanicsPolicy == null ? [] : [mechanicsInstruction(mechanicsPolicy)]),
       'Use only supplied context and policy refs.',
     ...(responseShape == null ? [] : [
         'The server will assemble this request-derived authoritative envelope; do not copy it:',
@@ -127,14 +131,20 @@ function ordinarySemanticShape(request) {
   }], reason_code: 'materialize' };
 }
 
-function exactRepairContext(context) {
+function exactModelContext(context) {
   const snapshot = snapshotLowerDvinaTraceOrdinaryStageBJson(context);
-  if (snapshot == null || Object.keys(snapshot).length !== 1
-      || !Object.hasOwn(snapshot, 'repair')) {
+  const keys = Object.keys(snapshot ?? {});
+  if (snapshot == null || !Object.hasOwn(snapshot, 'repair')
+      || keys.some((key) => !['repair', 'mechanics_policy'].includes(key))) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
   const repair = snapshot.repair;
-  if (repair === null) return null;
+  const mechanicsPolicy = Object.hasOwn(snapshot, 'mechanics_policy')
+    ? mechanicsPolicyOf(snapshot.mechanics_policy) : null;
+  if (Object.hasOwn(snapshot, 'mechanics_policy') && mechanicsPolicy == null) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
+  if (repair === null) return { repair: null, mechanicsPolicy };
   if (repair == null || typeof repair !== 'object' || Array.isArray(repair)
       || Object.keys(repair).length !== 3
       || repair.schema !== 'ordinary_materialization_repair_context_v1'
@@ -143,7 +153,43 @@ function exactRepairContext(context) {
       || repair.validation_errors.length === 0) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
-  return repair;
+  return { repair, mechanicsPolicy };
+}
+
+function mechanicsInstruction(policy) {
+  const bounds = mechanicsPolicyOf(policy);
+  if (bounds == null) throw cutoverError(
+    'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  return `Code-owned mechanics bounds: mass_grams is an integer from 1 to ${bounds.max_mass_grams}; external_hand_cost is exactly one of ${JSON.stringify(bounds.allowed_external_hand_costs)}; carry_form is exactly one of ${JSON.stringify(bounds.allowed_carry_forms)}; packing_slot_cost is an integer from 0 to ${bounds.max_packing_slot_cost}; quantity.value is an integer from 1 to ${bounds.max_quantity}; quantity.unit is "item"; container is null. Never invent another carry_form or exceed these bounds.`;
+}
+
+function mechanicsPolicyOf(value) {
+  const keys = ['policy_ref', 'max_mass_grams',
+    'allowed_external_hand_costs', 'allowed_carry_forms',
+    'max_packing_slot_cost', 'max_quantity'];
+  if (value == null || typeof value !== 'object' || Array.isArray(value)
+      || Object.keys(value).length !== keys.length
+      || keys.some((key) => !Object.hasOwn(value, key))
+      || typeof value.policy_ref !== 'string' || !value.policy_ref
+      || !Number.isSafeInteger(value.max_mass_grams)
+      || value.max_mass_grams < 1
+      || !Array.isArray(value.allowed_external_hand_costs)
+      || value.allowed_external_hand_costs.length === 0
+      || value.allowed_external_hand_costs.some((entry) =>
+        ![0, 1, 2].includes(entry))
+      || new Set(value.allowed_external_hand_costs).size
+        !== value.allowed_external_hand_costs.length
+      || !Array.isArray(value.allowed_carry_forms)
+      || value.allowed_carry_forms.length === 0
+      || value.allowed_carry_forms.some((entry) =>
+        !['compact', 'regular', 'long', 'bulky'].includes(entry))
+      || new Set(value.allowed_carry_forms).size
+        !== value.allowed_carry_forms.length
+      || !Number.isSafeInteger(value.max_packing_slot_cost)
+      || value.max_packing_slot_cost < 0
+      || !Number.isSafeInteger(value.max_quantity)
+      || value.max_quantity < 1) return null;
+  return value;
 }
 
 function admitCallSequence(calls, request, repair) {

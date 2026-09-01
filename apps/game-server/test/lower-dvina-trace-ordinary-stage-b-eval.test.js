@@ -91,6 +91,22 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
 });
 
+test('ordinary materialization prompt exposes exact code-owned mechanics bounds', () => {
+  const prompt = buildOrdinaryMaterializationMessages(presenceRequest('обломок доски'), {
+    mechanicsPolicy: { policy_ref: 'mechanics', max_mass_grams: 20_000,
+      allowed_external_hand_costs: [0, 1, 2],
+      allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+      max_packing_slot_cost: 16, max_quantity: 1 }
+  })[0].content;
+  assert.match(prompt, /mass_grams is an integer from 1 to 20000/u);
+  assert.match(prompt, /external_hand_cost is exactly one of \[0,1,2\]/u);
+  assert.match(prompt,
+    /carry_form is exactly one of \["compact","regular","long","bulky"\]/u);
+  assert.match(prompt, /packing_slot_cost is an integer from 0 to 16/u);
+  assert.match(prompt, /quantity\.value is an integer from 1 to 1/u);
+  assert.match(prompt, /Never invent another carry_form/u);
+});
+
 test('ordinary materialization absent prompt permits only its exact absent plan', () => {
   const source = presenceRequest('ложка');
   const request = { ...source, authority_envelope: { ...source.authority_envelope,

@@ -61,6 +61,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       working_projection: structuredClone(workingProjection),
       completed_steps: structuredClone(completedSteps),
       local_fire_atomic_write_plans: structuredClone(localFirePlans),
+      prepared_ordinary_materialization_atomic_write_plan:
+        structuredClone(ordinaryPlans[0] ?? null),
       prepared_chain_context: structuredClone(preparedChainContext),
       remaining_intent: remainingIntent
     })));

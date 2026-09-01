@@ -31,13 +31,11 @@ export async function runNarrationFlow(request, ports, options = {}) {
   if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
 
   const flaggedIds = [...new Set(audit.concerns.map((concern) => concern.segment_id))];
-  const actionIntent = actionIntentContext(request);
   const repair = await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
     visible_context: clone(request.visible_context),
-    ...(actionIntent ? { action_intent_context: actionIntent } : {}),
     style_policy: clone(request.style_policy ?? {}),
     concerns: clone(audit.concerns),
     segments: segments.filter((segment) => flaggedIds.includes(segment.segment_id)).map((segment) => ({ ...clone(segment), nearby_context: nearbySegments(segments, segment.segment_id) }))

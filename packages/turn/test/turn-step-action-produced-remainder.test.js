@@ -415,6 +415,14 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
         item_id: 'item:pole', placement: { anchor_id: 'anchor:shore' }
       }] }, remainingIntent: 'заострить жердь'
     }), false);
+    assert.equal(isActionProductionOwnerInScope({
+      operation, playerSafeState: { ...reloadedHeldObject,
+        inventory: { items: [] }, items: [{ item_id: 'item:pole',
+          placement: { anchor_id: 'anchor:shore' } }],
+        visible_objects: [], current_visible_context: { visible_objects: [
+          visibleObject('item:pole'), visibleObject('item:knife')
+        ] } }, remainingIntent: 'заострить жердь'
+    }), true);
     for (const marker of [null,
       { semantic_grounding_available: false },
       { semantic_grounding_available: true, extra: true }]) {

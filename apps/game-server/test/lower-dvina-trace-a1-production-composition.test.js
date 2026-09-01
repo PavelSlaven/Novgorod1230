@@ -6,6 +6,8 @@ import { loadLowerDvinaTraceLocalFireProfile } from
   '../src/internal/lower-dvina-trace-local-fire-profile.js';
 import { projectLowerDvinaTraceA1Capability } from
   '../src/runtime/lower-dvina-trace-a1-player-safe.js';
+import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
+  '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { resolveA1OperationScope } from
@@ -96,6 +98,11 @@ test('A1 capability marker requires the exact profile and installed resolver',
         item_id: 'item:held', placement: { anchor_id: 'anchor:shore' }
       }] }, loadedProfile, resolverAvailable: true
     }).action_production, undefined);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { current_visible_context: { visible_objects: [{
+        entity_ref: { entity_kind: 'item', entity_id: 'item:driftwood' }
+      }] } }, loadedProfile, resolverAvailable: true
+    }).action_production.semantic_grounding_available, true);
 
     const afterPreserve = projectLowerDvinaTraceA1Capability({
       playerSafeState: { visible_objects: [bag, {
@@ -121,6 +128,32 @@ test('A1 capability marker requires the exact profile and installed resolver',
     assert.throws(() => createLowerDvinaTraceA1ProductionResolverFactory({
       pool: { query: async () => ({ rows: [] }) }, loadedProfile: drifted
     }), /Exact loaded A1 profile is required/u);
+  });
+
+test('prepared ordinary item becomes a visible A1 source for the next step',
+  async () => {
+    const loadedProfile = await loadLowerDvinaTraceA1Profile();
+    const projector = createLowerDvinaTraceTurnStepPlayerSafeProjector({
+      actionProductionProfile: loadedProfile,
+      createTurnStepActionProductionOwner: () => {},
+      playerSafeStateProjector: async () => ({ actor: {}, player_safe_state: {
+        actor_id: 'actor', items: [], current_visible_context: {
+          visible_objects: [] }
+      } })
+    });
+    const item = { item_id: 'item:driftwood',
+      runtime_placement: { anchor_id: 'shore' }, item_proposal: {
+        semantic_descriptor: { semantic_type: 'ordinary_wood',
+          name: 'длинная доска', facts: [] }
+      } };
+    const result = await projector({ committed_state: {},
+      prepared_ordinary_materialization_atomic_write_plan: {
+        resolution: 'materialize', item } });
+    assert.equal(result.player_safe_state.items[0].item_id, item.item_id);
+    assert.equal(result.player_safe_state.current_visible_context
+      .visible_objects[0].entity_ref.entity_id, item.item_id);
+    assert.equal(result.player_safe_state.action_production
+      .semantic_grounding_available, true);
   });
 
 test('A1 owner projects its validated semantic operation bounds', async () => {

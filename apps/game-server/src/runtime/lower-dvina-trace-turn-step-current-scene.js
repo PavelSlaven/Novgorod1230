@@ -116,28 +116,25 @@ export function projectCurrentSceneForVisibleOverlay({
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ]),
-    uncertainties: unique([
-      ...current.uncertainties,
-      ...directOutcomeUncertainties(input)
-    ]),
+    uncertainties: unique(current.uncertainties),
     do_not_imply: unique([
       ...current.do_not_imply,
       'hidden_fact',
       'uncommitted_body_delta',
-      'uncommitted_time'
+      'uncommitted_time',
+      ...directOutcomeConstraints(input)
     ])
   });
 }
 
 export function projectDirectSeedChanges({ input, directSeedKeys }) {
   const seed = input?.consequence?.visible_seed ?? {};
-  return directSeedKeys.map((key) => directSeedChange(seed[key]));
+  return directSeedKeys.map((key) => directSeedChange(seed[key]))
+    .filter(Boolean);
 }
 
 function directSeedChange(value) {
-  if (value?.kind === 'semantic_activity') {
-    return 'Прошло некоторое время.';
-  }
+  if (value?.kind === 'semantic_activity') return null;
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
   }
@@ -157,18 +154,18 @@ function directSeedChange(value) {
   failCurrentScene();
 }
 
-function directOutcomeUncertainties(input) {
+function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;
   const plans = (trace?.step_traces ?? []).map(({ approved_plan: plan }) => plan)
     .filter((plan) => plan?.resolution === 'direct');
   const results = plans.map(({ goal_result: result }) => result).filter(Boolean);
   if (results.length > 0 && results.every((result) => result === 'not_achieved')
       && !text(trace?.remaining_intent)) {
-    return ['Задуманное не удалось.'];
+    return ['unconfirmed_attempt_success'];
   }
   if (results.includes('partially_achieved') || text(trace?.remaining_intent)
       || (results.length === 0 && input?.consequence?.status === 'partial')) {
-    return ['Удалось осуществить лишь часть задуманного; остальное ещё не произошло.'];
+    return ['uncompleted_remaining_intent'];
   }
   return [];
 }

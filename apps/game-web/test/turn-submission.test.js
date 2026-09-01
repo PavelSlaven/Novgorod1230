@@ -6,34 +6,44 @@ import {
   submitTurnWithPresentationReplay
 } from '../src/app/turn-submission.js';
 
-test('turn controller replays one pending presentation with same client request', async (t) => {
+test('turn controller recovers one pending presentation without replaying gameplay', async (t) => {
   await t.test('ready replay is accepted', async () => {
-    const calls = [];
+    const submissions = [];
+    const recoveries = [];
     const request = createTurnRequest({ raw_text: 'Look around.' });
     const result = await submitTurnWithPresentationReplay({
       async submitTurn(partyId, input) {
-        calls.push({ partyId, input });
-        return calls.length === 1
-          ? { screen: { screen_status: 'committed_presentation_pending' } }
-          : { screen: { screen_status: 'ready' } };
+        submissions.push({ partyId, input });
+        return { screen: { screen_status: 'committed_presentation_pending' } };
+      },
+      async recoverPendingPresentation(partyId) {
+        recoveries.push(partyId);
+        return { screen: { screen_status: 'ready' } };
       }
     }, 'party-1', request);
-    assert.equal(calls.length, 2);
-    assert.strictEqual(calls[0].input, calls[1].input);
-    assert.equal(calls[0].input.request_id, calls[0].input.idempotency_key);
-    assert.equal(calls[0].input.raw_text, 'Look around.');
+    assert.equal(submissions.length, 1);
+    assert.deepEqual(recoveries, ['party-1']);
+    assert.equal(submissions[0].input.request_id,
+      submissions[0].input.idempotency_key);
+    assert.equal(submissions[0].input.raw_text, 'Look around.');
     assert.equal(result.screen.screen_status, 'ready');
   });
   await t.test('second pending response does not receive a third submission', async () => {
-    let calls = 0;
+    let submissions = 0;
+    let recoveries = 0;
     const request = createTurnRequest({ raw_text: 'Look around.' });
     await assert.rejects(() => submitTurnWithPresentationReplay({
       async submitTurn() {
-        calls += 1;
+        submissions += 1;
+        return { screen: { screen_status: 'committed_presentation_pending' } };
+      },
+      async recoverPendingPresentation() {
+        recoveries += 1;
         return { screen: { screen_status: 'committed_presentation_pending' } };
       }
     }, 'party-1', request), { code: 'PRESENTATION_PENDING' });
-    assert.equal(calls, 2);
+    assert.equal(submissions, 1);
+    assert.equal(recoveries, 1);
   });
 });
 

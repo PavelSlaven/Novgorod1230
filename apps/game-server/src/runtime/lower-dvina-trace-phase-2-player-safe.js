@@ -33,7 +33,9 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     projected = projectLowerDvinaTraceO2aCapabilities({ projected,
       admission: admitAmbientOrdinaryPortion });
-    const basePlayerSafeState = projected.player_safe_state;
+    const basePlayerSafeState = projectPreparedOrdinaryItem(
+      projected.player_safe_state,
+      input.prepared_ordinary_materialization_atomic_write_plan);
     const { active_interlocutor: _staleActiveInterlocutor,
       current_visible_context: _presentationOnlyCurrentContext,
       ...initialWorkingProjection } = basePlayerSafeState;
@@ -80,4 +82,40 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     return {...withSources,initial_working_projection:initialWorkingProjection,
       player_safe_state:{...withSources.player_safe_state,...capability}};
   };
+}
+
+function projectPreparedOrdinaryItem(state, plan) {
+  const item = plan?.resolution === 'materialize' ? plan.item : null;
+  const descriptor = item?.item_proposal?.semantic_descriptor;
+  if (!text(item?.item_id) || !text(descriptor?.name)
+      || !text(descriptor?.semantic_type)) return state;
+  const projectedItem = {
+    item_id: item.item_id,
+    name: descriptor.name,
+    semantic_type: descriptor.semantic_type,
+    ...(Array.isArray(descriptor.facts) && descriptor.facts.length
+      ? { physical_facts: descriptor.facts.map((fact) => fact?.text ?? fact)
+        .filter(text) } : {}),
+    placement: structuredClone(item.runtime_placement ?? {})
+  };
+  const contextKey = ['current_visible_context', 'visible_context',
+    'visible_context_package'].find((key) => state[key] != null);
+  if (contextKey == null) return { ...state,
+    items: [...(state.items ?? []), projectedItem] };
+  const context = state[contextKey];
+  return {
+    ...state,
+    items: [...(state.items ?? []), projectedItem],
+    [contextKey]: { ...context, visible_objects: [
+      ...(context.visible_objects ?? []),
+      { entity_ref: { entity_kind: 'item', entity_id: item.item_id },
+        display_label: descriptor.name, recognition: 'recognized',
+        visible_status: 'available' }
+    ] }
+  };
+}
+
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
 }

@@ -18,7 +18,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       repaired: false
     };
   } catch (error) {
-    if (error?.code !== 'TURN_STEP_PLAN_INVALID') throw error;
+    const parseFailure = error?.code === 'json_parse_failed';
+    if (error?.code !== 'TURN_STEP_PLAN_INVALID' && !parseFailure) throw error;
     if (allowRepair !== true) {
       error.details = deepFreeze({
         ...error.details,
@@ -27,10 +28,13 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       });
       throw error;
     }
+    if (parseFailure) originalOutput = {};
     const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
       original_output: structuredClone(originalOutput),
-      structural_errors: structuredClone(error.details?.errors ?? [])
+      structural_errors: parseFailure ? [{ path: '$', code: 'json_parse_failed',
+        message: 'Planner output was not valid JSON.' }]
+        : structuredClone(error.details?.errors ?? [])
     });
     try {
       return {

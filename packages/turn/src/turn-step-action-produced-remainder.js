@@ -28,9 +28,7 @@ export function isActionProductionOwnerInScope({
       || marker.max_new_entities < 1 || marker.max_new_entities > 8) {
     return false;
   }
-  const visibleObjects = exactVisibleRefs(playerSafeState, 'visible_objects', {
-    requireItemKind: true
-  });
+  const visibleObjects = visibleItemRefs(playerSafeState);
   const playerSafeItems = exactPlayerSafeItemRefs(playerSafeState);
   const actorHeldItems = exactActorHeldItemRefs(playerSafeState);
   if (!visibleObjects.has(itemUse.item_ref)
@@ -41,6 +39,18 @@ export function isActionProductionOwnerInScope({
     ...exactVisibleRefs(playerSafeState, 'visible_entities')
   ]);
   return targetRefs.every((ref) => visibleTargets.has(ref));
+}
+
+function visibleItemRefs(state) {
+  const refs = exactVisibleRefs(state, 'visible_objects', {
+    requireItemKind: true
+  });
+  for (const key of ['current_visible_context', 'visible_context',
+    'visible_context_package']) {
+    for (const ref of exactVisibleRefs(ownDataProperty(state, key),
+      'visible_objects', { requireItemKind: true })) refs.add(ref);
+  }
+  return refs;
 }
 
 function exactActorHeldItemRefs(playerSafeState) {

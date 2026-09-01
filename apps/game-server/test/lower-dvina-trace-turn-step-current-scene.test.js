@@ -56,9 +56,9 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
-  assert.deepEqual(direct.visible_changes,
-    ['Прошло некоторое время.']);
-  assert.deepEqual(direct.uncertainties, ['Задуманное не удалось.']);
+  assert.deepEqual(direct.visible_changes, []);
+  assert.deepEqual(direct.uncertainties, []);
+  assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
 
 test('current scene never promotes an authored NPC name into player knowledge', () => {

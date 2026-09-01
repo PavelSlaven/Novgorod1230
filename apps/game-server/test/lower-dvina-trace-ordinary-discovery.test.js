@@ -261,7 +261,10 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
           presence_resolutions: [], reason_code: 'ordinary_present' };
       }
     });
-    const result = await resolver(request('найти простую верёвку'));
+    const discoveryRequest = request('найти простую верёвку');
+    discoveryRequest.plan = { continuation: {
+      remaining_intent: 'связать ею две жерди', depends_on_refs: [] } };
+    const result = await resolver(discoveryRequest);
     const plan = result.ordinary_materialization_atomic_write_plan;
     assert.equal(plan.resolution, 'materialize');
     assert.equal(plan.item.supporting_basis_ref, plan.new_prepared_bases[0].basis_ref);
@@ -274,6 +277,7 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
       packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
       container: null
     });
+    assert.equal(result.player_response_boundary, false);
   });
 
 test('visible target without a committed G6 never calls the ordinary model', async () => {

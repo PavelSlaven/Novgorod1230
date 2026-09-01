@@ -292,7 +292,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
     duration_minutes: 0,
-    player_response_boundary: true,
+    player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });
 }
 

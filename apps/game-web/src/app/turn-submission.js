@@ -7,9 +7,9 @@ export function createTurnRequest(input) {
 export async function submitTurnWithPresentationReplay(api, partyId, request) {
   const first = await api.submitTurn(partyId, request);
   if (first?.screen?.screen_status !== 'committed_presentation_pending') return first;
-  const replay = await api.submitTurn(partyId, request);
+  const replay = await api.recoverPendingPresentation(partyId);
   if (replay?.screen?.screen_status === 'committed_presentation_pending') {
-    throw uiError('PRESENTATION_PENDING', 'Экран хода ещё готовится. Повтори действие.');
+    throw uiError('PRESENTATION_PENDING', 'Факты хода сохранены; экран ещё готовится.');
   }
   return replay;
 }

@@ -187,7 +187,7 @@ test('semantic repair preserves original inter-segment spacing', async () => {
   assert.equal(result.approved_output.prose, 'Исправлено. Второе.');
 });
 
-test('shares intent-only player context with audit and semantic repair', async () => {
+test('shares intent-only player context with audit but not semantic repair', async () => {
   const actionIntent = {
     attempt: { text: 'Постучать в закрытую дверь.' },
     outcome: { position_changed: false }
@@ -207,10 +207,7 @@ test('shares intent-only player context with audit and semantic repair', async (
             concerns: [], evidence: ['Attempt is grounded by player intent.'] };
     } },
     semanticRepairer: { async repair(input) {
-      assert.deepEqual(input.action_intent_context, {
-        evidence_scope: 'intent_only_non_evidence_of_success',
-        ...actionIntent
-      });
+      assert.equal(Object.hasOwn(input, 'action_intent_context'), false);
       return { version: 1, schema: 'narration_semantic_repair',
         replacements: [{ segment_id: 's1',
           prose: 'Вы пытаетесь постучать в закрытую дверь.' }] };

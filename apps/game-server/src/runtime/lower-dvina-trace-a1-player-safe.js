@@ -5,7 +5,7 @@ export function projectLowerDvinaTraceA1Capability({
   if (profile?.status !== 'approved' || resolverAvailable !== true
       || ![...playerSafeInventoryItemRefs(playerSafeState),
         ...playerSafeActorHeldItemRefs(playerSafeState),
-        ...(playerSafeState.visible_objects ?? []).map(
+        ...visibleObjects(playerSafeState).map(
           ({ entity_ref: ref }) => ref?.entity_kind === 'item'
             ? ref.entity_id : null)].some(text)) {
     return playerSafeState;
@@ -22,6 +22,12 @@ export function projectLowerDvinaTraceA1Capability({
       allowed_physical_forms: ['compact', 'regular', 'long', 'bulky']
     }
   };
+}
+
+function visibleObjects(state) {
+  return ['visible_objects', 'current_visible_context', 'visible_context',
+    'visible_context_package'].flatMap((key) => key === 'visible_objects'
+    ? state[key] ?? [] : state[key]?.visible_objects ?? []);
 }
 
 function playerSafeActorHeldItemRefs(playerSafeState) {

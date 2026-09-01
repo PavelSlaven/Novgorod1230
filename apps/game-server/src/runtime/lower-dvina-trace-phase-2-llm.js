@@ -45,9 +45,7 @@ export function createLowerDvinaTraceTurnStepModel({
     const operationChoices = turnStepOperationChoices(request);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
-    let response;
-    try {
-      response = await roleRunner.run({
+    const response = await roleRunner.run({
         scope: 'turn_runtime',
         role_id: repairing
           ? 'turn_step_planner_repair'
@@ -95,10 +93,6 @@ export function createLowerDvinaTraceTurnStepModel({
           maxTokens: repairing ? 4000 : 8000
         }
       });
-    } catch (error) {
-      if (!repairing && error?.code === 'json_parse_failed') return {};
-      throw error;
-    }
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');

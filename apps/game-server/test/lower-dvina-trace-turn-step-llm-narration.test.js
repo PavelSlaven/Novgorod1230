@@ -136,17 +136,14 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'Remove unsupported claims'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'remove every unsupported claim in the flagged segment'), true);
+    'Remove every unsupported claim'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'do not prove that nobody or nothing is present'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'faithful natural paraphrase of visible_context is allowed'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
-  assert.equal(JSON.parse(calls[3].messages[1].content)
-    .action_intent_context.evidence_scope,
-  'intent_only_non_evidence_of_success');
+  assert.equal(Object.hasOwn(JSON.parse(calls[3].messages[1].content),
+    'action_intent_context'), false);
   assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
   assert.equal(calls.length, 5);

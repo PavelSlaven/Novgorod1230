@@ -57,6 +57,11 @@ test('general look seeds the scene without turning its wording into a candidate'
       .transitions.map(({ kind }) => kind), ['seed']);
     assert.equal(result.ordinary_materialization_atomic_write_plan
       .next_aggregate.background_groups[0].descriptor, 'ordinary layer');
+    assert.equal(result.goal_result, 'achieved');
+    assert.deepEqual(result.consequence_fragment, { visible_seed: {
+      ordinary_scene_seed: { kind: 'ordinary_scene_seed',
+        sensory_details: ['ordinary layer'] }
+    } });
   });
 
 test('unseeded ordinary discovery keeps Stage A candidate-free and candidate identity code-owned', async () => {

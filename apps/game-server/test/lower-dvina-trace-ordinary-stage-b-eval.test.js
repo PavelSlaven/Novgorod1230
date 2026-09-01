@@ -158,6 +158,7 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.match(prompt, /"resolution":"seeded"/u);
   assert.match(prompt, /"descriptor":null/u);
   assert.match(prompt, /Never copy angle-bracket placeholders/u);
+  assert.match(prompt, /natural Russian suitable for later player-facing prose/u);
   assert.match(prompt, /"basis_refs":\["basis"\]/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });

@@ -10,6 +10,8 @@ import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
 import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
@@ -158,6 +160,34 @@ test('in-place production forbids narration from inventing source relocation', (
 
   assert.equal(visible.do_not_imply.includes(
     'uncommitted_action_production_source_relocation'), true);
+});
+
+test('ordinary scene seed augments the current scene in the same turn', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail('fallback not expected') }
+  });
+  const state = committedState();
+  state.current_visible_context.sensory_details = ['Мокрый песок у воды.'];
+  const visible = await projector.project({
+    consequence: { status: 'resolved', visible_seed: {
+      completed_steps: [{ step_index: 1, summary: 'осмотреть берег' }],
+      ordinary_scene_seed: { kind: 'ordinary_scene_seed',
+        sensory_details: ['В ивняке застряли плавник и речной сор.'] }
+    } },
+    retrieved_state: state,
+    body_update: { state_after: {} },
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [{ approved_plan: { resolution: 'domain_request',
+        goal_result: 'pending', operations: [{ op: 'request_discovery' }],
+        check: null } }] } }
+  });
+  assert.deepEqual(visible.sensory_details,
+    ['Мокрый песок у воды.',
+      'В ивняке застряли плавник и речной сор.']);
+  assert.deepEqual(visible.visible_npc.map(({ entity_ref, display_label,
+    recognition }) => ({ entity_ref, display_label, recognition })),
+  state.current_visible_context.visible_npc);
+  assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
 });
 
 function committedState() {

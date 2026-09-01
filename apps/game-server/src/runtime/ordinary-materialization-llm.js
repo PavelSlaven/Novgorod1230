@@ -92,6 +92,7 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null,
       'For materialize return resolution, one entity containing only semantic_descriptor, presence_expectation, and mechanics_proposal, plus reason_code.',
       'Closed literal enums: density_band_proposal is null, sparse, ordinary, or dense; availability_class is common or context_bound; functional_bucket is household, work, storage, stock, furnishing_textile, maintenance_material, waste_scrap, personal_effect, arms, or other_ordinary; presence_expectation is routine, plausible, or exceptional.',
       'A null in the semantic response shape marks text you must supply. Never copy angle-bracket placeholders or return null for required semantic text.',
+      'Write every supplied semantic descriptor, ordinary name, and physical fact in natural Russian suitable for later player-facing prose; never use English, field terminology, or a technical inventory label.',
       ...(mechanicsPolicy == null ? [] : [mechanicsInstruction(mechanicsPolicy)]),
       'Use only supplied context and policy refs.',
     ...(responseShape == null ? [] : [

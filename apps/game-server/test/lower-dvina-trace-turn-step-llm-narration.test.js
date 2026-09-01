@@ -83,6 +83,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       'Empty visible_npc or visible_objects arrays are omissions'), true);
     assert.equal(call.messages[0].content.includes(
       'State uncertainty only when it is explicitly supplied'), true);
+    assert.equal(call.messages[0].content.includes(
+      'ground every adjective, adverb, sensory quality, temporal relation'), true);
   }
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');

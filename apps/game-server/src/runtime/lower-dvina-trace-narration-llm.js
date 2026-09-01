@@ -1,7 +1,7 @@
 import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
 
-const PLAYER_SAFE_PROSE_BOUNDARY = 'Narrate the player in second-person Russian (вы), never as first-person я. Empty visible_npc or visible_objects arrays are omissions: do not narrate them as absence, absence-from-view, silence, emptiness, or speculative alternatives. State uncertainty only when it is explicitly supplied in visible_context.uncertainties.';
+const PLAYER_SAFE_PROSE_BOUNDARY = 'Narrate the player in second-person Russian (вы), never as first-person я. Empty visible_npc or visible_objects arrays are omissions: do not narrate them as absence, absence-from-view, silence, emptiness, or speculative alternatives. State uncertainty only when it is explicitly supplied in visible_context.uncertainties. Audit and ground every adjective, adverb, sensory quality, temporal relation, history, and causal link independently; a visible feature does not authorize stereotypical color, motion, sound, mood, or condition.';
 
 function requireRoleRunner(roleRunner) {
   if (typeof roleRunner?.run !== 'function') throw serverError(

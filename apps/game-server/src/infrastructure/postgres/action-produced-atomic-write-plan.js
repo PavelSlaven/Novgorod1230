@@ -188,8 +188,10 @@ export function validActionProductionExtension(plan) {
 }
 function preparedPinMatches(pin, ordinary, priorPlans) {
   if (pin.prepared_ordinary != null) {
+    const ordinaryItems = Array.isArray(ordinary?.items)
+      ? ordinary.items : ordinary?.item == null ? [] : [ordinary.item];
     return ordinary?.request_identity === pin.prepared_ordinary.request_identity
-      && ordinary.items?.some((item) => item.item_id === pin.item_id);
+      && ordinaryItems.some((item) => item.item_id === pin.item_id);
   }
   if (pin.prepared_action == null) return true;
   const prior = priorPlans.find((candidate) => candidate.transition_proposal

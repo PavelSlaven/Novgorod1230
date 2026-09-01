@@ -121,6 +121,32 @@ test('grounding repair preserves the entire still-unexecuted intent',
     assert.equal(plan.continuation.remaining_intent, intent);
   });
 
+test('assembler derives redundant A1 carrier refs from semantic source refs',
+  async () => {
+    const input = request();
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        ...output(), resolution: 'domain_request',
+        activity: { owner: 'semantic', duration_class: 'brief',
+          effort: 'light' }, operations: [{ op: 'request_item_use',
+          actor_ref: 'actor_mikula', item_ref: 'wrong', use_kind: 'other',
+          target_refs: ['also-wrong'], action_production: {
+            source_refs: ['source', 'binding'], tool_refs: ['tool'],
+            requested_output_count: null, identity_mode: 'preserve_source',
+            origin: null, result_class: 'ordinary_physical_result',
+            material_extent: 'whole', result_descriptor: {
+              display_name: null, physical_description: 'bound support',
+              qualitative_facts: ['bound'], removed_physical_fact_refs: [],
+              inscription_text: null, physical_form: 'long',
+              source_fact_delta: null }, output_class: 'ordinary_mundane'
+          } }], operation_choice: null
+      } }; }
+    } });
+    const plan = await model(input);
+    assert.equal(plan.operations[0].item_ref, 'source');
+    assert.deepEqual(plan.operations[0].target_refs, ['binding', 'tool']);
+  });
+
 test('primary JSON parse failure uses one structural repair only', async () => {
   const calls = [];
   const input = request();

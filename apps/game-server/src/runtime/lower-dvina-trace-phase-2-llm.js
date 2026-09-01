@@ -168,9 +168,10 @@ export function assembleTurnStepPlan(choice, request,
   const copiedChoice = semantic.operation_choice == null
     && semantic.operations?.some((raw) => operationChoices.some(
       ({ operation }) => isDeepStrictEqual(raw, operation)));
-  const operations = selected ? [structuredClone(selected.operation)]
+  const operations = bindActionProductionCarrierRefs(selected
+    ? [structuredClone(selected.operation)]
     : semantic.operation_choice == null && !copiedChoice
-      ? structuredClone(semantic.operations) : undefined;
+      ? structuredClone(semantic.operations) : undefined);
   const domainRequest = semantic.resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
@@ -198,6 +199,20 @@ export function assembleTurnStepPlan(choice, request,
     reason_code: semantic.reason_code,
     reason: semantic.reason
   };
+}
+
+function bindActionProductionCarrierRefs(operations) {
+  if (!Array.isArray(operations)) return operations;
+  return operations.map((operation) => {
+    const production = operation?.op === 'request_item_use'
+      ? operation.action_production : null;
+    if (!Array.isArray(production?.source_refs)
+        || production.source_refs.length === 0
+        || !Array.isArray(production.tool_refs)) return operation;
+    return { ...operation, item_ref: production.source_refs[0],
+      target_refs: [...production.source_refs.slice(1),
+        ...production.tool_refs] };
+  });
 }
 function selectedTurnStepOperation(choice, operationChoices) {
   const selected = operationChoices.find(({ choice_id }) =>

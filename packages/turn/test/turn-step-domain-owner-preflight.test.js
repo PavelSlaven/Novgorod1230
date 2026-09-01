@@ -107,7 +107,7 @@ test('source-grounding audit rejects a semantically mismatched domain plan',
       message: 'source mismatch'
     }] });
     const validate = createTurnStepDomainOwnerPreflight({
-      externalRegistry: { domain: () => () => {} }, semanticBindings: [],
+      externalRegistry: null, semanticBindings: [],
       availableOptions: new Set(), actor: {}, committedState: {},
       services: { turnStepModel: model }
     });

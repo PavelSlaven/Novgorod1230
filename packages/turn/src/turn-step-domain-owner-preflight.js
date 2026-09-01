@@ -36,24 +36,28 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
         rule: 'prepared_followup_binding', code: 'prepared_followup_binding',
         message: 'must bind the current available prepared command' });
     }
-    for (const { operation, path } of plannedDomainOperations(plan,
-      isDomainStepOperation)) {
-      const owner = resolve({ operation, plan, request, preparedChainContext });
-      if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
-        turnCommandError);
-      if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
-        plan, path, preparedChainContext
-      })) errors.push({ path,
-        rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
-        message: 'must resolve to one available domain owner' });
-    }
-    if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
-      'Semantic plan references an unavailable domain owner.', { errors });
+    const validateOwners = () => {
+      for (const { operation, path } of plannedDomainOperations(plan,
+        isDomainStepOperation)) {
+        const owner = resolve({ operation, plan, request,
+          preparedChainContext });
+        if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
+          turnCommandError);
+        if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
+          plan, path, preparedChainContext
+        })) errors.push({ path,
+          rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
+          message: 'must resolve to one available domain owner' });
+      }
+      if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
+        'Semantic plan references an unavailable domain owner.', { errors });
+    };
     const audit = services.turnStepModel?.validateSourceGrounding;
-    if (typeof audit === 'function') return Promise.resolve(
+    if (typeof audit !== 'function') return validateOwners();
+    return Promise.resolve(
       audit(structuredClone(plan), structuredClone(request))
     ).then((result) => {
-      if (result === true) return;
+      if (result === true) return validateOwners();
       throw turnCommandError('TURN_STEP_PLAN_INVALID',
         'Semantic plan source grounding is invalid.', {
           errors: structuredClone(result?.errors ?? [{

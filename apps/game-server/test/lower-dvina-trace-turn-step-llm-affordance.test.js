@@ -48,6 +48,26 @@ test('focused discovery outranks general look and preserves continuation', async
     /focused perception clause[\s\S]*new physical detail or object[\s\S]*before visible_general_look[\s\S]*preserve it in continuation/u);
 });
 
+test('ordinary material prerequisite has an explicit continuation mapping', async () => {
+  const action = 'Подбираю обломок доски и делаю из него опору для плеча.';
+  const input = request({ root_player_action: action, remaining_intent: action,
+    actor: { actor_ref: 'actor:player' }, player_safe_state: {
+      ordinary_resolution: { discovery_available: true },
+      visible_entities: [{ entity_ref: 'location:current' }]
+    } });
+  let prompt;
+  await modelFor(input, null, {
+    continuation: { remaining_intent: 'Делаю из обломка опору для плеча.',
+      depends_on_refs: [] },
+    reasonCode: 'ordinary_material_prerequisite',
+    onPrompt: (value) => { prompt = value; }
+  })(input);
+  assert.match(prompt,
+    /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed visible material or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete intended handling or transformation>"/u);
+  assert.match(prompt,
+    /take, use, or transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
+});
+
 test('movement keeps supplied semantic label', async () => {
   const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route',
     target_ref: 'location:destination', description: 'Follow marked path to settlement.' };

@@ -11,6 +11,28 @@ import { projectLowerDvinaTracePlayerSafeState } from
 import { applyOrdinaryMaterializationProjection } from
   '../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js';
 
+test('initial location binding resolves through its provisioned ordinary scope',
+  async () => {
+    let loaded = null;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'initial-scope', verifyStageBCutover,
+      scopeBinding: { position_ref: 'wreck', g6_ref: 'shore' },
+      loadEnablement: async (input) => { loaded = input; return enabled(); },
+      ordinaryMaterializationModel: async (modelRequest) => ({
+        schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'seeded',
+        density_band_proposal: 'sparse', background_groups: [], entities: [],
+        presence_resolutions: [], reason_code: 'sparse'
+      })
+    });
+    const input = request('найти доску');
+    input.committed_state.position = { location_ref: 'wreck' };
+    input.operation.target_refs = ['wreck'];
+    await resolver(input);
+    assert.deepEqual(loaded, { partyId: 'party',
+      scopeRef: { entity_kind: 'g6', entity_id: 'shore' } });
+  });
+
 test('unseeded ordinary discovery keeps Stage A candidate-free and candidate identity code-owned', async () => {
   const calls = [];
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party', inputDigest: 'input',

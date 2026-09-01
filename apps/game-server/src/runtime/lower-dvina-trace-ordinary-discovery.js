@@ -169,6 +169,10 @@ function currentG6(state, scopeBinding) {
       && text(scopeBinding?.g6_ref)
     ? { entity_kind: 'g6', entity_id: scopeBinding.g6_ref } : null;
 }
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
+}
 function validExecution(value) {
   return value != null && typeof value === 'object'
     && Array.isArray(value.supporting_bases)

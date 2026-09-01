@@ -149,8 +149,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_g5_anchors
       SET item_capacity=8 WHERE party_id='party-a1'
         AND anchor_id='output-anchor'`);
-    assert.equal((await committer.commit({ plan: partitionCombined })).ok,
-      true);
+    const partitionCommit = await committer.commit({ plan: partitionCombined });
+    assert.equal(partitionCommit.ok, true, JSON.stringify(partitionCommit));
     assert.deepEqual(await committer.commit({ plan: partitionCombined }), {
       ok: true, replay: true, change_set_id: 'change-partition'
     });
@@ -1122,6 +1122,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_g5_anchors
       SET item_capacity=1 WHERE party_id='party-a1'
         AND anchor_id='output-anchor'`);
+    const directModernDestination = await loadActionProducedOutputDestination(
+      pool, { party_id: 'party-a1', actor_ref: 'pc' });
+    assert.equal(directModernDestination.destination_kind,
+      'party_current_scene_position');
+    assert.equal(directModernDestination.scene_position_id, 'position-a1');
     const partyVersion = Number((await pool.query(`SELECT state_version
       FROM party_runtime.parties WHERE party_id='party-a1'`)).rows[0]
       .state_version);

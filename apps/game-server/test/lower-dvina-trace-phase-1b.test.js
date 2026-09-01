@@ -133,7 +133,7 @@ test('production start provisions the pinned initial ordinary scope',
         statements.push(statement);
         if (String(statement).includes('SELECT snapshot.state_payload')) {
           return { rowCount: 1, rows: [{
-            position: { location_ref: 'wreck', position_id: 'position:wreck' },
+            location_ref: 'wreck', position_id: 'position:wreck',
             change_set_id: 'change:new-game'
           }] };
         }

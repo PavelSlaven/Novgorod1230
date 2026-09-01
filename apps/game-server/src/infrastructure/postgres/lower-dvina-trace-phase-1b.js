@@ -87,12 +87,22 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         try {
           await transaction.query('BEGIN');
           const loaded = await transaction.query(
-            `SELECT snapshot.state_payload->'position' AS position,
+            `SELECT snapshot.state_payload#>>
+                      '{immediate,spatial,node,state,location_profile_ref}'
+                      AS location_ref,
+                    journey.scene_position_id AS position_id,
                     change_set.id AS change_set_id
                FROM party_runtime.parties party
                JOIN party_runtime.party_state_snapshots snapshot
                  ON snapshot.party_id=party.party_id
                 AND snapshot.state_version=party.state_version
+               JOIN party_runtime.party_player_characters player
+                 ON player.party_id=party.party_id
+               JOIN party_runtime.party_journey_locations journey
+                 ON journey.party_id=party.party_id
+                AND journey.owner_kind='actor'
+                AND journey.owner_id=player.character_id
+                AND journey.location_kind='scene'
                JOIN LATERAL (
                  SELECT id FROM party_runtime.party_v3_change_sets
                   WHERE party_id=party.party_id AND operation_kind='new_game'
@@ -101,10 +111,9 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
               WHERE party.party_id=$1
               FOR UPDATE OF party`, [partyId]);
           const row = loaded.rows[0];
-          const position = row?.position;
           if (loaded.rowCount !== 1
-              || position?.location_ref !== binding.position_ref
-              || !text(position?.position_id) || !text(row.change_set_id)) {
+              || row?.location_ref !== binding.position_ref
+              || !text(row?.position_id) || !text(row.change_set_id)) {
             fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
               'Committed initial position does not match the ordinary scope.');
           }
@@ -112,7 +121,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             transaction, partyId, changeSetId: row.change_set_id,
             firstEntryBinding: {
               g6_instance_id: binding.g6_ref,
-              position_id: position.position_id
+              position_id: row.position_id
             }
           });
           await transaction.query('COMMIT');

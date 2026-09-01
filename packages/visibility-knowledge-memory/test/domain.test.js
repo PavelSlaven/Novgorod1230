@@ -23,7 +23,8 @@ test('ordinary resolution marker has one immutable player-safe capability owner'
   assert.deepEqual(marker, {
     ordinary_resolution: {
       discovery_available: false,
-      container_resolution_available: false
+      container_resolution_available: false,
+      scene_seed_available: false
     }
   });
   assert.ok(Object.isFrozen(marker));
@@ -32,6 +33,7 @@ test('ordinary resolution marker has one immutable player-safe capability owner'
     ordinary_resolution: {
       discovery_available: false,
       container_resolution_available: false,
+      scene_seed_available: false,
       identity_budget: 99,
       background_groups: ['hidden'],
       supporting_basis_allowlist: ['basis'],
@@ -48,11 +50,13 @@ test('ordinary resolution marker has one immutable player-safe capability owner'
   const enabled = projectPlayerSafeOrdinaryResolutionCapability({
     ordinary_resolution: {
       discovery_available: true,
-      container_resolution_available: false
+      container_resolution_available: false,
+      scene_seed_available: true
     }
   });
   assert.deepEqual(enabled, { ordinary_resolution: {
-    discovery_available: true, container_resolution_available: false
+    discovery_available: true, container_resolution_available: false,
+    scene_seed_available: true
   } });
   assert.ok(Object.isFrozen(enabled.ordinary_resolution));
   let reads = 0;
@@ -72,6 +76,10 @@ test('ordinary resolution marker has one immutable player-safe capability owner'
     enumerable: true,
     value: false
   });
+  Object.defineProperty(nestedAccessor.ordinary_resolution, 'scene_seed_available', {
+    enumerable: true,
+    value: false
+  });
   assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(nestedAccessor),
     /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
   assert.equal(reads, 0);
@@ -82,7 +90,8 @@ test('ordinary resolution marker has one immutable player-safe capability owner'
   assert.notStrictEqual(safe, marker);
   assert.deepEqual(safe, marker);
   assert.deepEqual(Object.keys(safe.ordinary_resolution), [
-    'discovery_available', 'container_resolution_available'
+    'discovery_available', 'container_resolution_available',
+    'scene_seed_available'
   ]);
   assert.equal(projectPlayerSafeOrdinaryResolutionCapability(), undefined);
 });

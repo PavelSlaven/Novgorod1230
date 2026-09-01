@@ -88,6 +88,7 @@ function reassemble(segments, replacements) {
   const byId = new Map(replacements.map((replacement) => [replacement.segment_id, replacement.prose]));
   return segments.map((segment) => {
     const replacement = byId.get(segment.segment_id);
+    if (typeof replacement === 'string' && !replacement.trim()) return '';
     if (replacement == null || /\s$/u.test(replacement)) return replacement ?? segment.prose;
     return replacement + (segment.prose.match(/\s+$/u)?.[0] ?? '');
   }).join('');

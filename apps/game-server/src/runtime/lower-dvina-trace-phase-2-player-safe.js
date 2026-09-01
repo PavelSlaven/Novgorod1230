@@ -34,9 +34,11 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     projected = projectLowerDvinaTraceO2aCapabilities({ projected,
       admission: admitAmbientOrdinaryPortion });
-    const basePlayerSafeState = projectPreparedOrdinaryItem(
-      projected.player_safe_state,
-      input.prepared_ordinary_materialization_atomic_write_plan);
+    const preparedOrdinaryPlan =
+      input.prepared_ordinary_materialization_atomic_write_plan;
+    const basePlayerSafeState = projectPreparedOrdinaryScene(
+      projectPreparedOrdinaryItem(projected.player_safe_state,
+        preparedOrdinaryPlan), preparedOrdinaryPlan?.next_aggregate);
     const { active_interlocutor: _staleActiveInterlocutor,
       current_visible_context: _presentationOnlyCurrentContext,
       ...initialWorkingProjection } = basePlayerSafeState;
@@ -78,13 +80,33 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const withSources = projectLowerDvinaTraceO2aDiscoverySources({
       projected:{...base,player_safe_state:spatialState},
       sources:enabled === true ? [] : enabled.sources });
+    const withScene = projectPreparedOrdinaryScene(
+      withSources.player_safe_state,
+      preparedOrdinaryPlan?.next_aggregate ?? {
+        background_groups: enabled === true ? [] : (enabled.scene_details ?? [])
+          .map((descriptor) => ({ descriptor }))
+      });
     const capability = projectPlayerSafeOrdinaryResolutionCapability({
       ordinary_resolution:{discovery_available:true,
-        container_resolution_available:false}
+        container_resolution_available:false,
+        scene_seed_available:enabled !== true
+          && enabled.scene_seed_available === true}
     });
     return {...withSources,initial_working_projection:initialWorkingProjection,
-      player_safe_state:{...withSources.player_safe_state,...capability}};
+      player_safe_state:{...withScene,...capability}};
   };
+}
+
+function projectPreparedOrdinaryScene(state, aggregate) {
+  const details = (aggregate?.background_groups ?? [])
+    .map((group) => group?.descriptor ?? group).filter(text);
+  if (details.length === 0) return state;
+  const contextKey = ['current_visible_context', 'visible_context',
+    'visible_context_package'].find((key) => state[key] != null);
+  if (contextKey == null) return state;
+  const context = state[contextKey];
+  return { ...state, [contextKey]: { ...context, sensory_details:
+    [...new Set([...(context.sensory_details ?? []), ...details])] } };
 }
 
 function projectPreparedOrdinaryItem(state, plan) {

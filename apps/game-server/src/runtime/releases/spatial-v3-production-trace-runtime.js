@@ -157,6 +157,10 @@ export function createTraceTurnRuntime({
       const capabilities =
         enabled.execution_context?.context_bound_capabilities ?? [];
       return Object.freeze({ discovery_available:true,
+        scene_seed_available:enabled.ordinary_aggregate?.seeded === false,
+        scene_details:Object.freeze((enabled.ordinary_aggregate
+          ?.background_groups ?? []).map(({descriptor})=>descriptor)
+          .filter((value)=>typeof value==='string'&&value.trim()===value)),
         sources:Object.freeze(capabilities.map((entry)=>Object.freeze({
           source_ref:entry.candidate_context.target_ref,
           public_name:entry.public_name,

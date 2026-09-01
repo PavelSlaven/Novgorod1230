@@ -116,6 +116,21 @@ test('current scene reads arbitrary authored location facts without code phrases
     ['Ольха растёт над тёмной водой.']);
 });
 
+test('current scene retains committed co-located physical objects', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'reed-bundle', name: 'пучок камыша',
+    placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
+  state.items.push({ item_id: 'remote-board', name: 'доска',
+    placement: { location_ref: 'camp', anchor_id: 'camp-anchor' } });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'reed-bundle' },
+    display_label: 'пучок камыша', recognition: 'recognized',
+    visible_status: 'available'
+  }]);
+});
+
 test('fact presentation reads an unseen committed fact generically', () => {
   const presentation = factPresentationForRef({ scenePresentation: {
     fact_presentations: [{ fact_ref: 'unseen:fact', text: 'На камне видна свежая зарубка.',

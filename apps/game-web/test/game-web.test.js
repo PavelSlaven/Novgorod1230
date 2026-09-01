@@ -279,7 +279,7 @@ test('landing always renders the Lovable-style shell and Continue only for remem
   assert.doesNotMatch(html, /data-screen-schema/u);
 });
 
-test('new-game view offers only active published scenarios', () => {
+test('new-game view keeps free text and published scenarios as start choices', () => {
   const store = createUiStore({ rememberedPartyId: 'party-old' });
   store.setScenarios([{
     scenario_id: 'lower_dvina_late_summer_open_water_v1',
@@ -290,8 +290,10 @@ test('new-game view offers only active published scenarios', () => {
   store.showNewGame();
   const html = renderAppState(store.getState());
   assert.match(html, /data-new-game-screen/u);
+  assert.match(html, /data-new-game-form/u);
+  assert.match(html, /textarea id="start-text" name="start_text" required/u);
   assert.match(html, /data-scenario-id="lower_dvina_late_summer_open_water_v1"/u);
-  assert.doesNotMatch(html, /name="start_text"|name="scenario_id"|name="player_name"|Пусто тоже можно/u);
+  assert.doesNotMatch(html, /name="scenario_id"|name="player_name"|Пусто тоже можно/u);
   assert.equal(store.getState().rememberedPartyId, 'party-old');
 });
 

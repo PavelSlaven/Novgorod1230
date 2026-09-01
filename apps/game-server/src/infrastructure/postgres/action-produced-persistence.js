@@ -208,7 +208,8 @@ async function insertResult(client, partyId, result, changeSetId,
      VALUES ($1,$2,$3,NULL,$4,$5,$6,$7::jsonb,$8,$9,$10)`,
   [partyId, ownership.ownership_id, result.item_id,
     ownership.owner_npc_id, ownership.owner_character_id,
-    ownership.owner_party, JSON.stringify(ownership.owner_external_ref ?? null),
+    ownership.owner_party, ownership.owner_external_ref == null
+      ? null : JSON.stringify(ownership.owner_external_ref),
     ownership.controller_npc_id,
     ownership.controller_character_id, ownership.claim_state]);
   if (scenePositionId !== null) await client.query(

@@ -33,6 +33,32 @@ test('initial location binding resolves through its provisioned ordinary scope',
       scopeRef: { entity_kind: 'g6', entity_id: 'shore' } });
   });
 
+test('general look seeds the scene without turning its wording into a candidate',
+  async () => {
+    const calls = [];
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'scene-seed', verifyStageBCutover,
+      loadEnablement: async () => enabled(),
+      ordinaryMaterializationModel: async (modelRequest) => {
+        calls.push(modelRequest);
+        return { schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'seeded',
+          density_band_proposal: 'ordinary', background_groups: [group()],
+          entities: [], presence_resolutions: [], reason_code: 'seed' };
+      }
+    });
+    const input = request('общий вид ближайшего окружения');
+    input.operation.discovery_kind = 'look';
+    const result = await resolver(input);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].mode, 'seed_scope');
+    assert.equal(calls[0].candidate_query, null);
+    assert.deepEqual(result.ordinary_materialization_atomic_write_plan
+      .transitions.map(({ kind }) => kind), ['seed']);
+    assert.equal(result.ordinary_materialization_atomic_write_plan
+      .next_aggregate.background_groups[0].descriptor, 'ordinary layer');
+  });
+
 test('unseeded ordinary discovery keeps Stage A candidate-free and candidate identity code-owned', async () => {
   const calls = [];
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party', inputDigest: 'input',
@@ -364,7 +390,9 @@ test('projects a committed ordinary item without its materialization internals',
     item_proposal: { scope_ref: { entity_kind: 'g6', entity_id: 'shed' },
       semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon' },
       placement: { scope_ref: 'shed', position_ref: 'bench' },
-      property_placement_evidence: { permission_ref: 'permission-private' } },
+      property_placement_evidence: { permission_ref: 'permission-private',
+        property_basis_class: 'occupied_site_default',
+        property_source_ref: 'basis-private' } },
     mechanics_snapshot: {
       schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
       provenance: { source_kind: 'ordinary_world_materialization',

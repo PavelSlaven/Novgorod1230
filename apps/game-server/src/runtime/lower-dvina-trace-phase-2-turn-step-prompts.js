@@ -75,6 +75,16 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     operations: [], check: null
   },
+  ordinary_scene_seed: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_discovery',
+      actor_ref: '<copy current actor ref from request>',
+      discovery_kind: 'look',
+      target_refs: ['<copy current position ref from request>'],
+      query: 'общий вид ближайшего окружения' }], check: null
+  },
   spatial_grounded_look: {
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
@@ -112,8 +122,7 @@ export const TURN_STEP_PLANNER_INSTRUCTIONS = [
   'an impossible result, create an absent referent, or move the actor for make_believe.',
   'Never return SQL, database tables, a write plan, narration, an NPC',
   'decision, a random result, exact time, or numeric domain effects.',
-  'A general look around already visible surroundings uses the mapped',
-  'achieved direct result. Exception: when',
+  'A general look around already visible surroundings uses ordinary_scene_seed when player_safe_state.ordinary_resolution.scene_seed_available is true: copy the actor and current position refs exactly and keep its fixed query. This is a candidate-free scene seed, not a search for any object named by the player. Otherwise use the mapped achieved direct result. Exception: when',
   'player_safe_state.spatial_semantic.semantic_grounding_available is',
   'true, use the mapped spatial_grounded_look exactly: copy its actor',
   'and position refs from request, use only request or operation-contract',
@@ -133,7 +142,7 @@ export const TURN_STEP_PLANNER_INSTRUCTIONS = [
   'outcome.',
   'Emit a domain_request only when player_safe_state contains the exact code-owned capability, owner, and referenced target; never use it as an open-ended fallback. Without that capability, use a direct no-operation reality-limited or visible attempt; do not discover or assert hidden facts.',
   'Focused inspect or search for hidden or new details uses discovery.',
-  'When player_safe_state.ordinary_resolution.discovery_available is true, it is exact code-owned authority for a focused inspect or search of the current visible location or entity for an unspecified ordinary physical object, material, resource, or local physical detail: before and over the general exact-ref, visible-look, and reality_limited paths, use focused_ordinary_discovery exactly. It MUST have exactly one request_discovery: copy discovery_kind inspect or search from the intent, actor_ref from request.actor, one current visible target_ref, and preserve the player query. target_ref is the location or entity being searched, not a preexisting ref for the sought ordinary detail; the sought ordinary detail need not be visible, and its absence from player-safe state is for discovery, not a reason for a direct failure. A supplied request_discovery choice covers only its own fixed query; never select or copy a broad authored inspection to stand in for a different ordinary candidate query. Questions about the general current situation, ongoing activity, or who is nearby are visible_general_look, not ordinary materialization. This does not authorize authored, significant, or hidden facts. A general look remains the mapped direct result.',
+  'When player_safe_state.ordinary_resolution.discovery_available is true, it is exact code-owned authority for a focused inspect or search of the current visible location or entity for an unspecified ordinary physical object, material, resource, or local physical detail: before and over the general exact-ref, visible-look, and reality_limited paths, use focused_ordinary_discovery exactly. It MUST have exactly one request_discovery: copy discovery_kind inspect or search from the intent, actor_ref from request.actor, one current visible target_ref, and preserve the player query. target_ref is the location or entity being searched, not a preexisting ref for the sought ordinary detail; the sought ordinary detail need not be visible, and its absence from player-safe state is for discovery, not a reason for a direct failure. A supplied request_discovery choice covers only its own fixed query; never select or copy a broad authored inspection to stand in for a different ordinary candidate query. Questions about the general current situation, ongoing activity, or who is nearby are visible_general_look, not targeted ordinary materialization. This does not authorize authored, significant, or hidden facts. A general look remains the mapped direct result after the scene substrate has been seeded.',
   'The same ordinary-resolution owner is the required first handoff when the player tries to take, use, or transform ordinary physical material explicitly described by current visible sensory facts but no semantically matching item entity_ref is supplied for that material. Use ordinary_material_prerequisite exactly, never focused_ordinary_discovery: emit one request_discovery with discovery_kind inspect against the current visible scope, a query naming only the needed visible material or physically connected group, and continuation containing the complete intended handling or transformation. This handoff MUST win over action_production. Never substitute an unrelated inventory, worn, held, or merely listed item_ref for the material named by the player. Do not call missing item refs impossible, do not invent refs, and do not resolve the later physical action in this step. After materialization the server exposes the committed candidate to the next step and action_production owns the transformation.',
   'Taking, dropping, wearing, attaching, or otherwise relocating an item is a physical placement change and must be represented by move_entity. When the same event also transforms that item through one domain operation, emit the move_entity and that domain operation together; neither operation implies the other.',
   'When available_domain_operations contains a request_container_access matching an open, close, or other container-access intent, use available_container_access before action_production or direct. Return domain_request selecting exactly one matching supplied choice_id; do not reproduce or alter its operation DTO.',

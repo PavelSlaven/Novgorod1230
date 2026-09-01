@@ -59,12 +59,10 @@ test('Phase 1B publishes only trace metadata', async () => {
   ]);
 });
 
-test('public start accepts only current trace scenario', async () => {
+test('public start maps free text to the current published trace', async () => {
   const runtime = createRuntime(fixture());
-  await assert.rejects(
-    () => runtime.startNewGame({ start_text: 'Начать путь' }),
-    { code: 'SCENARIO_NOT_SUPPORTED' }
-  );
+  const started = await runtime.startNewGame({ start_text: 'Начать путь' });
+  assert.equal(started.screen.scenario_id, 'lower_dvina_trace_v1');
   await assert.rejects(
     () => runtime.startNewGame({
       scenario_id: 'lower_dvina_late_summer_open_water_v1'

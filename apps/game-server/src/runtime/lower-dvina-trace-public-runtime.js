@@ -164,8 +164,10 @@ async function startNewGame({
   activePhase1AManifestDigest,
   activeScenarioDefinitionRevision
 }) {
-  const scenario = String(input.scenario_id ?? '').trim();
-  if (scenario !== TRACE_SCENARIO_ID || String(input.start_text ?? '').trim()) {
+  const startText = String(input.start_text ?? '').trim();
+  const scenario = String(input.scenario_id ?? '').trim()
+    || (startText ? TRACE_SCENARIO_ID : '');
+  if (scenario !== TRACE_SCENARIO_ID) {
     throw serverError(
       'SCENARIO_NOT_SUPPORTED',
       'Scenario is not supported.',

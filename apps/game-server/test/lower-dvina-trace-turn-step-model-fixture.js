@@ -14,10 +14,22 @@ export function createLowerDvinaTraceTurnStepTestModel({
   return (request) => {
     onCall(request);
     if (generalLook(request)) {
-      return spatialLook(request) ?? directPlan(request);
+      return ordinarySceneSeed(request) ?? spatialLook(request)
+        ?? directPlan(request);
     }
     return domainPlan(request, operationFor(request));
   };
+}
+
+function ordinarySceneSeed(request) {
+  if (request?.player_safe_state?.ordinary_resolution
+      ?.scene_seed_available !== true) return null;
+  return domainPlan(request, {
+    op: 'request_discovery', actor_ref: requiredActorRef(request),
+    discovery_kind: 'look',
+    target_refs: [request.player_safe_state.position.location_ref],
+    query: 'общий вид ближайшего окружения'
+  });
 }
 
 function spatialLook(request) {

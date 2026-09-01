@@ -38,10 +38,10 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
 
 export function validateNewGameRequest(body) {
   if (!plain(body)) throw serverError('REQUEST_BODY_INVALID', 'JSON object body is required.', { status: 400 });
-  if (text(body.start_text) || !text(body.scenario_id)) {
+  if (!text(body.start_text) && !text(body.scenario_id)) {
     throw serverError(
-      'SCENARIO_ID_REQUIRED',
-      'scenario_id is required.',
+      'NEW_GAME_START_REQUIRED',
+      'start_text or scenario_id is required.',
       { status: 400 }
     );
   }

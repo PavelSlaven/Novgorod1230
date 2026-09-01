@@ -323,7 +323,8 @@ test('unresolved in-scope inspect and search reach the ordinary seam without que
       },
       playerSafeStateProjector: () => discoveryProjection({
         discovery_available: true,
-        container_resolution_available: false
+        container_resolution_available: false,
+        scene_seed_available: false
       }),
       turnStepOrdinaryDiscoveryResolver: async (request) => {
         requests.push(request);
@@ -368,7 +369,8 @@ test('unresolved in-scope inspect and search reach the ordinary seam without que
       },
       playerSafeStateProjector: () => discoveryProjection({
         discovery_available: true,
-        container_resolution_available: false
+        container_resolution_available: false,
+        scene_seed_available: false
       }),
       turnStepOrdinaryDiscoveryResolver: async (request) => {
         requests.push(request);
@@ -410,9 +412,11 @@ test('ordinary resolver is not called outside enabled physical discovery scope',
     assert.equal(ordinaryCalls, 0);
 
     for (const ordinaryResolution of [undefined, {
-      discovery_available: false, container_resolution_available: false
+      discovery_available: false, container_resolution_available: false,
+      scene_seed_available: false
     }, {
-      discovery_available: true, container_resolution_available: true
+      discovery_available: true, container_resolution_available: true,
+      scene_seed_available: false
     }]) {
       const disabledCapability = createServices([], {
         command: {
@@ -434,7 +438,8 @@ test('ordinary resolver is not called outside enabled physical discovery scope',
         semantic_binding: unmatchedDiscoveryBinding() },
       playerSafeStateProjector: () => discoveryProjection({
         discovery_available: true,
-        container_resolution_available: false
+        container_resolution_available: false,
+        scene_seed_available: false
       }),
       turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
       turnStepModel: (request) => {
@@ -453,7 +458,8 @@ test('ordinary resolver is not called outside enabled physical discovery scope',
         semantic_binding: unmatchedDiscoveryBinding() },
       playerSafeStateProjector: () => discoveryProjection({
         discovery_available: true,
-        container_resolution_available: false
+        container_resolution_available: false,
+        scene_seed_available: false
       }),
       turnStepModel: discoveryPlan
     }).services;
@@ -471,7 +477,8 @@ test('listen and remember never reach ordinary resolver, even when enabled',
           semantic_binding: unmatchedDiscoveryBinding() },
         playerSafeStateProjector: () => discoveryProjection({
           discovery_available: true,
-          container_resolution_available: false
+          container_resolution_available: false,
+          scene_seed_available: false
         }),
         turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
         turnStepModel: (request) => discoveryPlan(request,
@@ -492,7 +499,8 @@ test('ambiguous authored discovery remains fail-closed before ordinary seam',
         semantic_binding: unmatchedDiscoveryBinding() },
       playerSafeStateProjector: () => discoveryProjection({
         discovery_available: true,
-        container_resolution_available: false
+        container_resolution_available: false,
+        scene_seed_available: false
       }),
       turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
       turnStepModel: discoveryPlan
@@ -529,14 +537,27 @@ test('ordinary capability gate accepts only an exact own marker without getters'
       target_refs: ['place-gate'], query: 'необычная формулировка'
     };
     const enabled = discoveryProjection({
-      discovery_available: true, container_resolution_available: false
+      discovery_available: true, container_resolution_available: false,
+      scene_seed_available: false
     }).player_safe_state;
     assert.equal(isOrdinaryDiscoveryInScope({
       operation, playerSafeState: enabled
     }), true);
+    const sceneLook = { ...operation, discovery_kind: 'look',
+      query: 'общий вид ближайшего окружения' };
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation: sceneLook, playerSafeState: enabled
+    }), false);
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation: sceneLook,
+      playerSafeState: discoveryProjection({ discovery_available: true,
+        container_resolution_available: false,
+        scene_seed_available: true }).player_safe_state
+    }), true);
     for (const marker of [
       { discovery_available: true },
       { discovery_available: true, container_resolution_available: false,
+        scene_seed_available: false,
         unexpected: true }
     ]) {
       assert.equal(isOrdinaryDiscoveryInScope({
@@ -544,7 +565,8 @@ test('ordinary capability gate accepts only an exact own marker without getters'
       }), false);
     }
     const inherited = Object.create({ ordinary_resolution: {
-      discovery_available: true, container_resolution_available: false
+      discovery_available: true, container_resolution_available: false,
+      scene_seed_available: false
     } });
     inherited.position = { location_ref: 'place-gate' };
     inherited.visible_entities = [{ entity_ref: 'place-gate' }];
@@ -567,6 +589,9 @@ test('ordinary capability gate accepts only an exact own marker without getters'
       get() { reads += 1; return true; }
     });
     Object.defineProperty(nestedAccessor, 'container_resolution_available', {
+      enumerable: true, value: false
+    });
+    Object.defineProperty(nestedAccessor, 'scene_seed_available', {
       enumerable: true, value: false
     });
     assert.equal(isOrdinaryDiscoveryInScope({

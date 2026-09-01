@@ -28,7 +28,7 @@ test('turn step model sends the validated request to the isolated planner role',
   const call = calls[0];
   assert.equal(call.scope, 'turn_runtime');
   assert.equal(call.role_id, 'turn_step_planner');
-  assert.deepEqual(call.overrides, { temperature: 0, maxTokens: 8000 });
+  assert.deepEqual(call.overrides, { temperature: 0, maxTokens: 20000 });
   assert.deepEqual(JSON.parse(call.messages[1].content), input);
   const prompt = call.messages[0].content;
   for (const phrase of [
@@ -40,8 +40,8 @@ test('turn step model sends the validated request to the isolated planner role',
     'narration',
     'NPC decision',
     'Delegate movement',
-    'A general look around already visible surroundings uses the mapped',
-    'achieved direct result',
+    'A general look around already visible surroundings uses ordinary_scene_seed',
+    'candidate-free scene seed',
     'Focused inspect or search for hidden or new details uses discovery',
     'ordinary_resolution.discovery_available is true',
     'exactly one request_discovery',
@@ -67,7 +67,8 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     remaining_intent: 'Поискать на берегу у стана обычную сухую ветку, если она там есть.',
     player_safe_state: { position: { g6_id: 'camp', location_ref: 'camp' },
       ordinary_resolution: { discovery_available: true,
-        container_resolution_available: false } }
+        container_resolution_available: false,
+        scene_seed_available: true } }
   });
   await model(input);
   await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
@@ -456,6 +457,19 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
       operations: [], check: null
     });
+    assert.deepEqual(mappings.ordinary_scene_seed, {
+      interpretation: { adaptation: 'literal' },
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [{ op: 'request_discovery',
+        actor_ref: '<copy current actor ref from request>',
+        discovery_kind: 'look',
+        target_refs: ['<copy current position ref from request>'],
+        query: 'общий вид ближайшего окружения' }],
+      check: null
+    });
+    assert.match(prompt,
+      /ordinary_resolution\.scene_seed_available is true[\s\S]*candidate-free scene seed/u);
     assert.deepEqual(mappings.spatial_grounded_look, {
       resolution: 'domain_request', goal_result: 'pending',
       activity: { owner: 'domain', duration_class: null, effort: null },

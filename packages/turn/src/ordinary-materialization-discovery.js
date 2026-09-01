@@ -79,6 +79,13 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         ?? execution.supporting_bases),
       ...structuredClone(newBases)].sort((left, right) =>
       left.basis_ref.localeCompare(right.basis_ref));
+    if (request.operation?.discovery_kind === 'look') {
+      if (transitions.length === 0) return ordinaryNoop(request);
+      return resolvedPlan({ request, enabled, partyId, scopeRef,
+        inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+        next: projection.ordinary_materialization_aggregate,
+        requestIdentity: objective.request_id, resolution: 'no_change' });
+    }
     if (modelBudget.hasRemaining() === false
         && enabled.code_owned_resolution == null) {
       return resolvedPlan({ request, enabled, partyId, scopeRef,

@@ -88,7 +88,11 @@ function nearbySegments(segments, id) {
 }
 function reassemble(segments, replacements) {
   const byId = new Map(replacements.map((replacement) => [replacement.segment_id, replacement.prose]));
-  return segments.map((segment) => byId.get(segment.segment_id) ?? segment.prose).join('');
+  return segments.map((segment) => {
+    const replacement = byId.get(segment.segment_id);
+    if (replacement == null || /\s$/u.test(replacement)) return replacement ?? segment.prose;
+    return replacement + (segment.prose.match(/\s+$/u)?.[0] ?? '');
+  }).join('');
 }
 function segmentIds(segments) { return segments.map((segment) => segment.segment_id); }
 function approved(request, draft, audit, generationHistory, repairHistory, auditHistory) {

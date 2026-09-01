@@ -76,6 +76,14 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'relevant player-safe known_context'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'not a report of game state'), true);
+  for (const call of calls) {
+    assert.equal(call.messages[0].content.includes(
+      'Narrate the player in second-person Russian'), true);
+    assert.equal(call.messages[0].content.includes(
+      'Empty visible_npc or visible_objects arrays are omissions'), true);
+    assert.equal(call.messages[0].content.includes(
+      'State uncertainty only when it is explicitly supplied'), true);
+  }
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');
   assert.equal(calls[1].roleId, 'gameplay_narrator_format_repair');

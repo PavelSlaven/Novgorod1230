@@ -1,6 +1,8 @@
 import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
 
+const PLAYER_SAFE_PROSE_BOUNDARY = 'Narrate the player in second-person Russian (вы), never as first-person я. Empty visible_npc or visible_objects arrays are omissions: do not narrate them as absence, absence-from-view, silence, emptiness, or speculative alternatives. State uncertainty only when it is explicitly supplied in visible_context.uncertainties.';
+
 function requireRoleRunner(roleRunner) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING',
@@ -30,7 +32,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
 async function runNarrationRole(roleRunner, roleId, instruction, request) {
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,
-    messages: [{ role: 'system', content: instruction },
+    messages: [{ role: 'system', content: `${instruction} ${PLAYER_SAFE_PROSE_BOUNDARY}` },
       { role: 'user', content: JSON.stringify(request) }],
     overrides: { temperature: 0 } });
   if (!response?.output || typeof response.output !== 'object') throw serverError(

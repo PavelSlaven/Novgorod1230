@@ -166,6 +166,27 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
   assert.equal(audits[1].output.prose, result.approved_output.prose);
 });
 
+test('semantic repair preserves original inter-segment spacing', async () => {
+  let audits = 0;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output('Первое. Второе.'); } },
+    auditor: { async audit() {
+      audits += 1;
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+          concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Replace.' }],
+          evidence: ['Replace.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+          concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair() {
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: 'Исправлено.' }] };
+    } }
+  }));
+  assert.equal(result.approved_output.prose, 'Исправлено. Второе.');
+});
+
 test('shares intent-only player context with audit and semantic repair', async () => {
   const actionIntent = {
     attempt: { text: 'Постучать в закрытую дверь.' },

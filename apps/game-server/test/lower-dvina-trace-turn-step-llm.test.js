@@ -241,7 +241,7 @@ test('turn step planner assembles exact domain operation and preserves independe
     'Попросить спутника пойти со мной.');
 });
 
-test('turn step adapter restores one admitted raw operation without model-owned refs', async () => {
+test('turn step adapter rejects a hand-written admitted operation', async () => {
   const candidate = { op: 'request_item_use', actor_ref: 'actor_mikula',
     item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };
   const input = request({ available_domain_operations: [candidate],
@@ -260,8 +260,25 @@ test('turn step adapter restores one admitted raw operation without model-owned 
     } }; }
   } });
   const plan = await model(input);
-  assert.deepEqual(plan.operations, [candidate]);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.deepEqual(plan.operations, [{ ...candidate,
+    target_refs: ['npc:zhdanko'], description: 'Забрать сумку.' }]);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+});
+
+test('turn step adapter rejects an exact copied operation choice', () => {
+  const candidate = { op: 'request_discovery', actor_ref: 'actor_mikula',
+    discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть.' };
+  const input = request({ available_domain_operations: [candidate] });
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: 'Найти доску.',
+      grounded_attempt: 'Найти доску.', adaptation: 'literal' },
+    resolution: 'domain_request', operation_choice: null,
+    operations: [candidate], check: null, continuation: null,
+    clarification: null, reason_code: 'ordinary_material_prerequisite',
+    reason: 'Нужен ordinary material.'
+  }, input);
+  assert.equal(plan.operations, undefined);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 
 test('turn step adapter does not guess between duplicate admitted raw operations', () => {

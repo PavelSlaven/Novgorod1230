@@ -146,8 +146,12 @@ export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const semantic = structuredClone(choice);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
+  const copiedChoice = semantic.operation_choice == null
+    && semantic.operations?.some((raw) => operationChoices.some(
+      ({ operation }) => isDeepStrictEqual(raw, operation)));
   const operations = selected ? [structuredClone(selected.operation)]
-    : semantic.operation_choice == null ? structuredClone(semantic.operations) : undefined;
+    : semantic.operation_choice == null && !copiedChoice
+      ? structuredClone(semantic.operations) : undefined;
   const domainRequest = semantic.resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
@@ -176,7 +180,13 @@ export function assembleTurnStepPlan(choice, request,
     reason: semantic.reason
   };
 }
-function selectedTurnStepOperation(choice, operationChoices) { const byId = operationChoices.find(({ choice_id }) => choice_id === choice.operation_choice); if (byId != null) return choice.operation_family == null || choice.operation_family === byId.operation.op ? byId : undefined; if (choice.operation_choice != null || !Array.isArray(choice.operations) || choice.operations.length !== 1) return undefined; const raw = choice.operations[0]; const matches = operationChoices.filter(({ operation }) => Object.entries(operation).filter(([, value]) => value == null || typeof value !== 'object').every(([key, value]) => isDeepStrictEqual(raw?.[key], value))); return matches.length === 1 && (choice.operation_family == null || choice.operation_family === matches[0].operation.op) ? matches[0] : undefined; }
+function selectedTurnStepOperation(choice, operationChoices) {
+  const selected = operationChoices.find(({ choice_id }) =>
+    choice_id === choice.operation_choice);
+  return selected != null && (choice.operation_family == null
+      || choice.operation_family === selected.operation.op)
+    ? selected : undefined;
+}
 function preparedFollowupPrompt(candidates) {
   return [
     'prepared_followup_candidates is a closed code-owned mapping:',

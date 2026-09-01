@@ -36,11 +36,13 @@ test('initial location binding resolves through its provisioned ordinary scope',
 test('general look seeds the scene without turning its wording into a candidate',
   async () => {
     const calls = [];
+    const contexts = [];
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
       partyId: 'party', inputDigest: 'scene-seed', verifyStageBCutover,
       loadEnablement: async () => enabled(),
-      ordinaryMaterializationModel: async (modelRequest) => {
+      ordinaryMaterializationModel: async (modelRequest, context) => {
         calls.push(modelRequest);
+        contexts.push(context);
         return { schema: 'ordinary_materialization_plan_v1',
           request_id: modelRequest.request_id, resolution: 'seeded',
           density_band_proposal: 'ordinary', background_groups: [group()],
@@ -49,10 +51,20 @@ test('general look seeds the scene without turning its wording into a candidate'
     });
     const input = request('общий вид ближайшего окружения');
     input.operation.discovery_kind = 'look';
+    input.request.player_safe_state = { current_visible_context: {
+      visible_scene: 'речной берег',
+      sensory_details: ['У воды лежат обломки досок.'],
+      visible_objects: [{ display_label: 'обломки лодки' }]
+    } };
     const result = await resolver(input);
     assert.equal(calls.length, 1);
     assert.equal(calls[0].mode, 'seed_scope');
     assert.equal(calls[0].candidate_query, null);
+    assert.deepEqual(contexts[0].semantic_context, {
+      visible_scene: 'речной берег',
+      sensory_details: ['У воды лежат обломки досок.'],
+      visible_objects: ['обломки лодки']
+    });
     assert.deepEqual(result.ordinary_materialization_atomic_write_plan
       .transitions.map(({ kind }) => kind), ['seed']);
     assert.equal(result.ordinary_materialization_atomic_write_plan

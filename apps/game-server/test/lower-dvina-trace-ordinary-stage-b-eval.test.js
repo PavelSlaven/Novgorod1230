@@ -163,6 +163,29 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
+test('ordinary seed prompt receives a player-safe scene basis without reading refs', () => {
+  const source = presenceRequest('ложка');
+  const request = { ...source, mode: 'seed_scope', candidate_query: null,
+    ordinary_state: { ...source.ordinary_state, seeded: false,
+      density_band: null },
+    authority_envelope: { stage: 'seed_scope', density_bands: ['ordinary'],
+      disclosure_policy_refs: ['disclosure'], group_bases: [{
+        basis_ref: 'basis', basis_state: 'committed',
+        functional_buckets: ['other_ordinary'],
+        allowed_admission_classes: ['common_mundane'], permission_refs: [] }] }
+  };
+  const prompt = buildOrdinaryMaterializationMessages(request, {
+    semanticContext: { visible_scene: 'речной берег',
+      sensory_details: ['У воды лежат обломки досок.'],
+      visible_objects: [] }
+  })[0].content;
+  assert.match(prompt, /All refs and IDs are opaque/u);
+  assert.match(prompt, /У воды лежат обломки досок/u);
+  assert.match(prompt, /one to three concrete co-present mundane physical groups/u);
+  assert.match(prompt, /Never answer with an abstract category/u);
+  assert.match(prompt, /never invent a visit, owner, action, purpose, origin, or past event/u);
+});
+
 test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
   const source = presenceRequest('любой предмет');
   const preparedBasis = 'ordinary_group_prepared';

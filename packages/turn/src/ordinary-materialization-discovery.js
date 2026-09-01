@@ -53,6 +53,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           authority_context: seedAuthorityContext({ execution,
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
+        semanticContext: enabled.seed_semantic_context ?? null,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,

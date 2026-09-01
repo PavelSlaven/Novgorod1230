@@ -100,6 +100,8 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
           finite_source_initial_amount_estimate_policy: estimatePolicy
         } };
       return { ...enabled, party_id: partyId, scope_ref: scopeRef,
+        seed_semantic_context: seedSemanticContext(
+          request?.request?.player_safe_state?.current_visible_context),
         semantic_target_ref: request.operation.target_refs[0],
         expected_supporting_bases:
           structuredClone(enabled.execution_context.supporting_bases),
@@ -168,6 +170,23 @@ function currentG6(state, scopeBinding) {
   return state?.position?.location_ref === scopeBinding?.position_ref
       && text(scopeBinding?.g6_ref)
     ? { entity_kind: 'g6', entity_id: scopeBinding.g6_ref } : null;
+}
+function seedSemanticContext(value) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+  const visibleScene = text(value.visible_scene) ? value.visible_scene : null;
+  const sensoryDetails = Array.isArray(value.sensory_details)
+    ? value.sensory_details.filter(text) : [];
+  const visibleObjects = Array.isArray(value.visible_objects)
+    ? value.visible_objects.map(({ display_label: label }) => label)
+      .filter(text) : [];
+  return visibleScene == null && sensoryDetails.length === 0
+      && visibleObjects.length === 0 ? null : {
+    visible_scene: visibleScene,
+    sensory_details: sensoryDetails,
+    visible_objects: visibleObjects
+  };
 }
 function text(value) {
   return typeof value === 'string' && value.length > 0

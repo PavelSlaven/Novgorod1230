@@ -117,7 +117,7 @@ function preserveGroundingPrerequisiteIntent({ output, request,
   if (!groundingRepair || !discovery) return output;
   const grounded = structuredClone(output);
   grounded.interpretation = { ...grounded.interpretation,
-    grounded_attempt: grounded.operations[0].query };
+    grounded_attempt: 'Осмотрен доступный обычный материал.' };
   return { ...grounded, continuation: {
     remaining_intent: request.remaining_intent,
     depends_on_refs: []

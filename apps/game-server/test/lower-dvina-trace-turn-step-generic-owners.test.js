@@ -193,6 +193,22 @@ test('generic composition preserves domain body and handles direct visible',
     assert.deepEqual(projected.visible_changes,
       ['Вы ощутили перемену в своём состоянии.']);
 
+    const physical = await visible.project({
+      consequence: { visible_seed: { completed_steps: [],
+        clarification: null,
+        turn_step_move: { change: 'moved', relation: 'held_by',
+          display_label: 'длинную доску' },
+        turn_step_action_production_2: { change: 'physical_change',
+          entity_ref: 'board', physical_description:
+            'Доска с обрывком снасти приспособлена как опора для плеча',
+          qualitative_facts: ['опора поддерживает плечо'] } } },
+      body_update: { state_after: body() }
+    });
+    assert.deepEqual(physical.visible_changes, [
+      'Вы взяли в руки длинную доску.',
+      'Доска с обрывком снасти приспособлена как опора для плеча.'
+    ]);
+
     const scene = await visible.project({
       mode_resolution: { decision_trace: { step_traces: [{
         approved_plan: {
@@ -315,7 +331,7 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
     assert.equal(movement.visible_scene,
       'Группа пришла во двор клети. Огонь разгорелся.');
     assert.deepEqual(movement.visible_changes, [
-      'trace_ld_v1_route_camp_to_storehouse_committed',
+      'Группа дошла от рыбацкого стана до двора клети.',
       'turn_step_world_process_1:local_fire:started'
     ]);
 
@@ -329,7 +345,8 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
     assert.equal(recovery.visible_scene,
       'Дорожная сумка теперь под вашим контролем. В огонь добавлено топливо.');
     assert.deepEqual(recovery.visible_changes, [
-      'road_bag_recovered', 'turn_step_world_process_1:local_fire:fuel_added'
+      'Вы забрали дорожную сумку.',
+      'turn_step_world_process_1:local_fire:fuel_added'
     ]);
 
     const combat = await visible.project({ retrieved_state: {
@@ -355,7 +372,7 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
     } });
     assert.equal(fallback.visible_scene, 'Группа пришла во двор клети.');
     assert.deepEqual(fallback.visible_changes,
-      ['trace_ld_v1_route_camp_to_storehouse_committed']);
+      ['Группа дошла от рыбацкого стана до двора клети.']);
   });
 
 test('generic visible projector rejects malformed player F1 facts',

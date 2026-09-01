@@ -27,6 +27,8 @@ import {
 } from './lower-dvina-trace-actor-item-transition.js';
 import { resolveOrdinaryContents } from
   './lower-dvina-trace-turn-step-container-ordinary.js';
+import { hydratePreparedOrdinaryRuntime } from
+  './lower-dvina-trace-action-produced-runtime.js';
 
 export async function moveEntity(execution, state, options) {
   const { operation } = execution;
@@ -36,6 +38,9 @@ export async function moveEntity(execution, state, options) {
   requireRef(operation.entity_ref, refs, 'entity_ref');
   requireRef(operation.placement.target_ref, refs, 'placement.target_ref');
   const current = requireProjectedItem(projection, operation.entity_ref);
+  hydratePreparedOrdinaryRuntime(
+    execution.prepared_ordinary_materialization_atomic_write_plan,
+    operation.entity_ref, state);
   const runtime = state.entities.get(actualRef(operation.entity_ref, state));
   const authoredItem = state.authoredItems.get(operation.entity_ref);
   let authoredContainer = state.authoredContainers.get(
@@ -159,7 +164,9 @@ export async function moveEntity(execution, state, options) {
       } : {})
     }),
     consequence: visibleConsequence(identity, {
-      change: 'moved', entity_ref: owned.instance_id
+      change: 'moved', entity_ref: owned.instance_id,
+      relation: operation.placement.relation,
+      display_label: current.name ?? current.display_label ?? null
     }),ordinaryPlan
   });
 }

@@ -119,7 +119,8 @@ test('grounding repair preserves the entire still-unexecuted intent',
       original_output: {}
     });
     assert.equal(plan.continuation.remaining_intent, intent);
-    assert.equal(plan.interpretation.grounded_attempt, 'доска');
+    assert.equal(plan.interpretation.grounded_attempt,
+      'Осмотрен доступный обычный материал.');
   });
 
 test('assembler derives redundant A1 carrier refs from semantic source refs',

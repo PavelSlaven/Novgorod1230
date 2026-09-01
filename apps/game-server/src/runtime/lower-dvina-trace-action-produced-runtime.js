@@ -120,6 +120,32 @@ function hydratePreparedSource(projection, plan, itemId, state) {
   ] };
 }
 
+export function hydratePreparedOrdinaryRuntime(plan, itemId, state) {
+  const item = plan?.resolution === 'materialize' ? plan.item : null;
+  if (item?.item_id !== itemId || !plain(item.mechanics_snapshot)
+      || !plain(item.runtime_placement)) return false;
+  const descriptor = item.item_proposal?.semantic_descriptor;
+  const rowState = {
+    runtime_instance_mechanics_snapshot:
+      structuredClone(item.mechanics_snapshot),
+    ordinary_metadata: {
+      semantic_type: text(descriptor?.semantic_type) || null,
+      name: text(descriptor?.name) || null,
+      semantic_facts: []
+    }
+  };
+  const runtime = runtimeEntity(itemId, rowState);
+  state.entities.set(itemId, runtime);
+  state.materializedItems.set(itemId, {
+    item_id: itemId, template_id: null, profile_id: null,
+    category_id: null, quantity: 1,
+    condition_state: 'ordinary_runtime_instance',
+    legal_status: 'ordinary_world_property_bound', state: rowState,
+    placement: structuredClone(item.runtime_placement)
+  });
+  return true;
+}
+
 function projectRuntimeItem(itemId, row, placement, runtime) {
   const metadata = row.state?.ordinary_metadata;
   return {

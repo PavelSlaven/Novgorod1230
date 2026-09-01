@@ -8,7 +8,8 @@ import { projectLowerDvinaTraceA1Capability } from
   '../src/runtime/lower-dvina-trace-a1-player-safe.js';
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
-import { createLowerDvinaTraceA1ProductionResolverFactory,
+import { createActionProductionVisibleConsequence,
+  createLowerDvinaTraceA1ProductionResolverFactory,
   snapshotA1ExecutionEnvelope } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { resolveA1OperationScope } from
@@ -22,6 +23,23 @@ import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
 import { materializeLocalFireActivation } from
   '../../../packages/materialization/src/lower-dvina-trace-local-fire.js';
+
+test('A1 exposes its approved physical result to player-safe presentation', () => {
+  const consequence = createActionProductionVisibleConsequence({
+    actionRef: 'action:1', stepIndex: 2, semantic: {
+      source_refs: ['board'], result_descriptor: {
+        physical_description: 'доска приспособлена как опора',
+        qualitative_facts: ['опора поддерживает плечо']
+      }
+    }
+  });
+  assert.deepEqual(consequence.visible_seed
+    .turn_step_action_production_2, {
+    change: 'physical_change', entity_ref: 'board',
+    physical_description: 'доска приспособлена как опора',
+    qualitative_facts: ['опора поддерживает плечо']
+  });
+});
 
 test('production-v10 threads the exact A1 profile and resolver into Phase 2',
   async () => {

@@ -134,14 +134,25 @@ export function projectDirectSeedChanges({ input, directSeedKeys }) {
 }
 
 function directSeedChange(value) {
-  if (value?.kind === 'semantic_activity') return null;
+  if (value?.kind === 'semantic_activity') return 'Прошло некоторое время.';
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
   }
   if (value?.change === 'created' && text(value.name)) {
     return `Появился результат вашей работы: ${value.name}.`;
   }
-  if (value?.change === 'moved') return 'Вы переложили доступный предмет.';
+  if (value?.change === 'moved') {
+    if (value.relation === 'held_by' && text(value.display_label)) {
+      return `Вы взяли в руки ${value.display_label}.`;
+    }
+    return text(value.display_label)
+      ? `Вы переместили ${value.display_label}.`
+      : 'Вы переместили доступный предмет.';
+  }
+  if (value?.change === 'physical_change'
+      && text(value.physical_description)) {
+    return sentence(value.physical_description);
+  }
   if (value?.change === 'container_accessed') {
     return 'Вы изменили состояние доступного вместилища.';
   }
@@ -152,6 +163,10 @@ function directSeedChange(value) {
     return 'Исходный предмет больше не существует отдельно.';
   }
   failCurrentScene();
+}
+
+function sentence(value) {
+  return /[.!?…]$/u.test(value) ? value : `${value}.`;
 }
 
 function directOutcomeConstraints(input) {
@@ -210,7 +225,12 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
     ...structuredClone(visibleContext),
     visible_npc: visibleContext.visible_npc.map((npc) => {
       const detail = details.get(npc?.entity_ref?.entity_id);
-      return detail == null ? structuredClone(npc) : {
+      const informative = detail != null
+        && (detail.visible_equipment.length > 0
+          || Object.keys(detail.presentation).length > 0
+          || Object.keys(detail.identity_state).some((key) =>
+            key !== 'display_name'));
+      return !informative ? structuredClone(npc) : {
         ...structuredClone(npc),
         observable_cues: {
           identity: structuredClone(detail.identity_state),

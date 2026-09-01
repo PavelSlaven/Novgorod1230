@@ -180,10 +180,27 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
             ? 'action_production:no_useful_result'
             : 'action_production:physical_change',
           write_fragments: [], duration_minutes: 0,
-          action_production_atomic_write_plan: atomicPlan
+          action_production_atomic_write_plan: atomicPlan,
+          consequence_fragment: createActionProductionVisibleConsequence({
+            actionRef, stepIndex, semantic
+          })
         });
       }
     });
+  };
+}
+
+export function createActionProductionVisibleConsequence({ actionRef, stepIndex,
+  semantic }) {
+  const descriptor = semantic.result_descriptor;
+  return {
+    visible_seed: { [`turn_step_action_production_${stepIndex}`]: {
+      change: 'physical_change', entity_ref: semantic.source_refs[0],
+      physical_description: descriptor.physical_description,
+      qualitative_facts: structuredClone(descriptor.qualitative_facts)
+    } },
+    state_changes: [{ operation_id: actionRef,
+      operation_kind: 'action_production' }]
   };
 }
 

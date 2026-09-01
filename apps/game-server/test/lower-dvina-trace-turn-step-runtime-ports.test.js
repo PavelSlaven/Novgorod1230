@@ -4,6 +4,7 @@ import test from 'node:test';
 import { runTurnStepLoop } from '@rus/turn';
 import { createAmbientOrdinaryPortionAdmission } from
   '@rus/items-property/ambient-ordinary-portion';
+import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
 import { ambientContextPort } from './ambient-ordinary-portion-fixture.js';
 import {
   createLowerDvinaTraceTurnStepRuntimePorts,
@@ -194,6 +195,45 @@ test('entity operations reject stale refs and unsupported projection relations',
     }, created.working_projection)), {
       code: 'ITEM_RUNTIME_PLACEMENT_CYCLE'
     });
+  });
+
+test('same-turn prepared ordinary item can move through the generic owner',
+  async () => {
+    const ports = createPorts();
+    const itemId = 'ordinary_item:prepared-board';
+    const prepared = {
+      resolution: 'materialize', item: {
+        item_id: itemId, runtime_placement: { anchor_id: 'shore' },
+        item_proposal: { semantic_descriptor: {
+          semantic_type: 'ordinary_object_candidate',
+          name: 'длинная доска', facts: ['доска лежит на берегу']
+        } },
+        mechanics_snapshot: createRuntimeInstanceMechanicsSnapshot({
+          schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
+          version: 1, provenance: {
+            source_kind: 'ordinary_direct_action_result',
+            root_turn_id: 'turn:party:1', step_index: 1,
+            operation_ref: 'ordinary:prepared',
+            origin_kind: 'ambient_ordinary', source_refs: ['shore']
+          }, mechanics: mechanics({ mass_grams: 3000,
+            external_hand_cost: 1, carry_form: 'long' })
+        })
+      }
+    };
+    const visible = projection();
+    visible.items.push({ item_id: itemId, name: 'длинная доска',
+      semantic_type: 'ordinary_object_candidate',
+      placement: { anchor_id: 'shore' } });
+    const input = execution({ op: 'move_entity', entity_ref: itemId,
+      placement: { relation: 'held_by', target_ref: 'mikula' } }, visible);
+    input.prepared_ordinary_materialization_atomic_write_plan = prepared;
+
+    const moved = await ports.executionRegistry.direct({ op: 'move_entity' })(
+      input);
+    assert.equal(moved.working_projection.items[0].placement
+      .holder_character_id, 'mikula');
+    assert.equal(moved.working_projection.inventory.occupied_hands, 1);
+    assert.equal(moved.write_fragments[0].value.payload.entity_ref, itemId);
   });
 
 test('committed runtime mechanics hydrate a fresh per-turn adapter', async () => {

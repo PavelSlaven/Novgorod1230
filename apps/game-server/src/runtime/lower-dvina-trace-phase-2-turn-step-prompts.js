@@ -37,6 +37,33 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
       depends_on_refs: []
     }
   },
+  action_production_preserve_source: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'request_item_use',
+      actor_ref: '<copy current actor ref from request>',
+      item_ref: '<copy first source item ref>',
+      use_kind: 'other',
+      target_refs: ['<copy remaining source and tool refs in exact order>'],
+      action_production: {
+        source_refs: ['<one or more visible material item refs>'],
+        tool_refs: ['<zero or more visible unchanged tool refs>'],
+        requested_output_count: null,
+        identity_mode: 'preserve_source', origin: null,
+        result_class: 'ordinary_physical_result', material_extent: null,
+        result_descriptor: {
+          display_name: null,
+          physical_description: '<visible physical result on preserved item>',
+          qualitative_facts: ['<visible qualitative physical fact>'],
+          removed_physical_fact_refs: [], inscription_text: null,
+          physical_form: '<one allowed physical form or null>',
+          source_fact_delta: null
+        },
+        output_class: 'ordinary_mundane'
+      }
+    }], check: null
+  },
   available_container_access: {
     interpretation: { adaptation: 'literal' },
     resolution: 'domain_request',
@@ -111,8 +138,10 @@ export const TURN_STEP_PLANNER_INSTRUCTIONS = [
   'When player_safe_state.active_interlocutor identifies an active interlocutor and an available emit_interaction targets exactly that entity, any speech, reply, or question continuing that conversation MUST select its exact supplied choice_id before focused discovery, direct observation, or no-op. If an independent later clause seeks a new detail, preserve it in continuation. Focused discovery remains available when the remaining intent is not conversational speech or independently seeks that detail. The player text remains semantic input for the domain owner; do not alter or replace the supplied operation.',
   'Delegate movement, containers, discovery, items, activities, NPC interaction, combat, body calculations, and other domain mechanics through the allowed domain requests instead of resolving them.',
   'For an intent to travel to a supplied route destination, return a domain_request selecting that exact available request_movement choice_id; never reproduce or alter its operation DTO, and do not replace travel with a generic activity.',
-  'When player_safe_state.action_production is present and no registered owner handles a physical item transformation, use request_item_use kind other with its exact action_production object.',
-  'Choose only listed result/output classes and physical forms. For action production, source_refs are one or more consumed material items, tool_refs are unchanged tools, item_ref is source_refs[0], and target_refs contain every remaining source/tool ref. For independent_outputs, when independent_output_source_groups are listed, every selected source_ref must come from one group. Positive weapon_capable, money_like_token and written_carrier results require at least one real tool_ref; ordinary_mundane and no_useful_result do not. For preserve_source, item_ref keeps identity and later source_refs are consumed materials; material_extent is null with one source and minor|half|major|whole with additional materials. requested_output_count is null unless the actor intent explicitly names a positive count; it is always null outside independent_outputs and must not exceed the visible max_new_entities. For an independent output material_extent is whole for full partition and minor|half|major for partial separation. A partial separation has exactly one source and requires source_fact_delta with the surviving source current physical_form; its text fact fields may be empty when only inventory geometry changes. Output facts and physical_form describe only new outputs. Fact removals may contain only visible fact_ref values made false on that entity. inscription_text is quoted text physically present on its carrier, never world truth, ownership, knowledge or official status. Choose only the qualitative extent and physical form implied by the attempt; never invent numeric mechanics, entity counts or combat classifications.',
+  'When player_safe_state.action_production is present and no registered owner handles a physical item transformation, emit request_item_use with use_kind:"other" and an action_production object; use action_production_preserve_source for an in-place physical change.',
+  'action_production contains exactly source_refs, tool_refs, requested_output_count, identity_mode, origin, result_class, material_extent, result_descriptor, and output_class. result_descriptor contains exactly display_name, physical_description, qualitative_facts, removed_physical_fact_refs, inscription_text, physical_form, and source_fact_delta. source_refs are one or more material item refs, tool_refs are unchanged tool refs, item_ref equals source_refs[0], and target_refs contain every remaining source ref followed by every tool ref. When independent_output_source_groups are listed, every selected source_ref for independent_outputs must come from one group.',
+  'For preserve_source, identity stays with item_ref, origin and requested_output_count are null, result_descriptor.source_fact_delta is null, material_extent is null with one source and minor|half|major|whole with additional consumed sources. For independent_outputs, origin is direct_partition or crafted, result_descriptor.display_name and physical_form are required, and material_extent is whole unless one surviving source is partially separated. A partial separation has exactly one source, material_extent minor|half|major, and a result_descriptor.source_fact_delta containing exactly physical_description, qualitative_facts, removed_physical_fact_refs, and the surviving source physical_form. For no_useful_result, origin and output_class are null, result_class is no_useful_result, and every result_descriptor value is null or an empty array.',
+  'requested_output_count is null unless independent_outputs explicitly requests a positive count, and never exceeds max_new_entities. removed_physical_fact_refs may contain only supplied visible fact_ref values made false on that same entity. inscription_text is quoted text physically present on its carrier, never world truth, ownership, knowledge, or official status. Choose only listed result/output classes and physical forms and only the qualitative extent implied by the attempt; never invent numeric mechanics, entity counts, or combat classifications.',
   'Describe only physical facts: no hidden truth, authenticity, currency, official status, canonical weapon identity, quantities, damage, or mechanics.',
   'Adapt impossible goals to a realistic partial, waste, or nonworking result when a physical attempt can still occur; otherwise use no_useful_result.'
 ];

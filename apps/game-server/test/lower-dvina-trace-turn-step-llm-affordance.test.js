@@ -68,6 +68,28 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     /take, use, or transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
 });
 
+test('action production prompt matches the active qualitative DTO', async () => {
+  const input = request({ root_player_action: 'Приспосабливаю доску как опору.',
+    remaining_intent: 'Приспосабливаю доску как опору.',
+    actor: { actor_ref: 'actor:player' }, player_safe_state: {
+      action_production: { semantic_grounding_available: true,
+        max_new_entities: 4,
+        allowed_identity_modes: ['preserve_source', 'independent_outputs',
+          'no_useful_result'],
+        allowed_origins: ['direct_partition', 'crafted'],
+        allowed_result_classes: ['ordinary_physical_result'],
+        allowed_output_classes: ['ordinary_mundane'],
+        allowed_physical_forms: ['compact', 'regular', 'long', 'bulky'] }
+    } });
+  let prompt;
+  await modelFor(input, null, { onPrompt: (value) => { prompt = value; } })(input);
+  assert.match(prompt,
+    /"action_production_preserve_source"[\s\S]*"use_kind":"other"[\s\S]*"result_descriptor":\{"display_name":null,"physical_description":"<visible physical result on preserved item>","qualitative_facts":\["<visible qualitative physical fact>"\],"removed_physical_fact_refs":\[\],"inscription_text":null,"physical_form":"<one allowed physical form or null>","source_fact_delta":null\}/u);
+  assert.match(prompt,
+    /action_production contains exactly source_refs, tool_refs, requested_output_count, identity_mode, origin, result_class, material_extent, result_descriptor, and output_class/u);
+  assert.doesNotMatch(prompt, /request_item_use kind other|output_facts|output_physical_form|fact_removals|independent_outputs":\[\]|preserve_source":true/u);
+});
+
 test('movement keeps supplied semantic label', async () => {
   const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route',
     target_ref: 'location:destination', description: 'Follow marked path to settlement.' };

@@ -181,6 +181,8 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   assert.match(admitted, /"mass_grams":"<semantic_integer_mass_grams>"/u);
   assert.match(admitted, /"external_hand_cost":"<semantic_integer_external_hand_cost>"/u);
   assert.match(admitted, /"packing_slot_cost":"<semantic_integer_packing_slot_cost>"/u);
+  assert.match(admitted,
+    /never copy the player's intended use, action, goal, or hoped-for result/u);
   assert.doesNotMatch(admitted, /"mass_grams":1/u);
 });
 

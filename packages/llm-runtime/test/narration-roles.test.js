@@ -56,3 +56,15 @@ test('NPC conversation grounding auditor uses Flash JSON role', () => {
   assert.equal(resolution.config.maxTokens, 20_000);
   assert.equal(resolution.config.outputContractMode, 'json_object');
 });
+
+test('turn-step grounding auditor uses Flash JSON role', () => {
+  const resolution = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: 'turn_step_grounding_auditor',
+    env: { DEEPSEEK_API_KEY: 'test' }
+  });
+  assert.equal(resolution.enabled, true);
+  assert.equal(resolution.config.model, 'deepseek-v4-flash');
+  assert.equal(resolution.config.maxTokens, 20_000);
+  assert.equal(resolution.config.requestTimeoutMs, 120_000);
+  assert.equal(resolution.config.outputContractMode, 'json_object');
+});

@@ -25,6 +25,7 @@ export const TurnRuntimeRoles = Object.freeze({
   INTENT_ROUTER: 'intent_router',
   TURN_STEP_PLANNER: 'turn_step_planner',
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
+  TURN_STEP_GROUNDING_AUDITOR: 'turn_step_grounding_auditor',
   GAMEPLAY_NARRATOR: 'gameplay_narrator',
   GAMEPLAY_NARRATOR_REPAIR: 'gameplay_narrator_format_repair',
   GAMEPLAY_NARRATOR_AUDITOR: 'gameplay_narrator_auditor',

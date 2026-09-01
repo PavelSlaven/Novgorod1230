@@ -19,6 +19,10 @@ export function conversationTurnRoleDefaults(contractModes) {
     npc_conversation_grounding_auditor: auditRole(
       'NPC_CONVERSATION_GROUNDING_AUDITOR',
       contractModes.JSON_OBJECT
+    ),
+    turn_step_grounding_auditor: auditRole(
+      'TURN_STEP_GROUNDING_AUDITOR',
+      contractModes.JSON_OBJECT
     )
   };
 }

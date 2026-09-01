@@ -91,6 +91,7 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null,
       'resolve_presence permits materialize, absent, no_change, or authority_required. Negative choices return only resolution and reason_code.',
       'For materialize return resolution, one entity containing only semantic_descriptor, presence_expectation, and mechanics_proposal, plus reason_code.',
       'Closed literal enums: density_band_proposal is null, sparse, ordinary, or dense; availability_class is common or context_bound; functional_bucket is household, work, storage, stock, furnishing_textile, maintenance_material, waste_scrap, personal_effect, arms, or other_ordinary; presence_expectation is routine, plausible, or exceptional.',
+      'A null in the semantic response shape marks text you must supply. Never copy angle-bracket placeholders or return null for required semantic text.',
       ...(mechanicsPolicy == null ? [] : [mechanicsInstruction(mechanicsPolicy)]),
       'Use only supplied context and policy refs.',
     ...(responseShape == null ? [] : [
@@ -114,15 +115,14 @@ function ordinarySemanticShape(request) {
   if (request?.mode === 'seed_scope') return {
     resolution: 'seeded',
     density_band_proposal: '<allowed density band>',
-    background_groups: [{ descriptor: '<semantic group descriptor>' }],
+    background_groups: [{ descriptor: null }],
     reason_code: 'seeded'
   };
   if (request?.authority_envelope?.selected_supporting_basis_ref == null) {
     return { resolution: 'absent', reason_code: 'absent' };
   }
   return { resolution: 'materialize', entities: [{
-    semantic_descriptor: { semantic_type: '<supplied semantic type>',
-      name: '<semantic ordinary name>', facts: ['<semantic ordinary fact>'] },
+    semantic_descriptor: { semantic_type: null, name: null, facts: [null] },
     presence_expectation: '<routine, plausible, or exceptional>',
     mechanics_proposal: { mass_grams: '<integer>',
       external_hand_cost: '<integer>', carry_form: '<semantic carry form>',

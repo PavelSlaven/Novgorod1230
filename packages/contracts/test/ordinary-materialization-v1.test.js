@@ -92,6 +92,19 @@ test('ordinary materialization DTO rejects unknown properties and enum values', 
   assert.ok(validateOrdinaryMaterializationPlanV1({ ...materializePlan(), resolution: 'invented' }).some((error) => error.path === 'resolution' && error.code === 'enum'));
 });
 
+test('ordinary materialization rejects semantic placeholders', () => {
+  const seed = { ...materializePlan(), resolution: 'seeded', entities: [],
+    background_groups: [{ descriptor: '<semantic_group_descriptor>',
+      functional_bucket: 'household', availability_class: 'common',
+      allowed_admission_classes: ['common_mundane'], causal_basis: {
+        basis_kind: 'seed_scope', basis_refs: ['basis-1'] },
+      property_basis_ref: 'property-1', permission_refs: [],
+      disclosure_policy_ref: 'disclosure-1' }] };
+  assert.ok(validateOrdinaryMaterializationPlanV1(seed, seedRequest()).some(
+    (error) => error.path === 'background_groups[0].descriptor'
+      && error.code === 'placeholder'));
+});
+
 test('ordinary materialization request rejects a Stage A candidate and malformed targeted evidence', () => {
   assert.ok(validateOrdinaryMaterializationRequestV1({ ...seedRequest(), candidate_query: targetedRequest().candidate_query }).some((error) => error.path === 'candidate_query' && error.code === 'const'));
   assert.ok(validateOrdinaryMaterializationRequestV1({ ...targetedRequest(), candidate_query: { ...targetedRequest().candidate_query, evidence_weight: 1 } }).some((error) => error.path === 'candidate_query.evidence_weight' && error.code === 'const'));

@@ -156,7 +156,8 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(prompt, /seed_scope permits only seeded or no_change/u);
   assert.match(prompt, /"resolution":"seeded"/u);
-  assert.match(prompt, /"descriptor":"<semantic_group_descriptor>"/u);
+  assert.match(prompt, /"descriptor":null/u);
+  assert.match(prompt, /Never copy angle-bracket placeholders/u);
   assert.match(prompt, /"basis_refs":\["basis"\]/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });

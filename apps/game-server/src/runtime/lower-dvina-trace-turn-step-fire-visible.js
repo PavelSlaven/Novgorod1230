@@ -93,7 +93,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       ...(consequence.visible_seed.clarification
         ? ['Фактическое действие не применено до уточнения.'] : []),
       ...(consequence.status === 'partial'
-        ? ['Задуманное выполнено лишь частично; остальное ещё не произошло.']
+        ? ['Удалось осуществить лишь часть задуманного; остальное ещё не произошло.']
         : [])
     ],
     allowed_tensions: [],

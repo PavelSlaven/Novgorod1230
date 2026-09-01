@@ -100,7 +100,8 @@ export function createTraceKnownRouteCommands({ state, contracts, inputDigest,
 export function routeCandidates({ state, contracts }) {
   const actor = { actor_ref: { entity_kind: 'player_character', entity_id: state?.actor_id },
     location_ref: state?.position?.location_ref, zone_ref: state?.position?.zone_ref ?? 'working' };
-  if (!actor.actor_ref.entity_id || !actor.location_ref || !actor.zone_ref) return [];
+  if (!actor.actor_ref.entity_id || !actor.location_ref || !actor.zone_ref
+      || actorInActiveCombat(state, actor.actor_ref)) return [];
   const scenes = admittedScenes(state, contracts);
   const known = state.route_knowledge ?? [];
   return scenes.flatMap((destination) => {
@@ -130,6 +131,14 @@ export function routeCandidates({ state, contracts }) {
         sourceEndpoint, destinationEndpoint, access, capacity, routePin }] : [];
     });
   });
+}
+
+function actorInActiveCombat(state, actorRef) {
+  return (state?.combat_sessions ?? []).some((session) =>
+    session?.status !== 'ended'
+      && session?.participant_refs?.some((participant) =>
+        participant?.entity_kind === actorRef.entity_kind
+          && participant?.entity_id === actorRef.entity_id));
 }
 
 function admittedScenes(state, contracts) {

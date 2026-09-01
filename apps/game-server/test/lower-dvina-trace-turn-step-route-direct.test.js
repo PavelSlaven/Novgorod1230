@@ -302,6 +302,12 @@ test('known-route candidates admit a prepared first-entry scene and keep paralle
     assert.deepEqual(routeCandidates({ state, contracts }).map(({ route }) =>
       route.route_id), ['trace_ld_v1_route_shed_to_camp']);
 
+    state.combat_sessions = [{ status: 'paused_for_player',
+      participant_refs: [{ entity_kind: 'player_character',
+        entity_id: state.actor_id }] }];
+    assert.deepEqual(routeCandidates({ state, contracts }), []);
+    state.combat_sessions = [];
+
     const full = structuredClone(contracts);
     const fullCapacity = full.capacityContracts.find(({ location_ref: ref }) =>
       ref === camp.location_profile_ref);

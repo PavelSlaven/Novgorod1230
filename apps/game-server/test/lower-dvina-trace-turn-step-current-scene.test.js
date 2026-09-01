@@ -35,17 +35,19 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
   assert.equal(current.party_state.state_version, 9);
   assert.deepEqual(current.route_history, state.route_history);
   const direct = projectCurrentSceneForNoOperationDirect({ input: {
-    consequence: { visible_seed: { turn_step_1: {
+    consequence: { status: 'partial', visible_seed: { turn_step_1: {
       kind: 'semantic_activity' } } }, retrieved_state: current, mode_resolution: {
-      decision_trace: { step_traces: [{ approved_plan: { resolution: 'direct',
-        operations: [], check: null } }] }
+      decision_trace: { remaining_intent: null,
+        step_traces: [{ approved_plan: { resolution: 'direct',
+          goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(direct.known_context.includes(
     'раненый мужчина: injured_unable_to_walk'),
     true);
   assert.deepEqual(direct.visible_changes,
-    ['Попытка заняла некоторое время.']);
+    ['Прошло некоторое время.']);
+  assert.deepEqual(direct.uncertainties, ['Задуманное не удалось.']);
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {

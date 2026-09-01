@@ -113,9 +113,7 @@ export function projectCurrentSceneForVisibleOverlay({
     ]),
     uncertainties: unique([
       ...current.uncertainties,
-      ...(input?.consequence?.status === 'partial'
-        ? ['Задуманное выполнено лишь частично; остальное ещё не произошло.']
-        : [])
+      ...directOutcomeUncertainties(input)
     ]),
     do_not_imply: unique([
       ...current.do_not_imply,
@@ -133,7 +131,7 @@ export function projectDirectSeedChanges({ input, directSeedKeys }) {
 
 function directSeedChange(value) {
   if (value?.kind === 'semantic_activity') {
-    return 'Попытка заняла некоторое время.';
+    return 'Прошло некоторое время.';
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
@@ -152,6 +150,22 @@ function directSeedChange(value) {
     return 'Исходный предмет больше не существует отдельно.';
   }
   failCurrentScene();
+}
+
+function directOutcomeUncertainties(input) {
+  const trace = input?.mode_resolution?.decision_trace;
+  const plans = (trace?.step_traces ?? []).map(({ approved_plan: plan }) => plan)
+    .filter((plan) => plan?.resolution === 'direct');
+  const results = plans.map(({ goal_result: result }) => result).filter(Boolean);
+  if (results.length > 0 && results.every((result) => result === 'not_achieved')
+      && !text(trace?.remaining_intent)) {
+    return ['Задуманное не удалось.'];
+  }
+  if (results.includes('partially_achieved') || text(trace?.remaining_intent)
+      || (results.length === 0 && input?.consequence?.status === 'partial')) {
+    return ['Удалось осуществить лишь часть задуманного; остальное ещё не произошло.'];
+  }
+  return [];
 }
 
 function validCurrentScene(value) {

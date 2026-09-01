@@ -55,47 +55,54 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     }
   }));
   assert.equal(result.status, 'approved');
-  const shape = '{"prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}';
+  const shape = '{"prose":"<visible-only prose in Russian>","action_options":[],"used_references":[],"self_check":{}}';
   const repairShape = shape;
   assert.equal(calls[0].messages[0].content.includes(shape), true);
   assert.equal(calls[0].messages[0].content.includes(
     'server assembles version, schema, and output_id'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'context.attempt only to state the attempted action or speech'), true);
+    'Use context.attempt only when needed'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'never evidence of success or a new world fact'), true);
+    'never evidence of success, object use, or a new world fact'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'Missing outcome fields are silent constraints'), true);
+    'Missing or false outcome fields are silent constraints'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'Do not infer a causal bridge, exact object use, or success mechanism'), true);
+    'Do not infer a causal bridge or exact success mechanism'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'copied verbatim from visible_context.visible_scene'), true);
+    'Faithfully paraphrase mechanical source wording'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'visible_changes is nonempty, prose MUST communicate every material newly visible change'), true);
+    'visible_context.visible_changes is nonempty, convey every material new change'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'relevant player-safe known_context, including an actionable route or context fact'), true);
+    'relevant player-safe known_context'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'not a report of game state'), true);
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');
   assert.equal(calls[1].roleId, 'gameplay_narrator_format_repair');
   assert.equal(calls[1].messages[0].content.includes(repairShape), true);
   assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
   assert.equal(calls[1].messages[0].content.includes(
-    'visible_changes is nonempty, preserve prose coverage of every material newly visible change'), true);
+    'Convey every material visible_change naturally'), true);
   assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
-  assert.equal(calls[2].messages[0].content.includes('full narration output'), true);
+  assert.equal(calls[2].messages[0].content.includes('full narration'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'action_intent_context is explicitly intent-only'), true);
+    'action_intent_context may ground only'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'It never proves success, object use, a result, or a world/NPC state change'), true);
+    'it never proves success, object use, a result, or a world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'complete sentence copied from visible_context.visible_scene or an entry of visible_context.known_context is supported'), true);
+    'faithful natural paraphrase of visible_context is supported'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'are part of the attempted action and are not completed object use'), true);
+    'do not prove that nobody or nothing is present'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'remain intent-only'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
-    /"kind":"<one allowed unsupported kind>"/u);
+    /"kind":"<one allowed concern kind>"/u);
   assert.match(calls[2].messages[0].content, /unsupported_success/u);
+  assert.match(calls[2].messages[0].content, /technical_presentation/u);
   assert.equal(calls[2].messages[0].content.includes(
     '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
@@ -117,9 +124,9 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'discard the original claim and rebuild the replacement only from'), true);
+    'Remove unsupported claims'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'copied verbatim from visible_context.visible_scene or an entry of visible_context.known_context'), true);
+    'faithful natural paraphrase of visible_context is allowed'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(JSON.parse(calls[3].messages[1].content)
     .action_intent_context.evidence_scope,

@@ -31,7 +31,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   });
   return ({ partyId, requestId, applyWorkingProjection }) => {
     const load = async (rawEnvelope, requireEvidence) => {
-      const envelope = snapshot(rawEnvelope);
+      const envelope = snapshotA1ExecutionEnvelope(rawEnvelope);
       if (envelope === INVALID_ACTION_PRODUCED_DATA) {
         fail('TRACE_A1_SCOPE_INVALID');
       }
@@ -185,6 +185,12 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       }
     });
   };
+}
+
+export function snapshotA1ExecutionEnvelope(rawEnvelope) {
+  return snapshot({ ...rawEnvelope, committed_state: { party_state: {
+    turn_number: rawEnvelope?.committed_state?.party_state?.turn_number
+  } } });
 }
 
 function currentPhysicalFactRefs(item) {

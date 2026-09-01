@@ -8,7 +8,8 @@ import { projectLowerDvinaTraceA1Capability } from
   '../src/runtime/lower-dvina-trace-a1-player-safe.js';
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
-import { createLowerDvinaTraceA1ProductionResolverFactory } from
+import { createLowerDvinaTraceA1ProductionResolverFactory,
+  snapshotA1ExecutionEnvelope } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { resolveA1OperationScope } from
   '../src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js';
@@ -204,6 +205,15 @@ test('A1 JSON boundary omits optional object values but rejects array holes', ()
     required: 1, nested: {} });
   assert.equal(snapshotActionProducedPersistenceData([undefined]),
     INVALID_ACTION_PRODUCED_DATA);
+});
+
+test('A1 execution envelope excludes non-DTO runtime indexes', () => {
+  const envelope = snapshotA1ExecutionEnvelope({ operation: {},
+    committed_state: { party_state: { turn_number: 3 },
+      entities: new Map([['item', {}]]) } });
+  assert.notEqual(envelope, INVALID_ACTION_PRODUCED_DATA);
+  assert.deepEqual(envelope.committed_state,
+    { party_state: { turn_number: 3 } });
 });
 
 test('production-v11 threads exact F1 profile, resolver and temporal owner',

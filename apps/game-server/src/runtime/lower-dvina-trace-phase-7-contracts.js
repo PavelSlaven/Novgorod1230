@@ -7,7 +7,7 @@ import {
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 25
+      || bundle.definition_revision < 15 || bundle.definition_revision > 27
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
@@ -65,7 +65,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const genericCheckContext = autonomous.generic_check_context_profile;
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
-  const npcSemanticProfile = bundle.definition_revision === 25
+  const npcSemanticProfile = bundle.definition_revision >= 25
     ? exactNpcSemanticProfile(bundle.npc_actor_step_profile, autonomous.target_npc_ref)
     : null;
   const currentGenericCheckContext = npcSemanticProfile == null

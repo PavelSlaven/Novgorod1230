@@ -18,6 +18,7 @@ const EXPECTED = Object.freeze({
     kind: 'route',
     targetKey: 'fishingCamp',
     targetSemantic: 'fishing_camp',
+    routeRef: 'trace_ld_v1_route_wreck_to_camp',
   },
   'lower_dvina_trace.ask_eremey_about_wreck': {
     operation: 'emit_interaction',
@@ -143,7 +144,7 @@ const REVISION_24_STATE_GATED_COMMANDS = new Set([
 ]);
 
 export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRefs }) {
-  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision);
   const byCommand = new Map();
@@ -206,7 +207,7 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
     [...byCommand.entries()].some(([commandId, record]) => {
       const command = bound.find(({ command_id: id }) => id === commandId);
       if (command?.semantic_binding) return false;
-      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId]);
+      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId]);
     })
   ) {
     gap();
@@ -233,7 +234,8 @@ function validRecord(record, expected) {
 function plannerOperation({ command, expected, actorRef, targetRef, evidenceRef }) {
   const operation = { op: expected.operation, actor_ref: actorRef, [expected.kindField]: expected.kind };
   if (expected.operation === 'request_movement') return { ...operation,
-    target_ref: targetRef, description: command.label };
+    target_ref: targetRef, ...(expected.routeRef == null ? {} : {
+      route_ref: expected.routeRef }), description: command.label };
   if (expected.operation === 'request_container_access') return { ...operation, container_ref: targetRef };
   if (expected.operation === 'request_item_use') return { ...operation, item_ref: targetRef, target_refs: [] };
   if (expected.operation === 'request_combat') return typeof targetRef !== 'string' || targetRef.length === 0 ? null

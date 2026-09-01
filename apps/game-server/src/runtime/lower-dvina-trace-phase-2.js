@@ -161,7 +161,7 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
         const turn10 = createTraceTurn10Runtime({
           state,
           bundle,

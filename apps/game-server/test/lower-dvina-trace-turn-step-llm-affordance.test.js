@@ -12,6 +12,7 @@ function modelFor(input, operationChoice, extra = {}) {
         grounded_attempt: extra.groundedAttempt ?? input.remaining_intent,
         adaptation: 'literal' },
       resolution: 'domain_request', operation_choice: operationChoice,
+      ...(extra.operationFamily === undefined ? {} : { operation_family: extra.operationFamily }),
       check: null, continuation: extra.continuation ?? null, clarification: null,
       reason_code: extra.reasonCode ?? 'focused_discovery',
       reason: extra.reason ?? 'Use supplied operation.'
@@ -57,6 +58,31 @@ test('movement keeps supplied semantic label', async () => {
     reasonCode: 'movement', onPrompt: (prompt) => assert.match(prompt, /Follow marked path to settlement/u)
   });
   assert.deepEqual((await model(input)).operations, [movement]);
+});
+
+test('travel prompt prioritizes supplied movement over unrelated inspection', async () => {
+  const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route',
+    target_ref: 'location:camp', description: 'Follow path to fishing camp.' };
+  const inspect = { op: 'request_discovery', actor_ref: 'actor:player', discovery_kind: 'inspect',
+    target_ref: 'location:shore', query: 'Inspect wreck.' };
+  const input = request({ root_player_action: 'Go to fishing camp along path.',
+    remaining_intent: 'Go to fishing camp along path.', actor: { actor_ref: 'actor:player' },
+    available_domain_operations: [movement, inspect] });
+  const model = modelFor(input, 'domain_operation_1_request_movement_route', {
+    onPrompt: (prompt) => assert.match(prompt,
+      /asks to travel to a location[\s\S]*request_movement reaches that location[\s\S]*Do not substitute inspecting/u)
+  });
+  assert.deepEqual((await model(input)).operations, [movement]);
+});
+
+test('mismatched semantic operation family cannot restore unrelated choice', async () => {
+  const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route', target_ref: 'location:camp' };
+  const inspect = { op: 'request_discovery', actor_ref: 'actor:player', discovery_kind: 'inspect', target_refs: ['location:shore'], query: 'Inspect shore.' };
+  const input = request({ root_player_action: 'Go to camp.', remaining_intent: 'Go to camp.', actor: { actor_ref: 'actor:player' }, available_domain_operations: [inspect, movement] });
+  const plan = await modelFor(input, 'domain_operation_1_request_discovery_inspect', {
+    operationFamily: 'request_movement'
+  })(input);
+  assert.equal(plan.operations, undefined);
 });
 
 test('active conversation selects exact supplied interaction', async (t) => {

@@ -3,14 +3,14 @@ import test from 'node:test';
 import { committedTraceScenarioDefinitionRevision } from
   '../src/runtime/lower-dvina-trace-committed-revision.js';
 
-test('committed revision 26 is executable without changing historical revisions', () => {
+test('committed revision 27 is executable without changing historical revisions', () => {
   for (const revision of [7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-    20, 21, 22, 23, 24, 25, 26]) {
+    20, 21, 22, 23, 24, 25, 26, 27]) {
     assert.equal(committedTraceScenarioDefinitionRevision({
       materialization_trace: { seed_context: { scenario_definition_revision: revision } }
     }), revision);
   }
   assert.throws(() => committedTraceScenarioDefinitionRevision({
-    materialization_trace: { seed_context: { scenario_definition_revision: 27 } }
+    materialization_trace: { seed_context: { scenario_definition_revision: 28 } }
   }), { code: 'TRACE_TURN_SCENARIO_REVISION_NOT_EXECUTABLE' });
 });

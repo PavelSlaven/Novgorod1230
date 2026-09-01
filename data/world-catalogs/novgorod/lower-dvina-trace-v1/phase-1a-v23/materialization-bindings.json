@@ -1,0 +1,58 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v23",
+  "revision": 23,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 27,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v22/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v22",
+    "revision": 22,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "83c221c8554316512e547c68498a7b9a3b352d1c70807dad5468a9cd7e413548"
+  },
+  "fallback_policy": "forbidden",
+  "first_entry_preparation": {
+    "members": [
+      {
+        "ordinal": 0,
+        "binding": {
+          "route_command_id": "lower_dvina_trace.follow_path_to_fishing_camp",
+          "route_ref": "trace_ld_v1_route_wreck_to_camp",
+          "materialization_timing": "on_first_successful_entry_only",
+          "source": {
+            "canonical_g5_ref": {"entity_ref":{"entity_kind":"canonical_spatial_node","entity_id":"trace_ld_v1_g5_wreck_shore"},"authoring_version":"1"},
+            "materialization_profile_ref": {"entity_ref":{"entity_kind":"scene_materialization_profile","entity_id":"trace_ld_v1_smp_wreck_shore"},"authoring_version":"1"}
+          },
+          "destination": {
+            "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+            "g5": {"canonical_ref":{"entity_ref":{"entity_kind":"canonical_spatial_node","entity_id":"trace_ld_v1_g5_fishing_camp"},"authoring_version":"1"},"materialization_profile_ref":{"entity_ref":{"entity_kind":"scene_materialization_profile","entity_id":"trace_ld_v1_smp_fishing_camp"},"authoring_version":"1"},"origin":"canonical"},
+            "g6": {"scene_template_ref":"trace_ld_v1_tpl_fishing_camp","materialization_profile":"trace_ld_v1_smp_fishing_camp","s1_topology_slot":{"source_scene_template_ref":{"entity_ref":{"entity_kind":"scene_template","entity_id":"trace_ld_v1_tpl_fishing_camp"},"authoring_version":"1"},"g6_slot_key":"s1_open_one_space","position_slot_key":"s1_open_one_space.interior","movement_edge_slot_keys":["s1_open_one_space.out","s1_open_one_space.back"],"visibility_link_slot_keys":["s1_open_one_space.visible_out","s1_open_one_space.visible_back"]}}
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "source_binding": {
+          "node_template_ref": "trace_ld_v1_tpl_fishing_camp",
+          "anchor_template": {"slot_key":"working_camp","state":{"zone_ref":"working_camp"}}
+        },
+        "binding": {
+          "route_command_id": "lower_dvina_trace.follow_known_route_to_drying_shed",
+          "route_ref": "trace_ld_v1_route_camp_to_shed",
+          "materialization_timing": "on_first_successful_entry_only",
+          "source": {
+            "canonical_g5_ref": {"entity_ref":{"entity_kind":"canonical_spatial_node","entity_id":"trace_ld_v1_g5_fishing_camp"},"authoring_version":"1"},
+            "materialization_profile_ref": {"entity_ref":{"entity_kind":"scene_materialization_profile","entity_id":"trace_ld_v1_smp_fishing_camp"},"authoring_version":"1"}
+          },
+          "destination": {
+            "location_profile_ref": "trace_ld_v1_loc_old_drying_shed",
+            "g5": {"canonical_ref":{"entity_ref":{"entity_kind":"canonical_spatial_node","entity_id":"trace_ld_v1_g5_old_drying_shed"},"authoring_version":"1"},"materialization_profile_ref":{"entity_ref":{"entity_kind":"scene_materialization_profile","entity_id":"trace_ld_v1_smp_old_drying_shed"},"authoring_version":"1"},"origin":"canonical"},
+            "g6": {"scene_template_ref":"trace_ld_v1_tpl_old_drying_shed","materialization_profile":"trace_ld_v1_smp_old_drying_shed","s1_topology_slot":{"source_scene_template_ref":{"entity_ref":{"entity_kind":"scene_template","entity_id":"trace_ld_v1_tpl_old_drying_shed"},"authoring_version":"1"},"g6_slot_key":"s1_enclosed_space","position_slot_key":"s1_enclosed_space.interior","movement_edge_slot_keys":["s1_enclosed_space.out","s1_enclosed_space.back"],"visibility_link_slot_keys":["s1_enclosed_space.visible_out","s1_enclosed_space.visible_back"]}}
+          }
+        }
+      }
+    ]
+  }
+}

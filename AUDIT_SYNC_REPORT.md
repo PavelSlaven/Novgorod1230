@@ -1,6 +1,6 @@
 # PR audit sync
 
-Status: work in progress. Repaired game version launched; read-only health ready.
+Status: work in progress. Runtime restarted after rev27 publication cutover.
 
 Health checkpoint:
 
@@ -9,4 +9,6 @@ Health checkpoint:
 - `world_readiness`: `ready`
 - DB dependencies: ok
 
-Gameplay completion and final suites remain pending.
+Rev27 immutable body/publication digest chain closed. Focused publication: 14/14. Materialization + Stage24/25 + P3: 21/21.
+
+Final gameplay route/completion and full suites remain pending.

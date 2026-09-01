@@ -33,6 +33,7 @@ export function createLowerDvinaTracePublicRuntime({
   traceStartAdapter = null,
   traceTurnRuntime = null,
   publicationLoader = loadLowerDvinaTracePhase1BPublication,
+  activePhase1AManifestDigest = null,
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
   partyRepository = null
 } = {}) {
@@ -70,6 +71,7 @@ export function createLowerDvinaTracePublicRuntime({
       idFactory,
       traceStartAdapter,
       publicationLoader,
+      activePhase1AManifestDigest,
       traceOpeningProjector
     }),
     acknowledgeOpening: (partyId, input) => acknowledgeOpening({
@@ -153,7 +155,8 @@ async function startNewGame({
   idFactory,
   traceStartAdapter,
   publicationLoader,
-  traceOpeningProjector
+  traceOpeningProjector,
+  activePhase1AManifestDigest
 }) {
   const scenario = String(input.scenario_id ?? '').trim();
   if (scenario !== TRACE_SCENARIO_ID || String(input.start_text ?? '').trim()) {
@@ -199,6 +202,7 @@ async function startNewGame({
     repository,
     traceStartAdapter,
     publicationLoader,
+    activePhase1AManifestDigest,
     traceOpeningProjector
   });
 }

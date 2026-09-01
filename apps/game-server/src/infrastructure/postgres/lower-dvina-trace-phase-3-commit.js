@@ -205,7 +205,16 @@ export async function commitLowerDvinaTracePhase3({
       ...phase3CommitRechecks({ partyId, state, factual, phase3Contracts,
         inputDigest }).filter(({ kind }) => kind !== 'physical').map((check) =>
           operationKind === 'first_entry' && check.kind === 'capacity'
-            ? sealedCheck('capacity', { party_id: partyId }) : check),
+            ? sealedCheck('capacity', {
+              ...withoutDigest(firstEntry.commit_rechecks.find(
+                ({ kind }) => kind === 'physical')),
+              capacity_model: 'trace_phase3_prepared_location_actor_capacity',
+              capacity_contract_ref: phase3Contracts.capacity.contract_id,
+              max_actors: phase3Contracts.capacity.zones.find(
+                ({ zone_id: id }) => id === 'working_camp'
+              )?.max_actors,
+              expected_present_npcs: state.first_entry_preparation?.npcs ?? []
+            }) : check),
       ...(firstEntry?.commit_rechecks ?? phase3CommitRechecks({ partyId,
         state, factual, phase3Contracts, inputDigest })
         .filter(({ kind }) => kind === 'physical'))
@@ -262,3 +271,5 @@ export async function commitLowerDvinaTracePhase3({
     committed_public_result: committedPublicResult
   };
 }
+
+function withoutDigest({ kind, digest, ...check }) { return check; }

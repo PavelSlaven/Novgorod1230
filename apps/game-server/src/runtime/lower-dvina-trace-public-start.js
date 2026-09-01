@@ -16,7 +16,8 @@ export async function startLowerDvinaTrace({
   repository,
   traceStartAdapter,
   publicationLoader,
-  traceOpeningProjector
+  traceOpeningProjector,
+  activePhase1AManifestDigest = null
 }) {
   if (!traceStartAdapter
     || typeof traceStartAdapter.materialize !== 'function'
@@ -37,7 +38,7 @@ export async function startLowerDvinaTrace({
   const publication = await publicationLoader({
     phase1AManifestDigest:
       committedBeforeStart?.request_identity?.scenario_manifest_digest
-        ?? null
+        ?? activePhase1AManifestDigest
   });
   const binding = publication.binding;
   const expectedWorld = committedBeforeStart?.request_identity ?? release;

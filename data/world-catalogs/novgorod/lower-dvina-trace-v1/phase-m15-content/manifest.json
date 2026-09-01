@@ -1,0 +1,48 @@
+{
+  "schema": "rus.lower_dvina_trace_m15_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m15_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 27,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m14-content/manifest.json",
+    "id": "lower_dvina_trace_m14_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m14_content_manifest.v1",
+    "digest": "4c9c88a772a025f7e6189369bc53c25e85c0fdf1c399528de5545053f15ed9f8"
+  },
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m14-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 26,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "f8b83e3bb3a3050d3a5c4daf7efe04b731dda134b83346e0a40c710e06d3134a"
+  },
+  "files": {
+    "definition.json": "88870ab8813cd3a67d0b1af02d471051f3dd78fcdf0955d1d6d435c0f9f4de35",
+    "npc-actor-step-profile.json": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 27,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "88870ab8813cd3a67d0b1af02d471051f3dd78fcdf0955d1d6d435c0f9f4de35"
+    },
+    "npc_actor_step_profile": {
+      "path": "npc-actor-step-profile.json",
+      "id": "lower_dvina_trace_npc_actor_step_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+      "digest": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
+    }
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "ee71225387e49c3f200ed47de166d1767955c8a6eb04ebc00a47622be416e70b",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

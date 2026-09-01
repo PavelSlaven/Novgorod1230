@@ -10,7 +10,7 @@ export function resolveFirstEntry({
 }) {
   const additionalMember = memberOrdinal > 0;
   if (!(additionalMember ? scenarioRevision === 26
-    : [24, 25].includes(scenarioRevision)) || !routeMovement(factual)) {
+    : [24, 25, 26].includes(scenarioRevision)) || !routeMovement(factual)) {
     return null;
   }
   const prepared = state.first_entry_preparation;

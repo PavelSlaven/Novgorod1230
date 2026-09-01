@@ -16,6 +16,8 @@ import {
 import {
   loadHistoricalLowerDvinaTracePhase1BPublication
 } from '../src/internal/lower-dvina-trace-phase-1b-historical-publication.js';
+import { TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST } from
+  '../src/internal/lower-dvina-trace-revision-27-publication.js';
 
 test('publication loader rejects an exact binding digest mismatch', async (t) => {
   const root = await copyPublicationClosure();
@@ -108,6 +110,15 @@ test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 NPC acto
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v21'
   );
+});
+
+test('explicit revision 27 identity resolves only the revision 27 publication', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v22');
+  assert.equal(publication.binding.execution_identity.scenario_definition_revision, 27);
+  assert.equal(publication.definition.resolved_policy_refs.body_environment_profiles.revision, 7);
 });
 
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {

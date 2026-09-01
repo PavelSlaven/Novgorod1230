@@ -5,6 +5,7 @@ import { createSpatialV3WorldBaseReader } from
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
+const v6Path = `${root}/spatial-v3-production-v6`;
 const lineagePaths = [
   `${root}/spatial-v3-production-v2/manifest.json`,
   `${root}/spatial-v3-production-v3/manifest.json`,
@@ -39,6 +40,12 @@ export const lowerDvinaTraceV5World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v5_candidate_001',
   digest: 'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
   manifest: '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c'
+});
+
+export const lowerDvinaTraceV6World = Object.freeze({
+  revision: 'novgorod_spatial_v3_production_v6_candidate_001',
+  digest: '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
+  manifest: '52cef611d26be49d06e0c80f0c44dfa2eb5021bcbb8e942e4daf51b6cb48b93c'
 });
 
 export const lowerDvinaTraceCanonicalG5SceneBindings = Object.freeze([
@@ -82,17 +89,17 @@ const pick = (row, columns) => Object.fromEntries(
 );
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 
-export async function installLowerDvinaTraceV5World(pool) {
-  const manifest = await readJson(`${v5Path}/manifest.json`);
+async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: paths }) {
+  const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
     digest: manifest.catalog_digest }, {
-    revision: lowerDvinaTraceV5World.revision,
-    digest: lowerDvinaTraceV5World.digest
+    revision: world.revision,
+    digest: world.digest
   });
   const datasets = Object.fromEntries(await Promise.all(manifest.datasets.map(
-    async ({ table, file }) => [table, await readJson(`${v5Path}/${file}`)]
+    async ({ table, file }) => [table, await readJson(`${path}/${file}`)]
   )));
-  const lineage = await Promise.all(lineagePaths.map(readJson));
+  const lineage = await Promise.all(paths.map(readJson));
   await pool.query('CREATE SCHEMA IF NOT EXISTS world_base');
   await pool.query(`CREATE TABLE world_base.spatial_v3_world_revisions (
     id text PRIMARY KEY, parent_revision_id text REFERENCES
@@ -151,7 +158,7 @@ export async function installLowerDvinaTraceV5World(pool) {
     (id,parent_revision_id,catalog_digest,status) VALUES($1,NULL,$2,'approved')`,
   ['novgorod_spatial_v3_target_contract_approval_001',
     '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e']);
-  for (const revision of [...lineage, datasets.spatial_v3_world_revisions[0]]) {
+  for (const revision of [...lineage, ...datasets.spatial_v3_world_revisions]) {
     await pool.query(`INSERT INTO world_base.spatial_v3_world_revisions
       (id,parent_revision_id,catalog_digest,status) VALUES($1,$2,$3,$4)`,
     [revision.id ?? revision.world_revision_id, revision.parent_revision_id, revision.catalog_digest,
@@ -181,7 +188,7 @@ export async function installLowerDvinaTraceV5World(pool) {
   const reader = createSpatialV3WorldBaseReader({ query: (sql, params) => pool.query(sql, params) });
   for (const scene of datasets.spatial_v3_scene_templates) {
     const closure = await reader.readPinnedSceneTemplateClosure({ id: scene.id,
-      version: scene.version, world_revision_id: lowerDvinaTraceV5World.revision });
+      version: scene.version, world_revision_id: world.revision });
     assert.equal(closure.ok, true);
     assert.deepEqual(closure.value.header, pick(scene, ['id', 'version',
       'world_revision_id', 'regional_template_id', 'regional_template_version',
@@ -198,4 +205,20 @@ export async function installLowerDvinaTraceV5World(pool) {
       visibility_links: rows('spatial_v3_visibility_link_templates')
     });
   }
+}
+
+export async function installLowerDvinaTraceV5World(pool) {
+  return installLowerDvinaTraceWorld(pool, {
+    path: v5Path,
+    world: lowerDvinaTraceV5World,
+    lineagePaths
+  });
+}
+
+export async function installLowerDvinaTraceV6World(pool) {
+  return installLowerDvinaTraceWorld(pool, {
+    path: v6Path,
+    world: lowerDvinaTraceV6World,
+    lineagePaths
+  });
 }

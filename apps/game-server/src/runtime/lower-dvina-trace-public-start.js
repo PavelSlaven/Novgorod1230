@@ -94,6 +94,9 @@ export async function startLowerDvinaTrace({
   }
   const internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
+  if (typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
+    await traceStartAdapter.provisionInitialOrdinary(partyId);
+  }
   const visible = await traceStartAdapter.loadVisible(partyId);
   if (!internal || !visible
     || internal.request_identity?.party_id !== partyId

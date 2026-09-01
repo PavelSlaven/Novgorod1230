@@ -20,6 +20,7 @@ import { snapshotOrdinaryMaterializationEnablement } from
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
+  scopeBinding = null,
   verifyStageBCutover = ordinaryMaterializationModel?.verifyStageBCutover,
   inputDigest
 } = {}) {
@@ -51,7 +52,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         : { finite_resource_transition: transition };
     },
     async loadDiscoveryContext(request) {
-      const scopeRef = currentG6(request?.committed_state);
+      const scopeRef = currentG6(request?.committed_state, scopeBinding);
       const rootId = request?.request?.root_turn_id;
       if (scopeRef == null || typeof rootId !== 'string' || !rootId) return null;
       const enabled = snapshotOrdinaryMaterializationEnablement(
@@ -159,10 +160,14 @@ function bindCommittedFiniteSource(execution) {
     matches.length === 1 ? structuredClone(matches[0]) : null };
 }
 
-function currentG6(state) {
+function currentG6(state, scopeBinding) {
   const id = state?.position?.g6_id ?? state?.position?.g6_ref;
-  return typeof id === 'string' && id.length
-    ? { entity_kind: 'g6', entity_id: id } : null;
+  if (typeof id === 'string' && id.length) {
+    return { entity_kind: 'g6', entity_id: id };
+  }
+  return state?.position?.location_ref === scopeBinding?.position_ref
+      && text(scopeBinding?.g6_ref)
+    ? { entity_kind: 'g6', entity_id: scopeBinding.g6_ref } : null;
 }
 function validExecution(value) {
   return value != null && typeof value === 'object'

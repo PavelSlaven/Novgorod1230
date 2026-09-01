@@ -13,7 +13,8 @@ import { provisionInitialOrdinaryContainer } from
 
 export function createOrdinaryMaterializationFirstEntryProvisioner({
   profile,
-  ordinaryContainerContentsProfile = null
+  ordinaryContainerContentsProfile = null,
+  includeContextBoundCapabilities = true
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -25,7 +26,9 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
-      const rows = buildRows({ profile, partyId, scope, positionRef: firstEntryBinding.position_id });
+      const rows = buildRows({ profile, partyId, scope,
+        positionRef: firstEntryBinding.position_id,
+        includeContextBoundCapabilities });
       const existing = await transaction.query(
         `SELECT e.objective_snapshot,e.objective_digest,e.enabled,
                 a.aggregate_payload,a.state_version,c.catalog_version,
@@ -71,8 +74,10 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
         VALUES ($1,$2,$3,$4::jsonb,$5,TRUE)`, [partyId, scope.entity_kind, scope.entity_id,
         JSON.stringify(rows.objective), rows.objective_digest]);
-      await insertFiniteSource({ transaction, partyId, changeSetId,
-        source: rows.finite_source });
+      if (rows.finite_source != null) {
+        await insertFiniteSource({ transaction, partyId, changeSetId,
+          source: rows.finite_source });
+      }
       await provisionInitialOrdinaryContainer({transaction,partyId,
         firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
       return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
@@ -80,15 +85,18 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
   });
 }
 
-function buildRows({ profile, partyId, scope, positionRef }) {
+function buildRows({ profile, partyId, scope, positionRef,
+  includeContextBoundCapabilities }) {
   const basisRef = `${profile.profile_id}:basis`;
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
   const basis = { basis_ref: basisRef, state: 'committed', scope_ref: scope,
     prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
     allowed_admission_classes: ['common_mundane'] };
-  const o2a = buildContextBoundCapability({ profile, partyId, scope, positionRef });
-  const bases = [basis, o2a.basis].sort((left, right) =>
+  const o2a = includeContextBoundCapabilities
+    ? buildContextBoundCapability({ profile, partyId, scope, positionRef })
+    : null;
+  const bases = [basis, ...(o2a == null ? [] : [o2a.basis])].sort((left, right) =>
     left.basis_ref.localeCompare(right.basis_ref));
   const policyRefs = { ...profile.policy_refs,
     allowed_supporting_bases: bases.map(({ basis_ref }) => ({ basis_ref,
@@ -97,30 +105,31 @@ function buildRows({ profile, partyId, scope, positionRef }) {
     version: 2, scope_ref: scope, item_kind: 'man_made',
     property_catalog_version_ref: `${profile.profile_id}:property-catalog`,
     placement_catalog_version_ref: `${profile.profile_id}:placement-catalog`,
-    explicit_item_source_refs: [o2a.basis.basis_ref],
+    explicit_item_source_refs: o2a == null ? [] : [o2a.basis.basis_ref],
     personal_possession_refs: [], communal_public_service_refs: [],
     container_property_refs: [], occupied_site_refs: [basisRef], unowned_cause_refs: [],
     placement_context_refs: [placementContextRef], property_catalog: [{
       property_basis_ref: propertyBasisRef, state: 'committed', scope_ref: scope,
       basis_class: 'occupied_site_default', source_ref: basisRef,
       unowned_cause_ref: null, unowned_cause_kind: null
-    }, {
+    }, ...(o2a == null ? [] : [{
       property_basis_ref: o2a.property_basis_ref, state: 'committed', scope_ref: scope,
       basis_class: 'explicit_source_item', source_ref: o2a.basis.basis_ref,
       unowned_cause_ref: null, unowned_cause_kind: null
-    }], placement_catalog: [{ position_ref: positionRef, state: 'committed',
+    }])], placement_catalog: [{ position_ref: positionRef, state: 'committed',
       scope_ref: scope, position_kind: 'scene_position', g6_ref: scope.entity_id,
       containment_depth: 1, placement_context_ref: placementContextRef }] };
   const objective = { request_id: `${profile.profile_id}:${scope.entity_id}`,
     scope_ref: scope, context_refs: structuredClone(profile.context_refs), policy_refs: policyRefs,
     technical_limits: structuredClone(profile.technical_limits), execution_context: {
       ...structuredClone(profile.execution), supporting_bases: [basis],
-      context_bound_capabilities: [o2a.capability],
+      context_bound_capabilities: o2a == null ? [] : [o2a.capability],
       stage_b_classification_eval:
         structuredClone(profile.stage_b_classification_eval),
       candidate_context: { ...structuredClone(profile.execution.candidate_context),
         target_ref: scope.entity_id }, source_refs: [basisRef, propertyBasisRef,
-        positionRef, placementContextRef].sort() } };
+        positionRef, placementContextRef,
+        ...(o2a == null ? [] : [o2a.basis.basis_ref])].sort() } };
   try {
     assertOrdinaryMaterializationRequestV1({ schema: 'ordinary_materialization_request_v1',
       request_id: objective.request_id, mode: 'seed_scope', scope_ref: objective.scope_ref,
@@ -131,7 +140,7 @@ function buildRows({ profile, partyId, scope, positionRef }) {
   } catch { throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID'); }
   return { aggregate: createOrdinaryAggregate({ scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records }),
-  bases, finite_source: o2a.finite_source,
+  bases, finite_source: o2a?.finite_source ?? null,
   basis_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1',
     supporting_bases: bases }), property_placement_context: property,
   property_digest: ordinaryWorldPropertyPlacementContextDigest({ ...property,

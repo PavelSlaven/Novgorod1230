@@ -136,7 +136,8 @@ export async function createSpatialV3ProductionBindings(
   return Object.freeze({
     targetCompositionPorts,
     commitRecheck: firstPlayableCommitRecheck,
-    createPublicRuntimeFacade: async ({ technicalCore, committer }) => {
+    createPublicRuntimeFacade: async ({ technicalCore, committer,
+      initialOrdinaryProvisioner }) => {
       if (typeof technicalCore?.executeReleaseOperation !== 'function') {
         throw new TypeError('technical spatial-v3 core is required');
       }
@@ -155,7 +156,12 @@ export async function createSpatialV3ProductionBindings(
             partyPool: ports.partyPool,
             worldPool: ports.worldPool,
             release,
-            runtimeCatalogPin
+            runtimeCatalogPin,
+            ...(initialOrdinaryProvisioner == null ? {} : {
+              initialOrdinaryProvisioner,
+              initialOrdinaryScopeBinding:
+                ordinaryMaterializationProfile.o2a_ambient.scope_binding
+            })
           }),
         traceTurnRuntime: createTraceTurnRuntime({
           partyPool: ports.partyPool,

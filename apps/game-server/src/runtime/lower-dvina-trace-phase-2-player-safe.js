@@ -19,6 +19,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   createTurnStepSpatialSemanticResolver,
   ordinaryDiscoveryEnablementMarker,
   ordinaryDiscoveryResolver,
+  ordinaryDiscoveryScopeBinding,
   partyId,
   playerSafeStateProjector,
   workingProjectionAuthority
@@ -63,7 +64,9 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     }
     const scopeId = committedState.position?.g6_id
       ?? committedState.position?.g6_ref
-      ?? committedState.position?.location_ref;
+      ?? (committedState.position?.location_ref
+          === ordinaryDiscoveryScopeBinding?.position_ref
+        ? ordinaryDiscoveryScopeBinding.g6_ref : null);
     if (typeof scopeId !== 'string' || !scopeId) {
       return { ...base, player_safe_state: spatialState };
     }

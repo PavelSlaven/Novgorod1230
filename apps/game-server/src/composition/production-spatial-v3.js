@@ -137,6 +137,11 @@ export async function createSpatialV3ProductionCompositionRoot({
       profile: profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
     });
+    const initialOrdinaryProvisioner =
+      createOrdinaryMaterializationFirstEntryProvisioner({
+        profile: profiles.ordinaryMaterializationProfile,
+        includeContextBoundCapabilities: false
+      });
     const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({
       pool: pools.partyPool, recheck: bindings.commitRecheck,
@@ -149,6 +154,7 @@ export async function createSpatialV3ProductionCompositionRoot({
     const publicRuntime = await bindings.createPublicRuntimeFacade({
       technicalCore: target,
       committer,
+      initialOrdinaryProvisioner,
       partyPool: pools.partyPool,
       worldPool: pools.worldPool,
       release: activatedRelease,

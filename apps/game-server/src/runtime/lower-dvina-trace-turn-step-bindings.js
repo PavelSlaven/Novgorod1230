@@ -203,6 +203,7 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
             actorRef,
             targetRef,
             evidenceRef: targetRefs?.evidence,
+            commandLabel: command.label,
           }),
       },
     };
@@ -262,7 +263,8 @@ function combatPlannerOperations({ record, actorRef, targetRef, scopeRef }) {
       ? 'ordinary' : 'cautious'
   }));
 }
-function matchesOperation({ operation, expected, allowedKinds, actorRef, targetRef, evidenceRef }) {
+function matchesOperation({ operation, expected, allowedKinds, actorRef,
+  targetRef, evidenceRef, commandLabel }) {
   if (operation?.op !== expected.operation || operation.actor_ref !== actorRef || !allowedKinds.includes(operation[expected.kindField])) {
     return false;
   }
@@ -275,6 +277,8 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef, targetR
   if (expected.operation === 'request_item_use') {
     return operation.item_ref === targetRef;
   }
+  if (expected.operation === 'request_discovery'
+      && operation.query !== commandLabel) return false;
   if (expected.operation === 'request_combat') {
     const noTarget = ['hold', 'protect', 'reach', 'break_contact', 'surrender', 'cease_hostility'].includes(operation.intent_kind);
     return noTarget || (operation.target_refs?.length === 1 && operation.target_refs[0] === targetRef);

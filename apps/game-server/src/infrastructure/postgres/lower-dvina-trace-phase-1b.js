@@ -18,6 +18,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   worldPool,
   release,
   runtimeCatalogPin,
+  initialOrdinaryProvisioner = null,
+  initialOrdinaryScopeBinding = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
@@ -31,6 +33,10 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     postcommitProjector:
       createLowerDvinaTracePhase1APostcommitProjector({ repository })
   });
+  if (initialOrdinaryProvisioner != null
+      && typeof initialOrdinaryProvisioner.provision !== 'function') {
+    throw new TypeError('initialOrdinaryProvisioner.provision is required');
+  }
   return Object.freeze({
     assertExecutionSupport(executionIdentity) {
       assertLowerDvinaTraceExecutionSupport(executionIdentity);
@@ -68,6 +74,57 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         rootDir
       });
     },
+    ...(initialOrdinaryProvisioner == null ? {} : {
+      async provisionInitialOrdinary(partyId) {
+        const binding = initialOrdinaryScopeBinding;
+        if (!text(partyId) || !text(binding?.position_ref)
+            || !text(binding?.g6_ref)
+            || typeof partyPool.connect !== 'function') {
+          fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
+            'Initial ordinary scope binding is invalid.');
+        }
+        const transaction = await partyPool.connect();
+        try {
+          await transaction.query('BEGIN');
+          const loaded = await transaction.query(
+            `SELECT snapshot.state_payload->'position' AS position,
+                    change_set.id AS change_set_id
+               FROM party_runtime.parties party
+               JOIN party_runtime.party_state_snapshots snapshot
+                 ON snapshot.party_id=party.party_id
+                AND snapshot.state_version=party.state_version
+               JOIN LATERAL (
+                 SELECT id FROM party_runtime.party_v3_change_sets
+                  WHERE party_id=party.party_id AND operation_kind='new_game'
+                  ORDER BY id LIMIT 1
+               ) change_set ON TRUE
+              WHERE party.party_id=$1
+              FOR UPDATE OF party`, [partyId]);
+          const row = loaded.rows[0];
+          const position = row?.position;
+          if (loaded.rowCount !== 1
+              || position?.location_ref !== binding.position_ref
+              || !text(position?.position_id) || !text(row.change_set_id)) {
+            fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
+              'Committed initial position does not match the ordinary scope.');
+          }
+          const result = await initialOrdinaryProvisioner.provision({
+            transaction, partyId, changeSetId: row.change_set_id,
+            firstEntryBinding: {
+              g6_instance_id: binding.g6_ref,
+              position_id: position.position_id
+            }
+          });
+          await transaction.query('COMMIT');
+          return result;
+        } catch (error) {
+          try { await transaction.query('ROLLBACK'); } catch {}
+          throw error;
+        } finally {
+          transaction.release();
+        }
+      }
+    }),
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId)
   });
@@ -289,6 +346,11 @@ function assertRequestWorldBinding(request, release, pin) {
 
 function requirePool(pool, name) {
   if (!pool?.query) throw new TypeError(`${name} is required.`);
+}
+
+function text(value) {
+  return typeof value === 'string' && value.trim() === value
+    && value.length > 0;
 }
 
 function digest(value) {

@@ -37,6 +37,7 @@ export function createLowerDvinaTracePhase2Runtime({
   turnStepOrdinaryDiscoveryResolver = null,
   createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
+  ordinaryDiscoveryScopeBinding = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
   requireTurnStepAmbientOrdinaryAdmission = false,
   createTurnStepActionProductionOwner = null,
@@ -242,6 +243,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
+          ordinaryDiscoveryScopeBinding,
           createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? actionProductionProfile : null,
           createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? localFireProfile : null,
           createTurnStepSpatialSemanticResolver:

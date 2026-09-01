@@ -82,6 +82,8 @@ export function createTraceTurnRuntime({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity
   });
+  const ordinaryDiscoveryScopeBinding =
+    ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
   const ordinaryEnablements =
     createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});
   const ordinaryContainerResolverFactory =
@@ -144,7 +146,8 @@ export function createTraceTurnRuntime({
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel
+        ordinaryMaterializationModel,
+        scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:
       ordinaryContainerResolverFactory,
@@ -159,6 +162,7 @@ export function createTraceTurnRuntime({
           public_name:entry.public_name,
           disclosure_state:entry.disclosure_state }))) });
     },
+    ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,

@@ -101,10 +101,11 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
       continuation: null, clarification: null,
       reason_code: 'ordinary_discovery', reason: 'Ищу обычную деталь.'
     }, { request: input }).ok, true);
-    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
+    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general look remains the mapped direct result/u);
+    assert.match(prompt, /general current situation, ongoing activity, or who is nearby are visible_general_look/u);
   }
 });
 

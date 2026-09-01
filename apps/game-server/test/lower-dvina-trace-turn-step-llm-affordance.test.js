@@ -45,7 +45,7 @@ test('focused discovery outranks general look and preserves continuation', async
     assert.equal(plan.continuation.remaining_intent, 'then wait.');
   }
   for (const prompt of prompts) assert.match(prompt,
-    /focused perception clause[\s\S]*new detail or answer[\s\S]*before visible_general_look[\s\S]*preserve it in continuation/u);
+    /focused perception clause[\s\S]*new physical detail or object[\s\S]*before visible_general_look[\s\S]*preserve it in continuation/u);
 });
 
 test('movement keeps supplied semantic label', async () => {

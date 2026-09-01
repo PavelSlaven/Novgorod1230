@@ -24,7 +24,7 @@ export function assertTracePhase2ExecutionBinding({
   const initialCold = revision >= 27 ? {
     from: 'mild_shivering', to: 'mild_shivering', outcome: 'worsens'
   } : { from: 'cold_with_possible_shivering', to: 'mild_shivering', outcome: 'worsens' };
-  if (![7, 27, 28].includes(revision)
+  if (![7, 27, 28, 29, 30].includes(revision)
       || activityRef?.id !== activity.profile_id
       || activityRef?.version !== activity.version
       || activityRef?.record_digest !== canonicalDigest(activity)
@@ -35,7 +35,7 @@ export function assertTracePhase2ExecutionBinding({
       || bodyRef?.record_digest !== canonicalDigest(bodyEffect)
       || bodyRef?.profile_set_id
         !== 'trace_ld_v1_body_environment_profiles'
-      || bodyRef?.profile_set_revision !== (revision >= 27 ? 7 : 4)
+      || bodyRef?.profile_set_revision !== (revision >= 29 ? 8 : revision >= 27 ? 7 : 4)
       || bodyRef?.profile_set_digest
         !== phase2Bundle.source_digests?.body_environment_profiles
       || binding?.attempt_policy?.new_attempt_elapsed_minutes

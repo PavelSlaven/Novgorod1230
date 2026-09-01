@@ -53,6 +53,7 @@ const targetRefs = Object.freeze({
   zhdankoStorehouse: 'place:zhdanko-storehouse',
   zhdanko: 'npc:zhdanko',
   activeHostileNpc: 'npc:hostile',
+  combatScope: 'place:combat-scope',
   roadBag: 'item:road-bag',
   sealedPacket: 'item:sealed-packet',
   caseEvidence: 'case:evidence',
@@ -250,6 +251,15 @@ test('revision 17 exposes valid copyable DTOs except bounded selection', () => {
     if (command.command_id ===
         'lower_dvina_trace.commit_temporary_disposition') {
       assert.equal(command.semantic_binding.operation_dto, null);
+    } else if (command.command_id ===
+        'lower_dvina_trace.respond_in_active_combat') {
+      assert.deepEqual(command.semantic_binding.operation_dtos.map(
+        ({ intent_kind: kind }) => kind), [
+        'engage', 'control', 'hold', 'break_contact', 'surrender',
+        'cease_hostility'
+      ]);
+      assert.equal(command.semantic_binding.operation_dtos.every((operation) =>
+        command.semantic_binding.matches({ operation })), true);
     } else {
       assert.equal(command.semantic_binding.matches({
         operation: command.semantic_binding.operation_dto

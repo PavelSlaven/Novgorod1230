@@ -175,7 +175,8 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(input.scenario_definition_revision)) {
+  if (input.scenario_definition_revision >= 12
+      && input.scenario_definition_revision <= 30) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -373,6 +374,18 @@ export function materializeLowerDvinaTracePreparedStorehouse({
       content_materialization: 'deferred_until_exact_inventory_profiles_are_approved'
     }
   };
+  if (input.scenario_definition_revision === 30) {
+    const profile = binding.packet_placement?.parent_container_inventory_profile;
+    if (profile?.id !== containerTemplate.base_catalog_ref?.inventory_profile_id
+        || profile.container_template_id !== containerTemplate.container_template_id
+        || profile.mass_grams !== containerTemplate.mass_grams
+        || profile.carry_form !== 'regular' || profile.external_hand_cost !== 1
+        || profile.inventory_role !== 'primary_container' || profile.status !== 'approved') {
+      fail('TRACE_REVISION_30_ROAD_BAG_PROFILE_INVALID',
+        'Revision 30 requires the exact approved road-bag inventory profile.');
+    }
+    container.state.inventory_profile_snapshot = structuredClone(profile);
+  }
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
   const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(input.scenario_definition_revision)

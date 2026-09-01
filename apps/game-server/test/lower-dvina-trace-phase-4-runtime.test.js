@@ -130,6 +130,7 @@ test('attack produces a separate two-minute player-response boundary without har
 
 test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
   const projector = createTracePhase4VisibleProjector({
+    contracts,
     phase3Projector: { project: async () => assert.fail('unexpected fallback') }
   });
   for (const responseKind of ['surrender', 'speech', 'lie', 'bargain',
@@ -148,6 +149,21 @@ test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
   } });
   assert.ok(legacy.visible_changes.includes('ratsha_surrendered'));
 });
+
+test('Phase 4 arrival exposes perceived actors without leaking canonical names',
+  async () => {
+    const projector = createTracePhase4VisibleProjector({ contracts,
+      phase3Projector: { project: async () => assert.fail('fallback') } });
+    const visible = await projector.project({ consequence: {
+      phase4_kind: 'movement'
+    } });
+    assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref,
+      display_label: label, recognition }) => [ref.entity_id, label, recognition]), [
+      ['onisim', 'раненый мужчина', 'unrecognized'],
+      ['ratsha', 'мужчина рядом', 'unrecognized']
+    ]);
+    assert.doesNotMatch(visible.visible_scene, /Онисим|Ратша/u);
+  });
 
 test('Phase 4 temporal owner commits route once and preserves separate negotiation roots', async () => {
   const route = routeToShedEffect({

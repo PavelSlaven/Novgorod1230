@@ -171,9 +171,14 @@ test('a known reverse route is offered and committed once without an authored co
     const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
       slot === 'ratsha_storehouse_helper');
     assert.ok(ratsha);
-    ratsha.location_ref = shed.location_profile_ref;
+    Object.assign(ratsha, {
+      location_ref: shed.location_profile_ref,
+      anchor_id: shed.anchor.instance_id,
+      zone_ref: shed.anchor.state.zone_ref
+    });
     ratsha.identity_state = { ...ratsha.identity_state,
-      canonical_name: 'Ратша', appearance: { ...ratsha.identity_state?.appearance,
+      canonical_name: 'Ратша', display_name: 'Ратша',
+      appearance: { ...ratsha.identity_state?.appearance,
         build: 'средний' } };
     ratsha.player_safe_presentation = { emotion: 'настороженность' };
     state.visible_context = { visible_scene: 'У старого сарая.', visible_npc: [{
@@ -414,7 +419,7 @@ test('generic known-route projection uses the authored route and location presen
   assert.deepEqual(visible, {
     version: 1, schema: 'visible_context_package',
     visible_scene: 'незнакомая пристань',
-    visible_changes: ['Тропа вывела к незнакомой пристани.'],
+    visible_changes: ['Перед вами — незнакомая пристань.'],
     sensory_details: ['Сухой настил поднимается над водой.'],
     visible_npc: [], visible_objects: [],
     known_context: ['Обратный путь отмечен приметами на берегу.'], uncertainties: [],

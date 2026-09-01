@@ -363,3 +363,12 @@ export const M16_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ...M15_ARTIFACT_CONTRACT_OVERRIDES,
   definition: ['rus.trace_scenario_definition.v1', 28]
 });
+export const M17_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M16_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 29],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 8]
+});
+export const M18_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M17_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 30]
+});

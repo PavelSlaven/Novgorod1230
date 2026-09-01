@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { spatialResult } from '../src/stages/narration.js';
 
-test('spatial result does not invent movement without a committed destination', () => {
+test('non-movement action does not become narrator scene material', () => {
   assert.deepEqual(spatialResult({ retrievedState: { position: {
     location_ref: 'camp' } }, consequence: { movement: null } }), {
-    position_changed: false, movement_committed: false
+    
   });
 });
 
@@ -16,6 +16,6 @@ test('spatial result recognizes committed active movement shapes', () => {
     { phase9: { movement: { destination: { location_ref: 'shed' } } } }
   ]) assert.deepEqual(spatialResult({ retrievedState: { position: {
     location_ref: 'camp' } }, consequence }), {
-    position_changed: true, movement_committed: true
+    movement_committed: true
   });
 });

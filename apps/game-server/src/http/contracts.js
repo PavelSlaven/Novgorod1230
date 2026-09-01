@@ -18,8 +18,12 @@ export function successEnvelope(data, { requestId = null } = {}) {
 
 export function errorEnvelope(error, { requestId = null, developerMode = false } = {}) {
   const status = Number.isInteger(error?.status) ? error.status : 500;
-  const code = text(error?.code) || 'INTERNAL_SERVER_ERROR';
-  const message = status >= 500 && !developerMode ? 'Internal server error.' : text(error?.message) || 'Request failed.';
+  const internal = status >= 500 || error?.public_exposure === 'internal';
+  const code = internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+    : text(error?.code) || 'REQUEST_FAILED';
+  const message = internal
+    ? 'Действие временно недоступно. Попробуйте ещё раз.'
+    : text(error?.message) || 'Request failed.';
   return Object.freeze({
     status,
     body: Object.freeze({

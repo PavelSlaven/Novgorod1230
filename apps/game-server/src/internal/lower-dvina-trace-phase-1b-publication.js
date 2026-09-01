@@ -17,10 +17,18 @@ import { loadLowerDvinaTraceRevision26Publication, TRACE_REVISION26_PHASE_1A_MAN
 import { loadLowerDvinaTraceRevision27Publication, TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision-27-publication.js';
 import { loadLowerDvinaTraceRevision28Publication,
   TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision-28-publication.js';
+import { loadLowerDvinaTraceRevision29Publication } from './lower-dvina-trace-revision-29-publication.js';
+import { loadLowerDvinaTraceRevision30Publication } from './lower-dvina-trace-revision-30-publication.js';
 export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(),
   phase1AManifestDigest = null, scenarioDefinitionRevision = null } = {}) {
   if (scenarioDefinitionRevision === 27) {
     return loadLowerDvinaTraceRevision27Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 29) {
+    return loadLowerDvinaTraceRevision29Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 30) {
+    return loadLowerDvinaTraceRevision30Publication({ rootDir, phase1AManifestDigest });
   }
   if (scenarioDefinitionRevision === 28
       || phase1AManifestDigest === TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST) {

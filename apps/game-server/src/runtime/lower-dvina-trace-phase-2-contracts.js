@@ -53,7 +53,7 @@ export function resolveTracePhase2Contracts({
     'placement_slot_id',
     ids.blueWoolSlot
   );
-  const pickupTransition = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(
+  const pickupTransition = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29, 30].includes(
     bundle.definition_revision
   )
     ? exactRecord(
@@ -62,7 +62,7 @@ export function resolveTracePhase2Contracts({
         'trace_ld_v1_transition_blue_wool_pickup'
       )
     : null;
-  const inventoryProfile = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(
+  const inventoryProfile = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29, 30].includes(
     bundle.definition_revision
   )
     ? exactRecord(
@@ -119,7 +119,7 @@ export function resolveTracePhase2Contracts({
       || accessPolicy.unmaterialized_access !== 'forbidden') {
     throw dataGap('TRACE_PHASE_2_APPROVED_CHAIN_INVALID');
   }
-  if ([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+  if ([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29, 30]
     .includes(bundle.definition_revision)) {
   assertBlueWoolPickupContract({
     item,

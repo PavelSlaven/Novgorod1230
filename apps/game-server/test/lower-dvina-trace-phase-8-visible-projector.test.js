@@ -55,15 +55,61 @@ test('Phase 8 projects NPCs through the player-safe entity contract',
     assert.deepEqual(validatePlayerSafeVisiblePayload(payload), []);
     assert.deepEqual(projected.visible_npc, [{
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-zhdanko' },
-      display_label: 'zhdanko_storehouse_controller', recognition: 'recognized'
+      display_label: 'хозяин клети', recognition: 'recognized'
     }, {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
       display_label: 'Еремей', recognition: 'known'
     }, {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-ratsha' },
-      display_label: 'ratsha_storehouse_helper', recognition: 'recognized'
+      display_label: 'мужчина из сушильни', recognition: 'recognized'
     }, {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-fisher' },
-      display_label: 'background_fisher', recognition: 'recognized'
+      display_label: 'рыбак', recognition: 'recognized'
     }]);
   });
+
+test('Phase 8 exposes only the NPC speech delivered to the player', async () => {
+  const projector = createTracePhase8VisibleProjector({ contracts,
+    fallback: { project: async () => assert.fail('fallback') } });
+  const statement = { statement_id: 'statement:refusal',
+    speaker_ref: { entity_kind: 'npc', entity_id: 'npc-zhdanko' },
+    utterance_text: 'Я ничего не брал.' };
+  const projected = await projector.project({ consequence: {
+    phase8_kind: 'accusation', accusation: { combat_initialization: null,
+      semantic_exchange: { response_kind: 'speech', statements: [statement],
+        audiences: [{ statement_ref: { entity_kind: 'conversation_statement',
+          entity_id: statement.statement_id }, received_messages: [{
+          listener_ref: { entity_kind: 'player_character', entity_id: 'player' },
+          comprehension: 'full', utterance_text: statement.utterance_text }] }] } }
+  } });
+  assert.equal(projected.visible_scene,
+    'Хозяин клети говорит: «Я ничего не брал.»');
+});
+
+test('combat exchange projects confirmed harm and terminal status', async () => {
+  const projector = createTracePhase8VisibleProjector({ contracts,
+    fallback: { project: async () => assert.fail('fallback') } });
+  const participant = (kind, id, status = 'active') => ({
+    actor_ref: { entity_kind: kind, entity_id: id }, combat_status: status
+  });
+  const projected = await projector.project({ retrieved_state: {
+    actor_id: 'player'
+  }, consequence: { combat_kind: 'exchange', combat: {
+    exchange: { technical_steps: [{ actor_ref: {
+      entity_kind: 'player_character', entity_id: 'player' },
+    check_request: { target_id: 'npc-zhdanko' } }] },
+    harm_packages: [{ target_id: 'npc-zhdanko', health_loss: 5,
+      injury: { label: 'лёгкая рана' } }],
+    session_before: { participant_states: [
+      participant('player_character', 'player'),
+      participant('npc', 'npc-zhdanko')
+    ] },
+    session_after: { status: 'ended', participant_states: [
+      participant('player_character', 'player'),
+      participant('npc', 'npc-zhdanko', 'incapacitated')
+    ] }
+  } } });
+  assert.equal(projected.visible_scene,
+    'У вашего противника — лёгкая рана. Ваш противник больше не может продолжать бой. Схватка закончилась.');
+  assert.equal(projected.visible_changes.length, 2);
+});

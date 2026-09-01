@@ -137,10 +137,10 @@ function conversationVisibleNpcs({ visibleContext, projectedNpcs,
         && typeof visibleNpc.display_label === 'string'
         && visibleNpc.display_label.trim())
       .map(({ display_label: displayLabel }) => displayLabel.trim());
+    const projectedName = npc?.identity_state?.display_name;
     const names = publicNames.length === 1 ? publicNames
-      : typeof npc?.identity_state?.canonical_name === 'string'
-        && npc.identity_state.canonical_name.trim()
-        ? [npc.identity_state.canonical_name.trim()] : [];
+      : typeof projectedName === 'string' && projectedName.trim()
+        ? [projectedName.trim()] : [];
     if (names.length !== 1) return null;
     const committedMatches = (committedNpcs ?? []).filter((candidate) =>
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,

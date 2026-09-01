@@ -70,6 +70,19 @@ test('projects the committed player context needed by the step planner', () => {
   });
 });
 
+test('canonical NPC names stay hidden without player-safe acquisition', () => {
+  const state = richCommittedState();
+  state.npcs = [{ instance_id: 'unknown-npc', location_ref:
+    state.position.location_ref, identity_state: {
+      canonical_name: 'Скрытое каноническое имя'
+    } }];
+  const projected = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(JSON.stringify(projected).includes(
+    'Скрытое каноническое имя'), false);
+});
+
 test('combat projection does not disclose private NPC intents', () => {
   const committedState = richCommittedState();
   committedState.combat_sessions = [{ combat_id: 'combat-1',

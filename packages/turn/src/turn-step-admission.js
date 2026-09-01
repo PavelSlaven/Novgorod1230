@@ -63,8 +63,9 @@ export async function resolveBoundTurnStepCommand({
   }
   const availableOptions = new Set(actionSet.options.map(({ option_id: id }) => id));
   const selectedCommands = [];
-  const initialDomainOperations = semanticBindings.filter(({ command, binding }) => availableOptions.has(command.option_id) && binding.operation_dto != null)
-    .map(({ binding }) => structuredClone(binding.operation_dto));
+  const initialDomainOperations = semanticBindings
+    .filter(({ command }) => availableOptions.has(command.option_id))
+    .flatMap(({ binding }) => bindingOperations(binding));
   const withAvailableDomainOperations = (state, operations,
     preparedFollowupCandidates = []) => deepFreeze({ player_safe_state: state,
     available_domain_operations: structuredClone(operations),
@@ -78,16 +79,18 @@ export async function resolveBoundTurnStepCommand({
     const currentState = await owner.currentState(deepFreeze({ prepared_chain_context: structuredClone(context), committed_state: structuredClone(committedState) }));
     const operations = [];
     for (const { command, binding } of semanticBindings) {
-      const operation = structuredClone(binding.operation_dto);
-      if (binding.operation_dto == null || owner.supports?.(deepFreeze({ operation,
-        command_id: command.command_id, option_id: command.option_id,
-        prepared_chain_context: structuredClone(context) })) !== true) continue;
-      const availability = await command.availability(deepFreeze({
-        playerInput: { ...structuredClone(playerInput), raw_text: remainingIntent },
-        committed_state: structuredClone(currentState), retrievedState: structuredClone(currentState),
-        modeResolution: null, action_set_evaluation: true }));
-      assertValid('turn_availability_decision', validateAvailabilityDecision(availability));
-      if (availability.can_attempt === true && availability.status !== 'blocked' && availability.check_requests.length === 0) operations.push(operation);
+      for (const operation of bindingOperations(binding)) {
+        if (owner.supports?.(deepFreeze({ operation,
+          command_id: command.command_id, option_id: command.option_id,
+          prepared_chain_context: structuredClone(context) })) !== true) continue;
+        const availability = await command.availability(deepFreeze({
+          playerInput: { ...structuredClone(playerInput), raw_text: remainingIntent },
+          committed_state: structuredClone(currentState), retrievedState: structuredClone(currentState),
+          modeResolution: null, action_set_evaluation: true }));
+        assertValid('turn_availability_decision', validateAvailabilityDecision(availability));
+        if (availability.can_attempt === true && availability.status !== 'blocked'
+            && availability.check_requests.length === 0) operations.push(operation);
+      }
     }
     return operations;
   };
@@ -453,6 +456,11 @@ function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
       operation: structuredClone(successors[0].binding.operation_dto) });
   }
   return candidates;
+}
+function bindingOperations(binding) {
+  const operations = binding.operation_dtos
+    ?? (binding.operation_dto == null ? [] : [binding.operation_dto]);
+  return operations.map((operation) => structuredClone(operation));
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 export function createTurnStepDomainOwnerPreflight(input) {

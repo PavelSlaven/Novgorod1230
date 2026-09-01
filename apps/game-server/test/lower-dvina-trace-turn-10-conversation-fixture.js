@@ -68,6 +68,7 @@ export function turn10State({ completedRest = true } = {}) {
     ...(zhdanko.machine_state ?? {}),
     load_category: 'moderate'
   };
+  state.phase5_treatment = { activity_execution: { status: 'completed' } };
   state.phase6_carry_execution = { status: 'completed' };
   const bodyConditions = [
     ['trace_ld_v1_condition_wet_clothing', 'wet'],

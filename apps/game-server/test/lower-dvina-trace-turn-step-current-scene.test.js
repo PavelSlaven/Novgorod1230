@@ -14,16 +14,17 @@ const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
 
-test('fresh current scene keeps canonical co-located NPC observations only', () => {
+test('current scene keeps prior player-safe co-located NPC observations only', () => {
   const state = committedState();
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
   assert.deepEqual(current.current_visible_context.visible_npc, [{
     entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
-    display_label: 'Онисим'
+    display_label: 'раненый мужчина',
+    recognition: 'unrecognized'
   }]);
   assert.equal(current.current_visible_context.known_context.includes(
-    'Онисим: injured_unable_to_walk'), true);
+    'раненый мужчина: injured_unable_to_walk'), true);
   const projected = projectLowerDvinaTracePlayerSafeState({
     committed_state: current, actor_id: state.actor_id
   }).player_safe_state;
@@ -34,13 +35,17 @@ test('fresh current scene keeps canonical co-located NPC observations only', () 
   assert.equal(current.party_state.state_version, 9);
   assert.deepEqual(current.route_history, state.route_history);
   const direct = projectCurrentSceneForNoOperationDirect({ input: {
-    consequence: {}, retrieved_state: current, mode_resolution: {
+    consequence: { visible_seed: { turn_step_1: {
+      kind: 'semantic_activity' } } }, retrieved_state: current, mode_resolution: {
       decision_trace: { step_traces: [{ approved_plan: { resolution: 'direct',
         operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
-  assert.equal(direct.known_context.includes('Онисим: injured_unable_to_walk'),
+  assert.equal(direct.known_context.includes(
+    'раненый мужчина: injured_unable_to_walk'),
     true);
+  assert.deepEqual(direct.visible_changes,
+    ['Попытка заняла некоторое время.']);
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
@@ -82,6 +87,13 @@ test('fact presentation reads an unseen committed fact generically', () => {
 function committedState() {
   return { actor_id: 'player', party_state: { state_version: 9 },
     position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor', zone_ref: 'yard' },
+    current_visible_context: { version: 1,
+      schema: 'visible_context_package', visible_scene: 'Старая сушильня',
+      visible_changes: [], sensory_details: [], visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+        display_label: 'раненый мужчина', recognition: 'unrecognized' }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] },
     route_history: [{ route_ref: 'camp-shed' }], npcs: [{ instance_id: 'onisim',
       location_ref: 'shed', anchor_id: 'shed-anchor', zone_ref: 'yard',
       identity_state: { canonical_name: 'Онисим' }, machine_state: {

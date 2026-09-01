@@ -8,3 +8,5 @@ export { loadLowerDvinaTraceRevision26Bundle } from
   './lower-dvina-trace-s1-revision-26-bundle.js';
 export { loadLowerDvinaTraceRevision28Bundle } from
   './lower-dvina-trace-s1-revision-28-bundle.js';
+export { loadLowerDvinaTraceRevision29Bundle } from
+  './lower-dvina-trace-s1-revision-29-bundle.js';

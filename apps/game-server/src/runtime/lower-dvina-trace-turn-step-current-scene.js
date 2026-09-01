@@ -35,8 +35,11 @@ export function withLowerDvinaTraceCurrentScene({
     ? historicalLocationProfile(locationProfiles, locationRef)
     : scenePresentationForLocation({ scenePresentation, locationRef });
   const sensoryDetails = profile.player_visible_physical_facts ?? [];
+  const visibleLabels = new Map((initial?.visible_npc ?? []).map((npc) => [
+    npc?.entity_ref?.entity_id, npc
+  ]));
   const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
-    playerSafe.position)).filter(Boolean);
+    playerSafe.position, visibleLabels)).filter(Boolean);
   const current = {
     version: 1,
     schema: 'visible_context_package',
@@ -46,7 +49,7 @@ export function withLowerDvinaTraceCurrentScene({
     visible_npc: sceneNpcs,
     visible_objects: [],
     known_context: [profile.display_name, ...(playerSafe.npcs ?? []).map((npc) =>
-      visibleNpcCondition(npc, playerSafe.position)).filter(Boolean)],
+      visibleNpcCondition(npc, playerSafe.position, visibleLabels)).filter(Boolean)],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
@@ -100,13 +103,19 @@ export function projectCurrentSceneForVisibleOverlay({
     ...structuredClone(current),
     visible_changes: unique([
       ...current.visible_changes,
-      ...directSeedKeys
+      ...projectDirectSeedChanges({ input, directSeedKeys })
     ]),
     known_context: unique([
       ...current.known_context,
       ...(Number.isFinite(body.health) ? [`health:${body.health}`] : []),
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
+    ]),
+    uncertainties: unique([
+      ...current.uncertainties,
+      ...(input?.consequence?.status === 'partial'
+        ? ['Задуманное выполнено лишь частично; остальное ещё не произошло.']
+        : [])
     ]),
     do_not_imply: unique([
       ...current.do_not_imply,
@@ -117,22 +126,54 @@ export function projectCurrentSceneForVisibleOverlay({
   });
 }
 
+export function projectDirectSeedChanges({ input, directSeedKeys }) {
+  const seed = input?.consequence?.visible_seed ?? {};
+  return directSeedKeys.map((key) => directSeedChange(seed[key]));
+}
+
+function directSeedChange(value) {
+  if (value?.kind === 'semantic_activity') {
+    return 'Попытка заняла некоторое время.';
+  }
+  if (value?.kind === 'body_event') {
+    return 'Вы ощутили перемену в своём состоянии.';
+  }
+  if (value?.change === 'created' && text(value.name)) {
+    return `Появился результат вашей работы: ${value.name}.`;
+  }
+  if (value?.change === 'moved') return 'Вы переложили доступный предмет.';
+  if (value?.change === 'container_accessed') {
+    return 'Вы изменили состояние доступного вместилища.';
+  }
+  if (['facts_changed', 'mechanics_changed'].includes(value?.change)) {
+    return 'Доступный предмет изменился.';
+  }
+  if (value?.change === 'retired') {
+    return 'Исходный предмет больше не существует отдельно.';
+  }
+  failCurrentScene();
+}
+
 function validCurrentScene(value) {
   return plain(value)
     && validateVisibleContext(value).ok
     && ARRAY_FIELDS.every((field) => Array.isArray(value[field]));
 }
 
-function visibleNpc(npc, position) {
+function visibleNpc(npc, position, visibleLabels) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
-  const displayLabel = npc?.identity_state?.display_name
-    ?? npc?.identity_state?.canonical_name;
+  const prior = visibleLabels?.get(entityId);
+  const displayLabel = prior?.display_label
+    ?? npc?.identity_state?.display_name;
   if (!samePositionScope(npc, position) || !text(entityId) || !text(displayLabel)) {
     return null;
   }
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
-    display_label: displayLabel
+    display_label: displayLabel,
+    recognition: prior?.recognition ?? 'recognized',
+    ...(text(prior?.visible_status)
+      ? { visible_status: prior.visible_status } : {})
   };
 }
 
@@ -145,8 +186,8 @@ function samePositionScope(npc, position) {
     npc[npcKey] === position?.[positionKey]);
 }
 
-function visibleNpcCondition(npc, position) {
-  const visible = visibleNpc(npc, position);
+function visibleNpcCondition(npc, position, visibleLabels) {
+  const visible = visibleNpc(npc, position, visibleLabels);
   const condition = npc?.body_condition;
   return visible != null && text(condition)
     ? `${visible.display_label}: ${condition}` : null;

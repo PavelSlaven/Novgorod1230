@@ -18,6 +18,10 @@ import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { resolveTracePhase7Contracts } from
   '../src/runtime/lower-dvina-trace-phase-7-contracts.js';
+import { isPreparedPhase7RestLedger } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-prepared-validation.js';
+import { isPreparedTurn10Ledger } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-10-prepared-validation.js';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import {
@@ -67,6 +71,13 @@ test('Phase 7 exact matches admit only the registered rest command', () => {
   assert.equal(command.matches({
     raw_text: 'Давайте немного погреемся у костра и просушим одежду'
   }), false);
+});
+
+test('completed Phase 7 rest is not misclassified as Turn 10', () => {
+  const rest = { owner_ref: 'lower_dvina_trace.rest_by_fire_and_dry_clothing',
+    consequence: { duration_minutes: 30 } };
+  assert.equal(isPreparedPhase7RestLedger({ slices: [rest] }), true);
+  assert.equal(isPreparedTurn10Ledger({ slices: [rest] }), false);
 });
 
 test('Phase 7 executes a direct NPC step and continues the rest interval',
@@ -255,6 +266,7 @@ test('revision 15 materialized state resolves the approved Phase 7 chain',
   async () => {
     const revision15 = await loadScenarioBundle(15);
     const state = fixture({ scenarioBundle: revision15 }).state;
+    state.body_state.active_conditions = [{ id: 'mild_shivering' }];
     const contracts = resolveTracePhase7Contracts({
       state, bundle: revision15
     });
@@ -263,6 +275,13 @@ test('revision 15 materialized state resolves the approved Phase 7 chain',
       'zhdanko_storehouse_controller');
     assert.equal(contracts.roadBag.item_ref,
       'trace_ld_v1_container_road_bag');
+    assert.deepEqual(contracts.bodyEffect.condition_outcomes.find(
+      ({ condition_profile_ref: ref }) =>
+        ref === 'trace_ld_v1_condition_cold_shivering'
+    ), {
+      condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
+      from: 'mild_shivering', to: 'mild_shivering', outcome: 'persists'
+    });
     assert.equal(Object.hasOwn(
       revision15.autonomous_semantic_bindings,
       'activity_profile_bindings'

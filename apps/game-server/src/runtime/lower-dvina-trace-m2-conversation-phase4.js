@@ -71,10 +71,10 @@ export async function resolveTracePhase4ConversationExchange({
         .combat_handoff_available ? [ref('player_character', state.actor_id)] : []
     },
     offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
-    classifyNpcPlan: (plan) => classifyRatshaFollowup(plan, {
+    classifyNpcPlan: (plan, request = null) => classifyRatshaFollowup(plan, {
       checkResult: effectiveCheckResult,
       confessionAssertionId: contracts.confessionStatement.assertion.assertion_id
-    }),
+    }, request),
     playerPlan
   });
   const effectivePlayerPlan = pendingExecution !== null ? null
@@ -104,11 +104,12 @@ function phase4FollowupAdmission(checkResult) {
       npcDecisionScope: {
         action_handoff_available: false,
         combat_handoff_available: false,
+        allowed_contribution_kinds: ['speech'],
         required_supporting_operation: { op: SURRENDER_OPERATION }
       }
     };
   }
-  if (['failure_with_consequence', 'severe_failure'].includes(band)) {
+  if (band === 'failure_with_consequence') {
     return {
       npcOperationContract: {
         [BARGAIN_OPERATION]: {
@@ -117,10 +118,18 @@ function phase4FollowupAdmission(checkResult) {
         }
       },
       npcDecisionScope: {
-        action_handoff_available: false, combat_handoff_available: true
+        action_handoff_available: false, combat_handoff_available: true,
+        allowed_contribution_kinds: ['speech', 'combat_handoff'],
+        required_supporting_operation: { op: BARGAIN_OPERATION }
       }
     };
   }
+  if (band === 'severe_failure') return {
+    npcOperationContract: {},
+    npcDecisionScope: { action_handoff_available: false,
+      combat_handoff_available: true,
+      allowed_contribution_kinds: ['combat_handoff'] }
+  };
   return {
     npcOperationContract: {
       [SURRENDER_OPERATION]: {
@@ -142,8 +151,12 @@ function phase4FollowupAdmission(checkResult) {
   };
 }
 
-function classifyRatshaFollowup(plan, { checkResult, confessionAssertionId }) {
+function classifyRatshaFollowup(plan, { checkResult, confessionAssertionId },
+  request = null) {
   const outcome = classifyRatshaPlan(plan, { confessionAssertionId });
+  if (request?.decision_scope.required_supporting_operation === undefined) {
+    return outcome;
+  }
   const band = checkResult?.outcome?.band ?? null;
   const admitted = ['clean_success', 'success', 'success_with_cost'].includes(band)
     ? ['surrender']

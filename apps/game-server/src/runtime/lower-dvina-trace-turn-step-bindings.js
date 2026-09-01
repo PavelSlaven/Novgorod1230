@@ -129,6 +129,7 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
   'lower_dvina_trace.rest_by_fire_and_dry_clothing': new Set(['отдохнуть у огня полчаса и подсушить одежду.', 'отдохнуть у огня полчаса и подсушить одежду']),
 });
 const STATE_GATED_COMMANDS = new Set([
+  'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp',
   'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
   'lower_dvina_trace.accuse_zhdanko_at_storehouse',
   'lower_dvina_trace.respond_in_active_combat',
@@ -138,13 +139,12 @@ const REVISION_24_STATE_GATED_COMMANDS = new Set([
   'lower_dvina_trace.follow_known_route_to_drying_shed',
   'lower_dvina_trace.offer_conditional_protection_and_seek_surrender',
   'lower_dvina_trace.attempt_risky_first_aid_onisim',
-  'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp',
   'lower_dvina_trace.rest_by_fire_and_dry_clothing',
   'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse',
 ]);
 
 export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRefs }) {
-  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision);
   const byCommand = new Map();
@@ -189,8 +189,12 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
       semantic_binding: {
         binding_id: record.binding_id,
         operation: record.operation,
-        operation_dto: plannerOperation({ command, expected, actorRef, targetRef,
-          evidenceRef: targetRefs?.evidence }),
+        ...(expected.operation === 'request_combat'
+          && typeof targetRefs?.combatScope === 'string'
+          ? { operation_dtos: combatPlannerOperations({ record, actorRef,
+              targetRef, scopeRef: targetRefs.combatScope }) }
+          : { operation_dto: plannerOperation({ command, expected, actorRef,
+              targetRef, evidenceRef: targetRefs?.evidence }) }),
         matches: ({ operation }) =>
           matchesOperation({
             operation,
@@ -207,7 +211,7 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
     [...byCommand.entries()].some(([commandId, record]) => {
       const command = bound.find(({ command_id: id }) => id === commandId);
       if (command?.semantic_binding) return false;
-      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId]);
+      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId]);
     })
   ) {
     gap();
@@ -245,6 +249,18 @@ function plannerOperation({ command, expected, actorRef, targetRef, evidenceRef 
     : { ...operation, target_refs: Array.isArray(targetRef) ? targetRef : [targetRef], description: command.label };
   if (expected.operation === 'request_discovery') return { ...operation, target_refs: Array.isArray(targetRef) ? targetRef : [targetRef], query: command.label };
   return null;
+}
+function combatPlannerOperations({ record, actorRef, targetRef, scopeRef }) {
+  return record.intent_kinds.map((intentKind) => ({
+    op: 'request_combat', actor_ref: actorRef, intent_kind: intentKind,
+    target_refs: ['engage', 'control'].includes(intentKind) ? [targetRef] : [],
+    protected_refs: [], scope_ref: intentKind === 'hold' ? scopeRef : null,
+    destination_ref: null,
+    force_limit: ['engage'].includes(intentKind) ? 'ordinary'
+      : intentKind === 'control' ? 'nonlethal_if_possible' : 'avoid_harm',
+    risk_posture: ['engage', 'control'].includes(intentKind)
+      ? 'ordinary' : 'cautious'
+  }));
 }
 function matchesOperation({ operation, expected, allowedKinds, actorRef, targetRef, evidenceRef }) {
   if (operation?.op !== expected.operation || operation.actor_ref !== actorRef || !allowedKinds.includes(operation[expected.kindField])) {

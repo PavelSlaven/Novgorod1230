@@ -16,7 +16,10 @@ const COMPANION_COMMAND =
   'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
 
 export function isPreparedTurn10Ledger(ledger) {
-  return ledger?.slices?.[0]?.owner_ref === REST_COMMAND;
+  return ledger?.slices?.length === 2
+    && ledger.slices[0]?.owner_ref === REST_COMMAND
+    && ledger.slices[0]?.consequence?.duration_minutes === 25
+    && ledger.slices[1]?.owner_ref === COMPANION_COMMAND;
 }
 
 export function validatePreparedTurn10({ ledger, traces, envelope, factual,

@@ -51,7 +51,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, context: {
       attempt: { text: 'Постучать в закрытую дверь.' },
-      outcome: { position_changed: false, movement_committed: false }
+      outcome: {}
     }
   }));
   assert.equal(result.status, 'approved');
@@ -64,6 +64,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'context.attempt only to state the attempted action or speech'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'never evidence of success or a new world fact'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'Missing outcome fields are silent constraints'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'Do not infer a causal bridge, exact object use, or success mechanism'), true);
   assert.equal(calls[0].messages[0].content.includes(
@@ -107,7 +109,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     }, action_intent_context: {
       evidence_scope: 'intent_only_non_evidence_of_success',
       attempt: { text: 'Постучать в закрытую дверь.' },
-      outcome: { position_changed: false, movement_committed: false }
+      outcome: {}
     }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');

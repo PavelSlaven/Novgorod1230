@@ -191,11 +191,13 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
   };
 }
 
-export function createTracePhase4VisibleProjector({ phase3Projector }) {
+export function createTracePhase4VisibleProjector({ phase3Projector,
+  contracts }) {
   return { async project(input) {
     if (input.consequence?.phase4_kind == null) return phase3Projector.project(input);
     const c = input.consequence;
-    if (c.phase4_kind === 'movement') return { version: 1, schema: 'visible_context_package', visible_scene: 'У старой сушильни Онисим жив, ранен и не может идти; Ратша здесь.', visible_changes: ['onisim_found_alive'], sensory_details: [], visible_npc: [], visible_objects: [], known_context: ['Ратша присутствует; ситуация требует решения.'], uncertainties: ['Причины случившегося не установлены.'], allowed_tensions: ['danger'], do_not_imply: ['hidden_truth', 'zhdanko_motive'] };
+    const visibleNpc = phase4VisibleNpcs(contracts);
+    if (c.phase4_kind === 'movement') return { version: 1, schema: 'visible_context_package', visible_scene: 'У старой сушильни лежит живой раненый мужчина: идти он не может. Рядом стоит другой мужчина.', visible_changes: ['Раненый мужчина найден живым.'], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: ['Имена мужчин и причины случившегося пока не установлены.'], allowed_tensions: ['danger'], do_not_imply: ['hidden_truth', 'zhdanko_motive', 'canonical_identity'] };
     const semantic = c.negotiation.semantic_exchange ?? null;
     const responseKind = semantic?.response_kind
       ?? c.negotiation.npc_decision?.outcome;
@@ -203,23 +205,36 @@ export function createTracePhase4VisibleProjector({ phase3Projector }) {
       && ['surrender', 'lie', 'bargain', 'speech'].includes(responseKind);
     const visibleScene = semantic === null
       ? (responseKind === 'surrender'
-          ? 'Ратша сдался.'
-          : 'Ратша не принял сдачу.')
+          ? 'Стоящий рядом мужчина сдался.'
+          : 'Стоящий рядом мужчина не принял предложение сдаться.')
       : speechResponse
-        ? `Ратша говорит: «${perceivedNpcUtterance(
+        ? `Стоящий рядом мужчина говорит: «${perceivedNpcUtterance(
             semantic,
             'TRACE_M2_PHASE_4_VISIBLE_GAP'
           )}»`
         : responseKind === 'silence'
-          ? 'Ратша молчит.'
+          ? 'Стоящий рядом мужчина молчит.'
           : responseKind === 'leave_conversation'
-            ? 'Ратша прекращает разговор.'
-          : 'Ратша переводит столкновение в открытый бой.';
+            ? 'Стоящий рядом мужчина прекращает разговор.'
+          : 'Стоящий рядом мужчина переводит столкновение в открытый бой.';
     return { version: 1, schema: 'visible_context_package', visible_scene: visibleScene, visible_changes: [
       ...(semantic?.statements.map(({ statement_id: statementId }) => statementId) ?? []),
       ...(responseKind === 'surrender' ? ['ratsha_surrendered'] : [])
-    ], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth'] };
+    ], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth', 'canonical_identity'] };
   } };
+}
+
+function phase4VisibleNpcs(contracts) {
+  const onisimId = contracts?.actors?.onisim_boatman?.instance_id;
+  const ratshaId = contracts?.actors?.ratsha_storehouse_helper?.instance_id;
+  if (typeof onisimId !== 'string' || typeof ratshaId !== 'string') {
+    fail('TRACE_PHASE_4_VISIBLE_ACTOR_GAP');
+  }
+  return [{ entity_ref: { entity_kind: 'npc', entity_id: onisimId },
+    display_label: 'раненый мужчина', recognition: 'unrecognized',
+    visible_status: 'жив, ранен и не может идти' },
+  { entity_ref: { entity_kind: 'npc', entity_id: ratshaId },
+    display_label: 'мужчина рядом', recognition: 'unrecognized' }];
 }
 
 function perceivedNpcUtterance(semantic, code) {

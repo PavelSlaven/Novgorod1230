@@ -10,7 +10,8 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
         : input.consequence?.phase4_kind === 'movement'
           ? phase4Contracts?.routeBodyEffect : null;
       if (effect == null && (input.consequence?.phase3_kind === 'movement'
-          || input.consequence?.phase4_kind === 'movement')) {
+          || input.consequence?.phase4_kind === 'movement'
+          || input.consequence?.phase8_kind === 'movement')) {
         return { owner: '@rus/body-state', applied: false, proposal: null,
           state_after: structuredClone(input.committed_state.body_state) };
       }
@@ -55,4 +56,6 @@ function valid(effect) {
     && Array.isArray(effect.condition_outcomes);
 }
 
-function fail(code) { return serverError(code, 'Approved route body effect cannot be applied.', { status: 409 }); }
+function fail(code) { return serverError(code, 'Approved route body effect cannot be applied.', {
+  status: 409, public_exposure: 'internal'
+}); }

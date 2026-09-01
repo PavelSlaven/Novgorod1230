@@ -15,8 +15,8 @@ export const TRACE_PHASE_5_IDS = Object.freeze({
 });
 
 export function resolveTracePhase5Contracts({ state, bundle }) {
-  if (![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
-      || ![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition?.revision)) {
+  if (![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)
+      || ![11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_5_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_5_IDS;
@@ -75,14 +75,14 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )]));
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)) {
+  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)) {
     resourceInventoryProfiles.water = exact(
       bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
       'trace_ld_v1_inventory_profile_eremey_drinking_water_vessel'
     );
   }
-  const ropeInventoryProfile = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
+  const ropeInventoryProfile = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)
     ? exact(bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
       'trace_ld_v1_inventory_profile_ratsha_binding_rope')
@@ -136,13 +136,13 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
         && profile.external_hand_cost === 1
         && profile.status === 'approved';
     })
-    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
+    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)
       && (resourceInventoryProfiles.water.item_template_ref !== ids.water
         || resourceInventoryProfiles.water.mass_grams !== 100
         || resourceInventoryProfiles.water.carry_form !== 'compact'
         || resourceInventoryProfiles.water.external_hand_cost !== 0
         || resourceInventoryProfiles.water.status !== 'approved'))
-    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28].includes(bundle.definition_revision)
+    || ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].includes(bundle.definition_revision)
       && (ropeInventoryProfile.item_template_ref !== ids.rope
         || ropeInventoryProfile.mass_grams !== 1200
         || ropeInventoryProfile.carry_form !== 'long'

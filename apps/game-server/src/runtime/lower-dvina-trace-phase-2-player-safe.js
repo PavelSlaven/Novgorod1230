@@ -26,7 +26,6 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   if (typeof playerSafeStateProjector !== 'function') return null;
   return async (input) => {
     const committedState = structuredClone(input.committed_state);
-    delete committedState.current_visible_context;
     let projected = await playerSafeStateProjector({
       ...input,
       committed_state: committedState,
@@ -36,6 +35,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       admission: admitAmbientOrdinaryPortion });
     const basePlayerSafeState = projected.player_safe_state;
     const { active_interlocutor: _staleActiveInterlocutor,
+      current_visible_context: _presentationOnlyCurrentContext,
       ...initialWorkingProjection } = basePlayerSafeState;
     const actionState = projectLowerDvinaTraceA1Capability({
       playerSafeState: basePlayerSafeState,

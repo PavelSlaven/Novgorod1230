@@ -22,6 +22,10 @@ import {
   isPreparedTurn10Ledger,
   validatePreparedTurn10
 } from './lower-dvina-trace-turn-10-prepared-validation.js';
+import {
+  isPreparedPhase7RestLedger,
+  validatePreparedPhase7Rest
+} from './lower-dvina-trace-phase-7-prepared-validation.js';
 import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
   './lower-dvina-trace-phase-8-prepared-validation.js';
 import {
@@ -58,6 +62,11 @@ export function validatePreparedEffectCommit({
   const traces = envelope.loop_trace?.step_traces;
   if (isPreparedTurn10Ledger(ledger)) {
     return validatePreparedTurn10({
+      ledger, traces, envelope, factual, state, batch
+    });
+  }
+  if (isPreparedPhase7RestLedger(ledger)) {
+    return validatePreparedPhase7Rest({
       ledger, traces, envelope, factual, state, batch
     });
   }

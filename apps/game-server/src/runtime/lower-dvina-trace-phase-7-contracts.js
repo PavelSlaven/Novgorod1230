@@ -7,7 +7,7 @@ import {
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 28
+      || bundle.definition_revision < 15 || bundle.definition_revision > 30
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
@@ -22,7 +22,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const bodyEffectSource = exact(
     bundle.body_environment_profiles?.effect_profiles,
     'effect_profile_id', 'trace_ld_v1_body_fire_rest_30m');
-  const bodyEffect = resolveFireRestEffect(bodyEffectSource);
+  const bodyEffect = resolveFireRestEffect(bodyEffectSource, state);
   const npcPolicy = exact(bundle.npc_decision_schedule_policies
     ?.decision_policies, 'policy_id', 'trace_ld_v1_npc_zhdanko_decisions');
   const schedulePolicy = exact(bundle.npc_decision_schedule_policies
@@ -192,7 +192,7 @@ function unique(records, predicate) {
   return matches[0];
 }
 
-function resolveFireRestEffect(source) {
+function resolveFireRestEffect(source, state) {
   const bounds = source?.delta_bounds;
   const transitions = source?.condition_transitions;
   if (source?.activity_ref !== 'trace_ld_v1_activity_fire_rest'
@@ -208,6 +208,12 @@ function resolveFireRestEffect(source) {
       ])) {
     gap('TRACE_PHASE_7_BODY_PROFILE_INVALID');
   }
+  const coldState = (state.body_state?.active_conditions ?? []).find(
+    ({ id }) => ['mild_shivering', 'strong_shivering'].includes(id)
+  )?.id;
+  if (coldState == null) {
+    gap('TRACE_PHASE_7_BODY_COLD_CONDITION_GAP');
+  }
   return {
     ...structuredClone(source),
     source_profile_digest: canonicalDigest(source),
@@ -221,9 +227,10 @@ function resolveFireRestEffect(source) {
       outcome: 'wet_clothing_reduced_to_damp'
     }, {
       condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
-      from: 'strong_shivering',
+      from: coldState,
       to: 'mild_shivering',
-      outcome: 'strong_shivering_reduced'
+      outcome: coldState === 'strong_shivering'
+        ? 'strong_shivering_reduced' : 'persists'
     }, {
       condition_profile_ref: 'trace_ld_v1_condition_headache',
       from: 'headache',
@@ -244,11 +251,10 @@ function approvedRestOutcomes(outcomes) {
   ));
   return byProfile.get('trace_ld_v1_condition_wet_clothing')?.from === 'wet'
     && byProfile.get('trace_ld_v1_condition_wet_clothing')?.to === 'damp'
-    && byProfile.get('trace_ld_v1_condition_cold_shivering')?.from
-      === 'strong_shivering'
-    && ['none', 'mild_shivering'].includes(
-      byProfile.get('trace_ld_v1_condition_cold_shivering')?.to
-    )
+    && [['strong_shivering', 'mild_shivering'],
+      ['mild_shivering', 'mild_shivering']].some(([from, to]) =>
+      byProfile.get('trace_ld_v1_condition_cold_shivering')?.from === from
+        && byProfile.get('trace_ld_v1_condition_cold_shivering')?.to === to)
     && byProfile.get('trace_ld_v1_condition_headache')?.to === 'headache'
     && byProfile.get('trace_ld_v1_condition_shoulder_bruise')?.to
       === 'shoulder_bruise';

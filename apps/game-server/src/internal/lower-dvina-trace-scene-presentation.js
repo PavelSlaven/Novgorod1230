@@ -9,7 +9,7 @@ export const TRACE_SCENE_PRESENTATION_DIGEST =
 export async function loadLowerDvinaTraceScenePresentation({
   rootDir = process.cwd(), scenarioDefinitionRevision
 } = {}) {
-  if (scenarioDefinitionRevision !== 28) return null;
+  if (![28, 29, 30].includes(scenarioDefinitionRevision)) return null;
   const raw = await readFile(resolve(rootDir, PATH));
   const digest = createHash('sha256').update(raw).digest('hex');
   const value = JSON.parse(raw);

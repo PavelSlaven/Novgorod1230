@@ -46,6 +46,16 @@ test('route without an approved effect leaves body state untouched', () => {
     proposal: null, state_after: value.committed_state.body_state });
 });
 
+test('Phase 8 route without an approved effect leaves body state untouched', () => {
+  const effect = createTraceRouteBodyEffect({ phase2BodyEffect: {
+    apply: () => assert.fail('Phase 8 route must not receive a Phase 2 charge') } });
+  const value = input('phase8_kind', {
+    health: 80, satiety: 38, energy: 60, active_conditions: conditions()
+  }, 12);
+  assert.deepEqual(effect.apply(value), { owner: '@rus/body-state', applied: false,
+    proposal: null, state_after: value.committed_state.body_state });
+});
+
 function input(kind, bodyState, minutes) {
   return {
     consequence: { [kind]: 'movement', activity_attempt_id: `attempt:${minutes}` },

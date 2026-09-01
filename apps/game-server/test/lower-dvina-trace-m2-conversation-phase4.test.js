@@ -409,6 +409,18 @@ test('Ratsha check admission maps success to surrender and failure to hostile fo
     });
     assert.equal(exchange.result.response_kind, responseKind);
     assert.equal(exchange.npcCalls, 1);
+    if (band === 'failure_with_consequence') {
+      assert.deepEqual(
+        exchange.npcRequest.decision_scope.required_supporting_operation,
+        { op: 'state_bargain' }
+      );
+    }
+    if (band === 'severe_failure') {
+      assert.deepEqual(
+        exchange.npcRequest.decision_scope.allowed_contribution_kinds,
+        ['combat_handoff']
+      );
+    }
   }
   for (const [index, [responseKind, band, code]] of [
     ['lie', 'success', 'TURN_NPC_PLAN_INVALID'],
@@ -419,9 +431,9 @@ test('Ratsha check admission maps success to surrender and failure to hostile fo
     ['combat_handoff', 'success', 'TURN_NPC_PLAN_INVALID'],
     ['surrender', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
     ['lie', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['speech', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
-    ['silence', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
-    ['leave_conversation', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED']
+    ['speech', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['silence', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['leave_conversation', 'severe_failure', 'TURN_NPC_PLAN_INVALID']
   ].entries()) {
     await assert.rejects(runPhase4({ state, contracts,
       rawText: 'Что ты ответишь?', inputDigest: digest('0123456789a'[index]),

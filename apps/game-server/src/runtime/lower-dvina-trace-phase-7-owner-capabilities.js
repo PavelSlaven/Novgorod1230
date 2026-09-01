@@ -3,12 +3,15 @@ import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
   './lower-dvina-trace-phase-7-owner-proposals.js';
 import { mergePhase7Capability, registeredPhase7Owners } from
   './lower-dvina-trace-phase-7-owner-registry.js';
+import { projectNpcSafeResourceSnapshots } from '@rus/npc-runtime';
 
 export function projectTracePhase7OwnerCapabilities({ contracts,
   worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver,
   directHandlers = {}, directOperationContract = {} }) {
-  const activityAllowed = exactActivityAllowed(contracts, state);
-  const itemAllowed = exactItemAllowed(contracts, state);
+  const safeResourceRefs = npcSafeResourceRefs(contracts, state);
+  const activityAllowed = exactActivityAllowed(
+    contracts, state, safeResourceRefs);
+  const itemAllowed = exactItemAllowed(contracts, state, safeResourceRefs);
   const movement = applicableMovement(contracts, state);
   const operationContract = {};
   if (activityAllowed.length > 0) operationContract.request_activity = {
@@ -61,7 +64,7 @@ function applicableMovement(contracts, state) {
   return ownerApplicable({ operation, state, contracts }) ? movement : null;
 }
 
-function exactActivityAllowed(contracts, state) {
+function exactActivityAllowed(contracts, state, safeResourceRefs) {
   const profiles = new Map(contracts.scheduleActivityProfiles.map((profile) =>
     [profile.profile_id, profile]));
   const movements = new Map([[contracts.localTransition.transition_id,
@@ -74,6 +77,8 @@ function exactActivityAllowed(contracts, state) {
       const profile = profiles.get(binding.activity_profile_ref);
       const activityKind = activityKindFor(profile, binding);
       if (activityKind == null) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
+      if ((profile.resource_refs ?? []).some(
+        (ref) => !safeResourceRefs.has(ref))) return [];
       const required = new Set(profile.resource_refs ?? []);
       if (binding.movement_ref != null) {
         const movement = movements.get(binding.movement_ref);
@@ -97,7 +102,8 @@ function exactActivityAllowed(contracts, state) {
   ));
 }
 
-function exactItemAllowed(contracts, state) {
+function exactItemAllowed(contracts, state, safeResourceRefs) {
+  if (!safeResourceRefs.has(contracts.roadBag.item_ref)) return Object.freeze([]);
   const targets = tracePhase7ItemUseTransitions(contracts)
     .map(tracePhase7TransitionTarget);
   return Object.freeze(['operate', 'other'].flatMap((useKind) =>
@@ -108,6 +114,18 @@ function exactItemAllowed(contracts, state) {
         actor_ref: contracts.zhdanko.instance_id, ...allowed };
       return ownerApplicable({ operation, state, contracts }) ? [allowed] : [];
     })));
+}
+
+function npcSafeResourceRefs(contracts, state) {
+  const npc = (state.npcs ?? []).find(({ instance_id: instanceId }) =>
+    instanceId === contracts.zhdanko.instance_id) ?? contracts.zhdanko;
+  return new Set(projectNpcSafeResourceSnapshots({
+    npc_snapshot: npc,
+    resource_snapshots: [...(state.containers ?? []), ...(state.items ?? [])],
+    perception_snapshot: npc.perception_snapshot,
+    knowledge_snapshot: npc.knowledge_snapshot
+  }).flatMap(({ resource_ref: resourceRef, template_ref: templateRef }) =>
+    [resourceRef, templateRef].filter(Boolean)));
 }
 
 function activityKindFor(profile, binding) {

@@ -1,7 +1,8 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import {
   projectCurrentSceneForNoOperationDirect,
-  projectCurrentSceneForVisibleOverlay
+  projectCurrentSceneForVisibleOverlay,
+  projectDirectSeedChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
@@ -78,7 +79,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     version: 1,
     schema: 'visible_context_package',
     visible_scene: 'Заявленное действие завершено.',
-    visible_changes: directSeeds.map(([key]) => key),
+    visible_changes: projectDirectSeedChanges({ input,
+      directSeedKeys: directSeeds.map(([key]) => key) }),
     sensory_details: [],
     visible_npc: [],
     visible_objects: [],
@@ -87,8 +89,13 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ],
-    uncertainties: consequence.visible_seed.clarification
-      ? ['Фактическое действие не применено до уточнения.'] : [],
+    uncertainties: [
+      ...(consequence.visible_seed.clarification
+        ? ['Фактическое действие не применено до уточнения.'] : []),
+      ...(consequence.status === 'partial'
+        ? ['Задуманное выполнено лишь частично; остальное ещё не произошло.']
+        : [])
+    ],
     allowed_tensions: [],
     do_not_imply: [
       'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
@@ -117,6 +124,7 @@ function directSeedKeys(entries) {
 
 function hasVisibleDomainProjection(consequence) {
   return Array.isArray(consequence?.observations)
+    || consequence?.combat_kind != null
     || Object.keys(consequence ?? {}).some((key) =>
       /^phase\d+_kind$/u.test(key) && consequence[key] != null);
 }

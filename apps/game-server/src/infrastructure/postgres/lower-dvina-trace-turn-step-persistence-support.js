@@ -95,6 +95,7 @@ export function fail(code, details = {}) {
   throw serverError(code,
     'Turn-step operation batch cannot be committed safely.', {
       status: 409,
+      public_exposure: 'internal',
       details: {
         ...structuredClone(details),
         persistence_digest: canonicalDigest({ code, details })

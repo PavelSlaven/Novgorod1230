@@ -179,7 +179,6 @@ function projectIdentity(value, strict) {
   const allowed = new Set(['canonical_name', 'display_name']);
   if (strict) assertAllowedKeys(value, allowed, 'identity_state', invalidCode());
   return compact({
-    canonical_name: text(value.canonical_name),
     display_name: text(value.display_name)
   });
 }

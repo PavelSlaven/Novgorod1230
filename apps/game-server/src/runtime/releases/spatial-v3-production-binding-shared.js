@@ -4,8 +4,8 @@ import {
 import {
   createLowerDvinaTracePublicRuntime
 } from '../lower-dvina-trace-public-runtime.js';
-import { TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST } from
-  '../../internal/lower-dvina-trace-revision-28-publication.js';
+import { TRACE_REVISION30_PHASE_1A_MANIFEST_DIGEST } from
+  '../../internal/lower-dvina-trace-revision-30-publication.js';
 import {
   firstPlayableCommitRecheck as baseCommitRecheck
 } from '../../infrastructure/postgres/first-playable/recheck.js';
@@ -145,8 +145,8 @@ export async function createSpatialV3ProductionBindings(
         committer,
         release,
         runtimeCatalogPin,
-        activePhase1AManifestDigest: TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST,
-        activeScenarioDefinitionRevision: 28,
+        activePhase1AManifestDigest: TRACE_REVISION30_PHASE_1A_MANIFEST_DIGEST,
+        activeScenarioDefinitionRevision: 30,
         ...(typeof config.idFactory === 'function'
           ? { idFactory: config.idFactory }
           : {}),

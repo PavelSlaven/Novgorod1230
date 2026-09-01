@@ -206,7 +206,7 @@ export async function executeM2ConversationExchange(context, {
       const targetContext = conversationNpcContext(
         workingConversationContext(context, working), request.npc_ref
       );
-      const npcOutcome = targetContext.classifyNpcPlan(proposal.plan);
+      const npcOutcome = targetContext.classifyNpcPlan(proposal.plan, request);
       npcOutcomes.set(request.request_id, npcOutcome);
       return applyNpcPlan(
         targetContext,

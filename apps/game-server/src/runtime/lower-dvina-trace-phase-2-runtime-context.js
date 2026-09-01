@@ -20,9 +20,9 @@ import { createTraceKnownRouteCommands } from
 
 export function resolveTracePhase2InheritedContracts({ state, bundle }) {
   const revision = bundle.definition_revision;
-  const ready = ![24, 25, 26, 27, 28].includes(revision)
+  const ready = ![24, 25, 26, 27, 28, 29, 30].includes(revision)
     || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
-  const enabled = (first) => revision >= first && revision <= 28;
+  const enabled = (first) => revision >= first && revision <= 30;
   return {
     phase3Contracts: enabled(9) ? resolveTracePhase3Contracts({ state, bundle }) : null,
     phase4Contracts: enabled(10) && ready ? resolveTracePhase4Contracts({ state, bundle }) : null,

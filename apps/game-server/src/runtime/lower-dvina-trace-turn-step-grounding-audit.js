@@ -22,7 +22,7 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
         sensory_details: request.player_safe_state?.current_visible_context
           ?.sensory_details ?? []
       })
-    }], overrides: { temperature: 0, maxTokens: 800 }
+    }], overrides: { temperature: 0, maxTokens: 20_000 }
   });
   if (!valid(response?.output)) throw serverError(
     'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',

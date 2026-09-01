@@ -58,7 +58,7 @@ export function createLowerDvinaTraceTurnStepModel({
             'Return only one JSON object containing the semantic choice for one turn step.',
             'Do not add Markdown, prose outside JSON, or unknown fields.',
             'Do not return schema, request_id, committed_state_version, working_revision, step_index, goal_result pending, or code-owned domain activity; the server assembles them.',
-            'Return interpretation, resolution, operation_family, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason.',
+            'Return interpretation, resolution, operation_family, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason. reason is one short conclusion sentence, never analysis, alternatives, self-correction, or repeated deliberation. If you notice a mistake, emit only the corrected final JSON.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             `Code-owned exact operation choices are:\n${JSON.stringify(operationChoices.map(({ choice_id, operation }) => ({ choice_id, operation })))}`,
             'operation_choice is exactly one scalar supplied choice_id string or null, never an object, array, or wrapper. For a matching code-owned operation return that scalar choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
@@ -91,7 +91,7 @@ export function createLowerDvinaTraceTurnStepModel({
         }],
         overrides: {
           temperature: 0,
-          maxTokens: repairing ? 4000 : 8000
+          maxTokens: 20_000
         }
       });
     if (!response?.output || typeof response.output !== 'object'
@@ -115,7 +115,10 @@ function preserveGroundingPrerequisiteIntent({ output, request,
     && output?.operations?.length === 1
     && output.operations[0]?.op === 'request_discovery';
   if (!groundingRepair || !discovery) return output;
-  return { ...structuredClone(output), continuation: {
+  const grounded = structuredClone(output);
+  grounded.interpretation = { ...grounded.interpretation,
+    grounded_attempt: grounded.operations[0].query };
+  return { ...grounded, continuation: {
     remaining_intent: request.remaining_intent,
     depends_on_refs: []
   } };

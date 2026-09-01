@@ -84,7 +84,7 @@ test('repair role receives original output, request, and structural errors', asy
     original_output: { resolution: 'domain_request', operation_choice: 'missing' }
   });
   assert.equal(seen.role_id, 'turn_step_planner_repair');
-  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 4000 });
+  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 20_000 });
   const payload = JSON.parse(seen.messages[1].content);
   assert.deepEqual(Object.keys(payload).sort(), ['original_output', 'request', 'structural_errors']);
   assert.deepEqual(payload.original_output,
@@ -119,6 +119,7 @@ test('grounding repair preserves the entire still-unexecuted intent',
       original_output: {}
     });
     assert.equal(plan.continuation.remaining_intent, intent);
+    assert.equal(plan.interpretation.grounded_attempt, 'доска');
   });
 
 test('assembler derives redundant A1 carrier refs from semantic source refs',

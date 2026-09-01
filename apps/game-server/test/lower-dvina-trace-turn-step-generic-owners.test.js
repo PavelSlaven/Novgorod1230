@@ -229,13 +229,14 @@ test('generic composition preserves domain body and handles direct visible',
         do_not_imply: []
       } },
       consequence: { visible_seed: { completed_steps: [],
-        clarification: null, turn_step_y: { kind: 'semantic_activity' } } },
+        clarification: null, turn_step_y: { kind: 'semantic_activity',
+          duration_minutes: 5 } } },
       body_update: { state_after: body({ health: 95 }) }
     });
     assert.equal(scene.visible_scene, 'Уже видимый берег.');
     assert.deepEqual(scene.sensory_details, ['cold', 'wet']);
     assert.deepEqual(scene.visible_changes,
-      ['Прошло некоторое время.']);
+      ['Прошло 5 минут.']);
     assert.equal(scene.known_context.includes('health:95'), true);
   });
 

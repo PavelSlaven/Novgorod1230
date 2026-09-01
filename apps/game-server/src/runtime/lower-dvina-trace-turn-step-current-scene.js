@@ -134,7 +134,11 @@ export function projectDirectSeedChanges({ input, directSeedKeys }) {
 }
 
 function directSeedChange(value) {
-  if (value?.kind === 'semantic_activity') return 'Прошло некоторое время.';
+  if (value?.kind === 'semantic_activity') {
+    const duration = Number(value.duration_minutes);
+    return Number.isSafeInteger(duration) && duration > 0
+      ? `Прошло ${duration} ${minuteWord(duration)}.` : null;
+  }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
   }
@@ -165,24 +169,43 @@ function directSeedChange(value) {
   failCurrentScene();
 }
 
+function minuteWord(value) {
+  const mod100 = value % 100;
+  if (mod100 >= 11 && mod100 <= 14) return 'минут';
+  if (value % 10 === 1) return 'минута';
+  if (value % 10 >= 2 && value % 10 <= 4) return 'минуты';
+  return 'минут';
+}
+
 function sentence(value) {
   return /[.!?…]$/u.test(value) ? value : `${value}.`;
 }
 
 function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;
-  const plans = (trace?.step_traces ?? []).map(({ approved_plan: plan }) => plan)
-    .filter((plan) => plan?.resolution === 'direct');
+  const allPlans = (trace?.step_traces ?? [])
+    .map(({ approved_plan: plan }) => plan).filter(Boolean);
+  const plans = allPlans.filter((plan) => plan.resolution === 'direct');
   const results = plans.map(({ goal_result: result }) => result).filter(Boolean);
+  const productionSources = new Set(allPlans.flatMap((plan) =>
+    (plan.operations ?? []).flatMap((operation) =>
+      operation?.action_production?.source_refs ?? [])));
+  const movedSources = new Set(allPlans.flatMap((plan) =>
+    (plan.operations ?? []).filter(({ op }) => op === 'move_entity')
+      .map(({ entity_ref: ref }) => ref)));
+  const sourceStayedPut = [...productionSources]
+    .some((sourceRef) => !movedSources.has(sourceRef));
+  const constraints = sourceStayedPut
+    ? ['uncommitted_action_production_source_relocation'] : [];
   if (results.length > 0 && results.every((result) => result === 'not_achieved')
       && !text(trace?.remaining_intent)) {
-    return ['unconfirmed_attempt_success'];
+    constraints.push('unconfirmed_attempt_success');
   }
   if (results.includes('partially_achieved') || text(trace?.remaining_intent)
       || (results.length === 0 && input?.consequence?.status === 'partial')) {
-    return ['uncompleted_remaining_intent'];
+    constraints.push('uncompleted_remaining_intent');
   }
-  return [];
+  return constraints;
 }
 
 function validCurrentScene(value) {

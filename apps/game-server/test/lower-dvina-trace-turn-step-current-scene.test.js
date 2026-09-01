@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   projectCurrentSceneForNoOperationDirect,
+  projectCurrentSceneForVisibleOverlay,
   withLowerDvinaTraceCurrentScene
 } from
   '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
@@ -122,6 +123,26 @@ test('fact presentation reads an unseen committed fact generically', () => {
       perception_requirement: 'committed_observation' }]
   }, factRef: 'unseen:fact' });
   assert.equal(presentation.text, 'На камне видна свежая зарубка.');
+});
+
+test('in-place production forbids narration from inventing source relocation', () => {
+  const state = committedState();
+  const visible = projectCurrentSceneForVisibleOverlay({ input: {
+    consequence: { status: 'resolved', visible_seed: { turn_step_1: {
+      change: 'physical_change', physical_description: 'Доска стала опорой.'
+    } } }, retrieved_state: state, mode_resolution: { decision_trace: {
+      remaining_intent: null, step_traces: [{ approved_plan: {
+        resolution: 'domain_request', goal_result: 'pending', operations: [{
+          op: 'request_item_use', action_production: {
+            source_refs: ['item:board']
+          }
+        }]
+      } }]
+    } }
+  }, directSeedKeys: ['turn_step_1'], body: {} });
+
+  assert.equal(visible.do_not_imply.includes(
+    'uncommitted_action_production_source_relocation'), true);
 });
 
 function committedState() {

@@ -42,8 +42,9 @@ test('action-production grounding audit receives only each source own evidence',
 
 test('grounding audit reports an explicit source relocation omitted by plan',
   async () => {
+    let call;
     const result = await auditTurnStepSourceGrounding({
-      roleRunner: { async run() { return { output: { pass: false,
+      roleRunner: { async run(input) { call = input; return { output: { pass: false,
         concerns: [{ kind: 'missing_required_source_move' }] } }; } },
       plan: { operations: [{ op: 'request_item_use', action_production: {
         source_refs: ['item:board'] } }] },
@@ -56,6 +57,8 @@ test('grounding audit reports an explicit source relocation omitted by plan',
         }] } }
     });
     assert.equal(result.errors[0].code, 'source_placement_grounding');
+    assert.match(call.messages[0].content,
+      /even when the source is immediately transformed/u);
   });
 
 test('non-production turn skips grounding model', async () => {

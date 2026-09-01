@@ -421,6 +421,36 @@ test('domain owner can stop automatic continuation at a player boundary', async 
   assert.deepEqual(outcome.consequence_fragments, [{ kind: 'treatment' }]);
 });
 
+test('completed goal remains resolved at a visible player boundary', async () => {
+  const executionRegistry = createTurnStepExecutionRegistry({
+    domain: {
+      request_activity: async ({ working_projection: projection }) =>
+        result({ ...projection, support_made: true }, 'опора готова', {
+          goal_result: 'achieved',
+          player_response_boundary: true
+        })
+    }
+  });
+  const outcome = await runTurnStepLoop(input(), ports({
+    executionRegistry,
+    turnStepModel: async (request) => basePlan(request, {
+      resolution: 'domain_request',
+      goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [{
+        op: 'request_activity', actor_ref: 'actor-1',
+        activity_kind: 'recover', target_refs: ['stone-1'],
+        description: 'сделать опору'
+      }],
+      continuation: null
+    })
+  }));
+
+  assert.equal(outcome.status, 'resolved');
+  assert.equal(outcome.stop_reason, 'terminal');
+  assert.equal(outcome.remaining_intent, null);
+});
+
 test('compound intent resumes from the committed domain boundary without replay',
   async () => {
     let inspections = 0;

@@ -94,6 +94,8 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
   assert.equal(seen.messages[0].content.includes(
     'owner absence is not evidence of impossibility or fantasy'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'do not combine move_entity and action production in one step'), true);
   assert.equal(seen.messages[0].content.includes('Do not re-plan or invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

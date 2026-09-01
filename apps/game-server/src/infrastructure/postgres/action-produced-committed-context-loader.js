@@ -10,6 +10,7 @@ import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
 import { actionProducedPreparedOrdinaryRows } from './action-produced-prepared-ordinary.js';
 import { actionProducedDestinationAfterPreparedActions,
+  actionProducedDestinationAfterPreparedOrdinary,
   actionProducedPreparedActionRows } from
   './action-produced-prepared-ordinary.js';
 import { bindActionProducedResourcePins } from
@@ -56,8 +57,9 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     fail('ACTION_PRODUCED_PARTY_STALE');
   }
   const outputDestinationPin = actionProducedDestinationAfterPreparedActions(
-    await loadActionProducedOutputDestination(client, input),
-    input.prepared_action_plans ?? []);
+    actionProducedDestinationAfterPreparedOrdinary(
+      await loadActionProducedOutputDestination(client, input),
+      input.prepared_ordinary_plan ?? null), input.prepared_action_plans ?? []);
 
   const requested = [...input.source_refs, ...input.tool_refs];
   const preparedActions = actionProducedPreparedActionRows(input);

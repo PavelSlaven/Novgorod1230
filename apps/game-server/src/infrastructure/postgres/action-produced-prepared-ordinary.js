@@ -202,6 +202,22 @@ export function actionProducedDestinationAfterPreparedActions(pin, values) {
   return { ...pin, used_item_ids: [...used].sort() };
 }
 
+export function actionProducedDestinationAfterPreparedOrdinary(pin, raw) {
+  if (pin == null || raw == null) return pin;
+  let plan;
+  try { plan = createOrdinaryMaterializationAtomicWritePlan(raw); }
+  catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+  const item = plan.schema === 'ordinary_materialization_atomic_write_plan_v1'
+    && plan.resolution === 'materialize' ? plan.item : null;
+  if (item == null || pin.destination_kind !== 'party_current_anchor'
+      || item.runtime_placement.anchor_id !== pin.anchor_id) return pin;
+  const used = [...new Set([...pin.used_item_ids, item.item_id])].sort();
+  if (used.length > pin.item_capacity) {
+    fail('ACTION_PRODUCED_DESTINATION_INVALID');
+  }
+  return { ...pin, used_item_ids: used };
+}
+
 function preparedActionRow({ item, placement, ownership,
   scenePlacement, finiteResourceRow, causal }) {
   return {

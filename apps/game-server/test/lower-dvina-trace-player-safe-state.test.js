@@ -326,6 +326,25 @@ test('working projection rejects unknown nested fields and invented positions', 
   }), { code: 'TRACE_PLAYER_SAFE_WORKING_POSITION_INVALID' });
 });
 
+test('committed first-entry scene remains an admitted movement destination after transient status is stripped', () => {
+  const committedState = richCommittedState();
+  committedState.first_entry_preparation = {
+    spatial_v3: { target: { scene_baseline_id: 'camp-baseline' } },
+    scene: preparedScene('camp', 'camp-node', 'camp-anchor')
+  };
+  const result = projectLowerDvinaTracePlayerSafeState({
+    committed_state: committedState,
+    working_projection: {
+      position: {
+        location_ref: 'camp', g5_node_id: 'camp-node',
+        g5_anchor_id: 'camp-anchor'
+      }
+    },
+    actor_id: 'mikula'
+  });
+  assert.equal(result.player_safe_state.position.location_ref, 'camp');
+});
+
 test('normalized children of closed containers never enter player-safe items', () => {
   const committedState = richCommittedState();
   committedState.items = [{

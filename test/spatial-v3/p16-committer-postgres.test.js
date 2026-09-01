@@ -703,12 +703,11 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     planId: 'n1-persistence-plan', idempotencyId: 'n1-persistence-idem',
     idempotencyKey: 'n1-persistence-key', changeSetId: 'n1-persistence-cs',
     updates: [{ target_table: 'party_npcs', id: 'npc:n1', record: {
-      party_id: 'p', npc_id: 'npc:n1', semantic_state: n1SemanticState,
-      updated_change_set_id: 'n1-persistence-cs' } }],
+      party_id: 'p', npc_id: 'npc:n1', semantic_state: n1SemanticState } }],
     physicalKeys: ['party_runtime.party_npcs:npc:n1']
   });
-  assert.equal((await concurrentCommitter.commit({ plan: n1Persistence })).ok,
-    true);
+  const n1Commit = await concurrentCommitter.commit({ plan: n1Persistence });
+  assert.equal(n1Commit.ok, true, JSON.stringify(n1Commit));
   const n1Reload = (await client.query(`SELECT identity_state,machine_state,
       semantic_state FROM party_runtime.party_npcs
     WHERE party_id='p' AND npc_id='npc:n1'`)).rows[0];

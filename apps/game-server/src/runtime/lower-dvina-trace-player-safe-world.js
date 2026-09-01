@@ -200,9 +200,10 @@ function admittedScenes(state) {
   const knownRoutes = new Set((state.route_knowledge ?? []).map((record) =>
     typeof record === 'string' ? record : record?.route_ref ?? record?.route_id)
     .filter(Boolean));
-  const firstEntryScene =
-    state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared'
-      ? state.first_entry_preparation.scene : null;
+  // A persisted party snapshot is already the commit boundary. New-game route
+  // normalization intentionally strips the transient preparation status.
+  const firstEntryScene = state.first_entry_preparation?.spatial_v3?.target
+    == null ? null : state.first_entry_preparation.scene;
   const unique = new Map();
   [...(state.prepared_scenes ?? []), firstEntryScene].forEach((scene) => {
     const locationRef = text(scene?.location_profile_ref);

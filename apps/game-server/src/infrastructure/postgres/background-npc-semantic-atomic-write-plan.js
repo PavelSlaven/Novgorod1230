@@ -42,8 +42,7 @@ export function applyBackgroundNpcSemanticPlan({ plan: input, state,
   snapshot.npcs[index] = nextNpc;
   return { target_table: 'party_npcs', id: plan.npc_ref, record: {
     party_id: plan.party_id, npc_id: plan.npc_ref,
-    semantic_state: structuredClone(nextNpc.semantic_state),
-    updated_change_set_id: plan.change_set_id } };
+    semantic_state: structuredClone(nextNpc.semantic_state) } };
 }
 
 export function backgroundNpcFormalStateDigest(npc) {

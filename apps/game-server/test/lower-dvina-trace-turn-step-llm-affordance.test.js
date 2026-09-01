@@ -68,6 +68,10 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     /take, use, or transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
   assert.match(prompt,
     /MUST win over action_production[\s\S]*Never substitute an unrelated inventory, worn, held, or merely listed item_ref/u);
+  assert.match(prompt,
+    /All refs are opaque identifiers[\s\S]*only when that same ref has its own supplied player-safe label, category, description, or facts supporting the match[\s\S]*sensory fact without an entity_ref does not label any listed item ref/u);
+  assert.match(prompt,
+    /request_discovery choice covers only its own fixed query[\s\S]*never select or copy a broad authored inspection/u);
 });
 
 test('action production prompt matches the active qualitative DTO', async () => {

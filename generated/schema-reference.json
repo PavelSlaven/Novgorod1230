@@ -957,9 +957,9 @@
       "type": "sql"
     },
     {
-      "bytes": 8182,
+      "bytes": 8419,
       "path": "schemas/party-db/015_party_runtime_turn_step_items.sql",
-      "sha256": "86734c9beac056974a1b16f46dcee8d889362dfbbf507d7281813b0fa509e77c",
+      "sha256": "99b84ebc5c75b74dc81c16f598cd55cbc034036119ba5235a9d72e244d1b526f",
       "type": "sql"
     },
     {
@@ -1011,9 +1011,9 @@
       "type": "sql"
     },
     {
-      "bytes": 5348,
+      "bytes": 5604,
       "path": "schemas/party-db/024_party_runtime_ordinary_world_items.sql",
-      "sha256": "f7592aa2599b93e15f4e8004405bff65053e972e6cc7139c2815ae1b8877f177",
+      "sha256": "219681fa81b3cb8b4acb5fb3aaee23f13cb7950b21091c01aed761f5611be220",
       "type": "sql"
     },
     {

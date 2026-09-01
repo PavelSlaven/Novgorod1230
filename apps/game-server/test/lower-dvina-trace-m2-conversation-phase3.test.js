@@ -29,6 +29,42 @@ import {
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { projectM2ConversationExecutionResult } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-result.js';
+
+test('multi-NPC result selects the addressed NPC as the primary decision', () => {
+  const background = ref('npc', 'background');
+  const target = ref('npc', 'target');
+  const decisions = [background, target].map((npcRef) => ({
+    request: { request_id: `request:${npcRef.entity_id}`, npc_ref: npcRef }
+  }));
+  const outcomes = new Map(decisions.map(({ request }) => [
+    request.request_id,
+    { kind: 'speech', contributionRef: ref('conversation_statement',
+      `statement:${request.npc_ref.entity_id}`) }
+  ]));
+  const result = projectM2ConversationExecutionResult({
+    exchange: {
+      npc_decisions: decisions,
+      contributions: [...outcomes.values()].map(({ contributionRef }) => ({
+        schema: 'conversation_statement_event_v1',
+        statement_id: contributionRef.entity_id
+      })),
+      working_state: { statements: [], audiences: [],
+        supporting_operation_perceptions: [], new_signal_records: [],
+        consumed_signal_ids: [], terminal_npc_outcomes: [], clock: {},
+        elapsed_minutes: 0 },
+      temporal_boundary_refs: []
+    },
+    context: { targetRef: target, socialDeliveryResult: null },
+    pendingExecution: null,
+    pendingPlayerExecution: null,
+    npcOutcomes: outcomes,
+    resumedOutcome: null
+  });
+  assert.equal(result.decision.request.npc_ref.entity_id, 'target');
+  assert.equal(result.npcOutcome.contributionRef.entity_id, 'statement:target');
+});
 
 test('player conversation meaning controls whether the common social check runs', async () => {
   const state = phase3State();

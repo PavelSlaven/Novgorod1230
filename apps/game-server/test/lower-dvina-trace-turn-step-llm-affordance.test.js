@@ -72,6 +72,8 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     /All refs are opaque identifiers[\s\S]*only when that same ref has its own supplied player-safe label, category, description, or facts supporting the match[\s\S]*sensory fact without an entity_ref does not label any listed item ref/u);
   assert.match(prompt,
     /request_discovery choice covers only its own fixed query[\s\S]*never select or copy a broad authored inspection/u);
+  assert.match(prompt,
+    /FINAL SOURCE-GROUNDING GATE[\s\S]*state that exact grounding in reason[\s\S]*request_item_use and action_production are invalid[\s\S]*material-only query[\s\S]*complete handling or transformation in continuation[\s\S]*final gate overrides action_production availability/u);
 });
 
 test('action production prompt matches the active qualitative DTO', async () => {

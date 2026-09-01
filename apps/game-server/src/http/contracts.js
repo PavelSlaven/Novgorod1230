@@ -59,6 +59,13 @@ export function validateTurnRequest(body) {
   return body;
 }
 
+export function validatePresentationRecoveryRequest(body) {
+  if (!plain(body) || Object.keys(body).length !== 0) {
+    throw serverError('REQUEST_BODY_INVALID', 'Presentation recovery body must be empty.', { status: 400 });
+  }
+  return body;
+}
+
 export function validateLlmSettingsRequest(body) {
   if (!plain(body)) throw serverError('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.', { status: 400 });
   return body;

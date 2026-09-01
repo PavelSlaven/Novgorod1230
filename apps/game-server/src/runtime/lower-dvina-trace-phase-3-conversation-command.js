@@ -61,7 +61,7 @@ export function createTracePhase3ConversationCommand({
     option_id: optionId,
     label: evidence
       ? 'Показать Еремею синюю шерсть и попросить содействия'
-      : 'Спросить Еремея о крушении',
+      : 'Поговорить с Еремеем',
     target_id: contracts.actors[0].instance_id,
     approved_record: activityPin,
     preconditions,
@@ -207,7 +207,7 @@ function createSemanticConversationCommand({
     option_id: optionId,
     label: evidence
       ? 'Показать Еремею синюю шерсть и попросить содействия'
-      : 'Спросить Еремея о крушении',
+      : 'Поговорить с Еремеем',
     target_id: contracts.actors[0].instance_id,
     approved_record: activityPin,
     preconditions,

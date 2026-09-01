@@ -18,7 +18,7 @@ test('narration assembly does not default omitted semantic fields', () => {
 
 test('narration wires writer, audit, and targeted semantic repair roles', async () => {
   const calls = [];
-  const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'Двор тих.', action_options: [], used_references: [], self_check: {} };
+  const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'The clearing is quiet.', action_options: [], used_references: [], self_check: {} };
   const turnBudget = createLlmTurnBudget();
   const narration = createLowerDvinaTraceNarrationService({
     roleRunner: createLlmRoleRunnerAdapter({ turnBudget,
@@ -34,7 +34,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
               ? { pass: false, concerns: [{ segment_choice: 'segment_1', kind: 'unsupported_fact', reason: 'Не подтверждено.' }], evidence: ['Нет в visible_context.'] }
               : { pass: true, concerns: [], evidence: ['Подтверждено.'] }
             : call.roleId === 'gameplay_narrator_semantic_repair'
-              ? { replacements: [{ prose: 'Двор тих.' }] }
+              ? { replacements: [{ prose: 'The clearing is quiet.' }] }
               : null;
       return { status: 'ok', parsed_json: output, provider: 'deepseek',
         model: 'deepseek-v4-flash', scope: call.scope, role_id: call.roleId,
@@ -44,9 +44,11 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   const result = await turnBudget.runTurn(() => narration.run({
     version: 1, schema: 'narration_request', request_id: 'narration-1',
     surface: 'turn', visible_context: {
-      version: 1, schema: 'visible_context_package', visible_scene: 'Двор тих.',
-      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
-      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+      version: 1, schema: 'visible_context_package', visible_scene: 'The clearing is quiet.',
+      visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
+      sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: ['A marked path leads toward the settlement.', 'health:5'],
+      uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, context: {
       player_input: { raw_text: 'Постучать в закрытую дверь.' },
       mode_resolution: { option_id: 'ordinary-attempt' }
@@ -66,11 +68,17 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'Do not infer a causal bridge, exact object use, or success mechanism'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'copied verbatim from visible_context.visible_scene'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'visible_changes is nonempty, prose MUST communicate every material newly visible change'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'relevant player-safe known_context, including an actionable route or context fact'), true);
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');
   assert.equal(calls[1].roleId, 'gameplay_narrator_format_repair');
   assert.equal(calls[1].messages[0].content.includes(repairShape), true);
   assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
+  assert.equal(calls[1].messages[0].content.includes(
+    'visible_changes is nonempty, preserve prose coverage of every material newly visible change'), true);
   assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
   assert.equal(calls[2].messages[0].content.includes('full narration output'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
@@ -79,7 +87,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[2].messages[0].content.includes(
     'It never proves success, object use, a result, or a world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'complete sentence copied from visible_context.visible_scene is supported'), true);
+    'complete sentence copied from visible_context.visible_scene or an entry of visible_context.known_context is supported'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'are part of the attempted action and are not completed object use'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
@@ -91,14 +99,16 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
     version: 1, schema: 'narration_semantic_audit_request', phase: 'initial',
     output: repairedOutput, visible_context: {
-      version: 1, schema: 'visible_context_package', visible_scene: 'Двор тих.',
-      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
-      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+      version: 1, schema: 'visible_context_package', visible_scene: 'The clearing is quiet.',
+      visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
+      sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: ['A marked path leads toward the settlement.', 'health:5'],
+      uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, action_intent_context: {
       evidence_scope: 'intent_only_non_evidence_of_success',
       player_input: { raw_text: 'Постучать в закрытую дверь.' },
       mode_resolution: { option_id: 'ordinary-attempt' }
-    }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'Двор тих.' }]
+    }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
   assert.equal(calls[3].messages[0].content.includes('flagged segments'), true);
@@ -107,12 +117,50 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'discard the original claim and rebuild the replacement only from'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'copied verbatim from visible_context.visible_scene'), true);
-  assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'Двор тих.', nearby_context: [] }]);
+    'copied verbatim from visible_context.visible_scene or an entry of visible_context.known_context'), true);
+  assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(JSON.parse(calls[3].messages[1].content)
     .action_intent_context.evidence_scope,
   'intent_only_non_evidence_of_success');
   assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
   assert.equal(calls.length, 5);
+});
+
+test('narration treats exact known context as visible evidence and still blocks inventions', async (t) => {
+  const known = 'A dry shelter stands beside the path.';
+  for (const [prose, expectedStatus] of [[known, 'approved'], [
+    'A stone bridge rises ahead.', 'blocked'
+  ]]) await t.test(prose, async () => {
+    const calls = [];
+    const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose, action_options: [], used_references: [], self_check: {}
+        } };
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          const supported = JSON.parse(call.messages[1].content).output.prose
+            .includes(known);
+          return { output: supported
+            ? { pass: true, concerns: [], evidence: ['known context'] }
+            : { pass: false, concerns: [{ segment_choice: 'segment_1',
+              kind: 'unsupported_world_state', reason: 'not visible' }],
+            evidence: ['not visible'] } };
+        }
+        return { output: { replacements: [{ prose }] } };
+      }
+    } });
+    const result = await narration.run({
+      version: 1, schema: 'narration_request', request_id: 'known-context',
+      surface: 'turn', visible_context: {
+        version: 1, schema: 'visible_context_package', visible_scene: 'The path is quiet.',
+        visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+        known_context: [known], uncertainties: [], allowed_tensions: [], do_not_imply: []
+      }, context: {}
+    });
+    assert.equal(result.status, expectedStatus);
+    assert.equal(calls.find(({ role_id: role }) => role === 'gameplay_narrator_auditor')
+      .messages[0].content.includes('visible_context.known_context'), true);
+  });
 });

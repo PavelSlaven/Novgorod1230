@@ -133,8 +133,11 @@ export function createTracePhase2VisibleProjector({ contracts }) {
         version: 1,
         schema: 'visible_context_package',
         visible_scene: 'Осмотр места крушения завершён.',
-        visible_changes: consequence.observations
-          .map(({ fact_id: factId }) => factId),
+        visible_changes: [
+          ...consequence.observations.map(({ fact_id: factId }) =>
+            visibleObservation(factId)),
+          'От берега к рыбацкому стану ведёт заметная тропа.'
+        ],
         sensory_details: [],
         visible_npc: [],
         visible_objects: visibleObjects,
@@ -153,4 +156,26 @@ export function createTracePhase2VisibleProjector({ contracts }) {
       };
     }
   });
+}
+
+function visibleObservation(factId) {
+  return {
+    'visible:wreck_present': 'На берегу лежат обломки разбитой лодки.',
+    'trace_ld_v1_evidence_onisim_barefoot_tracks':
+      'В мокром песке видны босые следы.',
+    'trace_ld_v1_evidence_boot_track':
+      'Рядом заметен отдельный след сапога.',
+    'visible:road_bag_missing':
+      'Дорожной сумки, о которой было известно, здесь нет.',
+    'visible:debris_layering_indicates_sequence':
+      'Слои обломков и следов различимы.',
+    'trace_ld_v1_evidence_cut_fastening':
+      'Кожаная застёжка разрезана.',
+    'trace_ld_v1_evidence_side_dent':
+      'На борту лодки заметна вмятина сбоку.',
+    'trace_ld_v1_evidence_second_boat_trace':
+      'Среди обломков есть следы ещё одной небольшой лодки.',
+    'trace_ld_v1_evidence_blue_wool':
+      'На ветке у места крушения найден клочок синей шерсти.'
+  }[factId];
 }

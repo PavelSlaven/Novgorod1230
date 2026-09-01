@@ -38,6 +38,7 @@ function payload(overrides = {}) {
         entity_kind: 'player_character', entity_id: 'player-1'
       }]
     }],
+    current_visible_context: visibleContext(),
     last_turn: {
       received_at: '2026-08-14T12:00:00.000Z',
       visible_package: {
@@ -295,19 +296,23 @@ test('nearby NPC alone does not become an interlocutor', () => {
   assert.equal(projected.panels.people, undefined);
 });
 
-test('canonical NPC identity is not promoted without a player-safe label', () => {
+test('active session may use its already player-safe canonical NPC label', () => {
   const projected = projectLowerDvinaTraceScreenPanels({
-    payload: payload(),
+    payload: payload({ current_visible_context: {
+      ...visibleContext(), visible_npc: []
+    } }),
     screen: {
       panels: {},
       visible_context: { ...visibleContext(), visible_npc: [] }
     }
   });
-  assert.equal(projected.panels.people, undefined);
+  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
+    'Еремей');
 });
 
-test('state display name does not bypass the persisted visible label', () => {
+test('state display name does not bypass the player-safe NPC label', () => {
   const state = payload();
+  state.current_visible_context = { ...visibleContext(), visible_npc: [] };
   state.npcs[0].identity_state = { display_name: 'Еремей' };
   const projected = projectLowerDvinaTraceScreenPanels({
     payload: state,

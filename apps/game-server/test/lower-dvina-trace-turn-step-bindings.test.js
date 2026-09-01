@@ -101,6 +101,10 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
     op: 'request_movement', actor_ref: 'player', movement_kind: 'local',
     target_ref: targetRefs.fishingCamp
   });
+  const fishingCamp = bound.find(({ command_id: id }) =>
+    id === 'lower_dvina_trace.follow_path_to_fishing_camp');
+  assert.equal(fishingCamp.semantic_binding.operation_dto.description,
+    fishingCamp.label);
   assertMatches(bound, 'lower_dvina_trace.ask_eremey_about_wreck', {
     op: 'emit_interaction', actor_ref: 'player', interaction_kind: 'speech',
     target_actor_refs: [targetRefs.eremey], instrument_refs: [], content: 'что было'

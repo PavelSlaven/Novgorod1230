@@ -124,6 +124,10 @@ test('schemas are deeply frozen and expose strict v1 top-level contracts', () =>
   assert.equal(Object.isFrozen(TURN_STEP_PLAN_V1_SCHEMA.$defs.create_entity), true);
   assert.equal(TURN_STEP_PLAN_V1_SCHEMA.additionalProperties, false);
   assert.equal(TURN_STEP_PLAN_V1_SCHEMA.$defs.clarification.additionalProperties, false);
+  assert.deepEqual(TURN_STEP_PLAN_V1_SCHEMA.$defs.request_movement
+    .properties.description, { type: 'string', minLength: 1 });
+  assert.equal(TURN_STEP_PLAN_V1_SCHEMA.$defs.request_movement
+    .required.includes('description'), false);
 });
 
 test('structured-output schema represents exact start and affect fire branches',
@@ -238,6 +242,28 @@ test('plan validation admits refs exposed through a plural ref array', () => {
     ok: true,
     errors: []
   });
+  movement.operations[0].description = 'Follow the marked path.';
+  assert.deepEqual(validateTurnStepPlan(movement, { request: source }), {
+    ok: true,
+    errors: []
+  });
+});
+
+test('plan validation admits only refs supplied by available domain operations', () => {
+  const source = request({ available_domain_operations: [{
+    op: 'request_movement', actor_ref: 'actor_mikula', movement_kind: 'route',
+    target_ref: 'location:admitted-only'
+  }] });
+  const movement = plan({ operations: [{
+    op: 'request_movement', actor_ref: 'actor_mikula', movement_kind: 'route',
+    target_ref: 'location:admitted-only'
+  }], continuation: null });
+
+  assert.equal(validateTurnStepPlan(movement, { request: source }).ok, true);
+  movement.operations[0].target_ref = 'location:invented';
+  assert.equal(validateTurnStepPlan(movement, { request: source }).errors.some(
+    ({ path, code }) => path === '$.operations[0].target_ref'
+      && code === 'unknown_ref'), true);
 });
 
 test('plan validation admits an exact player combat intent request', () => {

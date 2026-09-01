@@ -2,7 +2,8 @@ import {
   canonicalDigest,
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
-  LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST
+  LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST
 } from '@rus/materialization';
 
 export async function assertLowerDvinaTracePhase1BWorldLineage({
@@ -12,7 +13,10 @@ export async function assertLowerDvinaTracePhase1BWorldLineage({
 }) {
   const productionRevision = compatibility?.production_world_revision_id;
   const expected = productionRevision
-    === 'novgorod_spatial_v3_production_v5_candidate_001'
+    === 'novgorod_spatial_v3_production_v6_candidate_001'
+    ? [LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST,
+      '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad', 5]
+    : productionRevision === 'novgorod_spatial_v3_production_v5_candidate_001'
     ? [LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
       'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad', 4]
     : productionRevision === 'novgorod_spatial_v3_production_v4_candidate_001'

@@ -30,6 +30,8 @@ import {
 import {
   committedTraceScenarioDefinitionRevision
 } from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { resolveGenericKnownRouteContracts } from
+  '../../runtime/lower-dvina-trace-known-route-contracts.js';
 import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from
@@ -68,6 +70,8 @@ export async function commitLowerDvinaTracePhase3({
     presentationIdempotencyKey:
       factual.player_input.idempotency_key
   });
+  phase3Contracts = resolveGenericKnownRouteContracts({ state,
+    phase3Contracts, factual });
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
   const scenarioRevision = committedTraceScenarioDefinitionRevision(state);
   const semanticContext = phase3SemanticCommitContext({
@@ -145,6 +149,10 @@ export async function commitLowerDvinaTracePhase3({
         state.party_state.body_state_version
       ), ...expectedChangedConditions(state,
         factual.body_update.state_after)] : []),
+      ...([...writes.updates, ...writes.deletes].some(({ target_table: table }) =>
+        table === 'party_journey_locations') && state.journey_location != null
+        ? [expected('party_journey_locations', state.journey_location.id,
+          state.journey_location.state_version)] : []),
       ...(firstEntry?.expected_state_versions ?? [])
     ],
     validation_report: {

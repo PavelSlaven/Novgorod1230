@@ -119,6 +119,9 @@ export function createCanonicalPhase11LlmResponder({
         turn10Actors
       });
     }
+    if (model === 'fixture-npc-conversation-grounding-auditor') {
+      return { pass: true, concerns: [] };
+    }
     if (['fixture-npc-autonomous-decider',
       'fixture-npc-autonomous-decider-repair'].includes(model)) {
       turn10Actors = { ...turn10Actors, zhdanko: input.npc_ref };

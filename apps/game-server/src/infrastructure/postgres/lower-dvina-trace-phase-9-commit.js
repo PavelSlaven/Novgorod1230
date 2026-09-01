@@ -72,6 +72,10 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
       Number(state.promise_instances[0].state_version))] : []),
   ...(semantic == null ? []
     : expectedSemanticConversationSession(state, semantic))];
+  if (kind === 'return_to_camp' && preparedS1Arrival(state)
+      && state.journey_location != null) expectedVersions.push(
+    expected('party_journey_locations', state.journey_location.id,
+      state.journey_location.state_version));
   const built = await builder.build({
     plan_id: `p16:${partyId}:trace-phase9:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -106,7 +110,13 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
         ?? null }),
     sealedCheck('route', { route_binding_ref:
       factual.consequence.phase9.movement?.route_ref ?? null }),
-    sealedCheck('capacity', { party_id: partyId }),
+    sealedCheck('capacity', kind === 'return_to_camp' && preparedS1Arrival(state) ? {
+      party_id: partyId, capacity_model: 'world_route_s1_arrival', actor_id: state.actor_id,
+      destination_position_id: state.first_entry_preparation.spatial_v3.target.position_id,
+      destination_capacity: state.first_entry_preparation.spatial_v3.target.base_static_template.position.capacity,
+      destination_access_class: state.first_entry_preparation.spatial_v3.target.base_static_template.position.access_class_id,
+      expected_journey_state_version: state.journey_location?.state_version ?? null
+    } : { party_id: partyId }),
     sealedCheck('time', { expected_clock_state_version:
       state.party_state.clock_state_version,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),
@@ -121,6 +131,9 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
   return { ...committed, state_version: nextVersion, turn_number: turnNumber,
     package_id: envelope.package_id, package_digest: envelope.package_digest,
     committed_public_result: committedPublicResult };
+}
+function preparedS1Arrival(state) {
+  return state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
 }
 
 const target = (plan, name) => plan.write_targets.find(

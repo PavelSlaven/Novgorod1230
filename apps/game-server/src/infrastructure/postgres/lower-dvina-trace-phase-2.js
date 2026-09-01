@@ -1,7 +1,5 @@
-import { canonicalDigest } from '@rus/materialization';
-import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
-import { json } from '../../runtime/first-playable/shared.js';
-import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
+import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+import { json } from '../../runtime/first-playable/shared.js'; import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import { assertPhase2NormalizedRows, phase2IntegrityError,
   validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
@@ -31,7 +29,7 @@ import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js'
 import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
 import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
 import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-committed-runtime-containers.js';
-import { loadPhase2JourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
+import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
@@ -113,7 +111,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({
           openingScreenDigest: row.stage26_result.opening_screen_digest
         })
       );
-      return withSpatialSemanticCommittedState(readPool, partyId, { ...visible,
+      const journeyLocation = await loadPhase2JourneyLocation(
+        readPool, partyId, initial.actor_id);
+      return withSpatialSemanticCommittedState(readPool, partyId, { ...withJourneyLocation(visible, journeyLocation),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) });
     }
     const payload = row.state_payload;
@@ -147,7 +147,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     const loadedPayload = structuredClone(payload);
     const journeyLocation = await loadPhase2JourneyLocation(
       readPool, partyId, loadedPayload.actor_id);
-    if (journeyLocation != null) loadedPayload.journey_location = journeyLocation;
+    withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
     return withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, {

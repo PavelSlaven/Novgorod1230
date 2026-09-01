@@ -187,12 +187,15 @@ function projectIdentity(value, strict) {
 function sceneNpcIsVisible(npc, position) {
   if (typeof npc === 'string') return true;
   if (!plain(npc) || recordIsClosed(npc)) return false;
-  if (npc.visible === true || npc.is_visible === true
-      || ['visible', 'scene'].includes(npc.visibility_state)) return true;
-  return [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
-    ['g5_anchor_id', 'g5_anchor_id'], ['g5_node_id', 'g5_node_id']]
-    .some(([npcKey, positionKey]) => npc[npcKey] != null
-      && npc[npcKey] === position?.[positionKey]);
+  const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
+    ['g5_anchor_id', 'g5_anchor_id'], ['g5_node_id', 'g5_node_id'],
+    ['zone_ref', 'zone_ref']]
+    .filter(([npcKey, positionKey]) => npc[npcKey] != null
+      && position?.[positionKey] != null);
+  if (scopes.length > 0) return scopes.every(([npcKey, positionKey]) =>
+    npc[npcKey] === position?.[positionKey]);
+  return npc.visible === true || npc.is_visible === true
+    || ['visible', 'scene'].includes(npc.visibility_state);
 }
 
 function recordIsClosed(record) {

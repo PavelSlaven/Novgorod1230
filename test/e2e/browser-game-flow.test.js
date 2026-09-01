@@ -385,7 +385,10 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.fill('[data-turn-form] textarea', 'Осматриваюсь');
   await page.click('[data-turn-form] button[type="submit"]');
   await page.waitForSelector('[data-screen-schema="lower_dvina_trace_turn_screen"]');
-  assert.deepEqual(records.turns[0].input, { raw_text: 'Осматриваюсь' });
+  assert.equal(records.turns[0].input.raw_text, 'Осматриваюсь');
+  assert.equal(records.turns[0].input.request_id,
+    records.turns[0].input.idempotency_key);
+  assert.match(records.turns[0].input.request_id, /^web:turn:[0-9a-f-]{36}$/u);
   assert.equal(await page.locator('[data-action-id]').count(), 0);
   const body = await page.textContent('body');
   assert.match(body, /свежие следы/u);
@@ -460,7 +463,10 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.fill('[data-turn-form] textarea', 'Осматриваюсь снова');
   await page.click('[data-turn-form] button[type="submit"]');
   await page.waitForSelector('[data-screen-schema="lower_dvina_trace_turn_screen"]');
-  assert.deepEqual(records.turns[1].input, { raw_text: 'Осматриваюсь снова' });
+  assert.equal(records.turns[1].input.raw_text, 'Осматриваюсь снова');
+  assert.equal(records.turns[1].input.request_id,
+    records.turns[1].input.idempotency_key);
+  assert.match(records.turns[1].input.request_id, /^web:turn:[0-9a-f-]{36}$/u);
 
   const themeBefore = await page.getAttribute('html', 'data-theme');
   await page.click('[data-theme-toggle]');
@@ -589,7 +595,7 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
         page.waitForResponse((response) => response.request().method() === 'POST'
           && /\/api\/v1\/parties\/[^/]+\/turns$/u.test(
             new URL(response.url()).pathname)
-          && response.request().postData() === JSON.stringify({ raw_text: rawText })),
+          && JSON.parse(response.request().postData()).raw_text === rawText),
         page.click('[data-turn-form] button[type="submit"]')
       ]);
       await page.waitForFunction(({ weather, dayPart }) => {

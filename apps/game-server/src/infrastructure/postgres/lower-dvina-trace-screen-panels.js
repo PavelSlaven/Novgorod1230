@@ -1,7 +1,4 @@
 import { createPeoplePanel } from '@rus/presentation';
-import { runtimeItemRecordIsConcealed } from '@rus/items-property';
-import { projectActiveConversationInterlocutor } from
-  '@rus/visibility-knowledge-memory';
 
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
@@ -11,19 +8,7 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
     committed_state: payload,
     actor_id: payload.actor_id
   }).player_safe_state;
-  const activeInterlocutor = projectActiveConversationInterlocutor({
-    conversation_sessions: payload.conversation_sessions ?? [],
-    player_ref: {
-      entity_kind: 'player_character', entity_id: payload.actor_id
-    },
-    current_location_ref: projection.position?.location_ref,
-    visible_npcs: playerSafeDisplayNamedNpcs({
-      projectedNpcs: projection.npcs,
-      visibleNpcs: screen.visible_context?.visible_npc,
-      committedNpcs: payload.npcs,
-      committedItems: payload.items
-    })
-  });
+  const activeInterlocutor = projection.active_interlocutor ?? null;
   const panels = structuredClone(screen.panels ?? {});
   const previousPeople = panels.people;
   const peopleData = plain(previousPeople?.data)
@@ -86,105 +71,6 @@ function decorateActiveInterlocutor({ activeInterlocutor, committedNpcs }) {
   if (portraitAssetId == null) delete result.portrait_asset_id;
   else result.portrait_asset_id = portraitAssetId;
   return result;
-}
-
-function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
-  committedNpcs, committedItems }) {
-  if (!Array.isArray(projectedNpcs)) return [];
-  const labels = Array.isArray(visibleNpcs) ? visibleNpcs : [];
-  return projectedNpcs.map((npc) => {
-    const ids = [npc?.instance_id, npc?.actor_id, npc?.npc_id]
-      .filter(nonEmptyText);
-    const publicNames = labels.filter((visibleNpc) =>
-      visibleNpc?.entity_ref?.entity_kind === 'npc'
-        && ids.includes(visibleNpc.entity_ref.entity_id)
-        && nonEmptyText(visibleNpc.display_label))
-      .map(({ display_label: displayLabel }) => displayLabel.trim());
-    if (publicNames.length !== 1) return null;
-    const committedMatches = (committedNpcs ?? []).filter((candidate) =>
-      ids.some((id) => [candidate?.instance_id, candidate?.actor_id,
-        candidate?.npc_id].includes(id)));
-    const committed = committedMatches.length === 1 ? committedMatches[0] : null;
-    return {
-      instance_id: npc.instance_id,
-      actor_id: npc.actor_id,
-      npc_id: npc.npc_id,
-      identity_state: sanitizeActorIdentity(
-        committed?.identity_state, publicNames[0]),
-      visible_equipment: sanitizeVisibleEquipment(committedItems, ids),
-      presentation: sanitizePresentation(committed?.player_safe_presentation)
-    };
-  }).filter(Boolean);
-}
-
-function sanitizeActorIdentity(value, displayName) {
-  return {
-    display_name: displayName,
-    sex_category: textValue(value?.sex_category),
-    age_category: textValue(value?.age_category),
-    appearance: {
-      build: textValue(value?.appearance?.build),
-      skin_tone: textValue(value?.appearance?.skin_tone),
-      face_shape: textValue(value?.appearance?.face_shape),
-      hair: {
-        color: textValue(value?.appearance?.hair?.color),
-        length: textValue(value?.appearance?.hair?.length),
-        style: textValue(value?.appearance?.hair?.style),
-        facial_hair: textValue(value?.appearance?.hair?.facial_hair)
-      },
-      eyes: { color: textValue(value?.appearance?.eyes?.color) }
-    }
-  };
-}
-
-function sanitizeVisibleEquipment(items, npcIds) {
-  if (!Array.isArray(items)) return [];
-  return items.filter((item) => {
-    const placement = plain(item?.placement) ? item.placement : item;
-    return npcIds.includes(placement?.holder_npc_id)
-      && ['worn', 'equipped'].includes(placement?.physical_position)
-      && !runtimeItemRecordIsConcealed(item, { includeAccess: false });
-  }).map((item) => {
-    const placement = plain(item.placement) ? item.placement : item;
-    const snapshot = item?.state?.visual_profile_snapshot
-      ?? item?.visual_profile_snapshot;
-    return {
-      physical_position: placement.physical_position,
-      equipment_slot_category_id: placement.equipment_slot_category_id,
-      visual_profile_snapshot: sanitizeVisualProfile(snapshot)
-    };
-  }).filter((item) => item.visual_profile_snapshot !== null);
-}
-
-function sanitizeVisualProfile(value) {
-  if (!plain(value)) return null;
-  return {
-    schema: textValue(value.schema), version: Number(value.version),
-    equipment_slot: textValue(value.equipment_slot),
-    neckline: textValue(value.neckline),
-    sleeve_form: textValue(value.sleeve_form),
-    outer_form: textValue(value.outer_form),
-    visible_fabric: textValue(value.visible_fabric),
-    trim: textValue(value.trim),
-    main_visible_color: textValue(value.main_visible_color),
-    secondary_visible_color: textValue(value.secondary_visible_color),
-    headwear_kind: textValue(value.headwear_kind)
-  };
-}
-
-function sanitizePresentation(value) {
-  if (!plain(value)) return {};
-  return Object.fromEntries(['emotion', 'intensity', 'gaze', 'body_pose',
-    'head_pose', 'background'].map((key) => [key, textValue(value[key])])
-    .filter(([, value]) => value !== null));
-}
-
-function textValue(value) {
-  return typeof value === 'string' && value.trim() ? value.trim() : null;
-}
-
-function nonEmptyText(value) {
-  return typeof value === 'string' && value.trim().length > 0;
 }
 
 function plain(value) {

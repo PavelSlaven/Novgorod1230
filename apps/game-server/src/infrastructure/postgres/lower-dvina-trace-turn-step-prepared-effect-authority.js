@@ -1,16 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
-  projectLowerDvinaTracePlayerSafeState
-} from '../../runtime/lower-dvina-trace-player-safe-state.js';
-import {
-  createLowerDvinaTracePlayerSafeWorkingProjectionAuthority
-} from '../../runtime/lower-dvina-trace-player-safe-working.js';
-import {
   applyApprovedTraceRouteBodyEffect
 } from '../../runtime/lower-dvina-trace-route-body-effects.js';
-import {
-  buildLowerDvinaTracePreparedRouteWorkingProjection
-} from '../../runtime/lower-dvina-trace-turn-step-prepared-effects.js';
 import { fail } from './lower-dvina-trace-turn-step-persistence-support.js';
 
 export function validateAuthoritativePreparedRoute({
@@ -24,7 +15,9 @@ export function validateAuthoritativePreparedRoute({
   const activity = phase3Contracts?.movement;
   const effect = phase3Contracts?.routeBodyEffect;
   const exactElapsed = route.time_update?.exact_elapsed?.exact_minutes;
-  if (authoritativeRoute == null || activity == null || effect == null
+  const generic = consequence?.generic_known_route === true;
+  const destinationZone = generic ? phase3Contracts?.destinationZone : 'working_camp';
+  if (authoritativeRoute == null || activity == null || (!generic && effect == null)
       || consequence.phase3_kind !== 'movement'
       || consequence.duration_minutes !== authoritativeRoute.duration_minutes
       || consequence.duration_minutes !== activity.duration_minutes
@@ -32,7 +25,8 @@ export function validateAuthoritativePreparedRoute({
       || !samePreparedValue(route.time_update?.clock_before, state.clock)
       || exactElapsed?.numerator !== String(authoritativeRoute.duration_minutes)
       || exactElapsed?.denominator !== '1'
-      || consequence.body_effect_ref !== effect.effect_profile_id
+      || (!generic && consequence.body_effect_ref !== effect.effect_profile_id)
+      || (generic && consequence.body_effect_ref != null)
       || movement?.owner !== '@rus/movement-routes'
       || movement.activity_ref !== activity.profile_id
       || movement.route_ref !== authoritativeRoute.route_id
@@ -40,106 +34,12 @@ export function validateAuthoritativePreparedRoute({
       || movement.source?.g5_anchor_id !== state.position?.g5_anchor_id
       || movement.destination?.location_ref !== phase3Contracts.ids.campLocation
       || movement.destination?.g5_anchor_id !== phase3Contracts.campAnchor
-      || movement.destination?.zone_ref !== 'working_camp'
+      || movement.destination?.zone_ref !== destinationZone
       || movement.result?.route_id !== authoritativeRoute.route_id
       || movement.result?.elapsed_minutes
         !== authoritativeRoute.duration_minutes) {
     preparedEffectFail(
       'prepared route differs from authoritative phase3 contracts');
-  }
-}
-
-export function validatePreparedRouteTraceLineage({
-  route,
-  routeTrace,
-  directTrace,
-  loopTrace,
-  envelope,
-  state,
-  routeOnly,
-  intermediateTraces = []
-}) {
-  const routeRequest = routeTrace.plan_request;
-  const continuation = routeTrace.approved_plan?.continuation;
-  const expectedRequestRoot =
-    `turn-step:${envelope.party_id}:${envelope.player_input.turn_number}`;
-  let projected;
-  let routeWorkingAfter;
-  let playerSafeAfter;
-  try {
-    projected = projectLowerDvinaTracePlayerSafeState({
-      committed_state: state,
-      actor_id: state.actor_id
-    });
-    routeWorkingAfter = buildLowerDvinaTracePreparedRouteWorkingProjection({
-      projection: projected.player_safe_state,
-      movement: route.consequence.movement,
-      committedState: state,
-      clockAfter: route.time_update.clock_after
-    });
-    const authority =
-      createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-    playerSafeAfter = projectLowerDvinaTracePlayerSafeState({
-      committed_state: state,
-      working_projection: authority.admit(routeWorkingAfter),
-      working_projection_authority: authority,
-      actor_id: state.actor_id
-    }).player_safe_state;
-  } catch (cause) {
-    preparedEffectFail('prepared route lineage could not be projected', cause);
-  }
-  const priorTraces = loopTrace.step_traces.filter(({ step_index: step }) =>
-    step < directTrace?.step_index && step >= routeTrace.step_index);
-  const expectedPriorSteps = priorTraces.map((trace) => ({
-    step_index: trace.step_index,
-    summary: trace.approved_plan?.interpretation?.grounded_attempt
-  }));
-  if (routeRequest?.request_id !== `${expectedRequestRoot}:step:1`
-      || routeRequest.root_turn_id !== loopTrace.root_turn_id
-      || routeRequest.root_turn_id !== envelope.root_turn_id
-      || routeRequest.committed_state_version
-        !== loopTrace.committed_state_version
-      || routeRequest.working_revision !== 0
-      || routeRequest.step_index !== 1
-      || routeRequest.root_player_action !== envelope.player_input.raw_text
-      || routeRequest.remaining_intent !== routeRequest.root_player_action
-      || !samePreparedValue(routeRequest.completed_steps, [])
-      || !samePreparedValue(routeRequest.actor, projected.actor)
-      || !samePreparedValue(
-        routeRequest.player_safe_state, projected.player_safe_state)
-      || route.projection_before_digest
-        !== canonicalDigest(projected.player_safe_state)
-      || route.projection_after_digest !== canonicalDigest(routeWorkingAfter)) {
-    preparedEffectFail('route trace does not bind its committed root lineage');
-  }
-  if (directTrace == null) return;
-  const request = directTrace.plan_request;
-  const previousTrace = priorTraces.at(-1);
-  const exactPlayerSafe = intermediateTraces.length === 0
-    ? samePreparedValue(request?.player_safe_state, playerSafeAfter)
-    : samePreparedValue(request?.player_safe_state?.position,
-      playerSafeAfter.position)
-      && samePreparedValue(request?.player_safe_state?.clock,
-        playerSafeAfter.clock)
-      && request?.player_safe_state?.actor_id === playerSafeAfter.actor_id;
-  if (request?.request_id
-      !== `${expectedRequestRoot}:step:${directTrace.step_index}`
-      || request.root_turn_id !== routeRequest.root_turn_id
-      || request.committed_state_version
-        !== routeRequest.committed_state_version
-      || request.working_revision !== directTrace.step_index - 1
-      || request.step_index !== directTrace.step_index
-      || !samePreparedValue(request.actor, routeRequest.actor)
-      || request.root_player_action !== routeRequest.root_player_action
-      || request.remaining_intent
-        !== previousTrace?.approved_plan?.continuation?.remaining_intent
-      || !samePreparedValue(request.completed_steps, expectedPriorSteps)
-      || !exactPlayerSafe
-      || (routeOnly && (
-        loopTrace.remaining_intent !== continuation?.remaining_intent
-        || !samePreparedValue(loopTrace.completed_steps,
-          expectedPriorSteps)))) {
-    preparedEffectFail('direct trace does not bind the applied route lineage');
   }
 }
 
@@ -241,6 +141,15 @@ export function validatePreparedBodyReplay({
   const routeBody = route.body_update;
   const directBody = direct?.body_update ?? null;
   const proposal = routeBody.proposal;
+  if (route.consequence?.generic_known_route === true) {
+    if (routeBody.applied !== false || proposal !== null
+        || !samePreparedValue(routeBody.state_after, state.body_state)
+        || !samePreparedValue(factual.body_update.state_after,
+          state.body_state)) {
+      preparedEffectFail('generic route unexpectedly changes body state');
+    }
+    return;
+  }
   if (routeBody.applied !== true
       || (directBody != null && (directBody.applied !== false
         || directBody.proposal !== null

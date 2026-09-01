@@ -231,6 +231,38 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   assert.equal(preflight.pass, true, JSON.stringify(preflight.concerns));
 });
 
+test('revision 26 Stage 24 persists deterministic drying-shed preparation', async () => {
+  const revision26 = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 26
+  });
+  const fixture = await stage24Fixture({ revision: 26, bundle: revision26,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision26) });
+  const stage24 = await runStage24PartyDbWritePlan({ input: fixture.input,
+    builder: buildLowerDvinaTracePhase1AWritePlan,
+    auditor: (request) => auditPartyDbWritePlanByCode({ ...request,
+      stage24_input: fixture.input }) });
+  const snapshot = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_state_snapshots'
+  ).records[0].state_payload;
+  const shed = snapshot.first_entry_spatial_v3.members[0];
+  assert.equal(shed.preparation_member_ordinal, 1);
+  assert.equal(shed.route_plan_id.endsWith(':first-entry:1'), true);
+  assert.equal(shed.preparation_claim_id.endsWith(':first-entry:1'), true);
+  const firstEntry = resolveFirstEntry({ partyId: fixture.materialization.party_id,
+    state: snapshot, changeSetId: 'change:revision26:shed',
+    scenarioRevision: 26, memberOrdinal: 1,
+    phase3Contracts: { route: { route_id: 'trace_ld_v1_route_camp_to_shed' },
+      sourceEndpoint: { endpoint_id: 'trace_ld_v1_ep_camp_ridge_to_drying_shed' },
+      destinationEndpoint: { endpoint_id: 'trace_ld_v1_ep_drying_shed_ridge_to_camp' } },
+    factual: { mode_resolution: { command_id:
+      snapshot.first_entry_preparation.members[1].binding.route_command_id },
+    consequence: { phase3_kind: 'movement', movement: {
+      route_ref: 'trace_ld_v1_route_camp_to_shed', destination: {
+        location_ref: 'trace_ld_v1_loc_old_drying_shed' } } } } });
+  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
+  assert.equal(firstEntry.expected_state_versions.length, 2);
+});
+
 test('unknown table and forbidden operation fail before the transaction executor', async () => {
   const { stage24, schema } = await canonicalStage24();
   stage24.party_db_write_plan.write_batches[0].target_table = 'unknown_party_table';
@@ -357,16 +389,17 @@ test('Stage 24 fails closed for missing, forged or world-incompatible domain pin
   }
 });
 
-function createMaterialization() {
+function createMaterialization({ revision = 24, bundle: active = bundle,
+  domainCatalogPin: domainPin = domainCatalogPin } = {}) {
   return materializeInitialActorEquipment(
     materializeLowerDvinaTracePartyInstance({
     party_id: 'trace-stage24-party',
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 24,
-    scenario_manifest_digest: bundle.manifest_digest,
-    world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
-    world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
-    domain_catalog_pin: domainCatalogPin,
+    scenario_definition_revision: revision,
+    scenario_manifest_digest: active.manifest_digest,
+    world_revision_id: active.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest: active.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
+    domain_catalog_pin: domainPin,
     materializer_version: MATERIALIZER_VERSION,
     rng_algorithm_id: RNG_VERSION,
     seed_context: 'stage24-seed',
@@ -374,21 +407,21 @@ function createMaterialization() {
     trigger: 'new_game',
     occurrence: 0,
     existing_party_state: { baseline_exists: false },
-    scenario_bundle: bundle,
+    scenario_bundle: active,
     world_base_reference_snapshot: worldSnapshot(),
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
     })
   );
 }
 
-function partyContext(materialization) {
+function partyContext(materialization, domainPin = domainCatalogPin) {
   return {
     request_id: materialization.request_identity.idempotency_key,
     party_id: materialization.party_id,
     player_character_id: materialization.immediate.player.instance_id,
     schema_version: 'party_runtime_v2',
     commit_mode: 'internal_materialization',
-    domain_catalog_pin: domainCatalogPin,
+    domain_catalog_pin: domainPin,
     idempotency_key: materialization.request_identity.idempotency_key,
     version_pins: {
       world_revision_id: materialization.request_identity.world_revision_id,
@@ -411,10 +444,12 @@ async function canonicalStage24() {
   return { ...fixture, stage24, manifest: fixture.input.approved_pipeline_manifest };
 }
 
-async function stage24Fixture() {
-  const materialization = createMaterialization();
-  const semantic = validateLowerDvinaTracePlayerDossier(materialization, bundle);
-  const context = partyContext(materialization);
+async function stage24Fixture({ revision = 24, bundle: active = bundle,
+  domainCatalogPin: domainPin = domainCatalogPin } = {}) {
+  const materialization = createMaterialization({ revision, bundle: active,
+    domainCatalogPin: domainPin });
+  const semantic = validateLowerDvinaTracePlayerDossier(materialization, active);
+  const context = partyContext(materialization, domainPin);
   const closure = {
     version: 1,
     schema: 'rus.lower_dvina_trace_sealed_selection_closure.v1',
@@ -472,6 +507,24 @@ function worldSnapshot() {
   wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position.water_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
   wreckShore.movement_edges = [];
   wreckShore.visibility_links = [];
+  const dryingShed = structuredClone(fishingCamp);
+  dryingShed.header = { id: 'trace_ld_v1_tpl_old_drying_shed', version: 1 };
+  dryingShed.g6_slots = [g6('shed_approach', 'spatial.g6.semi_enclosed', 'shed_approach', 'partial'),
+    g6('s1_enclosed_space', 'spatial.g6.enclosed', 'ordinary_local', 'full')];
+  dryingShed.position_slots = [{ position_slot_key: 'shed_approach',
+    g6_scene_slot_key: 'shed_approach', position_type_id: 'scene_position.approach',
+    capacity: 7, access_class_id: 'trace_ld_v1_access_old_drying_shed' },
+  { position_slot_key: 's1_enclosed_space.interior',
+    g6_scene_slot_key: 's1_enclosed_space', position_type_id: 'scene_position.central',
+    capacity: 5, access_class_id: 'trace_ld_v1_access_old_drying_shed' }];
+  dryingShed.movement_edges = [edge('s1_enclosed_space.out', 'shed_approach',
+    's1_enclosed_space.interior', 's1_enclosed_space.back'), edge(
+    's1_enclosed_space.back', 's1_enclosed_space.interior', 'shed_approach',
+    's1_enclosed_space.out')];
+  dryingShed.visibility_links = [link('s1_enclosed_space.visible_out',
+    'shed_approach', 's1_enclosed_space.interior', 's1_enclosed_space.visible_back'),
+  link('s1_enclosed_space.visible_back', 's1_enclosed_space.interior',
+    'shed_approach', 's1_enclosed_space.visible_out')];
   return {
     version: 1,
     schema: 'world_base_reference_snapshot',
@@ -485,7 +538,7 @@ function worldSnapshot() {
     allowed_container_profile_ids: [],
     allowed_property_rule_ids: [],
     allowed_source_ids: [],
-    scene_template_closures: [wreckShore, fishingCamp],
+    scene_template_closures: [wreckShore, fishingCamp, dryingShed],
     canonical_g5_scene_bindings: lowerDvinaTraceCanonicalG5SceneBindings
   };
 }

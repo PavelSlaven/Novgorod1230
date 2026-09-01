@@ -8,7 +8,7 @@ import {
   phase3PlayerOperationContract,
   phase3PresentedEvidence
 } from './lower-dvina-trace-m2-conversation-player.js';
-import { classifyEremeyPlan } from
+import { classifyEremeyPlan, classifyOrdinaryConversationPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import {
   fail,
@@ -115,6 +115,13 @@ export async function resolveTracePhase3ConversationExchange({
       routeRef,
       knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
     }),
+    validateNpcPlan: (plan, request) => validateM2NpcPlan(plan, () =>
+      request?.npc_ref?.entity_id === target.instance_id
+        ? classifyEremeyPlan(plan, {
+            routeRef,
+            knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
+          })
+        : classifyOrdinaryConversationPlan(plan)),
     playerPlan
   });
   const effectivePlayerPlan = pendingExecution !== null ? null
@@ -236,4 +243,16 @@ export async function resolveTracePhase3ConversationExchange({
       : null,
     objective_truth_writes: []
   });
+}
+
+function validateM2NpcPlan(plan, classify) {
+  try {
+    classify(plan);
+    return true;
+  } catch (error) {
+    if (typeof error?.code !== 'string'
+        || !error.code.startsWith('TRACE_M2_')) throw error;
+    return { pass: false, errors: [{ code: error.code,
+      category: 'semantic_consistency', retryable: true }] };
+  }
 }

@@ -255,6 +255,7 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
     });
   }
   if (input.effect_kind === 'semantic_activity'
+      || input.consequence?.generic_known_route === true
       || Number(input.consequence?.duration_minutes) === 0) {
     return Object.freeze({
       version: 1,

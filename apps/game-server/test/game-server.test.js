@@ -224,6 +224,7 @@ test('API route matcher is declarative and bounded', () => {
   assert.deepEqual(matchApiRoute('GET', '/api/v1/scenarios'), { id: 'scenarios', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/portrait-spec'), { id: 'portrait_spec', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/new-games'), { id: 'new_game', status: 201 });
+  assert.deepEqual(matchApiRoute('POST', '/api/v1/parties/party-1/presentation-recovery'), { id: 'presentation_recovery', partyId: 'party-1', status: 200 });
   assert.equal(matchApiRoute('DELETE', '/api/v1/new-games'), null);
   assert.equal(matchApiRoute('GET', '/api/v2/health'), null);
 });

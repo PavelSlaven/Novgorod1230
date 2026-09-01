@@ -15,6 +15,7 @@ export function collectKnownRefs(request) {
   if (plain(request)) {
     visit(request.actor);
     visit(request.player_safe_state);
+    visit(request.available_domain_operations);
     collectCanonicalMapRefs(request.actor?.attributes, found);
     collectCanonicalMapRefs(request.actor?.skills, found);
   }

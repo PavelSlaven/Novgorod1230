@@ -70,7 +70,8 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Prepared camp NPC identities or capacity are invalid.'
     );
   }
-  if (input.scenario_definition_revision < 24) return { scene, npcs };
+  if (input.scenario_definition_revision < 24
+      || input.scenario_definition_revision >= 26) return { scene, npcs };
   const firstEntry = materializeS1FirstEntryPreparation({
     party_id: input.party_id,
     binding: bundle.materialization_bindings.first_entry_preparation,
@@ -87,6 +88,40 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Approved first-entry S1 topology is incomplete.');
   }
   return { scene, npcs, first_entry_preparation: firstEntry.preparation };
+}
+
+export function materializeLowerDvinaTraceFirstEntryPreparationMembers({ input,
+  bundle, camp, shed, locationSelections }) {
+  if (input.scenario_definition_revision < 26) return null;
+  const members = bundle.materialization_bindings.first_entry_preparation?.members;
+  if (!Array.isArray(members) || members.length !== 2
+      || members.some(({ ordinal }, index) => ordinal !== index)) {
+    fail('TRACE_FIRST_ENTRY_MEMBER_BINDING_INVALID',
+      'Revision 26 requires exactly camp and drying-shed first-entry members.');
+  }
+  const scenes = [camp, shed];
+  const preparations = members.map((member, ordinal) => {
+    const prepared = scenes[ordinal];
+    const source = member.source_binding
+      ?? bundle.materialization_bindings.start_spatial_binding;
+    const sourceG4 = ordinal === 0
+      ? locationSelections.find(({ slot_key: key }) => key === source.location_profile_ref)
+        ?.selected?.g4_node_ref?.id
+      : camp.scene.node.parent_g4_id;
+    const materialized = materializeS1FirstEntryPreparation({
+      party_id: input.party_id,
+      binding: member.binding,
+      start_binding: source,
+      source_g4_id: sourceG4,
+      scene: prepared.scene,
+      npcs: prepared.npcs,
+      world_base_reference_snapshot: input.world_base_reference_snapshot
+    });
+    if (!materialized.ok) fail('TRACE_FIRST_ENTRY_S1_TOPOLOGY_INVALID',
+      'Approved first-entry S1 topology is incomplete.');
+    return { ordinal, ...materialized.preparation };
+  });
+  return { ...preparations[0], members: preparations };
 }
 
 export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {
@@ -140,7 +175,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(input.scenario_definition_revision)) {
+  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(input.scenario_definition_revision)) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -196,7 +231,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const placement = binding?.npc_placement;
   const bag = binding?.container_placement;
   const weapon = binding?.weapon_placement ?? null;
-  const weaponRequired = [16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  const weaponRequired = [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     .includes(input.scenario_definition_revision);
   const location = locationSelections.find(
     ({ slot_key: key }) => key === spatial?.location_profile_ref
@@ -340,7 +375,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   };
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
-  const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25].includes(input.scenario_definition_revision)
+  const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(input.scenario_definition_revision)
     ? materializeHiddenPacket({ input, bundle, runId, container, npc,
       roadBagResource })
     : null;

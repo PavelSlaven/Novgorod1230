@@ -6,7 +6,10 @@ import { integrateSpatialV3TemporalWriteFragments } from
   '@rus/turn/spatial-v3-temporal-write-integration';
 import { serverError } from '../../errors.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
-import { phase6TargetedAdmissionEvidence } from
+import {
+  phase6TargetedAdmissionEvidence,
+  phase6TargetedAdmissionPhysicalKeys
+} from
   './first-playable/recheck-phase6-admission.js';
 import { assertPhase2CurrentStateVersion } from
   './lower-dvina-trace-phase-2-commit-admission.js';
@@ -114,7 +117,7 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
         ...Object.values(writes).flat().map(
           (write) => `party_runtime.${write.target_table}:${write.id}`
         ),
-        ...phase6AdmissionPhysicalKeys(
+        ...phase6TargetedAdmissionPhysicalKeys(
           factual.consequence.carry.intent,
           partyId
         )
@@ -150,30 +153,6 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
   };
-}
-function phase6AdmissionPhysicalKeys(intent, partyId) {
-  const participantIds = [
-    ...intent.participant_bindings.initial_carrier_ids.slice(1),
-    intent.participant_bindings.replacement_carrier_id,
-    intent.participant_bindings.carried_actor_id
-  ];
-  const itemIds = [...new Set([
-    ...intent.assembly_snapshot.resources.map(({ item_id: id }) => id),
-    ...intent.carrier_inventory_snapshots.flatMap(({ item_ids: ids }) => ids)
-  ])];
-  const containerIds = [...new Set(
-    intent.carrier_inventory_snapshots.flatMap(({ container_ids: ids }) => ids)
-  )];
-  return [
-    `party_runtime.party_positions:${partyId}`,
-    ...participantIds.map((id) => `party_runtime.party_npcs:${id}`),
-    ...itemIds.flatMap((id) => [
-      `party_runtime.party_items:${id}`,
-      `party_runtime.party_item_placements:${id}`,
-      `party_runtime.party_ownership:${id}`
-    ]),
-    ...containerIds.map((id) => `party_runtime.party_containers:${id}`)
-  ];
 }
 export async function buildLowerDvinaTracePhase6Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase6Contracts }) {
@@ -239,6 +218,9 @@ function expectedVersions({ state, factual }) {
       factual.consequence.carry.traversal.ids.travel_state_id,
       intent.attempt.ordinal));
   }
+  if (usesPreparedS1Arrival(state, factual) && state.journey_location != null) values.push(
+    expected('party_journey_locations', state.journey_location.id,
+      state.journey_location.state_version));
   return values;
 }
 function commitRechecks({ partyId, state, factual, phase6Contracts,
@@ -264,7 +246,14 @@ function commitRechecks({ partyId, state, factual, phase6Contracts,
       route_binding_ref: carry.intent.route_ref,
       progress_before_ppm: carry.intent.progress_before_ppm
     }),
-    sealedCheck('capacity', {
+    sealedCheck('capacity', usesPreparedS1Arrival(state, factual) ? {
+      party_id: partyId, capacity_model: 'world_route_s1_arrival',
+      actor_id: state.actor_id,
+      destination_position_id: state.first_entry_preparation.spatial_v3.target.position_id,
+      destination_capacity: state.first_entry_preparation.spatial_v3.target.base_static_template.position.capacity,
+      destination_access_class: state.first_entry_preparation.spatial_v3.target.base_static_template.position.access_class_id,
+      expected_journey_state_version: state.journey_location?.state_version ?? null
+    } : {
       party_id: partyId,
       contract_id: phase6Contracts.capacity.contract_id
     }),
@@ -273,6 +262,10 @@ function commitRechecks({ partyId, state, factual, phase6Contracts,
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest })
   ];
+}
+function usesPreparedS1Arrival(state, factual) {
+  return factual.consequence.carry.intent.execution_after.status === 'completed'
+    && state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
 }
 function ownerKeys(factual, state) {
   const intent = factual.consequence.carry.intent;

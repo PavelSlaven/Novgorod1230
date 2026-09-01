@@ -99,6 +99,10 @@ const contracts = {
 
 test('Phase 6 P16 plan atomically persists one owner traversal and terminal carry state', async () => {
   const state = committedState();
+  state.first_entry_preparation = { spatial_v3: { target: {
+    status: 'prepared', position_id: 'camp-position', base_static_template: {
+      position: { capacity: 10, access_class_id: 'camp-access' } } } }, scene: { anchor: {
+    instance_id: 'camp-anchor' } } };
   state.npc_semantic_decision_traces = [{
     plan: { private_marker: 'phase6-private-semantic-plan' }
   }];
@@ -165,6 +169,14 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   assert.equal('expected_inventory_digest' in physical, false);
   assert.equal('expected_inventory_snapshot' in physical, false);
   assert.equal(physical.assembly_resources.length, 2);
+  const arrival = plan.commit_rechecks.find(({ kind, capacity_model }) =>
+    kind === 'capacity' && capacity_model === 'world_route_s1_arrival');
+  assert.deepEqual({ position: arrival.destination_position_id,
+    capacity: arrival.destination_capacity, access: arrival.destination_access_class },
+  { position: 'camp-position', capacity: 10, access: 'camp-access' });
+  assert.equal(rows(plan, 'party_positions').length, 0);
+  assert.equal(rows(plan, 'party_journey_locations')[0].record.scene_position_id,
+    'camp-position');
 });
 
 test('Phase 6 P16 preserves an interrupted owner traversal and resumes the same execution', async () => {

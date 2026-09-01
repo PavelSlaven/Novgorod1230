@@ -29,6 +29,7 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
     normalizePortraitSpec: (input) => request('/api/v1/portrait-spec', post(input)),
     startNewGame: (input) => request('/api/v1/new-games', post(input)),
     getPartyScreen: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/screen`),
+    recoverPendingPresentation: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/presentation-recovery`, post({})),
     acknowledgeOpening: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, post(input)),
     submitTurn: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/turns`, post(input))
   });

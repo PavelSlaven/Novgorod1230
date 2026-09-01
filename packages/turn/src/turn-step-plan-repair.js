@@ -6,10 +6,15 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   preparedChainContext = null,
   allowRepair = true
 }) {
+  let originalOutput = null;
   try {
     return {
-      plan: await requestAndValidateTurnStepPlan({ request, turnStepModel,
-        semanticPlanValidator, preparedChainContext }),
+      plan: await requestAndValidateTurnStepPlan({ request,
+        turnStepModel: async (safeRequest) => {
+          const output = await turnStepModel(safeRequest);
+          originalOutput = structuredClone(output);
+          return output;
+        }, semanticPlanValidator, preparedChainContext, attempt: 1 }),
       repaired: false
     };
   } catch (error) {
@@ -24,6 +29,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     }
     const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
+      original_output: structuredClone(originalOutput),
       structural_errors: structuredClone(error.details?.errors ?? [])
     });
     try {
@@ -33,7 +39,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
           turnStepModel: (safeRequest) =>
             turnStepModel(safeRequest, repairContext),
           semanticPlanValidator,
-          preparedChainContext
+          preparedChainContext,
+          attempt: 2
         }),
         repaired: true
       };
@@ -50,11 +57,11 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,
-  semanticPlanValidator, preparedChainContext }) {
+  semanticPlanValidator, preparedChainContext, attempt = 1 }) {
   const plan = await requestTurnStepPlan({ request, turnStepModel });
   if (typeof semanticPlanValidator === 'function') {
     await semanticPlanValidator(deepFreeze({ plan, request: structuredClone(request),
-      prepared_chain_context: structuredClone(preparedChainContext) }));
+      prepared_chain_context: structuredClone(preparedChainContext), attempt }));
   }
   return plan;
 }

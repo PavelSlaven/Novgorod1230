@@ -65,13 +65,11 @@ export function createTraceTurnRuntime({
   const decisionSecret = String(
     config.traceTurnDecisionSecret ?? env.RUS_TURN_DECISION_SECRET ?? ''
   ).trim();
-  if (!decisionSecret) return Object.freeze({
-    async submitTurn() {
-      throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
-        'RUS_TURN_DECISION_SECRET is required for semantic intent.',
-        { status: 503 });
-    }
-  });
+  if (!decisionSecret) {
+    const unavailable = async () => { throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
+      'RUS_TURN_DECISION_SECRET is required for semantic intent.', { status: 503 }); };
+    return Object.freeze({ submitTurn: unavailable, recoverPendingPresentation: unavailable });
+  }
   const turnBudget = config.llmTurnBudget ?? config.llmDiagnostics?.turnBudget
     ?? createLlmTurnBudget();
   const llmDiagnostics = config.llmDiagnostics

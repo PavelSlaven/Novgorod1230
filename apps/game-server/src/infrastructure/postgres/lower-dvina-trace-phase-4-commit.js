@@ -16,6 +16,7 @@ import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn
 import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dvina-trace-committed-revision.js';
 import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
+import { resolveFirstEntry } from './lower-dvina-trace-phase-3-first-entry.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -46,6 +47,15 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   next = turnStep.snapshot;
   const pendingScreen = phase4PendingScreen({ state, factual, visibleEnvelope,
     turnNumber, nextVersion });
+  const firstEntry = factual.consequence.phase4_kind === 'movement'
+    ? resolveFirstEntry({ partyId, state, factual: { ...factual,
+      mode_resolution: { command_id:
+        state.first_entry_preparation?.members?.[1]?.binding?.route_command_id },
+      consequence: { ...factual.consequence, phase3_kind: 'movement' } },
+    phase3Contracts: { route: phase4Contracts.route,
+      sourceEndpoint: phase4Contracts.sourceEndpoint,
+      destinationEndpoint: phase4Contracts.destinationEndpoint }, changeSetId,
+    scenarioRevision, memberOrdinal: 1 }) : null;
   const writes = mergeLowerDvinaTraceTurnStepWrites(phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     pendingScreen, nextVersion, turnNumber, changeSetId, idemId,
     contracts: phase4Contracts, scenarioRevision,
@@ -74,11 +84,16 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
       state.party_state.body_state_version
     ), ...expectedChangedConditions(state,
       factual.body_update.state_after)] : []),
+    ...([...writes.updates, ...writes.deletes].some(({ target_table: table }) =>
+      table === 'party_journey_locations') && state.journey_location != null
+      ? [expected('party_journey_locations', state.journey_location.id,
+        state.journey_location.state_version)] : []),
     ...(writes.updates.some(({ target_table: table }) =>
       table === 'party_obligations') ? [expected(
       'party_obligations', state.promise_instances[0].obligation_id,
       Number(state.promise_instances[0].state_version)
-    )] : [])
+    )] : []),
+    ...(firstEntry?.expected_state_versions ?? [])
   ];
   const turnStepIdempotency = bindLowerDvinaTraceTurnStepIdempotency({
     envelope: writePlan.turn_step_commit,
@@ -117,17 +132,22 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     },
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
-    approved_write_sets: [writes],
+    approved_write_sets: [writes, ...(firstEntry?.approved_write_sets ?? [])],
     lock_context: {
       owner_keys: [`actor:${state.actor_id}`],
       execution_keys: [],
-      g4_keys: [],
-      physical_keys: Object.values(writes).flat().map(
-        (write) => `party_runtime.${write.target_table}:${write.id}`)
+      g4_keys: firstEntry?.lock_context.g4_keys ?? [],
+      physical_keys: [...Object.values(writes).flat().map(
+        (write) => `party_runtime.${write.target_table}:${write.id}`),
+      ...(firstEntry?.lock_context.physical_keys ?? [])]
     },
-    commit_rechecks: phase4CommitRechecks({
-      partyId, state, factual, phase4Contracts, inputDigest
-    })
+    commit_rechecks: [
+      ...phase4CommitRechecks({ partyId, state, factual, phase4Contracts,
+        inputDigest }).filter(({ kind }) => kind !== 'physical'),
+      ...(firstEntry?.commit_rechecks ?? phase4CommitRechecks({ partyId,
+        state, factual, phase4Contracts, inputDigest })
+        .filter(({ kind }) => kind === 'physical'))
+    ]
   };
   const integratedInput = integrateConversationTemporalWrites({
     input: baseWritePlanInput,

@@ -27,6 +27,8 @@ import {
   runPhase3,
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+import { createLowerDvinaTraceNpcSemanticModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 test('player conversation meaning controls whether the common social check runs', async () => {
   const state = phase3State();
@@ -66,6 +68,94 @@ test('player conversation meaning controls whether the common social check runs'
   });
   assert.equal(persuasiveAvailability.status, 'check_required');
   assert.equal(persuasiveAvailability.check_requests.length, 1);
+});
+
+test('NPC adapter retries an initial JSON parse failure with its format role',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    const calls = [];
+    const baseModel = createM2ConversationModels().npcSemanticModel;
+    const npcSemanticModel = createLowerDvinaTraceNpcSemanticModel({
+      roleRunner: { async run(call) {
+        calls.push(call);
+        if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
+          code: 'json_parse_failed'
+        });
+        if (call.role_id === 'npc_conversation_grounding_auditor') {
+          return { output: { pass: true, concerns: [] } };
+        }
+        const payload = JSON.parse(call.messages[1].content);
+        return { output: baseModel(payload.request ?? payload) };
+      } }
+    });
+    const exchange = await runPhase3({
+      state, contracts, rawText: 'Что случилось?', inputDigest: digest('a'),
+      responseKind: 'speech', npcSemanticModel
+    });
+    assert.equal(exchange.result.response_kind, 'withhold');
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair',
+      'npc_conversation_grounding_auditor'
+    ]);
+  });
+
+test('fresh NPC speech audit passes exact route disclosure and ordinary reply', async (t) => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+  const baseModel = createM2ConversationModels().npcSemanticModel;
+  const calls = [];
+  const npcSemanticModel = createLowerDvinaTraceNpcSemanticModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (call.role_id === 'npc_conversation_grounding_auditor') {
+        return { output: { pass: true, concerns: [] } };
+      }
+      const payload = JSON.parse(call.messages[1].content);
+      return { output: baseModel(payload.request ?? payload) };
+    } }
+  });
+  await t.test('exact supplied route candidate commits without repair', async () => {
+    const exchange = await runPhase3({
+      state, contracts,
+      rawText: 'Show the evidence and ask for directions.', inputDigest: digest('b'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true }, npcSemanticModel
+    });
+    assert.equal(exchange.result.response_kind, 'route_disclosure');
+    assert.equal(exchange.result.route_disclosure.route_ref,
+      'trace_ld_v1_route_camp_to_shed');
+    assert.equal(exchange.result.statements.filter(({ speaker_ref: speaker }) =>
+      speaker.entity_kind === 'npc').length, 1);
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+    ]);
+  });
+
+  await t.test('ordinary grounded reply commits without repair', async () => {
+    const ordinaryCalls = [];
+    const ordinaryModel = createLowerDvinaTraceNpcSemanticModel({
+      roleRunner: { async run(call) {
+        ordinaryCalls.push(call);
+        if (call.role_id === 'npc_conversation_grounding_auditor') {
+          return { output: { pass: true, concerns: [] } };
+        }
+        const payload = JSON.parse(call.messages[1].content);
+        return { output: baseModel(payload.request ?? payload) };
+      } }
+    });
+    const ordinary = await runPhase3({
+      state, contracts, rawText: 'What did you notice?', inputDigest: digest('c'),
+      responseKind: 'withhold', npcSemanticModel: ordinaryModel
+    });
+    assert.equal(ordinary.result.response_kind, 'withhold');
+    assert.deepEqual(ordinaryCalls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+    ]);
+  });
 });
 
 test('action-set evaluation does not require player input or invoke the interpreter', async () => {
@@ -389,6 +479,58 @@ test('Eremey may answer with ordinary speech and an intent paraphrase becomes na
     'Еремей, скажи по совести: что ты видел у лодки?'
   );
 });
+
+test('an unsupported NPC promise is repaired into the exact route disclosure',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    withAccessibleBlueWool(state, contracts);
+    const exchange = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Показываю улику и жду ответа.',
+      inputDigest: digest('e'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true },
+      transformNpcPlan(plan, { call_index: call }) {
+        if (call !== 1) return plan;
+        plan.speech.dominant_act = 'promise';
+        plan.supporting_operations = [];
+        return plan;
+      }
+    });
+
+    assert.equal(exchange.npcCalls, 2);
+    assert.equal(exchange.result.response_kind, 'route_disclosure');
+    assert.equal(exchange.result.route_disclosure.route_ref,
+      'trace_ld_v1_route_camp_to_shed');
+  });
+
+test('structured route speech without its exact operation is repaired before commit',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    withAccessibleBlueWool(state, contracts);
+    const exchange = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Показываю улику и жду ответа.',
+      inputDigest: digest('f'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true },
+      transformNpcPlan(plan, { call_index: call }) {
+        if (call === 1) plan.supporting_operations = [];
+        return plan;
+      }
+    });
+
+    assert.equal(exchange.npcCalls, 2);
+    assert.equal(exchange.result.response_kind, 'route_disclosure');
+    assert.equal(exchange.result.route_disclosure.route_ref,
+      'trace_ld_v1_route_camp_to_shed');
+  });
 
 function socialCheck(profile) {
   return {

@@ -31,6 +31,10 @@ import {
 } from './lower-dvina-trace-phase-2-fixture.js';
 import { requireRatshaSocialCheck } from
   './lower-dvina-trace-m2-social-check-fixture.js';
+export { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
+import { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
 
 export const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 export const digest = (character) => character.repeat(64);
@@ -211,6 +215,7 @@ export async function runPhase3({
   npcDurationClasses = ['domain_owned'],
   transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
+  npcSemanticModel: customNpcSemanticModel = null,
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -234,7 +239,7 @@ export async function runPhase3({
       );
       return plan;
     },
-    npcSemanticModel: async (request) => {
+    npcSemanticModel: customNpcSemanticModel ?? (async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
       npcRequests.push(structuredClone(request));
@@ -253,7 +258,7 @@ export async function runPhase3({
         npcDurationClasses, npcCalls
       );
       return plan;
-    },
+    }),
     temporalAdvanceOwner: conversationTemporalOwner(
       state, resolveTemporalBoundary
     ),
@@ -428,6 +433,7 @@ function eremeyPlan(request, responseKind, routeOperation) {
     dominantAct: disclosure ? 'inform' : ordinarySpeech ? 'answer' : 'evade',
     interactionTags: ordinarySpeech
       ? [] : [disclosure ? 'route_disclosure' : 'withhold'],
+    topicRefs: disclosure ? [routeRef] : [],
     claims: disclosure ? [{
       claim_id: 'eremey-route-disclosure',
       content_summary: 'К старой сушильне ведёт тропа.',
@@ -491,43 +497,6 @@ function ratshaPlan(request, responseKind, playerId) {
     : plan;
 }
 
-export function npcSpeechPlan(request, {
-  utteranceText,
-  dominantAct,
-  interactionTags = [],
-  claims = [],
-  supportingOperations = []
-}) {
-  const playerRef = request.public_conversation_history.at(-1)?.speaker_ref
-    ?? null;
-  return {
-    schema: 'conversation_contribution_plan_v1',
-    request_id: request.request_id,
-    boundary_id: request.boundary_id,
-    conversation_id: request.conversation_id,
-    exchange_id: request.exchange_id,
-    state_version: request.state_version,
-    speaker_ref: request.npc_ref,
-    contribution_kind: 'speech',
-    primary_addressee_ref: playerRef,
-    intended_addressee_refs: playerRef === null ? [] : [playerRef],
-    affected_actor_refs: [],
-    speech: speech({
-      utteranceText,
-      dominantAct,
-      interactionTags,
-      claims
-    }),
-    interpretation: interpretation('respond in the current conversation'),
-    resolution: 'automatic',
-    activity: activity(),
-    supporting_operations: supportingOperations,
-    check: null,
-    handoff: null,
-    reason: 'The response follows the NPC subjective state.'
-  };
-}
-
 function npcNonSpeechPlan(request, responseKind, playerId) {
   const combat = responseKind === 'combat_handoff';
   return {
@@ -567,13 +536,14 @@ function speech({
   utteranceText,
   dominantAct,
   interactionTags = [],
+  topicRefs = [],
   claims = []
 }) {
   return {
     utterance_text: utteranceText,
     dominant_act: dominantAct,
     interaction_tags: interactionTags,
-    topic_refs: [],
+    topic_refs: topicRefs,
     claims,
     response_expectation: { kind: 'none', target_refs: [] }
   };

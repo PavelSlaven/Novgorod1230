@@ -26,7 +26,7 @@ import { buildLowerDvinaV2ImportSql } from
   '../spatial-v3/lower-dvina-v2-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../spatial-v3/character-appearance-v1-importer.mjs';
-import { buildS1AuthoringV5ImportSql } from
+import { buildS1AuthoringV6ImportSql } from
   '../spatial-v3/s1-authoring-v5-importer.mjs';
 
 export async function installActivatedRuntimeCatalog({
@@ -119,7 +119,7 @@ export async function installActivatedRuntimeCatalog({
   await worldPool.query(await buildCharacterAppearanceV1ImportSql({
     root: repositoryRoot
   }));
-  await worldPool.query(await buildS1AuthoringV5ImportSql({
+  await worldPool.query(await buildS1AuthoringV6ImportSql({
     root: repositoryRoot
   }));
   const v12Bundle = await buildSpatialV3ProductionV12ActivationBundle({

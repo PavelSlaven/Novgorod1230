@@ -85,7 +85,18 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.equal(rolls, 0);
     assert.deepEqual(result.check_results, []);
     assert.deepEqual(result.write_fragments, []);
-  });
+});
+
+test('active conversation does not reject an unrelated direct plan', () => {
+  const validate = preflight();
+  const request = { player_safe_state: { active_interlocutor: {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' }
+  } }, available_domain_operations: [{ op: 'emit_interaction',
+    target_actor_refs: ['npc:visible'] }] };
+  const direct = { resolution: 'direct', operations: [], check: null };
+  assert.doesNotThrow(() => validate({ plan: direct, request,
+    prepared_chain_context: null }));
+});
 
 test('planner receives only available exact domain operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };

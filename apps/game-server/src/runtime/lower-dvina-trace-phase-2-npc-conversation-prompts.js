@@ -7,44 +7,9 @@ export function requiredNpcConversationCandidate(request) {
   const addressee = operation?.target_ref;
   const player = request?.allowed_references?.actor_refs?.find((reference) =>
     reference?.entity_kind === 'player_character');
-  const routeDisclosure = operation?.op === 'disclose_known_route'
-    && Object.keys(operation).length === 3
-    && typeof operation.route_ref === 'string' && operation.route_ref.trim()
-    && typeof operation.source_knowledge_scope_ref === 'string'
-    && operation.source_knowledge_scope_ref.trim()
-    && (scope?.required_resolution === undefined
-      || scope.required_resolution === 'automatic')
-    && player
-    && request.allowed_references.entity_refs.some((reference) =>
-      reference?.entity_kind === 'route'
-      && reference?.entity_id === operation.route_ref)
-    && request.allowed_references.knowledge_refs.some((reference) =>
-      reference?.entity_kind === 'knowledge_scope'
-      && reference?.entity_id === operation.source_knowledge_scope_ref);
-  if (routeDisclosure) return {
-    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
-    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
-    exchange_id: request.exchange_id, state_version: request.state_version,
-    speaker_ref: request.npc_ref, contribution_kind: 'speech',
-    primary_addressee_ref: structuredClone(player),
-    intended_addressee_refs: [structuredClone(player)], affected_actor_refs: [],
-    speech: { utterance_text: '<semantic NPC route disclosure>',
-      dominant_act: 'inform', interaction_tags: ['route_disclosure'],
-      topic_refs: [], claims: [{ claim_id: 'required-route-disclosure',
-        content_summary: '<semantic route disclosure>', form: 'assertion',
-        speaker_posture: 'believed_true', source_knowledge_refs: [{
-          entity_kind: 'knowledge_scope',
-          entity_id: operation.source_knowledge_scope_ref
-        }], mentioned_entity_refs: [{ entity_kind: 'route',
-          entity_id: operation.route_ref }] }],
-      response_expectation: { kind: 'none', target_refs: [] } },
-    interpretation: { intent: '<semantic route disclosure>',
-      grounded_contribution: '<semantic route disclosure>',
-      adaptation: 'literal' }, resolution: 'automatic',
-    activity: { duration_class: scope.allowed_duration_classes[0],
-      effort: 'none' }, supporting_operations: [structuredClone(operation)],
-    check: null, handoff: null, reason: '<semantic NPC reason>'
-  };
+  if (routeDisclosureCandidateIsValid(request, operation)) {
+    return routeDisclosureCandidate(request, operation);
+  }
   if (scope?.required_resolution !== 'check_required'
       || !check || !['attribute_ref', 'skill_ref', 'difficulty_band'].every(
         (key) => typeof check[key] === 'string' && check[key].trim())
@@ -83,6 +48,57 @@ export function requiredNpcConversationCandidate(request) {
     } }, handoff: null, reason: '<semantic NPC reason>'
   };
 }
+
+function routeDisclosureCandidateIsValid(request, operation) {
+  const scope = request?.decision_scope;
+  const player = request?.allowed_references?.actor_refs?.find((reference) =>
+    reference?.entity_kind === 'player_character');
+  return operation?.op === 'disclose_known_route'
+    && Object.keys(operation).length === 3
+    && typeof operation.route_ref === 'string' && operation.route_ref.trim()
+    && typeof operation.source_knowledge_scope_ref === 'string'
+    && operation.source_knowledge_scope_ref.trim()
+    && (scope?.required_resolution === undefined
+      || scope.required_resolution === 'automatic')
+    && player
+    && request.allowed_references.entity_refs.some((reference) =>
+      reference?.entity_kind === 'route'
+      && reference?.entity_id === operation.route_ref)
+    && request.allowed_references.knowledge_refs.some((reference) =>
+      reference?.entity_kind === 'knowledge_scope'
+      && reference?.entity_id === operation.source_knowledge_scope_ref);
+}
+
+function routeDisclosureCandidate(request, operation) {
+  const player = request.allowed_references.actor_refs.find((reference) =>
+    reference?.entity_kind === 'player_character');
+  const scope = request.decision_scope;
+  return {
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: structuredClone(player),
+    intended_addressee_refs: [structuredClone(player)], affected_actor_refs: [],
+    speech: { utterance_text: '<semantic NPC route disclosure>',
+      dominant_act: 'inform', interaction_tags: ['route_disclosure'],
+      topic_refs: [operation.route_ref],
+      claims: [{ claim_id: 'required-route-disclosure',
+        content_summary: '<semantic route disclosure>', form: 'assertion',
+        speaker_posture: 'believed_true', source_knowledge_refs: [{
+          entity_kind: 'knowledge_scope',
+          entity_id: operation.source_knowledge_scope_ref
+        }], mentioned_entity_refs: [{ entity_kind: 'route',
+          entity_id: operation.route_ref }] }],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: '<semantic route disclosure>',
+      grounded_contribution: '<semantic route disclosure>',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: scope.allowed_duration_classes[0],
+      effort: 'none' }, supporting_operations: [structuredClone(operation)],
+    check: null, handoff: null, reason: '<semantic NPC reason>'
+  };
+}
 export function npcConversationCandidates(request) {
   const scope = request?.decision_scope;
   const combatTargetRefs = Array.isArray(
@@ -93,7 +109,6 @@ export function npcConversationCandidates(request) {
   ) ?? [];
   if (scope?.required_resolution !== undefined
       || scope?.required_supporting_operation !== undefined
-      || !Object.hasOwn(scope?.operation_contract ?? {}, 'commit_surrender')
       || playerRefs.length !== 1
       || !scope.allowed_duration_classes?.includes('domain_owned')) return [];
   const player = playerRefs[0];
@@ -114,9 +129,18 @@ export function npcConversationCandidates(request) {
     supporting_operations, check: null, handoff: null,
     reason: '<semantic NPC reason>'
   });
-  return [
+  const routeOperation = selectableRouteOperation(request);
+  const candidates = [
     speech({ utterance_text: '<semantic NPC speech>', dominant_act: 'answer',
       interaction_tags: [], supporting_operations: [] }),
+    ...(routeOperation === null ? [] : [routeDisclosureCandidate(
+      request, routeOperation
+    )])
+  ];
+  if (!Object.hasOwn(scope.operation_contract ?? {}, 'commit_surrender')) {
+    return candidates;
+  }
+  return [...candidates,
     speech({ utterance_text: '<semantic NPC surrender speech>', dominant_act: 'accept',
       interaction_tags: ['surrender'],
       supporting_operations: [{ op: 'commit_surrender' }]
@@ -139,6 +163,16 @@ export function npcConversationCandidates(request) {
       reason: '<semantic NPC reason>'
     }] : [])
   ];
+}
+
+function selectableRouteOperation(request) {
+  const value = request?.decision_scope?.operation_contract?.disclose_known_route;
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+  const { owner: _owner, ...operation } = value;
+  const candidate = { op: 'disclose_known_route', ...operation };
+  return routeDisclosureCandidateIsValid(request, candidate) ? candidate : null;
 }
 
 export function npcConversationInstructions(repair, request = null) {
@@ -172,6 +206,11 @@ export function npcConversationInstructions(repair, request = null) {
     'A decision_scope.required_supporting_operation must be copied exactly once',
     'for speech: supporting_operations must be [required_supporting_operation]',
     'with that complete object copied exactly; do not add another operation.',
+    'An offer or promise of a future or code-owned action must select its exact',
+    'permitted supporting operation. Without one, use non-promissory ordinary speech.',
+    'When speech gives route guidance, directions, a route claim, or an offer to guide,',
+    'select the exact disclose_known_route operation and include route_disclosure plus',
+    'the matching route topic and claim refs. Otherwise do not imply that route speech.',
     'For emit_interaction, copy its exact permitted kind and actor, target,',
     'entity, and instrument refs from request; do not invent or substitute refs.',
     ...(Array.isArray(participationBindings) ? [
@@ -195,7 +234,7 @@ export function npcConversationInstructions(repair, request = null) {
       JSON.stringify(candidates.map(stripNpcEnvelope))
     ]),
     repair
-      ? 'Repair only structure, refs, and enum values. Preserve the original contribution meaning.'
+      ? 'Repair only structure, refs, and enum values. When validation_errors reports unsupported speech grounding, remove or recast that unsupported assertion or direction as ordinary grounded speech, or select its exact supplied candidate; do not preserve unsupported meaning.'
       : 'Ordinary valid speech is allowed without a scenario outcome operation.'
   ].join(' ');
 }

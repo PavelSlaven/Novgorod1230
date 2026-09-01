@@ -44,15 +44,18 @@ export function withLowerDvinaTraceCurrentScene({
   if (!text(profile.display_name) || sensoryDetails.length === 0) {
     failCurrentScene();
   }
+  const sceneNpcs = (playerSafe.npcs ?? []).map((npc) => visibleNpc(npc,
+    playerSafe.position)).filter(Boolean);
   const current = {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: profile.display_name,
     visible_changes: [],
     sensory_details: sensoryDetails,
-    visible_npc: (playerSafe.npcs ?? []).map(visibleNpc).filter(Boolean),
+    visible_npc: sceneNpcs,
     visible_objects: [],
-    known_context: [profile.display_name],
+    known_context: [profile.display_name, ...(playerSafe.npcs ?? []).map((npc) =>
+      visibleNpcCondition(npc, playerSafe.position)).filter(Boolean)],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
@@ -120,14 +123,33 @@ function validCurrentScene(value) {
     && ARRAY_FIELDS.every((field) => Array.isArray(value[field]));
 }
 
-function visibleNpc(npc) {
+function visibleNpc(npc, position) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
-  const displayLabel = npc?.identity_state?.display_name;
-  if (!text(entityId) || !text(displayLabel)) return null;
+  const displayLabel = npc?.identity_state?.display_name
+    ?? npc?.identity_state?.canonical_name;
+  if (!samePositionScope(npc, position) || !text(entityId) || !text(displayLabel)) {
+    return null;
+  }
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
     display_label: displayLabel
   };
+}
+
+function samePositionScope(npc, position) {
+  const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
+    ['g5_anchor_id', 'g5_anchor_id'], ['zone_ref', 'zone_ref']]
+    .filter(([npcKey, positionKey]) => text(npc?.[npcKey])
+      && text(position?.[positionKey]));
+  return scopes.length > 0 && scopes.every(([npcKey, positionKey]) =>
+    npc[npcKey] === position?.[positionKey]);
+}
+
+function visibleNpcCondition(npc, position) {
+  const visible = visibleNpc(npc, position);
+  const condition = npc?.body_condition;
+  return visible != null && text(condition)
+    ? `${visible.display_label}: ${condition}` : null;
 }
 
 function text(value) {

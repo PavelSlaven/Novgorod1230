@@ -45,3 +45,14 @@ test('custom narration provider retains its model override', () => {
   assert.equal(resolution.config.provider, 'openai_compatible');
   assert.equal(resolution.config.model, 'local-narrator');
 });
+
+test('NPC conversation grounding auditor uses Flash JSON role', () => {
+  const resolution = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: 'npc_conversation_grounding_auditor',
+    env: { DEEPSEEK_API_KEY: 'test' }
+  });
+  assert.equal(resolution.enabled, true);
+  assert.equal(resolution.config.model, 'deepseek-v4-flash');
+  assert.equal(resolution.config.maxTokens, 800);
+  assert.equal(resolution.config.outputContractMode, 'json_object');
+});

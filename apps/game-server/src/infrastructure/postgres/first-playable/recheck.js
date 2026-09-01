@@ -3,6 +3,7 @@ import { recheckTracePhase3LocationCapacity } from './recheck-location-capacity.
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 import { recheckPhase6TargetedAdmission } from './recheck-phase6-admission.js';
 import { recheckS1LocalMovement } from './recheck-s1-local-movement.js';
+import { recheckWorldRouteArrival } from './recheck-world-route-arrival.js';
 import { recheckSpatialV3PostgresFirstEntry } from '../spatial-v3-first-entry-recheck.js';
 
 export async function firstPlayableCommitRecheck({ transaction, party_id: partyId, check, plan }) {
@@ -117,6 +118,9 @@ export async function firstPlayableCommitRecheck({ transaction, party_id: partyI
     );
   }
   if (check.kind === 'capacity') {
+    if (check.capacity_model === 'world_route_s1_arrival') {
+      return recheckWorldRouteArrival({ transaction, partyId, check });
+    }
     if (check.capacity_model === 'trace_phase3_location_actor_capacity') {
       return recheckTracePhase3LocationCapacity({
         transaction,

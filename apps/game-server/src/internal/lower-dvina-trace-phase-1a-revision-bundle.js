@@ -28,6 +28,8 @@ import { loadLowerDvinaTraceRevision22Bundle } from
 import { loadLowerDvinaTraceRevision23Bundle, loadLowerDvinaTraceRevision24Bundle,
   loadLowerDvinaTraceRevision25Bundle } from
   './lower-dvina-trace-s1-bundle.js';
+import { loadLowerDvinaTraceRevision26Bundle } from
+  './lower-dvina-trace-s1-revision-26-bundle.js';
 
 export async function loadLowerDvinaTraceRevisionBundle({
   scenarioDefinitionRevision,
@@ -148,6 +150,14 @@ export async function loadLowerDvinaTraceRevisionBundle({
         rootDir, historicalBundle: await revision22(), fail, freezeDeep,
         validateDefinitionPins }), fail, freezeDeep, validateDefinitionPins }),
     fail, freezeDeep, validateDefinitionPins });
+  if (scenarioDefinitionRevision === 26) return loadLowerDvinaTraceRevision26Bundle({
+    rootDir, historicalBundle: await loadLowerDvinaTraceRevision25Bundle({
+      rootDir, historicalBundle: await loadLowerDvinaTraceRevision24Bundle({
+        rootDir, historicalBundle: await loadLowerDvinaTraceRevision23Bundle({
+          rootDir, historicalBundle: await revision22(), fail, freezeDeep,
+          validateDefinitionPins }), fail, freezeDeep, validateDefinitionPins }),
+      fail, freezeDeep, validateDefinitionPins }), fail, freezeDeep,
+    validateDefinitionPins });
   fail(
     'TRACE_SCENARIO_REVISION_UNSUPPORTED',
     `Unsupported Lower Dvina scenario revision: ${scenarioDefinitionRevision}.`

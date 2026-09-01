@@ -301,6 +301,7 @@ test('committed semantic trace replays without model or state revalidation calls
   });
   let modelCalls = 0;
   let revalidationCalls = 0;
+  let freshValidationCalls = 0;
 
   const result = await requestNpcSemanticDecision({
     boundary: decisionBoundary,
@@ -313,6 +314,10 @@ test('committed semantic trace replays without model or state revalidation calls
     revalidateStateVersion: async () => {
       revalidationCalls += 1;
       return 2;
+    },
+    validateFreshPlan: async () => {
+      freshValidationCalls += 1;
+      return true;
     }
   });
 
@@ -321,6 +326,7 @@ test('committed semantic trace replays without model or state revalidation calls
   assert.deepEqual(result.signal_ids_to_consume, []);
   assert.equal(modelCalls, 0);
   assert.equal(revalidationCalls, 0);
+  assert.equal(freshValidationCalls, 0);
 });
 
 test('one invalid NPC response receives one structural repair attempt', async () => {
@@ -341,6 +347,53 @@ test('one invalid NPC response receives one structural repair attempt', async ()
   assert.equal(calls[0].repair, null);
   assert.deepEqual(calls[1].repair.original_output, { schema: 'broken' });
   assert.equal(calls[1].repair.validation_errors.length, 1);
+});
+
+test('initial NPC JSON parse failure reaches exactly one format repair', async () => {
+  const decisionRequest = request();
+  const calls = [];
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(), request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      calls.push(context);
+      if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
+        code: 'json_parse_failed'
+      });
+      return plan(decisionRequest);
+    },
+    revalidateStateVersion: async () => 2
+  });
+  assert.equal(result.status, 'planned');
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].repair, null);
+  assert.deepEqual(calls[1].repair.original_output, {});
+});
+
+test('NPC repair parse failure and non-parse model failure do not retry again', async (t) => {
+  await t.test('repair parse failure', async () => {
+    let calls = 0;
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary: boundary(), request: request(),
+      semanticModel: async () => {
+        calls += 1;
+        throw Object.assign(new Error('bad JSON'), { code: 'json_parse_failed' });
+      },
+      revalidateStateVersion: async () => 2
+    }), { code: 'TURN_NPC_MODEL_FAILED' });
+    assert.equal(calls, 2);
+  });
+  await t.test('non-parse failure', async () => {
+    let calls = 0;
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary: boundary(), request: request(),
+      semanticModel: async () => {
+        calls += 1;
+        throw Object.assign(new Error('provider failed'), { code: 'http_500' });
+      },
+      revalidateStateVersion: async () => 2
+    }), { code: 'TURN_NPC_MODEL_FAILED' });
+    assert.equal(calls, 1);
+  });
 });
 
 test('invalid NPC dominant_act repair identifies its enum path', async () => {
@@ -395,6 +448,44 @@ test('one retryable NPC semantic inconsistency receives one repair', async () =>
   assert.equal(calls.length, 2);
   assert.equal(calls[1].repair.validation_errors[0].code,
     'TEST_SEMANTIC_INCONSISTENCY');
+});
+
+test('fresh NPC speech grounding rejection receives one repair', async () => {
+  const decisionRequest = request();
+  const calls = [];
+  const unsupported = plan(decisionRequest);
+  unsupported.speech.utterance_text = 'A ford and a smith are beyond the ridge.';
+  unsupported.speech.dominant_act = 'inform';
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(), request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      calls.push(context);
+      return calls.length === 1 ? unsupported : plan(decisionRequest);
+    },
+    validateFreshPlan: async () => calls.length === 1 ? {
+      pass: false, errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+        category: 'semantic_grounding', retryable: true }]
+    } : true,
+    revalidateStateVersion: async () => 2
+  });
+  assert.equal(result.status, 'planned');
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1].repair.validation_errors[0].code,
+    'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED');
+  assert.notEqual(result.plan.speech.utterance_text,
+    unsupported.speech.utterance_text);
+});
+
+test('fresh NPC speech grounding validator failure remains typed', async () => {
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: boundary(), request: request(), semanticModel: async () => plan(),
+    validateFreshPlan: async () => {
+      throw Object.assign(new Error('invalid auditor response'), {
+        code: 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID'
+      });
+    },
+    revalidateStateVersion: async () => 2
+  }), { code: 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID' });
 });
 
 test('failed uncommitted NPC decision releases its in-flight claim for retry', async () => {

@@ -34,9 +34,11 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     projected = projectLowerDvinaTraceO2aCapabilities({ projected,
       admission: admitAmbientOrdinaryPortion });
-    const initialWorkingProjection = projected.player_safe_state;
+    const basePlayerSafeState = projected.player_safe_state;
+    const { active_interlocutor: _staleActiveInterlocutor,
+      ...initialWorkingProjection } = basePlayerSafeState;
     const actionState = projectLowerDvinaTraceA1Capability({
-      playerSafeState: initialWorkingProjection,
+      playerSafeState: basePlayerSafeState,
       loadedProfile: actionProductionProfile,
       resolverAvailable:
         typeof createTurnStepActionProductionOwner === 'function'

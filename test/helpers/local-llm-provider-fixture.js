@@ -13,6 +13,8 @@ const ROLE_MODELS = Object.freeze({
   NPC_CONVERSATION_RESPONDER_MODEL: 'fixture-npc-conversation-responder',
   NPC_CONVERSATION_RESPONDER_REPAIR_MODEL:
     'fixture-npc-conversation-responder-repair',
+  NPC_CONVERSATION_GROUNDING_AUDITOR_MODEL:
+    'fixture-npc-conversation-grounding-auditor',
   NPC_AUTONOMOUS_DECIDER_MODEL: 'fixture-npc-autonomous-decider',
   NPC_AUTONOMOUS_DECIDER_REPAIR_MODEL:
     'fixture-npc-autonomous-decider-repair',

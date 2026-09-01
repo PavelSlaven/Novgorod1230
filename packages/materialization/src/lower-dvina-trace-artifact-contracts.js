@@ -82,6 +82,7 @@ export const M13_REQUIRED_ARTIFACTS = Object.freeze([
   ...M12_REQUIRED_ARTIFACTS,
   'npc_actor_step_profile'
 ]);
+export const M14_REQUIRED_ARTIFACTS = M13_REQUIRED_ARTIFACTS;
 
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
@@ -340,4 +341,12 @@ export const M13_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   npc_actor_step_profile: [
     'rus.lower_dvina_trace_npc_actor_step_profile.v1', 1
   ]
+});
+export const M14_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M13_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 22],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 22
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 26]
 });

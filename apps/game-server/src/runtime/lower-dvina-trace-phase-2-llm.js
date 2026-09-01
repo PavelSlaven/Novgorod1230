@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
+import { auditFreshNpcSpeech } from './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions } from './lower-dvina-trace-phase-2-llm-prompts.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
@@ -36,11 +37,14 @@ export function createLowerDvinaTraceTurnStepModel({
     const payload = repairing
       ? {
           request,
+          original_output: structuredClone(repairContext.original_output ?? null),
           structural_errors:
             structuredClone(repairContext.structural_errors ?? [])
         }
       : request;
     const operationChoices = turnStepOperationChoices(request);
+    const activeConversationExample = activeConversationChoiceExample(
+      request, operationChoices);
     let response;
     try {
       response = await roleRunner.run({
@@ -58,7 +62,14 @@ export function createLowerDvinaTraceTurnStepModel({
             'Return interpretation, resolution, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             `Code-owned exact operation choices are:\n${JSON.stringify(operationChoices.map(({ choice_id, operation }) => ({ choice_id, operation })))}`,
-            'For a matching code-owned operation return operation_choice with exactly one supplied choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
+            'operation_choice is exactly one scalar supplied choice_id string or null, never an object, array, or wrapper. For a matching code-owned operation return that scalar choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
+            ...(operationChoices.length === 0 ? [] : [
+              `A valid domain choice is: ${JSON.stringify({
+                resolution: 'domain_request',
+                operation_choice: operationChoices[0].choice_id
+              })}`
+            ]),
+            ...(activeConversationExample == null ? [] : [activeConversationExample]),
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
@@ -69,7 +80,7 @@ export function createLowerDvinaTraceTurnStepModel({
             ] : []),
             'Plan exactly one executable step. Sentence boundary is a continuation boundary. Plan only the first independently executable sentence. If request.remaining_intent has later non-empty sentences, always preserve all of them in continuation, use goal_result pending, and never let one selected operation consume them. Only clauses inside the same sentence may form one composite operation, and only when that operation explicitly represents their single event. One selected domain operation covers only its own grounded event; it may cover multiple verbs only when the selected operation explicitly represents every clause. Matching one clause, shared actor, place, time, or generic owner does not extend coverage. Preserve every independent uncovered clause in continuation, and use continuation null only when none remains. Every domain_request uses goal_result pending, including a complete composite with continuation null: pending means code-owned execution, not unhandled intent. If continuation is present, goal_result must be pending and continuation.remaining_intent must preserve every independent uncovered clause. Final continuation override for direct reality_limited or make_believe: a same-sentence clause whose stated action, purpose, manner, result, or qualifier depends on the same impossible or physically limited premise is covered by the same grounding, not continuation. Preserve only clauses independently executable without that premise and every later sentence; if none remain, set continuation to null.',
             repairing
-              ? 'Repair only listed validation errors and preserve unrelated semantic fields. For domain_owner_unavailable, owner absence is not evidence of impossibility or fantasy: ordinary or unspecified intent stays literal. Do not invent a physical impossibility or absent fantastical referent; use a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
+              ? 'Repair original_output using only supplied request and exact code-owned choices. Do not re-plan or invent operations or refs. operation_choice must be one scalar supplied choice_id string or null; replace an invalid object wrapper such as {"choice_id":"<supplied choice_id>"} with its inner supplied ID string. If no supplied choice matches, use a valid direct semantic plan with no operation. Repair only listed validation errors and preserve unrelated semantic fields. For domain_owner_unavailable, owner absence is not evidence of impossibility or fantasy: ordinary or unspecified intent stays literal. Do not invent a physical impossibility or absent fantastical referent; use a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
               : 'Plan only the next executable semantic step and preserve any remaining intent.'
           ].join(' ')
         }, {
@@ -119,6 +130,19 @@ function turnStepOperationChoices(request) {
 function operationChoiceId(operation,index,operations){const qualifier=operationQualifier(operation);const collision=operations.filter((candidate)=>candidate.op===operation.op&&operationQualifier(candidate)===qualifier).length>1;return['domain_operation',index+1,operation.op,qualifier,collision?semanticChoiceLabel(operation.description):null].filter((part)=>part!=null).join('_');}
 function operationQualifier(operation){return operation.process_action??operation.discovery_kind??operation.access_kind??operation.movement_kind??operation.use_kind??operation.activity_kind??operation.interaction_kind;}
 function semanticChoiceLabel(value){const label=typeof value==='string'?value.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_+|_+$/gu,''):'';return label||'variant';}
+function activeConversationChoiceExample(request, choices) {
+  const interlocutorId = request.player_safe_state?.active_interlocutor
+    ?.entity_ref?.entity_id;
+  const interaction = choices.find(({ operation }) => operation?.op === 'emit_interaction'
+    && Array.isArray(operation.target_actor_refs)
+    && operation.target_actor_refs.length === 1
+    && operation.target_actor_refs[0] === interlocutorId
+    && ['speech', 'request'].includes(operation.interaction_kind)
+    && Array.isArray(operation.instrument_refs)
+    && operation.instrument_refs.length === 0);
+  if (interaction == null) return null;
+  return `Active conversation contrast: ${JSON.stringify({ resolution: 'domain_request', operation_choice: interaction.choice_id })} is the required choice for a conversational question addressed to the active interlocutor, even when it asks where or how to find a place, object, or fact; that answer topic does not make it request_discovery. Conversely, an independent player intent to personally inspect, search, listen, remember, or dig for detail uses a matching supplied request_discovery.`;
+}
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
@@ -204,7 +228,7 @@ export function createLowerDvinaTraceNpcSemanticModel({
   roleRunner
 } = {}) {
   requireRoleRunner(roleRunner);
-  return async function planNpcConversationResponse(request, context = {}) {
+  const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
@@ -227,6 +251,10 @@ export function createLowerDvinaTraceNpcSemanticModel({
     });
     return assembleNpcConversationPlan(response.output, request);
   };
+  model.validateFreshPlan = (plan, request) => auditFreshNpcSpeech({
+    roleRunner, plan, request
+  });
+  return model;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({

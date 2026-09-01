@@ -232,7 +232,8 @@ function validRecord(record, expected) {
 }
 function plannerOperation({ command, expected, actorRef, targetRef, evidenceRef }) {
   const operation = { op: expected.operation, actor_ref: actorRef, [expected.kindField]: expected.kind };
-  if (expected.operation === 'request_movement') return { ...operation, target_ref: targetRef };
+  if (expected.operation === 'request_movement') return { ...operation,
+    target_ref: targetRef, description: command.label };
   if (expected.operation === 'request_container_access') return { ...operation, container_ref: targetRef };
   if (expected.operation === 'request_item_use') return { ...operation, item_ref: targetRef, target_refs: [] };
   if (expected.operation === 'request_combat') return typeof targetRef !== 'string' || targetRef.length === 0 ? null
@@ -293,7 +294,6 @@ function matchesClosedSelection(selected, eligible) {
   if (!Array.isArray(selected) || selected.length !== 3 || new Set(selected).size !== selected.length) return false;
   return ['custody', 'property', 'promise'].every((dimension) => selected.filter((id) => eligible[dimension].includes(id)).length === 1);
 }
-
 function gap() {
   throw serverError('TRACE_TURN_STEP_BINDING_INVALID', 'The active semantic revisions require exact approved command bindings.', { status: 409 });
 }

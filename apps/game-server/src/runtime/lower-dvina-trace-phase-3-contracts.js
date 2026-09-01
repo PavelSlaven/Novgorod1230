@@ -18,7 +18,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     .includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
@@ -121,7 +121,7 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'transition_template_id',
     'trace_ld_v1_transition_blue_wool_pickup'
   );
-  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     .includes(bundle.definition_revision)
     ? bundle.conversation_semantic_bindings
     : null;
@@ -216,6 +216,19 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     projectionText,
     campAnchor,
     actors,
+    routeBindings: structuredClone(bundle.movement_bindings.route_bindings),
+    endpoints: structuredClone(bundle.location_topology_set.endpoints),
+    locationProfiles: structuredClone(bundle.location_topology_set.location_profiles),
+    accessPolicies: structuredClone(bundle.location_access_policies.access_policies),
+    capacityContracts: structuredClone(bundle.location_capacity_contracts.capacity_contracts),
+    routePins: bundle.movement_bindings.route_bindings.map((entry) => {
+      const record = selection(state, 'movement', entry.route_id);
+      if (!record || record.record_digest !== canonicalDigest(entry)) {
+        gap('TRACE_KNOWN_ROUTE_SELECTION_MISMATCH');
+      }
+      return { id: entry.route_id, version: entry.version,
+        digest: record.record_digest };
+    }),
     activityPins: [movement, talk, evidenceTalk].map((activity) => {
       const record = selection(state, 'activities', activity.profile_id);
       return {
@@ -226,6 +239,7 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     })
   });
 }
+
 function routeEffect(records, effectId, activityRef, elapsedMinutes) {
   const effect = (records ?? []).find((entry) => entry.effect_profile_id === effectId);
   // Range-only historical profiles cannot be guessed or retroactively charged.

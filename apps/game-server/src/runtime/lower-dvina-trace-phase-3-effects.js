@@ -89,6 +89,23 @@ export function createTracePhase3VisibleProjector({
         return phase2Projector.project(input);
       }
       if (consequence.phase3_kind === 'movement') {
+        if (consequence.generic_known_route === true) {
+          const destination = consequence.movement?.destination;
+          if (typeof destination?.display_name !== 'string'
+              || !destination.display_name
+              || typeof consequence.movement?.route_ref !== 'string') {
+            throw visibleGap('TRACE_KNOWN_ROUTE_VISIBLE_DESTINATION_INVALID');
+          }
+          return {
+            version: 1,
+            schema: 'visible_context_package',
+            visible_scene: destination.display_name,
+            visible_changes: [`${consequence.movement.route_ref}:completed`],
+            sensory_details: [], visible_npc: [], visible_objects: [],
+            known_context: [], uncertainties: [], allowed_tensions: [],
+            do_not_imply: []
+          };
+        }
         return {
           version: 1,
           schema: 'visible_context_package',

@@ -27,6 +27,31 @@ export function phase6TargetedAdmissionEvidence({ state, intent }) {
   };
 }
 
+export function phase6TargetedAdmissionPhysicalKeys(intent, partyId) {
+  const participantIds = [
+    ...intent.participant_bindings.initial_carrier_ids.slice(1),
+    intent.participant_bindings.replacement_carrier_id,
+    intent.participant_bindings.carried_actor_id
+  ];
+  const itemIds = [...new Set([
+    ...intent.assembly_snapshot.resources.map(({ item_id: id }) => id),
+    ...intent.carrier_inventory_snapshots.flatMap(({ item_ids: ids }) => ids)
+  ])];
+  const containerIds = [...new Set(
+    intent.carrier_inventory_snapshots.flatMap(({ container_ids: ids }) => ids)
+  )];
+  return [
+    `party_runtime.party_positions:${partyId}`,
+    ...participantIds.map((id) => `party_runtime.party_npcs:${id}`),
+    ...itemIds.flatMap((id) => [
+      `party_runtime.party_items:${id}`,
+      `party_runtime.party_item_placements:${id}`,
+      `party_runtime.party_ownership:${id}`
+    ]),
+    ...containerIds.map((id) => `party_runtime.party_containers:${id}`)
+  ];
+}
+
 export async function recheckPhase6TargetedAdmission({ transaction, partyId,
   check }) {
   if (!valid(check)) return result(false, 'generated_schema_mismatch');

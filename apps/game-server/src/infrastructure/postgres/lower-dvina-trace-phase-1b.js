@@ -233,10 +233,12 @@ export async function readWorldBaseReferenceSnapshot(
   }
   const reader = createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) });
   const [closures, canonicalG5] = await Promise.all([
-    Promise.all(['trace_ld_v1_tpl_wreck_shore', 'trace_ld_v1_tpl_fishing_camp']
+    Promise.all(['trace_ld_v1_tpl_wreck_shore', 'trace_ld_v1_tpl_fishing_camp',
+      'trace_ld_v1_tpl_old_drying_shed']
       .map((id) => reader.readPinnedSceneTemplateClosure({ id, version: 1,
         world_revision_id: compatibility.production_world_revision_id }))),
-    Promise.all(['trace_ld_v1_g5_wreck_shore', 'trace_ld_v1_g5_fishing_camp']
+    Promise.all(['trace_ld_v1_g5_wreck_shore', 'trace_ld_v1_g5_fishing_camp',
+      'trace_ld_v1_g5_old_drying_shed']
       .map((id) => reader.readPinnedCanonicalG5SceneBinding({ id, version: 1,
         world_revision_id: compatibility.production_world_revision_id })))
   ]);

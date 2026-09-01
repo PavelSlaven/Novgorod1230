@@ -154,7 +154,7 @@ function staleDiscardedProposal(boundary, request, orderedSignals) {
 
 async function requestFreshDecision({ boundary, request, orderedSignals,
   semanticModel, revalidateStateVersion, rebuildDecisionContext, mode,
-  validatePlan }) {
+  validatePlan, validateFreshPlan }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
   }
@@ -180,14 +180,18 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
           repair
         }));
       } catch (error) {
-        throw turnFailure('TURN_NPC_MODEL_FAILED',
-          repair === null
-            ? 'NPC semantic model request failed'
-            : 'NPC format repair request failed', {
-          request_id: currentRequest.request_id,
-          boundary_id: currentBoundary.boundary_id,
-          cause: error instanceof Error ? error.message : String(error)
-        });
+        if (repair === null && error?.code === 'json_parse_failed') {
+          rawPlan = {};
+        } else {
+          throw turnFailure('TURN_NPC_MODEL_FAILED',
+            repair === null
+              ? 'NPC semantic model request failed'
+              : 'NPC format repair request failed', {
+              request_id: currentRequest.request_id,
+              boundary_id: currentBoundary.boundary_id,
+              cause: error instanceof Error ? error.message : String(error)
+            });
+        }
       }
 
       const expectedStateVersion = requestStateVersion(currentRequest, mode);
@@ -251,7 +255,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       const structurallyValid = validatePlanForMode(
         rawPlan, safeRequest, mode);
       const domainResult = structurallyValid
-        ? planDomainResult(rawPlan, safeRequest, validatePlan) : null;
+        ? await planDomainResult(rawPlan, safeRequest, validatePlan,
+          validateFreshPlan) : null;
       if (structurallyValid && domainResult?.pass !== false) break;
       if (domainResult?.pass === false && !domainResult.errors.every(
         ({ retryable }) => retryable === true
@@ -356,7 +361,8 @@ export async function requestNpcSemanticDecision({
   orderedSignals = [],
   revalidateStateVersion,
   rebuildDecisionContext = null,
-  validatePlan = null
+  validatePlan = null,
+  validateFreshPlan = null
 } = {}) {
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
@@ -404,7 +410,7 @@ export async function requestNpcSemanticDecision({
         { request_id: request.request_id, boundary_id: boundary.boundary_id }
       );
     }
-    const domainResult = planDomainResult(
+    const domainResult = await planDomainResult(
       persistedTrace.plan, request, validatePlan
     );
     if (domainResult?.pass === false) {
@@ -440,7 +446,8 @@ export async function requestNpcSemanticDecision({
     revalidateStateVersion,
     rebuildDecisionContext,
     mode,
-    validatePlan
+    validatePlan,
+    validateFreshPlan
   });
   const inFlight = { inputSnapshot, pending };
   inFlightDecisions.set(inFlightKey, inFlight);
@@ -453,9 +460,19 @@ export async function requestNpcSemanticDecision({
   }
 }
 
-function planDomainResult(plan, request, validatePlan) {
-  if (validatePlan === null) return null;
-  const result = validatePlan(plan, request);
+async function planDomainResult(plan, request, validatePlan,
+  validateFreshPlan = null) {
+  const validators = [validatePlan, validateFreshPlan].filter(
+    (validator) => validator !== null);
+  for (const validator of validators) {
+    const result = await validator(plan, request);
+    const rejected = domainValidationResult(result);
+    if (rejected !== null) return rejected;
+  }
+  return null;
+}
+
+function domainValidationResult(result) {
   if (result === true) return null;
   if (result === false) {
     return immutable({

@@ -162,6 +162,25 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   });
   assert.equal(result.body_update.proposal.rng_consumption, 'forbidden');
   assert.equal(result.clue.template_id, 'trace_ld_v1_item_blue_wool_fragment');
+  const visible = f.narratorInput().visible_context;
+  assert.deepEqual(visible.visible_changes, [
+    'На берегу лежат обломки разбитой лодки.',
+    'В мокром песке видны босые следы.',
+    'Рядом заметен отдельный след сапога.',
+    'Слои обломков и следов различимы.',
+    'Кожаная застёжка разрезана.',
+    'На борту лодки заметна вмятина сбоку.',
+    'Среди обломков есть следы ещё одной небольшой лодки.',
+    'На ветке у места крушения найден клочок синей шерсти.',
+    'От берега к рыбацкому стану ведёт заметная тропа.'
+  ]);
+  assert.equal(/trace_ld_v1_|visible:/u.test(visible.known_context.join(' ')), false);
+  assert.equal(/след сапога|безопасн|виновник|мотив|Жданко/u.test(visible.known_context.join(' ')), false);
+  assert.equal(JSON.stringify(visible.visible_changes)
+    .includes('trace_ld_v1_'), false);
+  assert.equal(JSON.stringify(visible.visible_changes).includes('visible:'), false);
+  assert.equal(/виновник|мотив|Жданко|безопасн(?:ый|ая) путь/u
+    .test(visible.visible_changes.join(' ')), false);
   assert.equal(f.semanticInput(), null);
   assert.equal(f.rollCount(), 1);
   assert.equal(f.commitCount(), 1);
@@ -305,8 +324,11 @@ test('authored prior bag knowledge admits the missing-road-bag observation',
         assert.equal(result.observations.some(
           ({ fact_id: observed }) => observed === 'visible:road_bag_missing'),
         true);
-        assert.equal(JSON.stringify(f.narratorInput()).includes(
-          'visible:road_bag_missing'), true);
+        const visibleChanges = f.narratorInput().visible_context.visible_changes;
+        assert.equal(visibleChanges.includes(
+          'Дорожной сумки, о которой было известно, здесь нет.'), true);
+        assert.equal(JSON.stringify(visibleChanges).includes(
+          'visible:road_bag_missing'), false);
       });
     }
   });

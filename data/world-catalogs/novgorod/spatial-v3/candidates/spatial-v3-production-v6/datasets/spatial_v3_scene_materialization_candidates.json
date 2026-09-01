@@ -1,0 +1,5 @@
+[
+  {"profile_id":"trace_ld_v1_smp_wreck_shore","profile_version":1,"scene_template_id":"trace_ld_v1_tpl_wreck_shore","scene_template_version":1,"weight":1,"applicability_rule_id":"scene_applicability_exact_source_ref_v1","applicability_rule_version":3},
+  {"profile_id":"trace_ld_v1_smp_fishing_camp","profile_version":1,"scene_template_id":"trace_ld_v1_tpl_fishing_camp","scene_template_version":1,"weight":1,"applicability_rule_id":"scene_applicability_exact_source_ref_v1","applicability_rule_version":3},
+  {"profile_id":"trace_ld_v1_smp_old_drying_shed","profile_version":1,"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","scene_template_version":1,"weight":1,"applicability_rule_id":"scene_applicability_exact_source_ref_v1","applicability_rule_version":3}
+]

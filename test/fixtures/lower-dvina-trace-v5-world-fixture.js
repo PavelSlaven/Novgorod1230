@@ -63,6 +63,17 @@ export const lowerDvinaTraceCanonicalG5SceneBindings = Object.freeze([
     materialization_profile_version: 1,
     materialization_profile_digest: '7c679edfd07ddb67bcef759df023cf2fd2ec1d476c89b0c59ae8e22db100a7de',
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1
+  }),
+  Object.freeze({
+    id: 'trace_ld_v1_g5_old_drying_shed', version: 1,
+    world_revision_id: lowerDvinaTraceV5World.revision, spatial_level: 'G5',
+    primary_class_id: 'spatial.g5.structure', status: 'approved',
+    canonical_digest: '1e2f53a47a9c77bc3e5bb8cc1fc5935413fc945b8f6ae2d4d26f99d26aa5b983',
+    parent_id: 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge',
+    parent_version: 4, materialization_profile_id: 'trace_ld_v1_smp_old_drying_shed',
+    materialization_profile_version: 1,
+    materialization_profile_digest: 'd3e6388b01e5c2546b7a7f62033bbd4f8433abbb3c1d5a3ee3bc2d3f3284648c',
+    scene_template_id: 'trace_ld_v1_tpl_old_drying_shed', scene_template_version: 1
   })
 ]);
 

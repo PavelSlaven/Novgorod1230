@@ -37,7 +37,7 @@ export function createPartyLog({ directory,
 export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
   metadata = null, clock = () => Date.now(), onLogError = console.error } = {}) {
   for (const method of ['startNewGame', 'acknowledgeOpening', 'submitTurn',
-    'getPartyScreen']) {
+    'getPartyScreen', 'recoverPendingPresentation']) {
     if (typeof root?.[method] !== 'function') {
       throw new TypeError(`root.${method} is required.`);
     }
@@ -99,6 +99,21 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
           event: 'turn.failed', duration_ms: duration(startedAt, clock()),
           input, error: errorRecord(error), llm: llmReport(partyId)
         });
+        throw error;
+      }
+    },
+    async recoverPendingPresentation(partyId) {
+      const startedAt = clock();
+      record(partyId, { event: 'presentation.recovery_requested' });
+      try {
+        const output = await root.recoverPendingPresentation(partyId);
+        record(partyId, { event: 'presentation.recovery_completed',
+          duration_ms: duration(startedAt, clock()), output, llm: llmReport(partyId) });
+        return output;
+      } catch (error) {
+        record(partyId, { event: 'presentation.recovery_failed',
+          duration_ms: duration(startedAt, clock()), error: errorRecord(error),
+          llm: llmReport(partyId) });
         throw error;
       }
     },

@@ -188,6 +188,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       visibleContext: state.persistedVisibleContext,
+      consequence: state.consequence,
+      retrievedState: state.revalidatedState,
       narrator: services.narrator
     }), context)),
     stage(17, 'screen_projection', async (state) => next(state, 'screen', buildScreenProjectionStage({

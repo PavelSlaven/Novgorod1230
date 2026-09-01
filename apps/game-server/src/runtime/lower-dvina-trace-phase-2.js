@@ -20,6 +20,7 @@ import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-re
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
+import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
@@ -41,12 +42,9 @@ export function createLowerDvinaTracePhase2Runtime({
   createTurnStepActionProductionOwner = null,
   actionProductionProfile = null,
   createTurnStepWorldProcessResolver = null, localFireProfile = null,
-  createTurnStepSpatialSemanticResolver = null,
-  spatialSemanticProfile = null,
-  llmTurnBudget = null,
-  llmDiagnostics = null,
-  temporalAdvanceOwner = undefined,
-  now = () => new Date().toISOString(),
+  createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null,
+  llmTurnBudget = null, llmDiagnostics = null,
+  temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision,
   }),
@@ -54,9 +52,12 @@ export function createLowerDvinaTracePhase2Runtime({
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
   return Object.freeze({ llmTurnBudget,
-    async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) {
-      await repository.loadPhase2State(partyId, { turnBudget });
-      return true;
+    async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) { await repository.loadPhase2State(partyId, { turnBudget }); return true; },
+    async recoverPendingPresentation({ partyId, session }) {
+      return executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId,
+        request_id: String(session?.screen?.turn_id ?? partyId) }, () =>
+          recoverTracePendingPresentation({ partyId, session, repository, narrator,
+            turnBudget: llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }));
     },
     async submitTurn({ partyId, input = {} }) {
       const { requestId, idempotencyKey, rawText, inputDigest } =
@@ -160,7 +161,7 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
         const turn10 = createTraceTurn10Runtime({
           state,
           bundle,
@@ -240,8 +241,8 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
-          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? actionProductionProfile : null,
-          createTurnStepWorldProcessResolver: [22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
+          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26].includes(bundle.definition_revision) ? actionProductionProfile : null,
+          createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26].includes(bundle.definition_revision) ? localFireProfile : null,
           createTurnStepSpatialSemanticResolver:
             activeSpatialSemanticProfile == null
               ? null : createTurnStepSpatialSemanticResolver,
@@ -292,8 +293,7 @@ export function createLowerDvinaTracePhase2Runtime({
           throw error;
         }
       };
-      return executeTraceTurnWithDiagnostics(llmDiagnostics,
-        { party_id: partyId, request_id: requestId }, executeAttempt);
+      return executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt);
     },
   });
 }

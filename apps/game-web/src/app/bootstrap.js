@@ -10,9 +10,15 @@ import {
 } from './pending-opening-ack.js';
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
+import {
+  createTurnRequest,
+  recoverPendingPresentation,
+  submitTurnWithPresentationReplay
+} from './turn-submission.js';
+export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
+  './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
 const THEME_STORAGE_KEY = 'rus.theme';
-
 export function bootstrapGameWeb({
   root = document.querySelector('[data-game-root]'),
   api = createApiClient(),
@@ -73,7 +79,6 @@ export function bootstrapGameWeb({
       await submitTurn({ raw_text: raw.trim() });
     }
   });
-
   root.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey
       && event.target.matches?.('[data-turn-form] textarea')) {
@@ -90,13 +95,11 @@ export function bootstrapGameWeb({
       trapOverlayFocus(event, root);
     }
   });
-
   root.addEventListener('change', (event) => {
     if (event.target.matches?.('[data-llm-settings-form] input[name="mode"]')) {
       llmSettings.setFieldsDisabled(event.target.value !== 'custom');
     }
   });
-
   root.addEventListener('click', async (event) => {
     const target = event.target;
     const startButton = target.closest?.('[data-start-new-game]');
@@ -201,13 +204,12 @@ export function bootstrapGameWeb({
       store.setOpeningFailed(error);
     }
   }
-
   async function continueParty() {
-    const partyId = store.getState().rememberedPartyId;
-    if (!partyId) return;
+    const partyId = store.getState().rememberedPartyId; if (!partyId) return;
     try {
-      store.setLoading();
-      const result = await api.getPartyScreen(partyId);
+      store.setLoading(); let result = await api.getPartyScreen(partyId);
+      result = recoverPendingPresentation(api, partyId, result.screen) ?? result;
+      result = await result;
       const pendingAck = storedPendingOpeningAck(partyStorage, partyId);
       if (pendingAck) {
         store.setScreen(result.screen, {
@@ -228,11 +230,11 @@ export function bootstrapGameWeb({
       store.setError(error);
     }
   }
-
   async function submitTurn(input) {
     try {
       store.setLoading();
-      const result = await api.submitTurn(store.getState().partyId, input);
+      const result = await submitTurnWithPresentationReplay(
+        api, store.getState().partyId, createTurnRequest(input));
       store.clearDraft('turn');
       store.setScreen(result.screen, { openingStatus: 'acknowledged' });
     } catch (error) {
@@ -293,7 +295,4 @@ function flowNavigationBlocked(state) {
 function availableLocalStorage() {
   try { return globalThis.localStorage; }
   catch { return null; }
-}
-function uiError(code, message) {
-  return Object.assign(new Error(message), { code });
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "spatial.g5.compound",
+    "domain": "spatial_structure",
+    "parent_category_id": null,
+    "stable_code": "spatial.g5.compound",
+    "facet": "structural_g5",
+    "preferred_label": "G5 compound",
+    "definition": "A G5 location containing at least two independently meaningful structure or G6 slots.",
+    "scope_note": "The exact approved scene materialization profile must prove the independently meaningful parts.",
+    "inclusion_rules": "Use only when an approved Spatial profile contains at least two independently meaningful structure or G6 slots.",
+    "exclusion_rules": "Exclude a locally bounded site without compound structure; classify it as spatial.g5.parcel.",
+    "replaced_by_category_id": null,
+    "title": "G5 compound",
+    "status": "approved"
+  },
+  {
+    "id": "spatial.g5.structure",
+    "domain": "spatial_structure",
+    "parent_category_id": null,
+    "stable_code": "spatial.g5.structure",
+    "facet": "structural_g5",
+    "preferred_label": "G5 structure",
+    "definition": "A bounded canonical G5 structure with an approved scene materialization profile.",
+    "scope_note": "Use only when the approved profile defines the structure's exact local topology.",
+    "inclusion_rules": "Use for one bounded authored structure with a complete approved scene profile.",
+    "exclusion_rules": "Exclude parcels and compounds with different canonical classes.",
+    "replaced_by_category_id": null,
+    "title": "G5 structure",
+    "status": "approved"
+  }
+]

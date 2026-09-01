@@ -28,6 +28,22 @@ export function normalizeJourneyLocationRows(rows) {
   return rows.length === 0 ? null : normalizeJourneyLocation(rows[0]);
 }
 
+export function withJourneyLocation(state, journeyLocation) {
+  delete state.journey_location;
+  if (journeyLocation == null) {
+    delete state.position.position_id;
+    delete state.position.g6_id;
+    return state;
+  }
+  state.journey_location = journeyLocation;
+  state.position.position_id = journeyLocation.scene_position_id;
+  const target = state.first_entry_preparation?.spatial_v3?.target;
+  if (target?.position_id === journeyLocation.scene_position_id) {
+    state.position.g6_id = target.g6_instance_id;
+  }
+  return state;
+}
+
 function text(value) {
   return typeof value === 'string' && value.trim() === value && value.length > 0;
 }

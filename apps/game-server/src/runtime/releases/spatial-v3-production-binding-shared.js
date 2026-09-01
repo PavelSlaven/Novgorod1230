@@ -46,7 +46,8 @@ function createTargetCompositionPorts(
       'startNewGame',
       'acknowledgeOpening',
       'submitTurn',
-      'getPartyScreen'
+      'getPartyScreen',
+      'recoverPendingPresentation'
     ].map((method) => [
       method,
       async (...args) => {
@@ -172,7 +173,8 @@ export async function createSpatialV3ProductionBindings(
         'startNewGame',
         'acknowledgeOpening',
         'submitTurn',
-        'getPartyScreen'
+        'getPartyScreen',
+        'recoverPendingPresentation'
       ].map((method) => [
         method,
         (...args) =>

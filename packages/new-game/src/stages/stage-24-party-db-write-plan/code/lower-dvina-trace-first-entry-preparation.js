@@ -1,10 +1,16 @@
 import { computeSpatialV3CanonicalDigest, validateSpatialV3Contract } from
   '@rus/contracts/spatial-v3/registry';
+import { additionalPreparationMember } from
+  './lower-dvina-trace-first-entry-preparation-member.js';
+import { additionalPreparationRoute } from
+  './lower-dvina-trace-first-entry-preparation-route.js';
 
 export function addFirstEntryPreparationBatches({ batches, result, partyId, playerId,
   changeSetId, sourceTrace, addBatch }) {
-  const prepared = result.first_entry_preparation;
-  if (prepared == null) return null;
+  const preparation = result.first_entry_preparation;
+  if (preparation == null) return null;
+  const preparedMembers = preparation.members ?? [preparation];
+  const prepared = preparedMembers[0];
   const binding = prepared.binding;
   const scene = prepared.scene;
   if (binding?.route_command_id !== 'lower_dvina_trace.follow_path_to_fishing_camp'
@@ -124,7 +130,16 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     target_endpoint_ref: targetEndpointRef,
     target_g4_id: scene.node.parent_g4_id
   });
-  const immutableMembersDigest = spatialDigest([member]);
+  const additionalMembers = preparedMembers.slice(1).map((entry, ordinal) =>
+    additionalPreparationMember({
+      prepared: entry,
+      snapshotId: ids.snapshot,
+      ordinal: ordinal + 1,
+      result,
+      sourceScene: prepared.scene
+    }));
+  const members = [member, ...additionalMembers.map(({ member: value }) => value)];
+  const immutableMembersDigest = spatialDigest(members);
   const snapshotPayload = {
     id: ids.snapshot,
     party_id: partyId,
@@ -225,6 +240,11 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     lifecycle_change_set_id: changeSetId,
     created_at_turn: 0
   };
+  const additionalRoutes = additionalMembers.map(({ member: nextMember, spatial_v3 }, index) =>
+    additionalPreparationRoute({ member: nextMember, spatial: spatial_v3,
+      binding: preparedMembers[index + 1].binding, routePlan, step,
+      partyId, playerId, changeSetId, idempotencyKey: result.trace.idempotency_key,
+      ordinal: index + 1 }));
   assertSpatialContract('endpoint_contract_snapshot', sourceEndpoint);
   assertSpatialContract('endpoint_contract_snapshot', targetEndpoint);
   assertSpatialContract('route_plan_step_static_snapshot',
@@ -306,11 +326,13 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     updated_change_set_id: changeSetId
   }], ['scene_position_nodes', 'party_player_characters'], sourceTrace);
   addBatch(batches, 'preparation_snapshots', [snapshot], ['parties'], sourceTrace);
-  addBatch(batches, 'preparation_snapshot_members', [member],
+  addBatch(batches, 'preparation_snapshot_members', members,
     ['preparation_snapshots'], sourceTrace);
-  addBatch(batches, 'party_route_plans', [routePlan],
+  addBatch(batches, 'party_route_plans', [routePlan,
+    ...additionalRoutes.map(({ routePlan: value }) => value)],
     ['preparation_snapshots'], sourceTrace);
-  addBatch(batches, 'party_route_plan_steps', [step],
+  addBatch(batches, 'party_route_plan_steps', [step,
+    ...additionalRoutes.map(({ step: value }) => value)],
     ['party_route_plans'], sourceTrace);
   addBatch(batches, 'party_route_plan_executions', [{
     id: ids.execution,
@@ -323,7 +345,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     current_endpoint_ref: sourceEndpoint,
     state_version: 1,
     updated_change_set_id: changeSetId
-  }], ['party_route_plans'], sourceTrace);
+  }, ...additionalRoutes.map(({ execution }) => execution)], ['party_route_plans'], sourceTrace);
   addBatch(batches, 'party_route_plan_execution_events', [{
     execution_id: ids.execution,
     event_ordinal: 0,
@@ -338,7 +360,8 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     change_set_id: changeSetId,
     idempotency_record_id: result.trace.idempotency_key,
     occurred_at_turn: 0
-  }], ['party_route_plan_executions'], sourceTrace);
+  }, ...additionalRoutes.map(({ event }) => event)],
+  ['party_route_plan_executions'], sourceTrace);
   addBatch(batches, 'preparation_claims', [{
     id: ids.claim,
     preparation_snapshot_id: ids.snapshot,
@@ -348,7 +371,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     state_version: 1,
     reserved_change_set_id: changeSetId,
     terminal_change_set_id: null
-  }], ['preparation_snapshot_members', 'party_route_plan_executions'], sourceTrace);
+  }, ...additionalRoutes.map(({ claim }) => claim)], ['preparation_snapshot_members', 'party_route_plan_executions'], sourceTrace);
   return {
     ...structuredClone(prepared),
     spatial_v3: {
@@ -375,7 +398,9 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
       route_plan_digest: routePlan.canonical_serialization_digest,
       route_plan_execution_id: ids.execution,
       preparation_claim_id: ids.claim,
-      journey_location_id: ids.journeyLocation
+      journey_location_id: ids.journeyLocation,
+      members: additionalMembers.map(({ spatial_v3 }, index) => ({ ...spatial_v3,
+        ...additionalRoutes[index].spatial_v3 }))
     }
   };
 }

@@ -20,6 +20,7 @@ export const TURN10_COMPANION_COMMAND =
   'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
 export const COMBAT_RESPONSE_COMMAND =
   'lower_dvina_trace.respond_in_active_combat';
+const KNOWN_ROUTE_COMMAND = 'lower_dvina_trace.follow_admitted_known_route:';
 
 export function createLowerDvinaTracePreparedDomainEffect({
   committedState
@@ -32,6 +33,9 @@ export function createLowerDvinaTracePreparedDomainEffect({
       return (operation?.op === 'request_movement'
           && [PHASE3_ROUTE_COMMAND, PHASE8_ROUTE_COMMAND]
             .includes(commandId) && priorCount === 0)
+        || (operation?.op === 'request_movement'
+          && commandId?.startsWith(KNOWN_ROUTE_COMMAND) === true
+          && priorCount === 0)
         || (operation?.op === 'request_activity'
           && commandId === PHASE7_REST_COMMAND && priorCount === 0)
         || (operation?.op === 'emit_interaction'
@@ -49,7 +53,8 @@ export function createLowerDvinaTracePreparedDomainEffect({
     },
     async apply(input) {
       if ([PHASE3_ROUTE_COMMAND, PHASE8_ROUTE_COMMAND]
-        .includes(input?.command_id)) {
+        .includes(input?.command_id)
+        || input?.command_id?.startsWith(KNOWN_ROUTE_COMMAND) === true) {
         return applyPreparedPhase3Route({ input, committedState });
       }
       if (input?.command_id === PHASE7_REST_COMMAND) {
@@ -175,7 +180,10 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
   const destination = movement.destination;
   const scene = (committedState.prepared_scenes ?? []).find(
     ({ location_profile_ref: locationRef }) =>
-      locationRef === destination.location_ref);
+      locationRef === destination.location_ref)
+    ?? (committedState.first_entry_preparation?.scene?.location_profile_ref
+      === destination.location_ref
+      ? committedState.first_entry_preparation.scene : null);
   if (!scene?.node?.instance_id) {
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_DESTINATION_INVALID');
   }
@@ -185,8 +193,10 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
     to_ref: destination.location_ref,
     status: 'completed'
   };
+  const { active_interlocutor: _activeInterlocutor,
+    ...projectionWithoutInterlocutor } = structuredClone(projection);
   const moved = {
-    ...structuredClone(projection),
+    ...projectionWithoutInterlocutor,
     position: {
       ...structuredClone(projection.position ?? {}),
       location_ref: destination.location_ref,

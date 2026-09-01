@@ -803,11 +803,12 @@ LLM не перечисляет contents до их появления в player-
   "op": "request_movement",
   "actor_ref": "actor_mikula",
   "target_ref": "location_or_position_ref",
-  "movement_kind": "local | route | long_course"
+  "movement_kind": "local | route | long_course",
+  "description": "optional code-owned player-safe movement label"
 }
 ```
 
-Маршрут, точное время, нагрузку, boundaries и итоговую позицию определяет movement/temporal owner.
+`description`, если передан, является code-owned player-safe label exact supplied operation; LLM выбирает operation целиком и не меняет его. Маршрут, точное время, нагрузку, boundaries и итоговую позицию определяет movement/temporal owner.
 
 ### 12.4. `request_item_use`
 

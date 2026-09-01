@@ -136,7 +136,16 @@ export function phase3CommitRechecks({
     sealedCheck('route', {
       route_binding_ref: movement?.route_ref ?? null
     }),
-    sealedCheck('capacity', movement ? {
+    sealedCheck('capacity', factual.consequence?.generic_known_route === true
+      && movement?.destination?.scene_position_id != null ? {
+      party_id: partyId,
+      capacity_model: 'world_route_s1_arrival',
+      actor_id: state.actor_id,
+      destination_position_id: movement.destination.scene_position_id,
+      destination_capacity: movement.destination.scene_capacity,
+      destination_access_class: movement.destination.scene_access_class,
+      expected_journey_state_version: state.journey_location?.state_version ?? null
+    } : movement ? {
       party_id: partyId,
       capacity_model: 'trace_phase3_location_actor_capacity',
       destination_anchor_id: movement.destination.g5_anchor_id,

@@ -27,6 +27,20 @@ export function assertLowerDvinaTracePhase1AValidation({
 
 function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scenarioId) {
   const bindings = bundle.materialization_bindings;
+  if (definitionRevision === revisions.m14) {
+    const members = bindings?.first_entry_preparation?.members;
+    if (bindings.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v22'
+      || bindings.scenario_definition_revision !== revisions.m14
+      || !Array.isArray(members) || members.length !== 2
+      || members[0]?.ordinal !== 0 || members[1]?.ordinal !== 1
+      || members[1]?.binding?.destination?.location_profile_ref
+        !== 'trace_ld_v1_loc_old_drying_shed') {
+      fail('TRACE_PHASE_1A_BINDING_INVALID',
+        'Revision 26 requires both exact prepared first-entry members.');
+    }
+    return;
+  }
   const phase3Definition = [
     revisions.phase3,
     revisions.phase3Pickup,
@@ -161,6 +175,17 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m14) {
+    const manifest = bundle.phase_1a_manifest;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v22'
+      || manifest.revision !== 22 || manifest.scenario_definition_revision !== revisions.m14
+      || bundle.materialization_bindings?.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v22') {
+      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID',
+        'Revision 26 requires its immutable prepared-member Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m13) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

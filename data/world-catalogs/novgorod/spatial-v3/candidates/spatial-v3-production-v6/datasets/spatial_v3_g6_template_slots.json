@@ -1,0 +1,43 @@
+[
+  {
+    "scene_template_id": "trace_ld_v1_tpl_wreck_shore",
+    "scene_template_version": 1,
+    "scene_slot_key": "open_shore",
+    "physical_class_id": "spatial.g6.open",
+    "primary_scene_role_id": "open_shore",
+    "vertical_context_id": "surface",
+    "overhead_cover_id": "none",
+    "intra_g6_visibility_mode": "default_clear",
+    "default_visibility_distance_band": "near",
+    "acoustic_uniformity": "uniform",
+    "enclosing_structure_slot_key": null
+  },
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "scene_slot_key": "working_camp",
+    "physical_class_id": "spatial.g6.open",
+    "primary_scene_role_id": "working_camp",
+    "vertical_context_id": "surface",
+    "overhead_cover_id": "none",
+    "intra_g6_visibility_mode": "default_clear",
+    "default_visibility_distance_band": "near",
+    "acoustic_uniformity": "uniform",
+    "enclosing_structure_slot_key": null
+  },
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "scene_slot_key": "s1_open_one_space",
+    "physical_class_id": "spatial.g6.semi_enclosed",
+    "primary_scene_role_id": "ordinary_local",
+    "vertical_context_id": "surface",
+    "overhead_cover_id": "partial",
+    "intra_g6_visibility_mode": "default_clear",
+    "default_visibility_distance_band": "near",
+    "acoustic_uniformity": "uniform",
+    "enclosing_structure_slot_key": null
+  },
+  {"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","scene_template_version":1,"scene_slot_key":"shed_approach","physical_class_id":"spatial.g6.open","primary_scene_role_id":"working_camp","vertical_context_id":"surface","overhead_cover_id":"none","intra_g6_visibility_mode":"default_clear","default_visibility_distance_band":"near","acoustic_uniformity":"uniform","enclosing_structure_slot_key":null},
+  {"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","scene_template_version":1,"scene_slot_key":"s1_enclosed_space","physical_class_id":"spatial.g6.enclosed","primary_scene_role_id":"ordinary_local","vertical_context_id":"surface","overhead_cover_id":"full","intra_g6_visibility_mode":"default_clear","default_visibility_distance_band":"near","acoustic_uniformity":"uniform","enclosing_structure_slot_key":null}
+]

@@ -25,17 +25,25 @@ export async function buildPersistencePlanStage(input) {
   const writeTargets = draft
     ? mergeTurnStepDraftWriteTargets(draftTargets, commandTargets)
     : commandTargets;
+  const turnStepCommit = draft ? buildTurnStepCommitEnvelope({
+    ...input,
+    draft
+  }) : null;
+  const persistedWriteTargets = turnStepCommit == null ? writeTargets
+    : writeTargets.map((target) => target?.target === 'party_state'
+      && target.value?.mode_resolution != null ? { ...target, value: {
+        ...target.value,
+        mode_resolution: structuredClone(turnStepCommit.mode_resolution)
+      } } : target);
   const transition = input.consequence?.position_transition ?? null;
   const expectsPositionWrite = input.modeResolution?.resolution_plan?.expected_writes?.includes('party_current_position') === true;
   if (expectsPositionWrite && (!transition?.from_g4_id || !transition?.to_g4_id)) throw Object.assign(new Error('party_current_position requires explicit from/to G4.'), { code: 'TURN_G4_TRANSITION_REQUIRED' });
   const plan = {
     version: 2, schema: 'party_turn_write_plan', sealed_by: 'turn_code_planner_v2', party_id: input.playerInput.party_id, turn_id: input.modeResolution.turn_id,
-    base_state_version: Number(input.retrievedState.party_state?.state_version ?? 0), write_targets: structuredClone(writeTargets),
-    command_trace: structuredClone(input.modeResolution.decision_trace),
-    ...(draft ? { turn_step_commit: buildTurnStepCommitEnvelope({
-      ...input,
-      draft
-    }) } : {}),
+    base_state_version: Number(input.retrievedState.party_state?.state_version ?? 0), write_targets: structuredClone(persistedWriteTargets),
+    command_trace: structuredClone(turnStepCommit?.mode_resolution.decision_trace
+      ?? input.modeResolution.decision_trace),
+    ...(turnStepCommit ? { turn_step_commit: turnStepCommit } : {}),
     ...(input.ordinary_materialization_atomic_write_plan == null ? {} : {
       ordinary_materialization_atomic_write_plan: structuredClone(
         input.ordinary_materialization_atomic_write_plan)

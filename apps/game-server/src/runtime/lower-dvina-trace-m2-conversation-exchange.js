@@ -103,6 +103,8 @@ export function createM2ConversationContext(input) {
     : null;
   return {
     ...input,
+    validateFreshNpcPlan: input.validateFreshNpcPlan
+      ?? input.npcSemanticModel?.validateFreshPlan,
     stateVersion,
     targetRef,
     actualNpcActors,
@@ -186,6 +188,9 @@ export async function executeM2ConversationExchange(context, {
     npcSemanticModel: context.npcSemanticModel,
     ...(context.validateNpcPlan === undefined ? {} : {
       validateNpcPlan: context.validateNpcPlan
+    }),
+    ...(context.validateFreshNpcPlan === undefined ? {} : {
+      validateFreshNpcPlan: context.validateFreshNpcPlan
     }),
     resolveNpcContributionCheck:
       context.npcSocialCheckResolver ?? undefined,

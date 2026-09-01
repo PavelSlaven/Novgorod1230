@@ -27,6 +27,7 @@ import {
   M12_REQUIRED_ARTIFACTS,
   M13_ARTIFACT_CONTRACT_OVERRIDES,
   M13_REQUIRED_ARTIFACTS,
+  M14_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_4_ARTIFACT_CONTRACT_OVERRIDES,
@@ -56,6 +57,7 @@ export const LOWER_DVINA_TRACE_M10_DEFINITION_REVISION = 22;
 export const LOWER_DVINA_TRACE_M11_DEFINITION_REVISION = 23;
 export const LOWER_DVINA_TRACE_M12_DEFINITION_REVISION = 24;
 export const LOWER_DVINA_TRACE_M13_DEFINITION_REVISION = 25;
+export const LOWER_DVINA_TRACE_M14_DEFINITION_REVISION = 26;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
@@ -63,6 +65,8 @@ export const LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST =
   '3d019f3e51cb4e7629713108bb7658127996ee5c70acd38ccb03e7160385ff00';
 export const LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST =
   'bbc14100e3f43d4a383c22fc717b4b54f4a464bf5f9c90489be22d5ab4b70e11';
+export const LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST =
+  '822e2e890374a9aa8e24470c5fbab55e6d7addf6e8160a47db5e597bd66f0163';
 
 export function assertLowerDvinaTraceRequest(input) {
   if (!input || typeof input !== 'object') fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'Materialization request is required.');
@@ -89,11 +93,12 @@ export function assertLowerDvinaTraceRequest(input) {
       ,LOWER_DVINA_TRACE_M11_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M12_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M13_DEFINITION_REVISION
+      ,LOWER_DVINA_TRACE_M14_DEFINITION_REVISION
     ]
       .includes(input.scenario_definition_revision)) {
     fail(
       'TRACE_SCENARIO_REVISION_UNSUPPORTED',
-      'Only approved Lower Dvina trace definition revisions 7 through 25 are supported.'
+      'Only approved Lower Dvina trace definition revisions 7 through 26 are supported.'
     );
   }
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
@@ -127,7 +132,7 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
   if (!bundle || bundle.schema !== 'rus.lower_dvina_trace_materialization_bundle.v1' || bundle.version !== 1) fail('TRACE_SCENARIO_BUNDLE_INVALID', 'Pinned materialization bundle v1 is required.');
   if (bundle.scenario_id !== input.scenario_id || bundle.definition_revision !== input.scenario_definition_revision || bundle.manifest_digest !== input.scenario_manifest_digest) fail('TRACE_SCENARIO_MANIFEST_MISMATCH', 'Scenario bundle identity does not match the request.');
   const requiredArtifacts = input.scenario_definition_revision
-      === LOWER_DVINA_TRACE_M13_DEFINITION_REVISION
+      >= LOWER_DVINA_TRACE_M13_DEFINITION_REVISION
     ? M13_REQUIRED_ARTIFACTS
     : input.scenario_definition_revision
       === LOWER_DVINA_TRACE_M12_DEFINITION_REVISION
@@ -211,12 +216,16 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
       ,m11: LOWER_DVINA_TRACE_M11_DEFINITION_REVISION
       ,m12: LOWER_DVINA_TRACE_M12_DEFINITION_REVISION
       ,m13: LOWER_DVINA_TRACE_M13_DEFINITION_REVISION
+      ,m14: LOWER_DVINA_TRACE_M14_DEFINITION_REVISION
     }
   });
   return bundle;
 }
 
 function artifactContractFor(key, definitionRevision) {
+  if (definitionRevision === LOWER_DVINA_TRACE_M14_DEFINITION_REVISION) {
+    return M14_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
+  }
   if (definitionRevision === LOWER_DVINA_TRACE_M13_DEFINITION_REVISION) {
     return M13_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   }
@@ -377,7 +386,8 @@ function worldTupleIsDirectOrApprovedDescendant(spatial, input) {
   const lineage = compatibility?.lineage;
   if (![LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
     LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
-    LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST]
+    LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
+    LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST]
       .includes(canonicalDigest(compatibility))
     || compatibility?.source_world_revision_id !== spatial?.world_revision_id
     || compatibility?.source_world_catalog_digest

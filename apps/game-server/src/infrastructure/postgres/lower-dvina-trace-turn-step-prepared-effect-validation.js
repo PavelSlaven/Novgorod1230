@@ -10,11 +10,14 @@ import {
   validateAuthoritativePreparedRoute,
   validatePreparedBodyReplay,
   validatePreparedDirectSlice,
-  validatePreparedRouteTraceLineage,
   validLocalFireIntermediateTrace
 } from './lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import { validatePreparedRouteTraceLineage } from
+  './lower-dvina-trace-turn-step-prepared-route-lineage.js';
 import { mergePreparedRecord, samePreparedTimeBase } from
   './lower-dvina-trace-turn-step-prepared-effect-values.js';
+import { projectPosition } from
+  '../../runtime/lower-dvina-trace-player-safe-world.js';
 import {
   isPreparedTurn10Ledger,
   validatePreparedTurn10
@@ -29,6 +32,7 @@ import { PHASE9_PREPARED_COMMANDS, validatePreparedPhase9 } from
   './lower-dvina-trace-phase-9-prepared-validation.js';
 
 const ROUTE_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
+const KNOWN_ROUTE_COMMAND = 'lower_dvina_trace.follow_admitted_known_route:';
 const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat'; const DEFERRED_DOMAIN_OPERATIONS = new Set([
   'request_discovery', 'request_container_access', 'request_movement',
   'request_item_use', 'request_activity', 'emit_interaction', 'request_combat'
@@ -92,7 +96,9 @@ export function validatePreparedEffectCommit({
       || envelope.loop_trace.working_revision
         !== (hasDirect ? traces.length : slices.length)
       || route.effect_kind !== 'domain_command'
-      || route.owner_ref !== ROUTE_COMMAND
+      || (route.owner_ref !== ROUTE_COMMAND
+        && route.owner_ref !== `${KNOWN_ROUTE_COMMAND}${
+          route.consequence?.movement?.route_ref}`)
       || route.operation_ref !== 'request_movement'
       || route.step_index !== 1
       || routeTrace.applied !== true
@@ -122,7 +128,7 @@ export function validatePreparedEffectCommit({
   }
   const routeRequestState = routeTrace.plan_request?.player_safe_state;
   const directRequestState = directTrace?.plan_request?.player_safe_state;
-  if (!samePreparedValue(routeRequestState?.position, state.position)
+  if (!samePreparedValue(routeRequestState?.position, projectPosition(state.position))
       || !samePreparedValue(routeRequestState?.clock, state.clock)
       || (directTrace != null && (
         !samePreparedValue(

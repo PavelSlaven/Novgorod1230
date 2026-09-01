@@ -6,6 +6,7 @@ import {
   validateLlmSettingsRequest,
   validateNewGameRequest,
   validateOpeningAckRequest,
+  validatePresentationRecoveryRequest,
   validateTurnRequest
 } from './contracts.js';
 import { readJsonBody, sendJson, sendText } from './json.js';
@@ -58,6 +59,8 @@ export function matchApiRoute(method, pathname) {
   if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeURIComponent(ack[1]), status: 200 };
   const turn = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns$/u);
   if (method === 'POST' && turn) return { id: 'turn', partyId: decodeURIComponent(turn[1]), status: 200 };
+  const recovery = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/presentation-recovery$/u);
+  if (method === 'POST' && recovery) return { id: 'presentation_recovery', partyId: decodeURIComponent(recovery[1]), status: 200 };
   return null;
 }
 
@@ -88,6 +91,7 @@ async function executeRoute(route, context) {
   }
   if (route.id === 'new_game') return context.root.startNewGame(validateNewGameRequest(body));
   if (route.id === 'opening_ack') return context.root.acknowledgeOpening(route.partyId, validateOpeningAckRequest(body));
+  if (route.id === 'presentation_recovery') return context.root.recoverPendingPresentation(route.partyId, validatePresentationRecoveryRequest(body));
   if (route.id === 'turn') return context.root.submitTurn(route.partyId, validateTurnRequest(body));
   throw new Error(`Unsupported route: ${route.id}`);
 }

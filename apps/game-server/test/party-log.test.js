@@ -34,6 +34,7 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
         screen: { main_prose: `Результат: ${input.raw_text}` }
       };
     },
+    recoverPendingPresentation: async () => ({ party_id: 'party:abc', screen: {} }),
     getPartyScreen: async () => ({
       party_id: 'party:abc', turn_number: 1,
       screen: { main_prose: 'Текущий экран.' }
@@ -78,6 +79,7 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
     { code: 'TURN_FAILED' }
   );
   await logged.getPartyScreen('party:abc');
+  await logged.recoverPendingPresentation('party:abc');
   await new Promise(setImmediate);
   await Promise.allSettled(writes);
 
@@ -86,13 +88,15 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
   assert.deepEqual(events.map(({ event }) => event), [
     'party.created', 'opening.acknowledged',
     'turn.requested', 'turn.completed',
-    'turn.requested', 'turn.failed', 'screen.read'
+    'turn.requested', 'turn.failed', 'screen.read',
+    'presentation.recovery_requested', 'presentation.recovery_completed'
   ]);
   assert.equal(events[0].metadata.release_id, 'release-1');
   assert.equal(events[2].input.raw_text, 'Осмотреться');
   assert.equal(events[3].output.screen.main_prose, 'Результат: Осмотреться');
   assert.equal(events[3].llm.calls[0].request.messages[0].content, 'Осмотреться');
   assert.equal(events[5].error.details.phase, 'resolve');
+  assert.equal(events[8].output.party_id, 'party:abc');
   assert.ok(events.every((event) => event.schema === 'rus.party_game_log_event.v1'
     && event.party_id === 'party:abc'));
 });
@@ -103,6 +107,7 @@ test('party log failure never converts completed gameplay into client failure', 
     startNewGame: async () => ({ party_id: 'party-1', screen: {} }),
     acknowledgeOpening: async () => ({ party_id: 'party-1' }),
     submitTurn: async () => ({ party_id: 'party-1', screen: {} }),
+    recoverPendingPresentation: async () => ({ party_id: 'party-1', screen: {} }),
     getPartyScreen: async () => ({ party_id: 'party-1', screen: {} })
   };
   const logged = createPartyLoggingRoot({
@@ -123,6 +128,7 @@ test('pending party log append never delays submitTurn', async () => {
       startNewGame: async () => ({ party_id: 'party-1' }),
       acknowledgeOpening: async () => ({ party_id: 'party-1' }),
       submitTurn: async () => ({ party_id: 'party-1', screen: {} }),
+      recoverPendingPresentation: async () => ({ party_id: 'party-1', screen: {} }),
       getPartyScreen: async () => ({ party_id: 'party-1', screen: {} })
     },
     partyLog: { append: () => blocked }
@@ -154,6 +160,7 @@ test('failed turn cannot reuse consumed LLM trace from previous turn', async () 
             return { party_id: 'party-1', screen: {} };
           });
       },
+      recoverPendingPresentation: async () => ({ party_id: 'party-1', screen: {} }),
       getPartyScreen: async () => ({ party_id: 'party-1', screen: {} })
     },
     partyLog: { append: async (_partyId, event) => { events.push(event); } },
@@ -205,6 +212,7 @@ test('party log excludes custom provider credentials and endpoint', async () => 
           });
           return { party_id: 'party-secret', screen: {} };
         }),
+        recoverPendingPresentation: async () => ({ party_id: 'party-secret', screen: {} }),
         getPartyScreen: async () => ({ party_id: 'party-secret' })
       },
       partyLog: { append(...args) {

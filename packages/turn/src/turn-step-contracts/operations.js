@@ -217,12 +217,19 @@ function validateContainerAccess(value, path, errors, trace) {
 
 function validateMovement(value, path, errors, trace) {
   if (!strict(value, path,
-    ['op', 'actor_ref', 'target_ref', 'movement_kind'], errors)) return;
+    ['op', 'actor_ref', 'target_ref', 'movement_kind'], errors,
+    { optional: ['description', 'route_ref'] })) return;
   constant(value.op, 'request_movement', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
   knownRef(value.target_ref, `${path}.target_ref`, errors, trace);
   enumValue(value.movement_kind, ['local', 'route', 'long_course'],
     `${path}.movement_kind`, errors);
+  if (Object.hasOwn(value, 'route_ref')) {
+    knownRef(value.route_ref, `${path}.route_ref`, errors, trace);
+  }
+  if (Object.hasOwn(value, 'description')) {
+    requiredText(value.description, `${path}.description`, errors);
+  }
 }
 
 function validateItemUse(value, path, errors, trace) {

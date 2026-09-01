@@ -9,12 +9,14 @@ export { projectActorPortraitSpecV1 };
  */
 export function projectActiveConversationInterlocutor({
   conversation_sessions: sessions = [],
+  conversation_statements: statements = [],
   player_ref: playerRef,
   current_location_ref: currentLocationRef,
   visible_npcs: visibleNpcs = []
 } = {}) {
   if (!Array.isArray(sessions) || !exactRef(playerRef, 'player_character')
-      || !nonEmptyText(currentLocationRef) || !Array.isArray(visibleNpcs)) {
+      || !nonEmptyText(currentLocationRef) || !Array.isArray(visibleNpcs)
+      || !Array.isArray(statements)) {
     return null;
   }
   const activeAtLocation = sessions.filter((session) =>
@@ -35,12 +37,14 @@ export function projectActiveConversationInterlocutor({
     sameRef(participant, playerRef));
   const npcParticipants = participants.filter(({ entity_kind: kind }) =>
     kind === 'npc');
-  if (participants.length !== 2 || playerParticipants.length !== 1
-      || npcParticipants.length !== 1) {
+  if (playerParticipants.length !== 1 || npcParticipants.length === 0) {
     return null;
   }
 
-  const npcRef = npcParticipants[0];
+  const npcRef = participants.length === 2 && npcParticipants.length === 1
+    ? npcParticipants[0]
+    : lastNpcSpeaker({ session: activeAtLocation[0], statements, participants });
+  if (npcRef === null) return null;
   const matches = visibleNpcs.filter((npc) =>
     visibleNpcIds(npc).includes(npcRef.entity_id)
       && nonEmptyText(npc?.identity_state?.display_name));
@@ -58,6 +62,18 @@ export function projectActiveConversationInterlocutor({
   });
   if (portrait !== null) output.portrait_spec_v1 = portrait;
   return deepFreeze(output);
+}
+
+function lastNpcSpeaker({ session, statements, participants }) {
+  const lastRef = session.last_contribution_ref;
+  if (!exactRef(lastRef, 'conversation_statement')) return null;
+  const matches = statements.filter((statement) =>
+    statement?.statement_id === lastRef.entity_id
+      && statement.conversation_id === session.conversation_id
+      && exactRef(statement.speaker_ref, 'npc')
+      && participants.some((participant) => sameRef(participant,
+        statement.speaker_ref)));
+  return matches.length === 1 ? matches[0].speaker_ref : null;
 }
 
 function visibleNpcIds(npc) {

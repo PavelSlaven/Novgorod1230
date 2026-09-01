@@ -12,6 +12,9 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { resolveA1OperationScope } from
   '../src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js';
+import { INVALID_ACTION_PRODUCED_DATA,
+  snapshotActionProducedPersistenceData } from
+  '../src/infrastructure/postgres/action-produced-persistence-boundary.js';
 import { projectLowerDvinaTraceF1Capability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
 import { createSpatialV3ProductionBindings } from
@@ -193,6 +196,14 @@ test('A1 admits unchecked domain request but keeps checked evidence strict', () 
     check: { difficulty_id: 'standard' } });
   assert.throws(() => resolveA1OperationScope(checked, checked.operation,
     { max_new_entities: 4 }, true), { code: 'TRACE_A1_SCOPE_INVALID' });
+});
+
+test('A1 JSON boundary omits optional object values but rejects array holes', () => {
+  assert.deepEqual(snapshotActionProducedPersistenceData({ required: 1,
+    optional: undefined, nested: { optional: undefined } }), {
+    required: 1, nested: {} });
+  assert.equal(snapshotActionProducedPersistenceData([undefined]),
+    INVALID_ACTION_PRODUCED_DATA);
 });
 
 test('production-v11 threads exact F1 profile, resolver and temporal owner',

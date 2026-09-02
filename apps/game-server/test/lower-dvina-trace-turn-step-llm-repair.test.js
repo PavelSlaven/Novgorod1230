@@ -107,6 +107,12 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);
   assert.equal(seen.messages[0].content.includes(
+    'continuation.remaining_intent equals request.remaining_intent'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'selected operation consumed none of the intent'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'set operation_choice null, and re-plan the earliest action'), true);
+  assert.equal(seen.messages[0].content.includes(
     'never return the discarded later operation in operations'), true);
   assert.equal(seen.messages[0].content.includes(
     'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);

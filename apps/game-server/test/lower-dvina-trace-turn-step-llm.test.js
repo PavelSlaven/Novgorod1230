@@ -222,6 +222,8 @@ test('turn step planner prompt requests semantic choice without deterministic en
   assert.match(prompt,
     /Process independent actions in their stated order[\s\S]*later action never outranks an earlier feasible action/u);
   assert.match(prompt,
+    /travel is the current earliest independently executable action[\s\S]*later travel clause never outranks an earlier manipulation/u);
+  assert.match(prompt,
     /Never invent a preliminary relocation[\s\S]*without explicitly relocating it, plan the manipulation itself/u);
   assert.match(prompt,
     /Never represent cutting, tearing, partitioning, reshaping, wrapping, binding[\s\S]*action_production independent_outputs[\s\S]*complete later use[\s\S]*continuation/u);

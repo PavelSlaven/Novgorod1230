@@ -296,7 +296,7 @@ test('nearby NPC alone does not become an interlocutor', () => {
   assert.equal(projected.panels.people, undefined);
 });
 
-test('active session may use its already player-safe canonical NPC label', () => {
+test('active session without a visible NPC label exposes no interlocutor', () => {
   const projected = projectLowerDvinaTraceScreenPanels({
     payload: payload({ current_visible_context: {
       ...visibleContext(), visible_npc: []
@@ -306,8 +306,7 @@ test('active session may use its already player-safe canonical NPC label', () =>
       visible_context: { ...visibleContext(), visible_npc: [] }
     }
   });
-  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
-    'Еремей');
+  assert.equal(projected.panels.people, undefined);
 });
 
 test('state display name does not bypass the player-safe NPC label', () => {

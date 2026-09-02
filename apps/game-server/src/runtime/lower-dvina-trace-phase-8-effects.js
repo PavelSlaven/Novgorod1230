@@ -161,6 +161,7 @@ function playerVisibleNpcSpeech(semantic, npc) {
     ? statement.utterance_text : null;
 }
 function visibleNpcSummaries(contracts) {
+  if (contracts == null) return [];
   return [contracts.actors.zhdanko, contracts.actors.eremey,
     contracts.actors.ratsha, ...contracts.participatingFishers]
     .map((npc) => ({

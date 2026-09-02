@@ -67,7 +67,9 @@ export function appendNpcSemanticConversationWrites({
         proposal: { plan: semanticExchange.decision_plan }
       }];
   const hasDecision = decisions.length > 0;
-  const primaryDecision = decisions[0] ?? null;
+  const primaryDecision = decisions.find(({ request }) =>
+    request?.request_id === semanticExchange?.decision_request?.request_id)
+    ?? decisions[0] ?? null;
   const unavailableResume = semanticExchange?.exchange?.stop_reason
     === 'npc_unavailable'
     && contributions?.length === 0

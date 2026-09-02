@@ -31,7 +31,7 @@ test('Phase 7 omits base capabilities rejected by current owner state',
         const contract = request.decision_scope.operation_contract;
         assert.deepEqual(contract.request_activity.allowed,
           [{ activity_kind: 'wait', target_refs: [] }]);
-        assert.equal(Object.hasOwn(contract, 'request_item_use'), true);
+        assert.equal(Object.hasOwn(contract, 'request_item_use'), false);
         assert.equal(Object.hasOwn(contract, 'request_movement'), false);
         return phase7AutonomousPlan(request, 'wait');
       }

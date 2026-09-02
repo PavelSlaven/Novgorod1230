@@ -51,7 +51,9 @@ export function projectSemanticConversationSnapshot({
   const exchange = semanticExchange.exchange;
   const decisions = exchange?.npc_decisions ?? [];
   const hasDecision = decisions.length > 0;
-  const primaryDecision = decisions[0] ?? null;
+  const primaryDecision = decisions.find(({ request }) =>
+    request?.request_id === semanticExchange.decision_request?.request_id)
+    ?? decisions[0] ?? null;
   const firstContribution = exchange?.contributions?.[0];
   const resumedPlan = semanticExchange.resumed_npc_execution?.plan;
   const exchangeIdentity = hasDecision ? primaryDecision.request

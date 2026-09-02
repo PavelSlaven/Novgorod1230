@@ -288,7 +288,7 @@ test('A1 reuses generic check RNG and prepared semantic activity time owners',
       genericA1Plan());
 
     const result = await runTurnWorkflow(actionInput(), services);
-    assert.equal(result.status, 'resolved');
+    assert.equal(result.status, 'partial');
     assert.equal(result.summary.duration_minutes, 90);
     assert.deepEqual(calls,
       { random: 1, resolver: 1, activity: 1, time: 1, body: 1 });

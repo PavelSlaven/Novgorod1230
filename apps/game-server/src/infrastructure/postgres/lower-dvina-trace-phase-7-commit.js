@@ -213,6 +213,7 @@ const target = (writePlan, name) => writePlan.write_targets
 function fail(code, details = null) {
   throw serverError(code, 'Phase 7 factual commit failed closed.', {
     status: 409,
-    details
+    details,
+    public_exposure: 'internal'
   });
 }

@@ -140,10 +140,7 @@ export function projectLowerDvinaTraceVisibleNpcDetails({ visibleContext, projec
         && typeof visibleNpc.display_label === 'string'
         && visibleNpc.display_label.trim())
       .map(({ display_label: displayLabel }) => displayLabel.trim());
-    const projectedName = npc?.identity_state?.display_name;
-    const names = publicNames.length === 1 ? publicNames
-      : typeof projectedName === 'string' && projectedName.trim()
-        ? [projectedName.trim()] : [];
+    const names = publicNames.length === 1 ? publicNames : [];
     if (names.length !== 1) return null;
     const committedMatches = (committedNpcs ?? []).filter((candidate) =>
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,

@@ -234,7 +234,8 @@ test('repair accepts an exact copied code-owned choice without trusting a new DT
         } };
         return { output: { ...output(), resolution: 'domain_request',
           activity: { owner: 'domain', duration_class: null, effort: null },
-          operations: [structuredClone(operation)], operation_choice: null } };
+          operations: undefined,
+          operation_choice: 'domain_operation_1_request_discovery_inspect' } };
       }
     } });
 

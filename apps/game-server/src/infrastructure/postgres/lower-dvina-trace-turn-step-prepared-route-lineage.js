@@ -37,8 +37,9 @@ export function validatePreparedRouteTraceLineage({
       actor_id: state.actor_id
     });
     const { active_interlocutor: _activeInterlocutor,
-      ...nextRouteProjection } = projected.player_safe_state;
-    routeProjection = nextRouteProjection;
+      current_visible_context: _currentVisibleContext,
+      ...stableRouteProjection } = projected.player_safe_state;
+    routeProjection = stableRouteProjection;
     routeWorkingAfter = buildLowerDvinaTracePreparedRouteWorkingProjection({
       projection: routeProjection,
       movement: route.consequence.movement,
@@ -70,24 +71,34 @@ export function validatePreparedRouteTraceLineage({
     step_index: trace.step_index,
     summary: trace.approved_plan?.interpretation?.grounded_attempt
   }));
-  if (routeRequest?.request_id !== `${expectedRequestRoot}:step:1`
-      || routeRequest.root_turn_id !== loopTrace.root_turn_id
-      || routeRequest.root_turn_id !== envelope.root_turn_id
-      || routeRequest.committed_state_version
-        !== loopTrace.committed_state_version
-      || routeRequest.working_revision !== 0
-      || routeRequest.step_index !== 1
-      || routeRequest.root_player_action !== envelope.player_input.raw_text
-      || routeRequest.remaining_intent !== routeRequest.root_player_action
-      || !samePreparedValue(routeRequest.completed_steps, [])
-      || !samePreparedValue(routeRequest.actor, projected.actor)
-      || !containsStableProjection(
-        routeRequest.player_safe_state, routeProjection)
-      || route.projection_before_digest
-        !== canonicalDigest(routeProjection)
-      || route.projection_after_digest !== canonicalDigest(routeWorkingAfter)) {
-    preparedEffectFail('route trace does not bind its committed root lineage');
-  }
+  const playerSafeMismatches = Object.entries(routeProjection)
+    .filter(([key, expected]) => !samePreparedValue(
+      routeRequest?.player_safe_state?.[key], expected))
+    .map(([key]) => key);
+  const rootMismatches = [
+    ['request_id', routeRequest?.request_id === `${expectedRequestRoot}:step:1`],
+    ['loop_root', routeRequest?.root_turn_id === loopTrace.root_turn_id],
+    ['envelope_root', routeRequest?.root_turn_id === envelope.root_turn_id],
+    ['state_version', routeRequest?.committed_state_version
+      === loopTrace.committed_state_version],
+    ['working_revision', routeRequest?.working_revision === 0],
+    ['step_index', routeRequest?.step_index === 1],
+    ['root_action', routeRequest?.root_player_action
+      === envelope.player_input.raw_text],
+    ['remaining_intent', routeRequest?.remaining_intent
+      === routeRequest?.root_player_action],
+    ['completed_steps', samePreparedValue(routeRequest?.completed_steps, [])],
+    ['actor', samePreparedValue(routeRequest?.actor, projected.actor)],
+    [`player_safe_state(${playerSafeMismatches.join('|')})`,
+      playerSafeMismatches.length === 0],
+    ['projection_before', route.projection_before_digest
+      === canonicalDigest(routeProjection)],
+    ['projection_after', route.projection_after_digest
+      === canonicalDigest(routeWorkingAfter)]
+  ].filter(([, valid]) => !valid).map(([name]) => name);
+  if (rootMismatches.length > 0) preparedEffectFail(
+    `route trace does not bind its committed root lineage: ${
+      rootMismatches.join(', ')}`);
   if (directTrace == null) return;
   const request = directTrace.plan_request;
   const previousTrace = priorTraces.at(-1);

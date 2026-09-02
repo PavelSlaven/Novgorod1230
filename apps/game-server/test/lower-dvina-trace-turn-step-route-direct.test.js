@@ -20,8 +20,6 @@ import { recheckTracePhase3LocationCapacity } from
   '../src/infrastructure/postgres/first-playable/recheck-location-capacity.js';
 import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
-import { projectLowerDvinaTracePlayerSafeState } from
-  '../src/runtime/lower-dvina-trace-player-safe-state.js';
 import { validateAuthoritativePreparedRoute } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-effect-authority.js';
 
@@ -181,10 +179,15 @@ test('a known reverse route is offered and committed once without an authored co
       appearance: { ...ratsha.identity_state?.appearance,
         build: 'средний' } };
     ratsha.player_safe_presentation = { emotion: 'настороженность' };
-    state.visible_context = { visible_scene: 'У старого сарая.', visible_npc: [{
-      entity_ref: { entity_kind: 'npc', entity_id: ratsha.instance_id },
-      display_label: 'Ратша'
-    }] };
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'старая сушильня', visible_changes: [],
+      sensory_details: [], visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: ratsha.instance_id },
+        display_label: 'Ратша', recognition: 'recognized'
+      }], visible_objects: [], known_context: ['старая сушильня'],
+      uncertainties: []
+    };
     state.conversation_sessions = [{ schema: 'conversation_session_v1',
       conversation_id: 'shed-conversation', status: 'active',
       location_ref: { entity_kind: 'location', entity_id: shed.location_profile_ref },
@@ -199,18 +202,6 @@ test('a known reverse route is offered and committed once without an authored co
     const before = structuredClone(state);
     const scenario = fixture({ scenarioBundle: bundle,
       materializationBundle: bundle, committedState: state, rollValue: 0.99,
-      playerSafeStateProjector(input) {
-        const projected = projectLowerDvinaTracePlayerSafeState(input);
-        const interlocutor = projected.player_safe_state.active_interlocutor;
-        if (interlocutor == null) return projected;
-        return { ...projected, player_safe_state: {
-          ...projected.player_safe_state,
-          active_interlocutor: {
-            ...interlocutor,
-            portrait_spec_v1: { schema: 'portrait_spec_v1' }
-          }
-        } };
-      },
       turnStepModel(request) {
         if (request.step_index === 2) {
           assert.equal(request.player_safe_state.position.location_ref,
@@ -233,7 +224,7 @@ test('a known reverse route is offered and committed once without an authored co
         assert.ok(operation);
         assert.deepEqual(request.player_safe_state.active_interlocutor, {
           entity_ref: { entity_kind: 'npc', entity_id: ratsha.instance_id },
-          display_label: 'Ратша', portrait_spec_v1: { schema: 'portrait_spec_v1' }
+          display_label: 'Ратша'
         });
         return {
           schema: 'turn_step_plan_v1', request_id: request.request_id,

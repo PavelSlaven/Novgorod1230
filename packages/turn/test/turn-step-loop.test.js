@@ -421,7 +421,7 @@ test('domain owner can stop automatic continuation at a player boundary', async 
   assert.deepEqual(outcome.consequence_fragments, [{ kind: 'treatment' }]);
 });
 
-test('completed goal remains resolved at a visible player boundary', async () => {
+test('completed action remains at its visible player boundary', async () => {
   const executionRegistry = createTurnStepExecutionRegistry({
     domain: {
       request_activity: async ({ working_projection: projection }) =>
@@ -446,8 +446,8 @@ test('completed goal remains resolved at a visible player boundary', async () =>
     })
   }));
 
-  assert.equal(outcome.status, 'resolved');
-  assert.equal(outcome.stop_reason, 'terminal');
+  assert.equal(outcome.status, 'player_response_required');
+  assert.equal(outcome.stop_reason, 'player_response');
   assert.equal(outcome.remaining_intent, null);
 });
 

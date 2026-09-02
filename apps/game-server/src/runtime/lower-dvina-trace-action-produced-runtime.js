@@ -1,6 +1,7 @@
 import { resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { actionProducedPhysicalFactTexts } from
   '@rus/items-property';
+import { compact } from './lower-dvina-trace-player-safe-json.js';
 import {
   fail,
   plain,
@@ -49,7 +50,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       continue;
     }
     const metadata = update.after_item.state?.ordinary_metadata;
-    const projected = {
+    const projected = compact({
       ...current,
       template_id: update.after_item.template_id,
       profile_id: update.after_item.profile_id,
@@ -65,7 +66,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       quantity: update.after_item.quantity,
       condition_state: update.after_item.condition_state,
       legal_status: update.after_item.legal_status
-    };
+    });
     next.items = next.items.map((item) => matchesItem(item, itemId)
       ? projected : item);
     state.entities.set(itemId, runtimeEntity(itemId, update.after_item.state));
@@ -148,7 +149,7 @@ export function hydratePreparedOrdinaryRuntime(plan, itemId, state) {
 
 function projectRuntimeItem(itemId, row, placement, runtime) {
   const metadata = row.state?.ordinary_metadata;
-  return {
+  return compact({
     item_id: itemId, instance_id: itemId,
     template_id: row.template_id, profile_id: row.profile_id,
     category_id: row.category_id ?? metadata?.semantic_type ?? null,
@@ -162,7 +163,7 @@ function projectRuntimeItem(itemId, row, placement, runtime) {
     quantity_unit_id: runtime.mechanics.quantity?.unit,
     condition_state: row.condition_state, legal_status: row.legal_status,
     placement: structuredClone(placement)
-  };
+  });
 }
 
 function physicalFactRecords(values) {

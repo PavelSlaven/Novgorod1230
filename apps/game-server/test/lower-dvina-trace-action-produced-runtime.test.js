@@ -129,6 +129,8 @@ test('preserved A1 source exposes its physical change now and after reload', () 
         ordinary_metadata: { semantic_type: 'ordinary_mundane', name: 'жердь',
           origin: { kind: 'ambient_ordinary', source_refs: ['shore'] },
           semantic_facts: [], operation_history: [] } } }], knowledge: [] };
+  delete committed.items[0].name;
+  committed.items[0].state.ordinary_metadata.name = null;
   const { state: ignoredState,
     runtime_instance_mechanics_snapshot: ignoredSnapshot,
     ...projectedItem } = committed.items[0];

@@ -166,7 +166,8 @@ function bindings(release) {
         (field)=>[field,check[field]]))} : {})}),
   createPublicRuntimeFacade:async()=>Object.fromEntries([
     'listScenarios','startNewGame','acknowledgeOpening','submitTurn',
-    'getPartyScreen'].map((method)=>[method,async()=>({ok:true})])),
+    'getPartyScreen','recoverPendingPresentation'
+  ].map((method)=>[method,async()=>({ok:true})])),
   releaseBinding:{...release},runtimeCatalogPin:{...pin}};
 }
 

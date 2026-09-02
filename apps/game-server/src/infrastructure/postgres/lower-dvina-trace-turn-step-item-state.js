@@ -48,6 +48,7 @@ export function runtimeEntities(items) {
 export function physicalPlacement(value) {
   return {
     anchor_id: value.anchor_id ?? null,
+    scene_position_id: value.scene_position_id ?? null,
     container_id: value.container_id ?? null,
     holder_npc_id: value.holder_npc_id ?? null,
     holder_character_id: value.holder_character_id ?? null,

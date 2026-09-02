@@ -67,6 +67,7 @@ test('M1 batch collapses create, move, facts and mechanics to atomic final rows'
     assert.deepEqual(itemWrite.state.ordinary_metadata.semantic_facts.map(
       ({ fact_id: id }) => id), ['fact:sand:packed']);
     assert.equal(result.writes.inserts[1].record.anchor_id, 'anchor-shore');
+    assert.equal(result.writes.inserts[1].record.scene_position_id, null);
     assert.equal(result.writes.inserts[1].record.holder_character_id, null);
     assert.equal(result.snapshot.items.some(
       ({ item_id: id }) => id === 'authored-item'), true,

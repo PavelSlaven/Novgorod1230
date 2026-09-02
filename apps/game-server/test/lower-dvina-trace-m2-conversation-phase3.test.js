@@ -229,7 +229,7 @@ test('supported semantic revisions bind exact semantic persistence to the root t
       conversation: { semantic_exchange: semanticExchange }
     }
   };
-  for (const scenarioRevision of [14, 15, 27]) {
+  for (const scenarioRevision of [14, 15, 27, 32]) {
     assert.deepEqual(phase3SemanticCommitContext({
       scenarioRevision,
       factual,

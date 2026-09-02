@@ -24,7 +24,8 @@ export function assertTracePhase2ExecutionBinding({
   const initialCold = revision >= 27 ? {
     from: 'mild_shivering', to: 'mild_shivering', outcome: 'worsens'
   } : { from: 'cold_with_possible_shivering', to: 'mild_shivering', outcome: 'worsens' };
-  if (![7, 27, 28, 29, 30, 31].includes(revision)
+  if (!(revision === 7
+        || Number.isSafeInteger(revision) && revision >= 27)
       || activityRef?.id !== activity.profile_id
       || activityRef?.version !== activity.version
       || activityRef?.record_digest !== canonicalDigest(activity)

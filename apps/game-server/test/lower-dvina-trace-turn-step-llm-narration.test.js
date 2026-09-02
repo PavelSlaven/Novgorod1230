@@ -128,6 +128,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'repeating how or why the player looked is technical_presentation'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'FAIL with kind missing_visible_change'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'already a confirmed player-safe fact and sufficient evidence'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed concern kind>"/u);
@@ -161,6 +163,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'faithful natural paraphrase of visible_context is allowed'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'For missing_visible_change'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'ensure the repaired full prose still conveys every material visible_change'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(Object.hasOwn(JSON.parse(calls[3].messages[1].content),
     'action_intent_context'), false);

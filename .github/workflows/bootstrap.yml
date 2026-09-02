@@ -1,7 +1,6 @@
-name: Bootstrap project import
+name: Temporary generated docs sync
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - .github/workflows/bootstrap.yml
@@ -10,14 +9,43 @@ permissions:
   contents: write
 
 jobs:
-  import-project:
+  sync-generated:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout bootstrap commit
-        uses: actions/checkout@v7
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Download project archive
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate canonical documentation artifacts
+        run: npm run docs:generate
+
+      - name: Commit generated artifacts
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check "
+          git add -- \
+            generated/generated-manifest.json \
+            generated/knowledge-source/graph/GRAPH_REPORT.md \
+            generated/knowledge-source/graph/graph.json \
+            generated/knowledge-source/graph/manifest.json \
+            generated/knowledge-source/manifests/knowledge-source-generated-manifest.json \
+            generated/knowledge-source/rag/lexical-index.json \
+            generated/knowledge-source/rag/manifest.json
+          if git diff --cached --quiet; then
+            echo "Generated artifacts already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: sync generated knowledge artifacts"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

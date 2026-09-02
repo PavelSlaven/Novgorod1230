@@ -60,7 +60,6 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   const clockChanged = canonicalDigest(envelope.time_update.clock_after)
     !== canonicalDigest(state.clock);
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
-  next.current_visible_context = structuredClone(envelope.visible_context);
   next.party_state = {
     ...next.party_state,
     state_version: nextVersion,

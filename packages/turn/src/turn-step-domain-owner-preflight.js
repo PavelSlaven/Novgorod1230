@@ -61,7 +61,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     ).then((result) => {
       if (result === true) return validateOwners();
       throw turnCommandError('TURN_STEP_PLAN_INVALID',
-        'Semantic plan source grounding is invalid.', {
+        'Semantic plan grounding is invalid.', {
           errors: structuredClone(result?.errors ?? [{
             path: '$.operations', rule: 'source_semantic_grounding',
             code: 'source_semantic_grounding',

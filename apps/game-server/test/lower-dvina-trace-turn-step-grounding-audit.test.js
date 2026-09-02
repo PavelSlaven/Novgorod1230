@@ -96,10 +96,43 @@ test('grounding audit preserves semantic and placement concerns together',
     });
     assert.deepEqual(result.errors.map(({ code }) => code), [
       'source_semantic_grounding', 'source_placement_grounding'
-    ]);
+  ]);
+});
+
+test('grounding audit rejects a selected domain operation for another action',
+  async () => {
+    const operation = { op: 'request_discovery', actor_ref: 'actor',
+      discovery_kind: 'inspect', target_refs: ['shore'],
+      query: 'Подробно осмотреть место крушения.' };
+    let payload;
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run(call) {
+        payload = JSON.parse(call.messages[1].content);
+        return { output: { pass: false,
+          concerns: [{ kind: 'operation_semantic_mismatch' }] } };
+      } },
+      plan: { operations: [operation], continuation: {
+        remaining_intent: 'Собрать ветки и пойти вдоль воды.',
+        depends_on_refs: []
+      } },
+      request: { request_id: 'request-operation',
+        root_player_action: 'Оглядываю берег, собираю ветки и иду вдоль воды.',
+        remaining_intent:
+          'Оглядываю берег, собираю ветки и иду вдоль воды.',
+        completed_steps: [], available_domain_operations: [operation],
+        player_safe_state: {} }
+    });
+    assert.equal(result.errors[0].code, 'operation_semantic_grounding');
+    assert.deepEqual(payload.selected_domain_operations, [{
+      path: '$.operations.0', operation
+    }]);
+    assert.deepEqual(payload.continuation, {
+      remaining_intent: 'Собрать ветки и пойти вдоль воды.',
+      depends_on_refs: []
+    });
   });
 
-test('non-production turn skips grounding model', async () => {
+test('unselected non-production turn skips grounding model', async () => {
   let calls = 0;
   assert.equal(await auditTurnStepSourceGrounding({
     roleRunner: { async run() { calls += 1; } },

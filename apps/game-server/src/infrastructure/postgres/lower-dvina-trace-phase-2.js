@@ -157,12 +157,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    withPhase2CurrentVisibleContext(loadedPayload,
-      await loadPhase2VisibleContext(partyPool, {
+    const loadedWithCurrentVisible = withPhase2CurrentVisibleContext(
+      loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
     return withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, {
-      ...loadedPayload,
+      ...loadedWithCurrentVisible,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest

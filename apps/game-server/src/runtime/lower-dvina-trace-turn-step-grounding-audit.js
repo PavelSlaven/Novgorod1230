@@ -1,11 +1,13 @@
+import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} or the same failure with kind "missing_required_source_move", or both concerns. Audit two things independently and report every present concern once, ordered source_semantic_mismatch then missing_required_source_move. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} using only these concern kinds: source_semantic_mismatch, missing_required_source_move, operation_semantic_mismatch; report every present concern once in that order. Audit three things independently. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Third, each selected_domain_operation must semantically cover the next independently executable action in remaining_intent. Its own supplied query, description, kind, and player-safe referent evidence must match that action; sharing only an actor, place, broad verb, or operation type is insufficient. A fixed authored inspection does not cover a broader general look or a different ordinary search. Every independent clause not covered by that operation must remain in continuation.remaining_intent. Report operation_semantic_mismatch for a different action, over-broad consumption, or lost uncovered clause. Do not report it merely because exact mechanics are absent from player text. Do not plan, repair, invent refs, or judge mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
   const productions = actionProductions(plan, request.player_safe_state);
-  if (productions.length === 0) return true;
+  const selectedDomains = selectedDomainOperations(plan, request);
+  if (productions.length === 0 && selectedDomains.length === 0) return true;
   const response = await roleRunner.run({
     scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
     request_identity: request.request_id,
@@ -19,6 +21,8 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
           check_outcomes: Object.fromEntries(Object.entries(
             plan.check?.outcomes ?? {}).map(([band, outcome]) => [band,
             outcome.operations ?? []])) },
+        selected_domain_operations: selectedDomains,
+        continuation: plan.continuation ?? null,
         action_productions: productions,
         sensory_details: request.player_safe_state?.current_visible_context
           ?.sensory_details ?? []
@@ -34,7 +38,9 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     ['source_semantic_mismatch', 'source_semantic_grounding',
       'each source must denote its named material from its own player-safe evidence'],
     ['missing_required_source_move', 'source_placement_grounding',
-      'explicit source relocation requires a matching move_entity']
+      'explicit source relocation requires a matching move_entity'],
+    ['operation_semantic_mismatch', 'operation_semantic_grounding',
+      'selected domain operation must cover the current intent']
   ];
   return { pass: false, errors: definitions
     .filter(([kind]) => response.output.concerns.some((concern) =>
@@ -42,6 +48,28 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     .map(([, code, message]) => ({
       path: '$.operations', rule: code, code, message
     })) };
+}
+
+function selectedDomainOperations(plan, request) {
+  const choices = [
+    ...(request.available_domain_operations ?? []),
+    ...(request.player_safe_state?.local_world_process?.allowed ?? [])
+  ];
+  return plannedOperations(plan).filter(({ operation }) => choices.some(
+    (choice) => isDeepStrictEqual(choice, operation)));
+}
+
+function plannedOperations(plan) {
+  const found = (plan?.operations ?? []).map((operation, index) => ({
+    path: `$.operations.${index}`, operation: structuredClone(operation)
+  }));
+  for (const [band, outcome] of Object.entries(plan?.check?.outcomes ?? {})) {
+    for (const [index, operation] of (outcome.operations ?? []).entries()) {
+      found.push({ path: `$.check.outcomes.${band}.operations.${index}`,
+        operation: structuredClone(operation) });
+    }
+  }
+  return found;
 }
 
 function actionProductions(plan, state) {
@@ -99,6 +127,7 @@ function valid(value) {
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
       && Object.keys(concern).length === 1
-      && ['source_semantic_mismatch', 'missing_required_source_move']
+      && ['source_semantic_mismatch', 'missing_required_source_move',
+        'operation_semantic_mismatch']
         .includes(concern.kind));
 }

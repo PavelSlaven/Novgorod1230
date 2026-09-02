@@ -175,7 +175,7 @@ test('same-root world-process steps receive prior plans and projected process',
           activity:{owner:'domain',duration_class:null,effort:null},
           operations:[{op:'request_world_process',actor_ref:'party-1',
             process_kind:'fire',description:'продолжить огонь',...operation}],
-          continuation:{remaining_intent:step===1
+          continuation:step===3?null:{remaining_intent:step===1
             ?'добавить топлива и залить водой':'залить водой',
           depends_on_refs:['process-1']}});
       }

@@ -159,6 +159,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'entire supplied prose as one coherent paragraph'), true);
   assert.equal(calls[3].messages[0].content.includes(
+    'never emit a sentence whose only content is elapsed time'), true);
+  assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'Remove every unsupported claim'), true);

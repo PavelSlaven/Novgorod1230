@@ -29,6 +29,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore npm-normalized CLI file modes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout -- \
+            tools/cutover/src/cli.js \
+            tools/docs-tools/src/cli.js \
+            tools/map-maker/src/cli.js \
+            tools/shadow-run/src/cli.js \
+            tools/world-catalog-workflow/src/cli.js
+
       - name: Synchronize corpus manifest and source alias
         shell: bash
         run: |
@@ -124,6 +135,7 @@ jobs:
           allowed_exact = {
               'data/knowledge-source/corpus-manifest.json',
               'data/knowledge-source/source-aliases.json',
+              'generated/generated-manifest.json',
           }
           unexpected = [
               path for path in changed
@@ -134,6 +146,7 @@ jobs:
           if 'data/knowledge-source/corpus-manifest.json' not in changed:
               raise SystemExit('corpus manifest did not change')
           required_generated = {
+              'generated/generated-manifest.json',
               'generated/knowledge-source/graph/manifest.json',
               'generated/knowledge-source/rag/lexical-index.json',
               'generated/knowledge-source/rag/manifest.json',
@@ -142,6 +155,9 @@ jobs:
           missing = sorted(required_generated.difference(changed))
           if missing:
               raise SystemExit('expected generated changes are missing: ' + ', '.join(missing))
+          summary = subprocess.check_output(['git', 'diff', '--summary'], text=True).strip()
+          if 'mode change' in summary:
+              raise SystemExit('unexpected file-mode change remains:\n' + summary)
           print('Validated changed files:')
           print('\n'.join(changed))
           PY
@@ -153,6 +169,7 @@ jobs:
           git rm .github/workflows/docs-knowledge-regenerate.yml
           git add data/knowledge-source/corpus-manifest.json \
                   data/knowledge-source/source-aliases.json \
+                  generated/generated-manifest.json \
                   generated/knowledge-source
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

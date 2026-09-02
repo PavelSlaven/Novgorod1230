@@ -226,8 +226,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
 
     const continuation = execution.continuation;
     if (execution.boundary || preparedSequenceComplete) {
-      stopReason = execution.goalResult !== 'pending' && continuation == null
-        ? 'terminal' : 'player_response';
+      stopReason = 'player_response';
       remainingIntent = continuation?.remaining_intent ?? '';
       break;
     }

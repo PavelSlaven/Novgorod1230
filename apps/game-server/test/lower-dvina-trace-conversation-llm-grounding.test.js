@@ -64,7 +64,9 @@ test('speech grounding admits supported route and ordinary reply, rejects unsupp
     unsupported.speech.dominant_act = 'inform';
     const rejected = createLowerDvinaTraceNpcSemanticModel(runner(() => ({ pass: false, concerns: [{ kind: 'unsupported_direction' }] })));
     assert.deepEqual(await rejected.validateFreshPlan(unsupported, ordinaryRequest), { pass: false, errors: [{
-      code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED', category: 'semantic_grounding', retryable: true
+      code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED', category: 'semantic_grounding', retryable: true,
+      concern_kinds: ['unsupported_direction'],
+      message: 'Remove the unsupported world assertion or direction unless the request supplies its exact supporting operation.'
     }] });
     const repairFixture = runner(() => ordinaryPlan);
     await createLowerDvinaTraceNpcSemanticModel(repairFixture)(ordinaryRequest, { repair: { original_output: unsupported,

@@ -17,7 +17,9 @@ export async function auditFreshNpcSpeech({ roleRunner, plan, request }) {
   );
   return response.output.pass ? true : { pass: false, errors: [{
     code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
-    category: 'semantic_grounding', retryable: true
+    category: 'semantic_grounding', retryable: true,
+    concern_kinds: response.output.concerns.map(({ kind }) => kind),
+    message: 'Remove the unsupported world assertion or direction unless the request supplies its exact supporting operation.'
   }] };
 }
 

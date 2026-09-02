@@ -95,7 +95,13 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'owner absence is not evidence of impossibility or fantasy'), true);
   assert.equal(seen.messages[0].content.includes(
-    'neither operation replaces the other'), true);
+    'Never combine move_entity and action_production in one plan'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'semantic grounding wins: do not move the discarded ref'), true);
+  assert.equal(seen.messages[0].content.includes(
+    '{"op":"move_entity","entity_ref":"<grounded source ref>","placement"'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'never preserve a ref whose descriptors identify another object'), true);
   assert.equal(seen.messages[0].content.includes('Do not re-plan or invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

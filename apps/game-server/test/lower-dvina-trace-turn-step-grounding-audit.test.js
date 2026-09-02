@@ -77,7 +77,26 @@ test('grounding audit reports an explicit source relocation omitted by plan',
     });
     assert.equal(result.errors[0].code, 'source_placement_grounding');
     assert.match(call.messages[0].content,
-      /even when the source is immediately transformed/u);
+      /report every present concern once/u);
+  });
+
+test('grounding audit preserves semantic and placement concerns together',
+  async () => {
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run() { return { output: { pass: false,
+        concerns: [{ kind: 'missing_required_source_move' },
+          { kind: 'source_semantic_mismatch' }] } }; } },
+      plan: { operations: [{ op: 'request_item_use', action_production: {
+        source_refs: ['item:shirt'] } }] },
+      request: { request_id: 'request-both', actor: { actor_id: 'actor' },
+        root_player_action: 'Беру сеть и чиню её.',
+        remaining_intent: 'Беру сеть и чиню её.', completed_steps: [],
+        player_safe_state: { items: [{ item_id: 'item:shirt',
+          name: 'льняная рубаха' }] } }
+    });
+    assert.deepEqual(result.errors.map(({ code }) => code), [
+      'source_semantic_grounding', 'source_placement_grounding'
+    ]);
   });
 
 test('non-production turn skips grounding model', async () => {

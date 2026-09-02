@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} or the same failure with kind "missing_required_source_move". Audit two things only. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity even when the source is immediately transformed in the same sentence; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Audit relocation before transformation. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} or the same failure with kind "missing_required_source_move", or both concerns. Audit two things independently and report every present concern once, ordered source_semantic_mismatch then missing_required_source_move. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Do not plan, repair, invent refs, or judge mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
@@ -30,16 +30,18 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     'Turn-step grounding auditor returned an invalid result.', { status: 503 }
   );
   if (response.output.pass) return true;
-  const moveMissing = response.output.concerns.some(({ kind }) =>
-    kind === 'missing_required_source_move');
-  const code = moveMissing
-    ? 'source_placement_grounding' : 'source_semantic_grounding';
-  return { pass: false, errors: [{
-    path: '$.operations', rule: code, code,
-    message: moveMissing
-      ? 'explicit source relocation requires a matching move_entity'
-      : 'each source must denote its named material from its own player-safe evidence'
-  }] };
+  const definitions = [
+    ['source_semantic_mismatch', 'source_semantic_grounding',
+      'each source must denote its named material from its own player-safe evidence'],
+    ['missing_required_source_move', 'source_placement_grounding',
+      'explicit source relocation requires a matching move_entity']
+  ];
+  return { pass: false, errors: definitions
+    .filter(([kind]) => response.output.concerns.some((concern) =>
+      concern.kind === kind))
+    .map(([, code, message]) => ({
+      path: '$.operations', rule: code, code, message
+    })) };
 }
 
 function actionProductions(plan, state) {

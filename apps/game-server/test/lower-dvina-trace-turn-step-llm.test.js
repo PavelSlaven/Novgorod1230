@@ -179,6 +179,18 @@ test('turn step planner prompt preserves only compound intent outside capability
     } }
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
+  const mappings = JSON.parse(prompt.match(
+    /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
+  )[1]);
+  assert.deepEqual(mappings.direct_item_relocation.operations, [{
+    op: 'move_entity', entity_ref: '<copy the grounded source item ref>',
+    placement: {
+      relation: '<held_by, worn_by, inside, located_at, or attached_to>',
+      target_ref: '<copy the player-safe actor, container, position, or attachment target ref>'
+    }
+  }]);
+  assert.match(prompt,
+    /direct preparation and action_production cannot share one plan[\s\S]*plan only move_entity now[\s\S]*still-unexecuted transformation in continuation/u);
   assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 

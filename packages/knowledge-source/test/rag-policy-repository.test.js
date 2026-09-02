@@ -70,7 +70,9 @@ test('repository registers active spatial v3 specializations and excludes deprec
   );
   assert.deepEqual(policy.default_statuses, ['active']);
   assert.equal(policy.documents.filter((document) => activeV3Ids.includes(document.document_id)).length, activeV3Ids.length);
+  const indexDocument = manifest.documents.find((document) => document.document_id === 'contract-index');
   const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
+  assert.equal(indexDocument?.status, 'active');
   assert.equal(indexMetadata?.document_type, 'navigation');
   assert.equal(indexMetadata?.priority_tier, 'navigation');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('contract-index')));

@@ -107,6 +107,8 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);
   assert.equal(seen.messages[0].content.includes(
+    'never return the discarded later operation in operations'), true);
+  assert.equal(seen.messages[0].content.includes(
     'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

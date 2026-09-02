@@ -219,6 +219,8 @@ test('turn step planner prompt requests semantic choice without deterministic en
     'domain_request'
   ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
   assert.match(prompt, /continuation\.next_step[\s\S]*remaining_intent[\s\S]*depends_on_refs as \[\][\s\S]*copied player-safe refs[\s\S]*prepared_followup_ref[\s\S]*request prepared_followup_candidate[\s\S]*no other fields/u);
+  assert.match(prompt,
+    /Process independent actions in their stated order[\s\S]*later action never outranks an earlier feasible action/u);
 });
 
 test('turn step planner assembles exact domain operation and preserves independent continuation', async () => {

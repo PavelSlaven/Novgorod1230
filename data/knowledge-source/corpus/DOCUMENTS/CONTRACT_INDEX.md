@@ -50,7 +50,7 @@
 |---|---|---|
 | [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline |
 
-`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`. Его устойчивое содержание уже включено в root `AGENTS.md`; создавать параллельную копию не следует. Внешняя копия с таким именем может быть только входным материалом для сравнения и не переопределяет GitHub.
+`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 
 ## 3.1. Module contracts and public schemas
 
@@ -99,8 +99,8 @@ Active status applies only to the scope stated by each header and active profile
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |
 | [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |
-| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25 + Contract Auditor rules below |
-| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25 + this index |
+| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
+| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
 
 The obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.
 
@@ -134,36 +134,9 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 ## 8. Contract Auditor
 
-`CONTRACT AUDITOR` is a read-only specialist. It establishes the applicable source set, document statuses, precedence and implementation consistency. It does not edit production code, invent a new owner or change a contract merely to bless an implementation bug.
+Обязательность Contract Auditor, его read-only роль, mandatory triggers, always-read source set, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.
 
-### 8.1. Mandatory triggers
-
-Run Contract Auditor when at least one condition is true:
-
-1. a governing/normative document, this index, `AGENTS.md`, nested `AGENTS.md` or `MODULE.md` is created, changed, moved, renamed, deleted or promoted;
-2. an active release/profile/manifest/binding/status changes;
-3. public schema, operation, API, package export, DDL, persistence, transaction, idempotency or replay boundary changes;
-4. a domain owner or owner-to-owner handoff changes;
-5. LLM authority, prompt, request/plan contract, model-call topology or repair policy changes;
-6. free actions, ordinary materialization, items/property, Spatial G0–G6, NPC decisions/conversation/combat, time/processes, visibility/knowledge/perception, direct speech or narration boundaries change;
-7. an implementation plan cites a proposed/target/migration/historical document;
-8. `AGENTS.md`, index, contract, `MODULE.md`, schema, code or tests disagree about current behavior;
-9. final acceptance concerns a cross-module or otherwise elevated-risk change.
-
-For an ordinary local fix Contract Auditor is not mandatory only when CHIEF proves that public behavior, contracts, owner boundary, persistence/schema, LLM authority and active profile status remain unchanged.
-
-### 8.2. Always-read source set
-
-1. root `AGENTS.md`;
-2. this index;
-3. applicable nested `AGENTS.md`;
-4. relevant `MODULE.md`;
-5. active release/profile/manifest/bindings;
-6. applicable active contract/schema;
-7. production code, callers and tests;
-8. proposed/target/migration docs only for explicit implementation/audit of that target.
-
-### 8.3. Scope matrix
+### 8.1. Scope matrix
 
 | Scope | Mandatory contract set |
 |---|---|
@@ -179,36 +152,12 @@ For an ordinary local fix Contract Auditor is not mandatory only when CHIEF prov
 | Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
 | Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |
 
-### 8.4. Finding format
-
-```text
-CONTRACT AUDIT FINDING
-
-scope:
-source_set:
-source_statuses:
-observed_implementation:
-required_by_active_contract:
-target_if_any:
-conflict:
-precedence_resolution:
-first_bad_boundary:
-correct_owner:
-required_code_delta:
-required_docs_delta:
-required_tests:
-severity: P0 | P1 | P2 | P3
-verdict: PASS | PASS_WITH_NOTES | BLOCK
-```
-
-`BLOCK` is required when a diff violates a governing/active contract, creates mixed semantics or duplicate ownership, or presents proposed behavior as current production. Documentation drift that does not change production may be `PASS_WITH_NOTES`, but must be assigned to the correct documentation owner.
-
 ## 9. Audited conflict register
 
 ### C-001 — absent `Novgorod1230_project_instruction_full.md`
 
-**Observed:** exact filename is absent from `main`; external prompts still require it.  
-**Resolution:** root `AGENTS.md` already contains the stable product constitution and repository rules. Do not add a duplicate. External copies are noncanonical comparison inputs only.
+**Observed:** exact filename is absent from `main`; an administrator may still supply it externally as current task instruction.  
+**Resolution:** do not add a duplicate to the repository. For merged/current implementation state use `main`, root `AGENTS.md`, active contracts, code and tests. An explicitly supplied administrator project instruction remains governing task input for product/reviewer intent; if it conflicts with repository state, report the conflict and distinguish current production from target instead of silently overriding either side.
 
 ### C-002 — old navigation claimed precedence over root instructions
 
@@ -219,7 +168,7 @@ verdict: PASS | PASS_WITH_NOTES | BLOCK
 
 **Observed:** two legacy critic-rule files mandated a critic for every behavior/code change.  
 **Conflict:** root `AGENTS.md` requires independent audit for elevated-risk work and explicitly says ordinary local fixes do not require a separate critic.  
-**Resolution:** root `AGENTS.md` §25 wins; legacy files redirect to the risk-based rule and Contract Auditor triggers.
+**Resolution:** root `AGENTS.md` §25.1 wins; legacy files redirect to that single governing audit rule and this index supplies only contract status/navigation/scope-matrix data.
 
 ### C-004 — `target` filename interpreted as proposed
 

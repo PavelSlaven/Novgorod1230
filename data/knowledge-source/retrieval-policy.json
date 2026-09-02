@@ -1,24 +1,18 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "440f2b67fb96de21f6f7bdcbed5ff1579de47b1f306f05636aa8e55d13ac2ac7",
-  "default_statuses": [
-    "active"
-  ],
+  "baseline_manifest_sha256": "de6b8f23a093a4f3c838bd4ae3830dd5ad8e1a79b0cdcaa3db8deb4c27b877cf",
+  "default_statuses": ["active"],
   "documents": [
     {
       "document_id": "universal-category-classification-policy",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "classification",
-        "world-base",
-        "materialization"
-      ],
+      "subsystems": ["classification", "world-base", "materialization"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-base-materialization-table-requirements",
-        "llm-documentation-navigation"
+        "contract-index"
       ],
       "related_module_paths": [
         "infra/world-base",
@@ -41,20 +35,13 @@
       "document_id": "universal-category-classification-references",
       "document_type": "reference",
       "priority_tier": "reference",
-      "subsystems": [
-        "classification",
-        "editorial"
-      ],
+      "subsystems": ["classification", "editorial"],
       "related_document_ids": [
         "universal-category-classification-policy",
-        "llm-documentation-navigation"
+        "contract-index"
       ],
-      "related_module_paths": [
-        "infra/world-base"
-      ],
-      "related_contracts": [
-        "external classification mapping"
-      ],
+      "related_module_paths": ["infra/world-base"],
+      "related_contracts": ["external classification mapping"],
       "search_terms": [
         "SKOS",
         "Getty AAT",
@@ -68,24 +55,11 @@
       "document_id": "base-turn-orchestration",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "turn",
-        "orchestration"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/turn"
-      ],
-      "related_contracts": [
-        "turn workflow"
-      ],
-      "search_terms": [
-        "ход",
-        "оркестратор",
-        "намерение игрока"
-      ],
+      "subsystems": ["turn", "orchestration"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/turn"],
+      "related_contracts": ["turn workflow"],
+      "search_terms": ["ход", "оркестратор", "намерение игрока"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -93,26 +67,14 @@
       "document_id": "character-inventory-equipment",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "inventory",
-        "character"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["inventory", "character"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/items-property",
         "packages/presentation"
       ],
-      "related_contracts": [
-        "inventory projection"
-      ],
-      "search_terms": [
-        "инвентарь",
-        "нагрузка",
-        "руки",
-        "снаряжение"
-      ],
+      "related_contracts": ["inventory projection"],
+      "search_terms": ["инвентарь", "нагрузка", "руки", "снаряжение"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -120,53 +82,31 @@
       "document_id": "character-parameters",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "character",
-        "checks",
-        "body"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["character", "checks", "body"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/actors",
         "packages/body-state",
         "packages/checks-rng"
       ],
-      "related_contracts": [
-        "character parameters"
-      ],
-      "search_terms": [
-        "характеристики",
-        "навыки",
-        "d20",
-        "здоровье"
-      ],
+      "related_contracts": ["character parameters"],
+      "search_terms": ["характеристики", "навыки", "d20", "здоровье"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "code-critic-invocation-rule",
-      "document_type": "canonical_normative",
-      "priority_tier": "development_process_normative",
-      "subsystems": [
-        "development",
-        "audit"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "tools/audit-tools"
-      ],
-      "related_contracts": [
-        "critic admission"
-      ],
+      "document_type": "navigation",
+      "priority_tier": "navigation",
+      "subsystems": ["development", "audit"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["tools/audit-tools"],
+      "related_contracts": ["compatibility redirect to canonical audit rules"],
       "search_terms": [
         "критик",
         "аудит",
-        "pass",
-        "changes required"
+        "Contract Auditor",
+        "blocking finding"
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
@@ -175,22 +115,14 @@
       "document_id": "code-driven-world-materialization-architecture",
       "document_type": "canonical_normative",
       "priority_tier": "highest_materialization_normative",
-      "subsystems": [
-        "materialization",
-        "architecture"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["materialization", "architecture"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/materialization",
         "packages/new-game",
         "packages/turn"
       ],
-      "related_contracts": [
-        "materializer v2",
-        "bounded decision"
-      ],
+      "related_contracts": ["materialization boundary", "bounded decision"],
       "search_terms": [
         "материализация",
         "код и llm",
@@ -204,48 +136,22 @@
       "document_id": "combat-system",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "combat"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/combat-health",
-        "packages/checks-rng"
-      ],
-      "related_contracts": [
-        "combat workflow"
-      ],
-      "search_terms": [
-        "бой",
-        "атака",
-        "защита",
-        "ранение"
-      ],
+      "subsystems": ["combat"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/combat-health", "packages/checks-rng"],
+      "related_contracts": ["combat workflow"],
+      "search_terms": ["бой", "атака", "защита", "ранение"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "development-rules",
-      "document_type": "canonical_normative",
+      "document_type": "reference",
       "priority_tier": "development_process_normative",
-      "subsystems": [
-        "development",
-        "modules",
-        "documentation"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/pipeline-engine",
-        "tools/docs-tools"
-      ],
-      "related_contracts": [
-        "module contract",
-        "documentation readiness"
-      ],
+      "subsystems": ["development", "modules", "documentation"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/pipeline-engine", "tools/docs-tools"],
+      "related_contracts": ["legacy development rules"],
       "search_terms": [
         "правила разработки",
         "модули",
@@ -259,22 +165,32 @@
       "document_id": "documentation-corpus-readme",
       "document_type": "navigation",
       "priority_tier": "navigation",
-      "subsystems": [
-        "documentation"
-      ],
+      "subsystems": ["documentation"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/knowledge-source"],
+      "related_contracts": ["corpus navigation redirect"],
+      "search_terms": ["документация", "корпус", "knowledge graph"],
+      "conflicts_with_document_ids": [],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "contract-index",
+      "document_type": "navigation",
+      "priority_tier": "navigation",
+      "subsystems": ["documentation", "contracts", "audit"],
       "related_document_ids": [
-        "llm-documentation-navigation"
+        "llm-documentation-navigation",
+        "code-critic-invocation-rule",
+        "spatial-architecture-standard-g0-g6"
       ],
-      "related_module_paths": [
-        "packages/knowledge-source"
-      ],
-      "related_contracts": [
-        "corpus navigation"
-      ],
+      "related_module_paths": ["packages/knowledge-source"],
+      "related_contracts": ["canonical contract status and precedence routing"],
       "search_terms": [
-        "документация",
-        "корпус",
-        "knowledge graph"
+        "contract index",
+        "document status",
+        "precedence",
+        "active contracts",
+        "Contract Auditor"
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
@@ -283,25 +199,11 @@
       "document_id": "formulas",
       "document_type": "reference",
       "priority_tier": "reference",
-      "subsystems": [
-        "formulas",
-        "checks"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/checks-rng",
-        "packages/body-state"
-      ],
-      "related_contracts": [
-        "formula reference"
-      ],
-      "search_terms": [
-        "формулы",
-        "d20",
-        "расчёт"
-      ],
+      "subsystems": ["formulas", "checks"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/checks-rng", "packages/body-state"],
+      "related_contracts": ["formula reference"],
+      "search_terms": ["формулы", "d20", "расчёт"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -309,51 +211,29 @@
       "document_id": "g1-g5-generation-rules",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "map",
-        "materialization"
-      ],
+      "subsystems": ["map", "materialization"],
       "related_document_ids": [
-        "llm-documentation-navigation",
+        "contract-index",
         "code-driven-world-materialization-architecture"
       ],
       "related_module_paths": [
         "packages/space-map",
         "packages/materialization"
       ],
-      "related_contracts": [
-        "g1 g5 generation"
-      ],
-      "search_terms": [
-        "g1",
-        "g5",
-        "генерация",
-        "локация"
-      ],
+      "related_contracts": ["g1 g5 generation"],
+      "search_terms": ["g1", "g5", "генерация", "локация"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "historical-events-and-figures",
-      "document_type": "canonical_normative",
+      "document_type": "reference",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "history"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/time-events-history"
-      ],
-      "related_contracts": [
-        "historical events"
-      ],
-      "search_terms": [
-        "исторические события",
-        "личности",
-        "фазы"
-      ],
+      "subsystems": ["history"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/time-events-history"],
+      "related_contracts": ["historical events"],
+      "search_terms": ["исторические события", "личности", "фазы"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -361,27 +241,14 @@
       "document_id": "information-sources-llm-prompts",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "knowledge",
-        "llm",
-        "sources"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["knowledge", "llm", "sources"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/knowledge-source",
         "packages/llm-runtime"
       ],
-      "related_contracts": [
-        "knowledge enrichment"
-      ],
-      "search_terms": [
-        "источники",
-        "rag",
-        "база знаний",
-        "промты"
-      ],
+      "related_contracts": ["knowledge enrichment"],
+      "search_terms": ["источники", "rag", "база знаний", "промты"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -389,26 +256,11 @@
       "document_id": "interface-ux",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "ui",
-        "visibility"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "apps/game-web",
-        "packages/presentation"
-      ],
-      "related_contracts": [
-        "visible projection"
-      ],
-      "search_terms": [
-        "интерфейс",
-        "ui",
-        "видимый контекст",
-        "скрытые данные"
-      ],
+      "subsystems": ["ui", "visibility"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["apps/game-web", "packages/presentation"],
+      "related_contracts": ["visible projection"],
+      "search_terms": ["интерфейс", "ui", "видимый контекст", "скрытые данные"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -416,52 +268,26 @@
       "document_id": "items-and-property",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "items",
-        "property"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["items", "property"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/items-property",
         "packages/materialization"
       ],
-      "related_contracts": [
-        "item materialization"
-      ],
-      "search_terms": [
-        "предметы",
-        "имущество",
-        "владелец",
-        "контейнер"
-      ],
+      "related_contracts": ["item materialization"],
+      "search_terms": ["предметы", "имущество", "владелец", "контейнер"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "llm-agent-prompt-templates",
-      "document_type": "canonical_normative",
+      "document_type": "reference",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "llm",
-        "prompts"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/llm-runtime",
-        "packages/narration"
-      ],
-      "related_contracts": [
-        "llm role prompts"
-      ],
-      "search_terms": [
-        "агент",
-        "промт",
-        "роль llm"
-      ],
+      "subsystems": ["llm", "prompts"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/llm-runtime", "packages/narration"],
+      "related_contracts": ["llm role prompts"],
+      "search_terms": ["агент", "промт", "роль llm"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -469,17 +295,10 @@
       "document_id": "llm-documentation-navigation",
       "document_type": "navigation",
       "priority_tier": "navigation",
-      "subsystems": [
-        "documentation",
-        "navigation"
-      ],
-      "related_document_ids": [],
-      "related_module_paths": [
-        "packages/knowledge-source"
-      ],
-      "related_contracts": [
-        "documentation routing"
-      ],
+      "subsystems": ["documentation", "navigation"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/knowledge-source"],
+      "related_contracts": ["compatibility documentation routing"],
       "search_terms": [
         "навигация",
         "какой документ читать",
@@ -490,29 +309,19 @@
     },
     {
       "document_id": "map-g0-g4-workflow",
-      "document_type": "canonical_normative",
-      "priority_tier": "profile_normative",
-      "subsystems": [
-        "map",
-        "authoring"
-      ],
+      "document_type": "reference",
+      "priority_tier": "reference",
+      "subsystems": ["map", "authoring", "migration"],
       "related_document_ids": [
-        "llm-documentation-navigation"
+        "spatial-v3-target-map-g0-g4-workflow",
+        "contract-index"
       ],
       "related_module_paths": [
         "tools/map-maker",
         "tools/world-catalog-workflow"
       ],
-      "related_contracts": [
-        "g0 g4 workflow"
-      ],
-      "search_terms": [
-        "карта",
-        "g0",
-        "g4",
-        "узлы",
-        "рёбра"
-      ],
+      "related_contracts": ["legacy G0 G4 migration rollback source"],
+      "search_terms": ["карта", "g0", "g4", "migration", "rollback"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -520,26 +329,14 @@
       "document_id": "movement-locations-regions",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "movement",
-        "map"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["movement", "map"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/movement-routes",
         "packages/space-map"
       ],
-      "related_contracts": [
-        "movement workflow"
-      ],
-      "search_terms": [
-        "перемещение",
-        "маршрут",
-        "дорога",
-        "регион"
-      ],
+      "related_contracts": ["movement workflow"],
+      "search_terms": ["перемещение", "маршрут", "дорога", "регион"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -547,24 +344,14 @@
       "document_id": "new-game-start-pipeline",
       "document_type": "canonical_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "new-game"
-      ],
+      "subsystems": ["new-game"],
       "related_document_ids": [
-        "llm-documentation-navigation",
+        "contract-index",
         "code-driven-world-materialization-architecture"
       ],
-      "related_module_paths": [
-        "packages/new-game"
-      ],
-      "related_contracts": [
-        "new game stages"
-      ],
-      "search_terms": [
-        "новая игра",
-        "стартовый pipeline",
-        "этапы"
-      ],
+      "related_module_paths": ["packages/new-game"],
+      "related_contracts": ["new game stages"],
+      "search_terms": ["новая игра", "стартовый pipeline", "этапы"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -572,24 +359,11 @@
       "document_id": "npc-generation-profiles",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "npc"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/actors",
-        "packages/materialization"
-      ],
-      "related_contracts": [
-        "npc profiles"
-      ],
-      "search_terms": [
-        "npc",
-        "профиль npc",
-        "фоновый npc"
-      ],
+      "subsystems": ["npc"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/actors", "packages/materialization"],
+      "related_contracts": ["npc profiles"],
+      "search_terms": ["npc", "профиль npc", "фоновый npc"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -597,25 +371,11 @@
       "document_id": "npc-inventory-item-marks",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "npc",
-        "items"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/items-property",
-        "packages/actors"
-      ],
-      "related_contracts": [
-        "npc inventory"
-      ],
-      "search_terms": [
-        "инвентарь npc",
-        "метки предметов",
-        "кража"
-      ],
+      "subsystems": ["npc", "items"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/items-property", "packages/actors"],
+      "related_contracts": ["npc inventory"],
+      "search_terms": ["инвентарь npc", "метки предметов", "кража"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -623,51 +383,32 @@
       "document_id": "player-character-generation",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "player-character",
-        "new-game"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
-      "related_module_paths": [
-        "packages/new-game",
-        "packages/actors"
-      ],
-      "related_contracts": [
-        "player generation"
-      ],
-      "search_terms": [
-        "персонаж игрока",
-        "генерация персонажа",
-        "биография"
-      ],
+      "subsystems": ["player-character", "new-game"],
+      "related_document_ids": ["contract-index"],
+      "related_module_paths": ["packages/new-game", "packages/actors"],
+      "related_contracts": ["player generation"],
+      "search_terms": ["персонаж игрока", "генерация персонажа", "биография"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "read-only-database-and-graph-architecture",
-      "document_type": "canonical_normative",
-      "priority_tier": "technical_contract",
-      "subsystems": [
-        "database",
-        "graph"
-      ],
+      "document_type": "reference",
+      "priority_tier": "reference",
+      "subsystems": ["database", "graph", "migration"],
       "related_document_ids": [
-        "llm-documentation-navigation"
+        "spatial-v3-target-read-only-database-and-graph-architecture",
+        "contract-index"
       ],
-      "related_module_paths": [
-        "packages/world-base",
-        "packages/space-map"
-      ],
-      "related_contracts": [
-        "world base read only"
-      ],
+      "related_module_paths": ["infra/world-base", "packages/space-map"],
+      "related_contracts": ["materialization v2 migration rollback source"],
       "search_terms": [
         "read-only",
         "world_base",
         "граф",
-        "party_runtime"
+        "party_runtime",
+        "migration",
+        "rollback"
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
@@ -689,7 +430,7 @@
         "base-turn-orchestration",
         "spatial-architecture-standard-g0-g6",
         "code-driven-world-materialization-architecture",
-        "llm-documentation-navigation"
+        "contract-index"
       ],
       "related_module_paths": [
         "packages/time-events-history",
@@ -723,27 +464,16 @@
     },
     {
       "document_id": "time-system",
-      "document_type": "canonical_normative",
+      "document_type": "reference",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "time"
-      ],
+      "subsystems": ["time"],
       "related_document_ids": [
-        "llm-documentation-navigation",
-        "temporal-world-and-interruptible-activities"
+        "temporal-world-and-interruptible-activities",
+        "contract-index"
       ],
-      "related_module_paths": [
-        "packages/time-events-history"
-      ],
-      "related_contracts": [
-        "clock and timers"
-      ],
-      "search_terms": [
-        "время",
-        "длительность",
-        "таймер",
-        "сон"
-      ],
+      "related_module_paths": ["packages/time-events-history"],
+      "related_contracts": ["legacy clock and timers"],
+      "search_terms": ["время", "длительность", "таймер", "сон"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -751,25 +481,14 @@
       "document_id": "weapons-and-armor",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "combat",
-        "items"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["combat", "items"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/combat-health",
         "packages/items-property"
       ],
-      "related_contracts": [
-        "weapon and armor"
-      ],
-      "search_terms": [
-        "оружие",
-        "броня",
-        "щит"
-      ],
+      "related_contracts": ["weapon and armor"],
+      "search_terms": ["оружие", "броня", "щит"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "covered"
     },
@@ -777,25 +496,14 @@
       "document_id": "world-base-materialization-table-requirements",
       "document_type": "canonical_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "database",
-        "materialization"
-      ],
+      "subsystems": ["database", "materialization"],
       "related_document_ids": [
-        "llm-documentation-navigation"
+        "contract-index",
+        "spatial-v3-target-world-base-materialization-table-requirements"
       ],
-      "related_module_paths": [
-        "packages/world-base",
-        "packages/materialization"
-      ],
-      "related_contracts": [
-        "world base tables"
-      ],
-      "search_terms": [
-        "таблицы world_base",
-        "ddl",
-        "профили материализации"
-      ],
+      "related_module_paths": ["infra/world-base", "packages/materialization"],
+      "related_contracts": ["world base tables"],
+      "search_terms": ["таблицы world_base", "ddl", "профили материализации"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
@@ -803,13 +511,9 @@
       "document_id": "world-generation-and-turns",
       "document_type": "canonical_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "world",
-        "turn",
-        "new-game"
-      ],
+      "subsystems": ["world", "turn", "new-game"],
       "related_document_ids": [
-        "llm-documentation-navigation",
+        "contract-index",
         "code-driven-world-materialization-architecture"
       ],
       "related_module_paths": [
@@ -817,41 +521,23 @@
         "packages/turn",
         "packages/materialization"
       ],
-      "related_contracts": [
-        "world and turn workflow"
-      ],
-      "search_terms": [
-        "мир",
-        "ход",
-        "генерация мира",
-        "последствия"
-      ],
+      "related_contracts": ["world and turn workflow"],
+      "search_terms": ["мир", "ход", "генерация мира", "последствия"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "world-regions",
-      "document_type": "canonical_normative",
+      "document_type": "reference",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "regions",
-        "map"
-      ],
-      "related_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "subsystems": ["regions", "map"],
+      "related_document_ids": ["contract-index"],
       "related_module_paths": [
         "packages/space-map",
         "tools/world-catalog-workflow"
       ],
-      "related_contracts": [
-        "region catalog"
-      ],
-      "search_terms": [
-        "регионы",
-        "земли",
-        "новгород"
-      ],
+      "related_contracts": ["region catalog"],
+      "search_terms": ["регионы", "земли", "новгород"],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "covered"
     },
@@ -859,18 +545,13 @@
       "document_id": "npc-autonomous-decision-contract",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "npc",
-        "turn",
-        "temporal",
-        "llm"
-      ],
+      "subsystems": ["npc", "turn", "temporal", "llm"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "temporal-world-and-interruptible-activities",
         "npc-generation-profiles",
         "llm-agent-prompt-templates",
-        "llm-documentation-navigation",
+        "contract-index",
         "turn-step-llm-contract",
         "npc-conversation-mode-contract",
         "npc-combat-and-trigger-contract"
@@ -905,20 +586,14 @@
       "document_id": "npc-combat-and-trigger-contract",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "combat",
-        "npc",
-        "turn",
-        "temporal",
-        "llm"
-      ],
+      "subsystems": ["combat", "npc", "turn", "temporal", "llm"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "combat-system",
         "temporal-world-and-interruptible-activities",
         "npc-generation-profiles",
         "llm-agent-prompt-templates",
-        "llm-documentation-navigation",
+        "contract-index",
         "turn-step-llm-contract",
         "npc-autonomous-decision-contract",
         "npc-conversation-mode-contract"
@@ -955,19 +630,13 @@
       "document_id": "npc-conversation-mode-contract",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "npc",
-        "conversation",
-        "social",
-        "knowledge",
-        "llm"
-      ],
+      "subsystems": ["npc", "conversation", "social", "knowledge", "llm"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "temporal-world-and-interruptible-activities",
         "npc-generation-profiles",
         "llm-agent-prompt-templates",
-        "llm-documentation-navigation",
+        "contract-index",
         "turn-step-llm-contract",
         "npc-autonomous-decision-contract",
         "npc-combat-and-trigger-contract"
@@ -1002,17 +671,13 @@
       "document_id": "turn-step-llm-contract",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "turn",
-        "orchestration",
-        "llm"
-      ],
+      "subsystems": ["turn", "orchestration", "llm"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-generation-and-turns",
         "base-turn-orchestration",
         "llm-agent-prompt-templates",
-        "llm-documentation-navigation",
+        "contract-index",
         "items-and-property",
         "character-inventory-equipment"
       ],
@@ -1041,28 +706,26 @@
       "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
       "document_type": "target_normative",
       "priority_tier": "highest_materialization_normative",
-      "subsystems": [
-        "materialization",
-        "architecture"
-      ],
+      "subsystems": ["materialization", "architecture", "spatial"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
-        "map-g0-g4-workflow"
+        "map-g0-g4-workflow",
+        "contract-index"
       ],
       "related_module_paths": [
-        "docs/migration/spatial-v3"
+        "packages/materialization",
+        "packages/space-map",
+        "infra/world-base"
       ],
-      "related_contracts": [
-        "spatial v3 target-only migration"
-      ],
+      "related_contracts": ["active Spatial v3 production specialization"],
       "search_terms": [
-        "spatial v3",
-        "target",
-        "P28",
+        "spatial v3 production",
+        "versioned production activation cutover",
         "G0",
-        "G6"
+        "G6",
+        "production specialization"
       ],
       "conflicts_with_document_ids": [
         "code-driven-world-materialization-architecture",
@@ -1076,26 +739,24 @@
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "database",
-        "materialization"
-      ],
+      "subsystems": ["database", "materialization", "spatial"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
-        "map-g0-g4-workflow"
+        "map-g0-g4-workflow",
+        "contract-index"
       ],
       "related_module_paths": [
-        "docs/migration/spatial-v3"
+        "infra/world-base",
+        "packages/materialization",
+        "packages/space-map"
       ],
-      "related_contracts": [
-        "spatial v3 target-only migration"
-      ],
+      "related_contracts": ["active Spatial v3 production specialization"],
       "search_terms": [
-        "spatial v3",
-        "target",
-        "P28",
+        "spatial v3 production",
+        "versioned production activation cutover",
+        "world_base",
         "G0",
         "G6"
       ],
@@ -1111,27 +772,21 @@
       "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
       "document_type": "target_normative",
       "priority_tier": "technical_contract",
-      "subsystems": [
-        "database",
-        "graph"
-      ],
+      "subsystems": ["database", "graph", "spatial"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
-        "map-g0-g4-workflow"
+        "map-g0-g4-workflow",
+        "contract-index"
       ],
-      "related_module_paths": [
-        "docs/migration/spatial-v3"
-      ],
-      "related_contracts": [
-        "spatial v3 target-only migration"
-      ],
+      "related_module_paths": ["infra/world-base", "packages/space-map"],
+      "related_contracts": ["active Spatial v3 production specialization"],
       "search_terms": [
-        "spatial v3",
-        "target",
-        "P28",
-        "G0",
+        "spatial v3 production",
+        "versioned production activation cutover",
+        "read-only",
+        "party_runtime",
         "G6"
       ],
       "conflicts_with_document_ids": [
@@ -1146,28 +801,27 @@
       "document_id": "spatial-v3-target-map-g0-g4-workflow",
       "document_type": "target_normative",
       "priority_tier": "profile_normative",
-      "subsystems": [
-        "map",
-        "authoring"
-      ],
+      "subsystems": ["map", "authoring", "spatial"],
       "related_document_ids": [
         "code-driven-world-materialization-architecture",
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
-        "map-g0-g4-workflow"
+        "map-g0-g4-workflow",
+        "contract-index"
       ],
       "related_module_paths": [
-        "docs/migration/spatial-v3"
+        "tools/map-maker",
+        "tools/world-catalog-workflow",
+        "packages/space-map"
       ],
-      "related_contracts": [
-        "spatial v3 target-only migration"
-      ],
+      "related_contracts": ["active Spatial v3 production specialization"],
       "search_terms": [
-        "spatial v3",
-        "target",
-        "P28",
+        "spatial v3 production",
+        "versioned production activation cutover",
         "G0",
-        "G6"
+        "G5",
+        "G6",
+        "authoring workflow"
       ],
       "conflicts_with_document_ids": [
         "code-driven-world-materialization-architecture",
@@ -1197,7 +851,7 @@
         "items-and-property",
         "npc-autonomous-decision-contract",
         "temporal-world-and-interruptible-activities",
-        "llm-documentation-navigation"
+        "contract-index"
       ],
       "related_module_paths": [
         "packages/turn",
@@ -1246,7 +900,7 @@
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
         "map-g0-g4-workflow",
-        "llm-documentation-navigation"
+        "contract-index"
       ],
       "related_module_paths": [
         "infra/world-base",
@@ -1282,10 +936,8 @@
     },
     {
       "query_id": "documentation-navigation",
-      "query": "какой профильный документ нужно читать по подсистеме",
-      "expected_document_ids": [
-        "llm-documentation-navigation"
-      ],
+      "query": "какой документ определяет статус active proposed migration contract set и precedence",
+      "expected_document_ids": ["contract-index"],
       "top_k": 5
     },
     {
@@ -1301,14 +953,16 @@
       "query_id": "time-owner",
       "query": "кто изменяет игровое время и как рассчитывается длительность",
       "expected_document_ids": [
+        "temporal-world-and-interruptible-activities",
         "time-system"
       ],
       "top_k": 5
     },
     {
       "query_id": "critic-required",
-      "query": "когда обязателен агент критик и повторный аудит",
+      "query": "когда обязателен Contract Auditor независимый аудит и blocking finding",
       "expected_document_ids": [
+        "contract-index",
         "code-critic-invocation-rule"
       ],
       "top_k": 5
@@ -1317,15 +971,17 @@
       "query_id": "world-base-tables",
       "query": "какие таблицы нужны для materialization profiles rules world_base",
       "expected_document_ids": [
+        "spatial-v3-target-world-base-materialization-table-requirements",
         "world-base-materialization-table-requirements"
       ],
       "top_k": 5
     },
     {
       "query_id": "spatial-architecture-target",
-      "query": "target spatial architecture G0 G6 topology movement materialization P28 activation",
+      "query": "production spatial architecture G0 G6 topology movement materialization versioned activation",
       "expected_document_ids": [
-        "spatial-architecture-standard-g0-g6"
+        "spatial-architecture-standard-g0-g6",
+        "spatial-v3-target-code-driven-world-materialization-architecture"
       ],
       "top_k": 5
     }

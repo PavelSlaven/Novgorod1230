@@ -948,7 +948,7 @@
       "source_location": {
         "file": "code_critic_invocation_rule.txt",
         "line_start": 1,
-        "line_end": 154
+        "line_end": 14
       }
     },
     {
@@ -976,6 +976,18 @@
       }
     },
     {
+      "id": "canonical-document:contract-index",
+      "type": "canonical_document",
+      "label": "CONTRACT_INDEX.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/CONTRACT_INDEX.md",
+      "source_location": {
+        "file": "CONTRACT_INDEX.md",
+        "line_start": 1,
+        "line_end": 195
+      }
+    },
+    {
       "id": "canonical-document:development-rules",
       "type": "canonical_document",
       "label": "development_rules.txt",
@@ -996,7 +1008,7 @@
       "source_location": {
         "file": "README.md",
         "line_start": 1,
-        "line_end": 68
+        "line_end": 18
       }
     },
     {
@@ -1092,19 +1104,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 356
-      }
-    },
-    {
-      "id": "canonical-document:map-g0-g4-workflow",
-      "type": "canonical_document",
-      "label": "map_g0_g4_workflow.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/map_g0_g4_workflow.txt",
-      "source_location": {
-        "file": "map_g0_g4_workflow.txt",
-        "line_start": 1,
-        "line_end": 2375
+        "line_end": 18
       }
     },
     {
@@ -1204,18 +1204,6 @@
       }
     },
     {
-      "id": "canonical-document:read-only-database-and-graph-architecture",
-      "type": "canonical_document",
-      "label": "read_only_database_and_graph_architecture.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/read_only_database_and_graph_architecture.md",
-      "source_location": {
-        "file": "read_only_database_and_graph_architecture.md",
-        "line_start": 1,
-        "line_end": 229
-      }
-    },
-    {
       "id": "canonical-document:spatial-architecture-standard-g0-g6",
       "type": "canonical_document",
       "label": "spatial_architecture_standard_g0_g6.md",
@@ -1225,6 +1213,54 @@
         "file": "spatial_architecture_standard_g0_g6.md",
         "line_start": 1,
         "line_end": 6854
+      }
+    },
+    {
+      "id": "canonical-document:spatial-v3-target-code-driven-world-materialization-architecture",
+      "type": "canonical_document",
+      "label": "spatial_v3_target_code_driven_world_materialization_architecture.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_v3_target_code_driven_world_materialization_architecture.md",
+      "source_location": {
+        "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
+        "line_start": 1,
+        "line_end": 90
+      }
+    },
+    {
+      "id": "canonical-document:spatial-v3-target-map-g0-g4-workflow",
+      "type": "canonical_document",
+      "label": "spatial_v3_target_map_g0_g4_workflow.txt",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_v3_target_map_g0_g4_workflow.txt",
+      "source_location": {
+        "file": "spatial_v3_target_map_g0_g4_workflow.txt",
+        "line_start": 1,
+        "line_end": 49
+      }
+    },
+    {
+      "id": "canonical-document:spatial-v3-target-read-only-database-and-graph-architecture",
+      "type": "canonical_document",
+      "label": "spatial_v3_target_read_only_database_and_graph_architecture.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_v3_target_read_only_database_and_graph_architecture.md",
+      "source_location": {
+        "file": "spatial_v3_target_read_only_database_and_graph_architecture.md",
+        "line_start": 1,
+        "line_end": 59
+      }
+    },
+    {
+      "id": "canonical-document:spatial-v3-target-world-base-materialization-table-requirements",
+      "type": "canonical_document",
+      "label": "spatial_v3_target_world_base_materialization_table_requirements.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/spatial_v3_target_world_base_materialization_table_requirements.md",
+      "source_location": {
+        "file": "spatial_v3_target_world_base_materialization_table_requirements.md",
+        "line_start": 1,
+        "line_end": 67
       }
     },
     {

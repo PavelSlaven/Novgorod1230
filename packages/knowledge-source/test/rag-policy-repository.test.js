@@ -47,29 +47,47 @@ test('repository policy registers proposed classification documents without chan
   );
 });
 
-test('repository registers spatial v3 supplements as proposed and keeps default retrieval active-only', async () => {
+test('repository registers active spatial v3 specializations and excludes deprecated v2 sources from default retrieval', async () => {
   const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
   const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
-  const targetIds = [
+  const activeV3Ids = [
     'spatial-v3-target-code-driven-world-materialization-architecture',
     'spatial-v3-target-world-base-materialization-table-requirements',
     'spatial-v3-target-read-only-database-and-graph-architecture',
     'spatial-v3-target-map-g0-g4-workflow'
   ];
+  const deprecatedV2Ids = [
+    'read-only-database-and-graph-architecture',
+    'map-g0-g4-workflow'
+  ];
   assert.deepEqual(
-    manifest.documents.filter((document) => targetIds.includes(document.document_id)).map((document) => document.status),
-    ['proposed', 'proposed', 'proposed', 'proposed']
+    manifest.documents.filter((document) => activeV3Ids.includes(document.document_id)).map((document) => document.status),
+    ['active', 'active', 'active', 'active']
+  );
+  assert.deepEqual(
+    manifest.documents.filter((document) => deprecatedV2Ids.includes(document.document_id)).map((document) => document.status),
+    ['deprecated', 'deprecated']
   );
   assert.deepEqual(policy.default_statuses, ['active']);
-  assert.equal(policy.documents.filter((document) => targetIds.includes(document.document_id)).length, targetIds.length);
+  assert.equal(policy.documents.filter((document) => activeV3Ids.includes(document.document_id)).length, activeV3Ids.length);
+  const indexDocument = manifest.documents.find((document) => document.document_id === 'contract-index');
+  const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
+  assert.equal(indexDocument?.status, 'active');
+  assert.equal(indexMetadata?.document_type, 'navigation');
+  assert.equal(indexMetadata?.priority_tier, 'navigation');
+  assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('contract-index')));
+
   const reader = createKnowledgeRagReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot }),
-    allowedStatuses: ['active', 'proposed']
+    allowedStatuses: ['active', 'deprecated']
   });
   const defaultResult = await reader.searchKnowledge({ query: 'finite party-generated G5' });
-  assert.ok(defaultResult.results.every((result) => !targetIds.includes(result.document_id)));
-  const proposedResult = await reader.searchKnowledge({ query: 'finite party-generated G5', statuses: ['proposed'] });
-  assert.ok(proposedResult.results.some((result) => targetIds.includes(result.document_id)));
+  assert.ok(defaultResult.results.some((result) => activeV3Ids.includes(result.document_id)));
+  assert.ok(defaultResult.results.every((result) => !deprecatedV2Ids.includes(result.document_id)));
+
+  const deprecatedResult = await reader.searchKnowledge({ query: 'migration rollback G0 G4', statuses: ['deprecated'] });
+  assert.ok(deprecatedResult.results.length > 0);
+  assert.ok(deprecatedResult.results.every((result) => deprecatedV2Ids.includes(result.document_id)));
 });
 
 test('repository registers the audited spatial architecture standard as an active target normative', async () => {

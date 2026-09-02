@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "a655387573ca41f7647cb387f2738187ac90e5d2b214cde23a923aba6353d530",
-  "chunk_count": 2538,
+  "corpus_hash": "5df4f4a52d71767135ee4862a1f2a78ae71a5f087c8410ddb37b3dc02bfa9508",
+  "chunk_count": 2520,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -481,85 +481,13 @@
       "char_count": 526
     },
     {
-      "id": "code_critic_invocation_rule.txt:Правило вызова агента критики кода \"Аудитор кода Русь XIII век\":0",
+      "id": "code_critic_invocation_rule.txt:Compatibility redirect: independent audit and Contract Auditor:0",
       "file": "code_critic_invocation_rule.txt",
-      "section": "Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"",
+      "section": "Compatibility redirect: independent audit and Contract Auditor",
       "line_start": 1,
-      "line_end": 44,
-      "text": "## code_critic_invocation_rule.txt — Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"\n## Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"\n\nАгент критики кода вызывается каждый раз, когда созданный или изменённый код должен быть признан соответствующим требованиям проекта.\n\nЕго вызов обязателен до объединения изменений с основной кодовой базой, если выполняется хотя бы одно из условий:",
-      "char_count": 417
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Правило вызова агента критики кода \"Аудитор кода Русь XIII век\":1",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"",
-      "line_start": 1,
-      "line_end": 44,
-      "text": "## code_critic_invocation_rule.txt — Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"\nоответствующим требованиям проекта.\n\nЕго вызов обязателен до объединения изменений с основной кодовой базой, если выполняется хотя бы одно из условий:\n\n1. создан новый этап конвейера;\n2. изменён существующий этап конвейера;\n3. изменён входной или выходной контракт этапа;\n4. изменена последовательность оркестрации;\n5. добавлен или изменён LLM-вызов;\n6. изменена генерация, аудит или repair-процедура;\n7. изменена работа с состоянием партии;\n8. изменена запись в базу данных;\n9. изменены схемы, модели, DTO или runtime-валидаторы;\n10. изменена обработка ошибок, retry, repair или остановки конвейера;\n11. добавлен fallback или значение по умолчанию;\n12. изменено разделение ответственности между кодом и LLM;\n13. изменена логика видимого и скрытого контекста;\n14. изменена генерация player-facing прозы или UI-данных;\n15. исправлена ошибка, способная повлиять на состояние мира;\n16. изменена работа со временем, перемещением, NPC, предметами, событиями или бросками;\n17. код реализован по нормативному документу и должен быть сверен с ним;\n18. изменения затрагивают несколько модулей или этапов;\n19. тесты проходят, но соответствие архитектуре ещё не проверено;\n20. результат предыдущего аудита был `CHANGES REQUIRED` или `REJECT`.\n21. изменены materialization profiles/rules, versioned RNG, trace или no-rematerialization guarantees;\n22. изменён bounded decision protocol, command token, option filtering или code handler registry;\n23. документ `proposed` должен быть повышен в `active`.",
-      "char_count": 1589
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Правило вызова агента критики кода \"Аудитор кода Русь XIII век\":2",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"",
-      "line_start": 1,
-      "line_end": 44,
-      "text": "## code_critic_invocation_rule.txt — Правило вызова агента критики кода \"Аудитор кода Русь XIII век\"\n изменён bounded decision protocol, command token, option filtering или code handler registry;\n23. документ `proposed` должен быть повышен в `active`.\n\nДля materialization v2 критик отдельно проверяет: отсутствие `Math.random`; невозможность создать unknown category/template/profile/rule; fail-closed при пустом required candidate set; atomic first-entry; сохранение baseline; state-version и token binding bounded decisions; нормализованный `party_runtime_v2`; read-only `world_base`; соответствие generated schema reference фактическому DDL.\n\nКороткая формула:\n\n```text\nизменение смысловой или критической технической логики\n→ реализация\n→ тесты\n→ агент критики кода\n→ исправление замечаний\n→ повторный аудит\n→ принятие изменений\n```",
-      "char_count": 837
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Обязательный повторный вызов:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Обязательный повторный вызов",
-      "line_start": 45,
-      "line_end": 82,
-      "text": "## code_critic_invocation_rule.txt — Обязательный повторный вызов\n### Обязательный повторный вызов\n\nЕсли агент критики вернул:\n\n```text\nCHANGES REQUIRED\n```\n\nили:\n\n```text\nREJECT\n```\n\nкод после исправления обязательно передаётся ему повторно.\n\nНельзя считать замечание закрытым только потому, что разработчик изменил соответствующий участок. Агент должен проверить:\n\n1. устранена ли первоначальная проблема;\n2. не появилось ли новое нарушение;\n3. не был ли исправлен только симптом;\n4. сохранилось ли соответствие нормативному документу;\n5. проходят ли необходимые тесты.\n\nЦикл продолжается до результата:\n\n```text\nPASS\n```\n\nили:\n\n```text\nPASS WITH NOTES\n```\n\nРезультат `PASS WITH NOTES` допускает принятие кода только в том случае, если все оставшиеся замечания имеют уровень `NOTE` и не содержат скрытых функциональных, архитектурных или информационных рисков.",
-      "char_count": 862
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Когда агент может не вызываться:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Когда агент может не вызываться",
-      "line_start": 83,
-      "line_end": 95,
-      "text": "## code_critic_invocation_rule.txt — Когда агент может не вызываться\n### Когда агент может не вызываться\n\nОтдельный аудит не обязателен для изменений, которые гарантированно не влияют на выполнение программы:\n\n1. исправление орфографии в комментарии;\n2. изменение форматирования без изменения AST и поведения;\n3. переименование локальной переменной без изменения публичного контракта;\n4. обновление текста документации, не меняющего требования;\n5. удаление недостижимого комментария;\n6. изменение диагностического текста без влияния на логику и без раскрытия скрытых данных.\n\nЕсли существует сомнение, влияет ли изменение на поведение, контракт, состояние, безопасность или архитектуру, агент вызывается.",
-      "char_count": 704
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Место агента в процессе разработки:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Место агента в процессе разработки",
-      "line_start": 96,
-      "line_end": 117,
-      "text": "## code_critic_invocation_rule.txt — Место агента в процессе разработки\n### Место агента в процессе разработки\n\nАгент критики не является частью игрового runtime и не вызывается при каждом игровом ходе.\n\nОн является обязательным контрольным этапом процесса разработки:\n\n```text\nтребование\n→ реализация\n→ автоматические тесты\n→ статическая проверка\n→ агент критики кода\n→ исправление\n→ повторные тесты\n→ повторный аудит\n→ интеграция\n```\n\nАвтоматические тесты не заменяют агента критики. Агент критики не заменяет автоматические тесты.\n\nТесты проверяют заранее описанные сценарии. Агент проверяет соответствие нормативным документам, архитектуре, контрактам, разделению роли кода и LLM, а также ищет сценарии, которые могли не попасть в тесты.",
-      "char_count": 741
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Минимальные данные для вызова:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Минимальные данные для вызова",
-      "line_start": 118,
-      "line_end": 134,
-      "text": "## code_critic_invocation_rule.txt — Минимальные данные для вызова\n### Минимальные данные для вызова\n\nАгенту должны передаваться:\n\n1. изменённый код;\n2. назначение изменения;\n3. нормативные документы;\n4. контракты затронутых этапов;\n5. связанные схемы и типы;\n6. тесты;\n7. результаты тестов;\n8. логи ошибок, если исправлялся дефект;\n9. список изменённых файлов;\n10. замечания прошлого аудита при повторной проверке.\n\nБез нормативного документа нельзя объявлять код полностью соответствующим требованиям, если такой документ существует, но не был передан агенту.",
-      "char_count": 561
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Запреты:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Запреты",
-      "line_start": 135,
-      "line_end": 149,
-      "text": "## code_critic_invocation_rule.txt — Запреты\n### Запреты\n\nЗапрещено:\n\n1. объединять критические изменения без аудита;\n2. пропускать повторный аудит после исправления замечаний;\n3. считать прохождение тестов эквивалентом `PASS`;\n4. проводить аудит только по отдельному фрагменту, если ошибка может находиться в интеграции;\n5. скрывать от агента связанные изменения;\n6. передавать только исправленный код без предыдущего отчёта;\n7. игнорировать `BLOCKER`, `CRITICAL` или `MAJOR`;\n8. понижать уровень замечания без технического доказательства;\n9. принимать код при результате `REJECT`;\n10. использовать агента критики для самостоятельного исправления кода вместо отдельного этапа реализации.",
-      "char_count": 688
-    },
-    {
-      "id": "code_critic_invocation_rule.txt:Итоговое правило допуска:0",
-      "file": "code_critic_invocation_rule.txt",
-      "section": "Итоговое правило допуска",
-      "line_start": 150,
-      "line_end": 154,
-      "text": "## code_critic_invocation_rule.txt — Итоговое правило допуска\n### Итоговое правило допуска\n\n```text\nКод, затрагивающий выполнение программы, состояние партии, LLM-процедуры, контракты, базы данных или архитектуру конвейера, не считается завершённым, пока агент критики кода не вернул PASS или допустимый PASS WITH NOTES.\n```",
-      "char_count": 324
+      "line_end": 14,
+      "text": "## code_critic_invocation_rule.txt — Compatibility redirect: independent audit and Contract Auditor\n# Compatibility redirect: independent audit and Contract Auditor\n\nStatus: superseded.\n\nThe old rule requiring a critic after every code or behavior change no longer applies.\n\nUse:\n\n1. root `AGENTS.md`, section 25, for risk-based independent audit;\n2. `CONTRACT_INDEX.md`, section 8, for the read-only Contract Auditor, its triggers, source sets and finding format.\n\nAn ordinary local fix does not require a separate critic when CHIEF proves that public behavior, contracts, owner boundaries, persistence/schema, LLM authority and active profile status are unchanged.\n\nElevated-risk work remains subject to mandatory independent audit as defined by root `AGENTS.md`.",
+      "char_count": 765
     },
     {
       "id": "code_driven_world_materialization_architecture.md:Архитектура кодовой материализации мира:0",
@@ -1388,6 +1316,276 @@
       "line_end": 1174,
       "text": "## combat_system.md — 33. Главное правило\n### 33. Главное правило\n\nБой должен быть коротким, опасным, причинным и связанным с миром.\n\nПобеда в проверке не отменяет тело, страх, кровь, закон, свидетелей, усталость, оружие, вес, погоду, место и дальнейшие последствия.\n\nСистема должна давать LLM понятный числовой позвоночник:\n\n`параметры персонажа → шанс действия → качество успеха → вред → состояние → последствия`\n\nLLM описывает сцену, но не импровизирует базовую математику каждый раз заново.",
       "char_count": 494
+    },
+    {
+      "id": "CONTRACT_INDEX.md:Канонический индекс контрактов Novgorod1230:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "Канонический индекс контрактов Novgorod1230",
+      "line_start": 1,
+      "line_end": 9,
+      "text": "## CONTRACT_INDEX.md — Канонический индекс контрактов Novgorod1230\n# Канонический индекс контрактов Novgorod1230\n\n**Статус:** active documentation/navigation index  \n**Репозиторий:** `PavelSlaven/Novgorod1230`  \n**Каноническое merged state:** ветка `main`  \n**Аудит индекса:** 2026-09-02, `main` HEAD `4cb58cdd1ee1ef636dfdf0437b650bffe50f0936`\n\nЭтот файл отвечает только за навигацию, статусы и порядок применения документов. Он не создаёт новую gameplay semantics и не заменяет профильные контракты, schemas, active bindings, код или tests.",
+      "char_count": 541
+    },
+    {
+      "id": "CONTRACT_INDEX.md:1. Обязательный порядок чтения:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "1. Обязательный порядок чтения",
+      "line_start": 10,
+      "line_end": 31,
+      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md);\n2. прочитать этот индекс;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:\n\n- явным normative header документа;\n- завершённым versioned cutover;\n- active release/profile/manifest/binding;\n- согласованными schemas, code и tests.",
+      "char_count": 1027
+    },
+    {
+      "id": "CONTRACT_INDEX.md:2. Статусы:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "2. Статусы",
+      "line_start": 32,
+      "line_end": 46,
+      "text": "## CONTRACT_INDEX.md — 2. Статусы\n## 2. Статусы\n\n| Статус | Значение |\n|---|---|\n| `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — root `AGENTS.md` |\n| `ACTIVE` | действующий норматив текущей production-семантики в заявленной области |\n| `ACTIVE SPECIALIZATION` | действующий более узкий норматив; имеет приоритет над общим документом только в своём scope |\n| `PROPOSED / UMBRELLA TARGET` | целевое предложение; не описывает production само по себе |\n| `MIGRATION / ROLLBACK` | источник для миграции, rollback или исторической интерпретации; не production fallback |\n| `REFERENCE / DOMAIN GUIDE` | полезная справка; сама по себе не доказывает active behavior |\n| `SUPERSEDED / REDIRECT` | совместимый filename, направляющий к актуальному владельцу |\n| `UNDECLARED` | файл не имеет достаточно ясного status header; Contract Auditor обязан установить его роль по active owner/binding до использования как нормы |\n\nПри конфликте применяется наиболее высокий и наиболее узкий applicable источник. Proposed, migration, reference и undeclared документы не могут отменять governing/active contract.",
+      "char_count": 1123
+    },
+    {
+      "id": "CONTRACT_INDEX.md:3. Governing source:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "3. Governing source",
+      "line_start": 47,
+      "line_end": 54,
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline |\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`. Его устойчивое содержание уже включено в root `AGENTS.md`; создавать параллельную копию не следует. Внешняя копия с таким именем может быть только входным материалом для сравнения и не переопределяет GitHub.",
+      "char_count": 552
+    },
+    {
+      "id": "CONTRACT_INDEX.md:3.1. Module contracts and public schemas:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "3.1. Module contracts and public schemas",
+      "line_start": 55,
+      "line_end": 60,
+      "text": "## CONTRACT_INDEX.md — 3.1. Module contracts and public schemas\n## 3.1. Module contracts and public schemas\n\nВсе module-level contracts перечислены в generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md). Этот generated файл используется только для навигации; точный owner и public boundary задаёт соответствующий `MODULE.md`, а physical schema — canonical DDL/schema source затронутой области.\n\nContract Auditor не копирует весь generated module index сюда и не редактирует его вручную. Он выбирает relevant `MODULE.md` по `MODULE_INDEX.md`, затем сверяет public exports, schemas, callers и tests.",
+      "char_count": 603
+    },
+    {
+      "id": "CONTRACT_INDEX.md:4. Explicit active contracts:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "4. Explicit active contracts",
+      "line_start": 61,
+      "line_end": 81,
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts",
+      "char_count": 83
+    },
+    {
+      "id": "CONTRACT_INDEX.md:4. Explicit active contracts:1",
+      "file": "CONTRACT_INDEX.md",
+      "section": "4. Explicit active contracts",
+      "line_start": 61,
+      "line_end": 81,
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |",
+      "char_count": 2828
+    },
+    {
+      "id": "CONTRACT_INDEX.md:4. Explicit active contracts:2",
+      "file": "CONTRACT_INDEX.md",
+      "section": "4. Explicit active contracts",
+      "line_start": 61,
+      "line_end": 81,
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\nsions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |\n\nActive status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.",
+      "char_count": 363
+    },
+    {
+      "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "5. Explicit non-production, migration and supporting contracts",
+      "line_start": 82,
+      "line_end": 95,
+      "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts",
+      "char_count": 151
+    },
+    {
+      "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:1",
+      "file": "CONTRACT_INDEX.md",
+      "section": "5. Explicit non-production, migration and supporting contracts",
+      "line_start": 82,
+      "line_end": 95,
+      "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts\n\n| Документ | Статус | Правило применения |\n|---|---|---|\n| [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |\n| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |\n| [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |\n| [`read_only_database_and_graph_architecture.md`](read_only_database_and_graph_architecture.md) | `MIGRATION / ROLLBACK` | materialization v2; active owner — Spatial v3 specialization |\n| [`map_g0_g4_workflow.txt`](map_g0_g4_workflow.txt) | `MIGRATION / ROLLBACK` | прежний G0–G4 workflow; active owner — Spatial v3 compatibility workflow |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |",
+      "char_count": 2053
+    },
+    {
+      "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "6. Compatibility navigation and superseded audit rules",
+      "line_start": 96,
+      "line_end": 106,
+      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\n## 6. Compatibility navigation and superseded audit rules\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25 + Contract Auditor rules below |\n| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25 + this index |\n\nThe obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.",
+      "char_count": 957
+    },
+    {
+      "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "7. Domain guides and legacy/supporting documents",
+      "line_start": 107,
+      "line_end": 134,
+      "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n## 7. Domain guides and legacy/supporting documents\n\nThe following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.",
+      "char_count": 371
+    },
+    {
+      "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:1",
+      "file": "CONTRACT_INDEX.md",
+      "section": "7. Domain guides and legacy/supporting documents",
+      "line_start": 107,
+      "line_end": 134,
+      "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\name alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.\n\n| Документ | Default treatment until verified | Topic |\n|---|---|---|\n| [`base_turn_orchestration.txt`](base_turn_orchestration.txt) | `UNDECLARED / DOMAIN GUIDE` | legacy/general turn orchestration |\n| [`character_inventory_equipment.txt`](character_inventory_equipment.txt) | `UNDECLARED / DOMAIN GUIDE` | character inventory/equipment |\n| [`character_parameters.txt`](character_parameters.txt) | `UNDECLARED / DOMAIN GUIDE` | character parameters |\n| [`development_rules.txt`](development_rules.txt) | `REFERENCE`; cannot override `AGENTS.md` | legacy development rules |\n| [`formulas.md`](formulas.md) | `UNDECLARED / DOMAIN GUIDE` | formulas and mechanics |\n| [`g1_g5_generation_rules.txt`](g1_g5_generation_rules.txt) | `UNDECLARED / DOMAIN GUIDE` | generation rules |\n| [`historical_events_and_figures.txt`](historical_events_and_figures.txt) | `REFERENCE / KNOWLEDGE GUIDE` | historical figures/events boundary |\n| [`information_sources_llm_prompts.md`](information_sources_llm_prompts.md) | `UNDECLARED / DOMAIN GUIDE` | information-source prompts |\n| [`interface_ux.md`](interface_ux.md) | `UNDECLARED / DOMAIN GUIDE` | player-facing interface/UX |\n| [`llm_agent_prompt_templates.md`](llm_agent_prompt_templates.md) | `REFERENCE / TEMPLATE` | agent prompt templates |\n| [`movement_locations_regions.txt`](movement_locations_regions.txt) | `UNDECLARED / DOMAIN GUIDE` | movement/locations/regions |\n| [`new_game_start_pipeline.txt`](new_game_start_pipeline.txt) | `UNDECLARED / DOMAIN GUIDE` | new-game start pipeline |\n| [`npc_generation_profiles.txt`](npc_generation_profiles.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC generation profiles |\n| [`npc_inventory_item_marks.txt`](npc_inventory_item_marks.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC inventory and marks |\n| [`player_character_generation.txt`](player_character_generation.txt) | `UNDECLARED / DOMAIN GUIDE` | player character generation |\n| [`time_system.txt`](time_system.txt) | `REFERENCE / LEGACY` | older time-system description; active temporal contract has priority |\n| [`weapons_and_armor.txt`](weapons_and_armor.txt) | `UNDECLARED / DOMAIN GUIDE` | weapons/armor |\n| [`world_generation_and_turns.txt`](world_generation_and_turns.txt) | `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |",
+      "char_count": 2583
+    },
+    {
+      "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:2",
+      "file": "CONTRACT_INDEX.md",
+      "section": "7. Domain guides and legacy/supporting documents",
+      "line_start": 107,
+      "line_end": 134,
+      "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n| `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |\n\nAn undeclared guide may still be relevant, but it must not silently override an explicit active contract, schema or current owner.",
+      "char_count": 354
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8. Contract Auditor:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8. Contract Auditor",
+      "line_start": 135,
+      "line_end": 138,
+      "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\n`CONTRACT AUDITOR` is a read-only specialist. It establishes the applicable source set, document statuses, precedence and implementation consistency. It does not edit production code, invent a new owner or change a contract merely to bless an implementation bug.",
+      "char_count": 329
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.1. Mandatory triggers:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.1. Mandatory triggers",
+      "line_start": 139,
+      "line_end": 154,
+      "text": "## CONTRACT_INDEX.md — 8.1. Mandatory triggers\n### 8.1. Mandatory triggers\n\nRun Contract Auditor when at least one condition is true:\n\n1. a governing/normative document, this index, `AGENTS.md`, nested `AGENTS.md` or `MODULE.md` is created, changed, moved, renamed, deleted or promoted;\n2. an active release/profile/manifest/binding/status changes;\n3. public schema, operation, API, package export, DDL, persistence, transaction, idempotency or replay boundary changes;\n4. a domain owner or owner-to-owner handoff changes;\n5. LLM authority, prompt, request/plan contract, model-call topology or repair policy changes;\n6. free actions, ordinary materialization, items/property, Spatial G0–G6, NPC decisions/conversation/combat, time/processes, visibility/knowledge/perception, direct speech or narration boundaries change;\n7. an implementation plan cites a proposed/target/migration/historical document;\n8. `AGENTS.md`, index, contract, `MODULE.md`, schema, code or tests disagree about current behavior;\n9. final acceptance concerns a cross-module or otherwise elevated-risk change.",
+      "char_count": 1082
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.1. Mandatory triggers:1",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.1. Mandatory triggers",
+      "line_start": 139,
+      "line_end": 154,
+      "text": "## CONTRACT_INDEX.md — 8.1. Mandatory triggers\nct, `MODULE.md`, schema, code or tests disagree about current behavior;\n9. final acceptance concerns a cross-module or otherwise elevated-risk change.\n\nFor an ordinary local fix Contract Auditor is not mandatory only when CHIEF proves that public behavior, contracts, owner boundary, persistence/schema, LLM authority and active profile status remain unchanged.",
+      "char_count": 408
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.2. Always-read source set:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.2. Always-read source set",
+      "line_start": 155,
+      "line_end": 165,
+      "text": "## CONTRACT_INDEX.md — 8.2. Always-read source set\n### 8.2. Always-read source set\n\n1. root `AGENTS.md`;\n2. this index;\n3. applicable nested `AGENTS.md`;\n4. relevant `MODULE.md`;\n5. active release/profile/manifest/bindings;\n6. applicable active contract/schema;\n7. production code, callers and tests;\n8. proposed/target/migration docs only for explicit implementation/audit of that target.",
+      "char_count": 389
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.3. Scope matrix:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.3. Scope matrix",
+      "line_start": 166,
+      "line_end": 181,
+      "text": "## CONTRACT_INDEX.md — 8.3. Scope matrix\n### 8.3. Scope matrix",
+      "char_count": 62
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.3. Scope matrix:1",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.3. Scope matrix",
+      "line_start": 166,
+      "line_end": 181,
+      "text": "## CONTRACT_INDEX.md — 8.3. Scope matrix\n### 8.3. Scope matrix\n\n| Scope | Mandatory contract set |\n|---|---|\n| Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |\n| Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |\n| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |\n| Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |\n| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |\n| Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |\n| Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |\n| Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |\n| DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |\n| Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |\n| Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |",
+      "char_count": 1714
+    },
+    {
+      "id": "CONTRACT_INDEX.md:8.4. Finding format:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "8.4. Finding format",
+      "line_start": 182,
+      "line_end": 205,
+      "text": "## CONTRACT_INDEX.md — 8.4. Finding format\n### 8.4. Finding format\n\n```text\nCONTRACT AUDIT FINDING\n\nscope:\nsource_set:\nsource_statuses:\nobserved_implementation:\nrequired_by_active_contract:\ntarget_if_any:\nconflict:\nprecedence_resolution:\nfirst_bad_boundary:\ncorrect_owner:\nrequired_code_delta:\nrequired_docs_delta:\nrequired_tests:\nseverity: P0 | P1 | P2 | P3\nverdict: PASS | PASS_WITH_NOTES | BLOCK\n```\n\n`BLOCK` is required when a diff violates a governing/active contract, creates mixed semantics or duplicate ownership, or presents proposed behavior as current production. Documentation drift that does not change production may be `PASS_WITH_NOTES`, but must be assigned to the correct documentation owner.",
+      "char_count": 709
+    },
+    {
+      "id": "CONTRACT_INDEX.md:9. Audited conflict register:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "9. Audited conflict register",
+      "line_start": 206,
+      "line_end": 207,
+      "text": "## CONTRACT_INDEX.md — 9. Audited conflict register\n## 9. Audited conflict register",
+      "char_count": 83
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-001 — absent `Novgorod1230_project_instruction_full.md`:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-001 — absent `Novgorod1230_project_instruction_full.md`",
+      "line_start": 208,
+      "line_end": 212,
+      "text": "## CONTRACT_INDEX.md — C-001 — absent `Novgorod1230_project_instruction_full.md`\n### C-001 — absent `Novgorod1230_project_instruction_full.md`\n\n**Observed:** exact filename is absent from `main`; external prompts still require it.  \n**Resolution:** root `AGENTS.md` already contains the stable product constitution and repository rules. Do not add a duplicate. External copies are noncanonical comparison inputs only.",
+      "char_count": 417
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-002 — old navigation claimed precedence over root instructions:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-002 — old navigation claimed precedence over root instructions",
+      "line_start": 213,
+      "line_end": 217,
+      "text": "## CONTRACT_INDEX.md — C-002 — old navigation claimed precedence over root instructions\n### C-002 — old navigation claimed precedence over root instructions\n\n**Observed:** `llm_documentation_navigation.md` and `DOCUMENTS/README.md` carried an older reading order and could imply that a domain document outranked root `AGENTS.md`.  \n**Resolution:** root `AGENTS.md` → this index → nested `AGENTS.md` → `MODULE.md` → active profile/contract/schema → code/tests. Compatibility files redirect here.",
+      "char_count": 494
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-003 — critic required after every code change:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-003 — critic required after every code change",
+      "line_start": 218,
+      "line_end": 223,
+      "text": "## CONTRACT_INDEX.md — C-003 — critic required after every code change\n### C-003 — critic required after every code change\n\n**Observed:** two legacy critic-rule files mandated a critic for every behavior/code change.  \n**Conflict:** root `AGENTS.md` requires independent audit for elevated-risk work and explicitly says ordinary local fixes do not require a separate critic.  \n**Resolution:** root `AGENTS.md` §25 wins; legacy files redirect to the risk-based rule and Contract Auditor triggers.",
+      "char_count": 495
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-004 — `target` filename interpreted as proposed:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-004 — `target` filename interpreted as proposed",
+      "line_start": 224,
+      "line_end": 228,
+      "text": "## CONTRACT_INDEX.md — C-004 — `target` filename interpreted as proposed\n### C-004 — `target` filename interpreted as proposed\n\n**Observed:** four Spatial v3 files retain `target` in their filenames but their headers state that versioned production activation completed.  \n**Resolution:** they are active specializations. Filename heuristics are forbidden.",
+      "char_count": 356
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-005 — proposed umbrella snapshot versus later profile cutovers:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-005 — proposed umbrella snapshot versus later profile cutovers",
+      "line_start": 229,
+      "line_end": 233,
+      "text": "## CONTRACT_INDEX.md — C-005 — proposed umbrella snapshot versus later profile cutovers\n### C-005 — proposed umbrella snapshot versus later profile cutovers\n\n**Observed:** `semantic_world_actions_materialization_and_processes_contract.md` remains a proposed umbrella snapshot checked against `main` on 2026-08-16, while later `main` contains active profile-specific rules and implementation.  \n**Resolution:** the umbrella never becomes production merely because some ideas were implemented. Current behavior comes from root `AGENTS.md`, active profile contracts/bindings, code and tests. Use the umbrella only as target/history unless explicitly promoted.",
+      "char_count": 656
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-006 — generic world-base norm versus active v3 table specialization:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-006 — generic world-base norm versus active v3 table specialization",
+      "line_start": 234,
+      "line_end": 238,
+      "text": "## CONTRACT_INDEX.md — C-006 — generic world-base norm versus active v3 table specialization\n### C-006 — generic world-base norm versus active v3 table specialization\n\n**Observed:** `world_base_materialization_table_requirements.md` is active for general authoring/readiness semantics but states that the v3 target specialization owns production table-purpose semantics; older v2 portions remain migration/rollback.  \n**Resolution:** use the generic document for shared authoring principles and the v3 specialization for current production table-purpose details. DDL/generated schema remain physical truth.",
+      "char_count": 606
+    },
+    {
+      "id": "CONTRACT_INDEX.md:C-007 — authored candidate closure versus active ordinary paths:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "C-007 — authored candidate closure versus active ordinary paths",
+      "line_start": 239,
+      "line_end": 243,
+      "text": "## CONTRACT_INDEX.md — C-007 — authored candidate closure versus active ordinary paths\n### C-007 — authored candidate closure versus active ordinary paths\n\n**Observed:** the general materialization contract remains fail-closed for authored/significant/hidden/informational candidates, while active item/turn profiles add separately gated ordinary paths.  \n**Resolution:** ordinary paths do not repair an empty authored candidate set. Apply the active ordinary profile through its own request/admission/persistence contract; preserve authored fail-closed semantics.",
+      "char_count": 564
+    },
+    {
+      "id": "CONTRACT_INDEX.md:10. Maintenance rule:0",
+      "file": "CONTRACT_INDEX.md",
+      "section": "10. Maintenance rule",
+      "line_start": 244,
+      "line_end": 246,
+      "text": "## CONTRACT_INDEX.md — 10. Maintenance rule\n## 10. Maintenance rule\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.",
+      "char_count": 370
     },
     {
       "id": "development_rules.txt:18.1. Обязательная регистрация повторно используемых модулей:0",
@@ -3739,328 +3937,13 @@
       "char_count": 447
     },
     {
-      "id": "llm_documentation_navigation.md:README для LLM: навигация по документации проекта «Русь XIII век»:0",
+      "id": "llm_documentation_navigation.md:Documentation navigation — compatibility redirect:0",
       "file": "llm_documentation_navigation.md",
-      "section": "README для LLM: навигация по документации проекта «Русь XIII век»",
+      "section": "Documentation navigation — compatibility redirect",
       "line_start": 1,
-      "line_end": 2,
-      "text": "## llm_documentation_navigation.md — README для LLM: навигация по документации проекта «Русь XIII век»\n# README для LLM: навигация по документации проекта «Русь XIII век»",
-      "char_count": 170
-    },
-    {
-      "id": "llm_documentation_navigation.md:Статус navigation и target/active boundary:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Статус navigation и target/active boundary",
-      "line_start": 3,
-      "line_end": 16,
-      "text": "## llm_documentation_navigation.md — Статус navigation и target/active boundary\n## Статус navigation и target/active boundary\n\nНавигация отражает завершённый `versioned production activation cutover`:\nrelease `spatial-v3-production-v1` следует Spatial v3/Temporal World v4 как\nединственному production read/write пути; materialization v2 остаётся только\nexplicit migration/rollback source.\n`temporal_world_and_interruptible_activities.md` задаёт active Temporal World\nv4 current target amendment (`temporal-world-v1.1`, Spatial contract\n`4.4.0-target.1`) и immutable accepted snapshot (`temporal-world-v1`,\n`4.3.0-target.1`); документ доступен в default active-only retrieval. Историческое\nP28 exact-head evidence само не активировало production; это сделал отдельный\ncutover. Навигационный файл не разрешает partial activation, dual write или\nfallback.",
-      "char_count": 853
-    },
-    {
-      "id": "llm_documentation_navigation.md:Приоритет кодовой материализации:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Приоритет кодовой материализации",
-      "line_start": 17,
-      "line_end": 41,
-      "text": "## llm_documentation_navigation.md — Приоритет кодовой материализации\n## Приоритет кодовой материализации\n\nВысший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC и authored/significant/hidden items из утверждённых profiles/rules. LLM ограничен active player `turn_step_plan_v1`, active revision-14 conversation plans, genuinely closed bounded decisions, персонажем игрока, аудитом и прозой. Ordinary direct action result проходит отдельный code-owned admission и получает persisted exact runtime mechanics snapshot; он не является fallback для пустого authored candidate set.",
-      "char_count": 770
-    },
-    {
-      "id": "llm_documentation_navigation.md:Приоритет кодовой материализации:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "Приоритет кодовой материализации",
-      "line_start": 17,
-      "line_end": 41,
-      "text": "## llm_documentation_navigation.md — Приоритет кодовой материализации\nодит отдельный code-owned admission и получает persisted exact runtime mechanics snapshot; он не является fallback для пустого authored candidate set.\n\nДля domain-scoped activation `item_container_materialization_v2` дополнительно\nобязательны `read_only_database_and_graph_architecture.md` и generated\n`infra/world-base/SCHEMA_REFERENCE.md`. Implementation owners:\n`packages/runtime-catalog/MODULE.md` для read-only active/historical catalog,\n`tools/runtime-catalog-activation/MODULE.md` для operator-only writes и\n`docs/implementation/item-container-runtime-activation/README.md` для\nreadiness, выполненных queries/checks и operator blockers. Эти implementation\npaths не заменяют active-нормативы.\n\nАктуализировано: 2026-08-03.\n\nЭтот файл нужен для быстрой ориентации LLM, разработчика или аудитора в папке `DOCUMENTS`. Он не заменяет нормативные документы и не вводит новых правил. Если этот README расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.\n\nГлавное правило работы:",
-      "char_count": 1114
-    },
-    {
-      "id": "llm_documentation_navigation.md:Приоритет кодовой материализации:2",
-      "file": "llm_documentation_navigation.md",
-      "section": "Приоритет кодовой материализации",
-      "line_start": 17,
-      "line_end": 41,
-      "text": "## llm_documentation_navigation.md — Приоритет кодовой материализации\nREADME расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.\n\nГлавное правило работы:\n\n```text\nсначала определить систему → открыть профильный документ → сверить связанные документы → только потом отвечать, писать код, менять промт или фиксировать состояние\n```\n\nНельзя придумывать новые механики, категории, формулы, исторические допущения, игровые факты или UI-слои, если они не следуют из текущих документов проекта. Код материализует и изменяет экземпляры из утверждённых данных; LLM принимает только формально ограниченные решения и формулирует разрешённую прозу.",
-      "char_count": 703
-    },
-    {
-      "id": "llm_documentation_navigation.md:1. Приоритет источников:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "1. Приоритет источников",
-      "line_start": 42,
-      "line_end": 51,
-      "text": "## llm_documentation_navigation.md — 1. Приоритет источников\n## 1. Приоритет источников\n\n1. `code_driven_world_materialization_architecture.md` — для границы кода/LLM и материализации.\n2. Профильный норматив конкретной подсистемы.\n3. `development_rules.txt`.\n4. DDL, схемы и формальные контракты.\n5. Навигационные документы.\n6. Реализация.\n7. Комментарии и примеры.",
-      "char_count": 365
-    },
-    {
-      "id": "llm_documentation_navigation.md:Статусы целевых нормативов:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Статусы целевых нормативов",
-      "line_start": 52,
-      "line_end": 65,
-      "text": "## llm_documentation_navigation.md — Статусы целевых нормативов\n### Статусы целевых нормативов\n\n`universal_category_classification_policy.md` и `universal_category_classification_references.md` зарегистрированы в canonical corpus со статусом `proposed`. Они задают целевую модель классификации и внешние опоры, но не отменяют active-нормативы и не подтверждают готовность предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.\n\n`semantic_world_actions_materialization_and_processes_contract.md` зарегистрирован как `proposed umbrella target` для независимых profiles `O1`, `O2`, `A1`, `F1`, `S1` и `N1`. Он не активирует новую production semantics: до profile-specific versioned cutover production behavior определяется current active contracts и code.",
-      "char_count": 808
-    },
-    {
-      "id": "llm_documentation_navigation.md:Статусы целевых нормативов:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "Статусы целевых нормативов",
-      "line_start": 52,
-      "line_end": 65,
-      "text": "## llm_documentation_navigation.md — Статусы целевых нормативов\n. Он не активирует новую production semantics: до profile-specific versioned cutover production behavior определяется current active contracts и code.\n\n`temporal_world_and_interruptible_activities.md` имеет status `active` после\nреализации, полного набора проверок и независимого критика. Для exact time,\nactivities, boundaries, NPC temporal runtime, carriers, environment или remote\nprocesses его необходимо читать полностью вместе с target spatial standard.\nЕго active status означает нормативную власть amendment. Историческое P28\nexact-head evidence не активировало production; последующий release\n`spatial-v3-production-v1` прошёл собственную candidate-bound validation.",
-      "char_count": 739
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\n### Active semantic LLM contracts\n\n- free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13+);\n- autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`active`, Phase 7 / `spatial-v3-production-v5`);\n- conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);\n- combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).",
-      "char_count": 536
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\n` for Lower Dvina Trace revision 14);\n- combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).\n\nHistorical Lower Dvina Trace revision 22 / `spatial-v3-production-v11` наследует\nвсе четыре границы. Revision 20 / M8 / Phase 1A v16 / Phase 1B v15 добавила\nSHA-pinned O2b existing-container contents для одного authored player pouch;\nrevision 21 / M9 / Phase 1A v17 / Phase 1B v16 активирует узкий SHA-pinned A1\npersonal-tool transform внутри существующего `request_item_use`; revision 22 /\nM10 / Phase 1A v18 / Phase 1B v17 добавляет SHA-pinned F1 local exact fire для\nauthored ignition basis и concrete whole fuel units. Revision 21 и прежние\nпубликации остаются immutable historical recovery paths. O2b остаётся внутренней\ncandidate-free container веткой; A1 сохраняет exact handler priority и\nиспользует существующие generic-check/activity owners плюс общий P16. F1\nпереиспользует pure `@rus/world-processes`, общий temporal boundary owner и тот\nже P16; water/extinguish остаются disabled без exact finite-water authority.",
-      "char_count": 1145
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:2",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nпользует pure `@rus/world-processes`, общий temporal boundary owner и тот\nже P16; water/extinguish остаются disabled без exact finite-water authority.\n\nRevision 24 / M12 / Phase 1A v20 / Phase 1B v19 / `spatial-v3-production-v12`\nактивирует S1 только для fishing-camp `ordinary_structure` с\n`open_one_space`. Wreck-shore и `local_natural_feature` не active. Exact\nG6/position/topology создаёт `@rus/materialization/spatial-v3` только из exact\nSpatial catalog closure; scenario binding передаёт лишь profile refs и slot\nkeys. В пределах finite code-owned envelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.",
-      "char_count": 774
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:3",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.\n\nRevision 25 / M13 / Phase 1A v21 / Phase 1B v20 /\n`spatial-v3-production-v13` — прямой non-selectable child v12. Он публикует\napproved NPC actor-step Phase-7 profile: существующая boundary Жданко — первый\nтекущий activation participant/probe. Runtime NPC actor-step — общий текущий actor-step\nowner-capability path: он допускает зарегистрированные и применимые к current\nstate операции и NPC-safe current refs, без whitelist actions/refs/owners и\nспециальной action logic Жданко. S1 остаётся в отдельном prepared revision-24\ngate. Runtime-catalog activation этим release не меняется, а v12/revision-24\nartifacts остаются immutable historical paths.",
-      "char_count": 867
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:4",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nльном prepared revision-24\ngate. Runtime-catalog activation этим release не меняется, а v12/revision-24\nartifacts остаются immutable historical paths.\n\nActive player contract остаётся единственной semantic boundary свободной\nзаявки игрока после exact fast path. Revision 14 дополнительно активирует\nconversation path: общие `npc_decision_signal_v1` и\n`npc_decision_boundary_v1`, player conversation contribution и ровно один\nsemantic responder для одного NPC/same-time batch. Phase-7 autonomous contract\nactive: «Отдых у огня» advances 30 minutes, creates Жданко's boundary at +25\nand applies one actor-step from the operations actually registered in the\nruntime at the same timestamp, then resumes the common temporal owner to +30\nfrom the updated working projection. Persistence and visibility remain\ncode-owned. Combat active для revision 16 и наследуется revisions 17–18. Phase 9\nне вводит новый LLM contract: свободные действия идут через active turn-step\ncontract, а показание Онисима — через active conversation contract.\nProperty/evidence/temporary-disposition consequences остаются code-owned;\nсодержимое документа недоступно этому path. Revision 18 Phase 10 не вводит\nLLM contract: completion и player-safe epilogue детерминированно строятся из\nуже committed Phase 9 producers, сохраняются отдельным zero-time commit и\nтолько затем передаются обычной narration stage.\nHistorical bounded Phase 3/4 доступен исключительно по явному revision pin и\nне является production fallback.",
-      "char_count": 1554
-    },
-    {
-      "id": "llm_documentation_navigation.md:Active semantic LLM contracts:5",
-      "file": "llm_documentation_navigation.md",
-      "section": "Active semantic LLM contracts",
-      "line_start": 66,
-      "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nатем передаются обычной narration stage.\nHistorical bounded Phase 3/4 доступен исключительно по явному revision pin и\nне является production fallback.\n\nДополнительные правила навигации:\n\n- `formulas.md` помогает быстро найти формулу, но не заменяет профильный документ, где эта формула объяснена.\n- `README.md` и этот `llm_documentation_navigation.md` являются навигацией, а не источником новых правил.\n- `world_regions.txt` задаёт допустимую региональную сетку, но не описывает всю внутреннюю логику региона.\n- Исторический слой всегда уточняется через год, сезон, регион, текущую сцену и уже зафиксированные факты партии.\n- LLM не должна менять уже зафиксированные факты без игровой причины и явной фиксации изменения.\n- Новые предметы, NPC, места, слухи, исторические события и последствия материализуются только при причинном основании и в пределах текущего контекста.\n- Скрытые факты мира, мотивы NPC, будущие события, технические промты и raw-диагностика не должны попадать в player-facing прозу или UI.",
-      "char_count": 1076
-    },
-    {
-      "id": "llm_documentation_navigation.md:2. Быстрый порядок чтения:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "2. Быстрый порядок чтения",
-      "line_start": 135,
-      "line_end": 136,
-      "text": "## llm_documentation_navigation.md — 2. Быстрый порядок чтения\n## 2. Быстрый порядок чтения",
-      "char_count": 91
-    },
-    {
-      "id": "llm_documentation_navigation.md:Для общего понимания проекта:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Для общего понимания проекта",
-      "line_start": 137,
-      "line_end": 147,
-      "text": "## llm_documentation_navigation.md — Для общего понимания проекта\n### Для общего понимания проекта\n\n1. `README.md`\n2. `world_generation_and_turns.txt`\n3. `player_character_generation.txt`\n4. `character_parameters.txt`\n5. `time_system.txt`\n6. `temporal_world_and_interruptible_activities.md` при temporal target work\n7. `movement_locations_regions.txt`\n8. `interface_ux.md`",
-      "char_count": 372
-    },
-    {
-      "id": "llm_documentation_navigation.md:Для игровых систем и последствий:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Для игровых систем и последствий",
-      "line_start": 148,
-      "line_end": 159,
-      "text": "## llm_documentation_navigation.md — Для игровых систем и последствий\n### Для игровых систем и последствий\n\n1. `items_and_property.txt`\n2. `character_inventory_equipment.txt`\n3. `npc_inventory_item_marks.txt`\n4. `npc_generation_profiles.txt`\n5. `weapons_and_armor.txt`\n6. `combat_system.md`\n7. `historical_events_and_figures.txt`\n8. `world_regions.txt`\n9. `formulas.md`",
-      "char_count": 369
-    },
-    {
-      "id": "llm_documentation_navigation.md:Для LLM-архитектуры, промтов и работы с источниками:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Для LLM-архитектуры, промтов и работы с источниками",
-      "line_start": 160,
-      "line_end": 168,
-      "text": "## llm_documentation_navigation.md — Для LLM-архитектуры, промтов и работы с источниками\n### Для LLM-архитектуры, промтов и работы с источниками\n\n1. `turn_step_llm_contract.md` — для свободной заявки игрока и player semantic boundary\n2. `npc_conversation_mode_contract.md` — для active revision-14 conversation path\n3. `information_sources_llm_prompts.md`\n4. `llm_agent_prompt_templates.md`\n5. `world_generation_and_turns.txt`\n6. `interface_ux.md`",
-      "char_count": 447
-    },
-    {
-      "id": "llm_documentation_navigation.md:3. Карта документов:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "3. Карта документов",
-      "line_start": 169,
-      "line_end": 198,
-      "text": "## llm_documentation_navigation.md — 3. Карта документов\n## 3. Карта документов",
-      "char_count": 79
-    },
-    {
-      "id": "llm_documentation_navigation.md:3. Карта документов:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "3. Карта документов",
-      "line_start": 169,
-      "line_end": 198,
-      "text": "## llm_documentation_navigation.md — 3. Карта документов\n## 3. Карта документов\n\n| Файл | Краткое содержание | Когда использовать |\n|---|---|---|\n| `README.md` | Общее описание проекта, состава `DOCUMENTS`, запуска, тестов и правил будущих изменений. | При первом входе в проект, объяснении назначения репозитория, проверке состава документации и базовых команд. |\n| `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |\n| `spatial_architecture_standard_g0_g6.md` | Главный production v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release boundary. | При проектировании пространственной модели, contracts, DDL/migration plan и проверке sole-owner production boundary. |\n| `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |\n| `turn_step_llm_contract.md` | Active strict contract свободной заявки игрока: exact fast path, player-safe request, `turn_step_plan_v1`, working projection, direct/check/domain execution, one repair и atomic commit. NPC semantic modes не активирует. | При изменении player input, turn-step schemas/prompts, semantic loop, ordinary direct action results, continuation и commit boundary. |\n| `npc_conversation_mode_contract.md` | Active revision-14 contract разговора: player/NPC contribution plans, единые NPC signals/boundaries, фактическая аудитория, social delivery и combat handoff. | При изменении Phase 3/4 conversation, responder boundary, listeners/witnesses, conversation knowledge/memory или promises. |\n| `world_generation_and_turns.txt` | Production v3: G0–G6/position, bounded preparation/materialization и active player turn-step boundary; archived v2 источник сохранён для migration/rollback traceability. | При проектировании start/materialization/slots/expansion и проверке active v3/player-turn boundary. |\n| `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |\n| `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |\n| `time_system.txt` | Target routing для exact времени; authoritative Temporal World v4 details находятся в профильном amendment, архивная v2-проза исключена из retrieval. | При любом действии, которое занимает время; для target implementation обязательно затем читать active temporal amendment. |\n| `movement_locations_regions.txt` | Target v3: typed endpoints, authored topology, readiness, immutable plans и execution; archived v2 источник сохранён для traceability. | При target-проектировании перемещения, path query, route/segment authoring и boundary. |\n| `items_and_property.txt` | Два класса materialization: code-owned authored/significant/hidden предметы из approved candidates и ordinary direct action results с exact runtime mechanics snapshot; также имущество, доступ, контейнеры, видимость, право и риск. | При создании или проверке предметов сцены, player-created ordinary results, контейнеров, собственности, доступа, поиска и правдоподобия материальной среды. |\n| `character_inventory_equipment.txt` | Правила инвентаря и два допустимых источника exact mechanics: approved authored profile либо persisted runtime instance snapshot. Derived mass/load/hands/capacity остаются code-owned. | Когда персонаж берёт, создаёт действием, несёт, достаёт, теряет или использует предмет; при расчёте нагрузки и доступа. |\n| `npc_inventory_item_marks.txt` | Правила для предметов, которые NPC держит при себе или контролирует в текущей сцене. Описывает владельца, держателя, доступность, видимость, метки, узнавание вещи, скрытые предметы, кражу, передачу и последствия обнаружения. | При обыске NPC, краже, передаче вещей, распознавании чужого предмета, проверке улик, меток собственности и реакции владельца. |\n| `npc_generation_profiles.txt` | Описывает три уровня NPC: фоновый, сценический и ключевой. Задаёт, какие параметры нужны каждому уровню, когда профиль повышается/понижается, как хранить память, отношение, знания, ресурсы, навыки и последствия. | При создании NPC, взаимодействии с NPC, повышении NPC до сценического или ключевого уровня, сохранении отношений, долгов, памяти и долговременных последствий. |\n| `weapons_and_armor.txt` | Типы оружия, брони, щитов и боевого снаряжения как сочетание боевого эффекта, веса, доступности, состояния, права и риска. | При выборе оружия, определении опасности попадания, снижении вреда бронёй, проверке допустимости ношения оружия, социального риска и физической нагрузки. |\n| `combat_system.md` | Правила начала боя, боевого хода, проверок атаки/защиты, активной защиты, вреда, уязвимости, брони, дистанции, борьбы, дальнего боя, ранений, добивания, бегства, сдачи и последствий насилия. | При любой физической угрозе, атаке, борьбе, погоне, защите, попытке сбежать, удержать позицию, нанести вред или оценить последствия насилия. |\n| `historical_events_and_figures.txt` | Правила исторического слоя: события и личности как внешнее давление, фазы событий, слухи, предвестники, последствия, связь с местом, временем, властью, дорогами, ценами и настроением. | При генерации исторического фона, слухов, крупных событий, власти, войн, известных личностей, смене региона, большом пропуске времени или изменении исторического давления. |\n| `interface_ux.md` | Target v3 player-safe projection: movement readiness, knowledge visibility, scene/route maps, interruption/stranded state и diagnostics boundary; archived v2 источник сохранён для traceability. | При UI, `ui-state`, журнале, карте знаний, player payload или проверке hidden-leak boundary. |\n| `formulas.md` | Справочник расчётных и структурных формул проекта с пояснениями. Объединяет формулы проверок, состояний, веса, нагрузки, боя, времени, перемещения и структуры сущностей. | Когда нужно быстро найти формулу, а затем проверить её смысл в профильном документе. |\n| `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |\n| `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |\n| `semantic_world_actions_materialization_and_processes_contract.md` | Proposed umbrella target для profiles O1/O2/A1/F1/S1/N1; до отдельного profile cutover не имеет production authority. | При планировании будущих ordinary-materialization, actor-action, local-process, NPC или persistence changes; сначала сверить active contract соответствующей подсистемы. |\n| `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |\n| `llm_agent_prompt_templates.md` | Active player planner/repair, conversation, autonomous и combat roles. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении player/NPC semantic LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |",
-      "char_count": 8537
-    },
-    {
-      "id": "llm_documentation_navigation.md:4. Как выбирать нужный документ по задаче:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "4. Как выбирать нужный документ по задаче",
-      "line_start": 199,
-      "line_end": 222,
-      "text": "## llm_documentation_navigation.md — 4. Как выбирать нужный документ по задаче\n## 4. Как выбирать нужный документ по задаче",
-      "char_count": 123
-    },
-    {
-      "id": "llm_documentation_navigation.md:4. Как выбирать нужный документ по задаче:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "4. Как выбирать нужный документ по задаче",
-      "line_start": 199,
-      "line_end": 222,
-      "text": "## llm_documentation_navigation.md — 4. Как выбирать нужный документ по задаче\n## 4. Как выбирать нужный документ по задаче\n\n| Задача | Читать сначала | Затем сверить |\n|---|---|---|\n| Обработать свободную заявку игрока или изменить player semantic loop | `turn_step_llm_contract.md` | `world_generation_and_turns.txt`, `packages/turn/MODULE.md`, `docs/pipelines/turn.md` |\n| Создать новую партию, стартовую сцену или новый узел мира | `world_generation_and_turns.txt` | `time_system.txt`, `movement_locations_regions.txt`, `interface_ux.md` |\n| Создать или проверить персонажа игрока | `player_character_generation.txt` | `character_parameters.txt`, `character_inventory_equipment.txt`, `items_and_property.txt` |\n| Рассчитать проверку, состояние тела, штраф или навык | `character_parameters.txt` | `formulas.md`, релевантный документ системы действия |\n| Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `temporal_world_and_interruptible_activities.md` | `time_system.txt`, `character_parameters.txt`, `historical_events_and_figures.txt` |\n| Переместить персонажа, построить маршрут, вернуть назад, заблудиться | `movement_locations_regions.txt` | `time_system.txt`, `world_regions.txt`, `world_generation_and_turns.txt` |\n| Создать предмет сцены, проверить имущество, existing-container contents, доступ или кражу | `items_and_property.txt` | `turn_step_llm_contract.md` §12.2, `character_inventory_equipment.txt`, `npc_inventory_item_marks.txt`, `interface_ux.md` |\n| Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |\n| Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |\n| Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |\n| Определить новую реакцию или действие NPC | `temporal_world_and_interruptible_activities.md`, раздел 15 | `npc_generation_profiles.txt`, `llm_agent_prompt_templates.md`, профильные action/activity/movement/item/conflict contracts |\n| Обработать разговор Phase 3/4, listeners, witnesses, social delivery или promise | `npc_conversation_mode_contract.md` | `temporal_world_and_interruptible_activities.md`, `packages/turn/MODULE.md`, `docs/pipelines/turn.md` |\n| Обработать физический конфликт, угрозу, удар, борьбу, стрельбу, защиту, бегство | `combat_system.md` | `weapons_and_armor.txt`, `character_parameters.txt`, `character_inventory_equipment.txt` |\n| Проверить оружие, броню, щит, опасность, защиту, право ношения и социальный риск | `weapons_and_armor.txt` | `combat_system.md`, `character_inventory_equipment.txt`, `items_and_property.txt` |\n| Создать исторический фон, слух, войну, власть, князя, фазу события | `historical_events_and_figures.txt` | `world_regions.txt`, `time_system.txt`, `world_generation_and_turns.txt` |\n| Изменить UI, журнал, подсказки, видимость данных, dev-diagnostics | `interface_ux.md` | `llm_agent_prompt_templates.md`, `information_sources_llm_prompts.md` |\n| Изменить LLM-пайплайн, роли агентов, prompt templates, visible context | `llm_agent_prompt_templates.md` | `information_sources_llm_prompts.md`, `world_generation_and_turns.txt`, `interface_ux.md` |\n| Добавить внешние источники или пополнить базу знаний | `information_sources_llm_prompts.md` | `historical_events_and_figures.txt`, `world_regions.txt`, профильный документ системы |\n| Быстро найти формулу | `formulas.md` | профильный документ, из которого формула взята |",
-      "char_count": 3728
-    },
-    {
-      "id": "llm_documentation_navigation.md:5. Минимальные связки документов по подсистемам:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "5. Минимальные связки документов по подсистемам",
-      "line_start": 223,
-      "line_end": 224,
-      "text": "## llm_documentation_navigation.md — 5. Минимальные связки документов по подсистемам\n## 5. Минимальные связки документов по подсистемам",
-      "char_count": 135
-    },
-    {
-      "id": "llm_documentation_navigation.md:Мир и ход:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Мир и ход",
-      "line_start": 225,
-      "line_end": 235,
-      "text": "## llm_documentation_navigation.md — Мир и ход\n### Мир и ход\n\n```text\nworld_generation_and_turns.txt\n+ time_system.txt\n+ movement_locations_regions.txt\n+ interface_ux.md\n```\n\nИспользовать при обработке обычной заявки игрока, потому что ход почти всегда меняет сцену, время, видимость и сохранённые факты.",
-      "char_count": 304
-    },
-    {
-      "id": "llm_documentation_navigation.md:Персонаж и проверки:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Персонаж и проверки",
-      "line_start": 236,
-      "line_end": 245,
-      "text": "## llm_documentation_navigation.md — Персонаж и проверки\n### Персонаж и проверки\n\n```text\nplayer_character_generation.txt\n+ character_parameters.txt\n+ formulas.md\n```\n\nИспользовать при генерации, миграции или проверке `health / satiety / vigor`, характеристик, навыков, активных состояний и d20-формулы.",
-      "char_count": 303
-    },
-    {
-      "id": "llm_documentation_navigation.md:Предметы, имущество и инвентарь:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Предметы, имущество и инвентарь",
-      "line_start": 246,
-      "line_end": 255,
-      "text": "## llm_documentation_navigation.md — Предметы, имущество и инвентарь\n### Предметы, имущество и инвентарь\n\n```text\nitems_and_property.txt\n+ character_inventory_equipment.txt\n+ npc_inventory_item_marks.txt\n```\n\nИспользовать, чтобы не смешивать физический инвентарь, право собственности, доступ, держателя, владельца, контейнеры, метки, риск и сценическую видимость.",
-      "char_count": 363
-    },
-    {
-      "id": "llm_documentation_navigation.md:NPC и социальная память:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "NPC и социальная память",
-      "line_start": 256,
-      "line_end": 266,
-      "text": "## llm_documentation_navigation.md — NPC и социальная память\n### NPC и социальная память\n\n```text\nnpc_generation_profiles.txt\n+ character_parameters.txt\n+ items_and_property.txt\n+ interface_ux.md\n```\n\nИспользовать, чтобы фоновые NPC не получали лишнюю скрытую биографию, а сценические и ключевые NPC получали ровно тот объём состояния, который нужен для честных последствий.",
-      "char_count": 374
-    },
-    {
-      "id": "llm_documentation_navigation.md:Бой, оружие и последствия насилия:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "Бой, оружие и последствия насилия",
-      "line_start": 267,
-      "line_end": 278,
-      "text": "## llm_documentation_navigation.md — Бой, оружие и последствия насилия\n### Бой, оружие и последствия насилия\n\n```text\ncombat_system.md\n+ weapons_and_armor.txt\n+ character_parameters.txt\n+ character_inventory_equipment.txt\n+ npc_inventory_item_marks.txt\n```\n\nИспользовать при любой физической угрозе. Оружие не создаётся заявкой игрока: оно должно быть при персонаже, в руках, доступно в сцене или причинно присутствовать в мире.",
-      "char_count": 428
-    },
-    {
-      "id": "llm_documentation_navigation.md:История, регион и источники:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "История, регион и источники",
-      "line_start": 279,
-      "line_end": 289,
-      "text": "## llm_documentation_navigation.md — История, регион и источники\n### История, регион и источники\n\n```text\nhistorical_events_and_figures.txt\n+ world_regions.txt\n+ time_system.txt\n+ information_sources_llm_prompts.md\n```\n\nИспользовать для фаз исторических событий, слухов, влияния власти, внешнего давления, региональных ограничений и пополнения базы знаний.",
-      "char_count": 356
-    },
-    {
-      "id": "llm_documentation_navigation.md:UI и LLM-слои:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "UI и LLM-слои",
-      "line_start": 290,
-      "line_end": 299,
-      "text": "## llm_documentation_navigation.md — UI и LLM-слои\n### UI и LLM-слои\n\n```text\ninterface_ux.md\n+ llm_agent_prompt_templates.md\n+ information_sources_llm_prompts.md\n```\n\nИспользовать при отделении player-facing данных от скрытого состояния, raw diagnostics, prompt payloads, debug/admin слоя и художественной прозы.",
-      "char_count": 313
-    },
-    {
-      "id": "llm_documentation_navigation.md:6. Правила для LLM при ответах и изменениях кода:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "6. Правила для LLM при ответах и изменениях кода",
-      "line_start": 300,
-      "line_end": 312,
-      "text": "## llm_documentation_navigation.md — 6. Правила для LLM при ответах и изменениях кода\n## 6. Правила для LLM при ответах и изменениях кода",
-      "char_count": 137
-    },
-    {
-      "id": "llm_documentation_navigation.md:6. Правила для LLM при ответах и изменениях кода:1",
-      "file": "llm_documentation_navigation.md",
-      "section": "6. Правила для LLM при ответах и изменениях кода",
-      "line_start": 300,
-      "line_end": 312,
-      "text": "## llm_documentation_navigation.md — 6. Правила для LLM при ответах и изменениях кода\n## 6. Правила для LLM при ответах и изменениях кода\n\n1. Не добавлять новую механику, если она не описана в профильном документе.\n2. Не менять формулу в коде без сверки с `formulas.md` и профильным документом.\n3. Не считать старый код источником истины, если он противоречит `DOCUMENTS`.\n4. Не считать художественную прозу состоянием мира. Состояние должно быть структурировано и сохранено отдельно.\n5. Не раскрывать скрытые мотивы NPC, скрытые предметы, будущие события, полный JSON мира или technical diagnostics в игровом UI/прозе.\n6. Не материализовать новый предмет, NPC, место или событие только потому, что игрок это назвал. Сначала проверить уже зафиксированное, затем допустимые категории, доступ, риск и причинное основание.\n7. Не менять owner при простой передаче предмета: передача обычно меняет holder, а право собственности может остаться прежним.\n8. Не обновлять историческое событие как внезапный факт без фаз, предвестников, видимых признаков или регионального давления.\n9. Не смешивать инвентарь и имущество: инвентарь — только то, что персонаж физически несёт и может использовать в текущей сцене.\n10. Не считать `llm_documentation_navigation.md` самостоятельным источником правил; он только указывает, где искать правило.",
-      "char_count": 1326
-    },
-    {
-      "id": "llm_documentation_navigation.md:7. Чеклист перед изменением проекта:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "7. Чеклист перед изменением проекта",
-      "line_start": 313,
-      "line_end": 327,
-      "text": "## llm_documentation_navigation.md — 7. Чеклист перед изменением проекта\n## 7. Чеклист перед изменением проекта\n\nПеред изменением кода, промта, схемы данных или UI нужно ответить:\n\n1. Какая подсистема затронута?\n2. Какой профильный документ её описывает?\n3. Какие связанные документы нужно сверить?\n4. Есть ли формула в `formulas.md`?\n5. Меняется ли сохранённое состояние мира или только отображение?\n6. Не попадут ли скрытые факты в player-facing слой?\n7. Нужна ли миграция старых сохранений?\n8. Нужны ли новые тесты на формулу, схему, UI-фильтрацию или LLM-контракт?\n9. Не создаёт ли изменение новую механику, отсутствующую в документах?\n10. Нужно ли обновить профильный документ, если изменение действительно новое?",
-      "char_count": 718
-    },
-    {
-      "id": "llm_documentation_navigation.md:8. Чеклист перед ответом LLM по игровой ситуации:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "8. Чеклист перед ответом LLM по игровой ситуации",
-      "line_start": 328,
-      "line_end": 342,
-      "text": "## llm_documentation_navigation.md — 8. Чеклист перед ответом LLM по игровой ситуации\n## 8. Чеклист перед ответом LLM по игровой ситуации\n\nПеред ответом игроку или генерацией хода LLM должна проверить:\n\n1. Что персонаж видит, слышит, помнит или разумно предполагает?\n2. Что скрыто от персонажа и не должно попасть в прозу?\n3. Есть ли уже зафиксированные факты о месте, NPC, предметах, маршруте и времени?\n4. Занимает ли заявка время и как оно влияет на тело, NPC, погоду, дороги и последствия?\n5. Нужна ли проверка d20 и какие характеристика/навык/состояние/обстоятельства в неё входят?\n6. Есть ли предмет физически при персонаже или в сцене?\n7. Есть ли владелец, держатель, доступ, риск или метки предмета?\n8. Может ли действие изменить отношение NPC, слух, обязательство, право собственности, следы или историческое давление?\n9. Нужно ли записать событие в память/журнал как факт, слух, обязательство или последствие?\n10. Не раскрывает ли ответ техническую или будущую информацию?",
-      "char_count": 982
-    },
-    {
-      "id": "llm_documentation_navigation.md:9. Что делать при конфликте документов:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "9. Что делать при конфликте документов",
-      "line_start": 343,
-      "line_end": 351,
-      "text": "## llm_documentation_navigation.md — 9. Что делать при конфликте документов\n## 9. Что делать при конфликте документов\n\n1. Не выбирать удобную трактовку молча.\n2. Найти профильные документы обеих подсистем.\n3. Проверить, не является ли один файл справочником или README, а другой профильным источником.\n4. Если конфликт остаётся, явно зафиксировать его как проблему документации.\n5. В коде не закреплять новую трактовку до правки профильного документа.\n6. В отчёте или задаче указывать конкретные файлы и разделы, где возник конфликт.",
-      "char_count": 533
-    },
-    {
-      "id": "llm_documentation_navigation.md:10. Где должен лежать этот файл:0",
-      "file": "llm_documentation_navigation.md",
-      "section": "10. Где должен лежать этот файл",
-      "line_start": 352,
-      "line_end": 356,
-      "text": "## llm_documentation_navigation.md — 10. Где должен лежать этот файл\n## 10. Где должен лежать этот файл\n\nРекомендуемое место: корень проекта рядом с `README.md`.\n\nПричина: основной `README.md` ссылается на `llm_documentation_navigation.md` как на навигационный файл для LLM. При желании можно дополнительно держать копию в `DOCUMENTS/llm_documentation_navigation.md`, но источником для разработчиков должен быть один актуальный файл, чтобы не появилось двух расходящихся навигационных README.",
-      "char_count": 492
+      "line_end": 18,
+      "text": "## llm_documentation_navigation.md — Documentation navigation — compatibility redirect\n# Documentation navigation — compatibility redirect\n\n**Status:** superseded navigation filename retained for compatibility.\n\nThe canonical documentation map is now [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md).\n\nRead in this order:\n\n1. root [`AGENTS.md`](../../../../AGENTS.md);\n2. [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md);\n3. applicable nested `AGENTS.md`;\n4. relevant `MODULE.md`;\n5. active release/profile/bindings and applicable active contracts;\n6. production code, callers, tests and CI.\n\nSpatial v3 is the current production owner after the completed `versioned production activation cutover`; compatibility filenames and migration sources do not restore v2 authority.\n\nProposed, migration, historical and reference documents are not current production contracts unless an explicit versioned cutover and active binding say otherwise.",
+      "char_count": 922
     },
     {
       "id": "map_g0_g4_workflow.txt:Инструкция-памятка по работе с картой G0–G4:0",
@@ -11560,67 +11443,22 @@
       "char_count": 619
     },
     {
-      "id": "README.md:XIII Century World Sim — Documentation:0",
+      "id": "README.md:DOCUMENTS — contract and domain documentation:0",
       "file": "README.md",
-      "section": "XIII Century World Sim — Documentation",
+      "section": "DOCUMENTS — contract and domain documentation",
       "line_start": 1,
-      "line_end": 4,
-      "text": "## README.md — XIII Century World Sim — Documentation\n# XIII Century World Sim — Documentation\n\nThis folder contains the normative documentation for a text-first historical RPG simulation set in the 13th century. `code_driven_world_materialization_architecture.md` is the highest materialization rule: code creates concrete party instances from approved categories/templates/profiles/rules, while LLM is limited to bounded decisions, player-character creation, audit and visible-context prose.",
-      "char_count": 493
+      "line_end": 18,
+      "text": "## README.md — DOCUMENTS — contract and domain documentation\n# DOCUMENTS — contract and domain documentation\n\nThe canonical entry point is root [`AGENTS.md`](../../../../AGENTS.md).\n\nUse [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md) to determine:\n\n- which documents are governing, active, proposed, migration-only, reference or superseded;\n- which contract set applies to a subsystem;\n- when the read-only Contract Auditor is mandatory;\n- how conflicts and filename/status traps are resolved.\n\nModule-level ownership is discoverable through generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md); the corresponding `MODULE.md` remains the exact public-boundary owner.\n\nSpatial v3 is the current production owner after the completed `versioned production activation cutover`; earlier v2 documents are migration/rollback sources only where their own headers say so.\n\nThis directory contains several generations of documents. Filename, age, detail level or the words `contract`, `policy`, `standard` and `target` do not determine normative status. Verify the explicit header, active release/profile/binding, code and tests.",
+      "char_count": 1119
     },
     {
-      "id": "README.md:Current purpose:0",
+      "id": "README.md:DOCUMENTS — contract and domain documentation:1",
       "file": "README.md",
-      "section": "Current purpose",
-      "line_start": 5,
-      "line_end": 10,
-      "text": "## README.md — Current purpose\n## Current purpose\n\nThis is not a finished game. It is a foundation for a historical text RPG where the player acts through natural language and the system maintains a consistent world: time, place, NPCs, items, risks, hidden processes, visible information, and consequences.\n\nThe project documents define how the LLM should generate, interpret, and update the game world without inventing unsupported mechanics. When documents conflict, use `llm_documentation_navigation.md` and the source-priority rules there.",
-      "char_count": 543
-    },
-    {
-      "id": "README.md:Main project files:0",
-      "file": "README.md",
-      "section": "Main project files",
-      "line_start": 11,
-      "line_end": 40,
-      "text": "## README.md — Main project files\n## Main project files",
-      "char_count": 55
-    },
-    {
-      "id": "README.md:Main project files:1",
-      "file": "README.md",
-      "section": "Main project files",
-      "line_start": 11,
-      "line_end": 40,
-      "text": "## README.md — Main project files\n## Main project files\n\n| File | Purpose |\n|---|---|\n| `code_driven_world_materialization_architecture.md` | Highest normative boundary between authoring data, code, LLM and party state. |\n| `world_base_materialization_table_requirements.md` | Purpose, population and normalization requirements for world-base materialization data. |\n| `llm_documentation_navigation.md` | LLM navigation, source priority, reading order, cross-document bundles. |\n| `spatial_architecture_standard_g0_g6.md` | Active production Spatial v3 G0–G6 standard after release `spatial-v3-production-v1`. Historical P28 evidence did not itself activate it; the later versioned production activation cutover did. |\n| `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment in release `spatial-v3-production-v1`. |\n| `world_generation_and_turns.txt` | World materialization, start pipeline, turn processing, visible/hidden facts. |\n| `player_character_generation.txt` | Player character creation pipeline and output contract. |\n| `character_parameters.txt` | Attributes, skills, body states, active conditions, checks, modifiers. |\n| `npc_generation_profiles.txt` | Background, scene, and key NPC profiles and transitions. |\n| `combat_system.md` | Combat processing, checks, harm, defense, NPC reactions, consequences. |\n| `weapons_and_armor.txt` | Weapons, armor, shields, helmets, equipment constraints, social risk. |\n| `items_and_property.txt` | Item materialization, item schema, ownership, value, visibility, property. |\n| `character_inventory_equipment.txt` | Character inventory, encumbrance, access, equipment in checks. |\n| `npc_inventory_item_marks.txt` | NPC inventory, item marks, recognition, hidden items, theft consequences. |\n| `movement_locations_regions.txt` | Position hierarchy, routes, maps, path risk, long-distance movement. |\n| `time_system.txt` | Time levels, turn duration, time-driven updates, timers. |\n| `historical_events_and_figures.txt` | Historical layer, event phases, figures, visibility, no future knowledge. |\n| `world_regions.txt` | Allowed RUS13 regional grid. |\n| `interface_ux.md` | UI layers, player input, journal, map, diagnostics, hidden-information rules. |\n| `information_sources_llm_prompts.md` | Knowledge-base workflow, information sources, prompt boundaries, agent types. |\n| `llm_agent_prompt_templates.md` | Prompt templates for the LLM agent pipeline. |\n| `formulas.md` | Central formula reference; does not override the profile documents. |\n| `universal_category_classification_policy.md` | Proposed universal-category policy. It is not active and does not itself grant regional or runtime availability. |\n| `universal_category_classification_references.md` | Proposed reference appendix for external classification schemes; it is not historical evidence. |\n| `semantic_world_actions_materialization_and_processes_contract.md` | Proposed umbrella target for independent O1/O2/A1/F1/S1/N1 profiles. The umbrella is not activated wholesale; production behavior is defined by each profile-specific cutover (including active Lower Dvina O1/O2/A1 scopes) and code. |",
-      "char_count": 3161
-    },
-    {
-      "id": "README.md:Knowledge graph:0",
-      "file": "README.md",
-      "section": "Knowledge graph",
-      "line_start": 41,
-      "line_end": 51,
-      "text": "## README.md — Knowledge graph\n## Knowledge graph\n\nThe rebuilt knowledge graph lives in `documents-kg/graphify-out/`.\n\n- `graph.json` is the machine-readable graph for agents.\n- `graph.html` is a local browser view.\n- `GRAPH_REPORT.md` is the audit summary.\n- `documents-kg/corpus/DOCUMENTS/` contains a renamed English-file corpus copy used by the graph.\n\nThe graph was rebuilt as a detailed documentation map. It now includes formulas, schemas, body states, item schemas, NPC schemas, routes, combat structure, source priority, character generation, item marks, and LLM agents. Nodes and edges include `source_location` with file, section, and line range.",
-      "char_count": 657
-    },
-    {
-      "id": "README.md:Recommended reading order for LLM work:0",
-      "file": "README.md",
-      "section": "Recommended reading order for LLM work",
-      "line_start": 52,
-      "line_end": 60,
-      "text": "## README.md — Recommended reading order for LLM work\n## Recommended reading order for LLM work\n\n1. `README.md`\n2. `llm_documentation_navigation.md`\n3. `world_generation_and_turns.txt`\n4. The profile document for the subsystem being changed.\n5. `formulas.md` only as a cross-reference.\n6. `documents-kg/graphify-out/graph.json` for cross-system navigation.",
-      "char_count": 356
-    },
-    {
-      "id": "README.md:Rules for future changes:0",
-      "file": "README.md",
-      "section": "Rules for future changes",
-      "line_start": 61,
-      "line_end": 68,
-      "text": "## README.md — Rules for future changes\n## Rules for future changes\n\n1. Do not add a mechanic in code unless it is described in the documentation or added to a profile document first.\n2. Do not let UI, diagnostics, or prose reveal hidden world state, hidden NPC motives, future events, raw prompts, or internal reasoning.\n3. Keep filename references in English snake_case.\n4. When a document changes, update the graph node/edge source locations and the graph report.\n5. Treat `EXTRACTED` graph edges as source-backed. Treat `INFERRED_SECONDARY` edges as navigation hints that still require document verification.\n6. Preserve legacy traceability prose when needed, but wrap only explicitly archived, non-normative ranges in the balanced `knowledge-retrieval-exclude:start` / `knowledge-retrieval-exclude:end` markers defined by `@rus/knowledge-source`; never use them to hide an active rule or an unresolved conflict.",
-      "char_count": 916
+      "section": "DOCUMENTS — contract and domain documentation",
+      "line_start": 1,
+      "line_end": 18,
+      "text": "## README.md — DOCUMENTS — contract and domain documentation\nact`, `policy`, `standard` and `target` do not determine normative status. Verify the explicit header, active release/profile/binding, code and tests.\n\nCompatibility and legacy files remain only where existing links need a stable target. They must not override root `AGENTS.md` or an applicable active specialization.",
+      "char_count": 378
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:0",

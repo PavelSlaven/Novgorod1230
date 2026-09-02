@@ -948,7 +948,7 @@
       "source_location": {
         "file": "code_critic_invocation_rule.txt",
         "line_start": 1,
-        "line_end": 154
+        "line_end": 14
       }
     },
     {
@@ -976,6 +976,18 @@
       }
     },
     {
+      "id": "canonical-document:contract-index",
+      "type": "canonical_document",
+      "label": "CONTRACT_INDEX.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/CONTRACT_INDEX.md",
+      "source_location": {
+        "file": "CONTRACT_INDEX.md",
+        "line_start": 1,
+        "line_end": 246
+      }
+    },
+    {
       "id": "canonical-document:development-rules",
       "type": "canonical_document",
       "label": "development_rules.txt",
@@ -996,7 +1008,7 @@
       "source_location": {
         "file": "README.md",
         "line_start": 1,
-        "line_end": 68
+        "line_end": 18
       }
     },
     {
@@ -1092,7 +1104,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 356
+        "line_end": 18
       }
     },
     {

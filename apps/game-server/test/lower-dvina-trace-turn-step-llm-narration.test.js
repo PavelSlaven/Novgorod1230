@@ -140,6 +140,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.match(calls[2].messages[0].content, /unsupported_success/u);
   assert.match(calls[2].messages[0].content, /technical_presentation/u);
   assert.equal(calls[2].messages[0].content.includes(
+    'Exact elapsed time is not standalone when it is a temporal modifier'), true);
+  assert.equal(calls[2].messages[0].content.includes(
     '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
     version: 1, schema: 'narration_semantic_audit_request', phase: 'initial',

@@ -670,6 +670,9 @@ async function assertRatshaCaftanTransitionPersists({
     narrationService: { async run() { throw new Error('unexpected narration'); } }
   });
   const initial = await repository.loadPhase2State(opened.party_id);
+  assert.deepEqual(initial.current_visible_context.visible_npc.map(
+    ({ display_label: label }) => label
+  ), ['раненый мужчина', 'мужчина рядом']);
   const ratsha = initial.npcs.find(({ participant_slot_ref: slot }) =>
     slot === 'ratsha_storehouse_helper');
   const caftan = initial.items.find(({ template_id: templateId }) =>

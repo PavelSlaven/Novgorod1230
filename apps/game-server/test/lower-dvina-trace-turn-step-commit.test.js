@@ -17,6 +17,9 @@ import {
 import {
   commitLowerDvinaTracePhase2
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
+import {
+  buildLowerDvinaTraceTurnStepRootWrites
+} from '../src/infrastructure/postgres/lower-dvina-trace-turn-step-state.js';
 import { backgroundNpcFormalStateDigest,
   createBackgroundNpcSemanticAtomicWritePlan } from
   '../src/infrastructure/postgres/background-npc-semantic-atomic-write-plan.js';
@@ -30,6 +33,24 @@ import {
   bindCommitEnvelopeToBatch,
   commitEnvelope
 } from './lower-dvina-trace-turn-step-envelope-fixture.js';
+
+test('generic known-route turn keeps normalized party position with snapshot', () => {
+  const writes = buildLowerDvinaTraceTurnStepRootWrites({
+    partyId: 'party', state: { party_state: {},
+      body_state: { active_conditions: [] } },
+    snapshot: { position: { g4_id: 'g4', g5_node_id: 'g5',
+      g5_anchor_id: 'anchor' }, body_state: { active_conditions: [] } },
+    envelope: { root_turn_id: 'turn', body_update: { applied: false,
+      proposal: null },
+      consequence: { generic_known_route: true, phase3_kind: 'movement' } },
+    nextVersion: 2, turnNumber: 2, changeSetId: 'change', idemId: 'idem',
+    pendingScreen: {}, clockChanged: false
+  });
+  assert.deepEqual(writes.updates.find(({ target_table: table }) =>
+    table === 'party_positions').record, {
+    party_id: 'party', g4_id: 'g4', g5_node_id: 'g5', g5_anchor_id: 'anchor'
+  });
+});
 
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {

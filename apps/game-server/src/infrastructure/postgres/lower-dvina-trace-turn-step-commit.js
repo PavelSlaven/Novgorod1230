@@ -216,7 +216,7 @@ export async function commitLowerDvinaTraceTurnStep({
         ? 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT'
         : 'TRACE_TURN_STEP_COMMIT_FAILED',
       'Semantic turn-step P16 commit failed closed.',
-      { status: 409, details: committed.error }
+      { status: 409, public_exposure: 'internal', details: committed.error }
     );
   }
   return {

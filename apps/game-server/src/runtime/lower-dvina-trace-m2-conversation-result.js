@@ -8,7 +8,8 @@ export function projectM2ConversationExecutionResult({
 }) {
   const primaryDecision = exchange.npc_decisions.find(({ request }) =>
     request.npc_ref.entity_kind === context.targetRef.entity_kind
-      && request.npc_ref.entity_id === context.targetRef.entity_id) ?? null;
+      && request.npc_ref.entity_id === context.targetRef.entity_id)
+    ?? exchange.npc_decisions[0] ?? null;
   const projectedOutcomes = exchange.npc_decisions.map(({ request }) => {
     const outcome = npcOutcomes.get(request.request_id);
     return {

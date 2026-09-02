@@ -202,7 +202,9 @@ test('planner and repair each receive shared execution limits', async () => {
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: runner });
   const request = { request_id: 'planner-request-1' };
   await budget.runTurn(async () => {
-    assert.equal((await model(request)).schema, 'turn_step_plan_v1');
+    await assert.rejects(model(request), { code: 'json_parse_failed' });
+    assert.equal((await model(request, { structural_errors: [] })).schema,
+      'turn_step_plan_v1');
   });
   assert.deepEqual(calls.map(({ roleId }) => roleId), [
     'turn_step_planner', 'turn_step_planner_repair'

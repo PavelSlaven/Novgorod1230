@@ -818,9 +818,9 @@ npm run repo-intel:query -- --query "<конкретная потребност�
 - общая cross-cutting архитектура и нормативные контракты — `data/knowledge-source/corpus/DOCUMENTS/`;
 - граница code/LLM и materialization — `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`;
 - world base, DDL/import/profiles/rules и materialization requirements — `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`;
-- read-only DB/graph architecture — `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md`;
+- active Spatial v3 read-only DB/graph architecture — `data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_read_only_database_and_graph_architecture.md`; прежний `read_only_database_and_graph_architecture.md` является migration/rollback source;
 - schema reference — `infra/world-base/SCHEMA_REFERENCE.md`;
-- G0–G4 workflow — `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt`;
+- active G0–G5 authoring workflow — `data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_map_g0_g4_workflow.txt`; прежний `map_g0_g4_workflow.txt` является migration/rollback source;
 - региональная semantic catalog информация — соответствующий `G1_SEMANTIC_CATALOG.md`;
 - time/activities/traversal/schedules/temporal boundaries — `data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`;
 - ответственность и public contract конкретного модуля — его `MODULE.md`;

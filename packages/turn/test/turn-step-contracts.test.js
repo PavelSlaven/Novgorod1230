@@ -545,6 +545,14 @@ test('operation validation enforces known and ordered refs, retirement, placemen
   });
   assert.equal(validateTurnStepPlan(valid, { request: request() }).ok, true);
 
+  const actorIsNotAContainer = directPlan({ operations: [{
+    op: 'move_entity', entity_ref: 'chest_1', placement: {
+      relation: 'inside', target_ref: 'actor_mikula' }
+  }] });
+  assert.equal(validateTurnStepPlan(actorIsNotAContainer, {
+    request: request()
+  }).errors.some(({ code }) => code === 'placement_target_kind'), true);
+
   const invalid = directPlan({
     operations: [{
       op: 'create_entity', temp_ref: 'box_a', semantic_type: 'container', name: 'короб A',

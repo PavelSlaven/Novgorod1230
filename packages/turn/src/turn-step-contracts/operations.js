@@ -57,6 +57,7 @@ export function validateTurnStepOperationDto(value) {
   const trace = {
     knownRefs: collectKnownRefs({ actor: { actor_ref: value?.actor_ref },
       player_safe_state: value }),
+    actorRef: typeof value?.actor_ref === 'string' ? value.actor_ref : null,
     tempRefs: new Set(), allTempRefs: new Set(), retired: new Set(),
     placements: new Map(), inside: new Map()
   };
@@ -392,6 +393,17 @@ function validatePlacement(value, path, errors, trace, entityRef) {
     ['held_by', 'worn_by', 'inside', 'located_at', 'attached_to'],
     `${path}.relation`, errors);
   knownRef(value.target_ref, `${path}.target_ref`, errors, trace);
+  if (typeof trace?.actorRef === 'string') {
+    if (['held_by', 'worn_by'].includes(value.relation)
+        && value.target_ref !== trace.actorRef) {
+      add(errors, `${path}.target_ref`, 'placement_target_kind',
+        'held_by and worn_by must target the current actor');
+    }
+    if (value.relation === 'inside' && value.target_ref === trace.actorRef) {
+      add(errors, `${path}.target_ref`, 'placement_target_kind',
+        'inside must target a visible item or container, not the actor; use held_by or worn_by for actor-carried placement');
+    }
+  }
   if (entityRef && value.target_ref === entityRef) {
     add(errors, `${path}.target_ref`, 'cycle',
       'entity cannot contain or attach to itself');

@@ -91,6 +91,7 @@ export function jsonProjection(value, path, errors) {
 export function cloneTrace(trace) {
   return {
     knownRefs: new Set(trace.knownRefs),
+    actorRef: trace.actorRef ?? null,
     tempRefs: new Set(trace.tempRefs),
     allTempRefs: trace.allTempRefs,
     retired: new Set(trace.retired),

@@ -52,6 +52,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   const knownRefs = collectKnownRefs(request);
   const trace = {
     knownRefs,
+    actorRef: request?.actor?.actor_id ?? request?.actor?.actor_ref ?? null,
     tempRefs: new Set(),
     allTempRefs: new Set(),
     retired: new Set(),

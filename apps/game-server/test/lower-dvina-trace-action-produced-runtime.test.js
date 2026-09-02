@@ -222,6 +222,7 @@ test('A1 hydrates a same-turn prepared ordinary source from its exact pin', () =
       result_items: []
     }
   });
+  assert.equal(result.items.length, 1);
   assert.equal(result.items[0].placement.anchor_id, 'shore');
   assert.deepEqual(result.items[0].physical_facts,
     ['приспособлен как опора для плеча']);

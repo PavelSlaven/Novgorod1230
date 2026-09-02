@@ -201,25 +201,7 @@ test('same-turn prepared ordinary item can move through the generic owner',
   async () => {
     const ports = createPorts();
     const itemId = 'ordinary_item:prepared-board';
-    const prepared = {
-      resolution: 'materialize', item: {
-        item_id: itemId, runtime_placement: { anchor_id: 'shore' },
-        item_proposal: { semantic_descriptor: {
-          semantic_type: 'ordinary_object_candidate',
-          name: 'длинная доска', facts: ['доска лежит на берегу']
-        } },
-        mechanics_snapshot: createRuntimeInstanceMechanicsSnapshot({
-          schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
-          version: 1, provenance: {
-            source_kind: 'ordinary_direct_action_result',
-            root_turn_id: 'turn:party:1', step_index: 1,
-            operation_ref: 'ordinary:prepared',
-            origin_kind: 'ambient_ordinary', source_refs: ['shore']
-          }, mechanics: mechanics({ mass_grams: 3000,
-            external_hand_cost: 1, carry_form: 'long' })
-        })
-      }
-    };
+    const prepared = preparedOrdinary(itemId);
     const visible = projection();
     visible.items.push({ item_id: itemId, name: 'длинная доска',
       semantic_type: 'ordinary_object_candidate',
@@ -234,6 +216,31 @@ test('same-turn prepared ordinary item can move through the generic owner',
       .holder_character_id, 'mikula');
     assert.equal(moved.working_projection.inventory.occupied_hands, 1);
     assert.equal(moved.write_fragments[0].value.payload.entity_ref, itemId);
+  });
+
+test('ordinary discovery projects its prepared item into the same root',
+  async () => {
+    const itemId = 'ordinary_item:discovered-board';
+    const prepared = preparedOrdinary(itemId);
+    const ports = createPorts({ ordinaryDiscoveryResolver: async (input) => ({
+      working_projection: input.working_projection,
+      write_fragments: [], summary: 'ordinary discovery resolved',
+      ordinary_materialization_atomic_write_plan: prepared
+    }) });
+    const discovered = await ports.ordinaryDiscoveryResolver(execution({
+      op: 'request_discovery', actor_ref: 'mikula', discovery_kind: 'search',
+      target_refs: ['shore'], query: 'найти доску'
+    }));
+    assert.equal(discovered.working_projection.items[0].item_id, itemId);
+
+    const moveInput = execution({ op: 'move_entity', entity_ref: itemId,
+      placement: { relation: 'held_by', target_ref: 'mikula' } },
+    discovered.working_projection, 2);
+    moveInput.prepared_ordinary_materialization_atomic_write_plan = prepared;
+    const moved = await ports.executionRegistry.direct({ op: 'move_entity' })(
+      moveInput);
+    assert.equal(moved.working_projection.items[0].placement
+      .holder_character_id, 'mikula');
   });
 
 test('committed runtime mechanics hydrate a fresh per-turn adapter', async () => {
@@ -639,6 +646,27 @@ function mechanics(overrides = {}) {
     quantity: { value: 1, unit: 'handful' },
     container: null,
     ...overrides
+  };
+}
+
+function preparedOrdinary(itemId) {
+  return {
+    resolution: 'materialize', item: {
+      item_id: itemId, runtime_placement: { anchor_id: 'shore' },
+      item_proposal: { semantic_descriptor: {
+        semantic_type: 'ordinary_object_candidate',
+        name: 'длинная доска', facts: ['доска лежит на берегу']
+      } },
+      mechanics_snapshot: createRuntimeInstanceMechanicsSnapshot({
+        schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+        provenance: { source_kind: 'ordinary_direct_action_result',
+          root_turn_id: 'turn:party:1', step_index: 1,
+          operation_ref: 'ordinary:prepared',
+          origin_kind: 'ambient_ordinary', source_refs: ['shore'] },
+        mechanics: mechanics({ mass_grams: 3000,
+          external_hand_cost: 1, carry_form: 'long' })
+      })
+    }
   };
 }
 

@@ -17,6 +17,8 @@ import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
 import {
   createLowerDvinaTracePreparedDomainEffect
 } from './lower-dvina-trace-turn-step-prepared-effects.js';
+import { projectPreparedOrdinaryItem } from
+  './lower-dvina-trace-phase-2-player-safe.js';
 
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
@@ -45,6 +47,16 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
     throw error;
   }
   const state = initializeRuntimeState(safeCommittedState);
+  const preparedOrdinaryDiscoveryResolver =
+    typeof ordinaryDiscoveryResolver !== 'function' ? null
+      : async (execution) => {
+          const applied = await ordinaryDiscoveryResolver(execution);
+          const plan = applied?.ordinary_materialization_atomic_write_plan;
+          if (plan == null) return applied;
+          return { ...applied, working_projection:
+            workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
+              applied.working_projection, plan)) };
+        };
   const containerAccessHandler = createContainerAccessHandler(state, {
     ordinaryContainerContentsResolver
   });
@@ -133,9 +145,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
           }
         },
         genericCheckContextOwner),
-    ...(typeof ordinaryDiscoveryResolver === 'function' ? {
-      ordinaryDiscoveryResolver
-    } : {}),
+    ...(preparedOrdinaryDiscoveryResolver == null ? {} : {
+      ordinaryDiscoveryResolver: preparedOrdinaryDiscoveryResolver
+    }),
     applyActionProductionProjection: ({ working_projection: projection,
       actor, action_production_atomic_write_plan: plan }) =>
       workingProjectionAuthority.admit(applyActionProducedRuntimeProjection({

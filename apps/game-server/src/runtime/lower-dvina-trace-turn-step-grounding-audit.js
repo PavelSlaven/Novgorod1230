@@ -34,6 +34,12 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     'Turn-step grounding auditor returned an invalid result.', { status: 503 }
   );
   if (response.output.pass) return true;
+  const allowedKinds = new Set([
+    ...(productions.length === 0 ? [] : [
+      'source_semantic_mismatch', 'missing_required_source_move'
+    ]),
+    ...(selectedDomains.length === 0 ? [] : ['operation_semantic_mismatch'])
+  ]);
   const definitions = [
     ['source_semantic_mismatch', 'source_semantic_grounding',
       'each source must denote its named material from its own player-safe evidence'],
@@ -42,13 +48,15 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     ['operation_semantic_mismatch', 'operation_semantic_grounding',
       'selected domain operation must cover the current intent']
   ];
-  return { pass: false, errors: definitions
+  const errors = definitions
+    .filter(([kind]) => allowedKinds.has(kind))
     .flatMap(([kind, code, fallback]) => {
       const concern = response.output.concerns.find((entry) =>
         entry.kind === kind);
       return concern == null ? [] : [{ path: '$.operations', rule: code, code,
         message: concern.reason || fallback }];
-    }) };
+    });
+  return errors.length === 0 ? true : { pass: false, errors };
 }
 
 function selectedDomainOperations(plan, request) {

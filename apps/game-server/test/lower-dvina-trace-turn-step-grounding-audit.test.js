@@ -137,6 +137,22 @@ test('grounding audit rejects a selected domain operation for another action',
     });
   });
 
+test('selected domain audit ignores impossible source concerns without A1',
+  async () => {
+    const operation = { op: 'request_movement', actor_ref: 'actor',
+      movement_kind: 'route', target_ref: 'camp' };
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run() { return { output: { pass: false,
+        concerns: [{ kind: 'source_semantic_mismatch',
+          reason: 'hallucinated source concern' }] } }; } },
+      plan: { operations: [operation], continuation: null },
+      request: { request_id: 'hostile-source', root_player_action: 'Иду в стан.',
+        remaining_intent: 'Иду в стан.', completed_steps: [],
+        available_domain_operations: [operation], player_safe_state: {} }
+    });
+    assert.equal(result, true);
+  });
+
 test('unselected non-production turn skips grounding model', async () => {
   let calls = 0;
   assert.equal(await auditTurnStepSourceGrounding({

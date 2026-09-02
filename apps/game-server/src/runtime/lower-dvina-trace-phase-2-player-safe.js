@@ -158,7 +158,7 @@ function projectPreparedOrdinaryScene(state, aggregate) {
     [...new Set([...(context.sensory_details ?? []), ...details])] } };
 }
 
-function projectPreparedOrdinaryItem(state, plan) {
+export function projectPreparedOrdinaryItem(state, plan) {
   const item = plan?.resolution === 'materialize' ? plan.item : null;
   const descriptor = item?.item_proposal?.semantic_descriptor;
   if (!text(item?.item_id) || !text(descriptor?.name)
@@ -172,20 +172,25 @@ function projectPreparedOrdinaryItem(state, plan) {
         .filter(text) } : {}),
     placement: structuredClone(item.runtime_placement ?? {})
   };
+  const items = (state.items ?? []).some(({ item_id: id }) =>
+    id === item.item_id) ? state.items : [...(state.items ?? []), projectedItem];
   const contextKey = ['current_visible_context', 'visible_context',
     'visible_context_package'].find((key) => state[key] != null);
   if (contextKey == null) return { ...state,
-    items: [...(state.items ?? []), projectedItem] };
+    items };
   const context = state[contextKey];
+  const visibleObjects = (context.visible_objects ?? []).some(({ entity_ref: ref }) =>
+    ref?.entity_kind === 'item' && ref.entity_id === item.item_id)
+    ? context.visible_objects : [
+        ...(context.visible_objects ?? []),
+        { entity_ref: { entity_kind: 'item', entity_id: item.item_id },
+          display_label: descriptor.name, recognition: 'recognized',
+          visible_status: 'available' }
+      ];
   return {
     ...state,
-    items: [...(state.items ?? []), projectedItem],
-    [contextKey]: { ...context, visible_objects: [
-      ...(context.visible_objects ?? []),
-      { entity_ref: { entity_kind: 'item', entity_id: item.item_id },
-        display_label: descriptor.name, recognition: 'recognized',
-        visible_status: 'available' }
-    ] }
+    items,
+    [contextKey]: { ...context, visible_objects: visibleObjects }
   };
 }
 

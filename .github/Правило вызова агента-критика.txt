@@ -1,6 +1,14 @@
-Канонический актуальный норматив находится по пути:
+Совместимый redirect: независимый аудит и Contract Auditor
 
-data/knowledge-source/corpus/DOCUMENTS/code_critic_invocation_rule.txt
+Статус: superseded.
 
-Перед вызовом агента-критика необходимо полностью прочитать указанный файл.
-Этот файл является только совместимым указателем и не содержит отдельной версии правил.
+Старое требование запускать критика после каждого изменения кода больше не применяется.
+
+Актуальные правила:
+
+- `../AGENTS.md`, раздел 25 — риск-ориентированный независимый аудит;
+- `../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md`, раздел 8 — read-only Contract Auditor, его триггеры, наборы контрактов и формат finding.
+
+Этот compatibility-файл не является самостоятельным контрактом и не расширяет trigger set, установленный каноническими документами.
+
+Обычный локальный fix не требует отдельного critic, если не меняются public behavior, contracts, owner boundaries, persistence/schema, LLM authority и active profile status.

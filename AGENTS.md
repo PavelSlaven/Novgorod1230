@@ -74,6 +74,8 @@
 
 Перед работой заново прочитай актуальный `AGENTS.md` из фактического checkout.
 
+Затем открой [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, applicable active contracts, precedence и обязательные триггеры Contract Auditor.
+
 Если в подкаталоге существует вложенный `AGENTS.md`, прочитай его перед изменением файлов в его области. Вложенный файл может уточнять локальные правила, но не должен молча отменять корневые продуктовые и архитектурные инварианты.
 
 Для конкретной подсистемы дополнительно действуют её:
@@ -809,16 +811,16 @@ npm run repo-intel:query -- --query "<конкретная потребност�
 
 `AGENTS.md` содержит стабильные правила работы и критические инварианты. Вся промежуточная, профильная, сценарная и release-specific документация должна находиться у соответствующего владельца.
 
-Используй [навигацию по документации](data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md), чтобы выбрать профильный норматив.
+Используй [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы определить статус документа, applicable contract set и precedence. `llm_documentation_navigation.md` сохранён только как compatibility redirect.
 
 Основные направления:
 
 - общая cross-cutting архитектура и нормативные контракты — `data/knowledge-source/corpus/DOCUMENTS/`;
 - граница code/LLM и materialization — `data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`;
 - world base, DDL/import/profiles/rules и materialization requirements — `data/knowledge-source/corpus/DOCUMENTS/world_base_materialization_table_requirements.md`;
-- read-only DB/graph architecture — `data/knowledge-source/corpus/DOCUMENTS/read_only_database_and_graph_architecture.md`;
+- active Spatial v3 read-only DB/graph architecture — `data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_read_only_database_and_graph_architecture.md`; прежний `read_only_database_and_graph_architecture.md` является migration/rollback source;
 - schema reference — `infra/world-base/SCHEMA_REFERENCE.md`;
-- G0–G4 workflow — `data/knowledge-source/corpus/DOCUMENTS/map_g0_g4_workflow.txt`;
+- active G0–G5 authoring workflow — `data/knowledge-source/corpus/DOCUMENTS/spatial_v3_target_map_g0_g4_workflow.txt`; прежний `map_g0_g4_workflow.txt` является migration/rollback source;
 - региональная semantic catalog информация — соответствующий `G1_SEMANTIC_CATALOG.md`;
 - time/activities/traversal/schedules/temporal boundaries — `data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`;
 - ответственность и public contract конкретного модуля — его `MODULE.md`;
@@ -1009,6 +1011,61 @@ fork_turns: "none"
 - сложная логика, для которой профильных тестов недостаточно.
 
 Для обычного локального исправления отдельный critic не нужен.
+
+### 25.1. Contract Auditor
+
+`CONTRACT AUDITOR` — read-only specialist, который устанавливает applicable source set, статусы документов, precedence и соответствие между governing/active contracts, bindings, schemas, implementation и tests. Он не изменяет production code, не создаёт нового owner и не меняет контракт только для того, чтобы узаконить implementation bug.
+
+Contract Auditor обязателен, если:
+
+- создаётся, изменяется, перемещается, переименовывается, удаляется или повышается в статусе governing/normative документ, этот индекс, `AGENTS.md`, nested `AGENTS.md` или `MODULE.md`;
+- меняется active release, profile, manifest, binding или document status;
+- меняется public schema, operation, API, package export, DDL, persistence, transaction, idempotency или replay boundary;
+- меняется domain owner либо handoff между owners;
+- меняется LLM authority, prompt, request/plan contract, model-call topology или repair policy;
+- меняются free actions, ordinary materialization, items/property, Spatial G0–G6, NPC decisions/conversation/combat, time/processes, visibility/knowledge/perception, direct speech или narration boundary;
+- implementation plan ссылается на proposed, target, migration или historical документ;
+- `AGENTS.md`, contract index, профильный контракт, `MODULE.md`, schema, code или tests расходятся в описании current behavior;
+- проводится final acceptance cross-module либо иного изменения повышенного риска.
+
+Для обычного локального fix отдельный Contract Auditor не обязателен только если главный агент доказал, что не меняются public behavior, contracts, owner boundary, persistence/schema, LLM authority и active profile status.
+
+Contract Auditor всегда читает:
+
+1. root `AGENTS.md`;
+2. [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
+3. applicable nested `AGENTS.md`;
+4. relevant `MODULE.md`;
+5. active release/profile/manifest/bindings;
+6. applicable active contract и schema;
+7. production code, callers и tests;
+8. proposed/target/migration документы только когда текущая задача явно реализует или аудирует соответствующий target.
+
+Точный contract set по player semantic action, materialization, ordinary items/resources/containers, Spatial, NPC, conversation, combat, time/processes, persistence, historical grounding и narration/UI определён в `CONTRACT_INDEX.md`, раздел 8. Proposed, migration, historical и reference документы не становятся production contract без explicit versioned cutover и active binding.
+
+Формат результата:
+
+```text
+CONTRACT AUDIT FINDING
+
+scope:
+source_set:
+source_statuses:
+observed_implementation:
+required_by_active_contract:
+target_if_any:
+conflict:
+precedence_resolution:
+first_bad_boundary:
+correct_owner:
+required_code_delta:
+required_docs_delta:
+required_tests:
+severity: P0 | P1 | P2 | P3
+verdict: PASS | PASS_WITH_NOTES | BLOCK
+```
+
+`BLOCK` обязателен, если diff нарушает governing/active contract, создаёт mixed semantics или duplicate ownership либо выдаёт proposed behavior за current production.
 
 После замечаний повторяй audit только после содержательного изменения.
 

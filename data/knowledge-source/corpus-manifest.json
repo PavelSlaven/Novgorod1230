@@ -41,8 +41,8 @@
       "document_id": "code-critic-invocation-rule",
       "canonical_path": "corpus/DOCUMENTS/code_critic_invocation_rule.txt",
       "file_name": "code_critic_invocation_rule.txt",
-      "sha256": "fdc56271e6517e9c4ca9e80c347ee60d05478c4631d06e477f9dfe8ba44107a7",
-      "bytes": 9773,
+      "sha256": "4efd1f5d741e6f5279118776e41825c4d2df8049a80d618881ece4767faf933a",
+      "bytes": 666,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -68,6 +68,15 @@
       "source_legacy_bytes": 58749
     },
     {
+      "document_id": "contract-index",
+      "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
+      "file_name": "CONTRACT_INDEX.md",
+      "sha256": "14f35d4f24af3fd5e07c818206f0c4fa14eaeed586939561000617d0ac2b7835",
+      "bytes": 20344,
+      "status": "active",
+      "provenance_mode": "native"
+    },
+    {
       "document_id": "development-rules",
       "canonical_path": "corpus/DOCUMENTS/development_rules.txt",
       "file_name": "development_rules.txt",
@@ -80,8 +89,8 @@
       "document_id": "documentation-corpus-readme",
       "canonical_path": "corpus/DOCUMENTS/README.md",
       "file_name": "README.md",
-      "sha256": "f6007a0ef001a826a8218982bc66efb3ef8885be3a34216a99e2373f79a48a0b",
-      "bytes": 5897,
+      "sha256": "205df565f8ffa57dc5b685175ef3b082779f74b2fd128aa29f879f9dcff986a5",
+      "bytes": 1228,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -173,8 +182,8 @@
       "document_id": "llm-documentation-navigation",
       "canonical_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
       "file_name": "llm_documentation_navigation.md",
-      "sha256": "fe87825f1c43475359a6eaf8316d747dbddd21edda9b5c9e3e77a5bd154c27cb",
-      "bytes": 40256,
+      "sha256": "4264797dc42d4ed499edea6bbad37b1a6813c25a1e13341754d619138441fff0",
+      "bytes": 838,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -187,7 +196,7 @@
       "file_name": "map_g0_g4_workflow.txt",
       "sha256": "45572b8ecd9e94c70e48da9acba441a8cac281a0e03c9f6c692a6b7f2ad8301c",
       "bytes": 86043,
-      "status": "active",
+      "status": "deprecated",
       "provenance_mode": "native"
     },
     {
@@ -280,7 +289,7 @@
       "file_name": "read_only_database_and_graph_architecture.md",
       "sha256": "c839a7f21ef2af6375ada54a39413b7aaaa1040e7f1a661c29ffd16c80d67719",
       "bytes": 13576,
-      "status": "active",
+      "status": "deprecated",
       "provenance_mode": "native"
     },
     {
@@ -307,7 +316,7 @@
       "file_name": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "sha256": "941a9792ae3cc22fbb8e66d452616c800e5c426755027663ff4a85f514734e3b",
       "bytes": 7537,
-      "status": "proposed",
+      "status": "active",
       "provenance_mode": "native"
     },
     {
@@ -316,7 +325,7 @@
       "file_name": "spatial_v3_target_map_g0_g4_workflow.txt",
       "sha256": "4e5042c41bea2e985dc03e3169805a11bcacb35779c6c1381ac349b20bcb1940",
       "bytes": 3565,
-      "status": "proposed",
+      "status": "active",
       "provenance_mode": "native"
     },
     {
@@ -325,7 +334,7 @@
       "file_name": "spatial_v3_target_read_only_database_and_graph_architecture.md",
       "sha256": "3c96781c0e3fdfa317ddf7a01dfd83e4b90d04531bfb64874a6bd507e4ed24cc",
       "bytes": 4185,
-      "status": "proposed",
+      "status": "active",
       "provenance_mode": "native"
     },
     {
@@ -334,7 +343,7 @@
       "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
       "sha256": "b6c9d4422684fe7bb48e76d9a3e40ea542e72076a50a594838de4cd3478040ab",
       "bytes": 5327,
-      "status": "proposed",
+      "status": "active",
       "provenance_mode": "native"
     },
     {

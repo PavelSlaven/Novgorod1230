@@ -60,6 +60,22 @@ export function ordinaryPhysicalKeys(plan) {
   ];
 }
 
+export function bindOrdinaryPlanToCombinedInput(input, rawPlan, partyId) {
+  const plan = ordinaryPlanFromRaw(rawPlan, partyId);
+  if (plan == null) return input;
+  return {
+    ...input,
+    ordinary_materialization_atomic_write_plan: plan,
+    lock_context: {
+      ...input.lock_context,
+      physical_keys: [...new Set([
+        ...input.lock_context.physical_keys,
+        ...ordinaryPhysicalKeys(plan)
+      ])]
+    }
+  };
+}
+
 export function applyOrdinaryMaterializationProjection({
   next, visibleContext, ordinaryPlan, changeSetId = null
 }) {

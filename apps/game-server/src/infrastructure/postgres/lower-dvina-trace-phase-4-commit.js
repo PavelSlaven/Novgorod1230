@@ -17,6 +17,8 @@ import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dv
 import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
 import { resolveFirstEntry } from './lower-dvina-trace-phase-3-first-entry.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -153,13 +155,14 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
         .filter(({ kind }) => kind === 'physical'))
     ]
   };
-  const integratedInput = integrateConversationTemporalWrites({
+  const integratedInput = bindOrdinaryPlanToCombinedInput(
+    integrateConversationTemporalWrites({
     input: baseWritePlanInput,
     semanticExchange: semanticContext?.semanticExchange,
     fail: (error) => {
       throw fail('TRACE_PHASE_4_TEMPORAL_WRITE_CONFLICT', error);
     }
-  });
+    }), writePlan.ordinary_materialization_atomic_write_plan, partyId);
   const built = await builder.build(integratedInput);
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
   const committedPublicResult = committedPendingPhase2PublicResult({ payload: next, screen: pendingScreen });

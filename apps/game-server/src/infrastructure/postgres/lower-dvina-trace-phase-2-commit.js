@@ -168,7 +168,8 @@ export async function commitLowerDvinaTracePhase2({
       partyId, state, factual, visibleEnvelope, writes, nextVersion,
       turnNumber, changeSetId, idemId, inputDigest, contracts,
       turnStepCommit: writePlan.turn_step_commit,
-      localFirePlans: writePlan.local_fire_atomic_write_plans ?? []
+      localFirePlans: writePlan.local_fire_atomic_write_plans ?? [],
+      ordinaryPlan: writePlan.ordinary_materialization_atomic_write_plan
     });
   const committed = await committer.commit({
     plan: built.plan,

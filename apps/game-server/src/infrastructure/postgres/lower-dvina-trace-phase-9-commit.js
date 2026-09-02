@@ -16,6 +16,8 @@ import { bindLowerDvinaTraceFactualTurnStepIdempotency } from
 import { mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence } from
   './lower-dvina-trace-turn-step-persistence.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
   inputDigest, phase9Contracts, turnStepApprovedOwners, loadState,
@@ -76,7 +78,7 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
       && state.journey_location != null) expectedVersions.push(
     expected('party_journey_locations', state.journey_location.id,
       state.journey_location.state_version));
-  const built = await builder.build({
+  const built = await builder.build(bindOrdinaryPlanToCombinedInput({
     plan_id: `p16:${partyId}:trace-phase9:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit',
     operation_kind: `trace_phase_9_${kind}`,
@@ -120,7 +122,8 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
     sealedCheck('time', { expected_clock_state_version:
       state.party_state.clock_state_version,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),
-    sealedCheck('change_set', { canonical_input_digest: inputDigest })] });
+    sealedCheck('change_set', { canonical_input_digest: inputDigest })] },
+  writePlan.ordinary_materialization_atomic_write_plan, partyId));
   if (!built.ok) fail('TRACE_PHASE_9_WRITE_PLAN_REJECTED', built.error);
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: next, screen

@@ -19,6 +19,8 @@ import {
 import {
   bindLowerDvinaTraceTurnStepIdempotency
 } from './lower-dvina-trace-turn-step-idempotency.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
   inputDigest, phase5Contracts, loadState, committer }) {
@@ -82,7 +84,7 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
           && candidate.operation_kind === 'trace_phase_5_treatment'
       })
     });
-  const built = await builder.build({
+  const built = await builder.build(bindOrdinaryPlanToCombinedInput({
     plan_id: `p16:${partyId}:trace-phase5:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -138,7 +140,7 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
     commit_rechecks: commitRechecks({
       partyId, state, factual, phase5Contracts, inputDigest
     })
-  });
+  }, writePlan.ordinary_materialization_atomic_write_plan, partyId));
   if (!built.ok) fail('TRACE_PHASE_5_WRITE_PLAN_REJECTED', built.error);
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: next, screen: pendingScreen

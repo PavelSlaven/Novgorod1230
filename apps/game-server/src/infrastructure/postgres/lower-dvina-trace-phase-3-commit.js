@@ -36,6 +36,8 @@ import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from
   './lower-dvina-trace-pending-activity-state.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 import {
   expectedChangedConditions,
@@ -220,7 +222,8 @@ export async function commitLowerDvinaTracePhase3({
         .filter(({ kind }) => kind === 'physical'))
     ]
   };
-  const integratedInput = integrateConversationTemporalWrites({
+  const integratedInput = bindOrdinaryPlanToCombinedInput(
+    integrateConversationTemporalWrites({
     input: baseWritePlanInput,
     semanticExchange: semanticContext?.semanticExchange,
     fail: (error) => {
@@ -230,7 +233,7 @@ export async function commitLowerDvinaTracePhase3({
         { status: 409, details: error }
       );
     }
-  });
+    }), writePlan.ordinary_materialization_atomic_write_plan, partyId);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
         ok: candidate.party_id === partyId

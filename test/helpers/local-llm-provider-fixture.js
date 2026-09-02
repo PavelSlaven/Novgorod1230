@@ -4,6 +4,8 @@ const ROLE_MODELS = Object.freeze({
   TURN_INTENT_ROUTER_MODEL: 'fixture-intent-router',
   TURN_STEP_PLANNER_MODEL: 'fixture-turn-step-planner',
   TURN_STEP_PLANNER_REPAIR_MODEL: 'fixture-turn-step-planner-repair',
+  TURN_STEP_GROUNDING_AUDITOR_MODEL:
+    'fixture-turn-step-grounding-auditor',
   TURN_SPATIAL_SEMANTIC_DESCRIPTOR_MODEL:
     'fixture-spatial-semantic-descriptor',
   PLAYER_CONVERSATION_INTERPRETER_MODEL:

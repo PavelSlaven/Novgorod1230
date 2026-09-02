@@ -118,7 +118,7 @@ test('travel prompt prioritizes supplied movement over unrelated inspection', as
     available_domain_operations: [movement, inspect] });
   const model = modelFor(input, 'domain_operation_1_request_movement_route', {
     onPrompt: (prompt) => assert.match(prompt,
-      /asks to travel to a location[\s\S]*request_movement reaches that location[\s\S]*Do not substitute inspecting/u)
+      /travel is the current earliest independently executable action[\s\S]*request_movement reaches its location[\s\S]*Do not substitute inspecting/u)
   });
   assert.deepEqual((await model(input)).operations, [movement]);
 });

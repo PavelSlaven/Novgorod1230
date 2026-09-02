@@ -38,6 +38,8 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange', a
   assert.equal(runtime.state.combat_sessions.length, 0);
   assert.equal(runtime.state.last_turn.consequence.combat.session_after.status, 'ended');
   assert.equal(runtime.state.last_turn.consequence.combat.session_after.participant_states.find(({ actor_ref: actor }) => actor.entity_id === ids.zhdanko).combat_status, 'restrained');
+  assert.equal(runtime.state.npcs.find(({ instance_id: id }) =>
+    id === ids.zhdanko).machine_state.combat_terminal_status, 'restrained');
   assert.ok(runtime.state.body_state.health < healthBefore);
   const axe = runtime.state.items.find(({ template_id }) => template_id === 'trace_ld_v1_item_zhdanko_axe');
   assert.equal(axe.placement.holder_npc_id, ids.eremey);

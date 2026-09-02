@@ -165,7 +165,7 @@ test('revision 32 publishes the authored A1 item mechanics cutover', async () =>
     .scenario_definition_revision, 32);
   assert.equal(publication.definition.immutable_content_refs
     .a1_authored_item_mechanics_profile.digest,
-  '5a98b0e914427da95f7d674d4e7be7c782ff524916160b40a07fafef316bef36');
+  '2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90');
 });
 
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {

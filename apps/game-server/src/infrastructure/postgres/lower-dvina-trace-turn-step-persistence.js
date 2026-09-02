@@ -29,10 +29,11 @@ import { validateTurnStepBatchPlanBindings } from
 import { validatePreparedEffectCommit } from './lower-dvina-trace-turn-step-prepared-effect-validation.js';
 import { authoredTurnStepContainers, projectPersistedTurnStepContainers } from
   './lower-dvina-trace-turn-step-container-persistence.js';
+import { isDeepStrictEqual } from 'node:util';
 export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
-  phase3Contracts = null,
+  phase3Contracts = null, preparedFactual = factual,
   turnStepApprovedOwners = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
@@ -69,7 +70,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   const preparedEffect = validatePreparedEffectCommit({
     batch,
     envelope: commit,
-    factual,
+    factual: preparedFactual,
     state, phase3Contracts, turnStepApprovedOwners,
     localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
@@ -94,7 +95,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   };
   // Every envelope and owner binding is checked before the first mutation.
   if (writePlan.turn_step_commit != null) {
-    validateTurnStepBatchPlanBindings({ batch, factual: commit, state });
+    validateBatchPlanBindings({ batch, factual: commit, state, actorRef });
   }
   for (const [index, fragment] of batch.operations.entries()) {
     prevalidateFragment({ fragment, index, batch, commit, state, context });
@@ -102,9 +103,14 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   if (!preparedEffect.prepared) {
     validateBodyComponentOrder(batch, commit, state);
   }
-  const activityTimeline = requireTurnStepSemanticActivityTimeline({
-    factual: commit, batch, expectedClockBefore: state.clock
-  });
+  const hasActivityFragments = batch.operations.some(({ target }) =>
+    target === 'party_events');
+  const activityTimeline = actorRef !== state.actor_id
+      && preparedEffect.prepared && !hasActivityFragments
+    ? { semanticDuration: 0, resolutions: new Map() }
+    : requireTurnStepSemanticActivityTimeline({
+        factual: commit, batch, expectedClockBefore: state.clock
+      });
   context.semanticDuration = activityTimeline.semanticDuration;
   context.activityResolutions = activityTimeline.resolutions;
   for (const fragment of batch.operations) {
@@ -175,6 +181,31 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       (write) => `party_runtime.${write.target_table}:${write.id}`),
     semanticDuration: context.semanticDuration
   };
+}
+
+function validateBatchPlanBindings({ batch, factual, state, actorRef }) {
+  if (actorRef === state.actor_id) {
+    validateTurnStepBatchPlanBindings({ batch, factual, state });
+    return;
+  }
+  const phase7 = factual.consequence?.phase7;
+  const plan = phase7?.autonomous?.proposal?.plan;
+  const fragments = phase7?.actor_step_owner_outputs?.write_fragments;
+  if (!Array.isArray(fragments)
+      || !isDeepStrictEqual(batch.operations, fragments)
+      || !Number.isSafeInteger(plan?.decision_index)) {
+    fail('TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH', {
+      reason: 'NPC owner batch is detached from the approved actor step'
+    });
+  }
+  validateTurnStepBatchPlanBindings({ batch, state, factual: {
+    loop_trace: { step_traces: [{
+      applied: true,
+      step_index: plan.decision_index,
+      approved_plan: plan,
+      check_outcome: phase7.actor_step_check?.result?.outcome?.band ?? null
+    }] }
+  } });
 }
 function requireBatch(value) {
   try {

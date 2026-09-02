@@ -74,6 +74,26 @@ test('legacy ambient direct action remains available without an O2a admission po
   assert.equal(result.write_fragments[0].target, 'party_items');
 });
 
+test('revision 32 leaves active Phase9 container access to its authored owner', () => {
+  const committedState = {
+    materialization_trace: {
+      seed_context: { scenario_definition_revision: 32 }
+    },
+    phase9: {}
+  };
+  const active = createPorts({ committedState });
+  assert.equal(active.executionRegistry.domain({
+    op: 'request_container_access'
+  }), null);
+
+  const inactive = createPorts({
+    committedState: { ...committedState, phase9: null }
+  });
+  assert.equal(typeof inactive.executionRegistry.domain({
+    op: 'request_container_access'
+  }), 'function');
+});
+
 test('an active O2a profile fails closed when its binding has drifted', () => {
   const ports = createPorts({ requireAmbientOrdinaryAdmission: true,
     admitAmbientOrdinaryPortion: null });

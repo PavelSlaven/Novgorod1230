@@ -33,7 +33,7 @@ export function buildLowerDvinaTraceOpeningScreen({
       place: projection.place_label,
       calendar: projection.calendar_label,
       timestamp: structuredClone(visible.timestamp),
-      environment: { facts: [] }
+      environment: { facts: structuredClone(visible.environment.facts) }
     },
     action_panel: { suggested_actions: [] },
     panels: {

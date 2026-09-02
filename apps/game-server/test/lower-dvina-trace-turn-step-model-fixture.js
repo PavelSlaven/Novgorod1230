@@ -14,7 +14,7 @@ export function createLowerDvinaTraceTurnStepTestModel({
   return (request) => {
     onCall(request);
     if (generalLook(request)) {
-      return ordinarySceneSeed(request) ?? spatialLook(request)
+      return spatialLook(request) ?? ordinarySceneSeed(request)
         ?? directPlan(request);
     }
     return domainPlan(request, operationFor(request));

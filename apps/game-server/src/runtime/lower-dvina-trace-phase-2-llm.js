@@ -101,30 +101,11 @@ export function createLowerDvinaTraceTurnStepModel({
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
     }
-    return assembleTurnStepPlan(preserveGroundingPrerequisiteIntent({
-      output: response.output, request, repairContext
-    }), request, operationChoices);
+    return assembleTurnStepPlan(response.output, request, operationChoices);
   };
   model.validateSourceGrounding = (plan, request) =>
     auditTurnStepSourceGrounding({ roleRunner, plan, request });
   return model;
-}
-
-function preserveGroundingPrerequisiteIntent({ output, request,
-  repairContext }) {
-  const groundingRepair = repairContext?.structural_errors?.some(
-    ({ code }) => code === 'source_semantic_grounding');
-  const discovery = output?.resolution === 'domain_request'
-    && output?.operations?.length === 1
-    && output.operations[0]?.op === 'request_discovery';
-  if (!groundingRepair || !discovery) return output;
-  const grounded = structuredClone(output);
-  grounded.interpretation = { ...grounded.interpretation,
-    grounded_attempt: 'Осмотрен доступный обычный материал.' };
-  return { ...grounded, continuation: {
-    remaining_intent: request.remaining_intent,
-    depends_on_refs: []
-  } };
 }
 
 function semanticTurnStepExample() {

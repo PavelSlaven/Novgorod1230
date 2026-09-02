@@ -6,9 +6,9 @@ const DEFINITION_PATH = `${ROOT}/phase-m20-content/definition.json`;
 const PROFILE_PATH =
   `${ROOT}/phase-m20-content/a1-authored-item-mechanics-profile.json`;
 const DEFINITION_DIGEST =
-  'beeb3e86ff0a83be4f4f046f9edf2b895b7c8137590d04b4d6889d207d157aa7';
+  '30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635';
 const PROFILE_DIGEST =
-  '5a98b0e914427da95f7d674d4e7be7c782ff524916160b40a07fafef316bef36';
+  '2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90';
 
 export async function loadLowerDvinaTraceRevision32Bundle({ rootDir,
   historicalBundle, fail = (code) => { throw new Error(code); },
@@ -32,7 +32,9 @@ export async function loadLowerDvinaTraceRevision32Bundle({ rootDir,
   for (const entry of mechanics.value.profiles) {
     const matches = [
       ...(bundle.item_container_set.item_inventory_profiles ?? []),
-      ...(bundle.item_inventory_profiles ?? [])
+      ...(bundle.item_inventory_profiles ?? []),
+      bundle.materialization_bindings?.initial_autonomous_materialization
+        ?.packet_placement?.inventory_profile
     ].filter((profile) => profileRef(profile) === entry.profile_ref);
     if (matches.length !== 1 || !validBaseMechanics(matches[0])) {
       return fail('TRACE_REVISION_32_ITEM_MECHANICS_INVALID');

@@ -104,7 +104,7 @@
     "a1_authored_item_mechanics_profile": {
       "id": "lower_dvina_trace_a1_authored_item_mechanics_v1",
       "revision": 1,
-      "digest": "5a98b0e914427da95f7d674d4e7be7c782ff524916160b40a07fafef316bef36"
+      "digest": "2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90"
     }
   },
   "resolved_policy_refs": {
@@ -271,4 +271,3 @@
     "browser_flow"
   ]
 }
-

@@ -11,7 +11,7 @@ const historicalFreezePath = 'docs/migration/spatial-v3/normative-freeze.json';
 const worldCatalogManifestPath =
   'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json';
 const currentWorldCatalogManifestPath =
-  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json';
+  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json';
 const expectedCutover = 'versioned production activation cutover';
 const errors = [];
 

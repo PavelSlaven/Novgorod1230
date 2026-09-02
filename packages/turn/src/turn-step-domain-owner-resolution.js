@@ -25,6 +25,10 @@ export function resolveTurnStepDomainOwner({
   if (typeof services.turnStepBackgroundNpcResolver === 'function'
       && isBackgroundNpcSemanticRemainderInScope({ operation,
         playerSafeState })) return { kind: 'background_npc_remainder' };
+  if (typeof services.turnStepSpatialSemanticResolver === 'function'
+      && isSpatialSemanticRemainderInScope({ operation, playerSafeState })) {
+    return { kind: 'spatial' };
+  }
   if (operation.op === 'request_discovery'
       && typeof services.turnStepOrdinaryDiscoveryResolver === 'function'
       && isOrdinaryDiscoveryInScope({ operation, playerSafeState })) {
@@ -33,10 +37,6 @@ export function resolveTurnStepDomainOwner({
   if (operation.op === 'request_world_process'
       && typeof services.turnStepWorldProcessResolver === 'function') {
     return { kind: 'world_process' };
-  }
-  if (typeof services.turnStepSpatialSemanticResolver === 'function'
-      && isSpatialSemanticRemainderInScope({ operation, playerSafeState })) {
-    return { kind: 'spatial' };
   }
   if (typeof services.turnStepActionProductionOwner === 'function'
       && isActionProductionOwnerInScope({ operation, playerSafeState,

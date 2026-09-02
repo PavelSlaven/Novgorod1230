@@ -86,6 +86,8 @@ test('trace dispatch commits before its safe screen', async () => {
   assert.equal(started.screen.schema, 'first_game_screen');
   assert.equal(started.screen.screen_status, 'ready');
   assert.equal(started.screen.panels.character.data.name, 'Микула');
+  assert.deepEqual(started.screen.visible_context.environment.facts,
+    ['cold', 'wet', 'exposed']);
   assert.deepEqual(started.screen.action_panel.suggested_actions, []);
   assert.equal(started.party_id, f.materializeCalls[0].party_id);
   assert.equal(

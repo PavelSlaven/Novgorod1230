@@ -211,9 +211,7 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
   }));
   const routeMovement = envelope.consequence?.phase3_kind === 'movement'
     || envelope.consequence?.phase8_kind === 'movement';
-  const localMovement = envelope.consequence?.position_transition?.owner
-    === '@rus/movement-routes';
-  if (routeMovement || localMovement) {
+  if (routeMovement) {
     writes.updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: snapshot.position.g4_id,

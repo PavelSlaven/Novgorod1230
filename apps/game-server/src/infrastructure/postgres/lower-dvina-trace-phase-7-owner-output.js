@@ -236,6 +236,7 @@ export function preparePhase7OwnerOperationPersistence({ partyId, writePlan,
     snapshot,
     factual: operationBatch == null
       ? factual : neutralPhase7OwnerFactual(factual, state),
+    preparedFactual: factual,
     changeSetId,
     idemId
   });

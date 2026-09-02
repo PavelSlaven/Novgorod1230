@@ -14,14 +14,39 @@ import { createM2ConversationModels, npcSpeechPlan, playerPlan } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 import { resolveTracePhase9Contracts } from
   '../src/runtime/lower-dvina-trace-phase-9-contracts.js';
+import { createTracePhase9Runtime } from
+  '../src/runtime/lower-dvina-trace-phase-9-runtime.js';
 import { packetPlan, recoveryPlan } from
   '../src/runtime/lower-dvina-trace-phase-9-command-plans.js';
 import { addCanonicalPhase10Evidence, assertCanonicalPhase10 } from
   './lower-dvina-trace-phase-10-integration-assertions.js';
 
 const bundle = await loadScenarioBundle(18);
+const bundle32 = await loadScenarioBundle(32);
 const ROUTE_TEXT =
   'Идти к Жданко всем вместе. Ратшу держать между нами. Не входить тайком.';
+
+test('revision 32 activates Phase 9 from persisted terminal combat state',
+  () => {
+    const state = phase8CampState(bundle);
+    const zhdanko = state.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller');
+    zhdanko.machine_state.combat_terminal_status = 'restrained';
+    state.player_response_boundary = null;
+    state.combat_sessions = [];
+    delete state.last_turn;
+    const runtime = createTracePhase9Runtime({ state, bundle: bundle32,
+      conversationBindings: bundle32.conversation_semantic_bindings,
+      inputDigest: 'revision-32-phase-9',
+      playerConversationModel: async () => null,
+      npcSemanticModel: async () => null,
+      temporalAdvanceOwner: null,
+      revalidateStateVersion: async () => state.party_state.state_version });
+    const recovery = runtime.commands.find(({ command_id: id }) =>
+      id === 'lower_dvina_trace.recover_road_bag_control');
+    assert.equal(recovery.availability({ committed_state: state })
+      .can_attempt, true);
+  });
 
 test('Phase 9 commits first, then Phase 10 completes and presents a safe epilogue',
   async () => {

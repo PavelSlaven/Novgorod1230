@@ -240,6 +240,34 @@ test('S1 look remainder runs through the final discovery seam', async () => {
   assert.equal(spatialCalls, 1);
 });
 
+test('exact S1 look preempts the broader ordinary scene seed seam', async () => {
+  let spatialCalls = 0;
+  let ordinaryCalls = 0;
+  const remainder = createServices([], {
+    command: { matches: () => false,
+      semantic_binding: unmatchedDiscoveryBinding() },
+    playerSafeStateProjector: () => discoveryProjection({
+      discovery_available: true,
+      container_resolution_available: false,
+      scene_seed_available: true
+    }, spatialMarker()),
+    turnStepSpatialSemanticResolver: async (request) => {
+      spatialCalls += 1;
+      return ordinaryResult(request);
+    },
+    turnStepOrdinaryDiscoveryResolver: async () => {
+      ordinaryCalls += 1;
+      throw new Error('ordinary discovery must not preempt exact S1 scope');
+    },
+    turnStepModel: (request) => discoveryPlan(request, 'осматриваю место', 'look')
+  }).services;
+
+  await runTurnWorkflow(input(), remainder);
+
+  assert.equal(spatialCalls, 1);
+  assert.equal(ordinaryCalls, 0);
+});
+
 test('S1 scope admits visible refs', () => {
   const operation = { op: 'request_discovery', actor_ref: 'party-1',
     discovery_kind: 'look', target_refs: ['place-gate'], query: 'осмотреть' };

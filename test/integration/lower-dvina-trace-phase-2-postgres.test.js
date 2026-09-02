@@ -1096,8 +1096,7 @@ async function assertGeneralLookAfterInspection({
     'берег крушения');
   assert.notEqual(lookContext.visible_scene,
     narrationRequests[0].visible_context.visible_scene);
-  assert.deepEqual([...lookContext.sensory_details].sort(),
-    [...opened.screen.visible_context.environment.facts].sort());
+  assert.deepEqual(lookContext.sensory_details, []);
   assert.equal(JSON.stringify(lookContext).includes(
     'visible:road_bag_missing'), false);
   assert.equal(randomDraws, beforeLook.randomDraws);

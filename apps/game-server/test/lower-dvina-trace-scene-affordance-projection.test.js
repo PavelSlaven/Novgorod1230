@@ -309,6 +309,17 @@ test('active session without a visible NPC label exposes no interlocutor', () =>
   assert.equal(projected.panels.people, undefined);
 });
 
+test('people panel uses the approved current screen context', () => {
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({ current_visible_context: {
+      ...visibleContext(), visible_npc: []
+    } }),
+    screen: { panels: {}, visible_context: visibleContext() }
+  });
+  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
+    'Еремей');
+});
+
 test('state display name does not bypass the player-safe NPC label', () => {
   const state = payload();
   state.current_visible_context = { ...visibleContext(), visible_npc: [] };

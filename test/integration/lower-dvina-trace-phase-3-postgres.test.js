@@ -48,6 +48,8 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-26-publication.js';
 import { installLowerDvinaTraceV6World, lowerDvinaTraceV6World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
@@ -861,6 +863,9 @@ function buildRuntime({
     committer,
     release,
     runtimeCatalogPin,
+    activePhase1AManifestDigest:
+      TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST,
+    activeScenarioDefinitionRevision: 26,
     traceStartAdapter:
       createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: pool,

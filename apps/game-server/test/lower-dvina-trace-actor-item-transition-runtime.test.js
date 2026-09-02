@@ -127,6 +127,10 @@ function committedStateWith(item) {
         load_category: 'light', occupied_hands: 0 }
     },
     npcs: [{ instance_id: 'ratsha', location_ref: 'shore' }],
+    current_visible_context: { visible_npc: [{
+      entity_ref: { entity_kind: 'npc', entity_id: 'ratsha' },
+      display_label: 'мужчина'
+    }], visible_objects: [] },
     items: [item], containers: [], container_placements: [],
     container_profiles: [], knowledge: []
   };

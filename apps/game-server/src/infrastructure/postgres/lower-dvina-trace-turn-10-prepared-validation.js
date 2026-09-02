@@ -23,14 +23,13 @@ export function isPreparedTurn10Ledger(ledger) {
 }
 
 export function validatePreparedTurn10({ ledger, traces, envelope, factual,
-  state, batch }) {
+  state }) {
   const [rest, conversation] = ledger.slices;
   const [restTrace, conversationTrace] = traces ?? [];
   const restOperation = restTrace?.approved_plan?.operations?.[0];
   const conversationOperation =
     conversationTrace?.approved_plan?.operations?.[0];
-  if (batch != null
-      || ledger.slices.length !== 2
+  if (ledger.slices.length !== 2
       || traces?.length !== 2
       || ledger.committed_state_version !== state.party_state.state_version
       || envelope.loop_trace.working_revision !== 2

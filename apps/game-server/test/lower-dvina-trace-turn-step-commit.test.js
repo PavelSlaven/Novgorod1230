@@ -52,6 +52,27 @@ test('route turn keeps normalized party position with snapshot', () => {
   });
 });
 
+test('S1 local turn updates journey position without rewriting G4/G5', () => {
+  const writes = buildLowerDvinaTraceTurnStepRootWrites({
+    partyId: 'party', state: { actor_id: 'actor', party_state: {},
+      journey_location: { id: 'journey', state_version: 3 },
+      body_state: { active_conditions: [] } },
+    snapshot: { position: { position_id: 'inside', g4_id: 'g4',
+      g5_node_id: 'snapshot-only-node', g5_anchor_id: 'anchor' },
+    body_state: { active_conditions: [] } },
+    envelope: { root_turn_id: 'turn', body_update: { applied: false,
+      proposal: null }, consequence: { position_transition: {
+      owner: '@rus/movement-routes'
+    } } },
+    nextVersion: 2, turnNumber: 2, changeSetId: 'change', idemId: 'idem',
+    pendingScreen: {}, clockChanged: false
+  });
+  assert.equal(writes.updates.some(({ target_table: table }) =>
+    table === 'party_positions'), false);
+  assert.equal(writes.updates.find(({ target_table: table }) =>
+    table === 'party_journey_locations').record.scene_position_id, 'inside');
+});
+
 test('direct-only semantic turn commits one P16 root with snapshot and pending presentation',
   async () => {
     const f = fixture({ direct: true });

@@ -45,7 +45,7 @@ export const lowerDvinaTraceV5World = Object.freeze({
 export const lowerDvinaTraceV6World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v6_candidate_001',
   digest: '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
-  manifest: '52cef611d26be49d06e0c80f0c44dfa2eb5021bcbb8e942e4daf51b6cb48b93c'
+  manifest: '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb'
 });
 
 export const lowerDvinaTraceCanonicalG5SceneBindings = Object.freeze([

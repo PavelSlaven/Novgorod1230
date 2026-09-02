@@ -584,7 +584,7 @@ async function runBargainPath({ pool, release, runtimeCatalogPin }) {
     randomValue: (requestId) =>
       requestId.includes('bargain-attempt')
         || requestId.includes('bargain-second-attempt')
-        ? 0
+        ? 0.3
         : 0.99,
     counters
   });
@@ -638,7 +638,7 @@ async function runBargainPath({ pool, release, runtimeCatalogPin }) {
     randomValue: (requestId) =>
       requestId.includes('bargain-attempt')
         || requestId.includes('bargain-repeat-')
-        ? 0
+        ? 0.3
         : 0.99,
     counters
   });

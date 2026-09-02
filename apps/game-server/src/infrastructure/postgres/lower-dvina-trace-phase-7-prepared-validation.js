@@ -20,7 +20,7 @@ export function isPreparedPhase7RestLedger(ledger) {
 }
 
 export function validatePreparedPhase7Rest({ ledger, traces, envelope, factual,
-  state, batch }) {
+  state }) {
   const rest = ledger.slices[0];
   const trace = traces?.[0];
   const operation = trace?.approved_plan?.operations?.[0];
@@ -31,8 +31,7 @@ export function validatePreparedPhase7Rest({ ledger, traces, envelope, factual,
   const validDuration = Number.isSafeInteger(duration) && duration > 0
     && (resumed ? duration <= 5
       : restCompleted ? duration === 30 : duration >= 25 && duration < 30);
-  if (batch != null
-      || traces?.length !== 1
+  if (traces?.length !== 1
       || ledger.committed_state_version !== state.party_state.state_version
       || envelope.loop_trace.working_revision !== 1
       || envelope.loop_trace.status !== 'resolved'

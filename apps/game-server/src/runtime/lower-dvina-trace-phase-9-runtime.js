@@ -8,7 +8,8 @@ import { createTracePhase9TestimonyCommand } from
 export function createTracePhase9Runtime({ state, bundle,
   conversationBindings, inputDigest, playerConversationModel,
   npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion }) {
-  if (![17, 18, 19, 20, 21, 22, 23, 24, 25].includes(bundle.definition_revision)
+  if (![17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+    32].includes(bundle.definition_revision)
       || !phase8Terminal(state)) return null;
   const contracts = resolveTracePhase9Contracts({ state, bundle,
     conversationBindings });
@@ -35,8 +36,9 @@ function phase8Terminal(state) {
     && (state.last_turn?.consequence?.combat?.session_after?.status === 'ended'
       || (state.npcs ?? []).some((npc) =>
         npc.participant_slot_ref === 'zhdanko_storehouse_controller'
-        && npc.machine_state?.surrender_state
-          === 'surrendered_without_further_attack')))
+        && (npc.machine_state?.combat_terminal_status != null
+          || npc.machine_state?.surrender_state
+            === 'surrendered_without_further_attack'))))
       || state.phase9 != null;
 }
 function actor(state, slot) {

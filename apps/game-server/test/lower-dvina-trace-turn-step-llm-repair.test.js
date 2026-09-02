@@ -121,7 +121,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
-test('grounding repair preserves the entire still-unexecuted intent',
+test('grounding repair keeps the model semantic result unchanged',
   async () => {
     const intent = 'Подбираю доску и делаю из неё опору.';
     const input = request({ root_player_action: intent,
@@ -129,6 +129,8 @@ test('grounding repair preserves the entire still-unexecuted intent',
     const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
       async run() { return { output: {
         ...output(), resolution: 'domain_request',
+        interpretation: { player_goal: intent,
+          grounded_attempt: 'Осмотреть доску.', adaptation: 'literal' },
         activity: { owner: 'domain', duration_class: null, effort: null },
         operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
           discovery_kind: 'inspect', target_refs: ['location:shore'],
@@ -141,9 +143,9 @@ test('grounding repair preserves the entire still-unexecuted intent',
       structural_errors: [{ code: 'source_semantic_grounding' }],
       original_output: {}
     });
-    assert.equal(plan.continuation.remaining_intent, intent);
+    assert.equal(plan.continuation.remaining_intent, 'делаю из неё опору');
     assert.equal(plan.interpretation.grounded_attempt,
-      'Осмотрен доступный обычный материал.');
+      'Осмотреть доску.');
   });
 
 test('assembler derives redundant A1 carrier refs from semantic source refs',

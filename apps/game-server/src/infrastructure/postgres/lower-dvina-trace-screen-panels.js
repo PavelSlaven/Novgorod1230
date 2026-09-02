@@ -5,7 +5,10 @@ import { projectLowerDvinaTracePlayerSafeState } from
 
 export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   const projection = projectLowerDvinaTracePlayerSafeState({
-    committed_state: payload,
+    committed_state: screen.visible_context == null ? payload : {
+      ...payload,
+      current_visible_context: screen.visible_context
+    },
     actor_id: payload.actor_id
   }).player_safe_state;
   const activeInterlocutor = projection.active_interlocutor ?? null;

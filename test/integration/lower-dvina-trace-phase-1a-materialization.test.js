@@ -50,6 +50,33 @@ const revision26Bundle = await loadLowerDvinaTraceMaterializationBundle({
 const revision26DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
   revision26Bundle
 );
+const revision32Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 32
+});
+const revision32DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
+  revision32Bundle
+);
+
+test('revision 32 materializes the sealed packet inside the road bag', () => {
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-32-party',
+    scenario_definition_revision: 32,
+    scenario_manifest_digest: revision32Bundle.manifest_digest,
+    world_revision_id: revision32Bundle.location_topology_set.spatial_source_ref
+      .world_revision_id,
+    world_catalog_digest: revision32Bundle.location_topology_set
+      .spatial_source_ref.world_revision_catalog_digest,
+    domain_catalog_pin: revision32DomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-32-idempotency',
+    scenario_bundle: revision32Bundle
+  }));
+  const bag = result.immediate.containers.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_container_road_bag');
+  const packet = result.immediate.items.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_item_sealed_packet');
+  assert.equal(packet.container_id, bag.instance_id);
+  assert.equal(packet.state.seal_state, 'intact');
+});
 
 test('revision 26 exposes camp and drying-shed first-entry members', async () => {
   const revision26 = await loadLowerDvinaTraceMaterializationBundle({

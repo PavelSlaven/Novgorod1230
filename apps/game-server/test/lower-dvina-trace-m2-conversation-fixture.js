@@ -71,8 +71,9 @@ export function createM2ConversationModels({
       offer: Boolean(request.player_safe_context.offer_policy_ref)
     }),
     npcSemanticModel: (request) => {
-      const routeOperation = request.decision_scope
-        ?.operation_contract?.disclose_known_route;
+      const operationContract = request.decision_scope
+        ?.operation_contract ?? {};
+      const routeOperation = operationContract.disclose_known_route;
       if (routeOperation) {
         const responseKind = (request.social_context?.delivery_cues ?? [])
           .some((cue) => EREMEY_DISCLOSURE_CUES.has(cue))
@@ -81,10 +82,36 @@ export function createM2ConversationModels({
         onNpcCall(request, responseKind);
         return eremeyPlan(request, responseKind, routeOperation);
       }
+      const ratshaBoundary = ['commit_surrender', 'state_bargain',
+        'state_known_falsehood'].some((operation) =>
+        Object.hasOwn(operationContract, operation))
+        || request.decision_scope?.allowed_contribution_kinds
+          ?.includes('combat_handoff')
+        || ratshaResponseKind === 'combat_handoff';
+      if (!ratshaBoundary) {
+        onNpcCall(request, 'speech');
+        return npcSpeechPlan(request, {
+          utteranceText: 'Я занят своим делом, но слышу тебя.',
+          dominantAct: 'answer'
+        });
+      }
+      const requiredOperation = request.decision_scope
+        ?.required_supporting_operation?.op;
+      const requiredResponseKind = {
+        commit_surrender: 'surrender',
+        state_bargain: 'bargain',
+        state_known_falsehood: 'lie'
+      }[requiredOperation];
+      const responseKind = request.decision_scope
+        ?.allowed_contribution_kinds?.length === 1
+        && request.decision_scope.allowed_contribution_kinds[0]
+          === 'combat_handoff'
+        ? 'combat_handoff'
+        : requiredResponseKind ?? ratshaResponseKind;
       const playerId = request.public_conversation_history.at(-1)
         .speaker_ref.entity_id;
-      onNpcCall(request, ratshaResponseKind);
-      return ratshaPlan(request, ratshaResponseKind, playerId);
+      onNpcCall(request, responseKind);
+      return ratshaPlan(request, responseKind, playerId);
     }
   };
 }

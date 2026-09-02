@@ -36,7 +36,7 @@ test('O2b child move is composed after materialization in the same P16',
       .write_plan_digest,ordinaryPlan.write_plan_digest);
     assert.deepEqual(plan.updates.find(({target_table:table,id}) =>
       table==='party_item_placements'&&id===itemId).record,
-    {party_id:'p',item_id:itemId,anchor_id:null,container_id:null,
+    {party_id:'p',item_id:itemId,anchor_id:null,scene_position_id:null,container_id:null,
       holder_npc_id:null,holder_character_id:'actor-1',
       physical_position:'hands',equipment_slot_category_id:null,
       attached_item_id:null});

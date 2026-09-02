@@ -3,7 +3,7 @@
 **Статус:** active documentation/navigation index  
 **Репозиторий:** `PavelSlaven/Novgorod1230`  
 **Каноническое merged state:** ветка `main`  
-**Аудит индекса:** 2026-09-02, `main` HEAD `4cb58cdd1ee1ef636dfdf0437b650bffe50f0936`
+**Аудит индекса:** 2026-09-02, `main` HEAD `4cb58cdd1ee1ef636df0437b650bffe50f0936`
 
 Этот файл отвечает только за навигацию, статусы и порядок применения документов. Он не создаёт новую gameplay semantics и не заменяет профильные контракты, schemas, active bindings, код или tests.
 

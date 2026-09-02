@@ -57,10 +57,7 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
       errors.push(`${id}: document file missing`);
       continue;
     }
-    const actualSha256 = sha256(bytes);
-    if (actualSha256 !== record.sha256 || bytes.length !== record.bytes) {
-      errors.push(`${id}: document hash or size mismatch; actual sha256=${actualSha256} bytes=${bytes.length}`);
-    }
+    if (sha256(bytes) !== record.sha256 || bytes.length !== record.bytes) errors.push(`${id}: document hash or size mismatch`);
     if (record.file_name !== basename(canonicalPath)) errors.push(`${id}: file_name differs from canonical_path`);
     if (record.source_legacy_path) legacyCount += 1;
   }

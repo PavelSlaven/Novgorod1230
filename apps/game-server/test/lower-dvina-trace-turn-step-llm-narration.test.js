@@ -16,7 +16,7 @@ test('narration assembly does not default omitted semantic fields', () => {
   assert.equal(validateNarrationOutput(output).ok, false);
 });
 
-test('narration wires writer, audit, and targeted semantic repair roles', async () => {
+test('narration wires writer, audit, and coherent semantic repair roles', async () => {
   const calls = [];
   const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'The clearing is quiet.', action_options: [], used_references: [], self_check: {} };
   const turnBudget = createLlmTurnBudget();
@@ -156,7 +156,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
-  assert.equal(calls[3].messages[0].content.includes('flagged segments'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'entire supplied prose as one coherent paragraph'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(
@@ -168,7 +169,7 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'For missing_visible_change'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'ensure the repaired full prose still conveys every material visible_change'), true);
+    'complete replacement must naturally convey every material visible_change once'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(Object.hasOwn(JSON.parse(calls[3].messages[1].content),
     'action_intent_context'), false);

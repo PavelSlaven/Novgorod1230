@@ -144,7 +144,7 @@ test('blocks non-empty unsupported used_references after one repair', async () =
   assert.deepEqual(result.diagnostics.errors, ['used_references must be empty until visible_context defines reference vocabulary']);
 });
 
-test('repairs only auditor-flagged segment and re-audits complete prose', async () => {
+test('repairs the coherent prose and re-audits the complete result', async () => {
   const audits = [];
   const result = await runNarrationFlow(request(), ports({
     writer: { async generate() { return output('Сначала видно ворота. Телега скрипит у ворот. Потом всё тихо.'); } },
@@ -156,8 +156,12 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
     } },
     semanticRepairer: { async repair(input) {
       assert.equal(input.request_id, 'turn:party-1:1');
-      assert.deepEqual(input.segments.map((segment) => segment.segment_id), ['s2']);
-      return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Телега стоит у ворот. ' }] };
+      assert.deepEqual(input.segments, [{ segment_id: 's1',
+        prose: 'Сначала видно ворота. Телега скрипит у ворот. Потом всё тихо.',
+        nearby_context: [] }]);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'Сначала видно ворота. Телега стоит у ворот. Потом всё тихо.' }] };
     } }
   }));
   assert.equal(result.status, 'approved');
@@ -166,7 +170,37 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
   assert.equal(audits[1].output.prose, result.approved_output.prose);
 });
 
-test('semantic repair preserves original inter-segment spacing', async () => {
+test('semantic repair rewrites one coherent paragraph instead of duplicating nearby facts', async () => {
+  let audits = 0;
+  const original = 'Плечо обмотано лентой, узел затянут. Прошло пять минут.';
+  const repaired = 'За пять минут плечо оказывается обмотано лентой, а узел — затянут.';
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output(original); } },
+    auditor: { async audit(input) {
+      audits += 1;
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's2', kind: 'technical_presentation',
+              reason: 'Elapsed time is a standalone report.' }],
+            evidence: ['Both changes are supported.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.deepEqual(input.segments, [{
+        segment_id: 's1', prose: original, nearby_context: []
+      }]);
+      assert.deepEqual(input.concerns.map(({ segment_id: id }) => id), ['s1']);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: repaired }] };
+    } }
+  }));
+
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, repaired);
+});
+
+test('semantic repair returns the complete prose with its spacing', async () => {
   let audits = 0;
   const result = await runNarrationFlow(request(), ports({
     writer: { async generate() { return output('Первое. Второе.'); } },
@@ -181,7 +215,8 @@ test('semantic repair preserves original inter-segment spacing', async () => {
     } },
     semanticRepairer: { async repair() {
       return { version: 1, schema: 'narration_semantic_repair',
-        replacements: [{ segment_id: 's1', prose: 'Исправлено.' }] };
+        replacements: [{ segment_id: 's1',
+          prose: 'Исправлено. Второе.' }] };
     } }
   }));
   assert.equal(result.approved_output.prose, 'Исправлено. Второе.');
@@ -204,7 +239,7 @@ test('semantic repair can delete a wholly unsupported segment', async () => {
     } },
     semanticRepairer: { async repair() {
       return { version: 1, schema: 'narration_semantic_repair',
-        replacements: [{ segment_id: 's1', prose: '' }] };
+        replacements: [{ segment_id: 's1', prose: 'Прошла минута.' }] };
     } }
   }));
 

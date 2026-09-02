@@ -30,21 +30,27 @@ export async function runNarrationFlow(request, ports, options = {}) {
   if (auditErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
   if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
 
-  const flaggedIds = [...new Set(audit.concerns.map((concern) => concern.segment_id))];
+  const repairSegment = {
+    segment_id: 's1', prose: draft.prose, nearby_context: []
+  };
+  const repairConcerns = audit.concerns.map((concern) => ({
+    ...clone(concern), segment_id: repairSegment.segment_id
+  }));
   const repair = await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
     visible_context: clone(request.visible_context),
     style_policy: clone(request.style_policy ?? {}),
-    concerns: clone(audit.concerns),
-    segments: segments.filter((segment) => flaggedIds.includes(segment.segment_id)).map((segment) => ({ ...clone(segment), nearby_context: nearbySegments(segments, segment.segment_id) }))
+    concerns: repairConcerns,
+    segments: [repairSegment]
   });
   generationHistory.push(record('semantic_repairer', repair));
   repairHistory.push(record('semantic_repair', repair));
-  const repairErrors = validateNarrationSemanticRepair(repair, flaggedIds).errors;
+  const repairErrors = validateNarrationSemanticRepair(
+    repair, [repairSegment.segment_id]).errors;
   if (repairErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'semantic_repair_validation', repairErrors);
-  const repaired = { ...draft, prose: reassemble(segments, repair.replacements) };
+  const repaired = { ...draft, prose: repair.replacements[0].prose };
   errors = outputErrors(repaired, request.request_id);
   if (errors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'reassembled_output_validation', errors);
 
@@ -79,19 +85,6 @@ function actionIntentContext(request) {
     ...(source.attempt == null ? {} : { attempt: clone(source.attempt) }),
     ...(source.outcome == null ? {} : { outcome: clone(source.outcome) })
   };
-}
-function nearbySegments(segments, id) {
-  const index = segments.findIndex((segment) => segment.segment_id === id);
-  return [segments[index - 1], segments[index + 1]].filter(Boolean).map(clone);
-}
-function reassemble(segments, replacements) {
-  const byId = new Map(replacements.map((replacement) => [replacement.segment_id, replacement.prose]));
-  return segments.map((segment) => {
-    const replacement = byId.get(segment.segment_id);
-    if (typeof replacement === 'string' && !replacement.trim()) return '';
-    if (replacement == null || /\s$/u.test(replacement)) return replacement ?? segment.prose;
-    return replacement + (segment.prose.match(/\s+$/u)?.[0] ?? '');
-  }).join('');
 }
 function segmentIds(segments) { return segments.map((segment) => segment.segment_id); }
 function approved(request, draft, audit, generationHistory, repairHistory, auditHistory) {

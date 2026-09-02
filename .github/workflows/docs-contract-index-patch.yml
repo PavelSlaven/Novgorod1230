@@ -20,12 +20,13 @@ jobs:
           ref: docs/contract-index-and-auditor-2026-09-02
           fetch-depth: 0
 
-      - name: Apply guarded AGENTS.md patch
+      - name: Apply guarded AGENTS.md patch and remove workflow
         shell: bash
         run: |
           set -euo pipefail
-          python <<'PY'
+          python <<'PYCODE'
           from pathlib import Path
+          import base64
 
           path = Path("AGENTS.md")
           text = path.read_text(encoding="utf-8")
@@ -57,64 +58,7 @@ jobs:
           text = text.replace(old_navigation, new_navigation, 1)
 
           audit_marker = "Для обычного локального исправления отдельный critic не нужен.\n\n"
-          audit_section = """Для обычного локального исправления отдельный critic не нужен.
-
-### 25.1. Contract Auditor
-
-`CONTRACT AUDITOR` — read-only specialist, который устанавливает applicable source set, статусы документов, precedence и соответствие между governing/active contracts, bindings, schemas, implementation и tests. Он не изменяет production code, не создаёт нового owner и не меняет контракт только для того, чтобы узаконить implementation bug.
-
-Contract Auditor обязателен, если:
-
-- создаётся, изменяется, перемещается, переименовывается, удаляется или повышается в статусе governing/normative документ, этот индекс, `AGENTS.md`, nested `AGENTS.md` или `MODULE.md`;
-- меняется active release, profile, manifest, binding или document status;
-- меняется public schema, operation, API, package export, DDL, persistence, transaction, idempotency или replay boundary;
-- меняется domain owner либо handoff между owners;
-- меняется LLM authority, prompt, request/plan contract, model-call topology или repair policy;
-- меняются free actions, ordinary materialization, items/property, Spatial G0–G6, NPC decisions/conversation/combat, time/processes, visibility/knowledge/perception, direct speech или narration boundary;
-- implementation plan ссылается на proposed, target, migration или historical документ;
-- `AGENTS.md`, contract index, профильный контракт, `MODULE.md`, schema, code или tests расходятся в описании current behavior;
-- проводится final acceptance cross-module либо иного изменения повышенного риска.
-
-Для обычного локального fix отдельный Contract Auditor не обязателен только если главный агент доказал, что не меняются public behavior, contracts, owner boundary, persistence/schema, LLM authority и active profile status.
-
-Contract Auditor всегда читает:
-
-1. root `AGENTS.md`;
-2. [канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
-3. applicable nested `AGENTS.md`;
-4. relevant `MODULE.md`;
-5. active release/profile/manifest/bindings;
-6. applicable active contract и schema;
-7. production code, callers и tests;
-8. proposed/target/migration документы только когда текущая задача явно реализует или аудирует соответствующий target.
-
-Точный contract set по player semantic action, materialization, ordinary items/resources/containers, Spatial, NPC, conversation, combat, time/processes, persistence, historical grounding и narration/UI определён в `CONTRACT_INDEX.md`, раздел 8. Proposed, migration, historical и reference документы не становятся production contract без explicit versioned cutover и active binding.
-
-Формат результата:
-
-```text
-CONTRACT AUDIT FINDING
-
-scope:
-source_set:
-source_statuses:
-observed_implementation:
-required_by_active_contract:
-target_if_any:
-conflict:
-precedence_resolution:
-first_bad_boundary:
-correct_owner:
-required_code_delta:
-required_docs_delta:
-required_tests:
-severity: P0 | P1 | P2 | P3
-verdict: PASS | PASS_WITH_NOTES | BLOCK
-```
-
-`BLOCK` обязателен, если diff нарушает governing/active contract, создаёт mixed semantics или duplicate ownership либо выдаёт proposed behavior за current production.
-
-"""
+          audit_section = base64.b64decode("0JTQu9GPINC+0LHRi9GH0L3QvtCz0L4g0LvQvtC60LDQu9GM0L3QvtCz0L4g0LjRgdC/0YDQsNCy0LvQtdC90LjRjyDQvtGC0LTQtdC70YzQvdGL0LkgY3JpdGljINC90LUg0L3Rg9C20LXQvS4KCiMjIyAyNS4xLiBDb250cmFjdCBBdWRpdG9yCgpgQ09OVFJBQ1QgQVVESVRPUmAg4oCUIHJlYWQtb25seSBzcGVjaWFsaXN0LCDQutC+0YLQvtGA0YvQuSDRg9GB0YLQsNC90LDQstC70LjQstCw0LXRgiBhcHBsaWNhYmxlIHNvdXJjZSBzZXQsINGB0YLQsNGC0YPRgdGLINC00L7QutGD0LzQtdC90YLQvtCyLCBwcmVjZWRlbmNlINC4INGB0L7QvtGC0LLQtdGC0YHRgtCy0LjQtSDQvNC10LbQtNGDIGdvdmVybmluZy9hY3RpdmUgY29udHJhY3RzLCBiaW5kaW5ncywgc2NoZW1hcywgaW1wbGVtZW50YXRpb24g0LggdGVzdHMuINCe0L0g0L3QtSDQuNC30LzQtdC90Y/QtdGCIHByb2R1Y3Rpb24gY29kZSwg0L3QtSDRgdC+0LfQtNCw0ZHRgiDQvdC+0LLQvtCz0L4gb3duZXIg0Lgg0L3QtSDQvNC10L3Rj9C10YIg0LrQvtC90YLRgNCw0LrRgiDRgtC+0LvRjNC60L4g0LTQu9GPINGC0L7Qs9C+LCDRh9GC0L7QsdGLINGD0LfQsNC60L7QvdC40YLRjCBpbXBsZW1lbnRhdGlvbiBidWcuCgpDb250cmFjdCBBdWRpdG9yINC+0LHRj9C30LDRgtC10LvQtdC9LCDQtdGB0LvQuDoKCi0g0YHQvtC30LTQsNGR0YLRgdGPLCDQuNC30LzQtdC90Y/QtdGC0YHRjywg0L/QtdGA0LXQvNC10YnQsNC10YLRgdGPLCDQv9C10YDQtdC40LzQtdC90L7QstGL0LLQsNC10YLRgdGPLCDRg9C00LDQu9GP0LXRgtGB0Y8g0LjQu9C4INC/0L7QstGL0YjQsNC10YLRgdGPINCyINGB0YLQsNGC0YPRgdC1IGdvdmVybmluZy9ub3JtYXRpdmUg0LTQvtC60YPQvNC10L3Rgiwg0Y3RgtC+0YIg0LjQvdC00LXQutGBLCBgQUdFTlRTLm1kYCwgbmVzdGVkIGBBR0VOVFMubWRgINC40LvQuCBgTU9EVUxFLm1kYDsKLSDQvNC10L3Rj9C10YLRgdGPIGFjdGl2ZSByZWxlYXNlLCBwcm9maWxlLCBtYW5pZmVzdCwgYmluZGluZyDQuNC70LggZG9jdW1lbnQgc3RhdHVzOwotINC80LXQvdGP0LXRgtGB0Y8gcHVibGljIHNjaGVtYSwgb3BlcmF0aW9uLCBBUEksIHBhY2thZ2UgZXhwb3J0LCBEREwsIHBlcnNpc3RlbmNlLCB0cmFuc2FjdGlvbiwgaWRlbXBvdGVuY3kg0LjQu9C4IHJlcGxheSBib3VuZGFyeTsKLSDQvNC10L3Rj9C10YLRgdGPIGRvbWFpbiBvd25lciDQu9C40LHQviBoYW5kb2ZmINC80LXQttC00YMgb3duZXJzOwotINC80LXQvdGP0LXRgtGB0Y8gTExNIGF1dGhvcml0eSwgcHJvbXB0LCByZXF1ZXN0L3BsYW4gY29udHJhY3QsIG1vZGVsLWNhbGwgdG9wb2xvZ3kg0LjQu9C4IHJlcGFpciBwb2xpY3k7Ci0g0LzQtdC90Y/RjtGC0YHRjyBmcmVlIGFjdGlvbnMsIG9yZGluYXJ5IG1hdGVyaWFsaXphdGlvbiwgaXRlbXMvcHJvcGVydHksIFNwYXRpYWwgRzDigJNHNiwgTlBDIGRlY2lzaW9ucy9jb252ZXJzYXRpb24vY29tYmF0LCB0aW1lL3Byb2Nlc3NlcywgdmlzaWJpbGl0eS9rbm93bGVkZ2UvcGVyY2VwdGlvbiwgZGlyZWN0IHNwZWVjaCDQuNC70LggbmFycmF0aW9uIGJvdW5kYXJ5OwotIGltcGxlbWVudGF0aW9uIHBsYW4g0YHRgdGL0LvQsNC10YLRgdGPINC90LAgcHJvcG9zZWQsIHRhcmdldCwgbWlncmF0aW9uINC40LvQuCBoaXN0b3JpY2FsINC00L7QutGD0LzQtdC90YI7Ci0gYEFHRU5UUy5tZGAsIGNvbnRyYWN0IGluZGV4LCDQv9GA0L7RhNC40LvRjNC90YvQuSDQutC+0L3RgtGA0LDQutGCLCBgTU9EVUxFLm1kYCwgc2NoZW1hLCBjb2RlINC40LvQuCB0ZXN0cyDRgNCw0YHRhdC+0LTRj9GC0YHRjyDQsiDQvtC/0LjRgdCw0L3QuNC4IGN1cnJlbnQgYmVoYXZpb3I7Ci0g0L/RgNC+0LLQvtC00LjRgtGB0Y8gZmluYWwgYWNjZXB0YW5jZSBjcm9zcy1tb2R1bGUg0LvQuNCx0L4g0LjQvdC+0LPQviDQuNC30LzQtdC90LXQvdC40Y8g0L/QvtCy0YvRiNC10L3QvdC+0LPQviDRgNC40YHQutCwLgoK0JTQu9GPINC+0LHRi9GH0L3QvtCz0L4g0LvQvtC60LDQu9GM0L3QvtCz0L4gZml4INC+0YLQtNC10LvRjNC90YvQuSBDb250cmFjdCBBdWRpdG9yINC90LUg0L7QsdGP0LfQsNGC0LXQu9C10L0g0YLQvtC70YzQutC+INC10YHQu9C4INCz0LvQsNCy0L3Ri9C5INCw0LPQtdC90YIg0LTQvtC60LDQt9Cw0LssINGH0YLQviDQvdC1INC80LXQvdGP0Y7RgtGB0Y8gcHVibGljIGJlaGF2aW9yLCBjb250cmFjdHMsIG93bmVyIGJvdW5kYXJ5LCBwZXJzaXN0ZW5jZS9zY2hlbWEsIExMTSBhdXRob3JpdHkg0LggYWN0aXZlIHByb2ZpbGUgc3RhdHVzLgoKQ29udHJhY3QgQXVkaXRvciDQstGB0LXQs9C00LAg0YfQuNGC0LDQtdGCOgoKMS4gcm9vdCBgQUdFTlRTLm1kYDsKMi4gW9C60LDQvdC+0L3QuNGH0LXRgdC60LjQuSDQuNC90LTQtdC60YEg0LrQvtC90YLRgNCw0LrRgtC+0LJdKGRhdGEva25vd2xlZGdlLXNvdXJjZS9jb3JwdXMvRE9DVU1FTlRTL0NPTlRSQUNUX0lOREVYLm1kKTsKMy4gYXBwbGljYWJsZSBuZXN0ZWQgYEFHRU5UUy5tZGA7CjQuIHJlbGV2YW50IGBNT0RVTEUubWRgOwo1LiBhY3RpdmUgcmVsZWFzZS9wcm9maWxlL21hbmlmZXN0L2JpbmRpbmdzOwo2LiBhcHBsaWNhYmxlIGFjdGl2ZSBjb250cmFjdCDQuCBzY2hlbWE7CjcuIHByb2R1Y3Rpb24gY29kZSwgY2FsbGVycyDQuCB0ZXN0czsKOC4gcHJvcG9zZWQvdGFyZ2V0L21pZ3JhdGlvbiDQtNC+0LrRg9C80LXQvdGC0Ysg0YLQvtC70YzQutC+INC60L7Qs9C00LAg0YLQtdC60YPRidCw0Y8g0LfQsNC00LDRh9CwINGP0LLQvdC+INGA0LXQsNC70LjQt9GD0LXRgiDQuNC70Lgg0LDRg9C00LjRgNGD0LXRgiDRgdC+0L7RgtCy0LXRgtGB0YLQstGD0Y7RidC40LkgdGFyZ2V0LgoK0KLQvtGH0L3Ri9C5IGNvbnRyYWN0IHNldCDQv9C+IHBsYXllciBzZW1hbnRpYyBhY3Rpb24sIG1hdGVyaWFsaXphdGlvbiwgb3JkaW5hcnkgaXRlbXMvcmVzb3VyY2VzL2NvbnRhaW5lcnMsIFNwYXRpYWwsIE5QQywgY29udmVyc2F0aW9uLCBjb21iYXQsIHRpbWUvcHJvY2Vzc2VzLCBwZXJzaXN0ZW5jZSwgaGlzdG9yaWNhbCBncm91bmRpbmcg0LggbmFycmF0aW9uL1VJINC+0L/RgNC10LTQtdC70ZHQvSDQsiBgQ09OVFJBQ1RfSU5ERVgubWRgLCDRgNCw0LfQtNC10LsgOC4gUHJvcG9zZWQsIG1pZ3JhdGlvbiwgaGlzdG9yaWNhbCDQuCByZWZlcmVuY2Ug0LTQvtC60YPQvNC10L3RgtGLINC90LUg0YHRgtCw0L3QvtCy0Y/RgtGB0Y8gcHJvZHVjdGlvbiBjb250cmFjdCDQsdC10LcgZXhwbGljaXQgdmVyc2lvbmVkIGN1dG92ZXIg0LggYWN0aXZlIGJpbmRpbmcuCgrQpNC+0YDQvNCw0YIg0YDQtdC30YPQu9GM0YLQsNGC0LA6CgpgYGB0ZXh0CkNPTlRSQUNUIEFVRElUIEZJTkRJTkcKCnNjb3BlOgpzb3VyY2Vfc2V0Ogpzb3VyY2Vfc3RhdHVzZXM6Cm9ic2VydmVkX2ltcGxlbWVudGF0aW9uOgpyZXF1aXJlZF9ieV9hY3RpdmVfY29udHJhY3Q6CnRhcmdldF9pZl9hbnk6CmNvbmZsaWN0OgpwcmVjZWRlbmNlX3Jlc29sdXRpb246CmZpcnN0X2JhZF9ib3VuZGFyeToKY29ycmVjdF9vd25lcjoKcmVxdWlyZWRfY29kZV9kZWx0YToKcmVxdWlyZWRfZG9jc19kZWx0YToKcmVxdWlyZWRfdGVzdHM6CnNldmVyaXR5OiBQMCB8IFAxIHwgUDIgfCBQMwp2ZXJkaWN0OiBQQVNTIHwgUEFTU19XSVRIX05PVEVTIHwgQkxPQ0sKYGBgCgpgQkxPQ0tgINC+0LHRj9C30LDRgtC10LvQtdC9LCDQtdGB0LvQuCBkaWZmINC90LDRgNGD0YjQsNC10YIgZ292ZXJuaW5nL2FjdGl2ZSBjb250cmFjdCwg0YHQvtC30LTQsNGR0YIgbWl4ZWQgc2VtYW50aWNzINC40LvQuCBkdXBsaWNhdGUgb3duZXJzaGlwINC70LjQsdC+INCy0YvQtNCw0ZHRgiBwcm9wb3NlZCBiZWhhdmlvciDQt9CwIGN1cnJlbnQgcHJvZHVjdGlvbi4KCg==").decode("utf-8")
           if "### 25.1. Contract Auditor" not in text:
               if text.count(audit_marker) != 1:
                   raise SystemExit(f"unexpected audit marker count: {text.count(audit_marker)}")
@@ -130,16 +74,12 @@ verdict: PASS | PASS_WITH_NOTES | BLOCK
                   raise SystemExit(f"missing required text: {needle}")
 
           path.write_text(text, encoding="utf-8", newline="\n")
-          PY
+          PYCODE
 
           git diff --check
           grep -F "CONTRACT_INDEX.md" AGENTS.md
           grep -F "### 25.1. Contract Auditor" AGENTS.md
 
-      - name: Commit guarded patch and remove one-off workflow
-        shell: bash
-        run: |
-          set -euo pipefail
           git rm .github/workflows/docs-contract-index-patch.yml
           git add AGENTS.md
           git config user.name "github-actions[bot]"

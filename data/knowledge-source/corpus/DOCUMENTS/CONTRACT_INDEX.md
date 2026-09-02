@@ -52,6 +52,12 @@
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`. Его устойчивое содержание уже включено в root `AGENTS.md`; создавать параллельную копию не следует. Внешняя копия с таким именем может быть только входным материалом для сравнения и не переопределяет GitHub.
 
+## 3.1. Module contracts and public schemas
+
+Все module-level contracts перечислены в generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md). Этот generated файл используется только для навигации; точный owner и public boundary задаёт соответствующий `MODULE.md`, а physical schema — canonical DDL/schema source затронутой области.
+
+Contract Auditor не копирует весь generated module index сюда и не редактирует его вручную. Он выбирает relevant `MODULE.md` по `MODULE_INDEX.md`, затем сверяет public exports, schemas, callers и tests.
+
 ## 4. Explicit active contracts
 
 | Документ | Статус | Основной scope / примечание |

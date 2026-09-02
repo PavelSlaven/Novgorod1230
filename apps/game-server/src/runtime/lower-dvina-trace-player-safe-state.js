@@ -41,15 +41,6 @@ export function projectLowerDvinaTracePlayerSafeState({
   const profile = committedState.player_profile ?? {};
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
-  const npcs = projectNpcs(committedState.npcs, { position });
-  const visibleNpcIds = new Set((npcs ?? []).flatMap((npc) => [
-    npc.instance_id, npc.npc_id
-  ]).filter(Boolean));
-  const items = projectItems([...(committedState.items ?? []),
-    ...containerItems(committedState.containers,
-      committedState.container_placements)], {
-    actorId, position, visibleNpcIds
-  });
   const visibleContext = projectVisibleContext(committedState.visible_context);
   const currentVisibleContext = projectVisibleContext(
     committedState.current_visible_context,
@@ -59,6 +50,15 @@ export function projectLowerDvinaTracePlayerSafeState({
     committedState.visible_context_package,
     { path: 'visible_context_package' }
   );
+  const npcs = projectNpcs(committedState.npcs, { position });
+  const visibleNpcIds = new Set((currentVisibleContext?.visible_npc ?? [])
+    .flatMap(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
+      ? [ref.entity_id] : []).filter(Boolean));
+  const items = projectItems([...(committedState.items ?? []),
+    ...containerItems(committedState.containers,
+      committedState.container_placements)], {
+    actorId, position, visibleNpcIds
+  });
   const activeInterlocutor = projectActiveConversationInterlocutor({
     conversation_sessions: committedState.conversation_sessions ?? [],
     conversation_statements: committedState.conversation_statements ?? [],

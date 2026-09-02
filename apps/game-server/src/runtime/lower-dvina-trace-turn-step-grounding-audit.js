@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch"}]} using only these concern kinds: source_semantic_mismatch, missing_required_source_move, operation_semantic_mismatch; report every present concern once in that order. Audit three things independently. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Third, each selected_domain_operation must semantically cover the next independently executable action in remaining_intent. Its own supplied query, description, kind, and player-safe referent evidence must match that action; sharing only an actor, place, broad verb, or operation type is insufficient. A fixed authored inspection does not cover a broader general look or a different ordinary search. Every independent clause not covered by that operation must remain in continuation.remaining_intent. Report operation_semantic_mismatch for a different action, over-broad consumption, or lost uncovered clause. Do not report it merely because exact mechanics are absent from player text. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch","reason":"<brief exact mismatch>"}]} using only these concern kinds: source_semantic_mismatch, missing_required_source_move, operation_semantic_mismatch; report every present concern once in that order. Every concern has exactly kind and a brief reason grounded in supplied text; name the mismatched or uncovered action, but do not propose a repair. Audit three things independently. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Third, each selected_domain_operation must semantically cover the next independently executable action in remaining_intent. Its own supplied query, description, kind, and player-safe referent evidence must match that action; sharing only an actor, place, broad verb, or operation type is insufficient. A fixed authored inspection does not cover a broader general look or a different ordinary search. Every independent clause not covered by that operation must remain in continuation.remaining_intent. Report operation_semantic_mismatch for a different action, over-broad consumption, or lost uncovered clause. In its reason identify the earliest uncovered action and every later clause missing from continuation. Do not report it merely because exact mechanics are absent from player text. Do not plan, repair, invent refs, or judge mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
@@ -43,11 +43,12 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
       'selected domain operation must cover the current intent']
   ];
   return { pass: false, errors: definitions
-    .filter(([kind]) => response.output.concerns.some((concern) =>
-      concern.kind === kind))
-    .map(([, code, message]) => ({
-      path: '$.operations', rule: code, code, message
-    })) };
+    .flatMap(([kind, code, fallback]) => {
+      const concern = response.output.concerns.find((entry) =>
+        entry.kind === kind);
+      return concern == null ? [] : [{ path: '$.operations', rule: code, code,
+        message: concern.reason || fallback }];
+    }) };
 }
 
 function selectedDomainOperations(plan, request) {
@@ -126,8 +127,9 @@ function valid(value) {
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
     && value.concerns.every((concern) => concern != null
       && typeof concern === 'object' && !Array.isArray(concern)
-      && Object.keys(concern).length === 1
+      && Object.keys(concern).length === 2
       && ['source_semantic_mismatch', 'missing_required_source_move',
         'operation_semantic_mismatch']
-        .includes(concern.kind));
+        .includes(concern.kind)
+      && typeof concern.reason === 'string' && concern.reason.trim());
 }

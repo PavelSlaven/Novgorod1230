@@ -83,6 +83,29 @@ test('canonical NPC names stay hidden without player-safe acquisition', () => {
     'Скрытое каноническое имя'), false);
 });
 
+test('NPC-held items require current perceptual evidence, not co-location', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'npc-knife', category_id: 'utility_knife',
+    placement: { holder_npc_id: 'onisim', physical_position: 'worn_quick' } });
+  state.current_visible_context = { visible_scene: 'Старая сушильня',
+    visible_npc: [], visible_objects: [] };
+
+  const hidden = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(JSON.stringify(hidden).includes('npc-knife'), false);
+
+  state.current_visible_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+    display_label: 'мужчина'
+  });
+  const visible = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(visible.items.some(({ item_id: id }) => id === 'npc-knife'),
+    true);
+});
+
 test('projects a committed player-safe item display name from item state', () => {
   const state = richCommittedState();
   state.items.push({ item_id: 'held-clue', placement: {

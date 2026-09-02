@@ -106,7 +106,8 @@ test('repair role receives original output, request, and structural errors', asy
     'remove the unavailable domain operation instead of preserving it'), true);
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, remove only the event covered by the selected domain operation'), true);
-  assert.equal(seen.messages[0].content.includes('Do not re-plan or invent operations or refs.'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 

@@ -11,7 +11,8 @@ test('action-production grounding audit receives only each source own evidence',
       roleRunner: { async run(input) {
         call = input;
         return { output: { pass: false,
-          concerns: [{ kind: 'source_semantic_mismatch' }] } };
+          concerns: [{ kind: 'source_semantic_mismatch',
+            reason: 'The knife is not the named board.' }] } };
       } },
       plan: { operations: [{ op: 'request_item_use', action_production: {
         source_refs: ['item:knife'] } }] },
@@ -64,7 +65,8 @@ test('grounding audit reports an explicit source relocation omitted by plan',
     let call;
     const result = await auditTurnStepSourceGrounding({
       roleRunner: { async run(input) { call = input; return { output: { pass: false,
-        concerns: [{ kind: 'missing_required_source_move' }] } }; } },
+        concerns: [{ kind: 'missing_required_source_move',
+          reason: 'Taking the board requires a move.' }] } }; } },
       plan: { operations: [{ op: 'request_item_use', action_production: {
         source_refs: ['item:board'] } }] },
       request: { request_id: 'request-2', actor: { actor_id: 'actor' },
@@ -84,8 +86,10 @@ test('grounding audit preserves semantic and placement concerns together',
   async () => {
     const result = await auditTurnStepSourceGrounding({
       roleRunner: { async run() { return { output: { pass: false,
-        concerns: [{ kind: 'missing_required_source_move' },
-          { kind: 'source_semantic_mismatch' }] } }; } },
+        concerns: [{ kind: 'missing_required_source_move',
+          reason: 'Taking the net requires a move.' },
+        { kind: 'source_semantic_mismatch',
+          reason: 'The shirt is not the named net.' }] } }; } },
       plan: { operations: [{ op: 'request_item_use', action_production: {
         source_refs: ['item:shirt'] } }] },
       request: { request_id: 'request-both', actor: { actor_id: 'actor' },
@@ -109,7 +113,8 @@ test('grounding audit rejects a selected domain operation for another action',
       roleRunner: { async run(call) {
         payload = JSON.parse(call.messages[1].content);
         return { output: { pass: false,
-          concerns: [{ kind: 'operation_semantic_mismatch' }] } };
+          concerns: [{ kind: 'operation_semantic_mismatch',
+            reason: 'The authored wreck inspection does not cover looking around.' }] } };
       } },
       plan: { operations: [operation], continuation: {
         remaining_intent: 'Собрать ветки и пойти вдоль воды.',

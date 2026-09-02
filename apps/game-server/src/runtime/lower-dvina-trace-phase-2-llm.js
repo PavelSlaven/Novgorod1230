@@ -311,6 +311,9 @@ export function createLowerDvinaTraceNpcSemanticModel({
   requireRoleRunner(roleRunner);
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
+    const semanticRepair = repair?.validation_errors?.some(
+      ({ category }) => category === 'semantic_grounding'
+    ) === true;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -324,7 +327,9 @@ export function createLowerDvinaTraceNpcSemanticModel({
         role: 'user',
         content: JSON.stringify(repair ? {
           request,
-          original_output: repair.original_output,
+          ...(semanticRepair ? {} : {
+            original_output: repair.original_output
+          }),
           validation_errors: repair.validation_errors
         } : request)
       }],

@@ -68,9 +68,14 @@ test('speech grounding admits supported route and ordinary reply, rejects unsupp
       concern_kinds: ['unsupported_direction'],
       message: 'Remove the unsupported world assertion or direction unless the request supplies its exact supporting operation.'
     }] });
-    const repairFixture = runner(() => ordinaryPlan);
+    const repairFixture = runner((call) => {
+      const payload = JSON.parse(call.messages[1].content);
+      assert.equal(Object.hasOwn(payload, 'original_output'), false);
+      return ordinaryPlan;
+    });
     await createLowerDvinaTraceNpcSemanticModel(repairFixture)(ordinaryRequest, { repair: { original_output: unsupported,
-      validation_errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED' }] } });
+      validation_errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+        category: 'semantic_grounding' }] } });
     assert.match(repairFixture.calls[0].messages[0].content, /remove or recast that unsupported assertion or direction[\s\S]*do not preserve unsupported meaning/u);
   });
   await t.test('invalid auditor result fails closed', async () => {

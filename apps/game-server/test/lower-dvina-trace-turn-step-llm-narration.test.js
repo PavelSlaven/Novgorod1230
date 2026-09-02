@@ -67,6 +67,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(
     'Missing or false outcome fields are silent constraints'), true);
   assert.equal(calls[0].messages[0].content.includes(
+    "item moved confirms only that item's placement change"), true);
+  assert.equal(calls[0].messages[0].content.includes(
     'Do not infer a causal bridge or exact success mechanism'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'Faithfully paraphrase mechanical source wording'), true);
@@ -130,6 +132,8 @@ test('narration wires writer, audit, and targeted semantic repair roles', async 
     'FAIL with kind missing_visible_change'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'already a confirmed player-safe fact and sufficient evidence'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'Actor movement wording MUST FAIL'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed concern kind>"/u);

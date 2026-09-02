@@ -55,6 +55,7 @@ test('speech grounding admits supported route and ordinary reply, rejects unsupp
   for (const call of fixture.calls) {
     assert.equal(call.role_id, 'npc_conversation_grounding_auditor');
     assert.match(call.messages[0].content, /utterance, claims, topic_refs, and supporting_operations/u);
+    assert.match(call.messages[0].content, /Route guidance[\s\S]*disclose_known_route[\s\S]*MUST fail/u);
     assert.match(call.messages[1].content, /"allowed_references"/u);
   }
   await t.test('unsupported direction is retryable', async () => {

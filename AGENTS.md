@@ -74,7 +74,7 @@
 
 Перед работой заново прочитай актуальный `AGENTS.md` из фактического checkout.
 
-Затем открой [канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, applicable active contracts, precedence и обязательные триггеры Contract Auditor.
+Затем открой [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, applicable active contracts, precedence и обязательные триггеры Contract Auditor.
 
 Если в подкаталоге существует вложенный `AGENTS.md`, прочитай его перед изменением файлов в его области. Вложенный файл может уточнять локальные правила, но не должен молча отменять корневые продуктовые и архитектурные инварианты.
 
@@ -811,7 +811,7 @@ npm run repo-intel:query -- --query "<конкретная потребност�
 
 `AGENTS.md` содержит стабильные правила работы и критические инварианты. Вся промежуточная, профильная, сценарная и release-specific документация должна находиться у соответствующего владельца.
 
-Используй [канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы определить статус документа, applicable contract set и precedence. `llm_documentation_navigation.md` сохранён только как compatibility redirect.
+Используй [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы определить статус документа, applicable contract set и precedence. `llm_documentation_navigation.md` сохранён только как compatibility redirect.
 
 Основные направления:
 
@@ -1033,7 +1033,7 @@ Contract Auditor обязателен, если:
 Contract Auditor всегда читает:
 
 1. root `AGENTS.md`;
-2. [канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
+2. [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
 3. applicable nested `AGENTS.md`;
 4. relevant `MODULE.md`;
 5. active release/profile/manifest/bindings;

@@ -108,7 +108,7 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
     'different normalized queries receive different code-owned identities');
 });
 
-test('unseeded structural repair shares the two-call Stage A plus Stage B budget',
+test('seed and presence each retain one structural repair',
   async () => {
     let modelCalls = 0;
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
@@ -116,23 +116,33 @@ test('unseeded structural repair shares the two-call Stage A plus Stage B budget
       loadEnablement: async () => enabled(),
       ordinaryMaterializationModel: async (modelRequest, context) => {
         modelCalls += 1;
-        if (modelCalls === 1) return {};
+        if (modelCalls === 1 || modelCalls === 3) return {};
         if (modelRequest.mode === 'seed_scope' && context.repair != null) {
           return { schema: 'ordinary_materialization_plan_v1',
             request_id: modelRequest.request_id, resolution: 'seeded',
             density_band_proposal: 'ordinary', background_groups: [group()],
             entities: [], presence_resolutions: [], reason_code: 'seed_repaired' };
         }
+        if (modelRequest.mode === 'resolve_presence'
+            && context.repair != null) {
+          return { schema: 'ordinary_materialization_plan_v1',
+            request_id: modelRequest.request_id, resolution: 'absent',
+            density_band_proposal: null, background_groups: [], entities: [],
+            presence_resolutions: [{
+              candidate_key: modelRequest.candidate_query.candidate_key,
+              coverage_key: modelRequest.candidate_query.coverage_key,
+              resolution: 'absent'
+            }], reason_code: 'presence_repaired' };
+        }
         return {};
       }
     });
     const result = await resolver(request('найти ложку'));
-    assert.equal(modelCalls, 2,
-      'Stage A repair consumes the remaining semantic-call budget');
+    assert.equal(modelCalls, 4);
     assert.deepEqual(result.ordinary_materialization_atomic_write_plan
-      .transitions.map(({ kind }) => kind), ['seed']);
+      .transitions.map(({ kind }) => kind), ['seed', 'resolve_presence']);
     assert.equal(result.ordinary_materialization_atomic_write_plan.resolution,
-      'no_change');
+      'absent');
   });
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {

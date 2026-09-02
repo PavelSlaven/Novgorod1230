@@ -247,7 +247,7 @@ function seedAuthorityContext({ execution, objective, scopeRef }) {
 }
 
 function semanticModelCallBudget(model) {
-  let remaining = 2;
+  let remaining = 4;
   return Object.freeze({
     hasRemaining: () => remaining > 0,
     invoke: async (request, context) => {

@@ -615,6 +615,14 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
       runtimeCatalogPin
     })
   );
+  await t.test(
+    'partial authored source and detached output survive reload, retry and reuse',
+    () => assertPartialAuthoredA1Persists({
+      pool,
+      release,
+      runtimeCatalogPin
+    })
+  );
 
   await assertConcurrentStaleCommitBlocked({
     pool,
@@ -750,6 +758,194 @@ async function assertRatshaCaftanTransitionPersists({
   });
   assert.equal(playerPortrait.clothing.outer, 'front_open');
   assert.equal(playerPortrait.clothing.main_color, 'dark_blue');
+}
+
+async function assertPartialAuthoredA1Persists({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const runtimeOptions = { pool, release, runtimeCatalogPin };
+  const runtime = buildRuntime({
+    ...runtimeOptions, turnStepModel: partialAuthoredA1TestModel
+  });
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-a1-partial-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-a1-partial-ack'
+  });
+  const repository = phase2Repository(pool);
+  const initial = await repository.loadPhase2State(opened.party_id);
+  const source = initial.items.find(({ template_id: templateId }) =>
+    templateId === 'trace_ld_v1_item_working_outer_garment');
+  assert.ok(source);
+  const input = {
+    request_id: 'phase-2-a1-partial',
+    idempotency_key: 'phase-2-a1-partial',
+    raw_text: 'Отрываю узкую полосу от своей верхней одежды.'
+  };
+  const committed = await runtime.submitTurn(opened.party_id, input);
+  const restarted = phase2Repository(pool);
+  const loaded = await restarted.loadPhase2State(opened.party_id);
+  const loadedSource = loaded.items.find(({ item_id: itemId }) =>
+    itemId === source.item_id);
+  const output = loaded.items.find((item) =>
+    item.item_id !== source.item_id
+      && item.state?.action_production?.causal_identity?.request_id
+        === input.request_id);
+  assert.ok(loadedSource);
+  assert.ok(output);
+  assert.equal(loadedSource.state.action_production.result_class,
+    'partial_transformation');
+  assert.equal(output.state.action_production.source_ref, source.item_id);
+
+  const rows = (await pool.query(`SELECT i.item_id,i.state_version,i.state,
+      p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+      p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
+      o.owner_npc_id,o.owner_character_id,o.owner_party,
+      o.controller_npc_id,o.controller_character_id,o.claim_state
+    FROM party_runtime.party_items i
+    JOIN party_runtime.party_item_placements p
+      ON p.party_id=i.party_id AND p.item_id=i.item_id
+    JOIN party_runtime.party_ownership o
+      ON o.party_id=i.party_id AND o.item_id=i.item_id
+    WHERE i.party_id=$1 AND i.item_id=ANY($2::text[])
+    ORDER BY i.item_id`, [opened.party_id,
+    [source.item_id, output.item_id]])).rows;
+  assert.equal(rows.length, 2);
+  for (const item of [loadedSource, output]) {
+    const row = rows.find(({ item_id: itemId }) => itemId === item.item_id);
+    assert.equal(item.state_version, Number(row.state_version));
+    assert.deepEqual(item.state.runtime_instance_mechanics_snapshot,
+      row.state.runtime_instance_mechanics_snapshot);
+    assert.deepEqual(item.placement, {
+      anchor_id: row.anchor_id,
+      container_id: row.container_id,
+      holder_npc_id: row.holder_npc_id,
+      holder_character_id: row.holder_character_id,
+      physical_position: row.physical_position,
+      equipment_slot_category_id: row.equipment_slot_category_id,
+      attached_item_id: row.attached_item_id
+    });
+    for (const key of ['owner_npc_id', 'owner_character_id', 'owner_party',
+      'controller_npc_id', 'controller_character_id', 'claim_state']) {
+      assert.equal(item.ownership[key], row[key]);
+    }
+  }
+  const beforeRetry = await a1PersistenceCounts(pool, opened.party_id);
+  assert.deepEqual(await buildRuntime({
+    ...runtimeOptions, turnStepModel: partialAuthoredA1TestModel
+  }).submitTurn(opened.party_id, input), committed);
+  assert.deepEqual(await a1PersistenceCounts(pool, opened.party_id),
+    beforeRetry);
+
+  await buildRuntime({
+    ...runtimeOptions, turnStepModel: moveDetachedA1OutputTestModel
+  }).submitTurn(opened.party_id, {
+    request_id: 'phase-2-a1-partial-follow-up',
+    idempotency_key: 'phase-2-a1-partial-follow-up',
+    raw_text: 'Беру оторванную полосу ткани в руку.'
+  });
+  const afterFollowUp = await phase2Repository(pool).loadPhase2State(
+    opened.party_id);
+  const sameSource = afterFollowUp.items.find(({ item_id: itemId }) =>
+    itemId === source.item_id);
+  const sameOutput = afterFollowUp.items.find(({ item_id: itemId }) =>
+    itemId === output.item_id);
+  assert.ok(sameSource);
+  assert.ok(sameOutput);
+  assert.equal(sameOutput.placement.holder_character_id,
+    afterFollowUp.actor_id);
+  assert.equal(sameOutput.placement.physical_position, 'hands');
+  assert.deepEqual(sameSource.state.runtime_instance_mechanics_snapshot,
+    loadedSource.state.runtime_instance_mechanics_snapshot);
+  assert.deepEqual(sameOutput.state.runtime_instance_mechanics_snapshot,
+    output.state.runtime_instance_mechanics_snapshot);
+}
+
+function phase2Repository(pool) {
+  return createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: createSpatialV3PostgresCombinedAtomicCommitter({
+      pool,
+      recheck: firstPlayableCommitRecheck,
+      now: () => new Date('2026-07-30T08:00:00.000Z')
+    })
+  });
+}
+
+async function a1PersistenceCounts(pool, partyId) {
+  return (await pool.query(`SELECT
+      (SELECT state_version::int FROM party_runtime.parties
+        WHERE party_id=$1) AS party_version,
+      (SELECT count(*)::int FROM party_runtime.party_items
+        WHERE party_id=$1 AND state ? 'action_production') AS action_items,
+      (SELECT count(*)::int FROM party_runtime.party_command_idempotency
+        WHERE party_id=$1 AND idempotency_key='phase-2-a1-partial') AS commands`,
+  [partyId])).rows[0];
+}
+
+function partialAuthoredA1TestModel(request) {
+  const source = (request.player_safe_state.items ?? []).find(
+    ({ template_id: templateId }) =>
+      templateId === 'trace_ld_v1_item_working_outer_garment');
+  assert.ok(source, 'authored source is player-safe');
+  return actionProductionPlan(request, source.item_id);
+}
+
+function actionProductionPlan(request, sourceRef) {
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'request_item_use', actor_ref: request.actor.actor_id,
+      item_ref: sourceRef, use_kind: 'other', target_refs: [],
+      action_production: { source_refs: [sourceRef], tool_refs: [],
+        requested_output_count: 1, identity_mode: 'independent_outputs',
+        origin: 'direct_partition', result_class: 'partial_transformation',
+        material_extent: 'minor', result_descriptor: {
+          display_name: 'полоса ткани',
+          physical_description: 'узкая полоса, оторванная от одежды',
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          inscription_text: null, physical_form: 'compact',
+          source_fact_delta: {
+            physical_description: 'у края недостаёт узкой полосы ткани',
+            qualitative_facts: [], removed_physical_fact_refs: [],
+            physical_form: 'regular'
+          }
+        }, output_class: 'ordinary_mundane' }
+    }], check: null, continuation: null, clarification: null,
+    reason_code: 'partial_authored_source_probe',
+    reason: 'От источника отделяется самостоятельная часть.'
+  };
+}
+
+function moveDetachedA1OutputTestModel(request) {
+  const output = (request.player_safe_state.items ?? []).find((item) =>
+    item.state?.action_production?.causal_identity?.request_id
+      === 'phase-2-a1-partial'
+      || item.physical_facts?.includes('узкая полоса, оторванная от одежды'));
+  assert.ok(output, 'detached output is player-safe after reload');
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [{ op: 'move_entity', entity_ref: output.item_id,
+      placement: { relation: 'held_by', target_ref: request.actor.actor_id } }],
+    check: null, continuation: null, clarification: null,
+    reason_code: 'reuse_detached_output',
+    reason: 'Сохранённый предмет перемещается обычным owner.'
+  };
 }
 
 function actorItemMoveTestModel(request) {

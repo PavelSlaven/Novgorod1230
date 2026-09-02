@@ -100,9 +100,8 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
 }
 
 function hydratePreparedSource(projection, plan, itemId, state) {
-  if ((projection.items ?? []).some((item) => matchesItem(item, itemId))) {
-    return projection;
-  }
+  const alreadyProjected = (projection.items ?? []).some((item) =>
+    matchesItem(item, itemId));
   const pins = (plan.source_pins ?? []).filter((pin) => pin?.item_id === itemId
     && (pin.prepared_ordinary != null || pin.prepared_action != null));
   if (pins.length !== 1 || !plain(pins[0].item)
@@ -114,6 +113,7 @@ function hydratePreparedSource(projection, plan, itemId, state) {
     ...structuredClone(pin.item), item_id: itemId,
     placement: structuredClone(pin.placement)
   });
+  if (alreadyProjected) return projection;
   return { ...projection, items: [
     ...(projection.items ?? []),
     projectRuntimeItem(itemId, pin.item, pin.placement, runtime)

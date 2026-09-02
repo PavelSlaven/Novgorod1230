@@ -207,7 +207,10 @@ test('A1 hydrates a same-turn prepared ordinary source from its exact pin', () =
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
     workingProjectionAuthority: authority });
   const result = ports.applyActionProductionProjection({
-    working_projection: { actor_id: 'mikula', items: [], inventory: {
+    working_projection: { actor_id: 'mikula', items: [{ item_id: 'driftwood',
+      name: 'длинный обломок доски',
+      semantic_type: 'ordinary_object_candidate', placement: {
+        anchor_id: 'shore' } }], inventory: {
       items: [], total_weight: { grams: 0 }, load_category: 'light',
       occupied_hands: 0 } },
     actor: { actor_id: 'mikula', attributes: { strength: { value: 9 } } },

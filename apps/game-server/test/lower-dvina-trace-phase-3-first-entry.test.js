@@ -21,9 +21,9 @@ test('Phase 8 route bypasses Phase 3 first-entry lifecycle', () => {
 });
 
 test('designated first-entry route still rejects mismatched binding', () => {
-  assert.throws(() => resolveFirstEntry({
+  for (const scenarioRevision of [24, 32]) assert.throws(() => resolveFirstEntry({
     partyId: 'party', phase3Contracts: contracts,
-    changeSetId: 'change', scenarioRevision: 24,
+    changeSetId: 'change', scenarioRevision,
     state: { first_entry_preparation: {
       binding: {
         route_command_id: 'lower_dvina_trace.follow_path_to_fishing_camp',

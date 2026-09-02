@@ -9,4 +9,6 @@
 - `../AGENTS.md`, раздел 25 — риск-ориентированный независимый аудит;
 - `../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md`, раздел 8 — read-only Contract Auditor, его триггеры, наборы контрактов и формат finding.
 
+Этот compatibility-файл не является самостоятельным контрактом и не расширяет trigger set, установленный каноническими документами.
+
 Обычный локальный fix не требует отдельного critic, если не меняются public behavior, contracts, owner boundaries, persistence/schema, LLM authority и active profile status.

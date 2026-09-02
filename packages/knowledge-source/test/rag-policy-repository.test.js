@@ -73,6 +73,7 @@ test('repository registers active spatial v3 specializations and excludes deprec
   const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
   assert.equal(indexMetadata?.document_type, 'navigation');
   assert.equal(indexMetadata?.priority_tier, 'navigation');
+  assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('contract-index')));
 
   const reader = createKnowledgeRagReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot }),

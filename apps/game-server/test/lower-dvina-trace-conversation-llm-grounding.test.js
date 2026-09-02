@@ -77,6 +77,8 @@ test('speech grounding admits supported route and ordinary reply, rejects unsupp
       validation_errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
         category: 'semantic_grounding' }] } });
     assert.match(repairFixture.calls[0].messages[0].content, /remove or recast that unsupported assertion or direction[\s\S]*do not preserve unsupported meaning/u);
+    assert.match(repairFixture.calls[0].messages[0].content,
+      /no valid disclose_known_route operation[\s\S]*Do not state or imply[\s\S]*where any route/u);
   });
   await t.test('invalid auditor result fails closed', async () => {
     const invalid = createLowerDvinaTraceNpcSemanticModel(runner(() => ({ pass: true, concerns: [{ kind: 'unexpected' }] })));
@@ -102,6 +104,7 @@ test('route contract candidate reaches initial and repair prompts', async () => 
     assert.deepEqual(result.supporting_operations, candidate.supporting_operations);
   }
   for (const call of fixture.calls) assert.match(call.messages[0].content, /"op":"disclose_known_route","route_ref":"route-1"/u);
+  assert.doesNotMatch(fixture.calls[1].messages[0].content, /no valid disclose_known_route operation/u);
   const wrong = structuredClone(semantic);
   wrong.speech.topic_refs = ['route-other'];
   wrong.speech.claims[0].mentioned_entity_refs = [ref('route', 'route-other')];

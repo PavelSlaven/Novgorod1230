@@ -178,6 +178,10 @@ function selectableRouteOperation(request) {
 export function npcConversationInstructions(repair, request = null) {
   const requiredCandidate = requiredNpcConversationCandidate(request);
   const candidates = npcConversationCandidates(request);
+  const unsupportedSpeechRepair = repair?.validation_errors?.some(
+    (error) => error?.category === 'semantic_grounding'
+      && error?.code === 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED'
+  ) === true;
   const participationBindings = request?.decision_scope?.operation_contract
     ?.commit_route_participation?.allowed_bindings;
   return [
@@ -236,6 +240,11 @@ export function npcConversationInstructions(repair, request = null) {
       'These are request-derived structural examples for matching semantic choices, not an exhaustive choice set. Ordinary speech may use any allowed dominant_act. Surrender is optional; for surrender speech, use exactly {"op":"commit_surrender"}, the surrender tag, and any interchangeable permitted dominant_act: accept, promise, or confess. Keep explicitly permitted silence and leave_conversation mappings available.',
       JSON.stringify(candidates.map(stripNpcEnvelope))
     ]),
+    ...(unsupportedSpeechRepair && selectableRouteOperation(request) === null ? [
+      'This repair has no valid disclose_known_route operation. Do not state or imply',
+      'where any route, path, road, or waterway leads. Respond only to the remaining',
+      'supported social content, or express uncertainty or decline if none remains.'
+    ] : []),
     repair
       ? 'Repair only structure, refs, and enum values. When validation_errors reports unsupported speech grounding, remove or recast that unsupported assertion or direction as ordinary grounded speech, or select its exact supplied candidate; do not preserve unsupported meaning.'
       : 'Ordinary valid speech is allowed without a scenario outcome operation.'

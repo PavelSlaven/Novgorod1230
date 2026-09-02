@@ -235,6 +235,8 @@ END $$;
 
 ALTER TABLE party_runtime.party_item_placements
   ADD COLUMN IF NOT EXISTS attached_item_id text;
+ALTER TABLE party_runtime.party_item_placements
+  ADD COLUMN IF NOT EXISTS scene_position_id text;
 
 DO $$
 DECLARE
@@ -261,6 +263,7 @@ ALTER TABLE party_runtime.party_item_placements
 ALTER TABLE party_runtime.party_item_placements
   ADD CONSTRAINT party_item_placements_owner_check CHECK (
     (CASE WHEN anchor_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN scene_position_id IS NULL THEN 0 ELSE 1 END)
     + (CASE WHEN container_id IS NULL THEN 0 ELSE 1 END)
     + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
     + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END)

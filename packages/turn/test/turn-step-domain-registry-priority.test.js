@@ -585,6 +585,15 @@ test('ordinary capability gate accepts only an exact own marker without getters'
         container_resolution_available: false,
         scene_seed_available: true }).player_safe_state
     }), true);
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation: { ...operation, target_refs: ['position-current'] },
+      playerSafeState: discoveryProjection({ discovery_available: true,
+        container_resolution_available: false,
+        scene_seed_available: false }, {
+        semantic_grounding_available: true,
+        position_ref: 'position-current'
+      }).player_safe_state
+    }), true);
     for (const marker of [
       { discovery_available: true },
       { discovery_available: true, container_resolution_available: false,

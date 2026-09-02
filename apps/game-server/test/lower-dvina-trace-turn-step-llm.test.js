@@ -223,6 +223,8 @@ test('turn step planner prompt requests semantic choice without deterministic en
     /Process independent actions in their stated order[\s\S]*later action never outranks an earlier feasible action/u);
   assert.match(prompt,
     /Never invent a preliminary relocation[\s\S]*without explicitly relocating it, plan the manipulation itself/u);
+  assert.match(prompt,
+    /Never represent cutting, tearing, partitioning, reshaping, wrapping, binding[\s\S]*action_production independent_outputs[\s\S]*complete later use[\s\S]*continuation/u);
 });
 
 test('turn step planner assembles exact domain operation and preserves independent continuation', async () => {

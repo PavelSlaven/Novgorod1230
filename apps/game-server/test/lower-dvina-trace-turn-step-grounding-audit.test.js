@@ -162,6 +162,35 @@ test('unselected non-production turn skips grounding model', async () => {
   assert.equal(calls, 0);
 });
 
+test('grounding audit rejects moving a whole source as a material transformation',
+  async () => {
+    const operation = { op: 'move_entity', entity_ref: 'shirt',
+      placement: { relation: 'worn_by', target_ref: 'actor' } };
+    let payload;
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run(call) {
+        payload = JSON.parse(call.messages[1].content);
+        return { output: { pass: false, concerns: [{
+          kind: 'operation_semantic_mismatch',
+          reason: 'Moving the whole shirt does not tear off and use a strip.'
+        }] } };
+      } },
+      plan: { operations: [operation], continuation: {
+        remaining_intent: 'иду к следам', depends_on_refs: [] } },
+      request: { request_id: 'shirt-strip', actor: { actor_id: 'actor' },
+        root_player_action:
+          'Отрываю полосу от рубахи, обматываю плечо и иду к следам.',
+        remaining_intent:
+          'Отрываю полосу от рубахи, обматываю плечо и иду к следам.',
+        completed_steps: [], player_safe_state: { items: [{
+          item_id: 'shirt', category_id: 'linen_shirt' }] } }
+    });
+    assert.equal(result.errors[0].code, 'operation_semantic_grounding');
+    assert.deepEqual(payload.selected_domain_operations, [{
+      path: '$.operations.0', operation
+    }]);
+  });
+
 test('explicit duration and omitted feasible material step are audited',
   async (t) => {
     await t.test('duration', async () => {

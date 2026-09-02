@@ -233,8 +233,11 @@ function projectSnapshot({
     ...entities.values()
       .filter((entity) => !entity.created_in_batch
         || entity.lifecycle_status === 'active')
-      .map(({ db_state: _dbState, lifecycle_status: _status,
-        created_in_batch: _created, ...item }) => structuredClone(item))
+      .map(({ db_state: dbState, lifecycle_status: _status,
+        created_in_batch: _created, ...item }) => structuredClone({
+        ...item,
+        state: context.touched.has(item.item_id) ? dbState : item.state
+      }))
   ].sort((left, right) => left.item_id.localeCompare(right.item_id));
   projectPersistedTurnStepContainers(next, authoredContainers);
   next.knowledge = mergeKnowledge(next.knowledge, context.knowledgeInserts);

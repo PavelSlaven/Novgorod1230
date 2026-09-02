@@ -59,7 +59,6 @@ function operationFor(request) {
       op: 'request_activity',
       actor_ref: actorRef,
       activity_kind: 'carry',
-      target_refs: [npcRef(request, 'onisim_boatman')],
       description: 'перенести Онисима в рыбацкий стан'
     };
   }
@@ -69,7 +68,6 @@ function operationFor(request) {
       op: 'request_activity',
       actor_ref: actorRef,
       activity_kind: 'recover',
-      target_refs: [npcRef(request, 'onisim_boatman')],
       description: 'оказать помощь раненой ноге Онисима'
     };
   }
@@ -86,7 +84,6 @@ function operationFor(request) {
       op: 'emit_interaction',
       actor_ref: actorRef,
       interaction_kind: 'offer',
-      target_actor_refs: [npcRef(request, 'ratsha_storehouse_helper')],
       instrument_refs: [],
       content: 'условная защита в обмен на сдачу'
     };
@@ -96,7 +93,6 @@ function operationFor(request) {
       op: 'emit_interaction',
       actor_ref: actorRef,
       interaction_kind: 'offer',
-      target_actor_refs: [npcRef(request, 'eremey_fisher')],
       instrument_refs: [REFS.evidence],
       content: 'показать синюю шерсть и попросить содействия'
     };
@@ -106,7 +102,6 @@ function operationFor(request) {
       op: 'emit_interaction',
       actor_ref: actorRef,
       interaction_kind: 'request',
-      target_actor_refs: [npcRef(request, 'eremey_fisher')],
       instrument_refs: [],
       content: 'расспросить Еремея о крушении'
     };
@@ -157,16 +152,18 @@ function domainPlan(request, operation) {
 }
 
 function exactAvailableOperation(request, intended) {
-  const matches = (request.available_domain_operations ?? []).filter(
+  const candidates = (request.available_domain_operations ?? []).filter(
     (candidate) => candidate.op === intended.op
       && sameScalar(candidate, intended, 'discovery_kind')
       && sameScalar(candidate, intended, 'movement_kind')
       && sameScalar(candidate, intended, 'activity_kind')
-      && sameScalar(candidate, intended, 'interaction_kind')
-      && sameScalar(candidate, intended, 'target_ref')
+      && sameScalar(candidate, intended, 'interaction_kind'));
+  const matches = candidates.filter((candidate) =>
+      sameScalar(candidate, intended, 'target_ref')
       && sameRefs(candidate.target_refs, intended.target_refs)
       && sameRefs(candidate.target_actor_refs, intended.target_actor_refs));
-  return matches.length === 1 ? matches[0] : null;
+  return matches.length === 1 ? matches[0]
+    : candidates.length === 1 ? candidates[0] : null;
 }
 
 function sameScalar(left, right, key) {
@@ -209,16 +206,6 @@ function requiredActorRef(request) {
     fail('Lower Dvina test turn step requires actor.actor_id.');
   }
   return actorRef;
-}
-
-function npcRef(request, participantSlotRef) {
-  const npc = request?.player_safe_state?.npcs?.find(
-    ({ participant_slot_ref: slot }) => slot === participantSlotRef
-  );
-  if (typeof npc?.instance_id !== 'string' || npc.instance_id.length === 0) {
-    fail(`Visible NPC is missing: ${participantSlotRef}`);
-  }
-  return npc.instance_id;
 }
 
 function contains(text, fragments) {

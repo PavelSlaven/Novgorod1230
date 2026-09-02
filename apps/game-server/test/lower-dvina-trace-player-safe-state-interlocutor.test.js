@@ -47,6 +47,9 @@ test('active interlocutor stays planner-visible but out of initial working proje
   assert.deepEqual(projected.player_safe_state.active_interlocutor, {
     entity_ref: { entity_kind: 'npc', entity_id: 'eremey' }, display_label: 'Еремей'
   });
+  assert.equal(Object.hasOwn(projected.player_safe_state, 'npcs'), false);
+  assert.equal(JSON.stringify(projected.player_safe_state)
+    .includes('body_condition'), false);
   assert.equal(Object.hasOwn(projected.initial_working_projection, 'active_interlocutor'), false);
   assert.doesNotThrow(() => projectLowerDvinaTracePlayerSafeState({ committed_state: committedState,
     working_projection: projected.initial_working_projection, actor_id: 'mikula' }));

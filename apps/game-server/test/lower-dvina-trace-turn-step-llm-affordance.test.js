@@ -194,3 +194,27 @@ test('generic request skips instrumented offer', async () => {
   assert.match(contrast, /"operation_choice":"domain_operation_2_emit_interaction_request"/u);
   assert.doesNotMatch(contrast, /domain_operation_1_emit_interaction_offer/u);
 });
+
+test('one visible NPC interaction routes free speech to existing conversation owner',
+  async () => {
+    const ratsha = { entity_ref: { entity_kind: 'npc', entity_id: 'npc:ratsha' },
+      display_label: 'стоящий мужчина' };
+    const offer = { ...speech, target_actor_refs: ['npc:ratsha'],
+      interaction_kind: 'offer', content: 'Authored capability.' };
+    const input = request({
+      root_player_action: 'Спрашиваю стоящего, что случилось.',
+      remaining_intent: 'Спрашиваю стоящего, что случилось.',
+      actor: { actor_ref: 'actor:player' },
+      player_safe_state: { current_visible_context: {
+        visible_npc: [ratsha] } },
+      available_domain_operations: [offer]
+    });
+    let prompt;
+    const model = modelFor(input, 'domain_operation_1_emit_interaction_offer', {
+      reasonCode: 'visible_conversation',
+      onPrompt: (value) => { prompt = value; }
+    });
+    assert.deepEqual((await model(input)).operations, [offer]);
+    assert.match(prompt,
+      /Visible conversation routing for "стоящий мужчина"[\s\S]*required choice for speech or a question[\s\S]*raw player text remains the utterance/u);
+  });

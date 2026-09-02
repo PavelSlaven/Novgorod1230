@@ -102,6 +102,8 @@ test('repair role receives original output, request, and structural errors', asy
     '{"op":"move_entity","entity_ref":"<grounded source ref>","placement"'), true);
   assert.equal(seen.messages[0].content.includes(
     'never preserve a ref whose descriptors identify another object'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'remove the unavailable domain operation instead of preserving it'), true);
   assert.equal(seen.messages[0].content.includes('Do not re-plan or invent operations or refs.'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

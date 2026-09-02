@@ -266,6 +266,20 @@ test('plan validation admits only refs supplied by available domain operations',
       && code === 'unknown_ref'), true);
 });
 
+test('continuation admits refs supplied by prepared followup candidates', () => {
+  const source = request({ prepared_followup_candidates: [{
+    prepared_followup_ref: 'continue-conversation',
+    precursor_operation: { op: 'request_activity', target_refs: ['fire_1'] },
+    operation: { op: 'emit_interaction', target_actor_refs: ['npc_fisher'] }
+  }] });
+  const continued = plan({ continuation: {
+    remaining_intent: 'попросить рыбака идти дальше',
+    depends_on_refs: ['npc_fisher']
+  } });
+
+  assert.equal(validateTurnStepPlan(continued, { request: source }).ok, true);
+});
+
 test('plan validation admits an exact player combat intent request', () => {
   const source = request();
   source.player_safe_state.destination_refs = ['location:camp'];

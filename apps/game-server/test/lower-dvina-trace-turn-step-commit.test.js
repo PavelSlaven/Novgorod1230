@@ -85,6 +85,8 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       'беру песок');
     assert.equal(snapshot.last_turn.turn_step_operation_batch.operations.length,
       2);
+    assert.deepEqual(snapshot.current_visible_context,
+      f.envelope.visible_context);
     const session = plan.updates.find(({ target_table: table }) =>
       table === 'party_server_sessions').record;
     assert.equal(session.screen.screen_status,

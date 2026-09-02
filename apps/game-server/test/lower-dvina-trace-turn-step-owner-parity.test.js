@@ -30,7 +30,7 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
           operation: (request) => ({
             op: 'request_movement',
             actor_ref: request.actor.actor_id,
-            movement_kind: 'local',
+            movement_kind: 'route',
             target_ref: 'trace_ld_v1_loc_fishing_camp'
           })
         });
@@ -57,9 +57,7 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'emit_interaction',
             actor_ref: request.actor.actor_id,
             interaction_kind: 'request',
-            target_actor_refs: [npcRef(request, 'eremey_fisher')],
-            instrument_refs: [],
-            content: 'что Еремей заметил у разбитой лодки'
+            instrument_refs: []
           })
         });
         assertSame(pair, ({ result, factual, state: after }) => ({
@@ -85,9 +83,7 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'emit_interaction',
             actor_ref: request.actor.actor_id,
             interaction_kind: 'offer',
-            target_actor_refs: [npcRef(request, 'eremey_fisher')],
-            instrument_refs: ['trace_ld_v1_evidence_blue_wool'],
-            content: 'показать синюю шерсть и попросить содействия'
+            instrument_refs: ['trace_ld_v1_evidence_blue_wool']
           })
         });
         assertSame(pair, ({ result, factual, state: after }) => ({
@@ -141,11 +137,7 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'emit_interaction',
             actor_ref: request.actor.actor_id,
             interaction_kind: 'offer',
-            target_actor_refs: [
-              npcRef(request, 'ratsha_storehouse_helper')
-            ],
-            instrument_refs: [],
-            content: 'условная защита в обмен на сдачу'
+            instrument_refs: []
           })
         });
         assertSame(pair, ({ result, factual, state: after }) => ({
@@ -173,7 +165,6 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'request_activity',
             actor_ref: request.actor.actor_id,
             activity_kind: 'recover',
-            target_refs: [npcRef(request, 'onisim_boatman')],
             description: 'оказать помощь раненой ноге Онисима'
           })
         });
@@ -202,7 +193,6 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'request_activity',
             actor_ref: request.actor.actor_id,
             activity_kind: 'carry',
-            target_refs: [npcRef(request, 'onisim_boatman')],
             description: 'перенести Онисима всей группой в рыбацкий стан'
           })
         });
@@ -279,14 +269,6 @@ function turn(key, rawText) {
   };
 }
 
-function npcRef(request, slot) {
-  const npc = request.player_safe_state.npcs.find(
-    ({ participant_slot_ref: current }) => current === slot
-  );
-  assert.ok(npc?.instance_id, `${slot} must be visible to the player`);
-  return npc.instance_id;
-}
-
 function phase6TemporalOwner(state) {
   return createPhase6TestTemporalOwner({
     state,
@@ -297,6 +279,12 @@ function phase6TemporalOwner(state) {
 }
 
 function domainPlan(request, operation) {
+  const matches = request.available_domain_operations.filter((candidate) =>
+    candidate.op === operation.op
+    && ['movement_kind', 'activity_kind', 'interaction_kind'].every((key) =>
+      operation[key] == null || candidate[key] === operation[key]));
+  assert.equal(matches.length, 1);
+  operation = matches[0];
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,

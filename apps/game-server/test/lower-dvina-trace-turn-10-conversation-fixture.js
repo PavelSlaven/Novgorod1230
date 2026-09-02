@@ -43,6 +43,7 @@ export function turn10State({ completedRest = true } = {}) {
     g5_node_id: camp.node.instance_id,
     zone_ref: 'working_camp'
   };
+  delete state.current_visible_context;
   state.environment_snapshot = {
     environment_profile_id: 'trace_ld_v1_env_camp_fire',
     schema: 'rus.trace_environment_profile.v1', version: 1,

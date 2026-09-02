@@ -46,6 +46,8 @@ export function createLowerDvinaTraceTurnStepModel({
     const operationChoices = turnStepOperationChoices(request);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
+    const visibleConversationExamples = visibleConversationChoiceExamples(
+      request, operationChoices);
     const response = await roleRunner.run({
         scope: 'turn_runtime',
         role_id: repairing
@@ -72,6 +74,7 @@ export function createLowerDvinaTraceTurnStepModel({
               })}`
             ]),
             ...(activeConversationExample == null ? [] : [activeConversationExample]),
+            ...visibleConversationExamples,
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${turnStepPlanMappings(request)}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
@@ -82,7 +85,7 @@ export function createLowerDvinaTraceTurnStepModel({
             ] : []),
             'Plan exactly one executable step. Sentence boundary is a continuation boundary. Plan only the first independently executable sentence. If request.remaining_intent has later non-empty sentences, always preserve all of them in continuation, use goal_result pending, and never let one selected operation consume them. Only clauses inside the same sentence may form one composite operation, and only when that operation explicitly represents their single event. One selected domain operation covers only its own grounded event; it may cover multiple verbs only when the selected operation explicitly represents every clause. Matching one clause, shared actor, place, time, or generic owner does not extend coverage. Preserve every independent uncovered clause in continuation, and use continuation null only when none remains. Every domain_request uses goal_result pending, including a complete composite with continuation null: pending means code-owned execution, not unhandled intent. If continuation is present, goal_result must be pending and continuation.remaining_intent must preserve every independent uncovered clause. Final continuation override for direct reality_limited or make_believe: a same-sentence clause whose stated action, purpose, manner, result, or qualifier depends on the same impossible or physically limited premise is covered by the same grounding, not continuation. Preserve only clauses independently executable without that premise and every later sentence; if none remain, set continuation to null.',
             repairing
-              ? 'Repair original_output using only supplied request and exact code-owned choices. Do not re-plan or invent operations or refs. operation_choice must be one scalar supplied choice_id string or null; replace an invalid object wrapper such as {"choice_id":"<supplied choice_id>"} with its inner supplied ID string. operation_family must equal selected operation op, or null with operation_choice null. If no supplied choice matches, use a valid direct semantic plan with no operation. Repair only listed validation errors and preserve unrelated semantic fields, except that every retained action_production must still bind each source to the material named by its own player-safe descriptors; never preserve a ref whose descriptors identify another object. If the named ordinary material has no matching item ref, use ordinary_material_prerequisite. For source_semantic_grounding, discard the unsupported source and use ordinary_material_prerequisite when the named ordinary material is sensory-only. When source_semantic_grounding and source_placement_grounding are both listed, semantic grounding wins: do not move the discarded ref. For source_placement_grounding alone, replace the current action_production with one direct move_entity using exactly {"op":"move_entity","entity_ref":"<grounded source ref>","placement":{"relation":"<allowed relation>","target_ref":"<player-safe target ref>"}} and preserve only the still-unexecuted transformation in continuation. Never combine move_entity and action_production in one plan. For domain_owner_unavailable, owner absence is not evidence of impossibility or fantasy: ordinary or unspecified intent stays literal. Do not invent a physical impossibility or absent fantastical referent; use a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
+              ? 'Repair original_output using only supplied request and exact code-owned choices. Do not re-plan or invent operations or refs. operation_choice must be one scalar supplied choice_id string or null; replace an invalid object wrapper such as {"choice_id":"<supplied choice_id>"} with its inner supplied ID string. operation_family must equal selected operation op, or null with operation_choice null. If no supplied choice matches, use a valid direct semantic plan with no operation. Repair only listed validation errors and preserve unrelated semantic fields, except that every retained action_production must still bind each source to the material named by its own player-safe descriptors; never preserve a ref whose descriptors identify another object. If the named ordinary material has no matching item ref, use ordinary_material_prerequisite. For source_semantic_grounding, discard the unsupported source and use ordinary_material_prerequisite when the named ordinary material is sensory-only. When source_semantic_grounding and source_placement_grounding are both listed, semantic grounding wins: do not move the discarded ref. For source_placement_grounding alone, replace the current action_production with one direct move_entity using exactly {"op":"move_entity","entity_ref":"<grounded source ref>","placement":{"relation":"<allowed relation>","target_ref":"<player-safe target ref>"}} and preserve only the still-unexecuted transformation in continuation. Never combine move_entity and action_production in one plan. For domain_owner_unavailable, remove the unavailable domain operation instead of preserving it; owner absence is not evidence of impossibility or fantasy, so ordinary or unspecified intent stays literal as a direct semantic plan limited to supplied visible facts. Do not invent a physical impossibility or absent fantastical referent; code still owns exact mechanics and state.'
               : 'Plan only the next executable semantic step and preserve any remaining intent.',
           ].join(' ')
         }, {
@@ -133,6 +136,11 @@ function semanticTurnStepExample() {
 function turnStepPlanMappings(request) {
   const mappings = JSON.parse(TURN_STEP_PLAN_MAPPINGS);
   if (request.player_safe_state?.ordinary_resolution
+      ?.discovery_available !== true) {
+    delete mappings.focused_ordinary_discovery;
+    delete mappings.ordinary_material_prerequisite;
+  }
+  if (request.player_safe_state?.ordinary_resolution
       ?.scene_seed_available === true) delete mappings.visible_general_look;
   else delete mappings.ordinary_scene_seed;
   return JSON.stringify(mappings);
@@ -170,6 +178,26 @@ function activeConversationChoiceExample(request, choices) {
     && operation.instrument_refs.length === 0);
   if (interaction == null) return null;
   return `Active conversation contrast: ${JSON.stringify({ resolution: 'domain_request', operation_choice: interaction.choice_id })} is the required choice for a conversational question addressed to the active interlocutor, even when it asks where or how to find a place, object, or fact; that answer topic does not make it request_discovery. Conversely, an independent player intent to personally inspect, search, listen, remember, or dig for detail uses a matching supplied request_discovery.`;
+}
+
+function visibleConversationChoiceExamples(request, choices) {
+  const visible = request.player_safe_state?.current_visible_context
+    ?.visible_npc ?? [];
+  return visible.flatMap(({ entity_ref: ref, display_label: label }) => {
+    if (ref?.entity_kind !== 'npc' || typeof ref.entity_id !== 'string'
+        || typeof label !== 'string' || !label.trim()) return [];
+    const matches = choices.filter(({ operation }) =>
+      operation?.op === 'emit_interaction'
+      && Array.isArray(operation.target_actor_refs)
+      && operation.target_actor_refs.length === 1
+      && operation.target_actor_refs[0] === ref.entity_id
+      && Array.isArray(operation.instrument_refs)
+      && operation.instrument_refs.length === 0);
+    if (matches.length !== 1) return [];
+    return [`Visible conversation routing for ${JSON.stringify(label)}: ${JSON.stringify({
+      resolution: 'domain_request', operation_choice: matches[0].choice_id
+    })} is the required choice for speech or a question addressed to that visible NPC. The exact operation selects the existing conversation owner; the raw player text remains the utterance and semantic input. Do not use this choice for another NPC or a non-conversational action.`];
+  });
 }
 
 export function assembleTurnStepPlan(choice, request,

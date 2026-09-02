@@ -71,7 +71,8 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       initial_working_projection: initialWorkingProjection };
     if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
         || typeof ordinaryDiscoveryResolver !== 'function') {
-      return { ...base, player_safe_state: npcState };
+      return { ...base, player_safe_state:
+        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
     }
     const scopeId = committedState.position?.g6_id
       ?? committedState.position?.g6_ref
@@ -79,12 +80,14 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
           === ordinaryDiscoveryScopeBinding?.position_ref
         ? ordinaryDiscoveryScopeBinding.g6_ref : null);
     if (typeof scopeId !== 'string' || !scopeId) {
-      return { ...base, player_safe_state: npcState };
+      return { ...base, player_safe_state:
+        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
     }
     const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
       scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
     if (enabled !== true && enabled?.discovery_available !== true) {
-      return { ...base, player_safe_state: npcState };
+      return { ...base, player_safe_state:
+        projectLowerDvinaTraceTurnStepPlannerState(npcState) };
     }
     const withSources = projectLowerDvinaTraceO2aDiscoverySources({
       projected:{...base,player_safe_state:npcState},
@@ -102,8 +105,15 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
           && enabled.scene_seed_available === true}
     });
     return {...withSources,initial_working_projection:initialWorkingProjection,
-      player_safe_state:{...withScene,...capability}};
+      player_safe_state:projectLowerDvinaTraceTurnStepPlannerState({
+        ...withScene,...capability})};
   };
+}
+
+export function projectLowerDvinaTraceTurnStepPlannerState(state) {
+  const { npcs: _npcs, visible_npcs: _visibleNpcs,
+    scene_npcs: _sceneNpcs, ...safe } = state;
+  return safe;
 }
 
 function projectLowerDvinaTraceN1Capability({ playerSafeState,

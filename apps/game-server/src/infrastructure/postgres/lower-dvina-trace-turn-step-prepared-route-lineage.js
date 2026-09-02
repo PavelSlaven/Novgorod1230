@@ -3,6 +3,9 @@ import {
   projectLowerDvinaTracePlayerSafeState
 } from '../../runtime/lower-dvina-trace-player-safe-state.js';
 import {
+  projectLowerDvinaTraceTurnStepPlannerState
+} from '../../runtime/lower-dvina-trace-phase-2-player-safe.js';
+import {
   createLowerDvinaTracePlayerSafeWorkingProjectionAuthority
 } from '../../runtime/lower-dvina-trace-player-safe-working.js';
 import {
@@ -71,7 +74,8 @@ export function validatePreparedRouteTraceLineage({
     step_index: trace.step_index,
     summary: trace.approved_plan?.interpretation?.grounded_attempt
   }));
-  const playerSafeMismatches = Object.entries(routeProjection)
+  const playerSafeMismatches = Object.entries(
+    projectLowerDvinaTraceTurnStepPlannerState(routeProjection))
     .filter(([key, expected]) => !samePreparedValue(
       routeRequest?.player_safe_state?.[key], expected))
     .map(([key]) => key);
@@ -102,13 +106,16 @@ export function validatePreparedRouteTraceLineage({
   if (directTrace == null) return;
   const request = directTrace.plan_request;
   const previousTrace = priorTraces.at(-1);
+  const stablePlayerSafeAfter =
+    projectLowerDvinaTraceTurnStepPlannerState(playerSafeAfter);
   const exactPlayerSafe = intermediateTraces.length === 0
-    ? containsStableProjection(request?.player_safe_state, playerSafeAfter)
+    ? containsStableProjection(request?.player_safe_state,
+      stablePlayerSafeAfter)
     : samePreparedValue(request?.player_safe_state?.position,
-      playerSafeAfter.position)
+      stablePlayerSafeAfter.position)
       && samePreparedValue(request?.player_safe_state?.clock,
-        playerSafeAfter.clock)
-      && request?.player_safe_state?.actor_id === playerSafeAfter.actor_id;
+        stablePlayerSafeAfter.clock)
+      && request?.player_safe_state?.actor_id === stablePlayerSafeAfter.actor_id;
   if (request?.request_id
       !== `${expectedRequestRoot}:step:${directTrace.step_index}`
       || request.root_turn_id !== routeRequest.root_turn_id

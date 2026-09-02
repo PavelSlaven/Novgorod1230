@@ -11,6 +11,8 @@ Use [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md) to determine:
 
 Module-level ownership is discoverable through generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md); the corresponding `MODULE.md` remains the exact public-boundary owner.
 
+Spatial v3 is the current production owner after the completed `versioned production activation cutover`; earlier v2 documents are migration/rollback sources only where their own headers say so.
+
 This directory contains several generations of documents. Filename, age, detail level or the words `contract`, `policy`, `standard` and `target` do not determine normative status. Verify the explicit header, active release/profile/binding, code and tests.
 
 Compatibility and legacy files remain only where existing links need a stable target. They must not override root `AGENTS.md` or an applicable active specialization.

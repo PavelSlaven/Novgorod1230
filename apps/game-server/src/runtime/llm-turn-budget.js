@@ -1,10 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-export const GAMEPLAY_TURN_DEADLINE_MS = null;
-export const GAMEPLAY_LLM_BUDGET_MS = 25_000;
-export const GAMEPLAY_DETERMINISTIC_RESERVE_MS = 5_000;
-export const GAMEPLAY_PRIMARY_TIMEOUT_MS = 120_000;
-export const GAMEPLAY_REPAIR_TIMEOUT_MS = 120_000;
+const GAMEPLAY_LLM_CALL_TIMEOUT_MS = 120_000;
 
 export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
   const storage = new AsyncLocalStorage();
@@ -16,9 +12,8 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
     return Object.freeze({
       turn,
       elapsed_ms: elapsed,
-      llm_budget_ms: Math.max(0, turn.llm_budget_ms - elapsed),
-      deadline_ms: turn.turn_deadline_ms == null
-        ? null : Math.max(0, turn.turn_deadline_ms - elapsed)
+      llm_budget_ms: null,
+      deadline_ms: null
     });
   };
   return Object.freeze({
@@ -27,8 +22,7 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
     async runTurn(execute, { startedAt = now() } = {}) {
       if (current()) return execute();
       const started_at = startedAt;
-      return storage.run({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claims: new Map() }, execute);
+      return storage.run({ started_at, repair_claims: new Map() }, execute);
     },
     claimRepair({ requestIdentity = null, repairKind = null } = {}) {
       const turn = current();
@@ -44,9 +38,9 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       turn.repair_claims.set(request_identity, claimedKinds);
       return claim;
     },
-    clamp({ requestedTimeoutMs = null, repair = false } = {}) {
+    clamp() {
       if (!current()) return null;
-      return repair ? GAMEPLAY_REPAIR_TIMEOUT_MS : GAMEPLAY_PRIMARY_TIMEOUT_MS;
+      return GAMEPLAY_LLM_CALL_TIMEOUT_MS;
     },
     assertCanCommit() {
       return null;
@@ -66,17 +60,6 @@ export async function runWithinTurnDeadline(turnBudget, execute) {
   const result = await execute();
   turnBudget?.assertWithinDeadline();
   return result;
-}
-
-export function exhausted(remaining, budgetExhausted = false) {
-  const error = new Error('Gameplay LLM turn budget is exhausted.');
-  error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
-  error.deadline_exceeded = false;
-  error.budget_exhausted = budgetExhausted
-    || remaining.llm_budget_ms <= 0;
-  error.remaining_llm_budget_ms = remaining.llm_budget_ms;
-  error.remaining_turn_deadline_ms = remaining.deadline_ms;
-  return error;
 }
 
 export function repairClaimed(claim) {

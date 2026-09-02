@@ -5,6 +5,9 @@ const REQUEST_KEYS = ['schema', 'request_id', 'npc_ref', 'profile_ref',
 const CONTEXT_KEYS = ['display_label', 'observable_cues', 'scene_details'];
 const PROPOSAL_KEYS = ['schema', 'request_id', 'ordinary_descriptor',
   'ordinary_activity'];
+const AUDIT_KEYS = ['schema', 'request_id', 'approved', 'concern_kinds'];
+const AUDIT_CONCERNS = new Set(['context_contradiction',
+  'forbidden_authority', 'formal_owner_overlap', 'new_entity']);
 
 export function validateNpcOrdinarySemanticRemainderRequest(value) {
   return exact(value, REQUEST_KEYS)
@@ -23,6 +26,19 @@ export function validateNpcOrdinarySemanticRemainderProposal(value, request) {
     && value.request_id === request.request_id
     && boundedText(value.ordinary_descriptor, 240)
     && boundedText(value.ordinary_activity, 240);
+}
+
+export function validateNpcOrdinarySemanticRemainderAudit(value, request) {
+  return validateNpcOrdinarySemanticRemainderRequest(request)
+    && exact(value, AUDIT_KEYS)
+    && value.schema === 'npc_ordinary_semantic_remainder_audit_v1'
+    && value.request_id === request.request_id
+    && typeof value.approved === 'boolean'
+    && Array.isArray(value.concern_kinds)
+    && new Set(value.concern_kinds).size === value.concern_kinds.length
+    && value.concern_kinds.every((kind) => AUDIT_CONCERNS.has(kind))
+    && (value.approved ? value.concern_kinds.length === 0
+      : value.concern_kinds.length > 0);
 }
 
 export function buildNpcOrdinarySemanticRemainder({ request, proposal,

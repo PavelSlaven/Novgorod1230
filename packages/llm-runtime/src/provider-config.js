@@ -33,6 +33,8 @@ export const TurnRuntimeRoles = Object.freeze({
   ORDINARY_MATERIALIZATION: 'ordinary_materialization',
   SPATIAL_SEMANTIC_DESCRIPTOR: 'spatial_semantic_descriptor',
   NPC_ORDINARY_SEMANTIC_REMAINDER: 'npc_ordinary_semantic_remainder',
+  NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR:
+    'npc_ordinary_semantic_remainder_auditor',
   PLAYER_CONVERSATION_INTERPRETER: 'player_conversation_interpreter',
   PLAYER_CONVERSATION_INTERPRETER_REPAIR:
     'player_conversation_interpreter_format_repair',
@@ -130,6 +132,16 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     expectedSchema: 'npc_ordinary_semantic_remainder_proposal_v1',
     parseJson: true, targetInputTokens: 4000, comfortableInputTokens: 8000,
     hardInputLimitTokens: 30000, reserveOutputTokens: 1000,
+    reserveRepairTokens: 0
+  },
+  [TurnRuntimeRoles.NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR]: {
+    envPrefix: 'TURN_NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR',
+    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'npc_ordinary_semantic_remainder_audit_v1',
+    parseJson: true, targetInputTokens: 5000, comfortableInputTokens: 10000,
+    hardInputLimitTokens: 30000, reserveOutputTokens: 600,
     reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.WORLD_PROCESS_STEP]: {

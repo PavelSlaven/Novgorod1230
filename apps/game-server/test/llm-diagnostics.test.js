@@ -46,6 +46,7 @@ test('diagnostics accepts telemetry shape, shares turn start, and unions paralle
 test('a valid sixty-second turn has no obsolete whole-turn deadline incident', () => {
   const report = buildLlmTurnReport({ turn_duration_ms: 60_000 });
   assert.equal(report.turn_deadline_ms, null);
+  assert.equal(report.llm_budget_ms, null);
   assert.equal(report.aggregate.deadline_exceeded, false);
   assert.deepEqual(report.aggregate.incidents, []);
 });

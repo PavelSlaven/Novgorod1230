@@ -158,15 +158,15 @@ test('every active role and an unseen role receive shared execution limits', asy
     { maxTokens: 20_000, requestTimeoutMs: 120_000 });
 });
 
-test('budget retains commit reserve without changing call timeout', async () => {
+test('turn context has no obsolete whole-turn deadline or aggregate LLM budget', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   await budget.runTurn(async () => {
-    now = 24_500;
     assert.equal(budget.clamp(), 120_000);
     assert.equal(budget.clamp({ requestedTimeoutMs: 400 }), 120_000);
     now = 60_000;
     assert.equal(budget.remaining().deadline_ms, null);
+    assert.equal(budget.remaining().llm_budget_ms, null);
     assert.doesNotThrow(() => budget.assertCanCommit());
     assert.doesNotThrow(() => budget.assertWithinDeadline());
   });

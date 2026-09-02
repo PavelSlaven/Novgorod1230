@@ -52,6 +52,7 @@ export { proposeNpcScheduleTransition } from './schedule.js';
 export {
   buildNpcOrdinarySemanticRemainder,
   validateNpcOrdinarySemanticRemainder,
+  validateNpcOrdinarySemanticRemainderAudit,
   validateNpcOrdinarySemanticRemainderProposal,
   validateNpcOrdinarySemanticRemainderRequest
 } from './ordinary-semantic-remainder.js';

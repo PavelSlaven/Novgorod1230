@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import {
+  validateNpcOrdinarySemanticRemainderAudit,
   validateNpcOrdinarySemanticRemainderProposal,
   validateNpcOrdinarySemanticRemainderRequest
 } from '@rus/npc-runtime';
@@ -35,7 +36,38 @@ export async function resolveNpcOrdinarySemanticRemainder({ request,
   if (!validateNpcOrdinarySemanticRemainderProposal(proposal, safeRequest)) {
     fail('TURN_NPC_ORDINARY_REMAINDER_PROPOSAL_INVALID');
   }
+  const audit = await auditProposal({ request: safeRequest, proposal,
+    roleRunner });
+  if (!audit.approved) fail('TURN_NPC_ORDINARY_REMAINDER_SEMANTIC_REJECTED');
   return deepFreeze(proposal);
+}
+
+async function auditProposal({ request, proposal, roleRunner }) {
+  let response;
+  try {
+    response = await roleRunner.run({ scope: 'turn_runtime',
+      role_id: 'npc_ordinary_semantic_remainder_auditor',
+      request_identity: request.request_id,
+      messages: [{ role: 'system', content: [
+        'Return only JSON with exactly schema, request_id, approved, concern_kinds.',
+        'schema is npc_ordinary_semantic_remainder_audit_v1; copy request_id exactly.',
+        'Judge whether both proposed phrases fit observable_context and remain only an ordinary visible descriptor/action.',
+        'Reject unsupported observations and any biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, formal profile field, or new entity.',
+        'Allowed concern_kinds: context_contradiction, forbidden_authority, formal_owner_overlap, new_entity.',
+        'approved=true requires an empty concern_kinds array; approved=false requires at least one concern.'
+      ].join(' ') }, { role: 'user', content: JSON.stringify({ request,
+        proposal }) }], overrides: { temperature: 0, maxTokens: 20_000 }
+    });
+  } catch (error) {
+    throw turnFailure('TURN_NPC_ORDINARY_REMAINDER_AUDIT_FAILED',
+      'NPC ordinary semantic remainder audit failed.', {
+        cause: error instanceof Error ? error.message : String(error) });
+  }
+  const audit = snapshot(response?.output);
+  if (!validateNpcOrdinarySemanticRemainderAudit(audit, request)) {
+    fail('TURN_NPC_ORDINARY_REMAINDER_AUDIT_INVALID');
+  }
+  return audit;
 }
 
 function snapshot(value) { try { return structuredClone(value); } catch { return null; } }

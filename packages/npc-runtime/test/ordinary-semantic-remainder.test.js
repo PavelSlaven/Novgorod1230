@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildNpcOrdinarySemanticRemainder,
   validateNpcOrdinarySemanticRemainder,
+  validateNpcOrdinarySemanticRemainderAudit,
   validateNpcOrdinarySemanticRemainderProposal,
   validateNpcOrdinarySemanticRemainderRequest } from '../src/index.js';
 
@@ -23,4 +24,25 @@ test('N1 admits only strict non-authoritative ordinary facets', () => {
   assert.equal(validateNpcOrdinarySemanticRemainder(remainder), true);
   assert.equal(validateNpcOrdinarySemanticRemainderProposal({ ...proposal,
     canonical_name: 'Еремей' }, request), false);
+});
+
+test('N1 semantic audit is fail-closed and bound to the request', () => {
+  assert.equal(validateNpcOrdinarySemanticRemainderAudit({
+    schema: 'npc_ordinary_semantic_remainder_audit_v1',
+    request_id: request.request_id, approved: true, concern_kinds: []
+  }, request), true);
+  assert.equal(validateNpcOrdinarySemanticRemainderAudit({
+    schema: 'npc_ordinary_semantic_remainder_audit_v1',
+    request_id: request.request_id, approved: false,
+    concern_kinds: ['forbidden_authority']
+  }, request), true);
+  assert.equal(validateNpcOrdinarySemanticRemainderAudit({
+    schema: 'npc_ordinary_semantic_remainder_audit_v1',
+    request_id: 'other', approved: true, concern_kinds: []
+  }, request), false);
+  assert.equal(validateNpcOrdinarySemanticRemainderAudit({
+    schema: 'npc_ordinary_semantic_remainder_audit_v1',
+    request_id: request.request_id, approved: true,
+    concern_kinds: ['forbidden_authority']
+  }, request), false);
 });

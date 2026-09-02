@@ -9,9 +9,9 @@ import { verifyCanonicalCorpus } from '../src/knowledge-corpus-verifier.js';
 const repositoryRoot = join(import.meta.dirname, '../../..');
 const requiredNormatives = [
   ['development-rules', 'development_rules.txt', 'active'],
-  ['map-g0-g4-workflow', 'map_g0_g4_workflow.txt', 'active'],
+  ['map-g0-g4-workflow', 'map_g0_g4_workflow.txt', 'deprecated'],
   ['base-turn-orchestration', 'base_turn_orchestration.txt', 'active'],
-  ['read-only-database-and-graph-architecture', 'read_only_database_and_graph_architecture.md', 'active'],
+  ['read-only-database-and-graph-architecture', 'read_only_database_and_graph_architecture.md', 'deprecated'],
   ['code-driven-world-materialization-architecture', 'code_driven_world_materialization_architecture.md', 'active'],
   ['world-base-materialization-table-requirements', 'world_base_materialization_table_requirements.md', 'active']
 ];

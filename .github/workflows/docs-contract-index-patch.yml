@@ -1,0 +1,148 @@
+name: Apply contract index links to AGENTS
+
+on:
+  push:
+    branches:
+      - docs/contract-index-and-auditor-2026-09-02
+    paths:
+      - .github/workflows/docs-contract-index-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-agents:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout documentation branch
+        uses: actions/checkout@v4
+        with:
+          ref: docs/contract-index-and-auditor-2026-09-02
+          fetch-depth: 0
+
+      - name: Apply guarded AGENTS.md patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path("AGENTS.md")
+          text = path.read_text(encoding="utf-8")
+
+          bootstrap_marker = "Перед работой заново прочитай актуальный `AGENTS.md` из фактического checkout.\n"
+          bootstrap_addition = (
+              bootstrap_marker
+              + "\nЗатем открой [канонический индекс контрактов]"
+              + "(data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, "
+              + "applicable active contracts, precedence и обязательные триггеры Contract Auditor.\n"
+          )
+          if text.count(bootstrap_marker) != 1:
+              raise SystemExit(f"unexpected bootstrap marker count: {text.count(bootstrap_marker)}")
+          if "канонический индекс контрактов" not in text:
+              text = text.replace(bootstrap_marker, bootstrap_addition, 1)
+
+          old_navigation = (
+              "Используй [навигацию по документации]"
+              "(data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md), "
+              "чтобы выбрать профильный норматив."
+          )
+          new_navigation = (
+              "Используй [канонический индекс контрактов]"
+              "(data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы определить статус документа, "
+              "applicable contract set и precedence. `llm_documentation_navigation.md` сохранён только как compatibility redirect."
+          )
+          if text.count(old_navigation) != 1:
+              raise SystemExit(f"unexpected navigation marker count: {text.count(old_navigation)}")
+          text = text.replace(old_navigation, new_navigation, 1)
+
+          audit_marker = "Для обычного локального исправления отдельный critic не нужен.\n\n"
+          audit_section = """Для обычного локального исправления отдельный critic не нужен.
+
+### 25.1. Contract Auditor
+
+`CONTRACT AUDITOR` — read-only specialist, который устанавливает applicable source set, статусы документов, precedence и соответствие между governing/active contracts, bindings, schemas, implementation и tests. Он не изменяет production code, не создаёт нового owner и не меняет контракт только для того, чтобы узаконить implementation bug.
+
+Contract Auditor обязателен, если:
+
+- создаётся, изменяется, перемещается, переименовывается, удаляется или повышается в статусе governing/normative документ, этот индекс, `AGENTS.md`, nested `AGENTS.md` или `MODULE.md`;
+- меняется active release, profile, manifest, binding или document status;
+- меняется public schema, operation, API, package export, DDL, persistence, transaction, idempotency или replay boundary;
+- меняется domain owner либо handoff между owners;
+- меняется LLM authority, prompt, request/plan contract, model-call topology или repair policy;
+- меняются free actions, ordinary materialization, items/property, Spatial G0–G6, NPC decisions/conversation/combat, time/processes, visibility/knowledge/perception, direct speech или narration boundary;
+- implementation plan ссылается на proposed, target, migration или historical документ;
+- `AGENTS.md`, contract index, профильный контракт, `MODULE.md`, schema, code или tests расходятся в описании current behavior;
+- проводится final acceptance cross-module либо иного изменения повышенного риска.
+
+Для обычного локального fix отдельный Contract Auditor не обязателен только если главный агент доказал, что не меняются public behavior, contracts, owner boundary, persistence/schema, LLM authority и active profile status.
+
+Contract Auditor всегда читает:
+
+1. root `AGENTS.md`;
+2. [канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
+3. applicable nested `AGENTS.md`;
+4. relevant `MODULE.md`;
+5. active release/profile/manifest/bindings;
+6. applicable active contract и schema;
+7. production code, callers и tests;
+8. proposed/target/migration документы только когда текущая задача явно реализует или аудирует соответствующий target.
+
+Точный contract set по player semantic action, materialization, ordinary items/resources/containers, Spatial, NPC, conversation, combat, time/processes, persistence, historical grounding и narration/UI определён в `CONTRACT_INDEX.md`, раздел 8. Proposed, migration, historical и reference документы не становятся production contract без explicit versioned cutover и active binding.
+
+Формат результата:
+
+```text
+CONTRACT AUDIT FINDING
+
+scope:
+source_set:
+source_statuses:
+observed_implementation:
+required_by_active_contract:
+target_if_any:
+conflict:
+precedence_resolution:
+first_bad_boundary:
+correct_owner:
+required_code_delta:
+required_docs_delta:
+required_tests:
+severity: P0 | P1 | P2 | P3
+verdict: PASS | PASS_WITH_NOTES | BLOCK
+```
+
+`BLOCK` обязателен, если diff нарушает governing/active contract, создаёт mixed semantics или duplicate ownership либо выдаёт proposed behavior за current production.
+
+"""
+          if "### 25.1. Contract Auditor" not in text:
+              if text.count(audit_marker) != 1:
+                  raise SystemExit(f"unexpected audit marker count: {text.count(audit_marker)}")
+              text = text.replace(audit_marker, audit_section, 1)
+
+          required = [
+              "data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md",
+              "### 25.1. Contract Auditor",
+              "verdict: PASS | PASS_WITH_NOTES | BLOCK",
+          ]
+          for needle in required:
+              if needle not in text:
+                  raise SystemExit(f"missing required text: {needle}")
+
+          path.write_text(text, encoding="utf-8", newline="\n")
+          PY
+
+          git diff --check
+          grep -F "CONTRACT_INDEX.md" AGENTS.md
+          grep -F "### 25.1. Contract Auditor" AGENTS.md
+
+      - name: Commit guarded patch and remove one-off workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/docs-contract-index-patch.yml
+          git add AGENTS.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: link contract index and define Contract Auditor"
+          git push origin HEAD:docs/contract-index-and-auditor-2026-09-02

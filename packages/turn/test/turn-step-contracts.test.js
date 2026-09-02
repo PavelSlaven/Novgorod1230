@@ -545,6 +545,15 @@ test('operation validation enforces known and ordered refs, retirement, placemen
   });
   assert.equal(validateTurnStepPlan(valid, { request: request() }).ok, true);
 
+  const exactWait = directPlan({ activity: { owner: 'semantic',
+    duration_class: 'brief', effort: 'none',
+    requested_duration_minutes: 10 } });
+  assert.equal(validateTurnStepPlan(exactWait, { request: request() }).ok,
+    true);
+  exactWait.activity.requested_duration_minutes = 0;
+  assert.equal(validateTurnStepPlan(exactWait, { request: request() }).ok,
+    false);
+
   const actorIsNotAContainer = directPlan({ operations: [{
     op: 'move_entity', entity_ref: 'chest_1', placement: {
       relation: 'inside', target_ref: 'actor_mikula' }

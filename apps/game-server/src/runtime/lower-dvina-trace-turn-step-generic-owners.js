@@ -46,12 +46,17 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
     resolve({ activity } = {}) {
       const selected = activityByKey.get(activityKey(activity));
       if (!selected) ownerFail('TRACE_TURN_STEP_ACTIVITY_PROFILE_DATA_GAP');
+      const requested = activity?.requested_duration_minutes;
+      if (requested !== undefined
+          && (!Number.isSafeInteger(requested) || requested < 1)) {
+        ownerFail('TRACE_TURN_STEP_ACTIVITY_DURATION_INVALID');
+      }
       return deepFreeze({
         profile_ref: selected.profile_ref,
         profile_pin: structuredClone(admitted.profile_pin),
         duration_class: selected.duration_class,
         effort: selected.effort,
-        duration_minutes: selected.duration_minutes
+        duration_minutes: requested ?? selected.duration_minutes
       });
     }
   });

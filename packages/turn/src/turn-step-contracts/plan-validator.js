@@ -96,7 +96,9 @@ function validateInterpretation(value, path, errors) {
 }
 
 function validateActivity(value, path, errors) {
-  if (!strict(value, path, ['owner', 'duration_class', 'effort'], errors)) {
+  if (!strict(value, path, ['owner', 'duration_class', 'effort'], errors, {
+    optional: ['requested_duration_minutes']
+  })) {
     return;
   }
   enumValue(value.owner, ['semantic', 'domain'], `${path}.owner`, errors);
@@ -104,9 +106,17 @@ function validateActivity(value, path, errors) {
     enumValue(value.duration_class, DURATION_CLASSES,
       `${path}.duration_class`, errors);
     enumValue(value.effort, EFFORTS, `${path}.effort`, errors);
+    if (value.requested_duration_minutes !== undefined) {
+      integer(value.requested_duration_minutes, 1,
+        `${path}.requested_duration_minutes`, errors);
+    }
   } else if (value.owner === 'domain') {
     constant(value.duration_class, null, `${path}.duration_class`, errors);
     constant(value.effort, null, `${path}.effort`, errors);
+    if (value.requested_duration_minutes !== undefined) {
+      add(errors, `${path}.requested_duration_minutes`, 'owner',
+        'is allowed only for semantic activity');
+    }
   }
 }
 

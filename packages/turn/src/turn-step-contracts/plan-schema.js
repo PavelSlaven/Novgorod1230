@@ -27,7 +27,7 @@ const actionProductionSchema = (identityMode, requestedCount, descriptorRef) => 
 
 const planDefinitions = {
   interpretation: strictObject(['player_goal', 'grounded_attempt', 'adaptation'], { player_goal: textSchema, grounded_attempt: textSchema, adaptation: { enum: ADAPTATIONS } }),
-  semantic_activity: strictObject(['owner', 'duration_class', 'effort'], { owner: { const: 'semantic' }, duration_class: { enum: DURATION_CLASSES }, effort: { enum: EFFORTS } }),
+  semantic_activity: strictObject(['owner', 'duration_class', 'effort'], { owner: { const: 'semantic' }, duration_class: { enum: DURATION_CLASSES }, effort: { enum: EFFORTS }, requested_duration_minutes: { type: 'integer', minimum: 1, maximum: Number.MAX_SAFE_INTEGER } }),
   domain_activity: strictObject(['owner', 'duration_class', 'effort'], { owner: { const: 'domain' }, duration_class: { type: 'null' }, effort: { type: 'null' } }),
   additional_activity: strictObject(['duration_class', 'effort'], { duration_class: { enum: DURATION_CLASSES }, effort: { enum: EFFORTS } }),
   continuation: { type: 'object', additionalProperties: false, required: ['remaining_intent', 'depends_on_refs'], properties: { remaining_intent: textSchema, depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }, prepared_followup_ref: nullableRefSchema } },

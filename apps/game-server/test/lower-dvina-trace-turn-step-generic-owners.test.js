@@ -40,8 +40,21 @@ test('semantic schedule owner resolves duration without an actor body',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' }
     });
     assert.equal(resolved.duration_minutes, 1);
-    assert.equal(resolved.profile_ref,
-      'trace_ld_v1_semantic_activity:moment:none');
+  assert.equal(resolved.profile_ref,
+    'trace_ld_v1_semantic_activity:moment:none');
+});
+
+test('explicit requested duration overrides only the temporal schedule',
+  async () => {
+    const owners = await createOwners();
+    const resolved = owners.semanticActivityOwner.resolve({
+      activity: { owner: 'semantic', duration_class: 'brief', effort: 'none',
+        requested_duration_minutes: 10 },
+      actor: { body: body() }
+    });
+    assert.equal(resolved.duration_minutes, 10);
+    assert.equal(resolved.body_effect_profile_ref,
+      'trace_ld_v1_semantic_activity:body:brief:none');
   });
 
 test('direct body event ignores prose and body-state calculates exact result',

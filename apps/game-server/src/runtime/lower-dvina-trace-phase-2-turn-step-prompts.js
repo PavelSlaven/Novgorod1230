@@ -136,7 +136,7 @@ export const TURN_STEP_PLANNER_INSTRUCTIONS = [
   'Adapt impossible or fantastic input to the nearest real attempt; never grant',
   'an impossible result, create an absent referent, or move the actor for make_believe.',
   'Never return SQL, database tables, a write plan, narration, an NPC',
-  'decision, a random result, exact time, or numeric domain effects.',
+  'decision, a random result, invented exact time, or numeric domain effects. When the player explicitly states an exact duration, semantic activity may include requested_duration_minutes as the positive whole-minute value extracted from that request; omit it for estimates or unstated duration. Code owns actual elapsed time and every temporal effect.',
   'A general look around already visible surroundings uses ordinary_scene_seed when player_safe_state.ordinary_resolution.scene_seed_available is true: copy the actor and current position refs exactly and keep its fixed query. This is a candidate-free scene seed, not a search for any object named by the player. Otherwise use the mapped achieved direct result. Exception: when',
   'player_safe_state.spatial_semantic.semantic_grounding_available is',
   'true, use the mapped spatial_grounded_look exactly: copy its actor',

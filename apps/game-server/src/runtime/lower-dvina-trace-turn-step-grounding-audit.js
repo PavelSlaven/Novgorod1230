@@ -1,13 +1,18 @@
 import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch","reason":"<brief exact mismatch>"}]} using only these concern kinds: source_semantic_mismatch, missing_required_source_move, operation_semantic_mismatch; report every present concern once in that order. Every concern has exactly kind and a brief reason grounded in supplied text; name the mismatched or uncovered action, but do not propose a repair. Audit three things independently. Apply the first two checks only when action_productions is non-empty; when it is empty, never report source_semantic_mismatch or missing_required_source_move. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected action-production source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Third, each selected_domain_operation must semantically cover the next independently executable action in remaining_intent. Its own supplied query, description, kind, and player-safe referent evidence must match that action; sharing only an actor, place, broad verb, or operation type is insufficient. A fixed authored inspection does not cover a broader general look or a different ordinary search. Every independent clause not covered by that operation must remain in continuation.remaining_intent. Report operation_semantic_mismatch for a different action, over-broad consumption, or lost uncovered clause. In its reason identify the earliest uncovered action and every later clause missing from continuation. Do not report it merely because exact mechanics are absent from player text. Do not plan, repair, invent refs, or judge mechanics.';
+const PROMPT = 'Return only {"pass":true,"concerns":[]} or {"pass":false,"concerns":[{"kind":"source_semantic_mismatch","reason":"<brief exact mismatch>"}]} using only these concern kinds: source_semantic_mismatch, missing_required_source_move, operation_semantic_mismatch, duration_semantic_mismatch, missing_material_transformation; report every present concern once in that order. Every concern has exactly kind and a brief reason grounded in supplied text; name the mismatched or uncovered action, but do not propose a repair. Audit five things independently. Apply the first two checks only when action_productions is non-empty; when it is empty, never report source_semantic_mismatch or missing_required_source_move. First, every selected action-production source must denote the ordinary material named in remaining_intent, resolving pronouns from root_player_action and completed_steps. Use only that source own supplied player-safe descriptors as grounding evidence. An unbound sensory sentence, another item descriptor, inventory order, and the player claim do not ground a source ref. Tools are not material sources. Second, independently identify every explicit change of possession or placement in remaining_intent. If the actor explicitly takes, picks up, drops, wears, attaches, or otherwise relocates the selected action-production source, planned_operations must contain a matching move_entity; action production never implies relocation. Do not require movement when the intent only manipulates or transforms the source in place without a separate placement change. Third, each selected_domain_operation must semantically cover the next independently executable action in remaining_intent. Its own supplied query, description, kind, and player-safe referent evidence must match that action; sharing only an actor, place, broad verb, or operation type is insufficient. A fixed authored inspection does not cover a broader general look or a different ordinary search. Every independent clause not covered by that operation must remain in continuation.remaining_intent. Report operation_semantic_mismatch for a different action, over-broad consumption, or lost uncovered clause. In its reason identify the earliest uncovered action and every later clause missing from continuation. Do not report it merely because exact mechanics are absent from player text. Fourth, when requested_duration_minutes is supplied, verify that remaining_intent explicitly requests exactly that whole-minute duration, including an equivalent natural-language duration such as half an hour; otherwise report duration_semantic_mismatch. Fifth, only when available_materials is supplied, decide whether the no-operation plan erased an independently feasible physical manipulation or transformation of one semantically matching visible/player-held material merely because a later purpose or effect lacks an owner. If so report missing_material_transformation and name the omitted transformation plus every later uncovered clause. Do not report it for observation, gesture, speech, waiting, impossible actions, absent sources, or a plan that preserves the transformation in continuation. Do not plan, repair, invent refs, or judge exact mechanics.';
 
 export async function auditTurnStepSourceGrounding({ roleRunner, plan,
   request }) {
   const productions = actionProductions(plan, request.player_safe_state);
   const selectedDomains = selectedDomainOperations(plan, request);
-  if (productions.length === 0 && selectedDomains.length === 0) return true;
+  const requestedDuration = plan?.activity?.requested_duration_minutes;
+  const missingMaterialCandidate = potentialMissingMaterialStep(plan, request);
+  if (productions.length === 0 && selectedDomains.length === 0
+      && requestedDuration === undefined && !missingMaterialCandidate) {
+    return true;
+  }
   const response = await roleRunner.run({
     scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
     request_identity: request.request_id,
@@ -23,7 +28,10 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
             outcome.operations ?? []])) },
         selected_domain_operations: selectedDomains,
         continuation: plan.continuation ?? null,
+        requested_duration_minutes: requestedDuration ?? null,
         action_productions: productions,
+        ...(missingMaterialCandidate ? { available_materials:
+          availableMaterials(request.player_safe_state) } : {}),
         sensory_details: request.player_safe_state?.current_visible_context
           ?.sensory_details ?? []
       })
@@ -38,7 +46,12 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     ...(productions.length === 0 ? [] : [
       'source_semantic_mismatch', 'missing_required_source_move'
     ]),
-    ...(selectedDomains.length === 0 ? [] : ['operation_semantic_mismatch'])
+    ...(selectedDomains.length === 0 ? [] : ['operation_semantic_mismatch']),
+    ...(requestedDuration === undefined ? [] : [
+      'duration_semantic_mismatch'
+    ]), ...(missingMaterialCandidate ? [
+      'missing_material_transformation'
+    ] : [])
   ]);
   const definitions = [
     ['source_semantic_mismatch', 'source_semantic_grounding',
@@ -46,7 +59,11 @@ export async function auditTurnStepSourceGrounding({ roleRunner, plan,
     ['missing_required_source_move', 'source_placement_grounding',
       'explicit source relocation requires a matching move_entity'],
     ['operation_semantic_mismatch', 'operation_semantic_grounding',
-      'selected domain operation must cover the current intent']
+      'selected domain operation must cover the current intent'],
+    ['duration_semantic_mismatch', 'duration_semantic_grounding',
+      'requested duration must exactly match an explicit player duration'],
+    ['missing_material_transformation', 'material_transformation_grounding',
+      'a feasible grounded material transformation must not disappear']
   ];
   const errors = definitions
     .filter(([kind]) => allowedKinds.has(kind))
@@ -101,6 +118,23 @@ function actionProductions(plan, state) {
   return found;
 }
 
+function potentialMissingMaterialStep(plan, request) {
+  return plan?.goal_result === 'not_achieved'
+    && plannedOperations(plan).length === 0 && plan.continuation == null
+    && request.player_safe_state?.action_production
+      ?.semantic_grounding_available === true
+    && availableMaterials(request.player_safe_state).length > 0;
+}
+
+function availableMaterials(state) {
+  return (state?.items ?? []).map((item) => ({
+    item_ref: item.item_id,
+    descriptors: descriptors(item),
+    placement: structuredClone(item.placement ?? null)
+  })).filter(({ item_ref: ref, descriptors: own }) =>
+    typeof ref === 'string' && ref.trim() && own != null);
+}
+
 function sourceDescriptors(state, refs) {
   const items = Array.isArray(state?.items) ? state.items : [];
   const visible = Array.isArray(state?.current_visible_context?.visible_objects)
@@ -137,7 +171,8 @@ function valid(value) {
       && typeof concern === 'object' && !Array.isArray(concern)
       && Object.keys(concern).length === 2
       && ['source_semantic_mismatch', 'missing_required_source_move',
-        'operation_semantic_mismatch']
+        'operation_semantic_mismatch', 'duration_semantic_mismatch',
+        'missing_material_transformation']
         .includes(concern.kind)
       && typeof concern.reason === 'string' && concern.reason.trim());
 }

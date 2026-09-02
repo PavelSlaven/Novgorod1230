@@ -161,3 +161,52 @@ test('unselected non-production turn skips grounding model', async () => {
   }), true);
   assert.equal(calls, 0);
 });
+
+test('explicit duration and omitted feasible material step are audited',
+  async (t) => {
+    await t.test('duration', async () => {
+      let payload;
+      const result = await auditTurnStepSourceGrounding({
+        roleRunner: { async run(call) {
+          payload = JSON.parse(call.messages[1].content);
+          return { output: { pass: false, concerns: [{
+            kind: 'duration_semantic_mismatch',
+            reason: 'Ten minutes were requested, not twelve.'
+          }] } };
+        } },
+        plan: { goal_result: 'pending', operations: [], continuation: null,
+          activity: { requested_duration_minutes: 12 } },
+        request: { request_id: 'duration', root_player_action: 'Жду десять минут.',
+          remaining_intent: 'Жду десять минут.', completed_steps: [],
+          player_safe_state: {} }
+      });
+      assert.equal(payload.requested_duration_minutes, 12);
+      assert.equal(result.errors[0].code, 'duration_semantic_grounding');
+    });
+
+    await t.test('material transformation', async () => {
+      let payload;
+      const result = await auditTurnStepSourceGrounding({
+        roleRunner: { async run(call) {
+          payload = JSON.parse(call.messages[1].content);
+          return { output: { pass: false, concerns: [{
+            kind: 'missing_material_transformation',
+            reason: 'Tearing a strip from the owned shirt was omitted.'
+          }] } };
+        } },
+        plan: { goal_result: 'not_achieved', operations: [],
+          continuation: null },
+        request: { request_id: 'cloth',
+          root_player_action: 'Отрываю полосу от рубахи и перевязываю руку.',
+          remaining_intent: 'Отрываю полосу от рубахи и перевязываю руку.',
+          completed_steps: [], player_safe_state: {
+            action_production: { semantic_grounding_available: true },
+            items: [{ item_id: 'shirt', category_id: 'linen_shirt',
+              placement: { holder_character_id: 'actor' } }]
+          } }
+      });
+      assert.equal(payload.available_materials[0].item_ref, 'shirt');
+      assert.equal(result.errors[0].code,
+        'material_transformation_grounding');
+    });
+  });

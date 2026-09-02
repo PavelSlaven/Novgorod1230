@@ -1,3 +1,7 @@
 # External auditor source snapshots are immutable, digest-bound evidence.
 data/world-catalogs/novgorod/temporal-v4/sources/** -whitespace
 data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md -whitespace
+# Rev32 raw bytes are persisted publication identity; trailing blank is immutable.
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m20-content/definition.json -whitespace
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v27/publication-binding.json -whitespace
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v27/manifest.json -whitespace

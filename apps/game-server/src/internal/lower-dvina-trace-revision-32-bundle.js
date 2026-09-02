@@ -6,7 +6,7 @@ const DEFINITION_PATH = `${ROOT}/phase-m20-content/definition.json`;
 const PROFILE_PATH =
   `${ROOT}/phase-m20-content/a1-authored-item-mechanics-profile.json`;
 const DEFINITION_DIGEST =
-  '40f41b40edda801ca9e7fc2b0bac049ab298708a3d19f4329736378e84d84951';
+  'beeb3e86ff0a83be4f4f046f9edf2b895b7c8137590d04b4d6889d207d157aa7';
 const PROFILE_DIGEST =
   '5a98b0e914427da95f7d674d4e7be7c782ff524916160b40a07fafef316bef36';
 

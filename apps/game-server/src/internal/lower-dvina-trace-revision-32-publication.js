@@ -8,9 +8,9 @@ const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 export const TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST =
   '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101';
 const PINS = Object.freeze({
-  manifest: '916b7606f034febde84889ce76922472335dd804518d387380a03449a78a38b7',
-  binding: '2aa34e4525784bcf71d0c92e0c24dd0039562e62d0400b0250162b706e37dfda',
-  definition: '40f41b40edda801ca9e7fc2b0bac049ab298708a3d19f4329736378e84d84951',
+  manifest: '25e655b3a3e2308ed814c1c99077355776e36c46fd25e6cd532976ed73bbefb9',
+  binding: 'defec66d395d77a9f86e354b129bc94909d0ee725a2617cb6bc1bb19dbd53772',
+  definition: 'beeb3e86ff0a83be4f4f046f9edf2b895b7c8137590d04b4d6889d207d157aa7',
   presentation: 'b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c',
   priorBinding: '2bcb6c037926a662d2fc3707561038bdd988746904f235c1ad146c87e29a00bf'
 });

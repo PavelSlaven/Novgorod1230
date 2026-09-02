@@ -89,7 +89,7 @@ function makeSeededOrdinaryState() {
 }
 
 function makeOrdinaryPlan({ aggregate, basis, context, partyStateVersion, requestIdentity,
-  enablementObjectiveDigest = null, runtimeAnchorId = 'ordinary-anchor' }) {
+  enablementObjectiveDigest = null, runtimePositionId = 'position-old' }) {
   const transition = { kind: 'resolve_presence', request_identity: requestIdentity, expected_state_version: aggregate.state_version, resolution_ref: `resolution-${requestIdentity}`, candidate_key: `candidate-${requestIdentity}`, coverage_key: `coverage-${requestIdentity}`, category_key: `category-${requestIdentity}`, context_version: 'ordinary_context_a', resolution: 'materialize', identity_key: `identity-${requestIdentity}` };
   const nextAggregate = applyOrdinaryAggregateTransition({ aggregate, transition });
   const evidence = structuredClone(resolveOrdinaryWorldPropertyPlacement({
@@ -100,7 +100,7 @@ function makeOrdinaryPlan({ aggregate, basis, context, partyStateVersion, reques
   const item = {
     item_id: `ordinary_item_${canonicalDigest({ party_id: 'p', scope_ref: ordinaryScope, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version }).slice(0, 24)}`,
     candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version,
-    functional_bucket: 'household', admission_class: 'common_mundane', supporting_basis_ref: basis.basis_ref, causal_basis_refs: [basis.basis_ref], property_basis_ref: 'property', position_ref: 'position', runtime_placement: { anchor_id: runtimeAnchorId }, mechanics_policy_ref: mechanicsPolicyRef,
+    functional_bucket: 'household', admission_class: 'common_mundane', supporting_basis_ref: basis.basis_ref, causal_basis_refs: [basis.basis_ref], property_basis_ref: 'property', position_ref: 'position', runtime_placement: { scene_position_id: runtimePositionId }, mechanics_policy_ref: mechanicsPolicyRef,
     item_proposal: { schema: 'ordinary_world_item_proposal_v1', request_id: requestIdentity, scope_ref: { ...ordinaryScope }, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version, semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon', facts: ['ordinary'] }, supporting_basis_ref: basis.basis_ref, property_basis_ref: 'property', property_placement_evidence: evidence, placement: { scope_ref: ordinaryScope.entity_id, position_ref: 'position' }, runtime_item_mechanics_policy_ref: mechanicsPolicyRef },
     mechanics_snapshot: { schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2, provenance: { source_kind: 'ordinary_world_materialization', causal_ref: `cause-${requestIdentity}`, request_id: requestIdentity, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version, policy_ref: mechanicsPolicyRef, source_refs: sourceRefs }, mechanics: { mass_grams: 80, external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null } }
   };
@@ -345,6 +345,26 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     INSERT INTO party_runtime.party_positions
       (party_id,g4_id,g5_node_id,g5_anchor_id)
     VALUES ('p','g4-existing','ordinary-node','ordinary-anchor');
+    INSERT INTO party_runtime.party_g5_sites
+      (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES
+      ('g5-old','p','canonical','g4-existing','{"entity_kind":"canonical_g5","entity_id":"canonical-old"}','active',0,'seed','seed');
+    INSERT INTO party_runtime.party_scene_baselines
+      (id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES
+      ('baseline-old','p','g5_site','g5-old','canonical_template','{"entity_ref":{"entity_kind":"scene_template","entity_id":"template-old"},"authoring_version":"v1"}','trace-old','v1','${hex}','active',0,'seed','seed');
+    INSERT INTO party_runtime.party_g6_instances
+      (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES
+      ('g6-old','p','baseline-old','{"entity_ref":{"entity_kind":"scene_template","entity_id":"template-old"},"authoring_version":"v1"}','entry','g5_site','g5-old','spatial.g6.open','entry','surface','none','default_clear','near','uniform','active',0,'seed','seed');
+    INSERT INTO party_runtime.scene_position_nodes
+      (id,party_id,g6_instance_id,position_type_id,template_slot_key,template_instance_ordinal,capacity,access_class_id,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES
+      ('position-old','p','g6-old','scene_position.central','arrival',0,10,'open','active',0,'seed','seed');
+    INSERT INTO party_runtime.party_journey_locations
+      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
+    VALUES
+      ('location-actor','p','actor','actor-1','scene','position-old',0,'seed');
   `);
   await client.query(await readFile(
     'schemas/party-db/024_party_runtime_ordinary_world_items.sql', 'utf8'));
@@ -546,7 +566,9 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     ordinaryMaterializationAtomicWritePlan: ordinaryPositive,
     visibleObjects: ordinaryProjection.visible_objects
   });
-  assert.equal((await committer.commit({ plan: ordinaryCommit })).ok, true);
+  const ordinaryCommitResult = await committer.commit({ plan: ordinaryCommit });
+  assert.equal(ordinaryCommitResult.ok, true,
+    JSON.stringify(ordinaryCommitResult));
   assert.deepEqual((await client.query(
     `SELECT item_id,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version
        FROM party_runtime.party_ordinary_materialization_commits
@@ -746,28 +768,6 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     '1'
   );
 
-  await client.query(`
-    INSERT INTO party_runtime.party_g5_sites
-      (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES
-      ('g5-old','p','canonical','g4-existing','{"entity_kind":"canonical_g5","entity_id":"canonical-old"}','active',0,'seed','seed');
-    INSERT INTO party_runtime.party_scene_baselines
-      (id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES
-      ('baseline-old','p','g5_site','g5-old','canonical_template','{"entity_ref":{"entity_kind":"scene_template","entity_id":"template-old"},"authoring_version":"v1"}','trace-old','v1','${hex}','active',0,'seed','seed');
-    INSERT INTO party_runtime.party_g6_instances
-      (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES
-      ('g6-old','p','baseline-old','{"entity_ref":{"entity_kind":"scene_template","entity_id":"template-old"},"authoring_version":"v1"}','entry','g5_site','g5-old','spatial.g6.open','entry','surface','none','default_clear','near','uniform','active',0,'seed','seed');
-    INSERT INTO party_runtime.scene_position_nodes
-      (id,party_id,g6_instance_id,position_type_id,template_slot_key,template_instance_ordinal,capacity,access_class_id,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES
-      ('position-old','p','g6-old','scene_position.central','arrival',0,10,'open','active',0,'seed','seed');
-    INSERT INTO party_runtime.party_journey_locations
-      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
-    VALUES
-      ('location-actor','p','actor','actor-1','scene','position-old',0,'seed');
-  `);
   const preparedScene = {
     g4_id: 'g4-existing',
     g5_site_id: 'g5-new',
@@ -1122,7 +1122,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const finiteAvailable = await finiteResolver({
     request: { root_turn_id: 'first-entry-o2a-finite' },
     committed_state: { position: { g6_id: 'g6-new',
-      g5_anchor_id: 'ordinary-anchor' } },
+      g5_anchor_id: 'ordinary-anchor', position_id: 'position-new' } },
     operation: { target_refs: [finiteCapability.source_ref],
       query: 'взять порцию подготовленной глины' }, working_projection: {} });
   const finitePlan = finiteAvailable.ordinary_materialization_atomic_write_plan;
@@ -1189,7 +1189,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   });
   const ordinaryAvailable = await ordinaryResolver({ request: { root_turn_id: 'first-entry-o1' },
     committed_state: { position: { g6_id: 'g6-new',
-      g5_anchor_id: 'ordinary-anchor' } },
+      g5_anchor_id: 'ordinary-anchor', position_id: 'position-new' } },
     operation: { target_refs: ['g6-new'], query: ' найти вещь ' }, working_projection: {} });
   assert.ok(ordinaryAvailable.ordinary_materialization_atomic_write_plan,
     `the production resolver can use only the provisioned exact scope: calls=${calls.length} ${JSON.stringify(ordinaryAvailable)}`);
@@ -1249,7 +1249,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   });
   const normalizedOrdinary = (await client.query(`SELECT
       i.template_id,i.state->'runtime_instance_mechanics_snapshot' AS mechanics,
-      p.anchor_id,p.container_id,p.holder_character_id
+      p.anchor_id,p.scene_position_id,p.container_id,p.holder_character_id
     FROM party_runtime.party_items i
     JOIN party_runtime.party_item_placements p
       ON p.party_id=i.party_id AND p.item_id=i.item_id
@@ -1258,7 +1258,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.deepEqual(normalizedOrdinary, {
     template_id: null,
     mechanics: productionOrdinaryPlan.item.mechanics_snapshot,
-    anchor_id: 'ordinary-anchor', container_id: null,
+    anchor_id: null, scene_position_id: 'position-new', container_id: null,
     holder_character_id: null
   });
   const reloadedOrdinaryState = (await client.query(`SELECT state_payload
@@ -1318,7 +1318,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const replayedOrdinary = await reloadResolver({
     request: { root_turn_id: 'first-entry-o1-reload' },
     committed_state: { position: { g6_id: 'g6-new',
-      g5_anchor_id: 'ordinary-anchor' } },
+      g5_anchor_id: 'ordinary-anchor', position_id: 'position-new' } },
     operation: { target_refs: ['g6-new'], query: '  НАЙТИ   ВЕЩЬ  ' },
     working_projection: {} });
   assert.equal(reloadModelCalls, 0);
@@ -1362,7 +1362,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const capped = await cappedResolver({
     request: { root_turn_id: 'first-entry-o1-cap' },
     committed_state: { position: { g6_id: 'g6-new',
-      g5_anchor_id: 'ordinary-anchor' } },
+      g5_anchor_id: 'ordinary-anchor', position_id: 'position-new' } },
     operation: { target_refs: ['g6-new'], query: 'найти другую вещь' },
     working_projection: {}
   });

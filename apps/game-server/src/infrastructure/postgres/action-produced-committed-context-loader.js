@@ -72,7 +72,8 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   const rows = await client.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
        i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
-       p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+       p.anchor_id,p.scene_position_id AS item_scene_position_id,
+       p.container_id,p.holder_npc_id,p.holder_character_id,
        p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
        e.position_node_id AS scene_position_id,
        e.occupies_capacity_units AS scene_occupies_capacity_units,
@@ -185,9 +186,11 @@ function rowPin({ row, role, actorRef, finite, accessAnchorId,
       || Number(row.state_version) < 1
       || preparedOrdinary === null && preparedAction === null
         && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
-          accessAnchorId)
+          accessAnchorId, accessScenePositionId)
       || row.scene_position_id != null && (!text(accessScenePositionId)
         || row.scene_position_id !== accessScenePositionId)
+      || row.item_scene_position_id != null && (!text(accessScenePositionId)
+        || row.item_scene_position_id !== accessScenePositionId)
       || !validOwnership(row)
       || !actionProducedControllerPermitted(row, role, actorRef)
       || row.state?.lifecycle_status != null
@@ -200,7 +203,8 @@ function rowPin({ row, role, actorRef, finite, accessAnchorId,
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
   const access = preparedOrdinary === null && preparedAction === null
-    ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId)
+    ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId,
+      accessScenePositionId)
     : 'quick';
   const holderRef = [row.holder_character_id, row.holder_npc_id]
     .includes(actorRef) ? actorRef : null;
@@ -217,7 +221,10 @@ function rowPin({ row, role, actorRef, finite, accessAnchorId,
     state_version: Number(row.state_version)
   };
   const placement = {
-    anchor_id: row.anchor_id, container_id: row.container_id,
+    anchor_id: row.anchor_id,
+    ...(row.item_scene_position_id == null ? {}
+      : { scene_position_id: row.item_scene_position_id }),
+    container_id: row.container_id,
     holder_npc_id: row.holder_npc_id,
     holder_character_id: row.holder_character_id,
     physical_position: row.physical_position,

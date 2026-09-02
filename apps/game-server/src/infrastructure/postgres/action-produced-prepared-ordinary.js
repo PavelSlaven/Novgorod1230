@@ -71,7 +71,9 @@ function preparedWorldRows(plan, input, requested) {
   return new Map([[item.item_id, {
     row: {
       ...structuredClone(record), state_version: 1,
-      anchor_id: placement.anchor_id, container_id: placement.container_id,
+      anchor_id: placement.anchor_id,
+      item_scene_position_id: placement.scene_position_id,
+      container_id: placement.container_id,
       holder_npc_id: placement.holder_npc_id,
       holder_character_id: placement.holder_character_id,
       physical_position: placement.physical_position,
@@ -209,7 +211,18 @@ export function actionProducedDestinationAfterPreparedOrdinary(pin, raw) {
   catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
   const item = plan.schema === 'ordinary_materialization_atomic_write_plan_v1'
     && plan.resolution === 'materialize' ? plan.item : null;
-  if (item == null || pin.destination_kind !== 'party_current_anchor'
+  if (item == null) return pin;
+  if (pin.destination_kind === 'party_current_scene_position') {
+    if (item.runtime_placement.scene_position_id !== pin.scene_position_id) {
+      return pin;
+    }
+    const occupancy = pin.scene_occupancy + 1;
+    if (occupancy > pin.scene_capacity) {
+      fail('ACTION_PRODUCED_DESTINATION_INVALID');
+    }
+    return { ...pin, scene_occupancy: occupancy };
+  }
+  if (pin.destination_kind !== 'party_current_anchor'
       || item.runtime_placement.anchor_id !== pin.anchor_id) return pin;
   const used = [...new Set([...pin.used_item_ids, item.item_id])].sort();
   if (used.length > pin.item_capacity) {

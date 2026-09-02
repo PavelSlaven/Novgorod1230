@@ -164,7 +164,7 @@ test('prepared ordinary item becomes a visible A1 source for the next step',
       } })
     });
     const item = { item_id: 'item:driftwood',
-      runtime_placement: { anchor_id: 'shore' }, item_proposal: {
+      runtime_placement: { scene_position_id: 'shore-position' }, item_proposal: {
         semantic_descriptor: { semantic_type: 'ordinary_wood',
           name: 'длинная доска', facts: [] }
       } };

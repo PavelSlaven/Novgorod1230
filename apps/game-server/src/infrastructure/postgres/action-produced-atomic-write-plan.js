@@ -275,9 +275,11 @@ function validatePlan(value) {
   const destination = validateActionProducedDestinationPin(
     value.output_destination_pin);
   validateActionProducedRowPins(value.source_pins, 'source', value.actor_ref,
-    proposal.causal_identity, destination?.anchor_id ?? null);
+    proposal.causal_identity, destination?.anchor_id ?? null,
+    destination?.scene_position_id ?? null);
   validateActionProducedRowPins(value.tool_pins, 'tool', value.actor_ref,
-    proposal.causal_identity, destination?.anchor_id ?? null);
+    proposal.causal_identity, destination?.anchor_id ?? null,
+    destination?.scene_position_id ?? null);
   const pinnedItemIds = [...value.source_pins, ...value.tool_pins]
     .map(({ item_id: itemId }) => itemId);
   if (new Set(pinnedItemIds).size !== pinnedItemIds.length) {

@@ -344,7 +344,7 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
     assert.equal(plan.resolution, 'materialize');
     assert.equal(plan.item.supporting_basis_ref, plan.new_prepared_bases[0].basis_ref);
     assert.deepEqual(plan.item.runtime_placement,
-      { anchor_id: 'shore-anchor' });
+      { scene_position_id: 'shore-position' });
     assert.equal(plan.item.item_proposal.semantic_descriptor.name,
       'простая верёвка');
     assert.deepEqual(plan.item.mechanics_snapshot.mechanics, {
@@ -395,7 +395,8 @@ test('current visible location maps to its already pinned G6 discovery context',
   await resolver({
     ...request('найти ложку'),
     committed_state: { position: { g6_id: 'shore',
-      location_ref: 'trace_ld_v1_loc_fishing_camp', g5_anchor_id: 'shore-anchor' } },
+      location_ref: 'trace_ld_v1_loc_fishing_camp',
+      g5_anchor_id: 'shore-anchor', position_id: 'shore-position' } },
     operation: { target_refs: ['trace_ld_v1_loc_fishing_camp'], query: 'найти ложку' }
   });
 
@@ -405,7 +406,8 @@ test('current visible location maps to its already pinned G6 discovery context',
 test('projects a committed ordinary item without its materialization internals', () => {
   const committedState = {
     party_id: 'party', actor_id: 'mikula', player_profile: {},
-    position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor' },
+    position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor',
+      position_id: 'shed-position' },
     items: [], visible_context: { visible_objects: [] },
     ordinary_materialization: { remaining_identity_budget: 0,
       background_groups: ['group-private'], supporting_basis_catalog: ['basis-private'],
@@ -413,7 +415,7 @@ test('projects a committed ordinary item without its materialization internals',
   };
   const ordinaryPlan = { party_id: 'party', item: { item_id: 'ordinary-spoon',
     property_basis_ref: 'basis-private', supporting_basis_ref: 'basis-private',
-    runtime_placement: { anchor_id: 'shed-anchor' },
+    runtime_placement: { scene_position_id: 'shed-position' },
     item_proposal: { scope_ref: { entity_kind: 'g6', entity_id: 'shed' },
       semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon' },
       placement: { scope_ref: 'shed', position_ref: 'bench' },
@@ -440,7 +442,7 @@ test('projects a committed ordinary item without its materialization internals',
     item_id: 'ordinary-spoon', name: 'wooden spoon',
     quantity: 1, condition_state: 'ordinary_runtime_instance',
     legal_status: 'ordinary_world_property_bound',
-    placement: { anchor_id: 'shed-anchor' },
+    placement: { scene_position_id: 'shed-position' },
     state: { semantic_category: 'household_tool' }
   }]);
   const playerSafe = JSON.stringify(result.player_safe_state);

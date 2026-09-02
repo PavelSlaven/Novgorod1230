@@ -154,6 +154,30 @@ BEGIN
   RETURN true;
 END $$;
 
+-- O1 concrete content is placed in the active Spatial v3 scene position.
+ALTER TABLE party_runtime.party_item_placements
+  ADD COLUMN IF NOT EXISTS scene_position_id text;
+
+ALTER TABLE party_runtime.party_item_placements
+  DROP CONSTRAINT IF EXISTS party_item_placements_owner_check;
+ALTER TABLE party_runtime.party_item_placements
+  ADD CONSTRAINT party_item_placements_owner_check CHECK (
+    (CASE WHEN anchor_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN scene_position_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN container_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN attached_item_id IS NULL THEN 0 ELSE 1 END) = 1
+  );
+
+ALTER TABLE party_runtime.party_item_placements
+  DROP CONSTRAINT IF EXISTS party_item_placements_scene_position_fk;
+ALTER TABLE party_runtime.party_item_placements
+  ADD CONSTRAINT party_item_placements_scene_position_fk
+  FOREIGN KEY (scene_position_id)
+  REFERENCES party_runtime.scene_position_nodes(id)
+  ON DELETE RESTRICT;
+
 DO $$
 BEGIN
   IF to_regprocedure(

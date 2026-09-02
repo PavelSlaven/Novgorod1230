@@ -652,7 +652,7 @@ function mechanics(overrides = {}) {
 function preparedOrdinary(itemId) {
   return {
     resolution: 'materialize', item: {
-      item_id: itemId, runtime_placement: { anchor_id: 'shore' },
+      item_id: itemId, runtime_placement: { scene_position_id: 'shore-position' },
       item_proposal: { semantic_descriptor: {
         semantic_type: 'ordinary_object_candidate',
         name: 'длинная доска', facts: ['доска лежит на берегу']

@@ -70,7 +70,8 @@ async function lockAndVerifyPins(client, plan) {
     const selected = await client.query(
       `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
          i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
-         p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+         p.anchor_id,p.scene_position_id AS item_scene_position_id,
+         p.container_id,p.holder_npc_id,p.holder_character_id,
          p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
          o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
          o.owner_external_ref,
@@ -107,7 +108,8 @@ async function lockAndVerifyPins(client, plan) {
     if (pin.prepared_action == null
           && !accessibleByActor(normalized.placement, normalized.ownership,
             accessContainer, plan.actor_ref,
-            plan.output_destination_pin?.anchor_id ?? null, pin.role)
+            plan.output_destination_pin?.anchor_id ?? null,
+            plan.output_destination_pin?.scene_position_id ?? null, pin.role)
         || !isDeepStrictEqual(normalized.item, pin.item)
         || !isDeepStrictEqual(normalized.placement, pin.placement)
         || !isDeepStrictEqual(normalized.ownership, pin.ownership)
@@ -140,12 +142,12 @@ async function lockAndVerifyPins(client, plan) {
 }
 
 function accessibleByActor(placement, ownership, accessContainer, actorRef,
-  accessAnchorId, role) {
+  accessAnchorId, accessScenePositionId, role) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
     + Number(ownership.owner_party === true);
   return actionProducedPlacementAccessible(placement, accessContainer,
-    actorRef, accessAnchorId)
+    actorRef, accessAnchorId, accessScenePositionId)
     && actionProducedControllerPermitted(ownership, role, actorRef)
     && owners === 1 && typeof ownership.owner_party === 'boolean'
     && text(ownership.claim_state);
@@ -230,7 +232,10 @@ function normalizedRows(row) {
       state: row.state, state_version: Number(row.state_version)
     },
     placement: {
-      anchor_id: row.anchor_id, container_id: row.container_id,
+      anchor_id: row.anchor_id,
+      ...(row.item_scene_position_id == null ? {}
+        : { scene_position_id: row.item_scene_position_id }),
+      container_id: row.container_id,
       holder_npc_id: row.holder_npc_id,
       holder_character_id: row.holder_character_id,
       physical_position: row.physical_position,

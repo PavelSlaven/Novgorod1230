@@ -95,8 +95,9 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   if (value.resolution === 'materialize') {
     const item = exactMaterializedItem(value.item);
     for (const key of ['item_id','candidate_key','coverage_key','context_version','functional_bucket','admission_class','supporting_basis_ref','property_basis_ref','position_ref','mechanics_policy_ref']) text(item[key]);
-    const runtimePlacement = exact(item.runtime_placement, ['anchor_id']);
-    text(runtimePlacement.anchor_id);
+    const runtimePlacement = exact(item.runtime_placement,
+      ['scene_position_id']);
+    text(runtimePlacement.scene_position_id);
     if (!sameTextList(item.causal_basis_refs,[...item.causal_basis_refs].sort()) || !exactAdmittedItem({ item, scope, request_identity:value.request_identity }) || !basisCoversItem(bases,item) || !propertyPlacementEvidenceMatches({ base:propertyPlacement, item }) || !resolution.identity_key || item.item_id !== `ordinary_item_${canonicalDigest({party_id:value.party_id,scope_ref:scope,candidate_key:item.candidate_key,coverage_key:item.coverage_key,context_version:item.context_version}).slice(0,24)}`) fail('ORDINARY_PHASE6_POSITIVE_ITEM_INVALID');
   } else if (value.item !== null || (!seedOnly && resolution.identity_key !== undefined)) fail('ORDINARY_PHASE6_NEGATIVE_ITEM_FORBIDDEN');
   const finite = value.finite_resource_transition == null ? null
@@ -174,7 +175,8 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
   if (old.rowCount) { const row=old.rows[0]; if (row.input_digest!==plan.input_digest || row.transition_digest!==plan.transition_digest || row.write_plan_digest!==plan.write_plan_digest) fail('ORDINARY_PHASE6_IDEMPOTENCY_COLLISION'); return Object.freeze({status:'committed',replay:true,state_version:Number(row.to_ordinary_state_version)}); }
   for (const [key,value] of Object.entries(plan.expected_versions)) if (current[key] !== value) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
   if (plan.item != null
-      && current.scene_position_id !== plan.item.position_ref) {
+      && current.scene_position_id
+        !== plan.item.runtime_placement.scene_position_id) {
     fail('ORDINARY_PHASE6_PROPOSAL_STALE');
   }
   const next = applyTransitions(current.aggregate, plan.transitions);

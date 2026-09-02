@@ -75,8 +75,13 @@ export async function resolveBoundTurnStepCommand({
     ...(preparedFollowupCandidates.length === 0 ? {} : {
       prepared_followup_candidates: structuredClone(preparedFollowupCandidates)
     }) });
-  const currentDomainOperations = async (context, remainingIntent, completedSteps) => {
-    if ((context?.prior_effect_count ?? 0) === 0) return completedSteps.length === 0 ? initialDomainOperations : [];
+  const currentDomainOperations = async (context, remainingIntent,
+    completedSteps, playerSafeState) => {
+    if ((context?.prior_effect_count ?? 0) === 0) {
+      return completedSteps.length === 0 ? initialDomainOperations
+        : activeConversationOperations(initialDomainOperations,
+          playerSafeState);
+    }
     const owner = services.turnStepPreparedDomainEffect;
     if (typeof owner?.currentState !== 'function') return [];
     const currentState = await owner.currentState(deepFreeze({ prepared_chain_context: structuredClone(context), committed_state: structuredClone(committedState) }));
@@ -374,7 +379,7 @@ export async function resolveBoundTurnStepCommand({
       }
       return withAvailableDomainOperations(next.player_safe_state,
         await currentDomainOperations(preparedChainContext, remainingIntent,
-          completedSteps));
+          completedSteps, next.player_safe_state));
     },
     async revalidateCommittedState({ step_index: stepIndex }) {
       const request = {
@@ -417,6 +422,16 @@ export async function resolveBoundTurnStepCommand({
       step_traces: structuredClone(loopResult.step_traces)
     })
   };
+}
+
+function activeConversationOperations(operations, playerSafeState) {
+  const target = playerSafeState?.active_interlocutor?.entity_ref?.entity_id;
+  if (typeof target !== 'string') return [];
+  return operations.filter((operation) => operation?.op === 'emit_interaction'
+    && ['speech', 'request'].includes(operation.interaction_kind)
+    && operation.target_actor_refs?.length === 1
+    && operation.target_actor_refs[0] === target
+    && operation.instrument_refs?.length === 0);
 }
 function commandWithDraftWrites({ command, registry, loopResult }) {
   const draftWrites = loopResult.write_fragments.length > 0

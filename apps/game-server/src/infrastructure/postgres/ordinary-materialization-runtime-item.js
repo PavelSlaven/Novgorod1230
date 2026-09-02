@@ -6,11 +6,11 @@ import { ordinaryArmamentWeaponDanger } from '@rus/combat-health';
 export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
   const snapshot = createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(
     item.mechanics_snapshot);
-  const anchorId = item.runtime_placement?.anchor_id;
+  const scenePositionId = item.runtime_placement?.scene_position_id;
   const semanticType = item.item_proposal?.semantic_descriptor?.semantic_type;
   const name = item.item_proposal?.semantic_descriptor?.name;
   const ownership = ordinaryWorldOwnership(item);
-  if (![partyId, item.item_id, anchorId, semanticType, name]
+  if (![partyId, item.item_id, scenePositionId, semanticType, name]
     .every(exactText)) {
     throw code('ORDINARY_RUNTIME_ITEM_PROJECTION_INVALID');
   }
@@ -44,7 +44,8 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
     causal_basis: item.supporting_basis_ref
   };
   const placement = {
-    anchor_id: anchorId,
+    anchor_id: null,
+    scene_position_id: scenePositionId,
     container_id: null,
     holder_npc_id: null,
     holder_character_id: null,
@@ -109,12 +110,13 @@ export async function insertOrdinaryMaterializedRuntimeItem({
   const placement = runtime.placement_record;
   await client.query(
     `INSERT INTO party_runtime.party_item_placements
-     (party_id,item_id,anchor_id,container_id,holder_npc_id,
+     (party_id,item_id,anchor_id,scene_position_id,container_id,holder_npc_id,
       holder_character_id,physical_position,equipment_slot_category_id,
       attached_item_id)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
     [placement.party_id, placement.item_id, placement.anchor_id,
-      placement.container_id, placement.holder_npc_id,
+      placement.scene_position_id, placement.container_id,
+      placement.holder_npc_id,
       placement.holder_character_id, placement.physical_position,
       placement.equipment_slot_category_id, placement.attached_item_id]
   );

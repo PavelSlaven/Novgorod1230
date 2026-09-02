@@ -154,10 +154,13 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
     return true;
   }
   const location = placement.location_ref ?? item.location_ref;
+  const scenePosition = placement.scene_position_id
+    ?? item.scene_position_id;
   const anchor = placement.g5_anchor_id ?? placement.anchor_id
     ?? item.g5_anchor_id ?? item.anchor_id;
-  if (location != null || anchor != null) {
+  if (location != null || scenePosition != null || anchor != null) {
     return location != null && location === position?.location_ref
+    || scenePosition != null && scenePosition === position?.position_id
     || anchor != null && [position?.g5_anchor_id, position?.anchor_id]
       .includes(anchor);
   }
@@ -212,7 +215,7 @@ function projectPlacement(value, strict) {
     'holder_character_id', 'holder_npc_id', 'owner_character_id',
     'physical_position', 'equipment_slot_category_id',
     'container_id', 'attached_item_id', 'location_ref', 'g5_node_id',
-    'g5_anchor_id', 'anchor_id', 'zone_ref'
+    'g5_anchor_id', 'anchor_id', 'scene_position_id', 'zone_ref'
   ]);
   if (strict) assertAllowedKeys(value, allowed, 'placement', invalidCode());
   return compact(Object.fromEntries([...allowed].map((key) => [

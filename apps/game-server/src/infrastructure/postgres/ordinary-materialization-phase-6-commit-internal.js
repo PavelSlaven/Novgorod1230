@@ -96,11 +96,12 @@ export function exactAdmittedItem({ item, scope, request_identity }) {
             !== item.condition_state
         : item.weapon_mechanics_snapshot != null)) return false;
   const placement = exactOrNull(proposal.placement, ['scope_ref','position_ref']);
-  const runtimePlacement = exactOrNull(item.runtime_placement, ['anchor_id']);
+  const runtimePlacement = exactOrNull(item.runtime_placement,
+    ['scene_position_id']);
   const evidence = exactOrNull(proposal.property_placement_evidence, ['schema','version','scope_ref','property_placement_context_digest','property_catalog_version_ref','placement_catalog_version_ref','property_basis_ref','property_basis_class','property_source_ref','unowned_cause_ref','placement_context_ref','placement'])
     ?? exactOrNull(proposal.property_placement_evidence, ['schema','version','property_context_version','scope_ref','property_placement_context_digest','property_catalog_version_ref','placement_catalog_version_ref','property_basis_ref','property_basis_class','property_source_ref','unowned_cause_ref','unowned_cause_kind','placement_context_ref','placement']);
   if (!placement || placement.scope_ref !== scope.entity_id || placement.position_ref !== item.position_ref
-      || !runtimePlacement || !sameText(runtimePlacement.anchor_id)
+      || !runtimePlacement || !sameText(runtimePlacement.scene_position_id)
       || !evidence || !((evidence.schema === 'rus.items.ordinary_world_property_placement_evidence.v2'
         && evidence.version === 2)
         || (evidence.schema === 'rus.items.ordinary_world_property_placement_evidence.v3'

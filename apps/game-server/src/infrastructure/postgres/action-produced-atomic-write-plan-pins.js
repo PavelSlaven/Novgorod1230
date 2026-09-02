@@ -99,7 +99,7 @@ export function actionProducedOwnerOutputDestination(destinationPin,
 }
 
 export function validateActionProducedRowPins(pins, role, actorRef,
-  causalIdentity, accessAnchorId = null) {
+  causalIdentity, accessAnchorId = null, accessScenePositionId = null) {
   const seenItems = new Set();
   const seenResources = new Set();
   for (const pin of pins) {
@@ -150,7 +150,7 @@ export function validateActionProducedRowPins(pins, role, actorRef,
     const finite = finiteSnapshot(pin.finite_resource_row, pin.item_id,
       role, seenResources);
     const expected = expectedEntity(pin, role, actorRef, finite,
-      accessAnchorId, accessContainer);
+      accessAnchorId, accessScenePositionId, accessContainer);
     if (!isDeepStrictEqual(pin.entity_snapshot, expected)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
@@ -186,13 +186,13 @@ function validScenePlacement(value) {
 }
 
 function expectedEntity(pin, role, actorRef, finite,
-  accessAnchorId, accessContainer) {
+  accessAnchorId, accessScenePositionId, accessContainer) {
   const { item, placement, ownership } = pin;
   const prepared = pin.prepared_ordinary != null
     || pin.prepared_action != null;
   const accessState = prepared ? 'quick'
     : actionProducedAccessState(placement, accessContainer, actorRef,
-      accessAnchorId);
+      accessAnchorId, accessScenePositionId);
   const holderRef = [placement.holder_character_id, placement.holder_npc_id]
     .includes(actorRef) ? actorRef : null;
   if (!exact(pin.entity_snapshot, ENTITY_KEYS)
@@ -200,7 +200,7 @@ function expectedEntity(pin, role, actorRef, finite,
       || item.state?.lifecycle_status != null
         && item.state.lifecycle_status !== 'active'
       || !prepared && !actionProducedPlacementAccessible(placement,
-        accessContainer, actorRef, accessAnchorId)
+        accessContainer, actorRef, accessAnchorId, accessScenePositionId)
       || !validOwnership(ownership)
       || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');

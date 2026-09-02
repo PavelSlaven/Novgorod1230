@@ -36,9 +36,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
     const rootId = request.request.root_turn_id;
-    const runtimeAnchorId = request.committed_state?.position?.g5_anchor_id;
-    if (typeof runtimeAnchorId !== 'string' || runtimeAnchorId.length === 0
-        || runtimeAnchorId.trim() !== runtimeAnchorId) {
+    const runtimePositionId = request.committed_state?.position?.position_id;
+    if (typeof runtimePositionId !== 'string' || runtimePositionId.length === 0
+        || runtimePositionId.trim() !== runtimePositionId) {
       return ordinaryNoop(request);
     }
     const objective = { ...enabled.objective_context,
@@ -205,7 +205,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, transition });
       item = admittedItem({ partyId, scopeRef, envelope,
         presence: authorizedPresence, admitted,
-        runtimeAnchorId, authorityProfile });
+        runtimePositionId, authorityProfile });
     }
     if (transition != null && next?.state_version ===
         projection.ordinary_materialization_aggregate.state_version) {
@@ -356,7 +356,7 @@ function presenceTransition({ envelope, presence, aggregate,
     ...(identityKey == null ? {} : { identity_key: identityKey }) };
 }
 function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
-  runtimeAnchorId, authorityProfile }) {
+  runtimePositionId, authorityProfile }) {
   const proposal = admitted.proposal;
   return { item_id: `ordinary_item_${canonicalDigest({ party_id: partyId,
     scope_ref: scopeRef, candidate_key: envelope.identity.candidate_key,
@@ -381,7 +381,7 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   } : {}),
   property_basis_ref: proposal.property_basis_ref,
   position_ref: proposal.placement.position_ref,
-  runtime_placement: { anchor_id: runtimeAnchorId },
+  runtime_placement: { scene_position_id: runtimePositionId },
   mechanics_policy_ref: proposal.runtime_item_mechanics_policy_ref,
   ...(authorityProfile?.weapon_mechanics_snapshot == null ? {}
     : { weapon_mechanics_snapshot:

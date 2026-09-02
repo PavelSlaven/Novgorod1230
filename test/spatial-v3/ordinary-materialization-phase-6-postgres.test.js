@@ -149,7 +149,7 @@ function admittedItem({ request_identity, candidate_key, coverage_key, context_v
   const mechanics_policy_ref = `mechanics-${token}`;
   const evidence = structuredClone(resolveOrdinaryWorldPropertyPlacement({...propertyPlacement,supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],requested_position_ref:position_ref}).evidence);
   const source_refs = [candidate_key,coverage_key,supporting_basis_ref,property_basis_ref,position_ref,mechanics_policy_ref,evidence.property_source_ref,evidence.property_catalog_version_ref,evidence.placement_catalog_version_ref,evidence.placement_context_ref,evidence.property_placement_context_digest].sort();
-  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,runtime_placement:{anchor_id:'ordinary-anchor'},mechanics_policy_ref,
+  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,runtime_placement:{scene_position_id:position_ref},mechanics_policy_ref,
     item_proposal:{schema:'ordinary_world_item_proposal_v1',request_id:request_identity,scope_ref:{...scope},candidate_key,coverage_key,context_version,semantic_descriptor:{semantic_type:'household_tool',name:'wooden spoon',facts:['ordinary']},supporting_basis_ref,property_basis_ref,property_placement_evidence:evidence,placement:{scope_ref:scope.entity_id,position_ref},runtime_item_mechanics_policy_ref:mechanics_policy_ref},
     mechanics_snapshot:{schema:'rus.items.runtime_instance_mechanics_snapshot.v2',version:2,provenance:{source_kind:'ordinary_world_materialization',causal_ref:`cause-${token}`,request_id:request_identity,candidate_key,coverage_key,context_version,policy_ref:mechanics_policy_ref,source_refs},mechanics:{mass_grams:80,external_hand_cost:0,carry_form:'compact',packing_slot_cost:1,quantity:{value:1,unit:'item'},container:null}}};
 }
@@ -550,7 +550,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     causal_basis_refs: [supportingBasis.basis_ref], causal_basis_kind: 'personal_possession',
     condition_state: 'serviceable', permission_refs: ['armament-profile-a'],
     property_basis_ref: 'o2a-property', position_ref: 'o2a-position',
-    runtime_placement: { anchor_id: 'ordinary-anchor' },
+    runtime_placement: { scene_position_id: 'o2a-position' },
     mechanics_policy_ref: 'o2a-mechanics',
     weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
       mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
@@ -943,7 +943,8 @@ function finiteResolverPropertyContext(scope, sourceRef) {
 
 function finiteResolverRequest(rootTurnId, query) {
   return { request: { root_turn_id: rootTurnId }, committed_state: { position: {
-    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor' } },
+    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor',
+    position_id: 'position-reload' } },
   operation: { target_refs: ['finite-reload-scope'], query }, working_projection: {} };
 }
 

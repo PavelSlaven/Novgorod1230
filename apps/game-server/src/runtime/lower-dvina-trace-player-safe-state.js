@@ -57,7 +57,7 @@ export function projectLowerDvinaTracePlayerSafeState({
   const items = projectItems([...(committedState.items ?? []),
     ...containerItems(committedState.containers,
       committedState.container_placements)], {
-    actorId, position, visibleNpcIds
+    actorId, position: committedState.position, visibleNpcIds
   });
   const activeInterlocutor = projectActiveConversationInterlocutor({
     conversation_sessions: committedState.conversation_sessions ?? [],

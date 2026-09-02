@@ -34,10 +34,15 @@ export async function loadActionProducedAccessContainers(client, partyId,
 }
 
 export function actionProducedPlacementAccessible(placement, accessContainer,
-  actorRef, accessAnchorId) {
+  actorRef, accessAnchorId, accessScenePositionId = null) {
   if (actorMatches(placement, actorRef, 'holder_character_id',
     'holder_npc_id')) return true;
   if (text(accessAnchorId) && placement.anchor_id === accessAnchorId
+      && placement.holder_character_id === null
+      && placement.holder_npc_id === null && placement.container_id === null
+      && placement.attached_item_id === null) return true;
+  if (text(accessScenePositionId)
+      && placement.scene_position_id === accessScenePositionId
       && placement.holder_character_id === null
       && placement.holder_npc_id === null && placement.container_id === null
       && placement.attached_item_id === null) return true;
@@ -48,9 +53,9 @@ export function actionProducedPlacementAccessible(placement, accessContainer,
 }
 
 export function actionProducedAccessState(placement, accessContainer,
-  actorRef, accessAnchorId) {
+  actorRef, accessAnchorId, accessScenePositionId = null) {
   if (!actionProducedPlacementAccessible(placement, accessContainer, actorRef,
-    accessAnchorId)) return null;
+    accessAnchorId, accessScenePositionId)) return null;
   return actorMatches(placement, actorRef, 'holder_character_id',
     'holder_npc_id')
       && ['hands', 'equipped', 'worn_quick'].includes(

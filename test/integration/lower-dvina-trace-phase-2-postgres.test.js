@@ -39,13 +39,18 @@ import {
 import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
+import { loadLowerDvinaTraceA1Profile } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-a1-profile.js';
+import { createLowerDvinaTraceA1ProductionResolverFactory } from
+  '../../apps/game-server/src/runtime/releases/lower-dvina-trace-a1-production.js';
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
+  installLowerDvinaTraceV6World, lowerDvinaTraceV6World } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync(
@@ -615,21 +620,55 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
       runtimeCatalogPin
     })
   );
-  await t.test(
-    'partial authored source and detached output survive reload, retry and reuse',
-    () => assertPartialAuthoredA1Persists({
-      pool,
-      release,
-      runtimeCatalogPin
-    })
-  );
-
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
     runtimeCatalogPin,
   });
 });
+
+test('active A1 partial authored result survives reload, retry and reuse',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for isolated A1 PostgreSQL integration');
+      return;
+    }
+    const name = `lower-dvina-a1-${process.pid}`;
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', name]);
+    });
+    const started = docker([
+      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=a1',
+      '-e', 'POSTGRES_DB=a1', 'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    await waitForPostgres(name);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    const port = Number(
+      docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
+    );
+    pool = new pg.Pool({ host: '127.0.0.1', port, user: 'a1',
+      password: 'local_only', database: 'a1', max: 8 });
+    await installSchemas(pool);
+    await installLowerDvinaTraceV6World(pool);
+    const bundle = await loadLowerDvinaTraceMaterializationBundle({
+      scenarioDefinitionRevision: 32
+    });
+    const runtimeCatalogPin = Object.freeze({
+      ...lowerDvinaTracePhase1ADomainPin(bundle),
+      compatible_world_revision_id: lowerDvinaTraceV6World.revision,
+      compatible_world_catalog_digest: lowerDvinaTraceV6World.digest,
+      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest
+    });
+    const release = Object.freeze({ release_id: 'a1-postgres-release',
+      world_revision_id: lowerDvinaTraceV6World.revision,
+      world_catalog_digest: lowerDvinaTraceV6World.digest,
+      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest });
+    await assertPartialAuthoredA1Persists({ pool, release, runtimeCatalogPin });
+  });
 
 async function assertRatshaCaftanTransitionPersists({
   pool,
@@ -765,7 +804,14 @@ async function assertPartialAuthoredA1Persists({
   release,
   runtimeCatalogPin
 }) {
-  const runtimeOptions = { pool, release, runtimeCatalogPin };
+  const loadedProfile = await loadLowerDvinaTraceA1Profile();
+  const runtimeOptions = { pool, release, runtimeCatalogPin,
+    activeScenarioDefinitionRevision: 32,
+    actionProductionProfile: loadedProfile,
+    createTurnStepActionProductionOwner:
+      createLowerDvinaTraceA1ProductionResolverFactory({
+        pool, loadedProfile
+      }) };
   const runtime = buildRuntime({
     ...runtimeOptions, turnStepModel: partialAuthoredA1TestModel
   });
@@ -778,8 +824,9 @@ async function assertPartialAuthoredA1Persists({
   });
   const repository = phase2Repository(pool);
   const initial = await repository.loadPhase2State(opened.party_id);
-  const source = initial.items.find(({ template_id: templateId }) =>
-    templateId === 'trace_ld_v1_item_working_outer_garment');
+  const source = initial.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_working_outer_garment'
+      && item.placement.holder_character_id === initial.actor_id);
   assert.ok(source);
   const input = {
     request_id: 'phase-2-a1-partial',
@@ -820,7 +867,8 @@ async function assertPartialAuthoredA1Persists({
     assert.equal(item.state_version, Number(row.state_version));
     assert.deepEqual(item.state.runtime_instance_mechanics_snapshot,
       row.state.runtime_instance_mechanics_snapshot);
-    assert.deepEqual(item.placement, {
+    const { item_id: _itemId, ...placement } = item.placement;
+    assert.deepEqual(placement, {
       anchor_id: row.anchor_id,
       container_id: row.container_id,
       holder_npc_id: row.holder_npc_id,
@@ -888,9 +936,9 @@ async function a1PersistenceCounts(pool, partyId) {
 }
 
 function partialAuthoredA1TestModel(request) {
-  const source = (request.player_safe_state.items ?? []).find(
-    ({ template_id: templateId }) =>
-      templateId === 'trace_ld_v1_item_working_outer_garment');
+  const source = (request.player_safe_state.items ?? []).find((item) =>
+    item.template_id === 'trace_ld_v1_item_working_outer_garment'
+      && item.placement?.holder_character_id === request.actor.actor_id);
   assert.ok(source, 'authored source is player-safe');
   return actionProductionPlan(request, source.item_id);
 }
@@ -1185,6 +1233,9 @@ function buildRuntime({
   randomDrawObserver = () => {},
   randomValue = null,
   turnStepModel: suppliedTurnStepModel = null,
+  createTurnStepActionProductionOwner = null,
+  actionProductionProfile = null,
+  activeScenarioDefinitionRevision = null,
   repositoryDecorator = (value) => value,
   narrationService = {
     async run(request) {
@@ -1213,6 +1264,8 @@ function buildRuntime({
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
     turnStepModel,
+    createTurnStepActionProductionOwner,
+    actionProductionProfile,
     playerConversationModel,
     npcSemanticModel,
     semanticResolver: async (request) => {
@@ -1260,6 +1313,7 @@ function buildRuntime({
     committer,
     release,
     runtimeCatalogPin,
+    activeScenarioDefinitionRevision,
     traceStartAdapter:
       createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: pool,

@@ -1,0 +1,160 @@
+name: Regenerate documentation knowledge artifacts
+
+on:
+  push:
+    branches:
+      - docs/contract-index-and-auditor-2026-09-02
+    paths:
+      - .github/workflows/docs-knowledge-regenerate.yml
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout documentation branch
+        uses: actions/checkout@v4
+        with:
+          ref: docs/contract-index-and-auditor-2026-09-02
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Synchronize corpus manifest and source alias
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+
+          source_root = Path('data/knowledge-source')
+          documents_root = source_root / 'corpus' / 'DOCUMENTS'
+          manifest_path = source_root / 'corpus-manifest.json'
+          aliases_path = source_root / 'source-aliases.json'
+
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          if manifest.get('schema_version') != 'rus.knowledge_corpus_manifest.v2':
+              raise SystemExit('unexpected corpus manifest schema')
+          documents = manifest.get('documents')
+          if not isinstance(documents, list):
+              raise SystemExit('corpus manifest documents must be a list')
+
+          def digest(path: Path):
+              data = path.read_bytes()
+              return hashlib.sha256(data).hexdigest(), len(data)
+
+          by_name = {record.get('file_name'): record for record in documents}
+          expected_existing = {
+              'README.md': 'documentation-corpus-readme',
+              'code_critic_invocation_rule.txt': 'code-critic-invocation-rule',
+              'llm_documentation_navigation.md': 'llm-documentation-navigation',
+          }
+          for file_name, document_id in expected_existing.items():
+              record = by_name.get(file_name)
+              if record is None or record.get('document_id') != document_id:
+                  raise SystemExit(f'unexpected manifest record for {file_name}')
+              sha256, size = digest(documents_root / file_name)
+              record['sha256'] = sha256
+              record['bytes'] = size
+
+          index_name = 'CONTRACT_INDEX.md'
+          index_id = 'contract-index'
+          index_record = by_name.get(index_name)
+          if index_record is not None and index_record.get('document_id') != index_id:
+              raise SystemExit('CONTRACT_INDEX.md is registered under an unexpected document_id')
+          sha256, size = digest(documents_root / index_name)
+          if index_record is None:
+              documents.append({
+                  'document_id': index_id,
+                  'canonical_path': f'corpus/DOCUMENTS/{index_name}',
+                  'file_name': index_name,
+                  'sha256': sha256,
+                  'bytes': size,
+                  'status': 'active',
+                  'provenance_mode': 'native',
+              })
+          else:
+              index_record['sha256'] = sha256
+              index_record['bytes'] = size
+
+          manifest['documents'] = sorted(documents, key=lambda item: item['document_id'])
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          aliases = json.loads(aliases_path.read_text(encoding='utf-8'))
+          if aliases.get('schema_version') != 'rus.knowledge_source_aliases.v1' or not isinstance(aliases.get('aliases'), dict):
+              raise SystemExit('unexpected source aliases schema')
+          prior = aliases['aliases'].get(index_name)
+          if prior not in (None, index_id):
+              raise SystemExit('CONTRACT_INDEX.md alias conflicts with an existing document')
+          aliases['aliases'][index_name] = index_id
+          aliases_path.write_text(json.dumps(aliases, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Generate and verify deterministic documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run docs:generate
+          npm run knowledge:check-corpus
+          npm run knowledge:check
+          npm run docs:check
+          git diff --check
+
+          python <<'PY'
+          import subprocess
+
+          changed = [
+              line.strip()
+              for line in subprocess.check_output(
+                  ['git', 'diff', '--name-only'], text=True
+              ).splitlines()
+              if line.strip()
+          ]
+          allowed_exact = {
+              'data/knowledge-source/corpus-manifest.json',
+              'data/knowledge-source/source-aliases.json',
+          }
+          unexpected = [
+              path for path in changed
+              if path not in allowed_exact and not path.startswith('generated/knowledge-source/')
+          ]
+          if unexpected:
+              raise SystemExit('unexpected generated changes: ' + ', '.join(unexpected))
+          if 'data/knowledge-source/corpus-manifest.json' not in changed:
+              raise SystemExit('corpus manifest did not change')
+          required_generated = {
+              'generated/knowledge-source/graph/manifest.json',
+              'generated/knowledge-source/rag/lexical-index.json',
+              'generated/knowledge-source/rag/manifest.json',
+              'generated/knowledge-source/manifests/knowledge-source-generated-manifest.json',
+          }
+          missing = sorted(required_generated.difference(changed))
+          if missing:
+              raise SystemExit('expected generated changes are missing: ' + ', '.join(missing))
+          print('Validated changed files:')
+          print('\n'.join(changed))
+          PY
+
+      - name: Commit generated outputs and remove one-off workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/docs-knowledge-regenerate.yml
+          git add data/knowledge-source/corpus-manifest.json \
+                  data/knowledge-source/source-aliases.json \
+                  generated/knowledge-source
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: synchronize contract index knowledge artifacts"
+          git push origin HEAD:docs/contract-index-and-auditor-2026-09-02

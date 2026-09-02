@@ -46,15 +46,17 @@ test('canonical documentation preserves active guidance without obsolete workflo
   assert.doesNotMatch(agents, /Перед любой задачей полностью прочитай/u);
   assert.doesNotMatch(agents, /Перед grep, file search, GitHub code search/u);
   assert.doesNotMatch(agents, /PR №13/u);
+  assert.match(agents, /Канонический индекс контрактов/u);
 
   const developmentRules = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/development_rules.txt'), 'utf8');
   assert.match(developmentRules, /Эти правила реализуют active-архитектуру materialization v2 и проверяются единым release gate/u);
   assert.doesNotMatch(developmentRules, /До повышения `code_driven_world_materialization_architecture\.md` в active/u);
 
   const navigation = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md'), 'utf8');
-  assert.match(navigation, /Актуализировано: 2026-08-03/u);
-  assert.match(navigation, /## 1\. Приоритет источников\s+1\. `code_driven_world_materialization_architecture\.md`[\s\S]*2\. Профильный норматив[\s\S]*3\. `development_rules\.txt`[\s\S]*4\. DDL, схемы и формальные контракты/u);
-  assert.doesNotMatch(navigation, /Профильный документ по конкретной системе имеет высший приоритет/u);
+  assert.match(navigation, /Status:\*\* superseded navigation filename retained for compatibility/u);
+  assert.match(navigation, /canonical documentation map is now \[`CONTRACT_INDEX\.md`\]\(CONTRACT_INDEX\.md\)/iu);
+  assert.match(navigation, /1\. root \[`AGENTS\.md`\][\s\S]*2\. \[`CONTRACT_INDEX\.md`\][\s\S]*active release\/profile\/bindings/u);
+  assert.match(navigation, /Proposed, migration, historical and reference documents are not current production contracts/u);
 });
 
 test('committed documentation and generated data are reproducible', async () => {

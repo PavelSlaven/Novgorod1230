@@ -4,8 +4,6 @@ const ROLE_MODELS = Object.freeze({
   TURN_INTENT_ROUTER_MODEL: 'fixture-intent-router',
   TURN_STEP_PLANNER_MODEL: 'fixture-turn-step-planner',
   TURN_STEP_PLANNER_REPAIR_MODEL: 'fixture-turn-step-planner-repair',
-  TURN_STEP_GROUNDING_AUDITOR_MODEL:
-    'fixture-turn-step-grounding-auditor',
   TURN_SPATIAL_SEMANTIC_DESCRIPTOR_MODEL:
     'fixture-spatial-semantic-descriptor',
   PLAYER_CONVERSATION_INTERPRETER_MODEL:
@@ -15,8 +13,6 @@ const ROLE_MODELS = Object.freeze({
   NPC_CONVERSATION_RESPONDER_MODEL: 'fixture-npc-conversation-responder',
   NPC_CONVERSATION_RESPONDER_REPAIR_MODEL:
     'fixture-npc-conversation-responder-repair',
-  NPC_CONVERSATION_GROUNDING_AUDITOR_MODEL:
-    'fixture-npc-conversation-grounding-auditor',
   NPC_AUTONOMOUS_DECIDER_MODEL: 'fixture-npc-autonomous-decider',
   NPC_AUTONOMOUS_DECIDER_REPAIR_MODEL:
     'fixture-npc-autonomous-decider-repair',

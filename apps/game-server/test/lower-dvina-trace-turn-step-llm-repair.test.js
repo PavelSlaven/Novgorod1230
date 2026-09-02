@@ -103,6 +103,8 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'never preserve a ref whose descriptors identify another object'), true);
   assert.equal(seen.messages[0].content.includes(
+    'For action_production_identity_grounding'), true);
+  assert.equal(seen.messages[0].content.includes(
     'remove the unavailable domain operation instead of preserving it'), true);
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);

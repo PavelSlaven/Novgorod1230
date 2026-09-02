@@ -124,7 +124,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
       loadLowerDvinaTraceScenePresentation({
         rootDir: config.rootDir ?? process.cwd(),
-        scenarioDefinitionRevision: 31
+        scenarioDefinitionRevision: 32
       }),
       loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()

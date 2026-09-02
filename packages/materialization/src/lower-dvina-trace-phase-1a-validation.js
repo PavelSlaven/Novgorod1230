@@ -27,7 +27,8 @@ export function assertLowerDvinaTracePhase1AValidation({
 
 function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scenarioId) {
   const bindings = bundle.materialization_bindings;
-  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19].includes(definitionRevision)) {
+  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,
+    revisions.m20].includes(definitionRevision)) {
     if (bindings?.binding_set_id
         !== 'lower_dvina_trace_phase_1a_materialization_bindings_v23'
       || bindings.scenario_definition_revision !== 27
@@ -187,7 +188,8 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
-  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19].includes(definitionRevision)) {
+  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,
+    revisions.m20].includes(definitionRevision)) {
     const manifest = bundle.phase_1a_manifest;
     if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v23'
       || manifest.revision !== 23 || manifest.scenario_definition_revision !== 27

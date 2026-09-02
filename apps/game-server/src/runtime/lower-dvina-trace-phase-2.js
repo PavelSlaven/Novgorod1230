@@ -164,8 +164,8 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
-        const turn10 = bundle.definition_revision <= 31 ? createTraceTurn10Runtime({
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const turn10 = bundle.definition_revision <= 32 ? createTraceTurn10Runtime({
           state,
           bundle,
           phase3Contracts,
@@ -246,16 +246,16 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
           ordinaryDiscoveryScopeBinding,
-          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? actionProductionProfile : null,
-          createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28, 29, 30, 31].includes(bundle.definition_revision) ? localFireProfile : null,
+          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32].includes(bundle.definition_revision) ? actionProductionProfile : null,
+          createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32].includes(bundle.definition_revision) ? localFireProfile : null,
           createTurnStepSpatialSemanticResolver:
             activeSpatialSemanticProfile == null
               ? null : createTurnStepSpatialSemanticResolver,
           spatialSemanticProfile: activeSpatialSemanticProfile,
           createTurnStepBackgroundNpcResolver:
-            bundle.definition_revision === 31
+            [31, 32].includes(bundle.definition_revision)
               ? createTurnStepBackgroundNpcResolver : null,
-          npcSemanticRemainderProfile: bundle.definition_revision === 31
+          npcSemanticRemainderProfile: [31, 32].includes(bundle.definition_revision)
             ? npcSemanticRemainderProfile : null,
           admitAmbientOrdinaryPortion:
             typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'

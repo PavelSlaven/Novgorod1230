@@ -155,6 +155,19 @@ test('revision 31 pins scene presentation v2 without scene authority', async () 
   assert.equal(/entity|inventory|affordance/i.test(JSON.stringify(camp)), false);
 });
 
+test('revision 32 publishes the authored A1 item mechanics cutover', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 32
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v27');
+  assert.equal(publication.definition.revision, 32);
+  assert.equal(publication.binding.execution_identity
+    .scenario_definition_revision, 32);
+  assert.equal(publication.definition.immutable_content_refs
+    .a1_authored_item_mechanics_profile.digest,
+  '5a98b0e914427da95f7d674d4e7be7c782ff524916160b40a07fafef316bef36');
+});
+
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {
   for (const [relative, code] of [
     [

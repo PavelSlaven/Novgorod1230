@@ -9,7 +9,7 @@ export async function completePendingTracePhase10Replay({ partyId,
   idempotencyKey, replay, repository, bundleLoader, turnBudget = null }) {
   if (!tracePhase10Pending(replay.state)) return replay;
   const revision = committedTraceScenarioDefinitionRevision(replay.state);
-  if (![18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].includes(revision)) return replay;
+  if (![18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32].includes(revision)) return replay;
   const bundle = await runWithinTurnDeadline(turnBudget, () => bundleLoader({
     scenarioDefinitionRevision: revision,
   }));

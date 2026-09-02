@@ -60,6 +60,44 @@ test('grounding audit includes every direct and checked action production',
     ]);
   });
 
+test('grounding audit rejects preserving a source when intent detaches a result',
+  async () => {
+    let payload;
+    const actionProduction = {
+      source_refs: ['item:shirt'], tool_refs: [],
+      identity_mode: 'preserve_source', origin: null,
+      result_class: 'ordinary_physical_result', material_extent: null,
+      requested_output_count: null, output_class: 'ordinary_mundane',
+      result_descriptor: { physical_form: 'compact',
+        physical_description: 'Полоса полотна отделена от рубахи.',
+        physical_facts: [], removed_physical_fact_refs: [],
+        source_fact_delta: null, inscription_text: null }
+    };
+    const result = await auditTurnStepSourceGrounding({
+      roleRunner: { async run(call) {
+        payload = JSON.parse(call.messages[1].content);
+        return { output: { pass: false, concerns: [{
+          kind: 'action_production_identity_mismatch',
+          reason: 'A detached strip cannot preserve the shirt as the result.'
+        }] } };
+      } },
+      plan: { operations: [{ op: 'request_item_use',
+        action_production: actionProduction }], continuation: {
+        remaining_intent: 'Скрутить полосу, перевязать плечо и идти к следам.',
+        depends_on_refs: [] } },
+      request: { request_id: 'shirt-partition',
+        root_player_action: 'Отрываю край рубахи, скручиваю жгут, перевязываю плечо и иду к следам.',
+        remaining_intent: 'Отрываю край рубахи, скручиваю жгут, перевязываю плечо и иду к следам.',
+        completed_steps: [], player_safe_state: { items: [{
+          item_id: 'item:shirt', category_id: 'linen_shirt' }] } }
+    });
+    assert.equal(result.errors[0].code,
+      'action_production_identity_grounding');
+    assert.deepEqual(payload.action_productions[0].action_production,
+      actionProduction);
+    assert.match(payload.continuation.remaining_intent, /перевязать плечо/u);
+  });
+
 test('grounding audit reports an explicit source relocation omitted by plan',
   async () => {
     let call;

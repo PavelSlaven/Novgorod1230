@@ -12,7 +12,7 @@ export async function loadLowerDvinaTraceN1Profile({
   const [raw, bundle] = await Promise.all([
     readFile(resolve(rootDir, PATH)),
     loadLowerDvinaTraceMaterializationBundle({ rootDir,
-      scenarioDefinitionRevision: 31 })
+      scenarioDefinitionRevision: 32 })
   ]);
   if (createHash('sha256').update(raw).digest('hex') !== TRACE_N1_PROFILE_DIGEST) fail();
   let profile;
@@ -42,7 +42,7 @@ export async function loadLowerDvinaTraceN1Profile({
         !== profile.forbidden_authority.length
       || ref?.id !== profile.profile_id || ref?.revision !== 1
       || ref?.digest !== TRACE_N1_PROFILE_DIGEST
-      || bundle?.definition_revision !== 31) fail();
+      || bundle?.definition_revision !== 32) fail();
   return Object.freeze({ schema: 'rus.lower_dvina_trace_n1_loaded_profile.v1',
     profile: deepFreeze(profile), digest: TRACE_N1_PROFILE_DIGEST });
 }

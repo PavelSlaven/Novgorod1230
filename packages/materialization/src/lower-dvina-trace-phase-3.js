@@ -176,7 +176,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     use_state: rope.use_state
   };
   if (input.scenario_definition_revision >= 12
-      && input.scenario_definition_revision <= 31) {
+      && input.scenario_definition_revision <= 32) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',

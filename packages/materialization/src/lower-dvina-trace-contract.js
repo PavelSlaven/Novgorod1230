@@ -33,6 +33,7 @@ import {
   M17_ARTIFACT_CONTRACT_OVERRIDES,
   M18_ARTIFACT_CONTRACT_OVERRIDES,
   M19_ARTIFACT_CONTRACT_OVERRIDES,
+  M20_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_4_ARTIFACT_CONTRACT_OVERRIDES,
@@ -68,6 +69,7 @@ export const LOWER_DVINA_TRACE_M16_DEFINITION_REVISION = 28;
 export const LOWER_DVINA_TRACE_M17_DEFINITION_REVISION = 29;
 export const LOWER_DVINA_TRACE_M18_DEFINITION_REVISION = 30;
 export const LOWER_DVINA_TRACE_M19_DEFINITION_REVISION = 31;
+export const LOWER_DVINA_TRACE_M20_DEFINITION_REVISION = 32;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
@@ -109,11 +111,12 @@ export function assertLowerDvinaTraceRequest(input) {
       ,LOWER_DVINA_TRACE_M17_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M18_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M19_DEFINITION_REVISION
+      ,LOWER_DVINA_TRACE_M20_DEFINITION_REVISION
     ]
       .includes(input.scenario_definition_revision)) {
     fail(
       'TRACE_SCENARIO_REVISION_UNSUPPORTED',
-      'Only approved Lower Dvina trace definition revisions 7 through 26 are supported.'
+      'The requested Lower Dvina trace definition revision is not approved.'
     );
   }
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
@@ -237,12 +240,16 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
       ,m17: LOWER_DVINA_TRACE_M17_DEFINITION_REVISION
       ,m18: LOWER_DVINA_TRACE_M18_DEFINITION_REVISION
       ,m19: LOWER_DVINA_TRACE_M19_DEFINITION_REVISION
+      ,m20: LOWER_DVINA_TRACE_M20_DEFINITION_REVISION
     }
   });
   return bundle;
 }
 
 function artifactContractFor(key, definitionRevision) {
+  if (definitionRevision === LOWER_DVINA_TRACE_M20_DEFINITION_REVISION) {
+    return M20_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
+  }
   if (definitionRevision === LOWER_DVINA_TRACE_M18_DEFINITION_REVISION) {
     return M18_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   }

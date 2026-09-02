@@ -291,6 +291,32 @@ test('revision 31 Stage 24 persists inherited NPC context', async () => {
   ));
 });
 
+test('revision 32 persists complete mechanics for every initial item', async () => {
+  const revision32 = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 32
+  });
+  const fixture = await stage24Fixture({ revision: 32, bundle: revision32,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision32) });
+  const stage24 = await runStage24PartyDbWritePlan({ input: fixture.input,
+    builder: buildLowerDvinaTracePhase1AWritePlan,
+    auditor: (request) => auditPartyDbWritePlanByCode({ ...request,
+      stage24_input: fixture.input }) });
+  const items = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_items').records;
+  assert.ok(items.length > 0);
+  for (const { item_id: itemId, state } of items) {
+    const mechanics = state.inventory_profile_snapshot;
+    assert.ok(mechanics, itemId);
+    assert.equal(Number.isSafeInteger(mechanics.mass_grams), true, itemId);
+    assert.equal([0, 1, 2].includes(mechanics.external_hand_cost), true, itemId);
+    assert.equal(['compact', 'regular', 'long', 'bulky']
+      .includes(mechanics.carry_form), true, itemId);
+    assert.equal(Number.isSafeInteger(mechanics.packing_slot_cost), true, itemId);
+    assert.equal(mechanics.quantity ?? null, null, itemId);
+    assert.equal(mechanics.container ?? null, null, itemId);
+  }
+});
+
 test('unknown table and forbidden operation fail before the transaction executor', async () => {
   const { stage24, schema } = await canonicalStage24();
   stage24.party_db_write_plan.write_batches[0].target_table = 'unknown_party_table';

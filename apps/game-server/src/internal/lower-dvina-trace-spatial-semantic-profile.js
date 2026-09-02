@@ -74,6 +74,12 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
         === 'lower_dvina_trace_phase_1a_materialization_bindings_v23'
       && binding.scenario_definition_revision === 27
       && bundle.definition?.immutable_content_refs?.spatial_semantic_profile
+        ?.digest === pin?.digest,
+    bundle?.definition_revision === 32
+      && binding?.binding_set_id
+        === 'lower_dvina_trace_phase_1a_materialization_bindings_v23'
+      && binding.scenario_definition_revision === 27
+      && bundle.definition?.immutable_content_refs?.spatial_semantic_profile
         ?.digest === pin?.digest
   ].some(Boolean))
     && loaded?.schema === 'rus.lower_dvina_trace_s1_loaded_profile.v1'

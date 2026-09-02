@@ -178,10 +178,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
-  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
   const revision26S1Preparation=revision>=26?materializeLowerDvinaTraceFirstEntryPreparationMembers({input,bundle,camp:phase3Prepared,shed:phase4Prepared,locationSelections}):null;
-  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
     bundle.item_inventory_profiles,
@@ -251,7 +251,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const materializedNpcs = phase3Prepared ? [...phase3Prepared.npcs,
     ...(phase4Prepared ? phase4Prepared.npcs : []),
     ...(phase7Prepared ? [phase7Prepared.npc] : [])] : [];
-    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30,31].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
+    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
   const revision19EquipmentHandoff = revision19Actors
     ? {
       party_id: input.party_id,
@@ -271,8 +271,9 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       initial_equipment_candidates:
         bundle.item_container_set.initial_equipment_candidates,
       item_templates: bundle.item_container_set.item_templates,
-      item_inventory_profiles:
-        bundle.item_container_set.item_inventory_profiles,
+      item_inventory_profiles: bundle.item_container_set
+        .item_inventory_profiles.map((profile) =>
+          completeAuthoredItemMechanics(bundle, profile)),
       item_visual_profiles:
         bundle.item_container_set.item_visual_profiles,
       catalog_digest: bundle.artifact_pins.item_container_set.digest
@@ -397,6 +398,12 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       : {}),
     ...(phase4Promise ? { promise_instances: [phase4Promise] } : {})
   };
+  if (revision === 32) {
+    for (const item of immediate.items) {
+      item.state.inventory_profile_snapshot = completeAuthoredItemMechanics(
+        bundle, item.state.inventory_profile_snapshot);
+    }
+  }
   const validationReport = {
     pass: true,
     checks: {
@@ -489,6 +496,21 @@ function selectParticipants(set, playerProfile, bindings, random, choices) {
   const expected = new Set(set.participant_slots);
   if (results.length !== expected.size || results.some((item) => !expected.has(item.slot_key))) fail('PARTICIPANT_SELECTION_INCOMPLETE', 'Participant slots must resolve exactly.');
   return results;
+}
+
+function completeAuthoredItemMechanics(bundle, profile) {
+  if (bundle.definition_revision !== 32) return structuredClone(profile);
+  const profileRef = profile?.inventory_profile_id ?? profile?.id;
+  const matches = bundle.a1_authored_item_mechanics_profile?.profiles
+    ?.filter(({ profile_ref: ref }) => ref === profileRef) ?? [];
+  if (matches.length !== 1) {
+    fail('TRACE_REVISION_32_ITEM_MECHANICS_INVALID',
+      `Authored item profile ${String(profileRef)} has no exact mechanics.`);
+  }
+  return { ...structuredClone(profile),
+    packing_slot_cost: matches[0].packing_slot_cost,
+    quantity: structuredClone(matches[0].quantity),
+    container: matches[0].container };
 }
 
 function selectLocations(set, random, choices) {

@@ -70,8 +70,20 @@ export function validateTurnStepPlan(value, { request } = {}) {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
   }
-  if (request !== undefined) validateEcho(value, request, errors);
+  if (request !== undefined) {
+    validateEcho(value, request, errors);
+    validateContinuationProgress(value, request, operationKinds, errors);
+  }
   return result(errors);
+}
+
+function validateContinuationProgress(plan, request, operationKinds, errors) {
+  if (plan.continuation?.remaining_intent !== request.remaining_intent) return;
+  const domainKinds = operationKinds.filter((kind) => DOMAIN_OPS.has(kind));
+  if (domainKinds.length === 0 || domainKinds.every(
+    (kind) => kind === 'request_discovery')) return;
+  add(errors, '$.continuation.remaining_intent', 'continuation_progress',
+    'must omit the event covered by the selected domain operation');
 }
 
 function validateInterpretation(value, path, errors) {

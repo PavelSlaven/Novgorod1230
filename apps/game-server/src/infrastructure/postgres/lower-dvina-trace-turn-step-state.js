@@ -210,8 +210,11 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       envelope.time_update.clock_after.subminute_denominator,
     updated_change_set_id: changeSetId
   }));
-  if (envelope.consequence?.generic_known_route === true
-      && envelope.consequence?.phase3_kind === 'movement') {
+  const routeMovement = envelope.consequence?.phase3_kind === 'movement'
+    || envelope.consequence?.phase8_kind === 'movement';
+  const localMovement = envelope.consequence?.position_transition?.owner
+    === '@rus/movement-routes';
+  if (routeMovement || localMovement) {
     writes.updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: snapshot.position.g4_id,

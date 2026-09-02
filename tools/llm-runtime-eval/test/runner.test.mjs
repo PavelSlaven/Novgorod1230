@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 24);
+  assert.equal(corpus.corpus_version, 25);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;

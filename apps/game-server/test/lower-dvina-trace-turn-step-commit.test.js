@@ -34,7 +34,7 @@ import {
   commitEnvelope
 } from './lower-dvina-trace-turn-step-envelope-fixture.js';
 
-test('generic known-route turn keeps normalized party position with snapshot', () => {
+test('route turn keeps normalized party position with snapshot', () => {
   const writes = buildLowerDvinaTraceTurnStepRootWrites({
     partyId: 'party', state: { party_state: {},
       body_state: { active_conditions: [] } },
@@ -42,7 +42,7 @@ test('generic known-route turn keeps normalized party position with snapshot', (
       g5_anchor_id: 'anchor' }, body_state: { active_conditions: [] } },
     envelope: { root_turn_id: 'turn', body_update: { applied: false,
       proposal: null },
-      consequence: { generic_known_route: true, phase3_kind: 'movement' } },
+      consequence: { phase3_kind: 'movement' } },
     nextVersion: 2, turnNumber: 2, changeSetId: 'change', idemId: 'idem',
     pendingScreen: {}, clockChanged: false
   });

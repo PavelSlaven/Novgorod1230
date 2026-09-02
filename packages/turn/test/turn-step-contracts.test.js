@@ -225,6 +225,21 @@ test('continuation rejects a reserved future domain operation', () => {
     code === 'additional_property'), true);
 });
 
+test('continuation cannot repeat intent after a non-discovery domain step', () => {
+  const source = request();
+  const repeated = plan({ continuation: {
+    remaining_intent: source.remaining_intent, depends_on_refs: []
+  } });
+  const invalid = validateTurnStepPlan(repeated, { request: source });
+  assert.equal(invalid.errors.some(({ code }) =>
+    code === 'continuation_progress'), true);
+
+  repeated.operations = [{ op: 'request_discovery',
+    actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+    target_refs: ['sand_bank'], query: 'осмотреть берег' }];
+  assert.equal(validateTurnStepPlan(repeated, { request: source }).ok, true);
+});
+
 test('plan validation admits refs exposed through a plural ref array', () => {
   const source = request();
   source.player_safe_state.destination_refs = ['location:camp'];

@@ -5,3 +5,7 @@ data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_an
 data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m20-content/definition.json -whitespace
 data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v27/publication-binding.json -whitespace
 data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v27/manifest.json -whitespace
+# Rev31 publication/profile bytes are likewise referenced by exact SHA-256 pins.
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m19-content/definition.json -whitespace
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v26/*.json -whitespace
+data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-2-v31/*.json -whitespace

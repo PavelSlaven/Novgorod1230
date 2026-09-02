@@ -108,6 +108,16 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
         partyPool: setup.pools.partyPool,
         worldPool: setup.pools.worldPool
       },
+      npcSemanticRemainderProfile: {
+        digest: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_digest,
+        profile: {
+          profile_id: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_id,
+          revision: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_revision,
+          scenario_definition_revision:
+            TEST_RELEASE.scenario_profile_exact_pins
+              .n1_profile_scenario_definition_revision
+        }
+      },
       release: TEST_RELEASE
     }
   );
@@ -127,18 +137,55 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
   assert.deepEqual(calls.map(({ method }) => method), ['submitTurn']);
   assert.deepEqual(bindings.runtimeCatalogPin, TEST_RUNTIME_CATALOG_PIN);
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
-    'novgorod_spatial_v3_production_v5_candidate_001');
+    'novgorod_spatial_v3_production_v6_candidate_001');
   assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
-    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad');
+    '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad');
 });
 
-test('production-v13 is the sole release', () => {
+test('production-v14 is the sole release and pins the active N1 slice', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.release_id,
-    'spatial-v3-production-v13');
+    'spatial-v3-production-v14');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.runtime_selectable_in_canonical_production,
     false);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
-    'novgorod_spatial_v3_production_v5_candidate_001');
+    'novgorod_spatial_v3_production_v6_candidate_001');
+  assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.scenario_profile_exact_pins, {
+    scenario_definition_revision: 32,
+    scenario_definition_digest:
+      '30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635',
+    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v23',
+    phase_1a_manifest_digest:
+      '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101',
+    phase_1b_package_id: 'lower_dvina_trace_phase_1b_v27',
+    phase_1b_manifest_digest:
+      'feeea173c07a430d7eff230aa95d949c46d06d5a31fb71c662a9e804d2e315f8',
+    phase_1b_binding_digest:
+      '9af689725c97d657e04cbd76f703517ed1d0f254329c268092b1e2c8a79b1921',
+    n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
+    n1_profile_revision: 1,
+    n1_profile_scenario_definition_revision: 31,
+    n1_profile_digest:
+      '0e44bc05cd6e27aa962eee7d3114209a1b9959d447fc72679e743c16176d4aeb'
+  });
+});
+
+test('production-v14 binding rejects the unversioned v13 and N1 mix', async () => {
+  await assert.rejects(
+    loadSpatialV3RuntimeBindings(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, {
+      release: { ...TEST_RELEASE, release_id: 'spatial-v3-production-v13' },
+      npcSemanticRemainderProfile: {
+        digest: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_digest,
+        profile: {
+          profile_id: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_id,
+          revision: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_revision,
+          scenario_definition_revision:
+            TEST_RELEASE.scenario_profile_exact_pins
+              .n1_profile_scenario_definition_revision
+        }
+      }
+    }),
+    /exact spatial-v3-production-v14 semantic release/u
+  );
 });
 
 function fixture() {
@@ -231,7 +278,8 @@ function fixture() {
         startNewGame: async () => ({ ok: true, owner: 'v5' }),
         acknowledgeOpening: async () => ({ ok: true, owner: 'v5' }),
         submitTurn: async () => ({ ok: true, owner: 'v5' }),
-        getPartyScreen: async () => ({ ok: true, owner: 'v5' })
+        getPartyScreen: async () => ({ ok: true, owner: 'v5' }),
+        recoverPendingPresentation: async () => ({ ok: true, owner: 'v5' })
       }),
       releaseBinding: { ...release },
       runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
@@ -246,7 +294,7 @@ function fixture() {
   };
 }
 
-test('v5 release requires exact committed activation readback', () => {
+test('production release requires exact committed activation readback', () => {
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.release_status,
     'validated_candidate_not_active'
@@ -285,13 +333,13 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v13 root is sole owner', async () => {
+test('production-v14 root is sole owner', async () => {
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
-    world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
+    world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',
     world_catalog_digest:
-      'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
+      '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
     world_catalog_manifest_sha256:
-      '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c'
+      '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb'
   });
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
@@ -692,7 +740,7 @@ test('restart extends the exact immutable catalog ledger through migration 030',
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config selects only builtin production-v13 binding', () => {
+test('cutover config selects only builtin production-v14 binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST
@@ -707,7 +755,7 @@ test('cutover config selects only builtin production-v13 binding', () => {
   );
   assert.equal(assertModularStartupConfig(configured), configured);
   assert.equal(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
-    'builtin:spatial-v3-production-v13');
+    'builtin:spatial-v3-production-v14');
   assert.throws(
     () => assertModularStartupConfig(readServerConfig({
       RUS_SPATIAL_V3_BINDINGS_MODULE:

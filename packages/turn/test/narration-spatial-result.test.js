@@ -5,7 +5,7 @@ import { spatialResult } from '../src/stages/narration.js';
 test('non-movement action does not become narrator scene material', () => {
   assert.deepEqual(spatialResult({ retrievedState: { position: {
     location_ref: 'camp' } }, consequence: { movement: null } }), {
-    
+
   });
 });
 

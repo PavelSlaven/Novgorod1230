@@ -14,15 +14,9 @@ import { resolveWorldProcessRemainder } from './turn-step-world-process-remainde
 export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 export { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
-  'request_discovery',
-  'request_container_access',
-  'request_movement',
-  'request_item_use',
-  'request_activity',
-  'emit_interaction',
-  'request_conversation',
-  'request_combat',
-  'request_world_process'
+  'request_discovery', 'request_container_access', 'request_movement',
+  'request_item_use', 'request_activity', 'emit_interaction',
+  'request_conversation', 'request_combat', 'request_world_process'
 ]);
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
@@ -423,7 +417,6 @@ export async function resolveBoundTurnStepCommand({
     })
   };
 }
-
 function activeConversationOperations(operations, playerSafeState) {
   const target = playerSafeState?.active_interlocutor?.entity_ref?.entity_id;
   if (typeof target !== 'string') return [];
@@ -498,7 +491,6 @@ export function createTurnStepDomainOwnerPreflight(input) {
     isBackgroundNpcSemanticRemainderInScope,
     isActionProductionOwnerInScope, turnCommandError });
 }
-
 function turnCommandError(code, message, details = undefined) {
   return Object.assign(new Error(message), { code,
     ...(details === undefined ? {} : { details: deepFreeze(structuredClone(details)) })

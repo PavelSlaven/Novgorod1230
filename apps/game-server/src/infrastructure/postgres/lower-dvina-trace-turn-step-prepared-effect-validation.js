@@ -1,17 +1,9 @@
-import {
-  buildTurnStepPreparedBodyUpdate,
-  buildTurnStepPreparedTimeUpdate,
-  requireTurnStepPreparedEffectLedger
-} from '@rus/turn';
-import {
-  isPreparedDirectContinuation,
-  preparedEffectFail,
-  samePreparedValue,
-  validateAuthoritativePreparedRoute,
-  validatePreparedBodyReplay,
-  validatePreparedDirectSlice,
-  validLocalFireIntermediateTrace
-} from './lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import { buildTurnStepPreparedBodyUpdate, buildTurnStepPreparedTimeUpdate,
+  requireTurnStepPreparedEffectLedger } from '@rus/turn';
+import { isPreparedDirectContinuation, preparedEffectFail, samePreparedValue,
+  validateAuthoritativePreparedRoute, validatePreparedBodyReplay,
+  validatePreparedDirectSlice, validLocalFireIntermediateTrace } from
+  './lower-dvina-trace-turn-step-prepared-effect-authority.js';
 import { validatePreparedRouteTraceLineage } from
   './lower-dvina-trace-turn-step-prepared-route-lineage.js';
 import { mergePreparedRecord, samePreparedTimeBase } from
@@ -34,7 +26,6 @@ import {
 } from '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
 import { PHASE9_PREPARED_COMMANDS, validatePreparedPhase9 } from
   './lower-dvina-trace-phase-9-prepared-validation.js';
-
 const ROUTE_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
 const KNOWN_ROUTE_COMMAND = 'lower_dvina_trace.follow_admitted_known_route:';
 const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat'; const DEFERRED_DOMAIN_OPERATIONS = new Set([
@@ -178,7 +169,6 @@ export function validatePreparedEffectCommit({
   });
   return { prepared: true, routeSlice: route, directSlice: direct };
 }
-
 function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   const slice = ledger.slices[0];
   const trace = envelope?.loop_trace?.step_traces?.[0];
@@ -211,7 +201,6 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   }
   return { prepared: true, combatSlice: slice };
 }
-
 function validateRouteOnlyBoundaryTrace({
   routeTrace,
   directTrace,
@@ -266,7 +255,6 @@ function validateRouteOnlyBoundaryTrace({
       'route-only boundary trace is not an exact deferred step');
   }
 }
-
 function expectedPreparedConsequence({
   route,
   direct,

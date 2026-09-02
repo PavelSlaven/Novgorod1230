@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { recheckTracePhase3LocationCapacity } from './recheck-location-capacity.js';
+import { recheckTracePhase3PreparedLocationCapacity } from
+  './recheck-prepared-location-capacity.js';
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 import { recheckPhase6TargetedAdmission } from './recheck-phase6-admission.js';
 import { recheckS1LocalMovement } from './recheck-s1-local-movement.js';
@@ -151,30 +153,6 @@ export async function firstPlayableCommitRecheck({ transaction, party_id: partyI
     });
   }
   return Object.freeze({ ok: true });
-}
-
-async function recheckTracePhase3PreparedLocationCapacity({ transaction, partyId, check }) {
-  if (!nonEmpty(check.preparation_snapshot_id)
-      || !Number.isInteger(check.preparation_member_ordinal)
-      || !nonEmpty(check.preparation_claim_id)
-      || !Number.isInteger(check.max_actors) || check.max_actors < 1
-      || !Array.isArray(check.expected_present_npcs)
-      || check.expected_present_npcs.length + 1 > check.max_actors) {
-    return resultOf(false, 'relation_capacity_undefined');
-  }
-  const result = await transaction.query(
-    `SELECT 1
-       FROM party_runtime.preparation_snapshot_members m
-       JOIN party_runtime.preparation_claims c
-         ON c.preparation_snapshot_id=m.preparation_snapshot_id
-        AND c.preparation_member_ordinal=m.ordinal
-      WHERE m.preparation_snapshot_id=$1 AND m.ordinal=$2 AND c.id=$3
-        AND c.claim_status='reserved' FOR UPDATE`,
-    [check.preparation_snapshot_id, check.preparation_member_ordinal,
-      check.preparation_claim_id]
-  );
-  return resultOf(result.rowCount === 1,
-    'relation_capacity_undefined');
 }
 
 async function recheckExactItem({ transaction, partyId, check }) {

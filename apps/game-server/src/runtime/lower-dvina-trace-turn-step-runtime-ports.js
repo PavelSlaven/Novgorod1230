@@ -1,9 +1,7 @@
 import { createTurnStepExecutionRegistry } from '@rus/turn';
-import {
-  applyBodyEvent,
-  applySemanticActivity,
-  resolveLowerDvinaTraceTurnStepCheckContext
-} from './lower-dvina-trace-turn-step-delegated-ports.js';
+import { applyBodyEvent, applySemanticActivity,
+  resolveLowerDvinaTraceTurnStepCheckContext } from
+  './lower-dvina-trace-turn-step-delegated-ports.js';
 import {
   createItemOperationHandlers,
   initializeRuntimeState
@@ -14,12 +12,10 @@ import { applyActionProducedRuntimeProjection } from
   './lower-dvina-trace-action-produced-runtime.js';
 import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
   './lower-dvina-trace-turn-step-container-access.js';
-import {
-  createLowerDvinaTracePreparedDomainEffect
-} from './lower-dvina-trace-turn-step-prepared-effects.js';
+import { createLowerDvinaTracePreparedDomainEffect } from
+  './lower-dvina-trace-turn-step-prepared-effects.js';
 import { projectPreparedOrdinaryItem } from
   './lower-dvina-trace-phase-2-player-safe.js';
-
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
@@ -162,9 +158,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       }))
   });
 }
-
-function applyLocalFireRuntimeProjection({ projection, actor, plan, state,
-  resolveItemMechanics }) {
+function applyLocalFireRuntimeProjection({ projection, actor, plan, state, resolveItemMechanics }) {
   let next = structuredClone(projection);
   for (const transition of plan.fuel_placement_transitions ?? []) {
     const item = requireProjectedItem(next, transition.item_id);
@@ -199,12 +193,10 @@ function applyLocalFireRuntimeProjection({ projection, actor, plan, state,
   }
   return next;
 }
-
 function projectedPlacement(value) {
   return Object.fromEntries(Object.entries(value).filter(
     ([key, entry]) => key !== 'item_id' && entry != null));
 }
-
 function updateRuntimePlacement(state, itemId, placement) {
   for (const collection of [state.materializedItems, state.authoredItems]) {
     const item = collection.get(itemId);
@@ -212,7 +204,6 @@ function updateRuntimePlacement(state, itemId, placement) {
       placement: structuredClone(placement) });
   }
 }
-
 async function prepareEffectTime(input, committedState, temporalAdvance) {
   if (typeof temporalAdvance !== 'function') {
     throw new TypeError('temporalAdvance is required for prepared effects.');
@@ -245,7 +236,6 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
     ...structuredClone(result)
   });
 }
-
 async function prepareEffectBody(input, committedState, bodyEffect) {
   if (input.consequence?.combat_kind === 'exchange') {
     const after = input.consequence.combat?.working_state_after
@@ -298,7 +288,6 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
     ...structuredClone(result)
   });
 }
-
 async function admitResult(pending, authority) {
   const result = await pending;
   return Object.freeze({
@@ -306,5 +295,4 @@ async function admitResult(pending, authority) {
     working_projection: authority.admit(result.working_projection)
   });
 }
-
 export { resolveLowerDvinaTraceTurnStepCheckContext };

@@ -2,12 +2,9 @@ import { createApiClient } from '../api/client.js';
 import { createUiStore } from './store.js';
 import { renderAppState } from './router.js';
 import { hydrateSceneCanvases } from './scene-canvas-hydration.js';
-import {
-  removeMatchingPendingOpeningAck,
-  removeStoredPendingOpeningAck,
-  storedPendingOpeningAck,
-  storePendingOpeningAck
-} from './pending-opening-ack.js';
+import { removeMatchingPendingOpeningAck, removeStoredPendingOpeningAck,
+  storedPendingOpeningAck, storePendingOpeningAck } from
+  './pending-opening-ack.js';
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
 import {
@@ -276,7 +273,6 @@ function trapOverlayFocus(event, root) {
     first.focus();
   }
 }
-
 function storedTheme(storage) {
   const value = storage?.getItem?.(THEME_STORAGE_KEY);
   return value === 'light' || value === 'dark' ? value : null;

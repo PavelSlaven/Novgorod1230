@@ -154,7 +154,7 @@ function staleDiscardedProposal(boundary, request, orderedSignals) {
 
 async function requestFreshDecision({ boundary, request, orderedSignals,
   semanticModel, revalidateStateVersion, rebuildDecisionContext, mode,
-  validatePlan, validateFreshPlan }) {
+  validatePlan }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
   }
@@ -255,8 +255,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       const structurallyValid = validatePlanForMode(
         rawPlan, safeRequest, mode);
       const domainResult = structurallyValid
-        ? await planDomainResult(rawPlan, safeRequest, validatePlan,
-          validateFreshPlan) : null;
+        ? await planDomainResult(rawPlan, safeRequest, validatePlan) : null;
       if (structurallyValid && domainResult?.pass !== false) break;
       if (domainResult?.pass === false && !domainResult.errors.every(
         ({ retryable }) => retryable === true
@@ -361,8 +360,7 @@ export async function requestNpcSemanticDecision({
   orderedSignals = [],
   revalidateStateVersion,
   rebuildDecisionContext = null,
-  validatePlan = null,
-  validateFreshPlan = null
+  validatePlan = null
 } = {}) {
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
@@ -446,8 +444,7 @@ export async function requestNpcSemanticDecision({
     revalidateStateVersion,
     rebuildDecisionContext,
     mode,
-    validatePlan,
-    validateFreshPlan
+    validatePlan
   });
   const inFlight = { inputSnapshot, pending };
   inFlightDecisions.set(inFlightKey, inFlight);
@@ -460,16 +457,9 @@ export async function requestNpcSemanticDecision({
   }
 }
 
-async function planDomainResult(plan, request, validatePlan,
-  validateFreshPlan = null) {
-  const validators = [validatePlan, validateFreshPlan].filter(
-    (validator) => validator !== null);
-  for (const validator of validators) {
-    const result = await validator(plan, request);
-    const rejected = domainValidationResult(result);
-    if (rejected !== null) return rejected;
-  }
-  return null;
+async function planDomainResult(plan, request, validatePlan) {
+  if (validatePlan === null) return null;
+  return domainValidationResult(await validatePlan(plan, request));
 }
 
 function domainValidationResult(result) {

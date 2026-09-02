@@ -118,9 +118,6 @@ test('NPC adapter retries an initial JSON parse failure with its format role',
         if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
           code: 'json_parse_failed'
         });
-        if (call.role_id === 'npc_conversation_grounding_auditor') {
-          return { output: { pass: true, concerns: [] } };
-        }
         const payload = JSON.parse(call.messages[1].content);
         return { output: baseModel(payload.request ?? payload) };
       } }
@@ -132,12 +129,11 @@ test('NPC adapter retries an initial JSON parse failure with its format role',
     assert.equal(exchange.result.response_kind, 'withhold');
     assert.deepEqual(calls.map(({ role_id }) => role_id), [
       'npc_conversation_responder',
-      'npc_conversation_responder_format_repair',
-      'npc_conversation_grounding_auditor'
+      'npc_conversation_responder_format_repair'
     ]);
   });
 
-test('fresh NPC speech audit passes exact route disclosure and ordinary reply', async (t) => {
+test('NPC speech owner accepts exact route disclosure and ordinary reply', async (t) => {
   const state = phase3State();
   const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
   withAccessibleBlueWool(state, contracts);
@@ -146,9 +142,6 @@ test('fresh NPC speech audit passes exact route disclosure and ordinary reply', 
   const npcSemanticModel = createLowerDvinaTraceNpcSemanticModel({
     roleRunner: { async run(call) {
       calls.push(call);
-      if (call.role_id === 'npc_conversation_grounding_auditor') {
-        return { output: { pass: true, concerns: [] } };
-      }
       const payload = JSON.parse(call.messages[1].content);
       return { output: baseModel(payload.request ?? payload) };
     } }
@@ -167,7 +160,7 @@ test('fresh NPC speech audit passes exact route disclosure and ordinary reply', 
     assert.equal(exchange.result.statements.filter(({ speaker_ref: speaker }) =>
       speaker.entity_kind === 'npc').length, 1);
     assert.deepEqual(calls.map(({ role_id }) => role_id), [
-      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+      'npc_conversation_responder'
     ]);
   });
 
@@ -176,9 +169,6 @@ test('fresh NPC speech audit passes exact route disclosure and ordinary reply', 
     const ordinaryModel = createLowerDvinaTraceNpcSemanticModel({
       roleRunner: { async run(call) {
         ordinaryCalls.push(call);
-        if (call.role_id === 'npc_conversation_grounding_auditor') {
-          return { output: { pass: true, concerns: [] } };
-        }
         const payload = JSON.parse(call.messages[1].content);
         return { output: baseModel(payload.request ?? payload) };
       } }
@@ -189,7 +179,7 @@ test('fresh NPC speech audit passes exact route disclosure and ordinary reply', 
     });
     assert.equal(ordinary.result.response_kind, 'withhold');
     assert.deepEqual(ordinaryCalls.map(({ role_id }) => role_id), [
-      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+      'npc_conversation_responder'
     ]);
   });
 });

@@ -13,7 +13,6 @@ const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
   'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'
 ];
-
 export function withLowerDvinaTraceCurrentScene({
   committedState,
   locationProfiles,
@@ -66,7 +65,6 @@ export function withLowerDvinaTraceCurrentScene({
     current_visible_context: deepFreeze(current)
   };
 }
-
 function visibleSceneObjects(items, position, actorId) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
@@ -81,7 +79,6 @@ function visibleSceneObjects(items, position, actorId) {
       visible_status: held ? 'у вас в руках' : 'available' }];
   });
 }
-
 function historicalLocationProfile(locationProfiles, locationRef) {
   const matches = Array.isArray(locationProfiles)
     ? locationProfiles.filter(({ location_profile_id: id }) => id === locationRef)
@@ -90,7 +87,6 @@ function historicalLocationProfile(locationProfiles, locationRef) {
   return { display_name: matches[0].display_name,
     player_visible_physical_facts: [] };
 }
-
 export function projectCurrentSceneForNoOperationDirect({
   input,
   directSeedKeys,
@@ -112,7 +108,6 @@ export function projectCurrentSceneForNoOperationDirect({
     input, directSeedKeys, body
   });
 }
-
 export function projectCurrentSceneForVisibleOverlay({
   input,
   directSeedKeys,
@@ -142,13 +137,11 @@ export function projectCurrentSceneForVisibleOverlay({
     ])
   });
 }
-
 export function projectDirectSeedChanges({ input, directSeedKeys }) {
   const seed = input?.consequence?.visible_seed ?? {};
   return directSeedKeys.map((key) => directSeedChange(seed[key]))
     .filter(Boolean);
 }
-
 function directSeedChange(value) {
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
@@ -184,7 +177,6 @@ function directSeedChange(value) {
   }
   failCurrentScene();
 }
-
 function minuteWord(value) {
   const mod100 = value % 100;
   if (mod100 >= 11 && mod100 <= 14) return 'минут';
@@ -192,11 +184,9 @@ function minuteWord(value) {
   if (value % 10 >= 2 && value % 10 <= 4) return 'минуты';
   return 'минут';
 }
-
 function sentence(value) {
   return /[.!?…]$/u.test(value) ? value : `${value}.`;
 }
-
 function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;
   const allPlans = (trace?.step_traces ?? [])
@@ -223,7 +213,6 @@ function directOutcomeConstraints(input) {
   }
   return constraints;
 }
-
 function validCurrentScene(value) {
   return plain(value)
     && validateVisibleContext(value).ok

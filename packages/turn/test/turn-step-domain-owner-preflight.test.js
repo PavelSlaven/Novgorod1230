@@ -98,31 +98,6 @@ test('active conversation does not reject an unrelated direct plan', () => {
     prepared_chain_context: null }));
 });
 
-test('source-grounding audit rejects a semantically mismatched domain plan',
-  async () => {
-    const model = async () => {};
-    model.validateSourceGrounding = async () => ({ pass: false, errors: [{
-      path: '$.operations.0.action_production.source_refs',
-      rule: 'source_semantic_grounding', code: 'source_semantic_grounding',
-      message: 'source mismatch'
-    }] });
-    const validate = createTurnStepDomainOwnerPreflight({
-      externalRegistry: null, semanticBindings: [],
-      availableOptions: new Set(), actor: {}, committedState: {},
-      services: { turnStepModel: model }
-    });
-    await assert.rejects(validate({ plan: {
-      resolution: 'domain_request', operations: [{ op: 'request_item_use',
-        action_production: { source_refs: ['item:knife'] } }], check: null
-    }, request: { remaining_intent: 'сделать опору из доски',
-      player_safe_state: {} }, prepared_chain_context: null }), (error) => {
-      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-      assert.equal(error.details.errors[0].code,
-        'source_semantic_grounding');
-      return true;
-    });
-  });
-
 test('planner receives only available exact domain operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const wait = { ...dto, activity_kind: 'wait', description: 'Ждать.' };

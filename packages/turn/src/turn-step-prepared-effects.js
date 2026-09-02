@@ -113,7 +113,6 @@ export async function orchestrateTurnStepPreparedEffect({
     prepared_effect: effect
   });
 }
-
 export function buildTurnStepPreparedEffectLedger({
   rootTurnId,
   committedStateVersion,
@@ -188,7 +187,6 @@ export function buildTurnStepPreparedEffectLedger({
     ledger_digest: sha256(payload)
   });
 }
-
 export function requireTurnStepPreparedEffectLedger(value) {
   let ledger;
   try {

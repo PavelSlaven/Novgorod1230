@@ -16,7 +16,10 @@ import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-playe
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
+import {
+  buildTracePhase2TurnRequest,
+  buildTraceTurnWorkflowInput
+} from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
@@ -272,26 +275,11 @@ export function createLowerDvinaTracePhase2Runtime({
         });
         try {
           const result = await runTurnWorkflow(
-            {
-              party_id: partyId,
-              turn_number: Number(state.party_state.turn_number) + 1,
-              request_id: requestId,
-              idempotency_key: idempotencyKey,
-              raw_text: rawText,
-              routing_context: {
-                actor_id: state.actor_id,
-                state_version: state.party_state.state_version,
-                policy_id: 'lower_dvina_trace_semantic_intent',
-                policy_version: '1',
-                policy_pins: [
-                  contracts.activityPin, ...(phase3Contracts?.activityPins ?? []),
-                  ...(phase4Contracts?.activityPins ?? []), ...(phase5Contracts?.activityPins ?? []),
-                  ...(phase7Contracts ? [phase7Contracts.activityPin] : []),
-                  ...(turn10Contracts ? [turn10Contracts.activityPin] : []),
-                  ...(phase8?.contracts?.activityPins ?? []), ...(phase9Contracts?.pins ?? []),
-                ],
-              },
-            },
+            buildTraceTurnWorkflowInput({
+              partyId, state, requestId, idempotencyKey, rawText, contracts,
+              phase3Contracts, phase4Contracts, phase5Contracts,
+              phase7Contracts, turn10Contracts, phase8, phase9Contracts
+            }),
             services,
             { now: issuedAt, requestId },
           );

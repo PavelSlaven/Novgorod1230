@@ -3,7 +3,7 @@ import test from 'node:test';
 import { validateConversationContributionPlan } from '@rus/npc-runtime';
 import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
-import { npcConversationCandidates, requiredNpcConversationCandidate } from
+import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -39,52 +39,6 @@ function runner(reply) {
   const calls = [];
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
 }
-
-test('speech grounding admits supported route and ordinary reply, rejects unsupported assertion', async (t) => {
-  const routeRequest = request({ required_supporting_operation: { op: 'disclose_known_route', route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1' } });
-  routeRequest.allowed_references.entity_refs.push(ref('route', 'route-1'));
-  routeRequest.allowed_references.knowledge_refs.push(ref('knowledge_scope', 'knowledge-1'));
-  routeRequest.decision_scope.operation_contract = { disclose_known_route: {} };
-  const ordinaryRequest = request();
-  const ordinaryPlan = plan(ordinaryRequest);
-  const fixture = runner((call) => call.role_id === 'npc_conversation_grounding_auditor'
-    ? { pass: true, concerns: [] } : plan(routeRequest));
-  const model = createLowerDvinaTraceNpcSemanticModel(fixture);
-  assert.equal(await model.validateFreshPlan(requiredNpcConversationCandidate(routeRequest), routeRequest), true);
-  assert.equal(await model.validateFreshPlan(ordinaryPlan, ordinaryRequest), true);
-  for (const call of fixture.calls) {
-    assert.equal(call.role_id, 'npc_conversation_grounding_auditor');
-    assert.match(call.messages[0].content, /utterance, claims, topic_refs, and supporting_operations/u);
-    assert.match(call.messages[0].content, /Route guidance[\s\S]*disclose_known_route[\s\S]*MUST fail/u);
-    assert.match(call.messages[1].content, /"allowed_references"/u);
-  }
-  await t.test('unsupported direction is retryable', async () => {
-    const unsupported = structuredClone(ordinaryPlan);
-    unsupported.speech.utterance_text = 'A ford lies beyond ridge.';
-    unsupported.speech.dominant_act = 'inform';
-    const rejected = createLowerDvinaTraceNpcSemanticModel(runner(() => ({ pass: false, concerns: [{ kind: 'unsupported_direction' }] })));
-    assert.deepEqual(await rejected.validateFreshPlan(unsupported, ordinaryRequest), { pass: false, errors: [{
-      code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED', category: 'semantic_grounding', retryable: true,
-      concern_kinds: ['unsupported_direction'],
-      message: 'Remove the unsupported world assertion or direction unless the request supplies its exact supporting operation.'
-    }] });
-    const repairFixture = runner((call) => {
-      const payload = JSON.parse(call.messages[1].content);
-      assert.equal(Object.hasOwn(payload, 'original_output'), false);
-      return ordinaryPlan;
-    });
-    await createLowerDvinaTraceNpcSemanticModel(repairFixture)(ordinaryRequest, { repair: { original_output: unsupported,
-      validation_errors: [{ code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
-        category: 'semantic_grounding' }] } });
-    assert.match(repairFixture.calls[0].messages[0].content, /remove or recast that unsupported assertion or direction[\s\S]*do not preserve unsupported meaning/u);
-    assert.match(repairFixture.calls[0].messages[0].content,
-      /no valid disclose_known_route operation[\s\S]*Do not state or imply[\s\S]*where any route/u);
-  });
-  await t.test('invalid auditor result fails closed', async () => {
-    const invalid = createLowerDvinaTraceNpcSemanticModel(runner(() => ({ pass: true, concerns: [{ kind: 'unexpected' }] })));
-    await assert.rejects(() => invalid.validateFreshPlan(ordinaryPlan, ordinaryRequest), { code: 'TRACE_NPC_SPEECH_GROUNDING_AUDIT_INVALID' });
-  });
-});
 
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();

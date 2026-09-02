@@ -38,6 +38,9 @@ const serverPublicApi = await read('apps/game-server/src/index.js');
 const productionRoot = await read(
   'apps/game-server/src/composition/production-spatial-v3.js'
 );
+const productionRelease = await read(
+  'apps/game-server/src/composition/production-spatial-v3-release.js'
+);
 const targetMigrations = await read(
   'apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js'
 );
@@ -198,7 +201,7 @@ for (const fragment of [
   'active_for_new_party_persisted_for_existing_party'
 ]) {
   check(
-    productionRoot.includes(fragment),
+    `${productionRoot}\n${productionRelease}`.includes(fragment),
     `production release pin is missing: ${fragment}`
   );
 }

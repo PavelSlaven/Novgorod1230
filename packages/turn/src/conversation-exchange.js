@@ -83,8 +83,7 @@ function requirePorts(ports, npcInitiated) {
       );
     }
   }
-  for (const validator of ['validatePlayerPlan', 'validateNpcPlan',
-    'validateFreshNpcPlan']) {
+  for (const validator of ['validatePlayerPlan', 'validateNpcPlan']) {
     if (ports[validator] !== undefined
         && typeof ports[validator] !== 'function') {
       fail('TURN_CONVERSATION_PORT_MISSING',
@@ -375,8 +374,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
       semanticModel: ports.npcSemanticModel,
       persistedTrace: decision.persisted_trace,
       revalidateStateVersion: ports.revalidateNpcStateVersion,
-      validatePlan: ports.validateNpcPlan ?? null,
-      validateFreshPlan: ports.validateFreshNpcPlan ?? null
+      validatePlan: ports.validateNpcPlan ?? null
     });
     const npcCheck = await resolveNpcContributionSocialCheck({
       plan: proposal.plan,

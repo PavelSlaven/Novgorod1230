@@ -6,24 +6,20 @@ import { assertPhase2NormalizedRows, phase2IntegrityError,
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
 import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest,
   publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
-import { projectLowerDvinaTraceScreenPanels } from
-  './lower-dvina-trace-screen-panels.js';
+import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext,
   withPhase2CurrentVisibleContext,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
-import {
-  assertPhase3NormalizedRows,
-  hydrateSemanticDecisionReplay
-} from './lower-dvina-trace-phase-3-read.js';
+import { assertPhase3NormalizedRows, hydrateSemanticDecisionReplay } from
+  './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
 import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js';
 import { assertPhase6NormalizedRows } from './lower-dvina-trace-phase-6-persistence.js';
 import { assertPhase7NormalizedRows } from './lower-dvina-trace-phase-7-read.js';
-import { assertTurnStepNormalizedRows } from
-  './lower-dvina-trace-turn-step-read.js';
+import { assertTurnStepNormalizedRows } from './lower-dvina-trace-turn-step-read.js';
 import { assertCombatSessionRows } from './lower-dvina-trace-combat-read.js';
 import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js';
 import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
@@ -34,8 +30,7 @@ import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-co
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
-import { loadLowerDvinaTraceScenePresentation } from
-  '../../internal/lower-dvina-trace-scene-presentation.js';
+import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,

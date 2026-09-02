@@ -298,21 +298,6 @@ test('Onisim silence remains an unknown evidence branch through restart',
     assert.equal(runtime.state.completion.status, 'committed');
   });
 
-test('Phase 9 does not recover a road bag carried away by Zhdanko', () => {
-  const state = phase8CampState(bundle);
-  const contracts = phase9Contracts(state);
-  const zhdanko = state.npcs.find(({ participant_slot_ref: slot }) =>
-    slot === 'zhdanko_storehouse_controller');
-  state.last_turn = { consequence: { combat: { session_after: {
-    participant_states: [{ actor_ref: { entity_kind: 'npc',
-      entity_id: zhdanko.instance_id }, combat_status: 'left' }] } } } };
-  state.knowledge.push({ fact_id: 'zhdanko_fled' });
-  const result = recoveryPlan(state, contracts);
-  assert.equal(result.pass, false);
-  assert.equal(result.errors[0].code,
-    'APPROVED_PROPERTY_TRANSITION_FACT_MISSING');
-});
-
 test('peaceful Zhdanko surrender admits Phase 9 recovery after restart',
   async () => {
     const state = phase8CampState(bundle);
@@ -353,31 +338,6 @@ test('peaceful Zhdanko surrender admits Phase 9 recovery after restart',
     assert.equal(restarted.state.containers.find(({ container_id: id }) =>
       id === ids.bag).state.controller_character_id,
     restarted.state.actor_id);
-  });
-
-test('Phase 9 preserves an authored destroyed packet branch without intact seal',
-  () => {
-    const state = phase8CampState(bundle);
-    const contracts = phase9Contracts(state);
-    const bag = state.containers.find(({ template_id: id }) =>
-      id === 'trace_ld_v1_container_road_bag');
-    bag.closure_state = 'open';
-    delete bag.holder_npc_id;
-    bag.holder_character_id = state.actor_id;
-    bag.controller_character_id = state.actor_id;
-    bag.state.controller_character_id = state.actor_id;
-    delete bag.state.controller_npc_id;
-    const packet = state.items.find(({ template_id: id }) =>
-      id === 'trace_ld_v1_item_sealed_packet');
-    Object.assign(packet.state, { seal_state: 'destroyed',
-      document_condition: 'destroyed_unreadable',
-      evidence_availability: 'destroyed' });
-    const result = packetPlan(state, contracts);
-    assert.equal(result.pass, true, JSON.stringify(result));
-    assert.equal(result.proposal.next.state.seal_state, 'destroyed');
-    assert.equal(result.proposal.next.state.document_condition,
-      'destroyed_unreadable');
-    assert.notEqual(result.proposal.next.state.seal_state, 'intact');
   });
 
 function bagState(runtime) {

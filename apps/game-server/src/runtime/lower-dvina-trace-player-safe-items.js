@@ -1,14 +1,6 @@
-import {
-  assertAllowedKeys,
-  compact,
-  finite,
-  physicalFactRecords,
-  plain,
-  projectionError,
-  scalarRecord,
-  text,
-  textArray
-} from './lower-dvina-trace-player-safe-json.js';
+import { assertAllowedKeys, compact, finite, physicalFactRecords, plain,
+  projectionError, scalarRecord, text, textArray } from
+  './lower-dvina-trace-player-safe-json.js';
 import {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
   runtimeItemContentsAreOpen as contentsAreOpen,
@@ -233,7 +225,6 @@ function projectReferenceState(value, strict, path) {
     key, typeof value[key] === 'boolean' ? value[key] : text(value[key])
   ])));
 }
-
 function projectContents(value, strict) {
   if (!Array.isArray(value)) return undefined;
   return value.filter((item) => plain(item) && !recordIsClosed(item))
@@ -250,7 +241,6 @@ function projectContents(value, strict) {
     });
   }).filter(Boolean);
 }
-
 function projectItemState(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
@@ -280,7 +270,6 @@ function projectItemState(value, strict) {
       path: 'item.state.use_state', allowedKeys: USE_STATE_KEYS })
   });
 }
-
 function assertNoPlacementCycles(records, byId) {
   for (const item of records) {
     const origin = item?.item_id ?? item?.instance_id;
@@ -298,7 +287,6 @@ function assertNoPlacementCycles(records, byId) {
     }
   }
 }
-
 function invalidCode() {
   return 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID';
 }

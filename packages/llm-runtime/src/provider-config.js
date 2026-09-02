@@ -25,7 +25,6 @@ export const TurnRuntimeRoles = Object.freeze({
   INTENT_ROUTER: 'intent_router',
   TURN_STEP_PLANNER: 'turn_step_planner',
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
-  TURN_STEP_GROUNDING_AUDITOR: 'turn_step_grounding_auditor',
   GAMEPLAY_NARRATOR: 'gameplay_narrator',
   GAMEPLAY_NARRATOR_REPAIR: 'gameplay_narrator_format_repair',
   GAMEPLAY_NARRATOR_AUDITOR: 'gameplay_narrator_auditor',
@@ -40,8 +39,6 @@ export const TurnRuntimeRoles = Object.freeze({
   NPC_CONVERSATION_RESPONDER: 'npc_conversation_responder',
   NPC_CONVERSATION_RESPONDER_REPAIR:
     'npc_conversation_responder_format_repair',
-  NPC_CONVERSATION_GROUNDING_AUDITOR:
-    'npc_conversation_grounding_auditor',
   NPC_AUTONOMOUS_DECIDER: 'npc_autonomous_decider',
   NPC_AUTONOMOUS_DECIDER_REPAIR:
     'npc_autonomous_decider_format_repair',

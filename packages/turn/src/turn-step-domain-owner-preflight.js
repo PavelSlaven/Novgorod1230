@@ -54,21 +54,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
       if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
         'Semantic plan references an unavailable domain owner.', { errors });
     };
-    const audit = services.turnStepModel?.validateSourceGrounding;
-    if (typeof audit !== 'function') return validateOwners();
-    return Promise.resolve(
-      audit(structuredClone(plan), structuredClone(request))
-    ).then((result) => {
-      if (result === true) return validateOwners();
-      throw turnCommandError('TURN_STEP_PLAN_INVALID',
-        'Semantic plan grounding is invalid.', {
-          errors: structuredClone(result?.errors ?? [{
-            path: '$.operations', rule: 'source_semantic_grounding',
-            code: 'source_semantic_grounding',
-            message: 'action-production sources must be semantically grounded'
-          }])
-        });
-    });
+    return validateOwners();
   };
   validate.resolve = resolve;
   return validate;

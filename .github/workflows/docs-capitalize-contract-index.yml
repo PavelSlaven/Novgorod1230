@@ -1,0 +1,58 @@
+name: Capitalize canonical contract index label
+
+on:
+  push:
+    branches:
+      - docs/contract-index-and-auditor-2026-09-02
+    paths:
+      - .github/workflows/docs-capitalize-contract-index.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout documentation branch
+        uses: actions/checkout@v4
+        with:
+          ref: docs/contract-index-and-auditor-2026-09-02
+          fetch-depth: 0
+
+      - name: Apply guarded capitalization fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path("AGENTS.md")
+          text = path.read_text(encoding="utf-8")
+          old = "[канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)"
+          new = "[Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)"
+          count = text.count(old)
+          if count < 1:
+              raise SystemExit("lowercase contract-index label not found")
+          text = text.replace(old, new)
+          if old in text:
+              raise SystemExit("lowercase contract-index label remains")
+          if text.count(new) != count:
+              raise SystemExit("unexpected replacement count")
+          path.write_text(text, encoding="utf-8", newline="\n")
+          print(f"capitalized {count} contract-index link labels")
+          PY
+
+          git diff --check
+          grep -F "Канонический индекс контрактов" AGENTS.md
+          if grep -F "[канонический индекс контрактов]" AGENTS.md; then
+            echo "lowercase label remains" >&2
+            exit 1
+          fi
+
+          git rm .github/workflows/docs-capitalize-contract-index.yml
+          git add AGENTS.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: capitalize canonical contract index label"
+          git push origin HEAD:docs/contract-index-and-auditor-2026-09-02

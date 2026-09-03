@@ -19,3 +19,13 @@ test('spatial result recognizes committed active movement shapes', () => {
     movement_committed: true
   });
 });
+
+test('spatial result recognizes replayed committed movement from its source', () => {
+  assert.deepEqual(spatialResult({ consequence: { movement: {
+    source: { location_ref: 'camp' },
+    destination: { location_ref: 'shed' }
+  } } }), { movement_committed: true });
+  assert.deepEqual(spatialResult({ consequence: { movement: {
+    source_location_ref: 'camp', destination_location_ref: 'shed'
+  } } }), { movement_committed: true });
+});

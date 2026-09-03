@@ -15,7 +15,7 @@ const IMPOSSIBLE_DOMAIN_REJECTION_TEST = 'apps/game-server/test/lower-dvina-trac
 export const DETERMINISTIC_PROOFS = Object.freeze([
   proof('impossible-action-grounding', IMPOSSIBLE_DOMAIN_REJECTION_TEST),
   proof('narration-failure-after-factual-commit', 'apps/game-server/test/lower-dvina-trace-phase-2.test.js#narration failure after factual commit returns its pending public result'),
-  proof('narration-localized-semantic-repair', 'packages/narration/test/narration-flow.test.js#repairs only auditor-flagged segment and re-audits complete prose'),
+  proof('narration-whole-prose-semantic-repair', 'packages/narration/test/narration-flow.test.js#repairs the coherent prose and re-audits the complete result'),
   proof('cross-workflow-gameplay-repairs', 'apps/game-server/test/llm-turn-budget.test.js#cross-workflow gameplay repairs execute, duplicate repair is blocked before provider'),
   proof('npc-combat-production-boundary', 'apps/game-server/test/lower-dvina-trace-npc-combat-llm.test.js#combat model assembles code-owned intent DTO for primary and repair')
 ]);

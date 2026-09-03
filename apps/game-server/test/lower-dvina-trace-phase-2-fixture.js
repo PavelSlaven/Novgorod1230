@@ -8,7 +8,7 @@ import {
   unexpectedNpcSemanticModel,
   unexpectedPlayerConversationModel,
 } from './lower-dvina-trace-phase-2-fixture-support.js';
-import { canonicalDigest } from '@rus/materialization';
+import { canonicalDigest } from '@rus/materialization'; import { spatialResult } from '@rus/turn';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createLowerDvinaTracePhase2Runtime } from '../src/runtime/lower-dvina-trace-phase-2.js';
 import { commitGeneric } from './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
@@ -194,7 +194,8 @@ function fixture({
         surface: 'turn',
         visible_context: visibleContext,
         context: {
-          attempt: { text: replay.factual.player_input.raw_text }
+          attempt: { text: replay.factual.player_input.raw_text },
+          outcome: spatialResult({ consequence: replay.factual.consequence })
         },
         style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
         max_repairs: 1,

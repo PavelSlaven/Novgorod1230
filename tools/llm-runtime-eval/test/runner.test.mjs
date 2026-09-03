@@ -546,7 +546,7 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
 
 test('narration semantic repair accepts grounded equivalent prose', async () => {
   const fixture = corpus.fixtures.find(({ id }) =>
-    id === 'gameplay-narrator-semantic-repair-localized');
+    id === 'gameplay-narrator-semantic-repair-whole-prose');
   const output = structuredClone(fixture.expected_output);
   output.replacements[0].prose = 'У ворот видна телега.';
   const server = createServer(async (request, response) => {
@@ -569,7 +569,7 @@ test('narration semantic repair accepts grounded equivalent prose', async () => 
 
 test('narration semantic repair rejects unchanged unsupported prose', async () => {
   const fixture = corpus.fixtures.find(({ id }) =>
-    id === 'gameplay-narrator-semantic-repair-localized');
+    id === 'gameplay-narrator-semantic-repair-whole-prose');
   const output = structuredClone(fixture.expected_output);
   output.replacements[0].prose = 'Телега скрипит у ворот.';
   const server = createServer(async (request, response) => {

@@ -38,11 +38,13 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const repairConcerns = audit.concerns.map((concern) => ({
     ...clone(concern), segment_id: repairSegment.segment_id
   }));
+  const confirmedOutcome = confirmedOutcomeContext(request);
   const repair = await ports.semanticRepairer.repair({
     version: 1,
     schema: 'narration_semantic_repair_request',
     request_id: request.request_id,
     visible_context: clone(request.visible_context),
+    ...(confirmedOutcome ? { confirmed_outcome: confirmedOutcome } : {}),
     style_policy: clone(request.style_policy ?? {}),
     concerns: repairConcerns,
     segments: [repairSegment]
@@ -77,16 +79,20 @@ export function segmentProse(prose) {
 
 function audited(auditor, request, draft, segments, phase) {
   const actionIntent = actionIntentContext(request);
-  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), ...(actionIntent ? { action_intent_context: actionIntent } : {}), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
+  const confirmedOutcome = confirmedOutcomeContext(request);
+  return auditor.audit({ version: 1, schema: 'narration_semantic_audit_request', phase, output: clone(draft), visible_context: clone(request.visible_context), ...(actionIntent ? { action_intent_context: actionIntent } : {}), ...(confirmedOutcome ? { confirmed_outcome: confirmedOutcome } : {}), style_policy: clone(request.style_policy ?? {}), segments: clone(segments) });
 }
 function actionIntentContext(request) {
   const source = request.context ?? {};
-  if (source.attempt == null && source.outcome == null) return null;
+  if (source.attempt == null) return null;
   return {
     evidence_scope: 'intent_only_non_evidence_of_success',
-    ...(source.attempt == null ? {} : { attempt: clone(source.attempt) }),
-    ...(source.outcome == null ? {} : { outcome: clone(source.outcome) })
+    attempt: clone(source.attempt)
   };
+}
+function confirmedOutcomeContext(request) {
+  return request.context?.outcome == null
+    ? null : clone(request.context.outcome);
 }
 function segmentIds(segments) { return segments.map((segment) => segment.segment_id); }
 function approved(request, draft, audit, generationHistory, repairHistory, auditHistory) {

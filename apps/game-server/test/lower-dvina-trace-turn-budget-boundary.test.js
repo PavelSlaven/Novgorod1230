@@ -437,6 +437,52 @@ test('replay deadline after visible read does not call narrator', async () => {
   assert.equal(narratorCalls, 0);
 });
 
+test('committed movement replay passes code-confirmed outcome to narrator',
+  async () => {
+    const visiblePayload = {
+      perceived_scene: 'У ворот начинается дорога.', perceived_changes: [],
+      sensory_details: [], visible_npcs: [], visible_objects: [],
+      known_context: [], uncertainties: []
+    };
+    const packageDigest = computeSpatialV3CanonicalDigest(visiblePayload);
+    let narrationRequest = null;
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: {
+        async query() {
+          return { rowCount: 1, rows: [{ visible_payload: visiblePayload,
+            package_digest: packageDigest }] };
+        },
+        connect() { throw new Error('unexpected transaction'); }
+      },
+      committer: { commit() {} }
+    });
+    await assert.rejects(repository.replayPhase2Turn({
+      partyId: 'party',
+      replay: {
+        input_digest: 'input',
+        screen: { screen_status: 'committed_presentation_pending',
+          turn_id: 'turn' },
+        state: { last_turn: {
+          visible_package: { package_id: 'package',
+            package_digest: packageDigest },
+          raw_text: 'Выйти к воротам.',
+          consequence: { movement: {
+            source: { location_ref: 'camp' },
+            destination: { location_ref: 'gate' }
+          } }
+        } }
+      },
+      narrator: { async run(input) {
+        narrationRequest = input;
+        throw new Error('stop after narration request');
+      } }
+    }), /stop after narration request/u);
+    assert.deepEqual(narrationRequest.context, {
+      attempt: { text: 'Выйти к воротам.' },
+      outcome: { movement_committed: true }
+    });
+  });
+
 test('trace retry shares one turn budget context', async () => {
   const budget = createLlmTurnBudget();
   const diagnostics = createLlmDiagnostics({ turnBudget: budget });

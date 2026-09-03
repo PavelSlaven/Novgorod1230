@@ -34,7 +34,7 @@
         "В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены",
         "Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state",
         "Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов, включая repair, получает полный transport timeout 120 с и `maxTokens = 20_000`; длина ответа ограничивается prompt/schema. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call",
-        "Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and, only for flagged segments, `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, immutable segment reassembly and final audit. No router, senior cascade or narration fallback exists"
+        "Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists"
       ],
       "path": "apps/game-server",
       "public_entry": "./src/index.js",
@@ -278,7 +278,7 @@
         "versioned `narration_request`, `narration_output` и `narration_flow_result`",
         "проверкой visible-only входа",
         "writer → deterministic structural validation → at most one format repair → semantic audit",
-        "stable deterministic prose segments, один local semantic repair только flagged segments и code-owned reassembly",
+        "один synthetic whole-prose segment и не более одной цельной semantic rewrite",
         "full final semantic audit после semantic repair",
         "историей генераций и ремонтов"
       ],

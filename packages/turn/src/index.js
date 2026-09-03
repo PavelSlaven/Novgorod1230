@@ -66,6 +66,7 @@ import { resolveSpatialV3FirstEntryLifecycle } from
   './spatial-v3-first-entry-lifecycle.js';
 import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
   runAutonomousUpdates } from './autonomous-update.js';
+import { spatialResult } from './stages/narration.js';
 
 export {
   createTurnWorkflowContext,
@@ -105,7 +106,8 @@ export {
   resolveSpatialV3FirstEntryLifecycle,
   createAutonomousUpdateRegistry,
   isCodeOwnedAutonomousUpdate,
-  runAutonomousUpdates
+  runAutonomousUpdates,
+  spatialResult
 };
 export {
   TURN_PRIMARY_MODES,

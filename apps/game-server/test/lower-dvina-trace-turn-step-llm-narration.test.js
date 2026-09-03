@@ -100,8 +100,11 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       'never group differing traits unless every stated trait applies'), true);
     assert.equal(call.messages[0].content.includes(
       'does not authorize an unstated direction, destination, route'), true);
+    const outcomeField = ['gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair'].includes(call.roleId)
+      ? 'confirmed_outcome' : 'context.outcome';
     assert.equal(call.messages[0].content.includes(
-      'grounds only an attempt unless visible_context or context.outcome confirms'), true);
+      `grounds only an attempt unless visible_context or ${outcomeField} confirms`), true);
     assert.equal(call.messages[0].content.includes(
       'do not turn source arrays into a one-fact-per-sentence catalogue'), true);
   }
@@ -139,6 +142,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'already a confirmed player-safe fact and sufficient evidence'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'Actor movement wording MUST FAIL'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'unless confirmed_outcome.movement_committed is true'), true);
   assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed concern kind>"/u);
@@ -170,9 +175,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     }, action_intent_context: {
       evidence_scope: 'intent_only_non_evidence_of_success',
-      attempt: { text: 'Постучать в закрытую дверь.' },
-      outcome: {}
-    }, style_policy: {}, segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
+      attempt: { text: 'Постучать в закрытую дверь.' }
+    }, confirmed_outcome: {}, style_policy: {},
+    segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
   assert.equal(calls[3].messages[0].content.includes(
@@ -197,9 +202,13 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'For missing_visible_change'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'complete replacement must naturally convey every material visible_change once'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'confirmed_outcome contains the code-confirmed outcome'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
   assert.equal(Object.hasOwn(JSON.parse(calls[3].messages[1].content),
     'action_intent_context'), false);
+  assert.deepEqual(JSON.parse(calls[3].messages[1].content).confirmed_outcome,
+    {});
   assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
   assert.equal(calls.length, 5);
@@ -255,8 +264,7 @@ test('narration removes technical prose derived from a negative movement invaria
         if (call.role_id === 'gameplay_narrator_auditor') {
           auditCount += 1;
           const input = JSON.parse(call.messages[1].content);
-          assert.equal(input.action_intent_context.outcome.position_changed,
-            false);
+          assert.equal(input.confirmed_outcome.position_changed, false);
           return { output: auditCount === 1 ? { pass: false, concerns: [{
             segment_choice: 'segment_1', kind: 'technical_presentation',
             reason: 'Negative movement invariant is not prose material.'

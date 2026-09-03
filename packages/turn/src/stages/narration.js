@@ -29,10 +29,21 @@ export async function buildNarrationStage({ playerInput, modeResolution, visible
 }
 
 export function spatialResult({ consequence, retrievedState }) {
-  const before = retrievedState?.position?.location_ref;
+  const before = retrievedState?.position?.location_ref
+    ?? movementSource(consequence);
   const after = movementDestination(consequence);
   return typeof before === 'string' && typeof after === 'string' && before !== after
     ? { movement_committed: true } : {};
+}
+
+function movementSource(consequence) {
+  const candidates = [
+    consequence?.movement?.source?.location_ref,
+    consequence?.movement?.source_location_ref,
+    consequence?.phase9?.movement?.source?.location_ref,
+    consequence?.phase9?.movement?.source_location_ref
+  ];
+  return candidates.find((value) => typeof value === 'string') ?? null;
 }
 
 function attemptOnly(playerInput) {

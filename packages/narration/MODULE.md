@@ -9,7 +9,7 @@
 - versioned `narration_request`, `narration_output` и `narration_flow_result`;
 - проверкой visible-only входа;
 - writer → deterministic structural validation → at most one format repair → semantic audit;
-- stable deterministic prose segments, один local semantic repair только flagged segments и code-owned reassembly;
+- один synthetic whole-prose segment и не более одной цельной semantic rewrite;
 - full final semantic audit после semantic repair;
 - историей генераций и ремонтов.
 
@@ -34,11 +34,11 @@
 
 ## Инварианты
 
-- writer, format repair и semantic repair получают validated visible context и confirmed outcome без raw action intent; auditor отдельно получает optional player-safe action-intent context только как non-evidence для обнаружения intent-to-success;
+- writer и format repair получают confirmed outcome в исходном request; auditor и semantic repair получают его отдельным evidence-полем `confirmed_outcome`; auditor отдельно получает optional player-safe `action_intent_context` только как non-evidence для обнаружения intent-to-success;
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
-- malformed audit/repair, unflagged/duplicate/missing replacement и final audit failure блокируют flow;
-- unflagged segments reassembly сохраняет byte-for-byte;
+- malformed audit/repair, не единственная replacement цельного synthetic segment и final audit failure блокируют flow;
+- semantic repair заменяет весь текст целиком; code-owned reassembly не смешивает старую и новую прозу;
 - normal gameplay вызывает один LLM auditor, без router/senior cascade;
 - approved result содержит ровно один утверждённый output;
 - upstream repair не вызывает persistence.

@@ -151,7 +151,7 @@ test('repairs the coherent prose and re-audits the complete result', async () =>
     auditor: { async audit(input) {
       audits.push(input);
       return audits.length === 1
-        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's2', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
+        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
         : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair(input) {
@@ -180,7 +180,7 @@ test('semantic repair rewrites one coherent paragraph instead of duplicating nea
       audits += 1;
       return audits === 1
         ? { version: 1, schema: 'narration_audit', pass: false,
-            concerns: [{ segment_id: 's2', kind: 'technical_presentation',
+            concerns: [{ segment_id: 's1', kind: 'technical_presentation',
               reason: 'Elapsed time is a standalone report.' }],
             evidence: ['Both changes are supported.'] }
         : { version: 1, schema: 'narration_audit', pass: true,
@@ -247,7 +247,7 @@ test('semantic repair can delete a wholly unsupported segment', async () => {
   assert.equal(result.approved_output.prose, 'Прошла минута.');
 });
 
-test('shares intent-only player context with audit but not semantic repair', async () => {
+test('keeps intent-only context separate from confirmed outcome', async () => {
   const actionIntent = {
     attempt: { text: 'Постучать в закрытую дверь.' },
     outcome: { position_changed: false }
@@ -261,6 +261,7 @@ test('shares intent-only player context with audit but not semantic repair', asy
     } },
     auditor: { async audit(input) {
       seen.push(input.action_intent_context);
+      assert.deepEqual(input.confirmed_outcome, actionIntent.outcome);
       return seen.length === 1
         ? { version: 1, schema: 'narration_audit', pass: false,
             concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
@@ -270,6 +271,7 @@ test('shares intent-only player context with audit but not semantic repair', asy
     } },
     semanticRepairer: { async repair(input) {
       assert.equal(Object.hasOwn(input, 'action_intent_context'), false);
+      assert.deepEqual(input.confirmed_outcome, actionIntent.outcome);
       return { version: 1, schema: 'narration_semantic_repair',
         replacements: [{ segment_id: 's1',
           prose: 'Вы пытаетесь постучать в закрытую дверь.' }] };
@@ -277,9 +279,46 @@ test('shares intent-only player context with audit but not semantic repair', asy
   }));
   assert.equal(result.status, 'approved');
   assert.deepEqual(seen, [
-    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent },
-    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent }
+    { evidence_scope: 'intent_only_non_evidence_of_success',
+      attempt: actionIntent.attempt },
+    { evidence_scope: 'intent_only_non_evidence_of_success',
+      attempt: actionIntent.attempt }
   ]);
+});
+
+test('passes confirmed outcome separately to audit and whole-prose repair', async () => {
+  const confirmedOutcome = { movement_committed: true };
+  let audits = 0;
+  const result = await runNarrationFlow(request({ context: {
+    attempt: { text: 'Выйти к воротам.' }, outcome: confirmedOutcome
+  } }), ports({
+    writer: { async generate() { return output('Вы вышли к воротам.'); } },
+    auditor: { async audit(input) {
+      audits += 1;
+      assert.deepEqual(input.action_intent_context, {
+        evidence_scope: 'intent_only_non_evidence_of_success',
+        attempt: { text: 'Выйти к воротам.' }
+      });
+      assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's1', kind: 'technical_presentation',
+              reason: 'Rewrite as coherent prose.' }],
+            evidence: ['Movement is confirmed.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Movement is confirmed.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.equal(Object.hasOwn(input, 'action_intent_context'), false);
+      assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'За воротами перед вами открывается дорога.' }] };
+    } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose,
+    'За воротами перед вами открывается дорога.');
 });
 
 test('intent-only context does not ground an unsupported success claim', async () => {
@@ -307,13 +346,13 @@ test('intent-only context does not ground an unsupported success claim', async (
   assert.equal(repairCalls, 1);
 });
 
-test('blocks malformed auditor, unflagged repair, and failed final audit without another repair', async (t) => {
+test('blocks malformed auditor, invalid repair target, and failed final audit without another repair', async (t) => {
   await t.test('malformed auditor', async () => {
     const result = await runNarrationFlow(request(), ports({ auditor: { async audit() { return {}; } } }));
     assert.equal(result.status, 'blocked');
     assert.equal(result.diagnostics.phase, 'audit_validation');
   });
-  await t.test('unflagged repair', async () => {
+  await t.test('invalid repair target', async () => {
     const result = await runNarrationFlow(request(), ports({
       auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'hidden_knowledge', reason: 'Hidden fact.' }], evidence: ['Hidden.'] }; } },
       semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Нет.' }] }; } }

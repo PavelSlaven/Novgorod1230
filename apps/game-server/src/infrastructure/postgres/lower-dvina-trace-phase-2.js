@@ -1,4 +1,4 @@
-import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a'; import { spatialResult } from '@rus/turn';
 import { json } from '../../runtime/first-playable/shared.js'; import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import { assertPhase2NormalizedRows, phase2IntegrityError, validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
@@ -184,9 +184,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       request_id: replay.screen.turn_id,
       surface: 'turn',
       visible_context: visibleContext,
-      context: {
-        attempt: { text: replay.state.last_turn.raw_text }
-      },
+      context: { attempt: { text: replay.state.last_turn.raw_text },
+        outcome: spatialResult({ consequence: replay.state.last_turn.consequence }) },
       style_policy: {
         preserve_uncertainty: true,
         no_new_world_facts: true

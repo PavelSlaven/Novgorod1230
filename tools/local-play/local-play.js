@@ -20,7 +20,7 @@ import {
 import { installActivatedRuntimeCatalog } from './production-setup.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const RELEASE_ID = 'spatial-v3-production-v14';
+const RELEASE_ID = 'spatial-v3-production-v15';
 const SCENARIO_ID = 'lower_dvina_trace_v1';
 
 export function validateLocalPlay({ env = process.env, nodeVersion = process.versions.node } = {}) {
@@ -47,7 +47,7 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl, pinManif
     RUS_RUNTIME_ROUTE: 'modular',
     RUS_CUTOVER_STAGE: '13',
     RUS_COMPOSITION_MODULE: 'builtin:production-spatial-v3',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: 'builtin:spatial-v3-production-v14',
+    RUS_SPATIAL_V3_BINDINGS_MODULE: 'builtin:spatial-v3-production-v15',
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: pinManifestDigest,
     RUS_WORLD_DATABASE_URL: worldUrl,
     RUS_PARTY_DATABASE_URL: partyUrl,

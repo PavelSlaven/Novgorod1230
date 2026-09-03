@@ -15,6 +15,8 @@
 
 Production `turn_runtime` использует Flash-first роли без heavy reasoning. Каждый primary и repair вызов получает `maxTokens = 20_000` и transport timeout 120 с; желаемую длину ограничивают prompt/schema, а не тесный output limit. Общего gameplay turn deadline нет. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
 
+`world_knowledge_query_planner` — малая JSON-role для выбора только domains/refs/predicates/search hints. Она не определяет факты или gameplay outcome; request/response валидирует `@rus/world-knowledge`.
+
 Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are Flash JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
 
 ## Не делает

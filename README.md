@@ -24,10 +24,16 @@
 ## Текущий runtime
 
 Локальный запуск использует production release
-`spatial-v3-production-v14` с `builtin:production-spatial-v3` и
-`builtin:spatial-v3-production-v14`. Spatial v3 и Temporal World v4 —
+`spatial-v3-production-v15` с `builtin:production-spatial-v3` и
+`builtin:spatial-v3-production-v15`. Spatial v3 и Temporal World v4 —
 единственные владельцы authoritative reads/writes; runtime fallback запрещён.
 `versioned production activation cutover` завершён на stage `13`.
+
+Перед semantic LLM-вызовами свободного хода, ordinary materialization и
+решений NPC runtime v15 подмешивает компактный срез production World
+Knowledge pack для Новгородской земли около 1230 года. Гибридный поиск
+использует лексический индекс и локальную Giga-Embeddings модель; factual
+claims не создают state и не заменяют code-owned механику.
 
 Текущий сценарий — Lower Dvina Trace. Свободный ввод проходит через
 `turn_step_request_v1` → `turn_step_plan_v1`; время, RNG, mechanics и

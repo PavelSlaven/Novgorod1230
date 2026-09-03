@@ -1,0 +1,1525 @@
+{
+  "schema": "world_knowledge_vector_index_v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "model_id": "ai-sage/Giga-Embeddings-instruct-480M-0826",
+  "model_revision": "0c94f705aa35719324fb46f7e75b0a5c275da6e4",
+  "dimension": 1024,
+  "normalization": "l2",
+  "pooling": "mean",
+  "entries": [
+    {
+      "entry_ref": "wk-retrieval:claim:activity-fluid-balance:en",
+      "target_ref": "claim:activity-fluid-balance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "During physical activity, fluid balance affects physiological state During physical activity, fluid balance affects physiological state; volumes, water safety, and individual outcome require concrete data."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:activity-fluid-balance:ru",
+      "target_ref": "claim:activity-fluid-balance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "При физической активности водный баланс влияет на физиологическое состояние При физической активности водный баланс влияет на физиологическое состояние; объёмы, безопасность воды и индивидуальный исход требуют конкретных данных."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:acute-sleep-loss-performance:en",
+      "target_ref": "claim:acute-sleep-loss-performance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Acute sleep loss can impair later physical performance, but does not prove a concrete actor sleep history or condition Acute sleep loss can impair later physical performance, but does not prove a concrete actor sleep history or condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:acute-sleep-loss-performance:ru",
+      "target_ref": "claim:acute-sleep-loss-performance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Острая потеря сна может ухудшать последующую физическую работоспособность, но не доказывает историю сна или состояние конкретного actor Острая потеря сна может ухудшать последующую физическую работоспособность, но не доказывает историю сна или состояние конкретного actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:agriculture-rural-role-context:en",
+      "target_ref": "claim:agriculture-rural-role-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Agricultural work is historically compatible with an established rural household or settlement Agricultural work is historically compatible with an established rural household or settlement; the source does not assign occupation, property, or a current task to an NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:agriculture-rural-role-context:ru",
+      "target_ref": "claim:agriculture-rural-role-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Земледельческая работа исторически совместима с уже установленным сельским хозяйством или поселением Земледельческая работа исторически совместима с уже установленным сельским хозяйством или поселением; источник не назначает профессию, имущество или текущую задачу конкретному NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:animal-care-needs-presence:en",
+      "target_ref": "claim:animal-care-needs-presence",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Care and use of a domestic animal applies only where a concrete animal and its context are already established Care and use of a domestic animal applies only where a concrete animal and its context are already established; a regional corpus creates neither animal nor owner."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:animal-care-needs-presence:ru",
+      "target_ref": "claim:animal-care-needs-presence",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Уход и использование домашнего животного рассматриваются только там, где конкретное животное и его контекст уже установлены Уход и использование домашнего животного рассматриваются только там, где конкретное животное и его контекст уже установлены; региональный corpus не создаёт животное или владельца."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:architectural-material-classes:en",
+      "target_ref": "claim:architectural-material-classes",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Architectural details, furniture, production raw material, and craft waste are broad attested classes Architectural details, furniture, production raw material, and craft waste are broad attested classes; concrete building stock needs a causal source."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:architectural-material-classes:ru",
+      "target_ref": "claim:architectural-material-classes",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Архитектурные детали, мебель, производственное сырьё и ремесленные отходы засвидетельствованы как широкие классы Архитектурные детали, мебель, производственное сырьё и ремесленные отходы засвидетельствованы как широкие классы; конкретный строительный запас должен иметь причинный источник."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:brittle-fracture-defects:en",
+      "target_ref": "claim:brittle-fracture-defects",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Glass and ceramics exhibit brittle fracture sensitive to defects Glass and ceramics exhibit brittle fracture sensitive to defects; a concrete impact or heating result needs object state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:brittle-fracture-defects:ru",
+      "target_ref": "claim:brittle-fracture-defects",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стекло и керамика демонстрируют хрупкое разрушение, чувствительное к дефектам Стекло и керамика демонстрируют хрупкое разрушение, чувствительное к дефектам; конкретный результат удара или нагрева требует состояния объекта."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:buoyancy-pressure-phase-change:en",
+      "target_ref": "claim:buoyancy-pressure-phase-change",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Buoyancy, hydrostatic pressure, and water phase change are universal physical relations Buoyancy, hydrostatic pressure, and water phase change are universal physical relations; a concrete outcome depends on state, geometry, and exact mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:buoyancy-pressure-phase-change:ru",
+      "target_ref": "claim:buoyancy-pressure-phase-change",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями; конкретный исход зависит от состояния, геометрии и точных механик."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ceramic-material-category:en",
+      "target_ref": "claim:ceramic-material-category",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ceramics is an archaeologically relevant material category in Novgorod and its region Ceramics is an archaeologically relevant material category in Novgorod and its region; form, kiln, and firing regime do not follow from this."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ceramic-material-category:ru",
+      "target_ref": "claim:ceramic-material-category",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Керамика является археологически релевантной материальной категорией Новгорода и региона Керамика является археологически релевантной материальной категорией Новгорода и региона; форма, печь и режим обжига отсюда не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:composite-urban-quarter:en",
+      "target_ref": "claim:composite-urban-quarter",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Excavated medieval Novgorod quarters contain varied structures, pavements, and improvement features Excavated medieval Novgorod quarters contain varied structures, pavements, and improvement features; this supports a composite established urban context, not a ready-made yard template."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:composite-urban-quarter:ru",
+      "target_ref": "claim:composite-urban-quarter",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Раскопанные средневековые новгородские кварталы содержат разные сооружения, мостовые и элементы благоустройства Раскопанные средневековые новгородские кварталы содержат разные сооружения, мостовые и элементы благоустройства; это допускает составной уже установленный городской контекст, а не готовый шаблон двора."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:contextual-evidence-classes:en",
+      "target_ref": "claim:contextual-evidence-classes",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household goods, architectural details, production raw material, and craft waste are distinct evidence classes and do not determine a building function from one find Household goods, architectural details, production raw material, and craft waste are distinct evidence classes and do not determine a building function from one find."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:contextual-evidence-classes:ru",
+      "target_ref": "claim:contextual-evidence-classes",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Хозяйственные вещи, архитектурные детали, производственное сырьё и ремесленные отходы являются разными классами контекстных свидетельств и не определяют функцию постройки по одной находке Хозяйственные вещи, архитектурные детали, производственное сырьё и ремесленные отходы являются разными классами контекстных свидетельств и не определяют функцию постройки по одной находке."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:debt-needs-parties-and-basis:en",
+      "target_ref": "claim:debt-needs-parties-and-basis",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "A debt record may record an obligation A debt record may record an obligation; a current in-game obligation needs established parties and basis and does not create automatic enforcement."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:debt-needs-parties-and-basis:ru",
+      "target_ref": "claim:debt-needs-parties-and-basis",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долговая запись может фиксировать обязательство Долговая запись может фиксировать обязательство; текущее обязательство в игре требует установленных сторон и основания и не создаёт автоматического взыскания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:debt-record-practice:en",
+      "target_ref": "claim:debt-record-practice",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod birch-bark letter 73 is a debt record dated 1220–1240 Novgorod birch-bark letter 73 is a debt record dated 1220–1240; one record does not establish a universal credit form, interest, or enforcement."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:debt-record-practice:ru",
+      "target_ref": "claim:debt-record-practice",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская берестяная грамота № 73 является долговой записью диапазона 1220–1240 Новгородская берестяная грамота № 73 является долговой записью диапазона 1220–1240; одна запись не задаёт универсальную форму кредита, проценты или взыскание."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:domestic-animal-context:en",
+      "target_ref": "claim:domestic-animal-context",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Domestic-animal evidence belongs to managed household, market, or transport contexts, not automatic scenery in every scene Domestic-animal evidence belongs to managed household, market, or transport contexts, not automatic scenery in every scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:domestic-animal-context:ru",
+      "target_ref": "claim:domestic-animal-context",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свидетельства домашних животных относятся к управляемому хозяйственному, рыночному или транспортному контексту, а не к автоматическому фону любой сцены Свидетельства домашних животных относятся к управляемому хозяйственному, рыночному или транспортному контексту, а не к автоматическому фону любой сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:dry-friction:en",
+      "target_ref": "claim:dry-friction",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Dry friction opposes relative motion and depends on normal force and surfaces Dry friction opposes relative motion and depends on normal force and surfaces; exact coefficients and outcomes remain mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:dry-friction:ru",
+      "target_ref": "claim:dry-friction",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Сухое трение сопротивляется относительному движению и зависит от нормальной силы и поверхностей Сухое трение сопротивляется относительному движению и зависит от нормальной силы и поверхностей; точный коэффициент и результат остаются механикой."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:excavated-urban-structures:en",
+      "target_ref": "claim:excavated-urban-structures",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Excavations of medieval Novgorod record structures and architectural house details Excavations of medieval Novgorod record structures and architectural house details; a concrete plan, date, material, and building presence require local grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:excavated-urban-structures:ru",
+      "target_ref": "claim:excavated-urban-structures",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов; конкретный план, дата, материал и присутствие здания требуют локального основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:exercise-heat-dissipation:en",
+      "target_ref": "claim:exercise-heat-dissipation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Physical work produces metabolic heat, and environmental conditions can impede heat dissipation Physical work produces metabolic heat, and environmental conditions can impede heat dissipation; exact thresholds and outcomes remain body mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:exercise-heat-dissipation:ru",
+      "target_ref": "claim:exercise-heat-dissipation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физическая работа производит метаболическое тепло, а условия среды могут затруднять теплоотдачу Физическая работа производит метаболическое тепло, а условия среды могут затруднять теплоотдачу; точные пороги и исходы остаются механикой тела."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:fermentation-conditions:en",
+      "target_ref": "claim:fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fermentation depends on substrate, microorganisms, time, and conditions Fermentation depends on substrate, microorganisms, time, and conditions; spoilage and contamination remain possible, and no specific historical product is implied."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:fermentation-conditions:ru",
+      "target_ref": "claim:fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Ферментация зависит от субстрата, микроорганизмов, времени и условий Ферментация зависит от субстрата, микроорганизмов, времени и условий; порча и загрязнение остаются возможными, а конкретный исторический продукт не подразумевается."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:food-energy-nutrients:en",
+      "target_ref": "claim:food-energy-nutrients",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food supplies energy and nutrients, but nutritional condition cannot safely be inferred from one missed meal Food supplies energy and nutrients, but nutritional condition cannot safely be inferred from one missed meal."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:food-energy-nutrients:ru",
+      "target_ref": "claim:food-energy-nutrients",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища даёт энергию и питательные вещества, но состояние питания нельзя надёжно вывести из одного пропущенного приёма пищи Пища даёт энергию и питательные вещества, но состояние питания нельзя надёжно вывести из одного пропущенного приёма пищи."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:food-preservation-qualitative:en",
+      "target_ref": "claim:food-preservation-qualitative",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Salting, drying, and adequate heating can reduce microbial hazards, and protection from recontamination matters Salting, drying, and adequate heating can reduce microbial hazards, and protection from recontamination matters; this does not guarantee batch safety or shelf life."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:food-preservation-qualitative:ru",
+      "target_ref": "claim:food-preservation-qualitative",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Соление, сушка и достаточный нагрев могут снижать микробиологические риски, а защита от повторного загрязнения важна Соление, сушка и достаточный нагрев могут снижать микробиологические риски, а защита от повторного загрязнения важна; это не гарантирует безопасность или срок хранения партии."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:force-contact-geometry:en",
+      "target_ref": "claim:force-contact-geometry",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Contact area, force direction, support, and geometry affect mechanical results Contact area, force direction, support, and geometry affect mechanical results; simple machines do not create work from nothing."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:force-contact-geometry:ru",
+      "target_ref": "claim:force-contact-geometry",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Площадь контакта, направление силы, опора и геометрия меняют механический результат Площадь контакта, направление силы, опора и геометрия меняют механический результат; простые машины не создают работу из ничего."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:gramota-73-debt-record:en",
+      "target_ref": "claim:gramota-73-debt-record",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Birch-bark letter 73 is a complete Novgorod debt record, stratigraphically dated to the 1220s–1230s Birch-bark letter 73 is a complete Novgorod debt record, stratigraphically dated to the 1220s–1230s."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:gramota-73-debt-record:ru",
+      "target_ref": "claim:gramota-73-debt-record",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Берестяная грамота № 73 — целая долговая запись из Новгорода, стратиграфически датированная 20–30-ми годами XIII века Берестяная грамота № 73 — целая долговая запись из Новгорода, стратиграфически датированная 20–30-ми годами XIII века."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:gramota-73-grivna-term:en",
+      "target_ref": "claim:gramota-73-grivna-term",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Birch-bark letter 73 uses a form of the term grivna in a debt record Birch-bark letter 73 uses a form of the term grivna in a debt record; this does not establish physical form, weight, exchange rate, price, or an actor balance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:gramota-73-grivna-term:ru",
+      "target_ref": "claim:gramota-73-grivna-term",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Берестяная грамота № 73 употребляет форму «гривнь» в долговой записи Берестяная грамота № 73 употребляет форму «гривнь» в долговой записи; это не задаёт физическую форму, массу, курс, цену или баланс actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:iron-corrosion-moisture-oxygen:en",
+      "target_ref": "claim:iron-corrosion-moisture-oxygen",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Iron corrosion is electrochemical and is generally promoted by moisture or water and oxygen Iron corrosion is electrochemical and is generally promoted by moisture or water and oxygen; rate and residual strength of a concrete item do not follow."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:iron-corrosion-moisture-oxygen:ru",
+      "target_ref": "claim:iron-corrosion-moisture-oxygen",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Коррозия железа электрохимична и обычно ускоряется при наличии влаги или воды и кислорода Коррозия железа электрохимична и обычно ускоряется при наличии влаги или воды и кислорода; скорость и остаточная прочность конкретного предмета отсюда не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:judicial-accusation-record:en",
+      "target_ref": "claim:judicial-accusation-record",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod birch-bark letter 510 documents an accusation in a judicial record dated 1220–1240 with a possible earlier shift Novgorod birch-bark letter 510 documents an accusation in a judicial record dated 1220–1240 with a possible earlier shift; procedure and outcome are unknown."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:judicial-accusation-record:ru",
+      "target_ref": "claim:judicial-accusation-record",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская берестяная грамота № 510 документирует обвинение в судебной записи, датируемой 1220–1240 с возможным более ранним смещением Новгородская берестяная грамота № 510 документирует обвинение в судебной записи, датируемой 1220–1240 с возможным более ранним смещением; процедура и исход неизвестны."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:later-novgorod-judicial-charter:en",
+      "target_ref": "claim:later-novgorod-judicial-charter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "The later Novgorod Judicial Charter is not applicable as evidence for procedure in 1230 The later Novgorod Judicial Charter is not applicable as evidence for procedure in 1230."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:later-novgorod-judicial-charter:ru",
+      "target_ref": "claim:later-novgorod-judicial-charter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Поздняя Новгородская судная грамота не применима как источник процедуры 1230 года Поздняя Новгородская судная грамота не применима как источник процедуры 1230 года."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:leather-broad-context:en",
+      "target_ref": "claim:leather-broad-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Leather items fit the broad medieval Novgorod context Leather items fit the broad medieval Novgorod context; this does not establish local tanning or instant leather production."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:leather-broad-context:ru",
+      "target_ref": "claim:leather-broad-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Кожаные предметы допустимы в широком средневековом новгородском контексте Кожаные предметы допустимы в широком средневековом новгородском контексте; эта связь не подтверждает локальное дубление или мгновенное изготовление кожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:lime-transformations:en",
+      "target_ref": "claim:lime-transformations",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Lime production, slaking, and carbonation are distinct transformations Lime production, slaking, and carbonation are distinct transformations; adding water to quicklime is hazardous and exothermic, while exact process outcomes require composition and conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:lime-transformations:ru",
+      "target_ref": "claim:lime-transformations",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Получение извести, гашение и карбонизация являются разными превращениями Получение извести, гашение и карбонизация являются разными превращениями; добавление воды к негашёной извести опасно и экзотермично, но точный процесс требует состава и условий."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:localized-improvement-context:en",
+      "target_ref": "claim:localized-improvement-context",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "An improvement system is reported in excavated medieval Novgorod quarters, but the source does not establish modern sewerage, centralized services, or hidden engineering An improvement system is reported in excavated medieval Novgorod quarters, but the source does not establish modern sewerage, centralized services, or hidden engineering."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:localized-improvement-context:ru",
+      "target_ref": "claim:localized-improvement-context",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "В раскопанных средневековых кварталах Новгорода отмечена система благоустройства, но источник не подтверждает современную канализацию, централизованную службу или скрытое устройство В раскопанных средневековых кварталах Новгорода отмечена система благоустройства, но источник не подтверждает современную канализацию, централизованную службу или скрытое устройство."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metal-classes-composition:en",
+      "target_ref": "claim:metal-classes-composition",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Iron or steel and copper or bronze are distinct material classes Iron or steel and copper or bronze are distinct material classes; composition and processing affect behavior, but an unknown item cannot be assigned an alloy or quality."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metal-classes-composition:ru",
+      "target_ref": "claim:metal-classes-composition",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Железо или сталь и медь или бронза — разные классы материалов Железо или сталь и медь или бронза — разные классы материалов; состав и обработка влияют на поведение, но неизвестному предмету нельзя назначать сплав или качество."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metal-properties-depend-on-state:en",
+      "target_ref": "claim:metal-properties-depend-on-state",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Metal properties depend on composition, structure, processing, and temperature Metal properties depend on composition, structure, processing, and temperature; the word metal does not define one set of numeric properties."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metal-properties-depend-on-state:ru",
+      "target_ref": "claim:metal-properties-depend-on-state",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Свойства металла зависят от состава, структуры, обработки и температуры Свойства металла зависят от состава, структуры, обработки и температуры; слово «металл» не задаёт одно число свойств."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metalworking-broad-context:en",
+      "target_ref": "claim:metalworking-broad-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Urban metalworking is historically attested in broad medieval Novgorod, while a specific hearth, fuel, metal, and process require scene state Urban metalworking is historically attested in broad medieval Novgorod, while a specific hearth, fuel, metal, and process require scene state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:metalworking-broad-context:ru",
+      "target_ref": "claim:metalworking-broad-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Городская металлообработка исторически засвидетельствована в широком средневековом Новгороде, но конкретный горн, топливо, металл и способ обработки требуют состояния сцены Городская металлообработка исторически засвидетельствована в широком средневековом Новгороде, но конкретный горн, топливо, металл и способ обработки требуют состояния сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:neutral-household-context:en",
+      "target_ref": "claim:neutral-household-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "A causally established dwelling or property may supply neutral household context, but does not prove kinship, residents, wealth, privacy, or possessions A causally established dwelling or property may supply neutral household context, but does not prove kinship, residents, wealth, privacy, or possessions."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:neutral-household-context:ru",
+      "target_ref": "claim:neutral-household-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Причинно установленное жилище или владение может задавать нейтральный бытовой контекст, но не доказывает родство, жильцов, богатство, приватность или имущество Причинно установленное жилище или владение может задавать нейтральный бытовой контекст, но не доказывает родство, жильцов, богатство, приватность или имущество."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-leather-items:en",
+      "target_ref": "claim:novgorod-leather-items",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Leather personal items occur in the published broad medieval Novgorod material assemblage Leather personal items occur in the published broad medieval Novgorod material assemblage; a concrete form and presence require separate grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-leather-items:ru",
+      "target_ref": "claim:novgorod-leather-items",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Кожаные личные вещи входят в опубликованный широкий средневековый новгородский вещевой комплекс Кожаные личные вещи входят в опубликованный широкий средневековый новгородский вещевой комплекс; конкретная форма и присутствие требуют отдельного основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-urban-metalworking:en",
+      "target_ref": "claim:novgorod-urban-metalworking",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Academic synthesis documents urban metalworking in broad medieval Novgorod Academic synthesis documents urban metalworking in broad medieval Novgorod; it does not prove a forge, alloy, or technique in a particular yard."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-urban-metalworking:ru",
+      "target_ref": "claim:novgorod-urban-metalworking",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Академический свод документирует городскую металлообработку в широком средневековом Новгороде Академический свод документирует городскую металлообработку в широком средневековом Новгороде; это не доказывает кузницу, сплав или технологию в конкретном дворе."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-waterlogged-organic-preservation:en",
+      "target_ref": "claim:novgorod-waterlogged-organic-preservation",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Waterlogged Novgorod archaeological deposits preserve organic finds unusually well Waterlogged Novgorod archaeological deposits preserve organic finds unusually well; this is a property of the archaeological context, not item availability to an actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-waterlogged-organic-preservation:ru",
+      "target_ref": "claim:novgorod-waterlogged-organic-preservation",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Водонасыщенные новгородские археологические слои особенно хорошо сохраняют органические находки Водонасыщенные новгородские археологические слои особенно хорошо сохраняют органические находки; это свойство археологического контекста, а не доступность предмета actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-wood-bone-horn-classes:en",
+      "target_ref": "claim:novgorod-wood-bone-horn-classes",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-wood-bone-horn-classes:ru",
+      "target_ref": "claim:novgorod-wood-bone-horn-classes",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-wooden-urban-elements:en",
+      "target_ref": "claim:novgorod-wooden-urban-elements",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Wooden structures and urban elements are attested in the broad medieval Novgorod urban context Wooden structures and urban elements are attested in the broad medieval Novgorod urban context; this does not prove a concrete object, form, or condition in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:novgorod-wooden-urban-elements:ru",
+      "target_ref": "claim:novgorod-wooden-urban-elements",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "В широком средневековом городском контексте Новгорода засвидетельствованы деревянные постройки и элементы городской среды В широком средневековом городском контексте Новгорода засвидетельствованы деревянные постройки и элементы городской среды; это не доказывает наличие, форму или состояние конкретного объекта в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:pain-nociception-distinct:en",
+      "target_ref": "claim:pain-nociception-distinct",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nociception and pain are distinct Nociception and pain are distinct; pain experience cannot be reduced to one objective damage scale or inferred without actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:pain-nociception-distinct:ru",
+      "target_ref": "claim:pain-nociception-distinct",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ноцицепция и боль различаются Ноцицепция и боль различаются; переживание боли нельзя свести к единой объективной шкале повреждения или вывести без состояния actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-document-genres:en",
+      "target_ref": "claim:practical-document-genres",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Surviving Novgorod birch-bark documents include different practical genres, including debt and judicial records Surviving Novgorod birch-bark documents include different practical genres, including debt and judicial records; this is not a measure of universal literacy."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-document-genres:ru",
+      "target_ref": "claim:practical-document-genres",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи; это не мера всеобщей грамотности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:regional-agriculture-practice:en",
+      "target_ref": "claim:regional-agriculture-practice",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Archaeological agricultural implements support agriculture as a regional medieval practice, without assigning a field, crop, tool, or yield to a household Archaeological agricultural implements support agriculture as a regional medieval practice, without assigning a field, crop, tool, or yield to a household."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:regional-agriculture-practice:ru",
+      "target_ref": "claim:regional-agriculture-practice",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Археологические сельскохозяйственные орудия подтверждают земледелие как региональную средневековую практику, не назначая хозяйству поле, культуру, орудие или урожай Археологические сельскохозяйственные орудия подтверждают земледелие как региональную средневековую практику, не назначая хозяйству поле, культуру, орудие или урожай."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:regional-fish-exploitation:en",
+      "target_ref": "claim:regional-fish-exploitation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Fish exploitation is historically attested at the regional scale of medieval Novgorod Fish exploitation is historically attested at the regional scale of medieval Novgorod; this does not establish species, stock, access, season, or a catch in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:regional-fish-exploitation:ru",
+      "target_ref": "claim:regional-fish-exploitation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода; это не устанавливает вид, запас, доступ, сезон или улов в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
+      "target_ref": "claim:resource-occupation-needs-setting",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Fishing, hunting, and fur procurement require separately established resources, setting, and practice Fishing, hunting, and fur procurement require separately established resources, setting, and practice; they do not automatically form one occupation or NPC skill set."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:ru",
+      "target_ref": "claim:resource-occupation-needs-setting",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики; они не образуют автоматически единую профессию или набор навыков NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:russkaya-pravda-comparative-only:en",
+      "target_ref": "claim:russkaya-pravda-comparative-only",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Russkaya Pravda is comparative evidence for Rus legal language and traditions, not an automatically executable Novgorod-1230 code Russkaya Pravda is comparative evidence for Rus legal language and traditions, not an automatically executable Novgorod-1230 code."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:russkaya-pravda-comparative-only:ru",
+      "target_ref": "claim:russkaya-pravda-comparative-only",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Русская Правда служит сравнительным свидетельством правового языка и традиций Руси, но не является автоматически исполнимым кодексом Новгорода 1230 года Русская Правда служит сравнительным свидетельством правового языка и традиций Руси, но не является автоматически исполнимым кодексом Новгорода 1230 года."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:structural-and-object-wood:en",
+      "target_ref": "claim:structural-and-object-wood",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Structural and artefactual wood is an attested class of Novgorod archaeological material Structural and artefactual wood is an attested class of Novgorod archaeological material; stock presence and access remain world state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:structural-and-object-wood:ru",
+      "target_ref": "claim:structural-and-object-wood",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Структурная и предметная древесина — засвидетельствованный класс новгородских археологических материалов Структурная и предметная древесина — засвидетельствованный класс новгородских археологических материалов; наличие заготовки и доступ к ней остаются состоянием мира."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:textile-conditioning-matters:en",
+      "target_ref": "claim:textile-conditioning-matters",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Textile sample condition and conditioning matter for testing Textile sample condition and conditioning matter for testing; the standard does not define properties of historical fabric or leather."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:textile-conditioning-matters:ru",
+      "target_ref": "claim:textile-conditioning-matters",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состояние и кондиционирование текстильного образца существенно для испытания Состояние и кондиционирование текстильного образца существенно для испытания; стандарт не задаёт свойства исторической ткани или кожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-bird-period-specific:en",
+      "target_ref": "claim:urban-bird-period-specific",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Historical compatibility of synanthropic urban birds must be taxon- and period-specific Historical compatibility of synanthropic urban birds must be taxon- and period-specific; a modern generic urban-bird assemblage cannot be projected into 1230."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-bird-period-specific:ru",
+      "target_ref": "claim:urban-bird-period-specific",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Историческая совместимость синантропной городской птицы должна быть видо- и периодоспецифичной Историческая совместимость синантропной городской птицы должна быть видо- и периодоспецифичной; общий современный городской набор нельзя переносить в 1230 год."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-pavements:en",
+      "target_ref": "claim:urban-pavements",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Pavements are directly reported among excavated medieval Novgorod-quarter features Pavements are directly reported among excavated medieval Novgorod-quarter features; material, width, condition, and presence on a specific street are not automatic."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-pavements:ru",
+      "target_ref": "claim:urban-pavements",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Мостовые прямо отмечены среди объектов раскопанных средневековых кварталов Новгорода Мостовые прямо отмечены среди объектов раскопанных средневековых кварталов Новгорода; материал, ширина, состояние и наличие на конкретной улице не выводятся автоматически."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-wooden-coverings:en",
+      "target_ref": "claim:urban-wooden-coverings",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wooden buildings and coverings are historically compatible with the broad medieval urban Novgorod context, without implying a concrete construction or place Wooden buildings and coverings are historically compatible with the broad medieval urban Novgorod context, without implying a concrete construction or place."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:urban-wooden-coverings:ru",
+      "target_ref": "claim:urban-wooden-coverings",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Деревянные постройки и покрытия исторически совместимы с широким городским средневековым контекстом Новгорода, без вывода о конкретной конструкции или месте Деревянные постройки и покрытия исторически совместимы с широким городским средневековым контекстом Новгорода, без вывода о конкретной конструкции или месте."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wild-food-and-fur-evidence:en",
+      "target_ref": "claim:wild-food-and-fur-evidence",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wild-animal food remains and evidence of fur procurement are distinct questions Wild-animal food remains and evidence of fur procurement are distinct questions; no encounter, catch, or pelt follows without separate grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wild-food-and-fur-evidence:ru",
+      "target_ref": "claim:wild-food-and-fur-evidence",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Остатки диких животных как пищи и свидетельства пушного промысла являются разными вопросами Остатки диких животных как пищи и свидетельства пушного промысла являются разными вопросами; ни встреча, ни добыча, ни шкура не возникают без отдельного основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wood-anisotropy-moisture:en",
+      "target_ref": "claim:wood-anisotropy-moisture",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wood properties depend on direction, species, and moisture condition Wood properties depend on direction, species, and moisture condition; this does not supply numerical strength for a concrete piece."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wood-anisotropy-moisture:ru",
+      "target_ref": "claim:wood-anisotropy-moisture",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Свойства древесины зависят от направления, породы и влажностного состояния Свойства древесины зависят от направления, породы и влажностного состояния; это не даёт числовую прочность конкретной детали."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:woodworked-objects-and-waste:en",
+      "target_ref": "claim:woodworked-objects-and-waste",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Worked wooden objects and woodworking waste are attested material classes Worked wooden objects and woodworking waste are attested material classes; an object function does not follow from material alone."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:woodworked-objects-and-waste:ru",
+      "target_ref": "claim:woodworked-objects-and-waste",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала; назначение вещи не следует только из материала."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:work-intensity-duration:en",
+      "target_ref": "claim:work-intensity-duration",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Greater sustained work intensity shortens maintainable duration, and fatigue limits continuation Greater sustained work intensity shortens maintainable duration, and fatigue limits continuation; there is no universal maximum for an actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:work-intensity-duration:ru",
+      "target_ref": "claim:work-intensity-duration",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рост длительной интенсивности работы сокращает время её поддержания, а утомление ограничивает продолжение Рост длительной интенсивности работы сокращает время её поддержания, а утомление ограничивает продолжение; универсального максимума для actor нет."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:work-waste-context:en",
+      "target_ref": "claim:work-waste-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Production waste may be a contextual consequence of material work, but does not reveal author, time, occupation, or hidden result without further evidence Production waste may be a contextual consequence of material work, but does not reveal author, time, occupation, or hidden result without further evidence."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:work-waste-context:ru",
+      "target_ref": "claim:work-waste-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wound-healing-time-dependent:en",
+      "target_ref": "claim:wound-healing-time-dependent",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Skin-wound healing is a time-dependent overlapping biological process influenced by local and systemic factors Skin-wound healing is a time-dependent overlapping biological process influenced by local and systemic factors; exact duration and diagnosis do not follow."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wound-healing-time-dependent:ru",
+      "target_ref": "claim:wound-healing-time-dependent",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заживление кожной раны — зависящий от времени перекрывающийся биологический процесс, на который влияют местные и системные факторы Заживление кожной раны — зависящий от времени перекрывающийся биологический процесс, на который влияют местные и системные факторы; точный срок и диагноз не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:architectural-material-classes:en",
+      "target_ref": "wk:architecture_settlement:architectural-material-classes",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Architectural details, furniture, production raw material, and craft waste are broad attested classes Architectural details, furniture, production raw material, and craft waste are broad attested classes; concrete building stock needs a causal source."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:architectural-material-classes:ru",
+      "target_ref": "wk:architecture_settlement:architectural-material-classes",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Архитектурные детали, мебель, производственное сырьё и ремесленные отходы засвидетельствованы как широкие классы Архитектурные детали, мебель, производственное сырьё и ремесленные отходы засвидетельствованы как широкие классы; конкретный строительный запас должен иметь причинный источник."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:composite-urban-quarter:en",
+      "target_ref": "wk:architecture_settlement:composite-urban-quarter",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Excavated medieval Novgorod quarters contain varied structures, pavements, and improvement features Excavated medieval Novgorod quarters contain varied structures, pavements, and improvement features; this supports a composite established urban context, not a ready-made yard template."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:composite-urban-quarter:ru",
+      "target_ref": "wk:architecture_settlement:composite-urban-quarter",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Раскопанные средневековые новгородские кварталы содержат разные сооружения, мостовые и элементы благоустройства Раскопанные средневековые новгородские кварталы содержат разные сооружения, мостовые и элементы благоустройства; это допускает составной уже установленный городской контекст, а не готовый шаблон двора."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:contextual-evidence-classes:en",
+      "target_ref": "wk:architecture_settlement:contextual-evidence-classes",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household goods, architectural details, production raw material, and craft waste are distinct evidence classes and do not determine a building function from one find Household goods, architectural details, production raw material, and craft waste are distinct evidence classes and do not determine a building function from one find."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:contextual-evidence-classes:ru",
+      "target_ref": "wk:architecture_settlement:contextual-evidence-classes",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Хозяйственные вещи, архитектурные детали, производственное сырьё и ремесленные отходы являются разными классами контекстных свидетельств и не определяют функцию постройки по одной находке Хозяйственные вещи, архитектурные детали, производственное сырьё и ремесленные отходы являются разными классами контекстных свидетельств и не определяют функцию постройки по одной находке."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:excavated-urban-structures:en",
+      "target_ref": "wk:architecture_settlement:excavated-urban-structures",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Excavations of medieval Novgorod record structures and architectural house details Excavations of medieval Novgorod record structures and architectural house details; a concrete plan, date, material, and building presence require local grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:excavated-urban-structures:ru",
+      "target_ref": "wk:architecture_settlement:excavated-urban-structures",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов; конкретный план, дата, материал и присутствие здания требуют локального основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:localized-improvement-context:en",
+      "target_ref": "wk:architecture_settlement:localized-improvement-context",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "An improvement system is reported in excavated medieval Novgorod quarters, but the source does not establish modern sewerage, centralized services, or hidden engineering An improvement system is reported in excavated medieval Novgorod quarters, but the source does not establish modern sewerage, centralized services, or hidden engineering."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:localized-improvement-context:ru",
+      "target_ref": "wk:architecture_settlement:localized-improvement-context",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "В раскопанных средневековых кварталах Новгорода отмечена система благоустройства, но источник не подтверждает современную канализацию, централизованную службу или скрытое устройство В раскопанных средневековых кварталах Новгорода отмечена система благоустройства, но источник не подтверждает современную канализацию, централизованную службу или скрытое устройство."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:urban-pavements:en",
+      "target_ref": "wk:architecture_settlement:urban-pavements",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Pavements are directly reported among excavated medieval Novgorod-quarter features Pavements are directly reported among excavated medieval Novgorod-quarter features; material, width, condition, and presence on a specific street are not automatic."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:urban-pavements:ru",
+      "target_ref": "wk:architecture_settlement:urban-pavements",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Мостовые прямо отмечены среди объектов раскопанных средневековых кварталов Новгорода Мостовые прямо отмечены среди объектов раскопанных средневековых кварталов Новгорода; материал, ширина, состояние и наличие на конкретной улице не выводятся автоматически."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:activity-fluid-balance:en",
+      "target_ref": "wk:biology_physiology:activity-fluid-balance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "During physical activity, fluid balance affects physiological state During physical activity, fluid balance affects physiological state; volumes, water safety, and individual outcome require concrete data."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:activity-fluid-balance:ru",
+      "target_ref": "wk:biology_physiology:activity-fluid-balance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "При физической активности водный баланс влияет на физиологическое состояние При физической активности водный баланс влияет на физиологическое состояние; объёмы, безопасность воды и индивидуальный исход требуют конкретных данных."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:acute-sleep-loss-performance:en",
+      "target_ref": "wk:biology_physiology:acute-sleep-loss-performance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Acute sleep loss can impair later physical performance, but does not prove a concrete actor sleep history or condition Acute sleep loss can impair later physical performance, but does not prove a concrete actor sleep history or condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:acute-sleep-loss-performance:ru",
+      "target_ref": "wk:biology_physiology:acute-sleep-loss-performance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Острая потеря сна может ухудшать последующую физическую работоспособность, но не доказывает историю сна или состояние конкретного actor Острая потеря сна может ухудшать последующую физическую работоспособность, но не доказывает историю сна или состояние конкретного actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:exercise-heat-dissipation:en",
+      "target_ref": "wk:biology_physiology:exercise-heat-dissipation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Physical work produces metabolic heat, and environmental conditions can impede heat dissipation Physical work produces metabolic heat, and environmental conditions can impede heat dissipation; exact thresholds and outcomes remain body mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:exercise-heat-dissipation:ru",
+      "target_ref": "wk:biology_physiology:exercise-heat-dissipation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физическая работа производит метаболическое тепло, а условия среды могут затруднять теплоотдачу Физическая работа производит метаболическое тепло, а условия среды могут затруднять теплоотдачу; точные пороги и исходы остаются механикой тела."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:food-energy-nutrients:en",
+      "target_ref": "wk:biology_physiology:food-energy-nutrients",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food supplies energy and nutrients, but nutritional condition cannot safely be inferred from one missed meal Food supplies energy and nutrients, but nutritional condition cannot safely be inferred from one missed meal."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:food-energy-nutrients:ru",
+      "target_ref": "wk:biology_physiology:food-energy-nutrients",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища даёт энергию и питательные вещества, но состояние питания нельзя надёжно вывести из одного пропущенного приёма пищи Пища даёт энергию и питательные вещества, но состояние питания нельзя надёжно вывести из одного пропущенного приёма пищи."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:pain-nociception-distinct:en",
+      "target_ref": "wk:biology_physiology:pain-nociception-distinct",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nociception and pain are distinct Nociception and pain are distinct; pain experience cannot be reduced to one objective damage scale or inferred without actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:pain-nociception-distinct:ru",
+      "target_ref": "wk:biology_physiology:pain-nociception-distinct",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ноцицепция и боль различаются Ноцицепция и боль различаются; переживание боли нельзя свести к единой объективной шкале повреждения или вывести без состояния actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:work-intensity-duration:en",
+      "target_ref": "wk:biology_physiology:work-intensity-duration",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Greater sustained work intensity shortens maintainable duration, and fatigue limits continuation Greater sustained work intensity shortens maintainable duration, and fatigue limits continuation; there is no universal maximum for an actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:work-intensity-duration:ru",
+      "target_ref": "wk:biology_physiology:work-intensity-duration",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рост длительной интенсивности работы сокращает время её поддержания, а утомление ограничивает продолжение Рост длительной интенсивности работы сокращает время её поддержания, а утомление ограничивает продолжение; универсального максимума для actor нет."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:wound-healing-time-dependent:en",
+      "target_ref": "wk:biology_physiology:wound-healing-time-dependent",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Skin-wound healing is a time-dependent overlapping biological process influenced by local and systemic factors Skin-wound healing is a time-dependent overlapping biological process influenced by local and systemic factors; exact duration and diagnosis do not follow."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:wound-healing-time-dependent:ru",
+      "target_ref": "wk:biology_physiology:wound-healing-time-dependent",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заживление кожной раны — зависящий от времени перекрывающийся биологический процесс, на который влияют местные и системные факторы Заживление кожной раны — зависящий от времени перекрывающийся биологический процесс, на который влияют местные и системные факторы; точный срок и диагноз не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:fermentation-conditions:en",
+      "target_ref": "wk:chemistry_process:fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fermentation depends on substrate, microorganisms, time, and conditions Fermentation depends on substrate, microorganisms, time, and conditions; spoilage and contamination remain possible, and no specific historical product is implied."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:fermentation-conditions:ru",
+      "target_ref": "wk:chemistry_process:fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Ферментация зависит от субстрата, микроорганизмов, времени и условий Ферментация зависит от субстрата, микроорганизмов, времени и условий; порча и загрязнение остаются возможными, а конкретный исторический продукт не подразумевается."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:food-preservation-qualitative:en",
+      "target_ref": "wk:chemistry_process:food-preservation-qualitative",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Salting, drying, and adequate heating can reduce microbial hazards, and protection from recontamination matters Salting, drying, and adequate heating can reduce microbial hazards, and protection from recontamination matters; this does not guarantee batch safety or shelf life."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:food-preservation-qualitative:ru",
+      "target_ref": "wk:chemistry_process:food-preservation-qualitative",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Соление, сушка и достаточный нагрев могут снижать микробиологические риски, а защита от повторного загрязнения важна Соление, сушка и достаточный нагрев могут снижать микробиологические риски, а защита от повторного загрязнения важна; это не гарантирует безопасность или срок хранения партии."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:iron-corrosion-moisture-oxygen:en",
+      "target_ref": "wk:chemistry_process:iron-corrosion-moisture-oxygen",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Iron corrosion is electrochemical and is generally promoted by moisture or water and oxygen Iron corrosion is electrochemical and is generally promoted by moisture or water and oxygen; rate and residual strength of a concrete item do not follow."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:iron-corrosion-moisture-oxygen:ru",
+      "target_ref": "wk:chemistry_process:iron-corrosion-moisture-oxygen",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Коррозия железа электрохимична и обычно ускоряется при наличии влаги или воды и кислорода Коррозия железа электрохимична и обычно ускоряется при наличии влаги или воды и кислорода; скорость и остаточная прочность конкретного предмета отсюда не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:lime-transformations:en",
+      "target_ref": "wk:chemistry_process:lime-transformations",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Lime production, slaking, and carbonation are distinct transformations Lime production, slaking, and carbonation are distinct transformations; adding water to quicklime is hazardous and exothermic, while exact process outcomes require composition and conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:lime-transformations:ru",
+      "target_ref": "wk:chemistry_process:lime-transformations",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Получение извести, гашение и карбонизация являются разными превращениями Получение извести, гашение и карбонизация являются разными превращениями; добавление воды к негашёной извести опасно и экзотермично, но точный процесс требует состава и условий."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:metal-classes-composition:en",
+      "target_ref": "wk:chemistry_process:metal-classes-composition",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Iron or steel and copper or bronze are distinct material classes Iron or steel and copper or bronze are distinct material classes; composition and processing affect behavior, but an unknown item cannot be assigned an alloy or quality."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:metal-classes-composition:ru",
+      "target_ref": "wk:chemistry_process:metal-classes-composition",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Железо или сталь и медь или бронза — разные классы материалов Железо или сталь и медь или бронза — разные классы материалов; состав и обработка влияют на поведение, но неизвестному предмету нельзя назначать сплав или качество."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:ceramic-material-category:en",
+      "target_ref": "wk:craft_technology:ceramic-material-category",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ceramics is an archaeologically relevant material category in Novgorod and its region Ceramics is an archaeologically relevant material category in Novgorod and its region; form, kiln, and firing regime do not follow from this."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:ceramic-material-category:ru",
+      "target_ref": "wk:craft_technology:ceramic-material-category",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Керамика является археологически релевантной материальной категорией Новгорода и региона Керамика является археологически релевантной материальной категорией Новгорода и региона; форма, печь и режим обжига отсюда не следуют."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:leather-broad-context:en",
+      "target_ref": "wk:craft_technology:leather-broad-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Leather items fit the broad medieval Novgorod context Leather items fit the broad medieval Novgorod context; this does not establish local tanning or instant leather production."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:leather-broad-context:ru",
+      "target_ref": "wk:craft_technology:leather-broad-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Кожаные предметы допустимы в широком средневековом новгородском контексте Кожаные предметы допустимы в широком средневековом новгородском контексте; эта связь не подтверждает локальное дубление или мгновенное изготовление кожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:metalworking-broad-context:en",
+      "target_ref": "wk:craft_technology:metalworking-broad-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Urban metalworking is historically attested in broad medieval Novgorod, while a specific hearth, fuel, metal, and process require scene state Urban metalworking is historically attested in broad medieval Novgorod, while a specific hearth, fuel, metal, and process require scene state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:metalworking-broad-context:ru",
+      "target_ref": "wk:craft_technology:metalworking-broad-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Городская металлообработка исторически засвидетельствована в широком средневековом Новгороде, но конкретный горн, топливо, металл и способ обработки требуют состояния сцены Городская металлообработка исторически засвидетельствована в широком средневековом Новгороде, но конкретный горн, топливо, металл и способ обработки требуют состояния сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:structural-and-object-wood:en",
+      "target_ref": "wk:craft_technology:structural-and-object-wood",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Structural and artefactual wood is an attested class of Novgorod archaeological material Structural and artefactual wood is an attested class of Novgorod archaeological material; stock presence and access remain world state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:structural-and-object-wood:ru",
+      "target_ref": "wk:craft_technology:structural-and-object-wood",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Структурная и предметная древесина — засвидетельствованный класс новгородских археологических материалов Структурная и предметная древесина — засвидетельствованный класс новгородских археологических материалов; наличие заготовки и доступ к ней остаются состоянием мира."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:urban-wooden-coverings:en",
+      "target_ref": "wk:craft_technology:urban-wooden-coverings",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wooden buildings and coverings are historically compatible with the broad medieval urban Novgorod context, without implying a concrete construction or place Wooden buildings and coverings are historically compatible with the broad medieval urban Novgorod context, without implying a concrete construction or place."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:urban-wooden-coverings:ru",
+      "target_ref": "wk:craft_technology:urban-wooden-coverings",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Деревянные постройки и покрытия исторически совместимы с широким городским средневековым контекстом Новгорода, без вывода о конкретной конструкции или месте Деревянные постройки и покрытия исторически совместимы с широким городским средневековым контекстом Новгорода, без вывода о конкретной конструкции или месте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:woodworked-objects-and-waste:en",
+      "target_ref": "wk:craft_technology:woodworked-objects-and-waste",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Worked wooden objects and woodworking waste are attested material classes Worked wooden objects and woodworking waste are attested material classes; an object function does not follow from material alone."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:woodworked-objects-and-waste:ru",
+      "target_ref": "wk:craft_technology:woodworked-objects-and-waste",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала; назначение вещи не следует только из материала."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:work-waste-context:en",
+      "target_ref": "wk:craft_technology:work-waste-context",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Production waste may be a contextual consequence of material work, but does not reveal author, time, occupation, or hidden result without further evidence Production waste may be a contextual consequence of material work, but does not reveal author, time, occupation, or hidden result without further evidence."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:work-waste-context:ru",
+      "target_ref": "wk:craft_technology:work-waste-context",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:domestic-animal-context:en",
+      "target_ref": "wk:environment:domestic-animal-context",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Domestic-animal evidence belongs to managed household, market, or transport contexts, not automatic scenery in every scene Domestic-animal evidence belongs to managed household, market, or transport contexts, not automatic scenery in every scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:domestic-animal-context:ru",
+      "target_ref": "wk:environment:domestic-animal-context",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свидетельства домашних животных относятся к управляемому хозяйственному, рыночному или транспортному контексту, а не к автоматическому фону любой сцены Свидетельства домашних животных относятся к управляемому хозяйственному, рыночному или транспортному контексту, а не к автоматическому фону любой сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:regional-agriculture-practice:en",
+      "target_ref": "wk:environment:regional-agriculture-practice",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Archaeological agricultural implements support agriculture as a regional medieval practice, without assigning a field, crop, tool, or yield to a household Archaeological agricultural implements support agriculture as a regional medieval practice, without assigning a field, crop, tool, or yield to a household."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:regional-agriculture-practice:ru",
+      "target_ref": "wk:environment:regional-agriculture-practice",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Археологические сельскохозяйственные орудия подтверждают земледелие как региональную средневековую практику, не назначая хозяйству поле, культуру, орудие или урожай Археологические сельскохозяйственные орудия подтверждают земледелие как региональную средневековую практику, не назначая хозяйству поле, культуру, орудие или урожай."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:regional-fish-exploitation:en",
+      "target_ref": "wk:environment:regional-fish-exploitation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Fish exploitation is historically attested at the regional scale of medieval Novgorod Fish exploitation is historically attested at the regional scale of medieval Novgorod; this does not establish species, stock, access, season, or a catch in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:regional-fish-exploitation:ru",
+      "target_ref": "wk:environment:regional-fish-exploitation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода; это не устанавливает вид, запас, доступ, сезон или улов в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:urban-bird-period-specific:en",
+      "target_ref": "wk:environment:urban-bird-period-specific",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Historical compatibility of synanthropic urban birds must be taxon- and period-specific Historical compatibility of synanthropic urban birds must be taxon- and period-specific; a modern generic urban-bird assemblage cannot be projected into 1230."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:urban-bird-period-specific:ru",
+      "target_ref": "wk:environment:urban-bird-period-specific",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Историческая совместимость синантропной городской птицы должна быть видо- и периодоспецифичной Историческая совместимость синантропной городской птицы должна быть видо- и периодоспецифичной; общий современный городской набор нельзя переносить в 1230 год."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:wild-food-and-fur-evidence:en",
+      "target_ref": "wk:environment:wild-food-and-fur-evidence",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wild-animal food remains and evidence of fur procurement are distinct questions Wild-animal food remains and evidence of fur procurement are distinct questions; no encounter, catch, or pelt follows without separate grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:wild-food-and-fur-evidence:ru",
+      "target_ref": "wk:environment:wild-food-and-fur-evidence",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Остатки диких животных как пищи и свидетельства пушного промысла являются разными вопросами Остатки диких животных как пищи и свидетельства пушного промысла являются разными вопросами; ни встреча, ни добыча, ни шкура не возникают без отдельного основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:gramota-73-debt-record:en",
+      "target_ref": "wk:material_culture:gramota-73-debt-record",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Birch-bark letter 73 is a complete Novgorod debt record, stratigraphically dated to the 1220s–1230s Birch-bark letter 73 is a complete Novgorod debt record, stratigraphically dated to the 1220s–1230s."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:gramota-73-debt-record:ru",
+      "target_ref": "wk:material_culture:gramota-73-debt-record",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Берестяная грамота № 73 — целая долговая запись из Новгорода, стратиграфически датированная 20–30-ми годами XIII века Берестяная грамота № 73 — целая долговая запись из Новгорода, стратиграфически датированная 20–30-ми годами XIII века."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:gramota-73-grivna-term:en",
+      "target_ref": "wk:material_culture:gramota-73-grivna-term",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Birch-bark letter 73 uses a form of the term grivna in a debt record Birch-bark letter 73 uses a form of the term grivna in a debt record; this does not establish physical form, weight, exchange rate, price, or an actor balance."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:gramota-73-grivna-term:ru",
+      "target_ref": "wk:material_culture:gramota-73-grivna-term",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Берестяная грамота № 73 употребляет форму «гривнь» в долговой записи Берестяная грамота № 73 употребляет форму «гривнь» в долговой записи; это не задаёт физическую форму, массу, курс, цену или баланс actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-leather-items:en",
+      "target_ref": "wk:material_culture:novgorod-leather-items",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Leather personal items occur in the published broad medieval Novgorod material assemblage Leather personal items occur in the published broad medieval Novgorod material assemblage; a concrete form and presence require separate grounding."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-leather-items:ru",
+      "target_ref": "wk:material_culture:novgorod-leather-items",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Кожаные личные вещи входят в опубликованный широкий средневековый новгородский вещевой комплекс Кожаные личные вещи входят в опубликованный широкий средневековый новгородский вещевой комплекс; конкретная форма и присутствие требуют отдельного основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-urban-metalworking:en",
+      "target_ref": "wk:material_culture:novgorod-urban-metalworking",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Academic synthesis documents urban metalworking in broad medieval Novgorod Academic synthesis documents urban metalworking in broad medieval Novgorod; it does not prove a forge, alloy, or technique in a particular yard."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-urban-metalworking:ru",
+      "target_ref": "wk:material_culture:novgorod-urban-metalworking",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Академический свод документирует городскую металлообработку в широком средневековом Новгороде Академический свод документирует городскую металлообработку в широком средневековом Новгороде; это не доказывает кузницу, сплав или технологию в конкретном дворе."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-waterlogged-organic-preservation:en",
+      "target_ref": "wk:material_culture:novgorod-waterlogged-organic-preservation",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Waterlogged Novgorod archaeological deposits preserve organic finds unusually well Waterlogged Novgorod archaeological deposits preserve organic finds unusually well; this is a property of the archaeological context, not item availability to an actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-waterlogged-organic-preservation:ru",
+      "target_ref": "wk:material_culture:novgorod-waterlogged-organic-preservation",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Водонасыщенные новгородские археологические слои особенно хорошо сохраняют органические находки Водонасыщенные новгородские археологические слои особенно хорошо сохраняют органические находки; это свойство археологического контекста, а не доступность предмета actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-wood-bone-horn-classes:en",
+      "target_ref": "wk:material_culture:novgorod-wood-bone-horn-classes",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-wood-bone-horn-classes:ru",
+      "target_ref": "wk:material_culture:novgorod-wood-bone-horn-classes",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-wooden-urban-elements:en",
+      "target_ref": "wk:material_culture:novgorod-wooden-urban-elements",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Wooden structures and urban elements are attested in the broad medieval Novgorod urban context Wooden structures and urban elements are attested in the broad medieval Novgorod urban context; this does not prove a concrete object, form, or condition in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:novgorod-wooden-urban-elements:ru",
+      "target_ref": "wk:material_culture:novgorod-wooden-urban-elements",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "В широком средневековом городском контексте Новгорода засвидетельствованы деревянные постройки и элементы городской среды В широком средневековом городском контексте Новгорода засвидетельствованы деревянные постройки и элементы городской среды; это не доказывает наличие, форму или состояние конкретного объекта в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:agriculture-rural-role-context:en",
+      "target_ref": "wk:npc_daily_life:agriculture-rural-role-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Agricultural work is historically compatible with an established rural household or settlement Agricultural work is historically compatible with an established rural household or settlement; the source does not assign occupation, property, or a current task to an NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:agriculture-rural-role-context:ru",
+      "target_ref": "wk:npc_daily_life:agriculture-rural-role-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Земледельческая работа исторически совместима с уже установленным сельским хозяйством или поселением Земледельческая работа исторически совместима с уже установленным сельским хозяйством или поселением; источник не назначает профессию, имущество или текущую задачу конкретному NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:animal-care-needs-presence:en",
+      "target_ref": "wk:npc_daily_life:animal-care-needs-presence",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Care and use of a domestic animal applies only where a concrete animal and its context are already established Care and use of a domestic animal applies only where a concrete animal and its context are already established; a regional corpus creates neither animal nor owner."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:animal-care-needs-presence:ru",
+      "target_ref": "wk:npc_daily_life:animal-care-needs-presence",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Уход и использование домашнего животного рассматриваются только там, где конкретное животное и его контекст уже установлены Уход и использование домашнего животного рассматриваются только там, где конкретное животное и его контекст уже установлены; региональный corpus не создаёт животное или владельца."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:neutral-household-context:en",
+      "target_ref": "wk:npc_daily_life:neutral-household-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "A causally established dwelling or property may supply neutral household context, but does not prove kinship, residents, wealth, privacy, or possessions A causally established dwelling or property may supply neutral household context, but does not prove kinship, residents, wealth, privacy, or possessions."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:neutral-household-context:ru",
+      "target_ref": "wk:npc_daily_life:neutral-household-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Причинно установленное жилище или владение может задавать нейтральный бытовой контекст, но не доказывает родство, жильцов, богатство, приватность или имущество Причинно установленное жилище или владение может задавать нейтральный бытовой контекст, но не доказывает родство, жильцов, богатство, приватность или имущество."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:resource-occupation-needs-setting:en",
+      "target_ref": "wk:npc_daily_life:resource-occupation-needs-setting",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Fishing, hunting, and fur procurement require separately established resources, setting, and practice Fishing, hunting, and fur procurement require separately established resources, setting, and practice; they do not automatically form one occupation or NPC skill set."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:resource-occupation-needs-setting:ru",
+      "target_ref": "wk:npc_daily_life:resource-occupation-needs-setting",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики; они не образуют автоматически единую профессию или набор навыков NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:brittle-fracture-defects:en",
+      "target_ref": "wk:physics_material_science:brittle-fracture-defects",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Glass and ceramics exhibit brittle fracture sensitive to defects Glass and ceramics exhibit brittle fracture sensitive to defects; a concrete impact or heating result needs object state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:brittle-fracture-defects:ru",
+      "target_ref": "wk:physics_material_science:brittle-fracture-defects",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стекло и керамика демонстрируют хрупкое разрушение, чувствительное к дефектам Стекло и керамика демонстрируют хрупкое разрушение, чувствительное к дефектам; конкретный результат удара или нагрева требует состояния объекта."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:buoyancy-pressure-phase-change:en",
+      "target_ref": "wk:physics_material_science:buoyancy-pressure-phase-change",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Buoyancy, hydrostatic pressure, and water phase change are universal physical relations Buoyancy, hydrostatic pressure, and water phase change are universal physical relations; a concrete outcome depends on state, geometry, and exact mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:buoyancy-pressure-phase-change:ru",
+      "target_ref": "wk:physics_material_science:buoyancy-pressure-phase-change",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями; конкретный исход зависит от состояния, геометрии и точных механик."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:dry-friction:en",
+      "target_ref": "wk:physics_material_science:dry-friction",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Dry friction opposes relative motion and depends on normal force and surfaces Dry friction opposes relative motion and depends on normal force and surfaces; exact coefficients and outcomes remain mechanics."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:dry-friction:ru",
+      "target_ref": "wk:physics_material_science:dry-friction",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Сухое трение сопротивляется относительному движению и зависит от нормальной силы и поверхностей Сухое трение сопротивляется относительному движению и зависит от нормальной силы и поверхностей; точный коэффициент и результат остаются механикой."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:force-contact-geometry:en",
+      "target_ref": "wk:physics_material_science:force-contact-geometry",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Contact area, force direction, support, and geometry affect mechanical results Contact area, force direction, support, and geometry affect mechanical results; simple machines do not create work from nothing."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:force-contact-geometry:ru",
+      "target_ref": "wk:physics_material_science:force-contact-geometry",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Площадь контакта, направление силы, опора и геометрия меняют механический результат Площадь контакта, направление силы, опора и геометрия меняют механический результат; простые машины не создают работу из ничего."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:metal-properties-depend-on-state:en",
+      "target_ref": "wk:physics_material_science:metal-properties-depend-on-state",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Metal properties depend on composition, structure, processing, and temperature Metal properties depend on composition, structure, processing, and temperature; the word metal does not define one set of numeric properties."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:metal-properties-depend-on-state:ru",
+      "target_ref": "wk:physics_material_science:metal-properties-depend-on-state",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Свойства металла зависят от состава, структуры, обработки и температуры Свойства металла зависят от состава, структуры, обработки и температуры; слово «металл» не задаёт одно число свойств."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:textile-conditioning-matters:en",
+      "target_ref": "wk:physics_material_science:textile-conditioning-matters",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Textile sample condition and conditioning matter for testing Textile sample condition and conditioning matter for testing; the standard does not define properties of historical fabric or leather."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:textile-conditioning-matters:ru",
+      "target_ref": "wk:physics_material_science:textile-conditioning-matters",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состояние и кондиционирование текстильного образца существенно для испытания Состояние и кондиционирование текстильного образца существенно для испытания; стандарт не задаёт свойства исторической ткани или кожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wood-anisotropy-moisture:en",
+      "target_ref": "wk:physics_material_science:wood-anisotropy-moisture",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wood properties depend on direction, species, and moisture condition Wood properties depend on direction, species, and moisture condition; this does not supply numerical strength for a concrete piece."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wood-anisotropy-moisture:ru",
+      "target_ref": "wk:physics_material_science:wood-anisotropy-moisture",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Свойства древесины зависят от направления, породы и влажностного состояния Свойства древесины зависят от направления, породы и влажностного состояния; это не даёт числовую прочность конкретной детали."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:debt-needs-parties-and-basis:en",
+      "target_ref": "wk:social_law_economy:debt-needs-parties-and-basis",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "A debt record may record an obligation A debt record may record an obligation; a current in-game obligation needs established parties and basis and does not create automatic enforcement."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:debt-needs-parties-and-basis:ru",
+      "target_ref": "wk:social_law_economy:debt-needs-parties-and-basis",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долговая запись может фиксировать обязательство Долговая запись может фиксировать обязательство; текущее обязательство в игре требует установленных сторон и основания и не создаёт автоматического взыскания."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:debt-record-practice:en",
+      "target_ref": "wk:social_law_economy:debt-record-practice",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod birch-bark letter 73 is a debt record dated 1220–1240 Novgorod birch-bark letter 73 is a debt record dated 1220–1240; one record does not establish a universal credit form, interest, or enforcement."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:debt-record-practice:ru",
+      "target_ref": "wk:social_law_economy:debt-record-practice",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская берестяная грамота № 73 является долговой записью диапазона 1220–1240 Новгородская берестяная грамота № 73 является долговой записью диапазона 1220–1240; одна запись не задаёт универсальную форму кредита, проценты или взыскание."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:judicial-accusation-record:en",
+      "target_ref": "wk:social_law_economy:judicial-accusation-record",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod birch-bark letter 510 documents an accusation in a judicial record dated 1220–1240 with a possible earlier shift Novgorod birch-bark letter 510 documents an accusation in a judicial record dated 1220–1240 with a possible earlier shift; procedure and outcome are unknown."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:judicial-accusation-record:ru",
+      "target_ref": "wk:social_law_economy:judicial-accusation-record",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская берестяная грамота № 510 документирует обвинение в судебной записи, датируемой 1220–1240 с возможным более ранним смещением Новгородская берестяная грамота № 510 документирует обвинение в судебной записи, датируемой 1220–1240 с возможным более ранним смещением; процедура и исход неизвестны."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:later-novgorod-judicial-charter:en",
+      "target_ref": "wk:social_law_economy:later-novgorod-judicial-charter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "The later Novgorod Judicial Charter is not applicable as evidence for procedure in 1230 The later Novgorod Judicial Charter is not applicable as evidence for procedure in 1230."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:later-novgorod-judicial-charter:ru",
+      "target_ref": "wk:social_law_economy:later-novgorod-judicial-charter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Поздняя Новгородская судная грамота не применима как источник процедуры 1230 года Поздняя Новгородская судная грамота не применима как источник процедуры 1230 года."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:practical-document-genres:en",
+      "target_ref": "wk:social_law_economy:practical-document-genres",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Surviving Novgorod birch-bark documents include different practical genres, including debt and judicial records Surviving Novgorod birch-bark documents include different practical genres, including debt and judicial records; this is not a measure of universal literacy."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:practical-document-genres:ru",
+      "target_ref": "wk:social_law_economy:practical-document-genres",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи; это не мера всеобщей грамотности."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:russkaya-pravda-comparative-only:en",
+      "target_ref": "wk:social_law_economy:russkaya-pravda-comparative-only",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Russkaya Pravda is comparative evidence for Rus legal language and traditions, not an automatically executable Novgorod-1230 code Russkaya Pravda is comparative evidence for Rus legal language and traditions, not an automatically executable Novgorod-1230 code."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:russkaya-pravda-comparative-only:ru",
+      "target_ref": "wk:social_law_economy:russkaya-pravda-comparative-only",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Русская Правда служит сравнительным свидетельством правового языка и традиций Руси, но не является автоматически исполнимым кодексом Новгорода 1230 года Русская Правда служит сравнительным свидетельством правового языка и традиций Руси, но не является автоматически исполнимым кодексом Новгорода 1230 года."
+    }
+  ]
+}

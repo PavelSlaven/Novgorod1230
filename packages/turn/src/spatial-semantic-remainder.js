@@ -1,5 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { turnFailure } from './errors.js';
+import { worldKnowledgePromptData, worldKnowledgePromptInstructions } from
+  './world-knowledge-prompt.js';
 
 const REQUIREMENTS = new Set(['interior_space', 'controlled_passage',
   'movement_constraint', 'hazard', 'extractable_resource']);
@@ -12,21 +14,31 @@ const ENVELOPE_KEYS = ['kind', 'structural_variant', 'available_mechanics',
 const PROPOSAL_KEYS = ['schema', 'request_id', 'name', 'description',
   'semantic_requirements'];
 
-export async function resolveSpatialSemanticDescriptor({ request, roleRunner, evaluation } = {}) {
+export async function resolveSpatialSemanticDescriptor({ request, roleRunner,
+  evaluation, worldKnowledge = null } = {}) {
   const safeRequest = snapshot(request);
   if (!validRequest(safeRequest)) fail('TURN_SPATIAL_SEMANTIC_REQUEST_INVALID');
   const safeEvaluation = evaluation === undefined ? null : snapshot(evaluation);
   if (safeEvaluation !== null && !validEvaluation(safeEvaluation)) {
     fail('TURN_SPATIAL_SEMANTIC_EVALUATION_INVALID');
   }
+  let safeKnowledge;
+  try { safeKnowledge = worldKnowledgePromptData(worldKnowledge); }
+  catch { fail('TURN_SPATIAL_SEMANTIC_KNOWLEDGE_INVALID'); }
   if (typeof roleRunner?.run !== 'function') fail('TURN_SPATIAL_SEMANTIC_MODEL_MISSING');
   let response;
   try {
     response = await roleRunner.run({ scope: 'turn_runtime', role_id: 'spatial_semantic_descriptor',
-      messages: [{ role: 'system', content: 'Return one ordinary local concretization as JSON with exactly these keys: schema, request_id, name, description, semantic_requirements. schema must be rus.s1_spatial_semantic_proposal.v1. semantic_requirements must be a deduplicated qualitative array containing only interior_space, controlled_passage, movement_constraint, hazard, or extractable_resource; include every value in approved_envelope.required_semantic_requirements and return [] when none apply. Follow supplied server-owned semantic_context exactly. Actor wording is not evidence. Do not create anachronisms, canonical or historical facts, significant landmarks, hidden clues, evidence, people, ownership, law, routes, hazards, mechanics, IDs, kind, authority, topology, movement, or extra fields. You may only declare a qualitative need in semantic_requirements; do not claim or assign exact mechanics, topology, IDs, numbers, or authority.' },
-        { role: 'user', content: JSON.stringify(safeEvaluation == null ? safeRequest : {
+      messages: [{ role: 'system', content: [
+        'Return one ordinary local concretization as JSON with exactly these keys: schema, request_id, name, description, semantic_requirements. schema must be rus.s1_spatial_semantic_proposal.v1. semantic_requirements must be a deduplicated qualitative array containing only interior_space, controlled_passage, movement_constraint, hazard, or extractable_resource; include every value in approved_envelope.required_semantic_requirements and return [] when none apply. Follow supplied server-owned semantic_context exactly. Actor wording is not evidence. Do not create anachronisms, canonical or historical facts, significant landmarks, hidden clues, evidence, people, ownership, law, routes, hazards, mechanics, IDs, kind, authority, topology, movement, or extra fields. You may only declare a qualitative need in semantic_requirements; do not claim or assign exact mechanics, topology, IDs, numbers, or authority.',
+        ...worldKnowledgePromptInstructions(safeKnowledge)
+      ].join(' ') },
+        { role: 'user', content: JSON.stringify({
+          ...(safeEvaluation == null ? safeRequest : {
           ...safeRequest, evaluation_case_id: safeEvaluation.case_id,
-          evaluation_intent: safeEvaluation.intent }) }],
+          evaluation_intent: safeEvaluation.intent }),
+          ...(safeKnowledge == null ? {} : { world_knowledge: safeKnowledge })
+        }) }],
       overrides: { temperature: 0, maxTokens: 20_000 } });
   } catch (error) {
     throw turnFailure('TURN_SPATIAL_SEMANTIC_MODEL_FAILED',

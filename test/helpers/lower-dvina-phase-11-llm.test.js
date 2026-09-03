@@ -16,6 +16,20 @@ test('canonical local fixture serves the active S1 descriptor role', async () =>
   });
 });
 
+test('canonical local fixture serves the World Knowledge query planner', async () => {
+  const response = await createCanonicalPhase11LlmResponder()({
+    model: 'fixture-world-knowledge-query-planner', input: {
+      input_locale: 'ru', semantic_input: 'Можно ли добыть рыбу?',
+      allowed_domains: ['environment', 'biology']
+    }
+  });
+  assert.deepEqual(response, {
+    schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+    domains: ['environment'], focus_refs: [], requested_predicates: [],
+    search_hints: ['Можно ли добыть рыбу?']
+  });
+});
+
 test('canonical combat fixture returns only semantic choices', async () => {
   const response = await createCanonicalPhase11LlmResponder()({
     model: 'fixture-npc-combat-decider', input: {

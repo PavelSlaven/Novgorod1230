@@ -83,6 +83,7 @@ Active status applies only to the scope stated by each header and active profile
 
 | Документ | Статус | Правило применения |
 |---|---|---|
+| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Production-v1 pack/profile и gameplay grounding активированы versioned cutover `4.13.0-world-knowledge.1` / spatial-v3 production v15; pilot pack остаётся `reviewed/not_active`, а optional stages — target до отдельной активации |
 | [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |
 | [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |
 | [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |

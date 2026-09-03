@@ -1,0 +1,651 @@
+{
+  "schema": "world_knowledge_retrieval_benchmark_report_v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "benchmark_ref": "wk-benchmark:novgorod-production-v1",
+  "gate": {
+    "min_recall_at_10": 0.85,
+    "min_recall_improvement_at_10": 0.05,
+    "max_noise_at_10": 0.75,
+    "min_hard_constraint_recall": 1,
+    "min_applicability_precision": 1,
+    "max_query_embedding_mean_ms": 750,
+    "max_vector_scan_mean_ms": 10
+  },
+  "metrics": {
+    "case_count": 27,
+    "lexical_recall_at_10": 0.7407407407407407,
+    "hybrid_recall_at_10": 0.9629629629629629,
+    "lexical_recall_at_20": 0.7407407407407407,
+    "hybrid_recall_at_20": 0.9629629629629629,
+    "lexical_hard_constraint_recall": 1,
+    "hybrid_hard_constraint_recall": 1,
+    "lexical_noise_at_10": 0.4058201058201058,
+    "hybrid_noise_at_10": 0.612610229276896,
+    "applicability_precision": 1,
+    "query_embedding_mean_ms": 69.19896296296297,
+    "vector_scan_mean_ms": 0.38451111111121633,
+    "runtime_bundle_bytes": 396316,
+    "vector_bundle_bytes": 884736,
+    "encoder_model_load_ms": 3856.935,
+    "peak_process_rss_bytes": 2385510400,
+    "cuda_peak_allocated_bytes": 0
+  },
+  "decision": {
+    "activate_hybrid_runtime": true,
+    "status": "pass",
+    "failed_checks": []
+  },
+  "cases": [
+    {
+      "case_id": "material_leather_personal_item_ru",
+      "vector_scan_ms": 8.175300000002608,
+      "lexical_at_10": [
+        "claim:gramota-73-debt-record"
+      ],
+      "hybrid_at_10": [
+        "claim:gramota-73-debt-record",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "lexical_at_20": [
+        "claim:gramota-73-debt-record"
+      ],
+      "hybrid_at_20": [
+        "claim:gramota-73-debt-record",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "material_waterlogged_preservation_en",
+      "vector_scan_ms": 0.17810000000463333,
+      "lexical_at_10": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:gramota-73-debt-record",
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes",
+        "claim:novgorod-wooden-urban-elements"
+      ],
+      "hybrid_at_10": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:gramota-73-debt-record",
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "lexical_at_20": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:gramota-73-debt-record",
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes",
+        "claim:novgorod-wooden-urban-elements"
+      ],
+      "hybrid_at_20": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:gramota-73-debt-record",
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-leather-items",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "material_timber_streetscape_ru",
+      "vector_scan_ms": 0.2598999999972875,
+      "lexical_at_10": [
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "hybrid_at_10": [
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-wood-bone-horn-classes",
+        "claim:novgorod-urban-metalworking"
+      ],
+      "lexical_at_20": [
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-urban-metalworking",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "hybrid_at_20": [
+        "claim:gramota-73-grivna-term",
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:novgorod-wood-bone-horn-classes",
+        "claim:novgorod-urban-metalworking"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "craft_smithy_assumption_en",
+      "vector_scan_ms": 0.08519999999407446,
+      "lexical_at_10": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context",
+        "claim:leather-broad-context"
+      ],
+      "hybrid_at_10": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context",
+        "claim:leather-broad-context",
+        "claim:woodworked-objects-and-waste"
+      ],
+      "lexical_at_20": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context",
+        "claim:leather-broad-context"
+      ],
+      "hybrid_at_20": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context",
+        "claim:leather-broad-context",
+        "claim:woodworked-objects-and-waste"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "craft_shavings_identity_ru",
+      "vector_scan_ms": 0.06459999999788124,
+      "lexical_at_10": [],
+      "hybrid_at_10": [
+        "claim:metalworking-broad-context",
+        "claim:ceramic-material-category"
+      ],
+      "lexical_at_20": [],
+      "hybrid_at_20": [
+        "claim:metalworking-broad-context",
+        "claim:ceramic-material-category"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "craft_clay_firing_ru",
+      "vector_scan_ms": 0.05209999999351567,
+      "lexical_at_10": [
+        "claim:ceramic-material-category"
+      ],
+      "hybrid_at_10": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context"
+      ],
+      "lexical_at_20": [
+        "claim:ceramic-material-category"
+      ],
+      "hybrid_at_20": [
+        "claim:ceramic-material-category",
+        "claim:metalworking-broad-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "environment_fishing_presence_ru",
+      "vector_scan_ms": 0.04619999999704305,
+      "lexical_at_10": [
+        "claim:regional-fish-exploitation",
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "hybrid_at_10": [
+        "claim:regional-fish-exploitation",
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "lexical_at_20": [
+        "claim:regional-fish-exploitation",
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "hybrid_at_20": [
+        "claim:regional-fish-exploitation",
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "environment_livestock_basis_en",
+      "vector_scan_ms": 0.05040000000008149,
+      "lexical_at_10": [
+        "claim:domestic-animal-context",
+        "claim:regional-agriculture-practice",
+        "claim:wild-food-and-fur-evidence",
+        "claim:regional-fish-exploitation",
+        "claim:urban-bird-period-specific"
+      ],
+      "hybrid_at_10": [
+        "claim:domestic-animal-context",
+        "claim:wild-food-and-fur-evidence",
+        "claim:regional-agriculture-practice",
+        "claim:regional-fish-exploitation",
+        "claim:urban-bird-period-specific"
+      ],
+      "lexical_at_20": [
+        "claim:domestic-animal-context",
+        "claim:regional-agriculture-practice",
+        "claim:wild-food-and-fur-evidence",
+        "claim:regional-fish-exploitation",
+        "claim:urban-bird-period-specific"
+      ],
+      "hybrid_at_20": [
+        "claim:domestic-animal-context",
+        "claim:wild-food-and-fur-evidence",
+        "claim:regional-agriculture-practice",
+        "claim:regional-fish-exploitation",
+        "claim:urban-bird-period-specific"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "environment_fur_food_evidence_ru",
+      "vector_scan_ms": 0.0635000000038417,
+      "lexical_at_10": [],
+      "hybrid_at_10": [
+        "claim:wild-food-and-fur-evidence",
+        "claim:domestic-animal-context"
+      ],
+      "lexical_at_20": [],
+      "hybrid_at_20": [
+        "claim:wild-food-and-fur-evidence",
+        "claim:domestic-animal-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "architecture_single_find_function_ru",
+      "vector_scan_ms": 0.06739999999990687,
+      "lexical_at_10": [
+        "claim:contextual-evidence-classes"
+      ],
+      "hybrid_at_10": [
+        "claim:contextual-evidence-classes",
+        "claim:urban-pavements"
+      ],
+      "lexical_at_20": [
+        "claim:contextual-evidence-classes"
+      ],
+      "hybrid_at_20": [
+        "claim:contextual-evidence-classes",
+        "claim:urban-pavements"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "architecture_paved_route_en",
+      "vector_scan_ms": 0.35829999999987194,
+      "lexical_at_10": [
+        "claim:composite-urban-quarter",
+        "claim:localized-improvement-context",
+        "claim:urban-pavements",
+        "claim:excavated-urban-structures"
+      ],
+      "hybrid_at_10": [
+        "claim:composite-urban-quarter",
+        "claim:localized-improvement-context",
+        "claim:urban-pavements",
+        "claim:excavated-urban-structures"
+      ],
+      "lexical_at_20": [
+        "claim:composite-urban-quarter",
+        "claim:localized-improvement-context",
+        "claim:urban-pavements",
+        "claim:excavated-urban-structures"
+      ],
+      "hybrid_at_20": [
+        "claim:composite-urban-quarter",
+        "claim:localized-improvement-context",
+        "claim:urban-pavements",
+        "claim:excavated-urban-structures"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "architecture_modern_sewer_ru",
+      "vector_scan_ms": 0.0776999999943655,
+      "lexical_at_10": [],
+      "hybrid_at_10": [
+        "claim:localized-improvement-context",
+        "claim:composite-urban-quarter"
+      ],
+      "lexical_at_20": [],
+      "hybrid_at_20": [
+        "claim:localized-improvement-context",
+        "claim:composite-urban-quarter"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "npc_combined_resource_skills_ru",
+      "vector_scan_ms": 0.06160000000090804,
+      "lexical_at_10": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "hybrid_at_10": [
+        "claim:resource-occupation-needs-setting",
+        "claim:agriculture-rural-role-context"
+      ],
+      "lexical_at_20": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "hybrid_at_20": [
+        "claim:resource-occupation-needs-setting",
+        "claim:agriculture-rural-role-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "npc_current_fieldwork_en",
+      "vector_scan_ms": 0.056900000003224704,
+      "lexical_at_10": [
+        "claim:agriculture-rural-role-context",
+        "claim:neutral-household-context",
+        "claim:resource-occupation-needs-setting",
+        "claim:animal-care-needs-presence"
+      ],
+      "hybrid_at_10": [
+        "claim:agriculture-rural-role-context",
+        "claim:resource-occupation-needs-setting",
+        "claim:neutral-household-context",
+        "claim:animal-care-needs-presence"
+      ],
+      "lexical_at_20": [
+        "claim:agriculture-rural-role-context",
+        "claim:neutral-household-context",
+        "claim:resource-occupation-needs-setting",
+        "claim:animal-care-needs-presence"
+      ],
+      "hybrid_at_20": [
+        "claim:agriculture-rural-role-context",
+        "claim:resource-occupation-needs-setting",
+        "claim:neutral-household-context",
+        "claim:animal-care-needs-presence"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "npc_house_family_wealth_ru",
+      "vector_scan_ms": 0.07100000000355067,
+      "lexical_at_10": [
+        "claim:neutral-household-context",
+        "claim:agriculture-rural-role-context"
+      ],
+      "hybrid_at_10": [
+        "claim:neutral-household-context",
+        "claim:agriculture-rural-role-context"
+      ],
+      "lexical_at_20": [
+        "claim:neutral-household-context",
+        "claim:agriculture-rural-role-context"
+      ],
+      "hybrid_at_20": [
+        "claim:neutral-household-context",
+        "claim:agriculture-rural-role-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "physics_wet_grain_ru",
+      "vector_scan_ms": 0.07220000000233995,
+      "lexical_at_10": [],
+      "hybrid_at_10": [
+        "claim:wood-anisotropy-moisture",
+        "claim:dry-friction"
+      ],
+      "lexical_at_20": [],
+      "hybrid_at_20": [
+        "claim:wood-anisotropy-moisture",
+        "claim:dry-friction"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "physics_ceramic_crack_en",
+      "vector_scan_ms": 0.07649999999557622,
+      "lexical_at_10": [
+        "claim:brittle-fracture-defects"
+      ],
+      "hybrid_at_10": [
+        "claim:brittle-fracture-defects",
+        "claim:force-contact-geometry"
+      ],
+      "lexical_at_20": [
+        "claim:brittle-fracture-defects"
+      ],
+      "hybrid_at_20": [
+        "claim:brittle-fracture-defects",
+        "claim:force-contact-geometry"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "physics_lever_energy_ru",
+      "vector_scan_ms": 0.07490000000689179,
+      "lexical_at_10": [
+        "claim:force-contact-geometry"
+      ],
+      "hybrid_at_10": [
+        "claim:buoyancy-pressure-phase-change",
+        "claim:force-contact-geometry"
+      ],
+      "lexical_at_20": [
+        "claim:force-contact-geometry"
+      ],
+      "hybrid_at_20": [
+        "claim:buoyancy-pressure-phase-change",
+        "claim:force-contact-geometry"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "chemistry_damp_iron_ru",
+      "vector_scan_ms": 0.061799999995855615,
+      "lexical_at_10": [
+        "claim:metal-classes-composition"
+      ],
+      "hybrid_at_10": [
+        "claim:metal-classes-composition",
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "lexical_at_20": [
+        "claim:metal-classes-composition"
+      ],
+      "hybrid_at_20": [
+        "claim:metal-classes-composition",
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "chemistry_salted_food_en",
+      "vector_scan_ms": 0.08439999999973224,
+      "lexical_at_10": [
+        "claim:food-preservation-qualitative",
+        "claim:metal-classes-composition"
+      ],
+      "hybrid_at_10": [
+        "claim:food-preservation-qualitative",
+        "claim:metal-classes-composition",
+        "claim:fermentation-conditions"
+      ],
+      "lexical_at_20": [
+        "claim:food-preservation-qualitative",
+        "claim:metal-classes-composition"
+      ],
+      "hybrid_at_20": [
+        "claim:food-preservation-qualitative",
+        "claim:metal-classes-composition",
+        "claim:fermentation-conditions"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "chemistry_quicklime_water_ru",
+      "vector_scan_ms": 0.04349999999976717,
+      "lexical_at_10": [
+        "claim:lime-transformations"
+      ],
+      "hybrid_at_10": [
+        "claim:lime-transformations",
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "lexical_at_20": [
+        "claim:lime-transformations"
+      ],
+      "hybrid_at_20": [
+        "claim:lime-transformations",
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "biology_one_meal_ru",
+      "vector_scan_ms": 0.06169999999838183,
+      "lexical_at_10": [
+        "claim:acute-sleep-loss-performance"
+      ],
+      "hybrid_at_10": [
+        "claim:acute-sleep-loss-performance",
+        "claim:food-energy-nutrients"
+      ],
+      "lexical_at_20": [
+        "claim:acute-sleep-loss-performance"
+      ],
+      "hybrid_at_20": [
+        "claim:acute-sleep-loss-performance",
+        "claim:food-energy-nutrients"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "biology_work_heat_en",
+      "vector_scan_ms": 0.0473000000056345,
+      "lexical_at_10": [
+        "claim:exercise-heat-dissipation",
+        "claim:work-intensity-duration"
+      ],
+      "hybrid_at_10": [
+        "claim:exercise-heat-dissipation",
+        "claim:work-intensity-duration"
+      ],
+      "lexical_at_20": [
+        "claim:exercise-heat-dissipation",
+        "claim:work-intensity-duration"
+      ],
+      "hybrid_at_20": [
+        "claim:exercise-heat-dissipation",
+        "claim:work-intensity-duration"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "biology_pain_damage_ru",
+      "vector_scan_ms": 0.041199999999662396,
+      "lexical_at_10": [
+        "claim:pain-nociception-distinct"
+      ],
+      "hybrid_at_10": [
+        "claim:pain-nociception-distinct",
+        "claim:wound-healing-time-dependent"
+      ],
+      "lexical_at_20": [
+        "claim:pain-nociception-distinct"
+      ],
+      "hybrid_at_20": [
+        "claim:pain-nociception-distinct",
+        "claim:wound-healing-time-dependent"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "social_debt_seizure_ru",
+      "vector_scan_ms": 0.0488000000041211,
+      "lexical_at_10": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "hybrid_at_10": [
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "lexical_at_20": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "hybrid_at_20": [
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "social_pravda_direct_code_en",
+      "vector_scan_ms": 0.053899999998975545,
+      "lexical_at_10": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:debt-record-practice",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres"
+      ],
+      "hybrid_at_10": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres"
+      ],
+      "lexical_at_20": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:debt-record-practice",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres"
+      ],
+      "hybrid_at_20": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "social_later_charter_hard_exclusion_ru",
+      "vector_scan_ms": 0.04740000000310829,
+      "lexical_at_10": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "hybrid_at_10": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "lexical_at_20": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "hybrid_at_20": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:judicial-accusation-record",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "inapplicable_at_20": []
+    }
+  ]
+}

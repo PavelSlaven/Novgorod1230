@@ -4,11 +4,11 @@ import {
 } from '../infrastructure/postgres/spatial-v3-target-migrations.js';
 import { serverError } from '../errors.js';
 
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v14';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v15';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.12.0-npc-ordinary-remainder.1',
+  contract_version: '4.13.0-world-knowledge.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',
@@ -16,6 +16,10 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
   world_catalog_manifest_sha256:
     '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb',
+  world_knowledge_pack_ref: 'wk-pack:novgorod-1230',
+  world_knowledge_pack_revision: 'revision:production-v1',
+  world_knowledge_embedding_profile_ref:
+    'wk-embedding:giga-480m-0826:v1',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',

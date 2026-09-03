@@ -56,6 +56,16 @@ export function createCanonicalPhase11LlmResponder({
   let turn10Actors = null;
   return async ({ model, input }) => {
     if (model === 'fixture-intent-router') return resolveIntent(input);
+    if (model === 'fixture-world-knowledge-query-planner') {
+      const request = input.request ?? input;
+      return {
+        schema: 'world_knowledge_query_plan_v1',
+        query_locale: request.input_locale,
+        domains: request.allowed_domains.slice(0, 1),
+        focus_refs: [], requested_predicates: [],
+        search_hints: [request.semantic_input]
+      };
+    }
     if (model === 'fixture-spatial-semantic-descriptor') {
       return {
         schema: 'rus.s1_spatial_semantic_proposal.v1',

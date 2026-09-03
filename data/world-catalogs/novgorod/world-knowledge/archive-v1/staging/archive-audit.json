@@ -1,0 +1,82 @@
+{
+  "schema": "world_knowledge_archive_audit_v1",
+  "archive_name": "Novgorod1230_MASTER_ARCHIVE_v1",
+  "archive_version": "1.0.0",
+  "inventory_file_count": 1497,
+  "inventory_payload_bytes": 919009694,
+  "canonical_record_counts": {
+    "entities": 22220,
+    "relations": 330715,
+    "entities_with_source_ids": 12111,
+    "supported_by_relations": 63966,
+    "supported_subjects": 8258,
+    "generated_by_master_merge": 9138
+  },
+  "file_dispositions": {
+    "approved_source": 1,
+    "approved_with_limits": 117,
+    "duplicate": 218,
+    "superseded": 820,
+    "irrelevant_to_pack": 211,
+    "rejected_incorrect": 0,
+    "rejected_unreliable": 130,
+    "disputed": 0,
+    "unresolved_after_research": 0
+  },
+  "duplicate_counts": {
+    "source_groups": 98,
+    "image_groups": 19,
+    "prompt_groups": 0,
+    "canonical_exact_name_groups": 0
+  },
+  "evidence_classes": {
+    "DIRECT_NOVGOROD": 3172,
+    "RUS_GENERAL": 4133,
+    "COMPARATIVE": 87,
+    "RECONSTRUCTION": 10819,
+    "GAMEPLAY_NORMALIZATION": 4009
+  },
+  "promotion_policy": {
+    "source_snapshots": "provenance_only",
+    "raw_images_and_reference_sheets": "not_needed_by_runtime_pack",
+    "prompts": "never_evidence",
+    "reconstruction_and_gameplay_normalization": "candidate_only_until_factual_review",
+    "direct_or_source_linked_structured_records": "eligible_after_domain_review",
+    "license_review": "not_required_by_current_user_request"
+  },
+  "promoted_batches": [
+    {
+      "batch_ref": "archive-v1-direct-novgorod-001",
+      "archive_source": "assets/source_cards/s0031.md",
+      "archive_source_ref": "n1230:source:s0031",
+      "canonical_source_ref": "source:gramoty-novgorod-73",
+      "evidence_ref": "evidence:gramota-73-debt-record",
+      "concept_ref": "wk:economy:debt_record",
+      "claim_ref": "claim:novgorod-1220-1240-debt-record-attested",
+      "verification": {
+        "status": "approved",
+        "checked_at": "2026-09-03",
+        "primary_page": "https://gramoty.ru/birchbark/document/show/novgorod/73/",
+        "confirmed": [
+          "Novgorod find",
+          "1220-1240 date",
+          "business record category",
+          "debt list or record genre",
+          "debt record content"
+        ]
+      }
+    }
+  ],
+  "record_findings": [
+    {
+      "severity": "reject_record_until_corrected",
+      "archive_source": "data/economy_social/historical_price_evidence.json",
+      "record_ref": "n1230:historical_price:birchbark_1004_pans_6_nogata",
+      "reason": "Archive assigns year 1200, while the referenced primary record 1004 is dated 1140-1160; it is not valid evidence for the 1230 game context.",
+      "checked_at": "2026-09-03",
+      "primary_page": "https://gramoty.ru/birchbark/document/show/novgorod/1004/"
+    }
+  ],
+  "final_dispositions_ref": "../archive-dispositions.json",
+  "status": "complete_all_1497_files_have_final_dispositions"
+}

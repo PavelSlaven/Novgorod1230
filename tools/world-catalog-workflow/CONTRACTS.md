@@ -32,6 +32,18 @@
 | `buildApprovedItemCatalogSnapshot` | `{ records_by_table, world_revision_id, catalog_digest }`: caller-provided approved `world_base` readback records, exact revision ID and its pinned catalog digest | deep-frozen `approved_item_catalog_snapshot` with item/container/equipment candidates, quantity requirements, property rules, source digest and deterministic projection digest | `RUNTIME_SOURCE_CATALOG_DIGEST_INVALID`, `RUNTIME_WORLD_REVISION_NOT_APPROVED`, `RUNTIME_SOURCE_CATALOG_DIGEST_MISMATCH`, `RUNTIME_DEPENDENCY_AMBIGUOUS`, `RUNTIME_*_DEPENDENCY_NOT_APPROVED`, `RUNTIME_*_CONTEXT_NOT_APPROVED`, `RUNTIME_CATEGORY_BINDING_*`, `RUNTIME_QUANTITY_UNIT_MASS_INVALID`, `RUNTIME_EQUIPMENT_*_NOT_APPROVED` | caller → Stage 8 approved candidate retrieval |
 | `buildAllowedG5TemplateSet` | `{ records_by_table, graph_node_id, world_revision_id, source_catalog_digest, selected_g4_type_id? }`: the same caller-owned readback plus exact approved G4 | deep-frozen `allowed_g5_template_set` with exact domain `source_catalog_digest`, one resolved G4 profile/layout, G5 node/anchor/edge templates, slot rules, resource candidates and a distinct deterministic projection `catalog_digest` | all snapshot errors plus `RUNTIME_G4_NOT_APPROVED`, `RUNTIME_G4_BINDING_UNRESOLVED`, `RUNTIME_G4_PROFILE_NOT_APPROVED`, `RUNTIME_G5_TEMPLATE_NOT_APPROVED`, `RUNTIME_RESOURCE_ANCHOR_SLOT_UNRESOLVED`, `RUNTIME_REQUIRED_RESOURCE_CANDIDATES_EMPTY` | caller → Stages 13/14/16 and first-entry materialization |
 
+## Internal World Knowledge authoring contract
+
+`src/world-knowledge-pack.js` и CLI `compile-world-knowledge` — internal Stage 1 authoring surface, не public package API. CLI принимает один pack либо descriptor с explicit relative `includes`, собирает canonical records, затем pure compiler fail-closed проверяет полный record shape, global refs, predicate signatures, applicability, units, coverage и localization completeness. Результат — deterministic immutable runtime bundle с exact/structured/lexical indexes. Surface не делает LLM/network/DB calls и не активирует gameplay retrieval.
+
+`src/world-knowledge-embeddings.js` и `giga-embeddings.py` — internal build
+surface для exact `ai-sage/Giga-Embeddings-instruct-480M-0826` revision,
+1024-dimensional mean-pooled L2 vectors. Build input — compiled pack;
+outputs — metadata JSON и contiguous float32 data. Benchmark использует
+отдельный committed набор unseen ru/en queries, сравнивает lexical и hybrid
+Recall@10/20, hard constraints, applicability precision, noise и latency.
+Runtime weights не являются repository artifact.
+
 ## Общие гарантии
 
 1. Validators не изменяют входные objects и не выполняют I/O.

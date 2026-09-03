@@ -2,6 +2,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS } from './lower-dvina-trace-phase-2-llm-prompts.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
+import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
 export { assembleNarrationRoleOutput, createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
@@ -32,20 +33,20 @@ export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
     return response.output;
   };
 }
-export function createLowerDvinaTraceTurnStepModel({
-  roleRunner
-} = {}) {
+export function createLowerDvinaTraceTurnStepModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   const model = async function planTurnStep(request, repairContext = null) {
+    const input = await groundTurnRequest(worldKnowledgeGrounder, request);
     const repairing = repairContext != null;
     const payload = repairing
       ? {
-          request,
+          request: input,
           original_output: structuredClone(repairContext.original_output ?? null),
           structural_errors:
             structuredClone(repairContext.structural_errors ?? [])
         }
-      : request;
+      : input;
     const operationChoices = turnStepOperationChoices(request);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
@@ -81,6 +82,7 @@ export function createLowerDvinaTraceTurnStepModel({
             ...visibleConversationExamples,
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${turnStepPlanMappings(request)}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
+            ...wkClosure(input),
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
             'Process independent actions in their stated order. A supplied operation choice for a later action never outranks an earlier feasible action. Plan the earlier action through its existing semantic mapping and preserve every later action in continuation. When an operation choice covers the intent\'s current earliest action, select its choice_id; use action_production only when no supplied choice covers that earliest action.',

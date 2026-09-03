@@ -261,7 +261,7 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The current versioned production activation cutover is `spatial-v3-production-v14`.
+The current versioned production activation cutover is `spatial-v3-production-v15`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
@@ -287,6 +287,14 @@ may persist and replay an audited semantic descriptor plus the exact activity
 already created by the code-owned materialized schedule; schedule state is
 never exposed to or authored by the N1 model. Broader N1 capability remains
 unactivated.
+Release v15 is the direct non-selectable child of v14. It pins
+`wk-pack:novgorod-1230@revision:production-v1` and
+`wk-embedding:giga-480m-0826:v1`. The server loads the compiled bilingual
+pack and flat vector index at startup, starts the local embedding worker
+lazily, and grounds player semantic resolution, S1/N1 ordinary
+materialization, conversation, and autonomous NPC decisions before their
+semantic LLM calls. Retrieved claims are bounded context only: domain owners
+still control current state, mechanics, persistence, access, and outcomes.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

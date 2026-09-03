@@ -1,0 +1,15 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_v1",
+  "benchmark_ref": "wk-pipeline:novgorod-production-v1",
+  "cases": [
+    { "case_id": "architecture_single_find_function_ru", "locale": "ru", "query_text": "У стены лежит обломок кладки. Этого достаточно, чтобы решить, что здесь была церковь?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:contextual-evidence-classes"] },
+    { "case_id": "biology_one_meal_ru", "locale": "ru", "query_text": "После нескольких часов работы человек устал. Можно ли считать причиной только отсутствие завтрака?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:food-energy-nutrients"] },
+    { "case_id": "chemistry_damp_iron_ru", "locale": "ru", "query_text": "Почему забытый под дождём железный нож покрывается ржавчиной?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:iron-corrosion-moisture-oxygen"] },
+    { "case_id": "craft_smithy_assumption_en", "locale": "en", "query_text": "A hammer and an iron fragment are visible. Does that establish a working smithy here?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:metalworking-broad-context"] },
+    { "case_id": "environment_fishing_presence_ru", "locale": "ru", "query_text": "Если в регионе ловят рыбу, обязана ли она попасться в этой заводи сегодня?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:regional-fish-exploitation"] },
+    { "case_id": "material_leather_personal_item_ru", "locale": "ru", "query_text": "Правдоподобен ли кожаный кошель у новгородца, если его ещё не нашли в сцене?", "accepted_answer_classes": ["yes", "uncertain"], "relevant_claim_refs": ["claim:novgorod-leather-items"] },
+    { "case_id": "npc_combined_resource_skills_ru", "locale": "ru", "query_text": "Нужно ли автоматически делать встреченного рыбака ещё и охотником?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:resource-occupation-needs-setting"] },
+    { "case_id": "physics_wet_grain_ru", "locale": "ru", "query_text": "Почему намокший деревянный кол может разбухать и коробиться по-разному вдоль и поперёк волокон?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:wood-anisotropy-moisture"] },
+    { "case_id": "social_debt_seizure_ru", "locale": "ru", "query_text": "У меня чужая долговая грамота: могу ли я без суда отнять товар у названного человека?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:debt-needs-parties-and-basis"] }
+  ]
+}

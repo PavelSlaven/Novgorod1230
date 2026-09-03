@@ -1,0 +1,1246 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:novgorod-production-v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "backend": "configured production DeepSeek backend",
+  "cost_measurement": {
+    "unit": "provider_reported_tokens",
+    "monetary_estimate_usd": null,
+    "reason": "The configured deepseek-v4-flash alias has no project-owned immutable price schedule; token usage is retained without inventing a rate."
+  },
+  "modes": {
+    "without_wk": {
+      "case_count": 9,
+      "factual_correctness": 0.8888888888888888,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 0,
+      "retrieval_mean_ms": 0,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 735.3380000000002,
+      "total_pipeline_mean_ms": 735.3380000000002,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "semantic_usage": {
+        "prompt_tokens": 1149,
+        "completion_tokens": 167,
+        "total_tokens": 1316
+      }
+    },
+    "structured_lexical": {
+      "case_count": 9,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1313.6237999999994,
+      "retrieval_mean_ms": 0.5980000000001584,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 771.0596888888894,
+      "total_pipeline_mean_ms": 2085.670133333334,
+      "planner_usage": {
+        "prompt_tokens": 10356,
+        "completion_tokens": 1139,
+        "total_tokens": 11495
+      },
+      "semantic_usage": {
+        "prompt_tokens": 7540,
+        "completion_tokens": 323,
+        "total_tokens": 7863
+      }
+    },
+    "hybrid": {
+      "case_count": 9,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1334.5579111111115,
+      "retrieval_mean_ms": 0.33035555555478724,
+      "query_embedding_cold_ms": 15588.555099999998,
+      "query_embedding_warm_mean_ms": 92.05816250000044,
+      "semantic_mean_ms": 1025.5383888888891,
+      "total_pipeline_mean_ms": 4174.693366666666,
+      "planner_usage": {
+        "prompt_tokens": 10356,
+        "completion_tokens": 1160,
+        "total_tokens": 11516
+      },
+      "semantic_usage": {
+        "prompt_tokens": 8728,
+        "completion_tokens": 282,
+        "total_tokens": 9010
+      }
+    }
+  },
+  "decision": {
+    "status": "pass",
+    "production_mode": "hybrid",
+    "basis": "All three modes produced safe answers on held-out domain probes; grounded modes must have zero unsupported claim refs. Hybrid remains selected by the separate 27-case retrieval Recall@10 gate; cold start is reported and the persistent worker makes warm embedding the gameplay path."
+  },
+  "runs": [
+    {
+      "mode": "without_wk",
+      "case_id": "architecture_single_find_function_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:contextual-evidence-classes"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1337.9719,
+      "semantic_usage": {
+        "prompt_tokens": 129,
+        "completion_tokens": 19,
+        "total_tokens": 148,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 129
+      },
+      "total_pipeline_ms": 1337.9719
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "biology_one_meal_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "explain",
+      "answer_correct": false,
+      "relevant_claim_refs": [
+        "claim:food-energy-nutrients"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 654.6992,
+      "semantic_usage": {
+        "prompt_tokens": 125,
+        "completion_tokens": 19,
+        "total_tokens": 144,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 125
+      },
+      "total_pipeline_ms": 654.6992
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "chemistry_damp_iron_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "explain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 740.8339999999998,
+      "semantic_usage": {
+        "prompt_tokens": 124,
+        "completion_tokens": 19,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 124
+      },
+      "total_pipeline_ms": 740.8339999999998
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "craft_smithy_assumption_en",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:metalworking-broad-context"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 647.5406000000003,
+      "semantic_usage": {
+        "prompt_tokens": 122,
+        "completion_tokens": 19,
+        "total_tokens": 141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 122
+      },
+      "total_pipeline_ms": 647.5406000000003
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "environment_fishing_presence_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 603.9913999999999,
+      "semantic_usage": {
+        "prompt_tokens": 126,
+        "completion_tokens": 17,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 126
+      },
+      "total_pipeline_ms": 603.9913999999999
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "material_leather_personal_item_ru",
+      "accepted_answer_classes": [
+        "yes",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:novgorod-leather-items"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 619.4610000000002,
+      "semantic_usage": {
+        "prompt_tokens": 133,
+        "completion_tokens": 19,
+        "total_tokens": 152,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 133
+      },
+      "total_pipeline_ms": 619.4610000000002
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "npc_combined_resource_skills_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 600.0394999999999,
+      "semantic_usage": {
+        "prompt_tokens": 122,
+        "completion_tokens": 19,
+        "total_tokens": 141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 122
+      },
+      "total_pipeline_ms": 600.0394999999999
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "physics_wet_grain_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "explain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 606.7312000000002,
+      "semantic_usage": {
+        "prompt_tokens": 137,
+        "completion_tokens": 17,
+        "total_tokens": 154,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 137
+      },
+      "total_pipeline_ms": 606.7312000000002
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "social_debt_seizure_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 806.7732000000005,
+      "semantic_usage": {
+        "prompt_tokens": 131,
+        "completion_tokens": 19,
+        "total_tokens": 150,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 131
+      },
+      "total_pipeline_ms": 806.7732000000005
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "architecture_single_find_function_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:contextual-evidence-classes"
+      ],
+      "available_claim_refs": [
+        "claim:contextual-evidence-classes",
+        "claim:excavated-urban-structures"
+      ],
+      "factual_premise_refs": [
+        "claim:contextual-evidence-classes",
+        "claim:excavated-urban-structures"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1174.7523,
+      "planner_usage": {
+        "prompt_tokens": 1152,
+        "completion_tokens": 98,
+        "total_tokens": 1250
+      },
+      "retrieval_ms": 1.7759000000005472,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 641.3363000000008,
+      "semantic_usage": {
+        "prompt_tokens": 608,
+        "completion_tokens": 35,
+        "total_tokens": 643,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 608
+      },
+      "total_pipeline_ms": 1819.368300000001
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "biology_one_meal_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:food-energy-nutrients"
+      ],
+      "available_claim_refs": [
+        "claim:food-energy-nutrients",
+        "claim:work-intensity-duration",
+        "claim:exercise-heat-dissipation"
+      ],
+      "factual_premise_refs": [
+        "claim:food-energy-nutrients",
+        "claim:work-intensity-duration",
+        "claim:exercise-heat-dissipation"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1114.2001,
+      "planner_usage": {
+        "prompt_tokens": 1148,
+        "completion_tokens": 93,
+        "total_tokens": 1241
+      },
+      "retrieval_ms": 1.0997999999999593,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 846.0373999999993,
+      "semantic_usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 39,
+        "total_tokens": 739,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 700
+      },
+      "total_pipeline_ms": 1961.7327999999998
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "chemistry_damp_iron_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "yes",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "available_claim_refs": [
+        "claim:novgorod-urban-metalworking",
+        "claim:iron-corrosion-moisture-oxygen",
+        "claim:metal-properties-depend-on-state",
+        "claim:metal-classes-composition"
+      ],
+      "factual_premise_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1679.132599999999,
+      "planner_usage": {
+        "prompt_tokens": 1147,
+        "completion_tokens": 133,
+        "total_tokens": 1280
+      },
+      "retrieval_ms": 0.28100000000085856,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 754.9886000000006,
+      "semantic_usage": {
+        "prompt_tokens": 976,
+        "completion_tokens": 28,
+        "total_tokens": 1004,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 976
+      },
+      "total_pipeline_ms": 2434.5551000000014
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "craft_smithy_assumption_en",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:metalworking-broad-context"
+      ],
+      "available_claim_refs": [
+        "claim:metalworking-broad-context",
+        "claim:novgorod-urban-metalworking",
+        "claim:work-waste-context",
+        "claim:novgorod-wood-bone-horn-classes"
+      ],
+      "factual_premise_refs": [
+        "claim:metalworking-broad-context",
+        "claim:novgorod-urban-metalworking"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1032.0566,
+      "planner_usage": {
+        "prompt_tokens": 1145,
+        "completion_tokens": 105,
+        "total_tokens": 1250
+      },
+      "retrieval_ms": 0.6298000000006141,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 707.2456999999995,
+      "semantic_usage": {
+        "prompt_tokens": 838,
+        "completion_tokens": 36,
+        "total_tokens": 874,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 838
+      },
+      "total_pipeline_ms": 1740.4519999999993
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "environment_fishing_presence_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "available_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "factual_premise_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1144.2411999999986,
+      "planner_usage": {
+        "prompt_tokens": 1149,
+        "completion_tokens": 77,
+        "total_tokens": 1226
+      },
+      "retrieval_ms": 0.194100000000617,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 732.1377000000011,
+      "semantic_usage": {
+        "prompt_tokens": 414,
+        "completion_tokens": 25,
+        "total_tokens": 439,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 414
+      },
+      "total_pipeline_ms": 1876.7667000000001
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "material_leather_personal_item_ru",
+      "accepted_answer_classes": [
+        "yes",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:novgorod-leather-items"
+      ],
+      "available_claim_refs": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:leather-broad-context",
+        "claim:novgorod-leather-items"
+      ],
+      "factual_premise_refs": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:leather-broad-context",
+        "claim:novgorod-leather-items"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1412.6715999999979,
+      "planner_usage": {
+        "prompt_tokens": 1156,
+        "completion_tokens": 118,
+        "total_tokens": 1274
+      },
+      "retrieval_ms": 0.2253000000018801,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 819.8701000000001,
+      "semantic_usage": {
+        "prompt_tokens": 768,
+        "completion_tokens": 47,
+        "total_tokens": 815,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 768
+      },
+      "total_pipeline_ms": 2232.908299999999
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "npc_combined_resource_skills_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "available_claim_refs": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:debt-record-practice",
+        "claim:judicial-accusation-record",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1399.7682999999997,
+      "planner_usage": {
+        "prompt_tokens": 1145,
+        "completion_tokens": 184,
+        "total_tokens": 1329
+      },
+      "retrieval_ms": 0.46349999999802094,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 705.318900000002,
+      "semantic_usage": {
+        "prompt_tokens": 1316,
+        "completion_tokens": 17,
+        "total_tokens": 1333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1316
+      },
+      "total_pipeline_ms": 2105.755000000001
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "physics_wet_grain_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "yes",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "available_claim_refs": [
+        "claim:structural-and-object-wood",
+        "claim:wood-anisotropy-moisture"
+      ],
+      "factual_premise_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1442.041799999999,
+      "planner_usage": {
+        "prompt_tokens": 1160,
+        "completion_tokens": 140,
+        "total_tokens": 1300
+      },
+      "retrieval_ms": 0.24289999999746215,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 929.0112000000008,
+      "semantic_usage": {
+        "prompt_tokens": 595,
+        "completion_tokens": 27,
+        "total_tokens": 622,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 595
+      },
+      "total_pipeline_ms": 2371.4287000000004
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "social_debt_seizure_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "available_claim_refs": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:debt-record-practice",
+        "claim:judicial-accusation-record",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "factual_premise_refs": [
+        "claim:debt-record-practice",
+        "claim:judicial-accusation-record",
+        "claim:debt-needs-parties-and-basis",
+        "claim:practical-document-genres",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1423.7497000000003,
+      "planner_usage": {
+        "prompt_tokens": 1154,
+        "completion_tokens": 191,
+        "total_tokens": 1345
+      },
+      "retrieval_ms": 0.46970000000146683,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 803.5913,
+      "semantic_usage": {
+        "prompt_tokens": 1325,
+        "completion_tokens": 69,
+        "total_tokens": 1394,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1325
+      },
+      "total_pipeline_ms": 2228.064300000002
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "architecture_single_find_function_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:contextual-evidence-classes"
+      ],
+      "available_claim_refs": [
+        "claim:contextual-evidence-classes",
+        "claim:excavated-urban-structures",
+        "claim:urban-pavements"
+      ],
+      "factual_premise_refs": [
+        "claim:contextual-evidence-classes"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1150.0282999999981,
+      "planner_usage": {
+        "prompt_tokens": 1152,
+        "completion_tokens": 98,
+        "total_tokens": 1250
+      },
+      "retrieval_ms": 0.5318999999944936,
+      "query_embedding_ms": 15588.555099999998,
+      "vector_scan_ms": 1.4856999999974505,
+      "vector_status": "ok",
+      "semantic_ms": 1096.459799999997,
+      "semantic_usage": {
+        "prompt_tokens": 780,
+        "completion_tokens": 25,
+        "total_tokens": 805,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 780
+      },
+      "total_pipeline_ms": 17837.1701
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "biology_one_meal_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:food-energy-nutrients"
+      ],
+      "available_claim_refs": [
+        "claim:work-intensity-duration",
+        "claim:food-energy-nutrients",
+        "claim:exercise-heat-dissipation",
+        "claim:acute-sleep-loss-performance"
+      ],
+      "factual_premise_refs": [
+        "claim:food-energy-nutrients",
+        "claim:work-intensity-duration"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1282.0347000000038,
+      "planner_usage": {
+        "prompt_tokens": 1148,
+        "completion_tokens": 108,
+        "total_tokens": 1256
+      },
+      "retrieval_ms": 0.22130000000470318,
+      "query_embedding_ms": 89.77070000000094,
+      "vector_scan_ms": 0.22709999999642605,
+      "vector_status": "ok",
+      "semantic_ms": 998.9666999999972,
+      "semantic_usage": {
+        "prompt_tokens": 853,
+        "completion_tokens": 30,
+        "total_tokens": 883,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 853
+      },
+      "total_pipeline_ms": 2371.295299999998
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "chemistry_damp_iron_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "yes",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "available_claim_refs": [
+        "claim:novgorod-urban-metalworking",
+        "claim:iron-corrosion-moisture-oxygen",
+        "claim:metal-properties-depend-on-state",
+        "claim:metal-classes-composition",
+        "claim:fermentation-conditions"
+      ],
+      "factual_premise_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1298.1844999999958,
+      "planner_usage": {
+        "prompt_tokens": 1147,
+        "completion_tokens": 133,
+        "total_tokens": 1280
+      },
+      "retrieval_ms": 0.3092000000033295,
+      "query_embedding_ms": 84.26860000000306,
+      "vector_scan_ms": 0.2180000000007567,
+      "vector_status": "ok",
+      "semantic_ms": 751.3078999999998,
+      "semantic_usage": {
+        "prompt_tokens": 1144,
+        "completion_tokens": 28,
+        "total_tokens": 1172,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1144
+      },
+      "total_pipeline_ms": 2134.3618999999962
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "craft_smithy_assumption_en",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:metalworking-broad-context"
+      ],
+      "available_claim_refs": [
+        "claim:metalworking-broad-context",
+        "claim:novgorod-urban-metalworking",
+        "claim:work-waste-context",
+        "claim:novgorod-wood-bone-horn-classes",
+        "claim:woodworked-objects-and-waste"
+      ],
+      "factual_premise_refs": [
+        "claim:metalworking-broad-context",
+        "claim:novgorod-urban-metalworking"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1055.8542000000016,
+      "planner_usage": {
+        "prompt_tokens": 1145,
+        "completion_tokens": 105,
+        "total_tokens": 1250
+      },
+      "retrieval_ms": 0.2764999999999418,
+      "query_embedding_ms": 90.55249999999796,
+      "vector_scan_ms": 0.09840000000258442,
+      "vector_status": "ok",
+      "semantic_ms": 963.3626999999979,
+      "semantic_usage": {
+        "prompt_tokens": 972,
+        "completion_tokens": 35,
+        "total_tokens": 1007,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 972
+      },
+      "total_pipeline_ms": 2110.2402999999977
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "environment_fishing_presence_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "available_claim_refs": [
+        "claim:regional-fish-exploitation",
+        "claim:regional-agriculture-practice"
+      ],
+      "factual_premise_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1199.649400000002,
+      "planner_usage": {
+        "prompt_tokens": 1149,
+        "completion_tokens": 74,
+        "total_tokens": 1223
+      },
+      "retrieval_ms": 0.22490000000107102,
+      "query_embedding_ms": 92.3489000000045,
+      "vector_scan_ms": 0.07970000000204891,
+      "vector_status": "ok",
+      "semantic_ms": 1319.724900000001,
+      "semantic_usage": {
+        "prompt_tokens": 597,
+        "completion_tokens": 25,
+        "total_tokens": 622,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 597
+      },
+      "total_pipeline_ms": 2612.117100000003
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "material_leather_personal_item_ru",
+      "accepted_answer_classes": [
+        "yes",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:novgorod-leather-items"
+      ],
+      "available_claim_refs": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-leather-items",
+        "claim:leather-broad-context"
+      ],
+      "factual_premise_refs": [
+        "claim:novgorod-leather-items",
+        "claim:leather-broad-context"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1259.3721000000005,
+      "planner_usage": {
+        "prompt_tokens": 1156,
+        "completion_tokens": 118,
+        "total_tokens": 1274
+      },
+      "retrieval_ms": 0.23349999999481952,
+      "query_embedding_ms": 94.17699999999604,
+      "vector_scan_ms": 0.11919999999372521,
+      "vector_status": "ok",
+      "semantic_ms": 1396.1677000000054,
+      "semantic_usage": {
+        "prompt_tokens": 768,
+        "completion_tokens": 35,
+        "total_tokens": 803,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 768
+      },
+      "total_pipeline_ms": 2750.1381000000038
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "npc_combined_resource_skills_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "no",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "available_claim_refs": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:debt-record-practice",
+        "claim:judicial-accusation-record",
+        "claim:practical-document-genres",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1743.0023,
+      "planner_usage": {
+        "prompt_tokens": 1145,
+        "completion_tokens": 184,
+        "total_tokens": 1329
+      },
+      "retrieval_ms": 0.3125999999974738,
+      "query_embedding_ms": 89.21399999999994,
+      "vector_scan_ms": 0.10850000000209548,
+      "vector_status": "ok",
+      "semantic_ms": 1024.4077000000034,
+      "semantic_usage": {
+        "prompt_tokens": 1316,
+        "completion_tokens": 16,
+        "total_tokens": 1332,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1316
+      },
+      "total_pipeline_ms": 2857.1123000000007
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "physics_wet_grain_ru",
+      "accepted_answer_classes": [
+        "explain",
+        "yes"
+      ],
+      "answer_class": "yes",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "available_claim_refs": [
+        "claim:structural-and-object-wood",
+        "claim:wood-anisotropy-moisture"
+      ],
+      "factual_premise_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1381.798600000002,
+      "planner_usage": {
+        "prompt_tokens": 1160,
+        "completion_tokens": 121,
+        "total_tokens": 1281
+      },
+      "retrieval_ms": 0.3033999999970547,
+      "query_embedding_ms": 105.1756000000023,
+      "vector_scan_ms": 0.1886000000013155,
+      "vector_status": "ok",
+      "semantic_ms": 716.8361000000004,
+      "semantic_usage": {
+        "prompt_tokens": 595,
+        "completion_tokens": 27,
+        "total_tokens": 622,
+        "prompt_tokens_details": {
+          "cached_tokens": 512
+        },
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 83
+      },
+      "total_pipeline_ms": 2204.3634999999995
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "social_debt_seizure_ru",
+      "accepted_answer_classes": [
+        "no",
+        "uncertain"
+      ],
+      "answer_class": "uncertain",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "available_claim_refs": [
+        "claim:later-novgorod-judicial-charter",
+        "claim:gramota-73-debt-record",
+        "claim:debt-record-practice",
+        "claim:gramota-73-grivna-term",
+        "claim:judicial-accusation-record",
+        "claim:debt-needs-parties-and-basis",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:practical-document-genres"
+      ],
+      "factual_premise_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:debt-record-practice",
+        "claim:judicial-accusation-record",
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "unsupported_premise_refs": [],
+      "planner_ms": 1641.097099999999,
+      "planner_usage": {
+        "prompt_tokens": 1154,
+        "completion_tokens": 219,
+        "total_tokens": 1373
+      },
+      "retrieval_ms": 0.5599000000001979,
+      "query_embedding_ms": 90.95799999999872,
+      "vector_scan_ms": 0.15129999999771826,
+      "vector_status": "ok",
+      "semantic_ms": 962.612000000001,
+      "semantic_usage": {
+        "prompt_tokens": 1703,
+        "completion_tokens": 61,
+        "total_tokens": 1764,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1703
+      },
+      "total_pipeline_ms": 2695.441700000003
+    }
+  ]
+}

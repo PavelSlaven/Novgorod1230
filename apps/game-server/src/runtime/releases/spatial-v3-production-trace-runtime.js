@@ -56,6 +56,8 @@ import { runLowerDvinaTraceNpcConversationExchange } from
   '../lower-dvina-trace-npc-initiated-conversation.js';
 import { createLlmDiagnostics } from '../llm-diagnostics.js';
 import { createLlmTurnBudget } from '../llm-turn-budget.js';
+import { createProductionWorldKnowledgeGrounder } from
+  '../world-knowledge-grounding.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -63,6 +65,7 @@ export function createTraceTurnRuntime({
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
+  worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -80,10 +83,16 @@ export function createTraceTurnRuntime({
   const roleRunner = createProductionLlmRoleRunner({
     env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null, turnBudget
   });
+  const worldKnowledgeGrounder = worldKnowledge == null ? null
+    : createProductionWorldKnowledgeGrounder({
+        worldKnowledge, roleRunner, telemetry: llmDiagnostics.telemetry,
+        year: 1230, placeRefs: ['region_novgorod_land']
+      });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
-    qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity
+    qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
+    worldKnowledgeGrounder
   });
   const ordinaryDiscoveryScopeBinding =
     ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
@@ -109,14 +118,16 @@ export function createTraceTurnRuntime({
     && spatialSemanticProfile.profile.scenario_definition_revision === 24
     ? spatialSemanticProfile : null;
   const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null
-    ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool, roleRunner })
+    ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
+        roleRunner, worldKnowledgeGrounder })
     : null;
   const backgroundNpcResolverFactory =
     npcSemanticRemainderProfile?.schema
       === 'rus.lower_dvina_trace_n1_loaded_profile.v1'
       && npcSemanticRemainderProfile.profile?.status === 'approved'
       ? createLowerDvinaTraceN1ProductionResolverFactory({
-          loadedProfile: npcSemanticRemainderProfile, roleRunner
+          loadedProfile: npcSemanticRemainderProfile, roleRunner,
+          worldKnowledgeGrounder
         }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
@@ -144,13 +155,15 @@ export function createTraceTurnRuntime({
       ...lowerDvinaTraceCombatTemporalEffectRegistrations()
     ]
   });
-  const npcRuntimePorts = createNpcRuntimePorts({ roleRunner });
+  const npcRuntimePorts = createNpcRuntimePorts({ roleRunner,
+    worldKnowledgeGrounder });
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
-    turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+    turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
+      worldKnowledgeGrounder }),
     actionProducedWeaponClassifier:
       createLowerDvinaTraceActionProducedWeaponClassifier({ roleRunner }),
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>

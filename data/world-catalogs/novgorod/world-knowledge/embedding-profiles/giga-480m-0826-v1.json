@@ -1,0 +1,16 @@
+{
+  "schema": "world_knowledge_embedding_profile_v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "model_id": "ai-sage/Giga-Embeddings-instruct-480M-0826",
+  "model_revision": "0c94f705aa35719324fb46f7e75b0a5c275da6e4",
+  "dimension": 1024,
+  "normalization": "l2",
+  "pooling": "mean",
+  "query_mode": "instruct",
+  "query_format": "Instruct: {task}\nQuery: {text}",
+  "document_mode": "plain",
+  "license": "MIT",
+  "upstream_url": "https://huggingface.co/ai-sage/Giga-Embeddings-instruct-480M-0826",
+  "verified_at": "2026-09-03",
+  "status": "production"
+}

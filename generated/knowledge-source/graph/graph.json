@@ -984,7 +984,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 195
+        "line_end": 196
       }
     },
     {
@@ -1321,6 +1321,18 @@
         "file": "world_generation_and_turns.txt",
         "line_start": 1,
         "line_end": 1581
+      }
+    },
+    {
+      "id": "canonical-document:world-knowledge-platform-implementation-contract",
+      "type": "canonical_document",
+      "label": "world_knowledge_platform_implementation_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/world_knowledge_platform_implementation_contract.md",
+      "source_location": {
+        "file": "world_knowledge_platform_implementation_contract.md",
+        "line_start": 1,
+        "line_end": 3354
       }
     },
     {

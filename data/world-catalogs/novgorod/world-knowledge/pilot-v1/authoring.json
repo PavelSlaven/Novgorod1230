@@ -1,0 +1,284 @@
+{
+  "schema": "world_knowledge_authoring_pack_v1",
+  "manifest": {
+    "schema": "world_knowledge_pack_manifest_v1",
+    "pack_ref": "wk-pack:novgorod-1230-pilot",
+    "revision_id": "revision:pilot-v1",
+    "status": "reviewed",
+    "default_locale": "ru",
+    "supported_locales": ["ru", "en"],
+    "domains": ["economy_trade", "law_institutions"],
+    "context_schema_ref": "wk-context:novgorod:v1",
+    "embedding_profile_ref": null
+  },
+  "predicate_registry": {
+    "economy_trade": {
+      "attested_use": {
+        "subject_domains": ["economy_trade"],
+        "object_kinds": ["literal"],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support"],
+        "cardinality": "single_assertion",
+        "applicability": "contextual",
+        "consumer_meaning": "Directly attested use in the declared historical context."
+      }
+    },
+    "law_institutions": {
+      "attested_use": {
+        "subject_domains": ["law_institutions"],
+        "object_kinds": ["literal"],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support"],
+        "cardinality": "single_assertion",
+        "applicability": "contextual",
+        "consumer_meaning": "Directly attested institutional use in the declared historical context."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramoty-novgorod-73",
+      "title": "Берестяная грамота № 73 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "gramoty.ru, Новгородская берестяная грамота № 73; датировка 1220–1240, стратиграфически 1220-е–1230-е; долговая запись.",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_only"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramoty-novgorod-510",
+      "title": "Берестяная грамота № 510 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "gramoty.ru, Новгородская берестяная грамота № 510; датировка 1220–1240; судебная запись с обвинением.",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_only"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota-73-debt-record",
+      "source_ref": "source:gramoty-novgorod-73",
+      "anchor": {
+        "record_id": "novgorod/73"
+      },
+      "note": "Источник прямо классифицирует документ как долговую запись; датировка 1220–1240, стратиграфически 1220-е–1230-е.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota-510-judicial-record",
+      "source_ref": "source:gramoty-novgorod-510",
+      "anchor": {
+        "record_id": "novgorod/510"
+      },
+      "note": "Источник прямо классифицирует документ как судебную запись; датировка 1220–1240.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:economy:debt_record",
+      "domain": "economy_trade",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:law:judicial_accusation_record",
+      "domain": "law_institutions",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:novgorod-1220-1240-debt-record-attested",
+      "domain": "economy_trade",
+      "subject_ref": "wk:economy:debt_record",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "literal",
+        "value": "attested_in_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+      ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gramota-73-debt-record"],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:novgorod-1220-1240-judicial-record-attested",
+      "domain": "law_institutions",
+      "subject_ref": "wk:law:judicial_accusation_record",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "literal",
+        "value": "attested_in_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+      ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gramota-510-judicial-record"],
+      "review_status": "approved"
+    }
+  ],
+  "coverage_profiles": [
+    {
+      "schema": "world_knowledge_profile_v1",
+      "profile_ref": "wk-profile:economy-novgorod-pilot:v1",
+      "domain": "economy_trade",
+      "status": "reviewed",
+      "scope": {
+        "time": {"from": 1220, "to": 1240},
+        "places": ["region_novgorod_land"]
+      },
+      "purposes": ["semantic_resolution"],
+      "question_classes": ["economic_practice"],
+      "runtime_requirement": "not_active",
+      "guard": {"mode": "advisory"}
+    },
+    {
+      "schema": "world_knowledge_profile_v1",
+      "profile_ref": "wk-profile:law-novgorod-pilot:v1",
+      "domain": "law_institutions",
+      "status": "reviewed",
+      "scope": {
+        "time": {"from": 1220, "to": 1240},
+        "places": ["region_novgorod_land"]
+      },
+      "purposes": ["semantic_resolution"],
+      "question_classes": ["legal_norm"],
+      "runtime_requirement": "not_active",
+      "guard": {"mode": "advisory"}
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:economy:debt_record",
+      "locale": "ru",
+      "labels": ["долговая запись"],
+      "short_definition": "Письменная запись долгового обязательства в рассматриваемом контексте.",
+      "search_aliases": ["долг", "долговое обязательство"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:economy:debt_record",
+      "locale": "en",
+      "labels": ["debt record"],
+      "short_definition": "A written record of a debt obligation in the relevant context.",
+      "search_aliases": ["debt", "debt obligation"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:law:judicial_accusation_record",
+      "locale": "ru",
+      "labels": ["судебная запись с обвинением"],
+      "short_definition": "Письменная запись обвинения в судебном контексте.",
+      "search_aliases": ["судебная запись", "обвинение"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:law:judicial_accusation_record",
+      "locale": "en",
+      "labels": ["judicial accusation record"],
+      "short_definition": "A written accusation record in a judicial context.",
+      "search_aliases": ["judicial record", "accusation"]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-1220-1240-debt-record-attested",
+      "locale": "ru",
+      "runtime_text": "В Новгороде в 1220–1240 годах прямо засвидетельствованы долговые записи на бересте.",
+      "search_aliases": ["долговая запись Новгород XIII век", "берестяная грамота долг"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-1220-1240-debt-record-attested",
+      "locale": "en",
+      "runtime_text": "Debt records on birch bark are directly attested in Novgorod in 1220–1240.",
+      "search_aliases": ["Novgorod debt record thirteenth century", "birch bark debt"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-1220-1240-judicial-record-attested",
+      "locale": "ru",
+      "runtime_text": "В Новгороде в 1220–1240 годах прямо засвидетельствована судебная запись с обвинением на бересте.",
+      "search_aliases": ["судебная запись Новгород XIII век", "берестяная грамота обвинение"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-1220-1240-judicial-record-attested",
+      "locale": "en",
+      "runtime_text": "A judicial accusation record on birch bark is directly attested in Novgorod in 1220–1240.",
+      "search_aliases": ["Novgorod judicial record thirteenth century", "birch bark accusation"]
+    }
+  ]
+}

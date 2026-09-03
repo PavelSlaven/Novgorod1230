@@ -5,10 +5,10 @@ import { assertReadiness, buildServerEnv, startLocalPlay, validateLocalPlay } fr
 
 const digest = 'a'.repeat(64);
 
-test('buildServerEnv fixes v14 settings and removes legacy variables', () => {
+test('buildServerEnv fixes v15 settings and removes legacy variables', () => {
   const env = buildServerEnv({ env: { RUS_RUNTIME_BINDINGS_MODULE: 'old', RUS_RUN_PARTY_MIGRATIONS: '1', KEEP: 'yes' }, worldUrl: 'world', partyUrl: 'party', pinManifestDigest: digest, port: 3001 });
   assert.equal(env.RUS_CUTOVER_STAGE, '13');
-  assert.equal(env.RUS_SPATIAL_V3_BINDINGS_MODULE, 'builtin:spatial-v3-production-v14');
+  assert.equal(env.RUS_SPATIAL_V3_BINDINGS_MODULE, 'builtin:spatial-v3-production-v15');
   assert.equal(env.RUS_RUNTIME_BINDINGS_MODULE, undefined);
   assert.equal(env.RUS_RUN_PARTY_MIGRATIONS, undefined);
   assert.equal(env.RUS_TURN_DECISION_SECRET, 'novgorod1230-local-play-decision-secret-v1');
@@ -17,7 +17,7 @@ test('buildServerEnv fixes v14 settings and removes legacy variables', () => {
 
 test('readiness rejects wrong release, activation, and unavailable scenario', async () => {
   await assert.rejects(assertReadiness({ baseUrl: 'http://test', attempts: 1, fetchImpl: async () => ({ ok: true, json: async () => ({ ok: true, data: { status: 'ok' } }) }) }), { code: 'LOCAL_PLAY_READINESS_FAILED' });
-  const health = { status: 'ok', release_id: 'spatial-v3-production-v14', activation: 'sole_owner', authoritative_reads: 'spatial_v3_only', authoritative_writes: 'spatial_v3_only', runtime_fallback: 'forbidden', production_activation: true, runtime_selectable_in_canonical_production: true };
+  const health = { status: 'ok', release_id: 'spatial-v3-production-v15', activation: 'sole_owner', authoritative_reads: 'spatial_v3_only', authoritative_writes: 'spatial_v3_only', runtime_fallback: 'forbidden', production_activation: true, runtime_selectable_in_canonical_production: true };
   await assert.rejects(assertReadiness({ baseUrl: 'http://test', attempts: 1, fetchImpl: async () => ({ ok: true, json: async () => ({ ok: true, data: { ...health, activation: 'legacy' } }) }) }), { code: 'LOCAL_PLAY_READINESS_FAILED' });
   let calls = 0;
   await assert.rejects(assertReadiness({ baseUrl: 'http://test', attempts: 1, fetchImpl: async () => ({ ok: true, json: async () => ({ ok: true, data: calls++ ? { scenarios: [] } : health }) }) }), { code: 'LOCAL_PLAY_SCENARIO_UNAVAILABLE' });

@@ -668,7 +668,8 @@ const approvedTurnImports = new Set([
     '@rus/materialization',
     '@rus/pipeline-engine',
     '@rus/combat-health',
-    '@rus/body-state'
+    '@rus/body-state',
+    '@rus/world-knowledge'
 ]);
 for (const file of turnFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
@@ -729,7 +730,7 @@ for (const appSpec of [
       '@rus/time-events-history/temporal-boundaries',
       '@rus/visibility-knowledge-memory',
       '@rus/visibility-knowledge-memory/ordinary-resolution-capability',
-      '@rus/world-base',
+      '@rus/world-base', '@rus/world-knowledge',
       '@rus/world-processes/local-exact-fire',
       '@rus/npc-runtime', 'pg'
     ])

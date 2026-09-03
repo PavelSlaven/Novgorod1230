@@ -256,9 +256,9 @@ export function createLowerDvinaTracePhase2Runtime({
               ? null : createTurnStepSpatialSemanticResolver,
           spatialSemanticProfile: activeSpatialSemanticProfile,
           createTurnStepBackgroundNpcResolver:
-            [31, 32].includes(bundle.definition_revision)
+            bundle.definition_revision === 32
               ? createTurnStepBackgroundNpcResolver : null,
-          npcSemanticRemainderProfile: [31, 32].includes(bundle.definition_revision)
+          npcSemanticRemainderProfile: bundle.definition_revision === 32
             ? npcSemanticRemainderProfile : null,
           admitAmbientOrdinaryPortion:
             typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'

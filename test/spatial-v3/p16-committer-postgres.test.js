@@ -720,7 +720,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
       schema: 'npc_ordinary_semantic_remainder_v1', npc_ref: 'npc:n1',
       profile_ref: 'lower_dvina_trace_n1_background_npc_v1@1',
       ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
-      ordinary_activity: 'Он перебирает край сети.' } };
+      ordinary_activity: 'Работает на рыбацкой стоянке.' } };
   const n1Persistence = await makePlan({
     planId: 'n1-persistence-plan', idempotencyId: 'n1-persistence-idem',
     idempotencyKey: 'n1-persistence-key', changeSetId: 'n1-persistence-cs',

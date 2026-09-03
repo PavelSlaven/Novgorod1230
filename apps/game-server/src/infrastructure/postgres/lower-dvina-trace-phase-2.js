@@ -1,14 +1,12 @@
 import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { json } from '../../runtime/first-playable/shared.js'; import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
-import { assertPhase2NormalizedRows, phase2IntegrityError,
-  validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
+import { assertPhase2NormalizedRows, phase2IntegrityError, validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
 import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest,
   publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
-import { phase2InitialCurrentVisibleContext,
-  withPhase2CurrentVisibleContext,
+import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
@@ -32,10 +30,8 @@ import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-t
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
 import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
-export function createLowerDvinaTracePhase2PostgresRepository({
-  partyPool,
-  committer
-} = {}) {
+export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
+  committer } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -238,10 +234,14 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       }
     } };
   }
-  async function loadCommittablePhase2State(...args) {
-    return withoutPhase2CurrentVisibleContext(
-      await loadPhase2State(...args)
-    );
+  async function loadCommittablePhase2State(partyId, {
+    includeCurrentVisibleContextForValidation = false,
+    ...options
+  } = {}) {
+    const state = await loadPhase2State(partyId, options);
+    return includeCurrentVisibleContextForValidation
+      ? state
+      : withoutPhase2CurrentVisibleContext(state);
   }
   async function persistPhase2Screen({ partyId, inputDigest, result, turnBudget = null }) {
     const anchor = result.commit;

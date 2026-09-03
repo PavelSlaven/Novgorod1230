@@ -114,6 +114,8 @@ export function buildNpcDecision(context, working, boundary,
         : {})
     },
     available_resources: context.phase === 'phase_4'
+      && context.targetRef.entity_id === context.contracts.actors
+        ?.ratsha_storehouse_helper?.instance_id
       ? [{
           resource_ref: context.contracts.knifeTransition
             .transition_profile_id,

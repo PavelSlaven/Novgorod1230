@@ -102,6 +102,16 @@ test('route commit persists no interlocutor portrait from its planner trace',
     assert.deepEqual(snapshot.clock, scenario.factual.time_update.clock_after);
   });
 
+test('route commit ignores a planner-only current-scene presentation overlay',
+  async () => {
+    const scenario = await routeDirectScenario({
+      plannerPresentationOverlay: true
+    });
+    const plans = [];
+    await commit(scenario.writePlan, scenario, plans);
+    assert.equal(plans.length, 1);
+  });
+
 test('P16 still rejects a portrait outside the persisted interlocutor path',
   async () => {
     const scenario = await routeDirectScenario();
@@ -142,9 +152,14 @@ test('route-only commit preserves one exact deferred second-step boundary',
 
         const plans = [];
         await commit(writePlan, scenario, plans);
+        assert.equal(
+          scenario.commitLoadOptions.includeCurrentVisibleContextForValidation,
+          true
+        );
         const snapshot = plans[0].inserts.find(
           ({ target_table: table }) => table === 'party_state_snapshots')
           .record.state_payload;
+        assert.equal(Object.hasOwn(snapshot, 'current_visible_context'), false);
         assert.equal(minutesBetween(factual.time_update.clock_before,
           snapshot.route_history.at(-1).ended_at), 8);
         assert.equal(minutesBetween(factual.time_update.clock_before,
@@ -392,9 +407,14 @@ test('generic known route awaits matching authored route availability', async ()
 });
 
 test('generic known-route projection uses the authored route and location presentation', async () => {
+  const destinationActor = { instance_id: 'npc:destination-fisher',
+    ref: 'background_fisher', anchor_id: 'anchor:destination' };
   const projector = createTracePhase3VisibleProjector({
     phase2Projector: { project: async () => assert.fail('phase2 fallback') },
-    contracts: { actors: [] },
+    contracts: { actors: [destinationActor, {
+      instance_id: 'npc:departed-fisher', ref: 'background_fisher',
+      anchor_id: 'anchor:source'
+    }] },
     scenePresentation: {
       locations: [{ location_ref: 'unseen_destination',
         display_name: 'незнакомая пристань',
@@ -410,7 +430,8 @@ test('generic known-route projection uses the authored route and location presen
   const visible = await projector.project({ consequence: {
     phase3_kind: 'movement', generic_known_route: true, movement: {
       route_ref: 'unseen_route', destination: {
-        location_ref: 'unseen_destination', display_name: 'незнакомая пристань' }
+        location_ref: 'unseen_destination', display_name: 'незнакомая пристань',
+        g5_anchor_id: 'anchor:destination' }
     }
   } });
   assert.deepEqual(visible, {
@@ -418,7 +439,9 @@ test('generic known-route projection uses the authored route and location presen
     visible_scene: 'незнакомая пристань',
     visible_changes: ['Перед вами — незнакомая пристань.'],
     sensory_details: ['Сухой настил поднимается над водой.'],
-    visible_npc: [], visible_objects: [],
+    visible_npc: [{ entity_ref: { entity_kind: 'npc',
+      entity_id: destinationActor.instance_id }, display_label: 'рыбак',
+    recognition: 'unrecognized' }], visible_objects: [],
     known_context: ['Обратный путь отмечен приметами на берегу.'], uncertainties: [],
     allowed_tensions: [], do_not_imply: []
   });

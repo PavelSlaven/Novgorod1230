@@ -21,9 +21,9 @@ export async function resolveNpcOrdinarySemanticRemainder({ request,
       messages: [{ role: 'system', content: [
         'Return only one JSON object with exactly schema, request_id, ordinary_descriptor, ordinary_activity.',
         'schema must be npc_ordinary_semantic_remainder_proposal_v1 and request_id must be copied exactly.',
-        'Write concise natural Russian phrases about one ordinary person as currently observable in a XIII-century scene.',
+        'Write one concise natural Russian visual description of an ordinary person as currently observable in a XIII-century scene.',
         'Use only supplied player-safe observable_context. Do not infer meaning from IDs or invent a name, biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, or new entity.',
-        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues; ordinary_activity is one visible ordinary action consistent with the display label and scene, without changing formal schedule or world state.'
+        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues. ordinary_activity must be null because current work belongs to code-owned schedule state outside this player-safe semantic request.'
       ].join(' ') }, { role: 'user', content: JSON.stringify(safeRequest) }],
       overrides: { temperature: 0, maxTokens: 20_000 }
     });
@@ -51,7 +51,7 @@ async function auditProposal({ request, proposal, roleRunner }) {
       messages: [{ role: 'system', content: [
         'Return only JSON with exactly schema, request_id, approved, concern_kinds.',
         'schema is npc_ordinary_semantic_remainder_audit_v1; copy request_id exactly.',
-        'Judge whether both proposed phrases fit observable_context and remain only an ordinary visible descriptor/action.',
+        'Judge whether ordinary_descriptor fits observable_context and remains only an ordinary visible descriptor; ordinary_activity must be null.',
         'Reject unsupported observations and any biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, formal profile field, or new entity.',
         'Allowed concern_kinds: context_contradiction, forbidden_authority, formal_owner_overlap, new_entity.',
         'approved=true requires an empty concern_kinds array; approved=false requires at least one concern.'

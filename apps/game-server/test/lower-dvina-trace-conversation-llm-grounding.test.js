@@ -40,6 +40,77 @@ function runner(reply) {
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
 }
 
+test('speech audit rejects invented past work from a current schedule',
+  async () => {
+    const input = request();
+    input.npc = { machine_state: { current_activity: {
+      status: 'active',
+      summary: 'Сейчас осматривает и чинит принадлежащие ему сети.'
+    } } };
+    input.memory = { records: [], received_messages: [] };
+    const unsupported = plan(input);
+    unsupported.speech.utterance_text =
+      'На рассвете я был у реки и проверял сети.';
+    unsupported.speech.dominant_act = 'inform';
+    const fixture = runner(() => ({ pass: false, concerns: [{
+      kind: 'unsupported_past_activity'
+    }] }));
+    const result = await createLowerDvinaTraceNpcSemanticModel(
+      fixture).validateFreshPlan(unsupported, input);
+
+    assert.equal(result.pass, false);
+    assert.equal(result.errors[0].category, 'semantic_grounding');
+    assert.equal(result.errors[0].retryable, true);
+    assert.deepEqual(result.errors[0].concern_kinds,
+      ['unsupported_past_activity']);
+    assert.match(fixture.calls[0].messages[0].content,
+      /current_activity describes only requested_at/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /Past first-person activity or observation needs an exact memory record/u);
+    assert.equal(fixture.calls[0].overrides.maxTokens, 20_000);
+  });
+
+test('speech audit applies to another NPC, place, and earlier time', async () => {
+  const input = request();
+  input.npc = { machine_state: { current_activity: {
+    status: 'active', summary: 'Сейчас перебирает верёвки.'
+  } } };
+  input.memory = { records: [], received_messages: [] };
+  const unsupported = plan(input);
+  unsupported.speech.utterance_text =
+    'Вчера до твоего прихода я видел людей у переправы.';
+  const fixture = runner(() => ({ pass: false, concerns: [{
+    kind: 'unsupported_past_observation'
+  }] }));
+
+  const result = await createLowerDvinaTraceNpcSemanticModel(
+    fixture).validateFreshPlan(unsupported, input);
+  assert.equal(result.pass, false);
+  assert.deepEqual(result.errors[0].concern_kinds,
+    ['unsupported_past_observation']);
+});
+
+test('semantic grounding failure requests one complete response rewrite',
+  async () => {
+    const input = request();
+    const fixture = runner(() => plan(input));
+    await createLowerDvinaTraceNpcSemanticModel(fixture)(input, { repair: {
+      original_output: plan(input),
+      validation_errors: [{
+        code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+        category: 'semantic_grounding', retryable: true
+      }]
+    } });
+
+    assert.equal(fixture.calls[0].role_id,
+      'npc_conversation_responder_format_repair');
+    assert.match(fixture.calls[0].messages[0].content,
+      /Rewrite the complete response once/u);
+    assert.equal(Object.hasOwn(
+      JSON.parse(fixture.calls[0].messages[1].content), 'original_output'),
+    false);
+  });
+
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();
   input.allowed_references.entity_refs.push(ref('route', 'route-1'));

@@ -229,9 +229,7 @@ function visibleNpc(npc, position, visibleLabels) {
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
     display_label: displayLabel,
-    recognition: prior?.recognition ?? 'recognized',
-    ...(text(prior?.visible_status)
-      ? { visible_status: prior.visible_status } : {})
+    recognition: prior?.recognition ?? 'recognized'
   };
 }
 

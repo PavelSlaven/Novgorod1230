@@ -4,7 +4,11 @@ export function mergePhase2Items(items, clue) {
     const exactPickup = Boolean(clue.pickup_transition);
     next.push({ item_id: clue.instance_id, template_id: clue.template_id,
       ...(exactPickup ? { profile_id: clue.profile_id,
-        quantity: clue.quantity } : {}),
+        quantity: clue.quantity,
+        category_id: clue.semantic_category,
+        condition_state: clue.condition_state,
+        legal_status: clue.legal_status,
+        ownership: structuredClone(clue.ownership) } : {}),
       placement: structuredClone(clue.placement), state: exactPickup ? {
         semantic_category: clue.semantic_category,
         display_name: 'клочок синей шерсти',

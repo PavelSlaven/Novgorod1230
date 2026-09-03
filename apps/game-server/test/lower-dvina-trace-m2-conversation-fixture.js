@@ -245,7 +245,8 @@ export async function runPhase3({
   transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
   npcSemanticModel: customNpcSemanticModel = null,
-  resolveTemporalBoundary = null
+  resolveTemporalBoundary = null,
+  targetActorId = null
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -257,6 +258,7 @@ export async function runPhase3({
     playerInput: { raw_text: rawText },
     inputDigest,
     checkResult: resolvedCheck,
+    targetActorId,
     playerConversationModel: async (request) => {
       playerCalls += 1;
       const plan = transformPlayerPlan(playerPlan(request, {
@@ -275,14 +277,13 @@ export async function runPhase3({
       const selectedResponseKind = typeof responseKind === 'function'
         ? responseKind(request, npcCalls)
         : responseKind;
-      const plan = transformNpcPlan(eremeyPlan(
-        request,
-        selectedResponseKind,
-        request.decision_scope.operation_contract.disclose_known_route ?? {
-          route_ref: 'unused-route',
-          source_knowledge_scope_ref: 'unused-knowledge-scope'
-        }
-      ), { request, call_index: npcCalls });
+      const plan = transformNpcPlan(
+        request.decision_scope.operation_contract.disclose_known_route
+          ? eremeyPlan(request, selectedResponseKind,
+              request.decision_scope.operation_contract.disclose_known_route)
+          : npcSpeechPlan(request, { utteranceText: 'Я слышу тебя.',
+              dominantAct: 'answer' }),
+        { request, call_index: npcCalls });
       plan.activity.duration_class = durationForCall(
         npcDurationClasses, npcCalls
       );
@@ -312,7 +313,8 @@ export async function runPhase4({
   transformNpcPlan = (plan) => plan,
   npcSocialCheckResolver = async ({ request }) =>
     checkResult(`npc:${request.request_id}`, 'success'),
-  resolveTemporalBoundary = null
+  resolveTemporalBoundary = null,
+  targetActorRef = 'ratsha_storehouse_helper'
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -326,6 +328,7 @@ export async function runPhase4({
     checkResult: resolvedCheck,
     offerStage,
     checkRequest,
+    targetActorRef,
     npcSocialCheckResolver,
     playerConversationModel: async (request) => {
       playerCalls += 1;

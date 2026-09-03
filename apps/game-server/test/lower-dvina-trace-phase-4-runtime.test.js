@@ -157,13 +157,20 @@ test('Phase 4 arrival exposes perceived actors without leaking canonical names',
       phase3Projector: { project: async () => assert.fail('fallback') } });
     const visible = await projector.project({ consequence: {
       phase4_kind: 'movement'
-    } });
+    }, retrieved_state: { npcs: [{ instance_id: 'onisim', machine_state: {
+      binding_item: { holder_npc_id: 'onisim', use_state: 'binding_onisim' }
+    } }] } });
     assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref,
       display_label: label, recognition }) => [ref.entity_id, label, recognition]), [
       ['onisim', 'раненый мужчина', 'unrecognized'],
-      ['ratsha', 'мужчина рядом', 'unrecognized']
+      ['ratsha', 'мужчина рядом', 'unrecognized'],
+      ['eremey', 'Еремей', 'recognized'],
+      ['fisher', 'рыбак, пришедший с вами', 'unrecognized']
     ]);
     assert.doesNotMatch(visible.visible_scene, /Онисим|Ратша/u);
+    assert.match(visible.visible_scene, /ноги стянуты верёвкой/u);
+    assert.match(visible.visible_npc[0].visible_status, /ноги стянуты верёвкой/u);
+    assert.doesNotMatch(JSON.stringify(visible), /binding_onisim|controller/u);
   });
 
 test('Phase 4 temporal owner commits route once and preserves separate negotiation roots', async () => {

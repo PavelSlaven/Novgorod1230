@@ -66,7 +66,8 @@ export function createUiStore(initial = {}) {
       publish();
     },
     showNewGame() {
-      state = freeze({ ...state, status: 'idle', view: 'new_game', error: null, activeOverlay: null });
+      state = freeze({ ...state, status: 'idle', view: 'new_game', error: null,
+        activeOverlay: null, turnDraft: '' });
       publish();
     },
     setRememberedPartyId(value) {

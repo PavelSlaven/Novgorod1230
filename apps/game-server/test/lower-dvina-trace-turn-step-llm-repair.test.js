@@ -109,15 +109,25 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);
   assert.equal(seen.messages[0].content.includes(
-    'continuation.remaining_intent equals request.remaining_intent'), true);
+    'Equality between continuation.remaining_intent and request.remaining_intent'), true);
   assert.equal(seen.messages[0].content.includes(
-    'selected operation consumed none of the intent'), true);
+    'does not prove that the selected operation consumed none of the intent'), true);
   assert.equal(seen.messages[0].content.includes(
-    'set operation_choice null, and re-plan the earliest action'), true);
+    'keep it and remove that covered event'), true);
   assert.equal(seen.messages[0].content.includes(
     'never return the discarded later operation in operations'), true);
   assert.equal(seen.messages[0].content.includes(
+    'plus any preceding ownerless ambient utterance'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'preserve only independent actions after it'), true);
+  assert.equal(seen.messages[0].content.includes(
     'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'restore the matching supplied semantic mapping'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'one domain operation exactly equal to a supplied code-owned choice'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'never substitute a broad authored operation choice'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 

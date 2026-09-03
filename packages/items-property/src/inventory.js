@@ -39,6 +39,7 @@ export function validateInventoryTopology(input = {}) {
   for (const placement of itemPlacements) {
     const targets = [
       placement.anchor_id,
+      placement.scene_position_id,
       placement.location_ref,
       placement.container_id,
       placement.holder_npc_id,

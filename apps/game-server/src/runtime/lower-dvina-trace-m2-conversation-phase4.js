@@ -3,7 +3,7 @@ import {
   executeM2ConversationExchange,
   prepareM2PlayerConversationPlan
 } from './lower-dvina-trace-m2-conversation-exchange.js';
-import { classifyRatshaPlan } from
+import { classifyOrdinaryConversationPlan, classifyRatshaPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import {
   BARGAIN_OPERATION,
@@ -20,12 +20,11 @@ import { buildSurrenderProjection } from
   './lower-dvina-trace-m2-conversation-surrender.js';
 import { hydratedPendingPlayerExecution } from
   './lower-dvina-trace-m2-conversation-resume.js';
-
 export async function resolveTracePhase4ConversationExchange({
   state, contracts, playerInput, inputDigest, checkResult, offerStage,
   checkRequest, playerConversationModel, npcSemanticModel,
   temporalAdvanceOwner, revalidateStateVersion, playerPlan = null,
-  npcSocialCheckResolver = null
+  npcSocialCheckResolver = null, targetActorRef = 'ratsha_storehouse_helper'
 } = {}) {
   requireCommonInput({ state, contracts, playerInput, inputDigest,
     playerConversationModel, npcSemanticModel, revalidateStateVersion });
@@ -37,7 +36,7 @@ export async function resolveTracePhase4ConversationExchange({
     checkRequest: effectiveCheckRequest, offerStage: effectiveOfferStage,
     contracts });
   const mapping = contracts.conversationSignalMappings?.demand;
-  const target = contracts.actors?.ratsha_storehouse_helper;
+  const target = contracts.actors?.[targetActorRef];
   if (!mapping || !target?.instance_id
       || mapping.target_npc_ref !== 'ratsha_storehouse_helper') {
     fail('TRACE_M2_PHASE_4_CONTRACT_GAP',
@@ -51,30 +50,37 @@ export async function resolveTracePhase4ConversationExchange({
   const effectiveInputDigest = (pendingExecution ?? persistedPlayer)
     ?.source_input_digest
     ?? inputDigest;
-  const followupAdmission = phase4FollowupAdmission(effectiveCheckResult);
+  const ratshaTarget = targetActorRef === 'ratsha_storehouse_helper';
+  const followupAdmission = ratshaTarget
+    ? phase4FollowupAdmission(effectiveCheckResult)
+    : ordinaryFollowupAdmission();
   const initialContext = createM2ConversationContext({
     phase: 'phase_4', state, contracts, playerInput,
     inputDigest: effectiveInputDigest, checkResult: effectiveCheckResult,
-    mapping, targetActor: { ref: 'ratsha_storehouse_helper', ...target },
+    mapping, targetActor: { ref: targetActorRef, ...target },
     actualNpcActors, playerConversationModel, npcSemanticModel,
     revalidateStateVersion, temporalAdvanceOwner, npcSocialCheckResolver,
-    playerOperationContract: {
+    playerOperationContract: ratshaTarget ? {
       [PROMISE_OPERATION]: {
         owner: '@rus/social-law', policy_ref: contracts.promisePolicy.policy_id
       }
-    },
+    } : {},
     ...followupAdmission,
-    npcSocialCheckProfile: contracts.npcSocialCheckProfile,
+    npcSocialCheckProfile: ratshaTarget
+      ? contracts.npcSocialCheckProfile : null,
     npcContributionReferencePolicy: {
       entity_refs: [], knowledge_refs: [],
       combat_target_refs: followupAdmission.npcDecisionScope
         .combat_handoff_available ? [ref('player_character', state.actor_id)] : []
     },
     offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
-    classifyNpcPlan: (plan, request = null) => classifyRatshaFollowup(plan, {
-      checkResult: effectiveCheckResult,
-      confessionAssertionId: contracts.confessionStatement.assertion.assertion_id
-    }, request),
+    classifyNpcPlan: ratshaTarget
+      ? (plan, request = null) => classifyRatshaFollowup(plan, {
+          checkResult: effectiveCheckResult,
+          confessionAssertionId:
+            contracts.confessionStatement.assertion.assertion_id
+        }, request)
+      : classifyOrdinaryConversationPlan,
     playerPlan
   });
   const effectivePlayerPlan = pendingExecution !== null ? null
@@ -90,7 +96,15 @@ export async function resolveTracePhase4ConversationExchange({
     effectiveInputDigest
   );
 }
-
+function ordinaryFollowupAdmission() {
+  return {
+    npcOperationContract: {},
+    npcDecisionScope: {
+      action_handoff_available: false,
+      combat_handoff_available: false
+    }
+  };
+}
 function phase4FollowupAdmission(checkResult) {
   const band = checkResult?.outcome?.band ?? null;
   if (['clean_success', 'success', 'success_with_cost'].includes(band)) {
@@ -150,7 +164,6 @@ function phase4FollowupAdmission(checkResult) {
     }
   };
 }
-
 function classifyRatshaFollowup(plan, { checkResult, confessionAssertionId },
   request = null) {
   const outcome = classifyRatshaPlan(plan, { confessionAssertionId });
@@ -168,7 +181,6 @@ function classifyRatshaFollowup(plan, { checkResult, confessionAssertionId },
   }
   return outcome;
 }
-
 function requireCausalInput({ checkResult, checkRequest, offerStage, contracts }) {
   const hasCheck = checkResult !== null || checkRequest !== null;
   if ((checkResult === null) !== (checkRequest === null)
@@ -182,7 +194,6 @@ function requireCausalInput({ checkResult, checkRequest, offerStage, contracts }
       'The committed offer stage and code-owned check are required.');
   }
 }
-
 function resultProjection(result, context, state, offerStage, checkRequest,
   inputDigest) {
   const surrender = result.npcOutcome?.kind === 'surrender'
@@ -246,7 +257,6 @@ function resultProjection(result, context, state, offerStage, checkRequest,
     objective_truth_writes: []
   });
 }
-
 function confessionProjection(result, context) {
   const authored = context.contracts.confessionStatement;
   if (result.npcOutcome?.confessionClaimId

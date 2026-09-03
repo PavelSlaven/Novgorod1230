@@ -54,6 +54,12 @@ const targetRefs = Object.freeze({
   zhdanko: 'npc:zhdanko',
   activeHostileNpc: 'npc:hostile',
   combatScope: 'place:combat-scope',
+  phase4ConversationActors: [
+    'npc:ratsha', 'npc:onisim', 'npc:eremey', 'npc:fisher-1'
+  ],
+  phase3ConversationActors: [
+    'npc:eremey', 'npc:fisher-1', 'npc:fisher-2'
+  ],
   roadBag: 'item:road-bag',
   sealedPacket: 'item:sealed-packet',
   caseEvidence: 'case:evidence',
@@ -103,6 +109,13 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
     id === 'lower_dvina_trace.follow_path_to_fishing_camp');
   assert.equal(fishingCamp.semantic_binding.operation_dto.description,
     fishingCamp.label);
+  const ratshaConversation = bound.find(({ command_id: id }) => id ===
+    'lower_dvina_trace.offer_conditional_protection_and_seek_surrender');
+  assert.deepEqual(ratshaConversation.semantic_binding.operation_dtos.map(
+    ({ interaction_kind: kind }) => kind), ['speech', 'offer', 'request']);
+  assert.equal(ratshaConversation.semantic_binding.operation_dtos.every(
+    (operation) => ratshaConversation.semantic_binding.matches({ operation })),
+  true);
   assertMatches(bound, 'lower_dvina_trace.ask_eremey_about_wreck', {
     op: 'emit_interaction', actor_ref: 'player', interaction_kind: 'speech',
     target_actor_refs: [targetRefs.eremey], instrument_refs: [], content: 'что было'
@@ -262,12 +275,28 @@ test('revision 17 exposes valid copyable DTOs except bounded selection', () => {
       ]);
       assert.equal(command.semantic_binding.operation_dtos.every((operation) =>
         command.semantic_binding.matches({ operation })), true);
+    } else if (command.semantic_binding.operation === 'emit_interaction') {
+      assert.equal(command.semantic_binding.operation_dtos.every((operation) =>
+        command.semantic_binding.matches({ operation })), true,
+      command.command_id);
     } else {
       assert.equal(command.semantic_binding.matches({
         operation: command.semantic_binding.operation_dto
       }), true, command.command_id);
     }
   }
+  const conversation = bound.find(({ command_id: id }) => id ===
+    'lower_dvina_trace.offer_conditional_protection_and_seek_surrender');
+  assert.equal(conversation.semantic_binding.operation_dtos.length, 12);
+  assert.deepEqual(new Set(conversation.semantic_binding.operation_dtos.map(
+    ({ target_actor_refs: refs }) => refs[0])), new Set([
+    targetRefs.ratsha, targetRefs.onisim, targetRefs.eremey,
+    targetRefs.participatingFisher
+  ]));
+  assert.deepEqual(new Set(conversation.semantic_binding.operation_dtos.map(
+    ({ content }) => content)), new Set([
+    'Обратиться к видимому собеседнику'
+  ]));
 });
 
 test('revision 24 keeps inherited inactive bindings unbound', () => {
@@ -298,6 +327,24 @@ test('revision 28 keeps paraphrases on semantic bindings, not revision 13 text m
     op: 'request_movement', actor_ref: targetRefs.actor, movement_kind: 'route',
     target_ref: targetRefs.dryingShed
   } }), true);
+});
+
+test('revision 32 exposes each present camp NPC through the conversation owner', () => {
+  const activeCommands = revision17Bindings.domain_bindings.map(
+    ({ command_id: commandId }) => ({ command_id: commandId,
+      label: commandId, matches: () => false, ...handlers }));
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: activeCommands,
+    bundle: { definition_revision: 32, turn_step_bindings: revision17Bindings },
+    targetRefs
+  });
+  const conversation = bound.find(({ command_id: id }) => id ===
+    'lower_dvina_trace.ask_eremey_about_wreck');
+  assert.deepEqual(new Set(conversation.semantic_binding.operation_dtos.map(
+    ({ target_actor_refs: refs }) => refs[0])),
+  new Set(targetRefs.phase3ConversationActors));
+  assert.equal(conversation.semantic_binding.operation_dtos.every((operation) =>
+    conversation.semantic_binding.matches({ operation })), true);
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

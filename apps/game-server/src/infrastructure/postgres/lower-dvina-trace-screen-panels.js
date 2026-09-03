@@ -17,6 +17,18 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   const peopleData = plain(previousPeople?.data)
     ? structuredClone(previousPeople.data) : {};
   delete peopleData.active_interlocutor;
+  delete peopleData.visible_npcs;
+  const nearbyNpcIds = new Set((projection.npcs ?? []).map((npc) =>
+    npc.instance_id ?? npc.actor_id ?? npc.npc_id).filter(Boolean));
+  const visibleNpcs = (projection.current_visible_context?.visible_npc ?? [])
+    .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id));
+  if (visibleNpcs.length > 0) {
+    peopleData.visible_npcs = visibleNpcs.map((npc) => ({
+      display_label: npc.display_label,
+      ...(typeof npc.visible_status === 'string'
+        ? { status: npc.visible_status } : {})
+    }));
+  }
   if (activeInterlocutor !== null) {
     peopleData.active_interlocutor = decorateActiveInterlocutor({
       activeInterlocutor, committedNpcs: payload.npcs

@@ -399,9 +399,10 @@ function validatePlacement(value, path, errors, trace, entityRef) {
       add(errors, `${path}.target_ref`, 'placement_target_kind',
         'held_by and worn_by must target the current actor');
     }
-    if (value.relation === 'inside' && value.target_ref === trace.actorRef) {
+    if (['inside', 'attached_to'].includes(value.relation)
+        && value.target_ref === trace.actorRef) {
       add(errors, `${path}.target_ref`, 'placement_target_kind',
-        'inside must target a visible item or container, not the actor; use held_by or worn_by for actor-carried placement');
+        'inside and attached_to must target a visible item or container, not the actor; use held_by or worn_by for actor-carried placement');
     }
   }
   if (entityRef && value.target_ref === entityRef) {

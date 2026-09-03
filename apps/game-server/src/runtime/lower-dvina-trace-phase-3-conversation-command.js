@@ -1,22 +1,15 @@
 import { tracePhase3PreconditionSatisfied } from './lower-dvina-trace-phase-3-admission.js';
-import {
-  available,
-  exact,
-  exactMatcher,
-  fail,
-  mode,
-  packageBase,
-  phase3WriteTargets
-} from './lower-dvina-trace-phase-3-command-shared.js';
-import {
-  assertTracePhase3ConversationExecution,
-  resolveTracePhase3NpcDecision
-} from './lower-dvina-trace-phase-3-npc-decision.js';
+import { available, exact, exactMatcher, fail, mode, packageBase,
+  phase3WriteTargets } from './lower-dvina-trace-phase-3-command-shared.js';
+import { assertTracePhase3ConversationExecution, resolveTracePhase3NpcDecision } from
+  './lower-dvina-trace-phase-3-npc-decision.js';
 import { resolveTracePhase3ConversationExchange } from './lower-dvina-trace-m2-conversation.js';
 import { conversationHandoffProjection } from './lower-dvina-trace-m2-conversation-handoff.js';
 import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
   prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
   './lower-dvina-trace-m2-conversation-player.js';
+import { phase3ConversationTarget, phase3ConversationTargetId } from
+  './lower-dvina-trace-phase-2-target-refs.js';
 
 export function createTracePhase3ConversationCommand({
   contracts, inputDigest, evidence,
@@ -233,6 +226,7 @@ function createSemanticConversationCommand({
         state,
         contracts,
         evidence,
+        targetActorId: phase3ConversationTargetId(context, contracts),
         playerInput: context.playerInput,
         inputDigest,
         playerConversationModel,
@@ -259,6 +253,11 @@ function createSemanticConversationCommand({
       if (playerPlan.resolution === 'check_required' && !checkResult) {
         fail('TRACE_PHASE_3_CHECK_RESULT_MISSING');
       }
+      const targetActor = phase3ConversationTarget(
+        contracts, playerPlan.primary_addressee_ref);
+      if (playerPlan.primary_addressee_ref != null && !targetActor) {
+        fail('TRACE_M2_PHASE_3_TARGET_INVALID');
+      }
       const semanticExchange = await resolveTracePhase3ConversationExchange({
         state,
         contracts,
@@ -269,7 +268,8 @@ function createSemanticConversationCommand({
         npcSemanticModel,
         temporalAdvanceOwner,
         revalidateStateVersion,
-        playerPlan
+        playerPlan,
+        targetActorId: playerPlan.primary_addressee_ref?.entity_id
       });
       return packageBase({
         inputDigest,
@@ -283,8 +283,8 @@ function createSemanticConversationCommand({
                 checkResult.outcome.success ? 'success' : 'failure'
               ]
             : null,
-          npc_ref: ids.eremeyRef,
-          npc_id: contracts.actors[0].instance_id,
+          npc_ref: targetActor.ref,
+          npc_id: targetActor.instance_id,
           semantic_exchange: semanticExchange,
           ...conversationHandoffProjection(semanticExchange),
           response_kind: semanticExchange.response_kind,

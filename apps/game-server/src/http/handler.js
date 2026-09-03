@@ -38,6 +38,9 @@ export function createHttpHandler({
       return sendJson(response, 404, errorEnvelope({ code: 'ROUTE_NOT_FOUND', message: 'Route not found.', status: 404 }, { requestId }).body);
     } catch (error) {
       const failure = errorEnvelope(error, { requestId, developerMode });
+      if (failure.body.error.code === 'TEMPORARY_ACTION_UNAVAILABLE') {
+        console.error(`[game-server] request ${requestId} failed`, error);
+      }
       return sendJson(response, failure.status, failure.body);
     }
   };

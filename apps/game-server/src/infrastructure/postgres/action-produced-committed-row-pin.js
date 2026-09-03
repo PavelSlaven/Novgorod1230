@@ -14,12 +14,16 @@ export function createActionProducedCommittedRowPin({
   row, role, actorRef, finite, accessAnchorId, accessScenePositionId,
   accessContainer = null, preparedOrdinary = null, preparedAction = null
 }) {
+  const accessPlacement = { ...row,
+    scene_position_id: row?.item_scene_position_id
+      ?? row?.scene_position_id };
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
       || preparedOrdinary === null && preparedAction === null
-        && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
-          accessAnchorId, accessScenePositionId)
+        && !actionProducedPlacementAccessible(accessPlacement,
+        accessContainer, actorRef,
+        accessAnchorId, accessScenePositionId)
       || row.scene_position_id != null && (!text(accessScenePositionId)
         || row.scene_position_id !== accessScenePositionId)
       || row.item_scene_position_id != null && (!text(accessScenePositionId)
@@ -36,8 +40,8 @@ export function createActionProducedCommittedRowPin({
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
   const access = preparedOrdinary === null && preparedAction === null
-    ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId,
-      accessScenePositionId)
+    ? actionProducedAccessState(accessPlacement, accessContainer, actorRef,
+      accessAnchorId, accessScenePositionId)
     : 'quick';
   const holderRef = [row.holder_character_id, row.holder_npc_id]
     .includes(actorRef) ? actorRef : null;

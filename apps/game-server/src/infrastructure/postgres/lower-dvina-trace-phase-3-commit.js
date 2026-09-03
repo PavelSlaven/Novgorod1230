@@ -38,6 +38,8 @@ import { resumedPendingConversationActivity } from
   './lower-dvina-trace-pending-activity-state.js';
 import { bindOrdinaryPlanToCombinedInput } from
   './lower-dvina-trace-ordinary-p16.js';
+import { withoutPhase2CurrentVisibleContext } from
+  './lower-dvina-trace-phase-2-current-visible.js';
 
 import {
   expectedChangedConditions,
@@ -70,7 +72,8 @@ export async function commitLowerDvinaTracePhase3({
   }
   const state = await loadState(partyId, {
     presentationIdempotencyKey:
-      factual.player_input.idempotency_key
+      factual.player_input.idempotency_key,
+    includeCurrentVisibleContextForValidation: true
   });
   phase3Contracts = resolveGenericKnownRouteContracts({ state,
     phase3Contracts, factual });
@@ -87,11 +90,11 @@ export async function commitLowerDvinaTracePhase3({
   const idemId = `idem:${partyId}:${canonicalDigest(
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
-  let next = nextState({
+  let next = withoutPhase2CurrentVisibleContext(nextState({
     state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
     rootTurnId: semanticContext?.rootTurnId,
     workingRevision: semanticContext?.workingRevision
-  });
+  }));
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId,
     phase3Contracts, turnStepApprovedOwners

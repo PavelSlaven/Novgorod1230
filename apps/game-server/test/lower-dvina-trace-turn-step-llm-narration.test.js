@@ -60,10 +60,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(shape), true);
   assert.equal(calls[0].messages[0].content.includes(
     'server assembles version, schema, and output_id'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Use context.attempt only when needed'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'never evidence of success, object use, or a new world fact'), true);
+  assert.equal(calls[0].messages[0].content.includes('context.attempt'), false);
   assert.equal(calls[0].messages[0].content.includes(
     'Missing or false outcome fields are silent constraints'), true);
   assert.equal(calls[0].messages[0].content.includes(
@@ -84,6 +81,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'do not add that nothing else was noticed'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'unless that exact bodily effect is supplied'), true);
+  assert.equal(calls[0].messages[0].content.includes(
+    'Проходит минута, а у самой воды лежат <supplied current detail>'), true);
   for (const call of calls) {
     assert.equal(call.messages[0].content.includes(
       'Narrate the player in second-person Russian'), true);
@@ -93,6 +92,12 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       'State uncertainty only when it is explicitly supplied'), true);
     assert.equal(call.messages[0].content.includes(
       'ground every adjective, adverb, sensory quality, temporal relation'), true);
+    assert.equal(call.messages[0].content.includes(
+      'Compare every rendered NPC trait to that same entity\'s observable_cues'), true);
+    assert.equal(call.messages[0].content.includes(
+      'static identity or equipment cue never authorizes an NPC action'), true);
+    assert.equal(call.messages[0].content.includes(
+      'never group differing traits unless every stated trait applies'), true);
     assert.equal(call.messages[0].content.includes(
       'does not authorize an unstated direction, destination, route'), true);
     assert.equal(call.messages[0].content.includes(
@@ -140,7 +145,19 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.match(calls[2].messages[0].content, /unsupported_success/u);
   assert.match(calls[2].messages[0].content, /technical_presentation/u);
   assert.equal(calls[2].messages[0].content.includes(
-    'Exact elapsed time is not standalone when it is a temporal modifier'), true);
+    'Exact elapsed time is not standalone when it is woven into'), true);
+  assert.equal(calls.some((call) => call.messages[0].content.includes(
+    'same sentence as a supplied current scene detail')), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'without claiming a change of scene, body, position, or action'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'still stands, waits, watches, looks, or remains somewhere MUST FAIL'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'scene or its objects stayed unchanged'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'copy one complete supplied current scene detail without semantic shortening'), true);
+  assert.equal(calls[2].messages[0].content.includes(
+    'MUST NOT classify that construction as standalone elapsed time'), true);
   assert.equal(calls[2].messages[0].content.includes(
     '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
@@ -161,7 +178,13 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'entire supplied prose as one coherent paragraph'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'never emit a sentence whose only content is elapsed time'), true);
+    'Never emit a sentence whose only content is elapsed time'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'when elapsed time is the only visible change'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'A safe grammatical pattern is «Проходит минута'), true);
+  assert.equal(calls[3].messages[0].content.includes(
+    'still stands, waits, watches, looks, or remains somewhere'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'server assembles version, schema, and immutable segment_id'), true);
   assert.equal(calls[3].messages[0].content.includes(

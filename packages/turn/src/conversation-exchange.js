@@ -374,7 +374,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       semanticModel: ports.npcSemanticModel,
       persistedTrace: decision.persisted_trace,
       revalidateStateVersion: ports.revalidateNpcStateVersion,
-      validatePlan: ports.validateNpcPlan ?? null
+      validatePlan: ports.validateNpcPlan ?? null,
+      validateFreshPlan: ports.validateFreshNpcPlan ?? null
     });
     const npcCheck = await resolveNpcContributionSocialCheck({
       plan: proposal.plan,

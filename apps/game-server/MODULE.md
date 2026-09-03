@@ -28,7 +28,7 @@ and adds no second transaction owner.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 - Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.
 - Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов, включая repair, получает полный transport timeout 120 с и `maxTokens = 20_000`; длина ответа ограничивается prompt/schema. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
-- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and, only for flagged segments, `gameplay_narrator_semantic_repair`; writer получает player-safe action-intent context (`raw_text`/selected option) только для понимания попытки, не как evidence success/world fact; auditor и semantic repair получают only visible_context. `@rus/narration` deterministically validates schema, visible context, hidden leaks, immutable segment reassembly and final audit. No router, senior cascade or narration fallback exists.
+- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and, only for flagged segments, `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, immutable segment reassembly and final audit. No router, senior cascade or narration fallback exists.
 
 ## Не владеет
 
@@ -283,8 +283,10 @@ Release v14 is the direct non-selectable child of v13. It pins Lower Dvina
 Trace revision 32 / M20 / Phase 1A v23 / Phase 1B v27 and the approved
 `lower_dvina_trace_n1_background_npc_v1@1` profile for the existing visible
 background fisher. This is a profile-specific N1 activation only: look/inspect
-may persist and replay the two allowed ordinary semantic facets; broader N1
-capability remains unactivated.
+may persist and replay an audited semantic descriptor plus the exact activity
+already created by the code-owned materialized schedule; schedule state is
+never exposed to or authored by the N1 model. Broader N1 capability remains
+unactivated.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

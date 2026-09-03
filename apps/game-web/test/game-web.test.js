@@ -234,6 +234,13 @@ test('UI store keeps screen read model instead of duplicating party state', () =
   assert.equal('worldState' in state, false);
 });
 
+test('starting a new game drops the previous party turn draft', () => {
+  const store = createUiStore();
+  store.setDraft('turn', 'Незавершённое действие');
+  store.showNewGame();
+  assert.equal(store.getState().turnDraft, '');
+});
+
 test('UI store keeps one exact pending opening identity and clears it after acknowledgement', () => {
   const store = createUiStore();
   store.setScreen(firstScreen(), {

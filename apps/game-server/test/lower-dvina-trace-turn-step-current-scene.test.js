@@ -19,6 +19,8 @@ const locationProfiles = [{ location_profile_id: 'shed',
 
 test('current scene keeps prior player-safe co-located NPC observations only', () => {
   const state = committedState();
+  state.current_visible_context.visible_npc[0].visible_status =
+    'говорит с вами';
   const current = withLowerDvinaTraceCurrentScene({ committedState: state,
     locationProfiles });
   assert.deepEqual(current.current_visible_context.visible_npc.map((npc) => ({
@@ -30,6 +32,8 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
     display_label: 'раненый мужчина',
     recognition: 'unrecognized'
   }]);
+  assert.equal(Object.hasOwn(
+    current.current_visible_context.visible_npc[0], 'visible_status'), false);
   const cues = current.current_visible_context.visible_npc[0].observable_cues;
   assert.equal(cues.identity.age_category, 'middle_aged');
   assert.equal(cues.identity.appearance.build, 'stocky');

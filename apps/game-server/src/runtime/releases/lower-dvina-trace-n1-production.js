@@ -39,6 +39,7 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
           || operation?.target_refs?.length !== 1
           || !text(actorRef) || !text(target) || visible == null || npc == null
           || npc.profile_level !== 'background'
+          || !hasMaterializedSchedule(npc)
           || !eligible.has(`${profileId}@${profileRevision}`)
           || !safeState?.background_npc_remainder?.eligible_npc_refs
             ?.includes(target)) fail('TRACE_N1_SCOPE_INVALID');
@@ -54,6 +55,7 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
         ?? value.committed_state?.position?.location_ref;
       const roleRef = refText(npc.role_ref);
       const occupationRef = refText(npc.occupation_ref);
+      const currentActivity = materializedActivity(npc);
       if (!text(roleRef) || !text(occupationRef) || locationRef == null) {
         fail('TRACE_N1_FORMAL_FACETS_MISSING');
       }
@@ -74,6 +76,7 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
       });
       const remainder = buildNpcOrdinarySemanticRemainder({
         request: modelRequest, proposal, profileRef,
+        ordinaryActivity: currentActivity,
         causalBasisRefs: [`${profileId}@${profileRevision}`, locationRef]
       });
       const plan = createBackgroundNpcSemanticAtomicWritePlan({
@@ -136,6 +139,22 @@ function exactNpc(npcs, ref) {
   const matches = (npcs ?? []).filter((npc) =>
     (npc.instance_id ?? npc.npc_id) === ref);
   return matches.length === 1 ? matches[0] : null;
+}
+function hasMaterializedSchedule(npc) {
+  const activity = npc?.machine_state?.current_activity;
+  return npc?.machine_state?.schedule_state === 'working'
+    && activity?.status === 'active'
+    && text(activity.activity_ref)
+    && text(activity.summary)
+    && activity.can_continue_automatically === true
+    && Array.isArray(npc.schedule_records)
+    && npc.schedule_records.some((schedule) =>
+      schedule?.schedule_profile_id === activity.activity_ref
+        && text(schedule.time_band) && text(schedule.g5_node_id));
+}
+function materializedActivity(npc) {
+  if (!hasMaterializedSchedule(npc)) fail('TRACE_N1_SCOPE_INVALID');
+  return npc.machine_state.current_activity.summary;
 }
 function refText(value) {
   if (text(value)) return value;

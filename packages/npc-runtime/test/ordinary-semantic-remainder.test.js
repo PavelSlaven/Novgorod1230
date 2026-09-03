@@ -14,16 +14,19 @@ const request = {
 };
 const proposal = { schema: 'npc_ordinary_semantic_remainder_proposal_v1',
   request_id: 'req:1', ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
-  ordinary_activity: 'Он перебирает край сети.' };
+  ordinary_activity: null };
 
 test('N1 admits only strict non-authoritative ordinary facets', () => {
   assert.equal(validateNpcOrdinarySemanticRemainderRequest(request), true);
   assert.equal(validateNpcOrdinarySemanticRemainderProposal(proposal, request), true);
   const remainder = buildNpcOrdinarySemanticRemainder({ request, proposal,
-    profileRef: 'n1@1', causalBasisRefs: ['fisher@2', 'shore'] });
+    profileRef: 'n1@1', causalBasisRefs: ['fisher@2', 'shore'],
+    ordinaryActivity: 'Работает на рыбацкой стоянке.' });
   assert.equal(validateNpcOrdinarySemanticRemainder(remainder), true);
   assert.equal(validateNpcOrdinarySemanticRemainderProposal({ ...proposal,
     canonical_name: 'Еремей' }, request), false);
+  assert.equal(validateNpcOrdinarySemanticRemainderProposal({ ...proposal,
+    ordinary_activity: 'Он перебирает край сети.' }, request), false);
 });
 
 test('N1 semantic audit is fail-closed and bound to the request', () => {

@@ -719,7 +719,8 @@ async function assertRatshaCaftanTransitionPersists({
   const initial = await repository.loadPhase2State(opened.party_id);
   assert.deepEqual(initial.current_visible_context.visible_npc.map(
     ({ display_label: label }) => label
-  ), ['раненый мужчина', 'мужчина рядом']);
+  ), ['раненый мужчина', 'мужчина рядом', 'Еремей',
+    'рыбак, пришедший с вами']);
   const ratsha = initial.npcs.find(({ participant_slot_ref: slot }) =>
     slot === 'ratsha_storehouse_helper');
   const caftan = initial.items.find(({ template_id: templateId }) =>
@@ -1076,7 +1077,7 @@ async function assertGeneralLookAfterInspection({
     raw_text: 'Осмотреть место крушения подробно.'
   });
   assert.equal(narrationRequests[0].visible_context.visible_scene,
-    'Осмотр места крушения завершён.');
+    'место крушения на берегу');
   const beforeLook = {
     checks: await count(pool, 'party_runtime.party_check_resolutions',
       opened.party_id),

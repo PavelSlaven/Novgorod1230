@@ -117,7 +117,12 @@ function applyExactConditionOutcomes(activeConditions, outcomes) {
 
 export function createTracePhase2VisibleProjector({ contracts, scenePresentation }) {
   return Object.freeze({
-    async project({ consequence }) {
+    async project({ consequence, time_update: timeUpdate, body_update: bodyUpdate }) {
+      const observations = consequence.visible_seed.observation_refs.map((factId) =>
+        scenePresentation == null
+          ? historicalFactPresentation(factId)
+          : factPresentationForRef({ scenePresentation, factRef: factId }).text);
+      const conditionChanges = inspectionBodyChanges({ timeUpdate, bodyUpdate });
       const visibleObjects = consequence.clue_materialization
         ? [{
             entity_ref: {
@@ -133,7 +138,7 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
       return {
         version: 1,
         schema: 'visible_context_package',
-        visible_scene: 'Осмотр места крушения завершён.',
+        visible_scene: 'место крушения на берегу',
         visible_changes: [
           ...consequence.observations.map(({ fact_id: factId }) =>
             scenePresentation == null
@@ -141,9 +146,10 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
               : factPresentationForRef({ scenePresentation, factRef: factId }).text),
           ...(consequence.clue_materialization == null ? [] : [
             'Клочок синей шерсти теперь у вас в руках.'
-          ])
+          ]),
+          ...conditionChanges
         ],
-        sensory_details: [],
+        sensory_details: observations,
         visible_npc: [],
         visible_objects: visibleObjects,
         known_context: [],
@@ -156,6 +162,20 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
       };
     }
   });
+}
+
+function inspectionBodyChanges({ timeUpdate, bodyUpdate }) {
+  const elapsed = timeUpdate?.exact_elapsed?.exact_minutes;
+  const transitions = bodyUpdate?.proposal?.condition_transitions ?? [];
+  if (elapsed?.numerator !== '15' || elapsed.denominator !== '1') return [];
+  const wet = transitions.find(({ condition_profile_ref: profile }) =>
+    profile === 'trace_ld_v1_condition_wet_clothing');
+  const shivering = transitions.find(({ condition_profile_ref: profile }) =>
+    profile === 'trace_ld_v1_condition_cold_shivering');
+  if (!wet || !shivering) return [];
+  return [shivering.outcome === 'worsens'
+    ? 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь усилилась.'
+    : 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь не отступила.'];
 }
 
 function historicalFactPresentation(factId) {

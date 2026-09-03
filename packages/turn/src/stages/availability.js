@@ -24,7 +24,12 @@ export async function resolveAvailabilityStage({ playerInput, modeResolution, re
     return freezeOutput(prepared.availability);
   }
   const command = commandRegistry.get(modeResolution.command_id);
-  const output = await command.availability(deepContext({ playerInput, modeResolution, retrievedState }));
+  const semanticPlan = draft?.loop_result?.step_traces?.findLast(
+    ({ applied, player_response_boundary: boundary }) =>
+      applied === true && boundary === true)?.approved_plan;
+  const output = await command.availability(deepContext({ playerInput,
+    modeResolution, retrievedState,
+    ...(semanticPlan == null ? {} : { semanticPlan }) }));
   assertValid('turn_availability_decision', validateAvailabilityDecision(output));
   return freezeOutput(output);
 }

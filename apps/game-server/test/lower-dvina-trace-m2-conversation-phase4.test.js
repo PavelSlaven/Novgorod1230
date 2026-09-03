@@ -30,7 +30,7 @@ import {
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
-test('Phase 4 persists an offered promise when the target hears nothing', async () => {
+test('Phase 4 persists an unheard promise', async () => {
   const { state, contracts } = phase4ArrivalState();
   state.promise_instances[0].created_change_set_id = 'change:phase4-arrival';
   const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
@@ -91,10 +91,12 @@ test('one arrival event creates distinct others and objective signals', () => {
 test('Phase 4 does not create a promise or check for an ordinary question', async () => {
   const { state, contracts } = phase4ArrivalState();
   const baseModel = createM2ConversationModels().playerConversationModel;
+  let playerRequest;
   const command = semanticNegotiationCommand({
     contracts,
     inputDigest: digest('1'),
     playerConversationModel: async (request) => {
+      playerRequest = structuredClone(request);
       const plan = structuredClone(await baseModel(request));
       plan.resolution = 'automatic';
       plan.check = null;
@@ -106,7 +108,13 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   });
   const availability = await command.availability({
     retrievedState: state,
-    playerInput: { raw_text: 'Ратша, кто велел тебе прийти сюда?' }
+    playerInput: { raw_text: 'Скажи, как тебя зовут и что случилось?' },
+    modeResolution: { decision_trace: { step_traces: [{ approved_plan: {
+      operations: [{ op: 'emit_interaction', interaction_kind: 'request',
+        target_actor_refs: [
+          contracts.actors.onisim_boatman.instance_id
+        ] }]
+    } }] } }
   });
 
   assert.equal(availability.status, 'available');
@@ -114,22 +122,28 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   assert.equal(availability.causal_stages.some(
     ({ schema }) => schema === 'rus.trace_promise_offer_stage.v1'
   ), false);
+  assert.equal(playerRequest.player_safe_context.target_npc_ref.entity_id,
+    contracts.actors.onisim_boatman.instance_id);
+  assert.deepEqual(playerRequest.operation_contract, {});
 });
 
-test('exact Phase 4 promise input requires one valid promise contribution', async () => {
+test('selected Phase 4 promise requires one contribution', async () => {
   const { state, contracts } = phase4ArrivalState();
   const requests = [];
   const { playerConversationModel } = createM2ConversationModels();
-  const prepare = (raw_text, model = playerConversationModel) =>
+  const prepare = (raw_text, model = playerConversationModel,
+    requiresPromise = false) =>
     prepareTracePhase4PlayerConversationPlan({
     state, contracts, playerInput: { raw_text }, inputDigest: digest('promise'),
+    requiresPromise,
     playerConversationModel: async (request) => {
       requests.push(structuredClone(request));
       return model(request);
     }, revalidateStateVersion: async () => state.party_state.state_version
   });
   const plan = await prepare(
-    '  Предложить Ратше  условную защиту и потребовать сдачи.  ');
+    'Обещаю тебе защиту, если ты сдашься.',
+    playerConversationModel, true);
   assert.equal(requests.length, 1);
   assert.equal(requests[0].player_safe_context.required_resolution,
     'check_required');

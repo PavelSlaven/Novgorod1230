@@ -17,10 +17,11 @@ test('N1 grounds one existing visible background NPC and replays without model',
       calls += 1;
       assert.equal(Object.hasOwn(request, 'formal_facets'), false);
       assert.equal(JSON.stringify(request).includes('occupation_ref'), false);
+      assert.equal(JSON.stringify(request).includes('current_activity'), false);
       return { schema: 'npc_ordinary_semantic_remainder_proposal_v1',
         request_id: request.request_id,
         ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
-        ordinary_activity: 'Он перебирает край сети.' };
+        ordinary_activity: null };
     }
   });
   const resolve = factory({ partyId: 'party:1',
@@ -32,7 +33,7 @@ test('N1 grounds one existing visible background NPC and replays without model',
   assert.deepEqual(first.working_projection.current_visible_context.visible_npc[0]
     .observable_cues.ordinary_remainder, {
       ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
-      ordinary_activity: 'Он перебирает край сети.'
+      ordinary_activity: 'Работник рыбацкой стоянки.'
     });
   const snapshot = structuredClone(input.committed_state);
   const write = applyBackgroundNpcSemanticPlan({
@@ -52,6 +53,19 @@ test('N1 grounds one existing visible background NPC and replays without model',
   const replay = await resolve(committed);
   assert.equal(calls, 1);
   assert.equal(replay.background_npc_semantic_atomic_write_plan, undefined);
+});
+
+test('N1 cannot invent activity for an NPC without a materialized schedule', async () => {
+  let calls = 0;
+  const resolve = createLowerDvinaTraceN1ProductionResolverFactory({
+    loadedProfile, roleRunner: {},
+    async resolveNpcOrdinarySemanticRemainder() { calls += 1; }
+  })({ partyId: 'party:1', applyWorkingProjection: (value) => value });
+  const input = requestInput();
+  input.committed_state.npcs[0].machine_state = {};
+  input.committed_state.npcs[0].schedule_records = [];
+  await assert.rejects(resolve(input), { code: 'TRACE_N1_SCOPE_INVALID' });
+  assert.equal(calls, 0);
 });
 
 function requestInput() {
@@ -77,7 +91,13 @@ function requestInput() {
       npcs: [{ npc_id: 'npc:1', profile_set_id: 'fisher',
         profile_level: 'background', anchor_id: 'anchor:1',
         role_ref: 'fisher', occupation_ref: 'fishing', identity_state: {},
-        machine_state: {}, semantic_state: { profile_revision: 2,
+        machine_state: { schedule_state: 'working', current_activity: {
+          activity_ref: 'fishing', status: 'active',
+          can_continue_automatically: true,
+          summary: 'Работник рыбацкой стоянки.' } },
+        schedule_records: [{ time_band: 'day',
+          schedule_profile_id: 'fishing', g5_node_id: 'node:shore' }],
+        semantic_state: { profile_revision: 2,
           participant_slot_ref: 'slot:1', location_profile_ref: 'shore',
           zone_ref: 'water' } }] }
   };

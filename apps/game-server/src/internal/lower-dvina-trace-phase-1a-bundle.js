@@ -243,6 +243,7 @@ export function validateDefinitionPins(bundle) {
     knowledge_lie_memory_rules: 'knowledge_lie_memory_rules',
     spatial_semantic_profile: 'spatial_semantic_profile',
     npc_actor_step_profile: 'npc_actor_step_profile',
+    initial_npc_schedule_profile: 'initial_npc_schedule_profile',
     a1_authored_item_mechanics_profile:
       'a1_authored_item_mechanics_profile'
   })) {

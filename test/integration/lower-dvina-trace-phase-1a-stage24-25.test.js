@@ -315,6 +315,32 @@ test('revision 32 persists complete mechanics for every initial item', async () 
     assert.equal(mechanics.quantity ?? null, null, itemId);
     assert.equal(mechanics.container ?? null, null, itemId);
   }
+  const schedules = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npc_schedules').records;
+  const npcs = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npcs').records;
+  assert.equal(schedules.length, npcs.length);
+  const eremey = npcs.find(({ profile_set_id: ref }) =>
+    ref === 'trace_ld_v1_eremey_local_fisher_v1');
+  assert.equal(eremey.machine_state.current_activity.summary,
+    'На рыбацкой стоянке осматривает и чинит принадлежащие ему сети.');
+  assert.equal(schedules.find(({ npc_id: id }) => id === eremey.npc_id)
+    .schedule_profile_id, 'trace_ld_v1_schedule_eremey_net_work_v1');
+  const onisim = npcs.find(({ profile_set_id: ref }) =>
+    ref === 'trace_ld_v1_onisim_hired_boatman_v1');
+  assert.equal(onisim.machine_state.schedule_state, 'interrupted');
+  assert.equal(onisim.machine_state.current_activity.status, 'paused');
+  assert.equal(onisim.machine_state.current_activity
+    .can_continue_automatically, false);
+  assert.equal(schedules.every(({ time_band: band }) => band === 'day'), true);
+  assert.equal(schedules.filter(({ g5_node_id: id }) => id === null).length, 3);
+  assert.equal(schedules.filter(({ g5_node_id: id }) => typeof id === 'string')
+    .length, 3);
+  const snapshot = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_state_snapshots')
+    .records[0].state_payload.persisted_projection;
+  assert.equal(snapshot.npcs.every(({ schedule_records: records }) =>
+    records.length === 1), true);
 });
 
 test('unknown table and forbidden operation fail before the transaction executor', async () => {

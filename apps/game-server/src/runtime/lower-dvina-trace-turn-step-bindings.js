@@ -25,12 +25,18 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
       return command;
     }
     const record = byCommand.get(command.command_id);
-    const targetRef = expected.targetKeys == null ? targetRefs?.[expected.targetKey] : expected.targetKeys.map((key) => targetRefs?.[key]);
+    const targetAlternatives = bundle.definition_revision
+      >= (expected.targetAlternativesMinRevision ?? Number.MAX_SAFE_INTEGER)
+      ? targetRefs?.[expected.targetAlternativeKey]
+      : null;
+    const targetRef = targetAlternatives
+      ?? (expected.targetKeys == null ? targetRefs?.[expected.targetKey]
+        : expected.targetKeys.map((key) => targetRefs?.[key]));
     const actorRef = targetRefs?.actor;
     const dynamicTargetAbsent = expected.operation === 'request_combat' && targetRef == null;
     if (expected.closedSelection === true && targetRef == null) return command;
     if (
-      !validRecord(record, expected) ||
+      !validRecord(record, expected, bundle.definition_revision) ||
       (expected.closedSelection === true && !validClosedSelectionOptions(targetRef)) ||
       (Array.isArray(targetRef)
         ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
@@ -56,6 +62,10 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
           && typeof targetRefs?.combatScope === 'string'
           ? { operation_dtos: combatPlannerOperations({ record, actorRef,
               targetRef, scopeRef: targetRefs.combatScope }) }
+          : expected.operation === 'emit_interaction'
+            ? { operation_dtos: interactionPlannerOperations({ command,
+                expected, record, actorRef, targetRef,
+                evidenceRef: targetRefs?.evidence }) }
           : { operation_dto: plannerOperation({ command, expected, actorRef,
               targetRef, evidenceRef: targetRefs?.evidence }) }),
         matches: ({ operation }) =>
@@ -75,7 +85,7 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
     [...byCommand.entries()].some(([commandId, record]) => {
       const command = bound.find(({ command_id: id }) => id === commandId);
       if (command?.semantic_binding) return false;
-      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28, 29, 30, 31, 32].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId]);
+      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28, 29, 30, 31, 32].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId], bundle.definition_revision);
     })
   ) {
     gap();
@@ -126,6 +136,19 @@ function combatPlannerOperations({ record, actorRef, targetRef, scopeRef }) {
       ? 'ordinary' : 'cautious'
   }));
 }
+function interactionPlannerOperations({ command, expected, record, actorRef,
+  targetRef, evidenceRef }) {
+  const targets = expected.targetAlternativeKey == null || !Array.isArray(targetRef)
+    ? [targetRef] : targetRef;
+  return targets.flatMap((target) => record[expected.kindsField].map(
+    (interactionKind) => plannerOperation({
+      command: expected.targetAlternativeKey == null ? command : {
+        ...command,
+        label: 'Обратиться к видимому собеседнику'
+      },
+      expected: { ...expected, kind: interactionKind }, actorRef,
+      targetRef: target, evidenceRef })));
+}
 function matchesOperation({ operation, expected, allowedKinds, actorRef,
   targetRef, evidenceRef, commandLabel }) {
   if (operation?.op !== expected.operation || operation.actor_ref !== actorRef || !allowedKinds.includes(operation[expected.kindField])) {
@@ -150,8 +173,13 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
     return matchesClosedSelection(operation.target_refs, targetRef);
   }
   const targetField = expected.operation === 'emit_interaction' ? 'target_actor_refs' : 'target_refs';
-  const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
-  if (operation[targetField]?.length !== expectedTargets.length || expectedTargets.some((ref) => operation[targetField]?.includes(ref) !== true)) return false;
+  if (expected.targetAlternativeKey != null && Array.isArray(targetRef)) {
+    if (operation[targetField]?.length !== 1
+        || !targetRef.includes(operation[targetField][0])) return false;
+  } else {
+    const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
+    if (operation[targetField]?.length !== expectedTargets.length || expectedTargets.some((ref) => operation[targetField]?.includes(ref) !== true)) return false;
+  }
   if (expected.instrument === 'none') {
     return operation.instrument_refs?.length === 0;
   }

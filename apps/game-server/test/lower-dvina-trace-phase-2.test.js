@@ -14,9 +14,6 @@ import {
   assertPhase2CurrentStateVersion
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit-admission.js';
 import {
-  buildPhase2Snapshot
-} from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-state.js';
-import {
   bundle,
   bundle9,
   fixture
@@ -57,15 +54,6 @@ test('revision 31 Phase 2 package pins revision 31 publication chain', async () 
   assert.equal(phase2.manifest.definition_ref.revision, 31);
   assert.equal(phase2.manifest.phase_1b_manifest_ref.revision, 26);
   assert.equal(phase2.binding.scenario_definition_revision, 31);
-});
-
-test('inspection preserves turn-step snapshot schema after an F1 turn', () => {
-  const state = inspectionSnapshotState('rus.lower_dvina_trace_turn_snapshot.v2');
-  assert.equal(buildPhase2Snapshot(inspectionSnapshotInput(state)).schema,
-    'rus.lower_dvina_trace_turn_snapshot.v2');
-  assert.equal(buildPhase2Snapshot(inspectionSnapshotInput(
-    inspectionSnapshotState('rus.lower_dvina_trace_phase_2_snapshot.v1')
-  )).schema, 'rus.lower_dvina_trace_phase_2_snapshot.v1');
 });
 
 test('ranges-only body effect fails closed before resolver, roll or commit', async () => {
@@ -182,8 +170,11 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     'На борту лодки заметна вмятина сбоку.',
     'Среди обломков есть следы ещё одной небольшой лодки.',
     'На ветке у места крушения найден клочок синей шерсти.',
-    'Клочок синей шерсти теперь у вас в руках.'
+    'Клочок синей шерсти теперь у вас в руках.',
+    'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь усилилась.'
   ]);
+  assert.equal(visible.sensory_details.includes(
+    'В мокром песке видны босые следы.'), true);
   assert.equal(visible.visible_objects[0].visible_status, 'у вас в руках');
   assert.equal(/trace_ld_v1_|visible:/u.test(visible.known_context.join(' ')), false);
   assert.equal(/след сапога|безопасн|виновник|мотив|Жданко/u.test(visible.known_context.join(' ')), false);
@@ -259,6 +250,20 @@ test('revision 9 success atomically picks up blue wool with exact owner-preservi
   assert.equal(f.state.items.find((item) =>
     item.template_id === 'trace_ld_v1_item_blue_wool_fragment')
     .state.display_name, 'клочок синей шерсти');
+  assert.deepEqual(f.state.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_blue_wool_fragment').ownership, {
+    ownership_id: `ownership:${clue.instance_id}`,
+    owner_character_id: null,
+    owner_npc_id: null,
+    owner_party: false,
+    owner_external_ref: {
+      entity_kind: 'participant_slot',
+      entity_id: 'ratsha_storehouse_helper'
+    },
+    controller_character_id: f.state.actor_id,
+    controller_npc_id: null,
+    claim_state: 'owner_preserved_evidence_held'
+  });
 });
 
 test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {
@@ -593,6 +598,13 @@ test('new repeated inspection follows the pinned retry policy without duplicatin
   );
   assert.deepEqual(repeated.observations, []);
   assert.deepEqual(repeated.evidence, []);
+  const repeatedVisible = f.narratorInput().visible_context;
+  assert.equal(repeatedVisible.visible_scene, 'место крушения на берегу');
+  assert.equal(repeatedVisible.sensory_details.includes(
+    'В мокром песке видны босые следы.'), true);
+  assert.deepEqual(repeatedVisible.visible_changes, [
+    'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь не отступила.'
+  ]);
   assert.equal(
     f.lastWritePlan().write_targets.find(
       ({ target }) => target === 'party_state'
@@ -627,43 +639,6 @@ test('narration failure after factual commit returns its pending public result',
   assert.equal(f.rollCount(), 1);
   assert.equal(f.state.party_state.state_version, 2);
 });
-
-function inspectionSnapshotState(schema) {
-  return {
-    schema,
-    party_id: 'party:inspection',
-    party_state: {
-      state_version: 2, session_state_version: 2, body_state_version: 2,
-      clock_state_version: 2, turn_number: 2
-    },
-    body_state: { active_conditions: [] },
-    body_effect_history: [],
-    clock: { whole_minutes: '10', subminute_numerator: '0',
-      subminute_denominator: '1' },
-    clock_weather_light: {}, items: [], knowledge: []
-  };
-}
-
-function inspectionSnapshotInput(state) {
-  const clock = { whole_minutes: '25', subminute_numerator: '0',
-    subminute_denominator: '1' };
-  return {
-    state, nextVersion: 3, turnNumber: 3, nextItems: [], nextKnowledge: [],
-    nextBodyState: { active_conditions: [] }, changeSetId: 'change:inspection',
-    inputDigest: 'input', visibleEnvelope: {
-      package_id: 'visible:inspection', package_digest: 'digest'
-    }, factual: {
-      player_input: { request_id: 'request:inspection',
-        idempotency_key: 'idem:inspection', raw_text: 'Осмотреть крушение.',
-        received_at: '1230-01-01T00:00:00Z' },
-      mode_resolution: { option_id: 'inspect_wreck_in_detail',
-        decision_trace: { action_set_digest: 'actions' } },
-      availability: { check_requests: [{}] },
-      consequence: { check_result: null }, time_update: { clock_after: clock },
-      body_update: { proposal: { execution_variant_id: 'inspection' } }
-    }
-  };
-}
 
 function temporalBoundary(id, wholeMinutes) {
   const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });

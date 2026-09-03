@@ -152,15 +152,15 @@ test('production-v14 is the sole release and pins the active N1 slice', () => {
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.scenario_profile_exact_pins, {
     scenario_definition_revision: 32,
     scenario_definition_digest:
-      '30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635',
+      '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f',
     phase_1a_package_id: 'lower_dvina_trace_phase_1a_v23',
     phase_1a_manifest_digest:
       '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101',
     phase_1b_package_id: 'lower_dvina_trace_phase_1b_v27',
     phase_1b_manifest_digest:
-      'feeea173c07a430d7eff230aa95d949c46d06d5a31fb71c662a9e804d2e315f8',
+      'bb05aff9ae0ec901063e4e5807e187d221aaa20fc709950270d1d8ced4895df1',
     phase_1b_binding_digest:
-      '9af689725c97d657e04cbd76f703517ed1d0f254329c268092b1e2c8a79b1921',
+      '83cd8eca17879484867262199970bf0f70152f2adb69d22d8900a1466045e88a',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,

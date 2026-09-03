@@ -147,9 +147,9 @@ test('prepared time sees cumulative F1 plans without duplicating prior output',
       [actorPlan, duePlan]);
   });
 
-test('prepared chain suppresses step-two schema repair but permits a repaired start',
+test('prepared chain permits one repair before each invalid step executes',
   async (t) => {
-    await t.test('invalid step two makes exactly two model calls', async () => {
+    await t.test('invalid step two is repaired without repeating step one', async () => {
       let calls = 0;
       let semanticCalls = 0;
       const registry = preparedRegistry();
@@ -161,16 +161,24 @@ test('prepared chain suppresses step-two schema repair but permits a repaired st
           return semantic(execution);
         }
       });
-      await assert.rejects(runTurnStepLoop(input(), ports({
+      const outcome = await runTurnStepLoop(input(), ports({
         executionRegistry: guarded,
-        turnStepModel(request) {
+        turnStepModel(request, repair) {
           calls += 1;
-          return request.step_index === 1 ? routePlan(request)
-            : { ...directPlan(request), request_id: 'forged' };
+          if (request.step_index === 1) return routePlan(request);
+          return repair == null
+            ? { ...directPlan(request), request_id: 'forged' }
+            : directPlan(request);
         }
-      })), { code: 'TURN_STEP_PLAN_INVALID' });
-      assert.equal(calls, 2);
-      assert.equal(semanticCalls, 0);
+      }));
+      assert.equal(calls, 3);
+      assert.equal(semanticCalls, 1);
+      assert.deepEqual(outcome.step_traces.map(({ repaired, applied }) =>
+        ({ repaired, applied })), [
+        { repaired: false, applied: true },
+        { repaired: true, applied: true }
+      ]);
+      assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
     });
 
     await t.test('a repaired pending start continues the prepared chain', async () => {

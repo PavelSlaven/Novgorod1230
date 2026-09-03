@@ -17,7 +17,7 @@ test('N1 rejects semantically unsupported authority before commit', async () => 
       schema: 'npc_ordinary_semantic_remainder_proposal_v1',
       request_id: request.request_id,
       ordinary_descriptor: 'Рыбак прячет украденный нож.',
-      ordinary_activity: 'Он ждёт тайного сообщника.'
+      ordinary_activity: null
     } };
     return { output: {
       schema: 'npc_ordinary_semantic_remainder_audit_v1',
@@ -40,7 +40,7 @@ test('N1 returns an audited observable proposal without repair cascade', async (
         schema: 'npc_ordinary_semantic_remainder_proposal_v1',
         request_id: request.request_id,
         ordinary_descriptor: 'Коренастый человек в мокрой рубахе.',
-        ordinary_activity: 'Он перебирает край сети.'
+        ordinary_activity: null
       } }
       : { output: {
         schema: 'npc_ordinary_semantic_remainder_audit_v1',
@@ -49,7 +49,7 @@ test('N1 returns an audited observable proposal without repair cascade', async (
   } };
   const result = await resolveNpcOrdinarySemanticRemainder({ request,
     roleRunner });
-  assert.equal(result.ordinary_activity, 'Он перебирает край сети.');
+  assert.equal(result.ordinary_activity, null);
   assert.deepEqual(roles, ['npc_ordinary_semantic_remainder',
     'npc_ordinary_semantic_remainder_auditor']);
 });

@@ -41,6 +41,8 @@ export const TurnRuntimeRoles = Object.freeze({
   NPC_CONVERSATION_RESPONDER: 'npc_conversation_responder',
   NPC_CONVERSATION_RESPONDER_REPAIR:
     'npc_conversation_responder_format_repair',
+  NPC_CONVERSATION_GROUNDING_AUDITOR:
+    'npc_conversation_grounding_auditor',
   NPC_AUTONOMOUS_DECIDER: 'npc_autonomous_decider',
   NPC_AUTONOMOUS_DECIDER_REPAIR:
     'npc_autonomous_decider_format_repair',

@@ -57,7 +57,10 @@ test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners'
             op: 'emit_interaction',
             actor_ref: request.actor.actor_id,
             interaction_kind: 'request',
-            instrument_refs: []
+            instrument_refs: [],
+            target_actor_refs: [state.npcs.find(
+              ({ participant_slot_ref: slot }) => slot === 'eremey_fisher')
+              .instance_id]
           })
         });
         assertSame(pair, ({ result, factual, state: after }) => ({
@@ -282,8 +285,12 @@ function domainPlan(request, operation) {
   const matches = request.available_domain_operations.filter((candidate) =>
     candidate.op === operation.op
     && ['movement_kind', 'activity_kind', 'interaction_kind'].every((key) =>
-      operation[key] == null || candidate[key] === operation[key]));
-  assert.equal(matches.length, 1);
+      operation[key] == null || candidate[key] === operation[key])
+    && ['target_actor_refs', 'instrument_refs'].every((key) =>
+      operation[key] == null
+      || JSON.stringify(candidate[key]) === JSON.stringify(operation[key])));
+  assert.equal(matches.length, 1, JSON.stringify({ operation,
+    candidates: request.available_domain_operations }));
   operation = matches[0];
   return {
     schema: 'turn_step_plan_v1',

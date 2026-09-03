@@ -25,7 +25,7 @@ export function validateNpcOrdinarySemanticRemainderProposal(value, request) {
     && value.schema === 'npc_ordinary_semantic_remainder_proposal_v1'
     && value.request_id === request.request_id
     && boundedText(value.ordinary_descriptor, 240)
-    && boundedText(value.ordinary_activity, 240);
+    && value.ordinary_activity === null;
 }
 
 export function validateNpcOrdinarySemanticRemainderAudit(value, request) {
@@ -42,9 +42,10 @@ export function validateNpcOrdinarySemanticRemainderAudit(value, request) {
 }
 
 export function buildNpcOrdinarySemanticRemainder({ request, proposal,
-  profileRef, causalBasisRefs }) {
+  profileRef, causalBasisRefs, ordinaryActivity }) {
   if (!validateNpcOrdinarySemanticRemainderProposal(proposal, request)
       || profileRef !== request.profile_ref
+      || !boundedText(ordinaryActivity, 240)
       || !textArray(causalBasisRefs, 2)
       || causalBasisRefs.length !== 2) fail();
   return deepFreeze({
@@ -53,7 +54,7 @@ export function buildNpcOrdinarySemanticRemainder({ request, proposal,
     profile_ref: profileRef,
     npc_ref: request.npc_ref,
     ordinary_descriptor: proposal.ordinary_descriptor,
-    ordinary_activity: proposal.ordinary_activity,
+    ordinary_activity: ordinaryActivity,
     causal_basis_refs: structuredClone(causalBasisRefs)
   });
 }

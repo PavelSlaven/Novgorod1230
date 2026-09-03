@@ -132,6 +132,7 @@ export function buildLowerDvinaTracePersistedProjection({
         name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
         language_profile_snapshot: {},
         knowledge_profile_snapshot: structuredClone(npc.knowledge_profile_snapshot),
+        schedule_records: structuredClone(npc.schedule_records ?? []),
         profile_candidate_set_digest: npc.profile_candidate_set_digest,
         state_version: 1,
         created_change_set_id: changeSetId,

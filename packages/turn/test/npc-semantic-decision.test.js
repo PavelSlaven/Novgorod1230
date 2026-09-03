@@ -420,28 +420,59 @@ test('invalid NPC dominant_act repair identifies its enum path', async () => {
   }]);
 });
 
-test('one retryable NPC semantic inconsistency receives one repair', async () => {
+test('NPC semantic inconsistency is rejected without rewriting the decision', async () => {
   const decisionRequest = request();
   const calls = [];
-  const result = await requestNpcSemanticDecision({
+  await assert.rejects(requestNpcSemanticDecision({
     boundary: boundary(),
     request: decisionRequest,
     semanticModel: async (_request, context) => {
       calls.push(context);
       return plan(decisionRequest);
     },
-    validatePlan: () => calls.length === 1 ? {
+    validatePlan: () => ({
       pass: false,
       errors: [{ code: 'TEST_SEMANTIC_INCONSISTENCY',
         category: 'semantic_consistency', retryable: true }]
-    } : true,
+    }),
+    revalidateStateVersion: async () => 2
+  }), (error) => error?.code === 'TURN_NPC_PLAN_NOT_APPLICABLE'
+    && error.details.validation_errors[0].code
+      === 'TEST_SEMANTIC_INCONSISTENCY');
+
+  assert.equal(calls.length, 1);
+});
+
+test('fresh NPC speech grounding receives at most one whole repair', async () => {
+  const decisionRequest = request();
+  const modelCalls = [];
+  let auditCalls = 0;
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      modelCalls.push(context);
+      const next = plan(decisionRequest);
+      next.speech.utterance_text = modelCalls.length === 1
+        ? 'Вчера я видел переправу.' : 'Этого я не знаю.';
+      return next;
+    },
+    validateFreshPlan: () => {
+      auditCalls += 1;
+      return auditCalls === 1 ? { pass: false, errors: [{
+        code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+        category: 'semantic_grounding', retryable: true
+      }] } : true;
+    },
     revalidateStateVersion: async () => 2
   });
 
   assert.equal(result.status, 'planned');
-  assert.equal(calls.length, 2);
-  assert.equal(calls[1].repair.validation_errors[0].code,
-    'TEST_SEMANTIC_INCONSISTENCY');
+  assert.equal(result.plan.speech.utterance_text, 'Этого я не знаю.');
+  assert.equal(modelCalls.length, 2);
+  assert.equal(auditCalls, 2);
+  assert.equal(modelCalls[1].repair.validation_errors[0].category,
+    'semantic_grounding');
 });
 
 test('failed uncommitted NPC decision releases its in-flight claim for retry', async () => {

@@ -106,39 +106,44 @@ export function validatePreparedRouteTraceLineage({
   if (directTrace == null) return;
   const request = directTrace.plan_request;
   const previousTrace = priorTraces.at(-1);
+  const { current_visible_context: _currentVisibleContextAfter,
+    ...stablePlayerSafeAfterSource } = playerSafeAfter;
   const stablePlayerSafeAfter =
-    projectLowerDvinaTraceTurnStepPlannerState(playerSafeAfter);
+    projectLowerDvinaTraceTurnStepPlannerState(stablePlayerSafeAfterSource);
+  const afterMismatches = Object.entries(stablePlayerSafeAfter)
+    .filter(([key, expected]) => !samePreparedValue(
+      request?.player_safe_state?.[key], expected))
+    .map(([key]) => key);
   const exactPlayerSafe = intermediateTraces.length === 0
-    ? containsStableProjection(request?.player_safe_state,
-      stablePlayerSafeAfter)
+    ? afterMismatches.length === 0
     : samePreparedValue(request?.player_safe_state?.position,
       stablePlayerSafeAfter.position)
       && samePreparedValue(request?.player_safe_state?.clock,
         stablePlayerSafeAfter.clock)
       && request?.player_safe_state?.actor_id === stablePlayerSafeAfter.actor_id;
-  if (request?.request_id
-      !== `${expectedRequestRoot}:step:${directTrace.step_index}`
-      || request.root_turn_id !== routeRequest.root_turn_id
-      || request.committed_state_version
-        !== routeRequest.committed_state_version
-      || request.working_revision !== directTrace.step_index - 1
-      || request.step_index !== directTrace.step_index
-      || !samePreparedValue(request.actor, routeRequest.actor)
-      || request.root_player_action !== routeRequest.root_player_action
-      || request.remaining_intent
-        !== previousTrace?.approved_plan?.continuation?.remaining_intent
-      || !samePreparedValue(request.completed_steps, expectedPriorSteps)
-      || !exactPlayerSafe
-      || (routeOnly && (
-        loopTrace.remaining_intent !== continuation?.remaining_intent
-        || !samePreparedValue(loopTrace.completed_steps,
-          expectedPriorSteps)))) {
-    preparedEffectFail('direct trace does not bind the applied route lineage');
+  const directMismatches = [
+    ['request_id', request?.request_id
+      === `${expectedRequestRoot}:step:${directTrace.step_index}`],
+    ['root_turn_id', request?.root_turn_id === routeRequest.root_turn_id],
+    ['state_version', request?.committed_state_version
+      === routeRequest.committed_state_version],
+    ['working_revision', request?.working_revision
+      === directTrace.step_index - 1],
+    ['step_index', request?.step_index === directTrace.step_index],
+    ['actor', samePreparedValue(request?.actor, routeRequest.actor)],
+    ['root_action', request?.root_player_action
+      === routeRequest.root_player_action],
+    ['remaining_intent', request?.remaining_intent
+      === previousTrace?.approved_plan?.continuation?.remaining_intent],
+    ['completed_steps', samePreparedValue(request?.completed_steps,
+      expectedPriorSteps)],
+    [`player_safe_state(${afterMismatches.join('|')})`, exactPlayerSafe],
+    ['route_only', !routeOnly || (loopTrace.remaining_intent
+      === continuation?.remaining_intent && samePreparedValue(
+        loopTrace.completed_steps, expectedPriorSteps))]
+  ].filter(([, valid]) => !valid).map(([name]) => name);
+  if (directMismatches.length > 0) {
+    preparedEffectFail(`direct trace does not bind the applied route lineage: ${
+      directMismatches.join(', ')}`);
   }
-}
-
-function containsStableProjection(value, stable) {
-  return value != null && typeof value === 'object' && !Array.isArray(value)
-    && Object.entries(stable).every(([key, expected]) =>
-      samePreparedValue(value[key], expected));
 }

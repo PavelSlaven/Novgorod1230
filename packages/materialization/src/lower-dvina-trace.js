@@ -400,7 +400,16 @@ export function materializeLowerDvinaTracePartyInstance(input) {
           ...(phase3Prepared
             ? revision < 24
               ? phase3Prepared.npcs
-              : phase3Prepared.npcs.map((npc) => ({ ...npc, anchor_id: null }))
+              : phase3Prepared.npcs.map((npc) => ({
+                  ...npc,
+                  anchor_id: null,
+                  ...(npc.schedule_records == null ? {} : {
+                    schedule_records: npc.schedule_records.map((schedule) => ({
+                      ...schedule,
+                      g5_node_id: null
+                    }))
+                  })
+                }))
             : []),
           ...(phase4Prepared ? phase4Prepared.npcs : []),
           ...(phase7Prepared ? [phase7Prepared.npc] : [])

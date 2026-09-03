@@ -112,7 +112,10 @@ export function createTracePhase3VisibleProjector({
             visible_scene: route.visible_scene,
             visible_changes: [`Перед вами — ${route.visible_scene}.`],
             sensory_details: scene.player_visible_physical_facts,
-            visible_npc: [], visible_objects: [],
+            visible_npc: contracts.actors.filter(({ anchor_id: anchorId }) =>
+              anchorId === destination.g5_anchor_id).map((actor) =>
+                playerSafeNpc(actor)),
+            visible_objects: [],
             known_context: [route.known_context], uncertainties: [], allowed_tensions: [],
             do_not_imply: []
           };
@@ -127,7 +130,7 @@ export function createTracePhase3VisibleProjector({
           visible_scene: route.visible_scene,
           visible_changes: [route.visible_change],
           sensory_details: scene.player_visible_physical_facts,
-          visible_npc: contracts.actors.map(playerSafeNpc),
+          visible_npc: contracts.actors.map((actor) => playerSafeNpc(actor)),
           visible_objects: [],
           known_context: [route.known_context],
           uncertainties: [],
@@ -140,6 +143,15 @@ export function createTracePhase3VisibleProjector({
       const conversation = consequence.conversation;
       const semantic = conversation.semantic_exchange ?? null;
       const responseKind = semantic?.response_kind ?? null;
+      const speakerRef = responseKind == null
+        ? null : perceivedNpcSpeakerRef(semantic);
+      const speaker = contracts.actors.find(({ instance_id: instanceId }) =>
+        instanceId === speakerRef?.entity_id);
+      if (responseKind != null && speaker == null) {
+        throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
+      }
+      const speakerLabel = speaker?.ref === contracts.ids.eremeyRef
+        ? 'Еремей' : 'Рыбак';
       const disclosed = semantic
         ? semantic.route_disclosure != null
         : conversation.route_knowledge_ref != null;
@@ -153,31 +165,39 @@ export function createTracePhase3VisibleProjector({
           )
         : null;
       const visibleChanges = [responseKind === 'silence'
-        ? 'Еремей промолчал.'
+        ? `${speakerLabel} промолчал.`
         : responseKind === 'leave_conversation'
-          ? 'Еремей прекратил разговор.'
+          ? `${speakerLabel} прекратил разговор.`
           : disclosed
             ? 'Еремей ответил и указал путь к сушильне.'
+            : speechResponse
+              ? `${speakerLabel} ответил.`
             : semantic != null
-              ? 'Еремей ответил.'
+              ? 'Ответа не последовало.'
               : 'Разговор с Еремеем продолжился.'];
+      const speakerStatus = responseKind === 'silence'
+        ? 'молчит после вашего обращения'
+        : responseKind === 'leave_conversation'
+          ? 'прекращает разговор с вами'
+          : speechResponse ? 'говорит с вами' : null;
       return {
         version: 1,
         schema: 'visible_context_package',
         visible_scene: speechResponse
-          ? `Еремей говорит: «${semanticUtterance}»`
+          ? `${speakerLabel} говорит: «${semanticUtterance}»`
           : responseKind === 'silence'
-            ? 'Еремей молчит.'
+            ? `${speakerLabel} молчит.`
             : responseKind === 'leave_conversation'
-              ? 'Еремей прекращает разговор.'
+              ? `${speakerLabel} прекращает разговор.`
               : semantic
-                ? 'Разговор с Еремеем остановлен.'
+                ? 'На ваш вопрос никто не ответил.'
           : disclosed
             ? 'Еремей рассказал, что слышал удар и видел мокрого Ратшу с чужой сумкой.'
             : 'Еремей уклонился от полного ответа о крушении.',
         visible_changes: visibleChanges,
         sensory_details: [],
-        visible_npc: contracts.actors.map(playerSafeNpc),
+        visible_npc: contracts.actors.map((actor) => playerSafeNpc(actor,
+          actor.instance_id === speaker?.instance_id ? speakerStatus : null)),
         visible_objects: [],
         known_context: [
           ...(semantic ? [] : [conversation.journal_ref]),
@@ -186,7 +206,8 @@ export function createTracePhase3VisibleProjector({
             'Слова Еремея и найденная синяя шерсть остаются независимыми сведениями.'
           ] : [])
         ],
-        uncertainties: disclosed
+        uncertainties: responseKind == null
+          ? [] : disclosed
           ? ['Синяя шерсть ещё не сопоставлена с одеждой Ратши.']
           : ['Еремей мог сообщить не всё, что знает.'],
         allowed_tensions: [],
@@ -207,7 +228,7 @@ function historicalMovementProjection(contracts) {
     visible_scene: 'Микула пришёл в рыбацкий стан.',
     visible_changes: ['Вы добрались от места крушения до рыбацкого стана.'],
     sensory_details: ['Рабочий стан стоит у берега Нижней Двины.'],
-    visible_npc: contracts.actors.map(playerSafeNpc),
+    visible_npc: contracts.actors.map((actor) => playerSafeNpc(actor)),
     visible_objects: [],
     known_context: ['Обратная тропа к месту крушения теперь известна.'],
     uncertainties: [], allowed_tensions: [],
@@ -216,8 +237,7 @@ function historicalMovementProjection(contracts) {
 }
 
 function perceivedNpcUtterance(semantic, code) {
-  const primaryNpcRef = semantic?.resumed_npc_execution?.plan?.speaker_ref
-    ?? semantic?.decision_request?.npc_ref;
+  const primaryNpcRef = perceivedNpcSpeakerRef(semantic);
   const statement = semantic?.statements?.find(
     ({ speaker_ref: speaker }) =>
       speaker?.entity_kind === primaryNpcRef?.entity_kind
@@ -239,6 +259,11 @@ function perceivedNpcUtterance(semantic, code) {
   return statement.utterance_text;
 }
 
+function perceivedNpcSpeakerRef(semantic) {
+  return semantic?.resumed_npc_execution?.plan?.speaker_ref
+    ?? semantic?.decision_request?.npc_ref;
+}
+
 function visibleGap(code) {
   return Object.assign(
     new Error('The semantic NPC utterance is not player-visible.'),
@@ -246,13 +271,14 @@ function visibleGap(code) {
   );
 }
 
-function playerSafeNpc(actor) {
+function playerSafeNpc(actor, visibleStatus = null) {
   return {
     entity_ref: {
       entity_kind: 'npc',
       entity_id: actor.instance_id
     },
     display_label: actor.ref === 'eremey_fisher' ? 'Еремей' : 'рыбак',
-    recognition: actor.ref === 'eremey_fisher' ? 'known' : 'unrecognized'
+    recognition: actor.ref === 'eremey_fisher' ? 'known' : 'unrecognized',
+    ...(visibleStatus == null ? {} : { visible_status: visibleStatus })
   };
 }

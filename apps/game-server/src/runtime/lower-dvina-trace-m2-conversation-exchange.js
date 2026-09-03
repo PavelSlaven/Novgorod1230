@@ -187,6 +187,11 @@ export async function executeM2ConversationExchange(context, {
     ...(context.validateNpcPlan === undefined ? {} : {
       validateNpcPlan: context.validateNpcPlan
     }),
+    ...(typeof context.npcSemanticModel?.validateFreshPlan !== 'function'
+      ? {} : {
+          validateFreshNpcPlan:
+            context.npcSemanticModel.validateFreshPlan
+        }),
     resolveNpcContributionCheck:
       context.npcSocialCheckResolver ?? undefined,
     revalidateNpcStateVersion: context.revalidateStateVersion,

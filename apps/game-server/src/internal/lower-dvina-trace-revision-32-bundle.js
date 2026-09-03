@@ -5,17 +5,22 @@ import { ROOT, readBundleArtifact } from
 const DEFINITION_PATH = `${ROOT}/phase-m20-content/definition.json`;
 const PROFILE_PATH =
   `${ROOT}/phase-m20-content/a1-authored-item-mechanics-profile.json`;
+const SCHEDULE_PATH =
+  `${ROOT}/phase-m20-content/initial-npc-schedule-profile.json`;
 const DEFINITION_DIGEST =
-  '30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635';
+  '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f';
 const PROFILE_DIGEST =
   '2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90';
+const SCHEDULE_DIGEST =
+  '844321a0aeda1f45e750b22a9a5bba11217d44c3d7575f1817e3d0d621031b59';
 
 export async function loadLowerDvinaTraceRevision32Bundle({ rootDir,
   historicalBundle, fail = (code) => { throw new Error(code); },
   freezeDeep = Object.freeze, validateDefinitionPins = () => {} } = {}) {
-  const [definition, mechanics] = await Promise.all([
+  const [definition, mechanics, schedules] = await Promise.all([
     readBundleArtifact(rootDir, DEFINITION_PATH),
-    readBundleArtifact(rootDir, PROFILE_PATH)
+    readBundleArtifact(rootDir, PROFILE_PATH),
+    readBundleArtifact(rootDir, SCHEDULE_PATH)
   ]);
   if (historicalBundle?.definition_revision !== 31
       || definition.digest !== DEFINITION_DIGEST
@@ -24,8 +29,12 @@ export async function loadLowerDvinaTraceRevision32Bundle({ rootDir,
         !== historicalBundle.artifact_pins.definition.digest
       || mechanics.digest !== PROFILE_DIGEST
       || !validProfile(mechanics.value)
+      || schedules.digest !== SCHEDULE_DIGEST
+      || !validScheduleProfile(schedules.value, historicalBundle)
       || definition.value?.immutable_content_refs
-        ?.a1_authored_item_mechanics_profile?.digest !== mechanics.digest) {
+        ?.a1_authored_item_mechanics_profile?.digest !== mechanics.digest
+      || definition.value?.immutable_content_refs
+        ?.initial_npc_schedule_profile?.digest !== schedules.digest) {
     return fail('TRACE_REVISION_32_CONTENT_INVALID');
   }
   const bundle = structuredClone(historicalBundle);
@@ -43,12 +52,51 @@ export async function loadLowerDvinaTraceRevision32Bundle({ rootDir,
   bundle.definition_revision = 32;
   bundle.definition = definition.value;
   bundle.a1_authored_item_mechanics_profile = mechanics.value;
+  bundle.initial_npc_schedule_profile = schedules.value;
   bundle.artifact_pins = { ...bundle.artifact_pins,
     definition: pin('definition', DEFINITION_PATH, definition),
     a1_authored_item_mechanics_profile:
-      pin('a1_authored_item_mechanics_profile', PROFILE_PATH, mechanics) };
+      pin('a1_authored_item_mechanics_profile', PROFILE_PATH, mechanics),
+    initial_npc_schedule_profile:
+      pin('initial_npc_schedule_profile', SCHEDULE_PATH, schedules) };
   validateDefinitionPins(bundle);
   return freezeDeep(bundle);
+}
+
+function validScheduleProfile(value, historical) {
+  const entries = value?.entries;
+  const participantProfiles = new Set(
+    historical?.participant_profile_set?.profiles?.map(({ profile_id: id }) => id)
+  );
+  return exact(value, ['schema', 'profile_id', 'revision', 'status',
+    'scenario_id', 'scenario_definition_revision', 'owner',
+    'fallback_policy', 'entries'])
+    && value.schema
+      === 'rus.lower_dvina_trace_initial_npc_schedule_profile.v1'
+    && value.profile_id === 'lower_dvina_trace_initial_npc_schedules_v1'
+    && value.revision === 1 && value.status === 'approved'
+    && value.scenario_id === 'lower_dvina_trace_v1'
+    && value.scenario_definition_revision === 32
+    && value.owner === '@rus/npc-runtime'
+    && value.fallback_policy === 'forbidden'
+    && Array.isArray(entries) && entries.length > 0
+    && new Set(entries.map(({ participant_profile_ref: ref }) => ref)).size
+      === entries.length
+    && entries.every((entry) => validScheduleEntry(entry)
+      && participantProfiles.has(entry.participant_profile_ref));
+}
+
+function validScheduleEntry(value) {
+  const activity = value?.current_activity;
+  return exact(value, ['participant_profile_ref', 'schedule_state',
+    'time_band', 'schedule_profile_id', 'current_activity'])
+    && text(value.participant_profile_ref) && text(value.schedule_state)
+    && text(value.time_band) && text(value.schedule_profile_id)
+    && exact(activity, ['activity_ref', 'summary', 'status',
+      'can_continue_automatically'])
+    && activity.activity_ref === value.schedule_profile_id
+    && text(activity.summary) && text(activity.status)
+    && typeof activity.can_continue_automatically === 'boolean';
 }
 
 function validProfile(value) {

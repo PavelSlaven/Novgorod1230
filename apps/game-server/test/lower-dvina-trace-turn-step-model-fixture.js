@@ -83,6 +83,7 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'мужчина рядом')],
       interaction_kind: 'offer',
       instrument_refs: [],
       content: 'условная защита в обмен на сдачу'
@@ -92,6 +93,7 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'Еремей')],
       interaction_kind: 'offer',
       instrument_refs: [REFS.evidence],
       content: 'показать синюю шерсть и попросить содействия'
@@ -101,6 +103,7 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'Еремей')],
       interaction_kind: 'request',
       instrument_refs: [],
       content: 'расспросить Еремея о крушении'
@@ -161,7 +164,8 @@ function exactAvailableOperation(request, intended) {
   const matches = candidates.filter((candidate) =>
       sameScalar(candidate, intended, 'target_ref')
       && sameRefs(candidate.target_refs, intended.target_refs)
-      && sameRefs(candidate.target_actor_refs, intended.target_actor_refs));
+      && sameRefs(candidate.target_actor_refs, intended.target_actor_refs)
+      && sameRefs(candidate.instrument_refs, intended.instrument_refs));
   return matches.length === 1 ? matches[0]
     : candidates.length === 1 ? candidates[0] : null;
 }
@@ -206,6 +210,16 @@ function requiredActorRef(request) {
     fail('Lower Dvina test turn step requires actor.actor_id.');
   }
   return actorRef;
+}
+
+function requiredVisibleNpcRef(request, displayLabel) {
+  const matches = (request?.player_safe_state?.current_visible_context
+    ?.visible_npc ?? []).filter(({ display_label: label }) => label === displayLabel);
+  const npcRef = matches[0]?.entity_ref?.entity_id;
+  if (matches.length !== 1 || typeof npcRef !== 'string' || npcRef.length === 0) {
+    fail(`Lower Dvina test turn step requires visible NPC ${displayLabel}.`);
+  }
+  return npcRef;
 }
 
 function contains(text, fragments) {

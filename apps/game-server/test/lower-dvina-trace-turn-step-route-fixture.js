@@ -19,7 +19,7 @@ import { projectLowerDvinaTracePlayerSafeState } from
 const bundle13 = await loadScenarioBundle(13);
 
 export async function routeDirectScenario({ firstEntryOnly = false,
-  plannerPortrait = false } = {}) {
+  plannerPortrait = false, plannerPresentationOverlay = false } = {}) {
   const bootstrap = fixture({ scenarioBundle: bundle13,
     materializationBundle: bundle13, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
@@ -48,15 +48,24 @@ export async function routeDirectScenario({ firstEntryOnly = false,
     materializationBundle: bundle13,
     committedState: before,
     rollValue: 0.99,
-    ...(plannerPortrait ? { playerSafeStateProjector: (input) => {
+    ...(plannerPortrait || plannerPresentationOverlay
+      ? { playerSafeStateProjector: (input) => {
       const projected = projectLowerDvinaTracePlayerSafeState(input);
       return { ...projected, player_safe_state: {
         ...projected.player_safe_state,
-        active_interlocutor: {
+        ...(plannerPresentationOverlay ? { current_visible_context: {
+          ...projected.player_safe_state.current_visible_context,
+          known_context: [
+            ...(projected.player_safe_state.current_visible_context
+              ?.known_context ?? []),
+            'runtime-only presentation overlay'
+          ]
+        } } : {}),
+        ...(plannerPortrait ? { active_interlocutor: {
           entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' },
           display_label: 'Visible interlocutor',
           portrait_spec_v1: { schema: 'portrait_spec_v1' }
-        }
+        } } : {})
       } };
     } } : {}),
     turnStepModel(request) {
@@ -268,7 +277,10 @@ export async function commit(writePlan, scenario, plans = []) {
   return commitLowerDvinaTracePhase2({
     ...scenario.semantic.lastCommitInput(),
     writePlan,
-    loadState: async () => structuredClone(scenario.before),
+    loadState: async (_partyId, options) => {
+      scenario.commitLoadOptions = structuredClone(options);
+      return structuredClone(scenario.before);
+    },
     committer: { async commit({ plan }) {
       plans.push(plan);
       return { ok: true, replay: false, change_set_id: plan.change_set_id };

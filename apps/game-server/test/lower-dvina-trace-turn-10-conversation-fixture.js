@@ -119,18 +119,9 @@ export function turn10State({ completedRest = true } = {}) {
 
 export function turn10StepPlan(request, contracts) {
   const first = request.step_index === 1;
-  const companionOperation = {
-    op: 'emit_interaction',
-    actor_ref: request.actor.actor_id,
-    interaction_kind: 'request',
-    target_actor_refs: [
-      contracts.actors.eremey.instance_id,
-      contracts.actors.participatingFisher.instance_id,
-      contracts.actors.otherFisher.instance_id
-    ],
-    instrument_refs: [],
-    content: 'попросить Еремея и рыбака пойти к Жданко'
-  };
+  const companionOperation = first ? null
+    : request.available_domain_operations.find(({ op }) =>
+      op === 'emit_interaction');
   const operation = first ? {
     op: 'request_activity',
     actor_ref: request.actor.actor_id,
@@ -159,9 +150,7 @@ export function turn10StepPlan(request, contracts) {
         'Попросить Еремея и рыбака пойти со мной к Жданко.',
       depends_on_refs: [
         request.player_safe_state.position.location_ref,
-        contracts.actors.eremey.instance_id,
-        contracts.actors.participatingFisher.instance_id,
-        contracts.actors.otherFisher.instance_id
+        contracts.actors.eremey.instance_id
       ],
       ...(request.prepared_followup_candidates?.[0] == null ? {} : {
         prepared_followup_ref:

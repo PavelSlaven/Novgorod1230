@@ -365,7 +365,11 @@ function fixture({
             item_id: clue.instance_id,
             template_id: clue.template_id,
             profile_id: clue.profile_id,
+            category_id: clue.semantic_category,
             quantity: clue.quantity,
+            condition_state: clue.condition_state,
+            legal_status: clue.legal_status,
+            ownership: structuredClone(clue.ownership),
             placement: structuredClone(clue.placement),
             state: {
               semantic_category: clue.semantic_category,

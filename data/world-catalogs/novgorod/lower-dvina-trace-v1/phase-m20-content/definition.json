@@ -105,6 +105,11 @@
       "id": "lower_dvina_trace_a1_authored_item_mechanics_v1",
       "revision": 1,
       "digest": "2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90"
+    },
+    "initial_npc_schedule_profile": {
+      "id": "lower_dvina_trace_initial_npc_schedules_v1",
+      "revision": 1,
+      "digest": "844321a0aeda1f45e750b22a9a5bba11217d44c3d7575f1817e3d0d621031b59"
     }
   },
   "resolved_policy_refs": {

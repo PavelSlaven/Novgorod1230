@@ -1,25 +1,17 @@
 import { addElapsedTime } from '@rus/time-events-history';
-import {
-  getCommittedInventoryLoad
-} from './lower-dvina-trace-committed-inventory.js';
-import {
-  executeTraceLocalTraversal
-} from './lower-dvina-trace-local-traversal.js';
-import {
-  buildTracePhase4M2ArrivalPayload
-} from './lower-dvina-trace-phase-4-arrival.js';
+import { getCommittedInventoryLoad } from './lower-dvina-trace-committed-inventory.js';
+import { executeTraceLocalTraversal } from './lower-dvina-trace-local-traversal.js';
+import { buildTracePhase4M2ArrivalPayload } from
+  './lower-dvina-trace-phase-4-arrival.js';
 import { projectConversationTemporalAdvance } from
   './lower-dvina-trace-m2-conversation-time.js';
-
 export function createTracePhase4Consequence({ inputDigest, duration, kind, detail }) {
   return { version: 1, schema: 'turn_consequence_package', status: 'resolved',
     activity_attempt_id: `attempt:${inputDigest.slice(0, 32)}`, duration_minutes: duration,
     phase4_kind: kind, ...detail, visible_seed: {}, hidden_update: {}, state_changes: [], suggested_actions: [] };
 }
-
-export function routeToShedEffect({
-  contracts, inputDigest, state, playerInput
-}) {
+export function routeToShedEffect({ contracts, inputDigest, state,
+  playerInput }) {
   const onisim = contracts.actors.onisim_boatman;
   const bodyCondition = onisim.machine_state?.body_condition;
   if (onisim.anchor_id !== contracts.anchors.shed
@@ -82,14 +74,8 @@ export function routeToShedEffect({
       traversal }
   } });
 }
-
 export function negotiationEffect({
-  contracts,
-  inputDigest,
-  checkResult,
-  decision,
-  offerStage,
-  checkRequest
+  contracts, inputDigest, checkResult, decision, offerStage, checkRequest
 }) {
   const outcomeRef = contracts.check.outcome_refs[checkResult.outcome.success ? 'success' : 'failure'];
   const optionId = decision.trace?.option_id;
@@ -139,7 +125,6 @@ export function negotiationEffect({
       activity_roots: decision.continuation ? [{ activity_ref: contracts.negotiation.profile_id, duration_minutes: 10 }, { activity_ref: decision.continuation.activity_ref, duration_minutes: 2, status: 'player_response_required', automatic_harm: false, automatic_escape: false }] : [{ activity_ref: contracts.negotiation.profile_id, duration_minutes: 10 }] }
   } });
 }
-
 export function createTracePhase4TemporalAdvance({ phase3Advance }) {
   return async (input) => {
     if (input.consequence?.phase4_kind == null) return phase3Advance(input);
@@ -190,28 +175,33 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
     });
   };
 }
-
 export function createTracePhase4VisibleProjector({ phase3Projector,
   contracts }) {
   return { async project(input) {
     if (input.consequence?.phase4_kind == null) return phase3Projector.project(input);
     const c = input.consequence;
-    const visibleNpc = phase4VisibleNpcs(contracts);
-    if (c.phase4_kind === 'movement') return { version: 1, schema: 'visible_context_package', visible_scene: 'У старой сушильни лежит живой раненый мужчина: идти он не может. Рядом стоит другой мужчина.', visible_changes: ['Раненый мужчина найден живым.'], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: ['Имена мужчин и причины случившегося пока не установлены.'], allowed_tensions: ['danger'], do_not_imply: ['hidden_truth', 'zhdanko_motive', 'canonical_identity'] };
+    const visibleNpc = phase4VisibleNpcs(contracts, input.retrieved_state);
+    if (c.phase4_kind === 'movement') return { version: 1, schema: 'visible_context_package', visible_scene: visibleNpc[0].visible_status.includes('верёвкой')
+      ? 'Внутри старой сушильни лежит живой раненый мужчина. Его ноги стянуты верёвкой, и идти он не может. Рядом стоит другой мужчина.'
+      : 'У старой сушильни лежит живой раненый мужчина: идти он не может. Рядом стоит другой мужчина.', visible_changes: ['Раненый мужчина найден живым.'], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: ['Имена мужчин и причины случившегося пока не установлены.'], allowed_tensions: ['danger'], do_not_imply: ['hidden_truth', 'zhdanko_motive', 'canonical_identity'] };
     const semantic = c.negotiation.semantic_exchange ?? null;
     const responseKind = semantic?.response_kind
       ?? c.negotiation.npc_decision?.outcome;
     const speechResponse = semantic !== null
       && ['surrender', 'lie', 'bargain', 'speech'].includes(responseKind);
+    const statement = speechResponse
+      ? perceivedNpcStatement(semantic, 'TRACE_M2_PHASE_4_VISIBLE_GAP')
+      : null;
+    const speakerLabel = statement === null ? 'стоящий рядом мужчина'
+      : visibleNpc.find(({ entity_ref: ref }) =>
+          ref.entity_id === statement.speaker_ref.entity_id)?.display_label
+        ?? 'собеседник';
     const visibleScene = semantic === null
       ? (responseKind === 'surrender'
           ? 'Стоящий рядом мужчина сдался.'
           : 'Стоящий рядом мужчина не принял предложение сдаться.')
       : speechResponse
-        ? `Стоящий рядом мужчина говорит: «${perceivedNpcUtterance(
-            semantic,
-            'TRACE_M2_PHASE_4_VISIBLE_GAP'
-          )}»`
+        ? `${capitalize(speakerLabel)} говорит: «${statement.utterance_text}»`
         : responseKind === 'silence'
           ? 'Стоящий рядом мужчина молчит.'
           : responseKind === 'leave_conversation'
@@ -223,27 +213,40 @@ export function createTracePhase4VisibleProjector({ phase3Projector,
         : responseKind === 'leave_conversation'
           ? 'Стоящий рядом мужчина прекратил разговор.'
           : speechResponse
-            ? 'Стоящий рядом мужчина ответил.'
+            ? `${capitalize(speakerLabel)} ответил.`
             : 'Разговор перешёл в действие.']),
       ...(responseKind === 'surrender' ? ['Стоящий рядом мужчина сдался.'] : [])
     ], sensory_details: [], visible_npc: visibleNpc, visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth', 'canonical_identity'] };
   } };
 }
-
-function phase4VisibleNpcs(contracts) {
+function phase4VisibleNpcs(contracts, state) {
   const onisimId = contracts?.actors?.onisim_boatman?.instance_id;
   const ratshaId = contracts?.actors?.ratsha_storehouse_helper?.instance_id;
   if (typeof onisimId !== 'string' || typeof ratshaId !== 'string') {
     fail('TRACE_PHASE_4_VISIBLE_ACTOR_GAP');
   }
+  const onisim = state?.npcs?.find(({ instance_id: id }) => id === onisimId);
+  const binding = onisim?.machine_state?.binding_item;
+  const visiblyBound = binding?.holder_npc_id === onisimId
+    && binding?.use_state === 'binding_onisim';
+  const eremeyId = contracts.actors.eremey_fisher?.instance_id;
+  const fisherId = contracts.actors.participating_fisher?.instance_id;
+  if (typeof eremeyId !== 'string' || typeof fisherId !== 'string') {
+    fail('TRACE_PHASE_4_VISIBLE_ACTOR_GAP');
+  }
   return [{ entity_ref: { entity_kind: 'npc', entity_id: onisimId },
     display_label: 'раненый мужчина', recognition: 'unrecognized',
-    visible_status: 'жив, ранен и не может идти' },
+    visible_status: visiblyBound
+      ? 'жив и ранен; ноги стянуты верёвкой, идти не может'
+      : 'жив, ранен и не может идти' },
   { entity_ref: { entity_kind: 'npc', entity_id: ratshaId },
-    display_label: 'мужчина рядом', recognition: 'unrecognized' }];
+    display_label: 'мужчина рядом', recognition: 'unrecognized' },
+  { entity_ref: { entity_kind: 'npc', entity_id: eremeyId },
+    display_label: 'Еремей', recognition: 'recognized' },
+  { entity_ref: { entity_kind: 'npc', entity_id: fisherId },
+    display_label: 'рыбак, пришедший с вами', recognition: 'unrecognized' }];
 }
-
-function perceivedNpcUtterance(semantic, code) {
+function perceivedNpcStatement(semantic, code) {
   const statements = semantic?.statements?.filter(
     ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'
   ) ?? [];
@@ -261,16 +264,17 @@ function perceivedNpcUtterance(semantic, code) {
       && utterance === statement.utterance_text
   ) ?? [];
   if (playerMessages.length !== 1) throw visibleGap(code);
-  return statement.utterance_text;
+  return statement;
 }
-
+function capitalize(value) {
+  return value.charAt(0).toLocaleUpperCase('ru-RU') + value.slice(1);
+}
 function visibleGap(code) {
   return Object.assign(
     new Error('The semantic NPC utterance is not player-visible.'),
     { code }
   );
 }
-
 function temporalResult({ before, after, exactMinutes, owner, candidates, roots }) {
   return {
     clock_before: structuredClone(before),
@@ -288,7 +292,6 @@ function temporalResult({ before, after, exactMinutes, owner, candidates, roots 
     }
   };
 }
-
 function fail(code) {
   const error = new Error('The approved Phase 4 effect is incomplete.');
   error.code = code;

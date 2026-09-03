@@ -15,6 +15,7 @@ import {
 test('semantic loop stops at a registered domain command boundary', async () => {
   let plannerCalls = 0;
   let boundedCalls = 0;
+  let delegatedPlan = null;
   const { commits, services } = createServices([], {
     command: {
       matches: () => false,
@@ -24,6 +25,13 @@ test('semantic loop stops at a registered domain command boundary', async () => 
         matches: ({ operation }) =>
           operation.discovery_kind === 'inspect'
           && operation.target_refs.includes('place-gate')
+      },
+      availability(context) {
+        if (context.semanticPlan) delegatedPlan = context.semanticPlan;
+        return { version: 1, schema: 'turn_availability_decision',
+          status: 'check_required', can_attempt: true, reasons: [],
+          check_requests: [{ check_id: 'attention-1', difficulty: 10,
+            attribute_value: 12, skill_bonus: 1 }] };
       }
     },
     semanticResolver: async () => {
@@ -87,6 +95,7 @@ test('semantic loop stops at a registered domain command boundary', async () => 
   );
   assert.equal(commits[0].command_trace.stop_reason, 'player_response');
   assert.equal(commits[0].command_trace.step_count, 1);
+  assert.equal(delegatedPlan.operations[0].target_refs[0], 'place-gate');
 });
 
 test('direct preparation and a domain owner produce one aggregated root commit', async () => {

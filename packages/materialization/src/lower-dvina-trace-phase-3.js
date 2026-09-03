@@ -1,6 +1,8 @@
 import { deterministicInstanceId } from './core.js';
 import { failLowerDvinaTraceMaterialization as fail } from './lower-dvina-trace-contract.js';
 import { materializeS1FirstEntryPreparation } from './spatial-v3-s1-first-entry.js';
+import { materializeLowerDvinaTraceNpcSchedule, materializeNpcRelationships }
+  from './lower-dvina-trace-npc.js';
 
 export function materializeLowerDvinaTracePreparedCamp({
   input,
@@ -54,15 +56,8 @@ export function materializeLowerDvinaTracePreparedCamp({
     }
   };
   const npcs = bundle.materialization_bindings.initial_participant_placements
-    .map((placement, ordinal) => materializeNpc({
-      input,
-      bundle,
-      runId,
-      participantSelections,
-      placement,
-      ordinal,
-      anchorId
-    }));
+    .map((placement, ordinal) => materializeNpc({ input, bundle, runId,
+      participantSelections, placement, ordinal, anchorId, nodeId }));
   if (new Set(npcs.map((value) => value.instance_id)).size !== npcs.length
     || npcs.length > scene.anchor.npc_capacity) {
     fail(
@@ -146,7 +141,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     node: { instance_id: nodeId, parent_g4_id: location.selected.g4_node_ref.id, template_id: spatial.node_template_ref, slot_key: spatial.node_slot_ref, state: { location_profile_ref: location.location.location_profile_id, prepared_for_first_entry: true } },
     anchor: { instance_id: anchorId, node_id: nodeId, template_id: spatial.anchor_template.template_id, slot_key: spatial.anchor_template.slot_key, npc_capacity: spatial.anchor_template.npc_capacity, item_capacity: spatial.anchor_template.item_capacity, container_capacity: spatial.anchor_template.container_capacity, state: structuredClone(spatial.anchor_template.state) }
   };
-  const npcs = binding.initial_participant_placements.map((placement, ordinal) => materializeNpc({ input, bundle, runId, participantSelections, placement, ordinal, anchorId }));
+  const npcs = binding.initial_participant_placements.map((placement, ordinal) => materializeNpc({ input, bundle, runId, participantSelections, placement, ordinal, anchorId, nodeId }));
   const bySlot = new Map(npcs.map((npc) => [npc.participant_slot_ref, npc]));
   const onisim = bySlot.get('onisim_boatman');
   const ratsha = bySlot.get('ratsha_storehouse_helper');
@@ -324,7 +319,8 @@ export function materializeLowerDvinaTracePreparedStorehouse({
     participantSelections,
     placement,
     ordinal: 0,
-    anchorId
+    anchorId,
+    nodeId
   });
   const roadBagResource = requiredById(
     bundle.npc_decision_schedule_policies.schedule_resource_bindings,
@@ -487,29 +483,16 @@ function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {
     inventory_profile_snapshot: structuredClone(profile) } };
 }
 
-function materializeNpc({
-  input,
-  bundle,
-  runId,
-  participantSelections,
-  placement,
-  ordinal,
-  anchorId
-}) {
+function materializeNpc({ input, bundle, runId, participantSelections,
+  placement, ordinal, anchorId, nodeId }) {
   const selection = participantSelections.find(
     (value) => value.slot_key === placement.participant_slot_ref
   );
-  if (!selection || selection.materialization_rule !== placement.materialization_depth) {
-    fail(
-      'TRACE_PHASE_3_PARTICIPANT_SELECTION_MISSING',
-      `The sealed participant ${placement.participant_slot_ref} is missing or incompatible.`
-    );
-  }
-  const profile = requiredById(
-    bundle.participant_profile_set.profiles,
-    'profile_id',
-    selection.selected_profile.profile_id
-  );
+  if (!selection || selection.materialization_rule !== placement.materialization_depth)
+    fail('TRACE_PHASE_3_PARTICIPANT_SELECTION_MISSING',
+      `The sealed participant ${placement.participant_slot_ref} is missing or incompatible.`);
+  const profile = requiredById(bundle.participant_profile_set.profiles,
+    'profile_id', selection.selected_profile.profile_id);
   if (profile.revision !== selection.selected_profile.revision
     || profile.knowledge_scope_ref == null
     || !Object.hasOwn(profile, 'canonical_name')
@@ -517,16 +500,16 @@ function materializeNpc({
     || typeof profile.occupation_id !== 'string'
     || typeof profile.scenario_function !== 'string'
     || typeof profile.causal_basis !== 'string') {
-    fail(
-      'TRACE_PHASE_3_PARTICIPANT_PROFILE_INVALID',
-      `The participant profile for ${placement.participant_slot_ref} is not exact.`
-    );
+    fail('TRACE_PHASE_3_PARTICIPANT_PROFILE_INVALID',
+      `The participant profile for ${placement.participant_slot_ref} is not exact.`);
   }
   const knowledgeScope = requiredById(
-    bundle.participant_profile_set.knowledge_scope_profiles,
-    'profile_id',
-    profile.knowledge_scope_ref
-  );
+    bundle.participant_profile_set.knowledge_scope_profiles, 'profile_id',
+    profile.knowledge_scope_ref);
+  const schedule = materializeLowerDvinaTraceNpcSchedule({
+    definitionRevision: input.scenario_definition_revision, profile,
+    scheduleProfile: bundle.initial_npc_schedule_profile, nodeId
+  });
   return {
     instance_id: deterministicInstanceId(
       input.party_id,
@@ -558,37 +541,25 @@ function materializeNpc({
     },
     machine_state: {
       status: 'active',
-      materialization_depth: placement.materialization_depth
+      materialization_depth: placement.materialization_depth,
+      ...schedule.machineState
     },
     semantic_state: {
       scenario_function: profile.scenario_function,
       causal_basis: profile.causal_basis
     },
-    relationships: materializeNpcRelationships(
-      bundle.participant_profile_set,
-      placement.participant_slot_ref
-    ),
+    relationships: materializeNpcRelationships(bundle.participant_profile_set,
+      placement.participant_slot_ref),
+    ...(schedule.records == null ? {} : { schedule_records: schedule.records }),
     knowledge_profile_snapshot: structuredClone(knowledgeScope),
     profile_candidate_set_digest: selection.candidate_set_digest,
     profile_record_digest: selection.record_digest
   };
 }
 
-function materializeNpcRelationships(profileSet, participantSlotRef) {
-  return (profileSet.relations ?? [])
-    .filter(({ source }) => source === participantSlotRef)
-    .map(({ source, relation_type_id: relation, target }) => ({
-      relationship_ref: `${source}:${relation}:${target}`,
-      actor_ref: target,
-      relation,
-      status: 'active'
-    }));
-}
-
 function requiredById(values, key, id) {
   const matches = values.filter((value) => value?.[key] === id);
-  if (matches.length !== 1) {
-    fail('TRACE_SCENARIO_REFERENCE_INVALID', `Expected exactly one ${key}=${id}.`);
-  }
+  if (matches.length !== 1) fail('TRACE_SCENARIO_REFERENCE_INVALID',
+    `Expected exactly one ${key}=${id}.`);
   return matches[0];
 }

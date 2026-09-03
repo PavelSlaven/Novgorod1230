@@ -7,6 +7,8 @@ import {
   assembleNpcConversationPlan,
   assemblePlayerConversationPlan
 } from './lower-dvina-trace-conversation-assembly.js';
+import { auditFreshNpcSpeech } from
+  './lower-dvina-trace-npc-speech-grounding-audit.js';
 
 export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
@@ -37,7 +39,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
 
 export function createLowerDvinaTraceNpcSemanticModel({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
-  return async function planNpcConversationResponse(request, context = {}) {
+  const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const semanticRepair = repair?.validation_errors?.some(
       ({ category }) => category === 'semantic_grounding'
@@ -55,7 +57,9 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner } = {}) {
         role: 'user',
         content: JSON.stringify(repair ? {
           request,
-          ...(semanticRepair ? {} : { original_output: repair.original_output }),
+          ...(semanticRepair ? {} : {
+            original_output: repair.original_output
+          }),
           validation_errors: repair.validation_errors
         } : request)
       }],
@@ -63,6 +67,10 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner } = {}) {
     });
     return assembleNpcConversationPlan(response.output, request);
   };
+  model.validateFreshPlan = (plan, request) => auditFreshNpcSpeech({
+    roleRunner, plan, request
+  });
+  return model;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

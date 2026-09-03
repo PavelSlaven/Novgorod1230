@@ -34,7 +34,8 @@ export async function resolveTracePhase3ConversationExchange({
   npcSemanticModel,
   temporalAdvanceOwner,
   revalidateStateVersion,
-  playerPlan = null
+  playerPlan = null,
+  targetActorId = null
 } = {}) {
   requireCommonInput({
     state,
@@ -46,11 +47,22 @@ export async function resolveTracePhase3ConversationExchange({
     revalidateStateVersion
   });
   const target = contracts.actors?.find(
-    ({ ref }) => ref === contracts.ids?.eremeyRef
+    ({ ref, instance_id: instanceId }) => targetActorId == null
+      ? ref === contracts.ids?.eremeyRef : instanceId === targetActorId
   );
+  const eremeyTarget = target?.ref === contracts.ids?.eremeyRef;
   const routeRef = contracts.disclosureMapping
     ?.route_knowledge_disclosure?.route_ref;
+  const disclosedRoute = contracts.routeBindings?.find(
+    ({ route_id: routeId }) => routeId === routeRef
+  );
+  const disclosedDestination = contracts.locationProfiles?.find(
+    ({ location_profile_id: locationId }) =>
+      locationId === disclosedRoute?.terminal_position_outcome
+  );
   if (!target?.instance_id || !routeRef
+      || typeof disclosedDestination?.display_name !== 'string'
+      || !disclosedDestination.display_name.trim()
       || (checkResult !== null
         && checkResult.check_id !== contracts.check.check_id)) {
     fail(
@@ -92,31 +104,36 @@ export async function resolveTracePhase3ConversationExchange({
     temporalAdvanceOwner,
     availableEvidence,
     playerOperationContract: phase3PlayerOperationContract(availableEvidence),
-    npcOperationContract: {
+    npcOperationContract: eremeyTarget ? {
       [ROUTE_OPERATION]: {
         owner: '@rus/visibility-knowledge-memory',
         route_ref: routeRef,
         source_knowledge_scope_ref:
-          contracts.eremeyKnowledge.knowledge_scope_ref
+          contracts.eremeyKnowledge.knowledge_scope_ref,
+        player_safe_context: {
+          destination_label: disclosedDestination.display_name
+        }
       }
-    },
+    } : {},
     npcDecisionScope: {
       action_handoff_available: false,
       combat_handoff_available: false
     },
     npcContributionReferencePolicy: {
-      entity_refs: [ref('route', routeRef)],
-      knowledge_refs: [ref(
+      entity_refs: eremeyTarget ? [ref('route', routeRef)] : [],
+      knowledge_refs: eremeyTarget ? [ref(
         'knowledge_scope', contracts.eremeyKnowledge.knowledge_scope_ref
-      )],
+      )] : [],
       combat_target_refs: []
     },
-    classifyNpcPlan: (plan) => classifyEremeyPlan(plan, {
-      routeRef,
-      knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
-    }),
-    validateNpcPlan: (plan, request) => validateM2NpcPlan(plan, () =>
-      request?.npc_ref?.entity_id === target.instance_id
+    classifyNpcPlan: eremeyTarget
+      ? (plan) => classifyEremeyPlan(plan, {
+          routeRef,
+          knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
+        })
+      : classifyOrdinaryConversationPlan,
+    validateNpcPlan: (plan) => validateM2NpcPlan(plan, () =>
+      eremeyTarget
         ? classifyEremeyPlan(plan, {
             routeRef,
             knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
@@ -129,7 +146,7 @@ export async function resolveTracePhase3ConversationExchange({
       ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
   const evidencePresented = effectivePlayerPlan === null ? false
     : phase3PresentedEvidence({ state, contracts, plan: effectivePlayerPlan });
-  const requiredNpcRouteOperation = evidencePresented
+  const requiredNpcRouteOperation = eremeyTarget && evidencePresented
     && effectiveCheckResult?.outcome?.success === true
     ? {
         op: ROUTE_OPERATION,
@@ -176,7 +193,8 @@ export async function resolveTracePhase3ConversationExchange({
     playerPlan: effectivePlayerPlan
   };
   const result = await executeM2ConversationExchange(context);
-  const disclosure = result.npcOutcome?.kind === 'route_disclosure'
+  const disclosure = eremeyTarget
+    && result.npcOutcome?.kind === 'route_disclosure'
     ? Object.freeze({
         route_ref: routeRef,
         source_statement_ref: result.npcOutcome.statementRef,

@@ -16,18 +16,16 @@ import {
 
 const PLAYER_PLAN_STAGE_SCHEMA =
   'rus.trace_player_conversation_plan_stage.v1';
-const REGISTERED_PHASE4_PROMISE_INPUT =
-  'предложить ратше условную защиту и потребовать сдачи.';
-
-function normalizeRegisteredInput(value) {
-  return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
-}
-
 export async function prepareTracePhase3PlayerConversationPlan(input) {
   const { contracts } = input;
   const target = contracts.actors.find(
-    ({ ref }) => ref === contracts.ids.eremeyRef
+    ({ ref, instance_id: instanceId }) => input.targetActorId == null
+      ? ref === contracts.ids.eremeyRef : instanceId === input.targetActorId
   );
+  if (!target?.instance_id || (input.evidence
+      && target.ref !== contracts.ids.eremeyRef)) {
+    fail('TRACE_M2_PHASE_3_TARGET_INVALID');
+  }
   const availableEvidence = phase3AvailableEvidence(input.state, contracts);
   return prepareM2PlayerConversationPlan(createM2ConversationContext({
     ...input,
@@ -51,23 +49,26 @@ export async function prepareTracePhase3PlayerConversationPlan(input) {
         entity_ref: structuredClone(availableEvidence.item_ref)
       }
     } : {}),
-    playerOperationContract: phase3PlayerOperationContract(availableEvidence)
+    playerOperationContract: input.evidence
+      ? phase3PlayerOperationContract(availableEvidence) : {}
   }));
 }
 
 export async function prepareTracePhase4PlayerConversationPlan(input) {
   const { contracts } = input;
-  const target = contracts.actors.ratsha_storehouse_helper;
+  const targetActorRef = input.targetActorRef ?? 'ratsha_storehouse_helper';
+  const target = contracts.actors[targetActorRef];
+  if (!target?.instance_id) fail('TRACE_M2_PHASE_4_TARGET_INVALID');
   const actualNpcActors = Object.entries(contracts.actors)
     .map(([ref, actor]) => ({ ref, ...structuredClone(actor) }));
-  const requiresPromise = normalizeRegisteredInput(input.playerInput?.raw_text)
-    === REGISTERED_PHASE4_PROMISE_INPUT;
+  const requiresPromise = targetActorRef === 'ratsha_storehouse_helper'
+    && input.requiresPromise === true;
   return prepareM2PlayerConversationPlan(createM2ConversationContext({
     ...input,
     phase: 'phase_4',
     checkResult: null,
     offerStage: null,
-    targetActor: { ref: 'ratsha_storehouse_helper', ...target },
+    targetActor: { ref: targetActorRef, ...target },
     actualNpcActors,
     ...(requiresPromise ? {
       requiredResolution: 'check_required',
@@ -78,12 +79,12 @@ export async function prepareTracePhase4PlayerConversationPlan(input) {
       },
       requiredSupportingOperation: { op: PROMISE_OPERATION }
     } : {}),
-    playerOperationContract: {
+    playerOperationContract: targetActorRef === 'ratsha_storehouse_helper' ? {
       [PROMISE_OPERATION]: {
         owner: '@rus/social-law',
         policy_ref: contracts.promisePolicy.policy_id
       }
-    }
+    } : {}
   }));
 }
 

@@ -1,0 +1,72 @@
+{
+  "schema": "rus.lower_dvina_trace_initial_npc_schedule_profile.v1",
+  "profile_id": "lower_dvina_trace_initial_npc_schedules_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 32,
+  "owner": "@rus/npc-runtime",
+  "fallback_policy": "forbidden",
+  "entries": [
+    {
+      "participant_profile_ref": "trace_ld_v1_onisim_hired_boatman_v1",
+      "schedule_state": "interrupted",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_onisim_wreck_recovery_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_onisim_wreck_recovery_v1",
+        "summary": "После крушения лежит в старой сушильне; перевозка прервана, и продолжать её он не может.",
+        "status": "paused",
+        "can_continue_automatically": false
+      }
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_eremey_local_fisher_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_eremey_net_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_eremey_net_work_v1",
+        "summary": "На рыбацкой стоянке осматривает и чинит принадлежащие ему сети.",
+        "status": "active",
+        "can_continue_automatically": true
+      }
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_ratsha_storehouse_helper_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_ratsha_storehouse_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_ratsha_storehouse_work_v1",
+        "summary": "У старой сушильни выполняет порученную работу с лодкой и грузом.",
+        "status": "active",
+        "can_continue_automatically": true
+      }
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_zhdanko_storehouse_controller_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_zhdanko_storehouse_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_zhdanko_storehouse_work_v1",
+        "summary": "У клети следит за запасами и распоряжается текущими работами.",
+        "status": "active",
+        "can_continue_automatically": true
+      }
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_background_fisher_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_background_fisher_net_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_background_fisher_net_work_v1",
+        "summary": "На рыбацкой стоянке чинит и укладывает снасти.",
+        "status": "active",
+        "can_continue_automatically": true
+      }
+    }
+  ]
+}

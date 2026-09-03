@@ -142,7 +142,7 @@ test('N1 remainder joins the same P16 root without changing formal NPC state',
       npc_ref: npc.npc_id,
       profile_ref: 'lower_dvina_trace_n1_background_npc_v1@1',
       ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
-      ordinary_activity: 'Он перебирает край сети.',
+      ordinary_activity: 'Работает на рыбацкой стоянке.',
       causal_basis_refs: [
         'trace_ld_v1_background_fisher_v1@2', 'shore'
       ]

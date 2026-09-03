@@ -28,7 +28,7 @@
     "id": "lower_dvina_trace_v1",
     "revision": 32,
     "schema": "rus.trace_scenario_definition.v1",
-    "digest": "30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635"
+    "digest": "0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f"
   },
   "content_refs": {
     "scene_presentation": {
@@ -65,7 +65,7 @@
     "occurrence": 0,
     "scenario_definition_revision": 32,
     "phase_1a_manifest_digest": "6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101",
-    "scenario_definition_digest": "30608c3dff4406175100352cdd95c1d0d4fffef2f8fc6be0700fe41f89326635"
+    "scenario_definition_digest": "0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f"
   },
   "world_compatibility_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v22/publication-binding.json",

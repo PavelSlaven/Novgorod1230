@@ -215,6 +215,7 @@ export async function resolveBoundTurnStepCommand({
             : committedState;
         const availability = await selectedCommand.availability(deepFreeze({
               playerInput: structuredClone(stepPlayerInput),
+              semanticPlan: structuredClone(execution.plan),
               committed_state: structuredClone(consequenceState),
               retrievedState: structuredClone(consequenceState),
               modeResolution: null,
@@ -460,9 +461,7 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
     }
   };
 }
-function recordSelectedCommand(commands, command) {
-  commands.push(command);
-}
+function recordSelectedCommand(commands, command) { commands.push(command); }
 function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
   const candidates = [];
   for (const { command, binding } of semanticBindings) {
@@ -470,12 +469,13 @@ function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
     if (!availableOptions.has(command.option_id)
         || binding.operation_dto == null
         || typeof ref !== 'string' || ref.length === 0) continue;
-    const successors = semanticBindings.filter(({ command: candidate, binding }) =>
-      candidate.command_id === ref && binding.operation_dto != null);
-    if (successors.length !== 1) continue;
+    const successors = semanticBindings.filter(({ command: candidate }) =>
+      candidate.command_id === ref);
+    const successorOperations = successors.flatMap(({ binding: successor }) => bindingOperations(successor));
+    if (successors.length !== 1 || successorOperations.length !== 1) continue;
     candidates.push({ prepared_followup_ref: ref,
       precursor_operation: structuredClone(binding.operation_dto),
-      operation: structuredClone(successors[0].binding.operation_dto) });
+      operation: successorOperations[0] });
   }
   return candidates;
 }

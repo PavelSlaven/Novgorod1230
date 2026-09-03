@@ -76,6 +76,25 @@ test('revision 32 materializes the sealed packet inside the road bag', () => {
     id === 'trace_ld_v1_item_sealed_packet');
   assert.equal(packet.container_id, bag.instance_id);
   assert.equal(packet.state.seal_state, 'intact');
+  assert.equal(result.immediate.npcs.length, 6);
+  const eremey = result.immediate.npcs.find(({ profile_id: ref }) =>
+    ref === 'trace_ld_v1_eremey_local_fisher_v1');
+  assert.equal(eremey.machine_state.schedule_state, 'working');
+  assert.equal(eremey.machine_state.current_activity.summary,
+    'На рыбацкой стоянке осматривает и чинит принадлежащие ему сети.');
+  assert.equal(eremey.machine_state.current_activity.status, 'active');
+  assert.equal(eremey.machine_state.current_activity
+    .can_continue_automatically, true);
+  assert.equal(eremey.schedule_records[0].schedule_profile_id,
+    'trace_ld_v1_schedule_eremey_net_work_v1');
+  const onisim = result.immediate.npcs.find(({ profile_id: ref }) =>
+    ref === 'trace_ld_v1_onisim_hired_boatman_v1');
+  assert.equal(onisim.machine_state.schedule_state, 'interrupted');
+  assert.equal(onisim.machine_state.current_activity.status, 'paused');
+  assert.equal(onisim.machine_state.current_activity
+    .can_continue_automatically, false);
+  assert.equal(result.immediate.npcs.every(({ schedule_records: records }) =>
+    records.length === 1), true);
 });
 
 test('revision 26 exposes camp and drying-shed first-entry members', async () => {

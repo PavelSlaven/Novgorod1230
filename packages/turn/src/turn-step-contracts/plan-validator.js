@@ -62,10 +62,12 @@ export function validateTurnStepPlan(value, { request } = {}) {
   const operationKinds = validateOperations(
     value.operations, '$.operations', errors, trace, { directOnly: false }
   );
+  validateAlreadySatisfiedPlacements(
+    value.operations, '$.operations', request, errors);
   validateContinuation(value.continuation, '$.continuation', errors, trace,
     request?.prepared_followup_candidates);
   validateClarification(value.clarification, '$.clarification', errors, trace);
-  validateCheck(value.check, '$.check', errors, trace);
+  validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
@@ -81,10 +83,10 @@ export function validateTurnStepPlan(value, { request } = {}) {
 function validateContinuationProgress(plan, request, operationKinds, errors) {
   if (plan.continuation?.remaining_intent !== request.remaining_intent) return;
   const domainKinds = operationKinds.filter((kind) => DOMAIN_OPS.has(kind));
-  if (domainKinds.length === 0 || domainKinds.every(
+  if (domainKinds.length > 0 && domainKinds.every(
     (kind) => kind === 'request_discovery')) return;
   add(errors, '$.continuation.remaining_intent', 'continuation_progress',
-    'must omit the event covered by the selected domain operation');
+    'must omit the event covered by the selected step');
 }
 
 function validateInterpretation(value, path, errors) {
@@ -162,7 +164,7 @@ function validateClarification(value, path, errors, trace = null) {
     { allowEmpty: true });
 }
 
-function validateCheck(value, path, errors, baseTrace) {
+function validateCheck(value, path, errors, baseTrace, request) {
   if (value === null) return;
   if (!strict(value, path, [
     'purpose', 'attribute_ref', 'skill_ref', 'difficulty_id', 'outcomes'
@@ -191,6 +193,8 @@ function validateCheck(value, path, errors, baseTrace) {
     const kinds = validateOperations(outcome.operations,
       `${outcomePath}.operations`, errors, outcomeTrace,
       { directOnly: false });
+    validateAlreadySatisfiedPlacements(outcome.operations,
+      `${outcomePath}.operations`, request, errors);
     const domainCount = kinds.filter((kind) => DOMAIN_OPS.has(kind)).length;
     const firstDomain = kinds.findIndex((kind) => DOMAIN_OPS.has(kind));
     if (domainCount > 1) {
@@ -207,6 +211,43 @@ function validateCheck(value, path, errors, baseTrace) {
       add(errors, `${outcomePath}.goal_result`, 'continuation',
         'must be pending when continuation is present');
     }
+  }
+}
+
+function validateAlreadySatisfiedPlacements(operations, path, request, errors) {
+  const items = request?.player_safe_state?.items;
+  if (!Array.isArray(operations) || !Array.isArray(items)) return;
+  operations.forEach((operation, index) => {
+    if (operation?.op !== 'move_entity') return;
+    const item = items.find((candidate) =>
+      (candidate?.item_id ?? candidate?.instance_id)
+        === operation.entity_ref);
+    if (!item || !samePlacement(item.placement, operation.placement)) return;
+    add(errors, `${path}[${index}]`, 'operation_semantic_grounding',
+      'move_entity already matches the current player-safe placement; omit it and continue with any remaining independent intent');
+  });
+}
+
+function samePlacement(current, requested) {
+  if (!plain(current) || !plain(requested)) return false;
+  const target = requested.target_ref;
+  switch (requested.relation) {
+    case 'held_by':
+      return current.holder_character_id === target
+        && current.physical_position === 'hands';
+    case 'worn_by':
+      return current.holder_character_id === target
+        && current.physical_position === 'worn';
+    case 'inside':
+      return current.container_id === target;
+    case 'located_at':
+      return [current.location_ref, current.g5_node_id,
+        current.g5_anchor_id, current.anchor_id,
+        current.scene_position_id].includes(target);
+    case 'attached_to':
+      return current.attached_item_id === target;
+    default:
+      return false;
   }
 }
 

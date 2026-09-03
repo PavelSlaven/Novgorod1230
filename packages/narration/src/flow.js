@@ -12,11 +12,13 @@ export async function runNarrationFlow(request, ports, options = {}) {
   assertNarrationValid('visible_context', validateVisibleContext(request.visible_context));
   const maxFormatRepairs = Math.min(1, Number(options.maxRepairs ?? request.max_repairs ?? 1));
   const generationHistory = [], repairHistory = [], auditHistory = [];
-  let draft = await ports.writer.generate(clone(request));
+  const writerRequest = clone(request);
+  if (writerRequest.context != null) delete writerRequest.context.attempt;
+  let draft = await ports.writer.generate(writerRequest);
   generationHistory.push(record('writer', draft));
   let errors = outputErrors(draft, request.request_id);
   if (errors.length && maxFormatRepairs > 0) {
-    draft = await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(request), invalid_output: clone(draft), validation_errors: errors, attempt: 1 });
+    draft = await ports.formatRepairer.repair({ version: 1, schema: 'narration_format_repair_request', request: clone(writerRequest), invalid_output: clone(draft), validation_errors: errors, attempt: 1 });
     repairHistory.push(record('format_repair', draft));
     generationHistory.push(record('format_repairer', draft));
     errors = outputErrors(draft, request.request_id);

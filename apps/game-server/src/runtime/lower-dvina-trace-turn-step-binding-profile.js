@@ -17,7 +17,9 @@ export const TRACE_TURN_STEP_EXPECTED = Object.freeze({
   'lower_dvina_trace.ask_eremey_about_wreck': {
     operation: 'emit_interaction', kindField: 'interaction_kind',
     kindsField: 'interaction_kinds', kind: 'request', targetKey: 'eremey',
-    targetSemantic: 'eremey_fisher', instrument: 'none'
+    targetSemantic: 'eremey_fisher', instrument: 'none',
+    targetAlternativesMinRevision: 32,
+    targetAlternativeKey: 'phase3ConversationActors'
   },
   'lower_dvina_trace.show_clue_and_seek_eremey_cooperation': {
     operation: 'emit_interaction', kindField: 'interaction_kind',
@@ -33,7 +35,9 @@ export const TRACE_TURN_STEP_EXPECTED = Object.freeze({
   'lower_dvina_trace.offer_conditional_protection_and_seek_surrender': {
     operation: 'emit_interaction', kindField: 'interaction_kind',
     kindsField: 'interaction_kinds', kind: 'offer', targetKey: 'ratsha',
-    targetSemantic: 'ratsha_storehouse_helper', instrument: 'none'
+    targetSemantic: 'ratsha_storehouse_helper', instrument: 'none',
+    targetAlternativesMinRevision: 17,
+    targetAlternativeKey: 'phase4ConversationActors'
   },
   'lower_dvina_trace.attempt_risky_first_aid_onisim': {
     operation: 'request_activity', kindField: 'activity_kind',

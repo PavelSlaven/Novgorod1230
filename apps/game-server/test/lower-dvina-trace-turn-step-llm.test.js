@@ -48,6 +48,10 @@ test('turn step model sends the validated request to the isolated planner role',
     'one current visible target_ref',
     'preserve the player query',
     'never grant an impossible result',
+    'skill proficiency is not',
+    'no_experience still permits an attempt',
+    'never report that the command or skill is missing',
+    'focused perception and is never achieved by visible_general_look',
     'create an absent referent',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
@@ -106,7 +110,8 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);
-    assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform ordinary physical material[\s\S]*current visible sensory facts[\s\S]*no semantically matching item entity_ref[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+  assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform an ordinary physical referent[\s\S]*no semantically matching item entity_ref[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+  assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
 });
 

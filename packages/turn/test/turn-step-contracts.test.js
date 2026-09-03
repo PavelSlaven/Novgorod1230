@@ -457,6 +457,15 @@ test('relational validation fails closed on echoes, mixed resolutions and malfor
     continuation: { remaining_intent: 'продолжить', depends_on_refs: ['unknown_ref'] }
   });
   assert.equal(validateTurnStepPlan(unknownDependency, { request: request() }).errors.some(({ code }) => code === 'unknown_ref'), true);
+  const stalledDirect = directPlan({
+    goal_result: 'pending',
+    continuation: {
+      remaining_intent: request().remaining_intent,
+      depends_on_refs: []
+    }
+  });
+  assert.equal(validateTurnStepPlan(stalledDirect, { request: request() })
+    .errors.some(({ code }) => code === 'continuation_progress'), true);
   const extraField = directPlan({ interpretation: { ...directPlan().interpretation, invented: true } });
   assert.equal(validateTurnStepPlan(extraField, { request: request() }).errors.some(({ code }) => code === 'additional_property'), true);
 });

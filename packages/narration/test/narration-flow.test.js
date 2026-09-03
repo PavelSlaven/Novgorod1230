@@ -254,7 +254,9 @@ test('shares intent-only player context with audit but not semantic repair', asy
   };
   const seen = [];
   const result = await runNarrationFlow(request({ context: actionIntent }), ports({
-    writer: { async generate() {
+    writer: { async generate(input) {
+      assert.equal(Object.hasOwn(input.context, 'attempt'), false);
+      assert.deepEqual(input.context.outcome, actionIntent.outcome);
       return output('Вы пытаетесь постучать в закрытую дверь.');
     } },
     auditor: { async audit(input) {

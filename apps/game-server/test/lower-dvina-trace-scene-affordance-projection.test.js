@@ -288,12 +288,16 @@ test('accusation combat initialization survives pending and ready replay', () =>
     ready: ready.combat_state }).includes('hidden'), false);
 });
 
-test('nearby NPC alone does not become an interlocutor', () => {
+test('nearby NPC is listed without becoming an interlocutor', () => {
   const projected = projectLowerDvinaTraceScreenPanels({
     payload: payload({ conversation_sessions: [] }),
     screen: { panels: {} }
   });
-  assert.equal(projected.panels.people, undefined);
+  assert.deepEqual(projected.panels.people.data, {
+    visible_npcs: [{ display_label: 'Еремей' }]
+  });
+  assert.equal(Object.hasOwn(
+    projected.panels.people.data, 'active_interlocutor'), false);
 });
 
 test('active session without a visible NPC label exposes no interlocutor', () => {

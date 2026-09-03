@@ -153,6 +153,31 @@ test('an intended NPC who did not perceive speech is not an active participant',
     ]);
   });
 
+test('Phase 3 presents the actual ordinary NPC speaker, not Eremey', async () => {
+  const state = phase3State();
+  const contracts = resolveContracts(state);
+  const fisher = npcBySlot(state, 'background_fisher_1');
+  const exchange = await runPhase3({ state, contracts,
+    rawText: 'Рыбак в буром кафтане, ответь мне.', inputDigest: digest('8'),
+    responseKind: 'speech', targetActorId: fisher.instance_id });
+  const visible = await createTracePhase3VisibleProjector({
+    phase2Projector: { project() {
+      throw new Error('Unexpected Phase 2 projection.');
+    } },
+    contracts
+  }).project({ consequence: { phase3_kind: 'conversation', conversation: {
+    npc_id: fisher.instance_id, semantic_exchange: exchange.result
+  } } });
+
+  assert.match(visible.visible_scene, /^Рыбак говорит:/u);
+  assert.deepEqual(visible.visible_changes, ['Рыбак ответил.']);
+  assert.equal(visible.visible_scene.includes('Еремей'), false);
+  assert.equal(visible.visible_npc.find(({ entity_ref: ref }) =>
+    ref.entity_id === fisher.instance_id).visible_status, 'говорит с вами');
+  assert.equal(visible.visible_npc.find(({ display_label: label }) =>
+    label === 'Еремей').visible_status, undefined);
+});
+
 test('second responder receives only the perceived part of the first reply',
   async () => {
     const state = phase3State();

@@ -13,6 +13,8 @@ import { appendNpcSemanticConversationWrites } from
   '../src/infrastructure/postgres/npc-semantic-conversation-writes.js';
 import { assertLowerDvinaTraceSemanticConversationRows } from
   '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
+import { findResumableConversationSession } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-resume.js';
 import { semanticReadPool } from
   './lower-dvina-trace-semantic-persistence-read-pool.js';
 import {
@@ -25,6 +27,22 @@ import {
   runPhase3,
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('one active local conversation accepts a newly addressed NPC', () => {
+  const player = ref('player_character', 'player-1');
+  const firstNpc = ref('npc', 'npc-1');
+  const secondNpc = ref('npc', 'npc-2');
+  const session = {
+    conversation_id: 'conversation-1',
+    status: 'active',
+    location_ref: ref('location', 'shed'),
+    active_participant_refs: [player, firstNpc]
+  };
+  assert.equal(findResumableConversationSession({
+    position: { location_ref: 'shed' },
+    conversation_sessions: [session]
+  }, player, secondNpc), session);
+});
 
 test('NPC response survives two interruptions and resumes one exact plan',
   async () => {

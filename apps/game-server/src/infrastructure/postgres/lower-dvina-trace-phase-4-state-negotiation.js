@@ -69,8 +69,8 @@ export function projectPhase4SemanticNegotiation({
       || ((hasDecision || resumed) && !npcApplied && responseKind !== null)
       || (!hasDecision && !resumed && responseKind !== null)
       || npcRef?.entity_kind !== 'npc'
-      || npcRef.entity_id
-        !== contracts.actors?.ratsha_storehouse_helper?.instance_id
+      || !Object.values(contracts.actors ?? {}).some(
+        ({ instance_id: instanceId }) => instanceId === npcRef.entity_id)
       || (npcApplied && finalOutcome?.outcome?.kind !== responseKind)
       || ((hasDecision || resumed) && npcPlan?.contribution_kind
         !== expectedContributionKind)

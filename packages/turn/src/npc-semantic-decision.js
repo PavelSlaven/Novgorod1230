@@ -18,44 +18,36 @@ import { turnFailure } from './errors.js';
 
 const inFlightDecisions = new Map();
 const MAX_STALE_REBUILDS = 8;
-
 function fail(code, message, details = {}) {
   throw turnFailure(code, message, details);
 }
-
 function requestMode(request) {
   if (request?.schema === 'npc_action_decision_request_v1') return 'autonomous';
   if (request?.schema === 'npc_conversation_response_request_v1') return 'conversation';
   if (request?.schema === 'npc_combat_decision_request_v1') return 'combat';
   return null;
 }
-
 function requestStateVersion(request, mode) {
   return mode === 'autonomous'
     ? request.committed_state_version
     : Number(request.state_version);
 }
-
 function requestNpcId(request, mode) {
   return mode === 'autonomous'
     ? request.npc_ref
     : request.npc_ref.entity_id;
 }
-
 function sameReferenceList(left, right) {
   return left.length === right.length
     && left.every((reference, index) => reference.entity_kind === right[index].entity_kind
       && reference.entity_id === right[index].entity_id);
 }
-
 function validateRequestForMode(request, mode) {
   return mode === 'autonomous' ? validateNpcActionDecisionRequest(request) : mode === 'combat' ? validateNpcCombatDecisionRequest(request) : validateNpcConversationResponseRequest(request);
 }
-
 function validatePlanForMode(plan, request, mode) {
   return mode === 'autonomous' ? validateNpcStepPlan(plan, request) : mode === 'combat' ? validateNpcCombatIntentPlan(plan, request) : validateConversationContributionPlan(plan, request);
 }
-
 function requireBoundaryRequestIdentity(boundary, request, mode) {
   const expectedStateVersion = requestStateVersion(request, mode);
   const reasons = request.decision_reasons;
@@ -76,11 +68,9 @@ function requireBoundaryRequestIdentity(boundary, request, mode) {
     );
   }
 }
-
 function immutable(value) {
   return deepFreeze(structuredClone(value));
 }
-
 function safeModelOutput(rawPlan) {
   try {
     return structuredClone(rawPlan);
@@ -89,7 +79,6 @@ function safeModelOutput(rawPlan) {
     return null;
   }
 }
-
 function repairContext(rawPlan, validationErrors = null) {
   return immutable({
     original_output: safeModelOutput(rawPlan),
@@ -100,7 +89,6 @@ function repairContext(rawPlan, validationErrors = null) {
     }]
   });
 }
-
 function decisionContext(boundary, request, orderedSignals) {
   return immutable({
     boundary,
@@ -108,7 +96,6 @@ function decisionContext(boundary, request, orderedSignals) {
     ordered_signals: orderedSignals
   });
 }
-
 function replayProposal(trace, boundary, request, orderedSignals) {
   return immutable({
     status: 'replayed',
@@ -118,7 +105,6 @@ function replayProposal(trace, boundary, request, orderedSignals) {
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-
 function plannedProposal(boundary, request, orderedSignals, plan) {
   return immutable({
     status: 'planned',
@@ -129,7 +115,6 @@ function plannedProposal(boundary, request, orderedSignals, plan) {
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-
 function domainRejectedProposal(boundary, request, orderedSignals, plan,
   domainResult) {
   return immutable({
@@ -154,7 +139,7 @@ function staleDiscardedProposal(boundary, request, orderedSignals) {
 
 async function requestFreshDecision({ boundary, request, orderedSignals,
   semanticModel, revalidateStateVersion, rebuildDecisionContext, mode,
-  validatePlan }) {
+  validatePlan, validateFreshPlan }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
   }
@@ -180,14 +165,18 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
           repair
         }));
       } catch (error) {
-        throw turnFailure('TURN_NPC_MODEL_FAILED',
-          repair === null
-            ? 'NPC semantic model request failed'
-            : 'NPC format repair request failed', {
-          request_id: currentRequest.request_id,
-          boundary_id: currentBoundary.boundary_id,
-          cause: error instanceof Error ? error.message : String(error)
-        });
+        if (repair === null && error?.code === 'json_parse_failed') {
+          rawPlan = {};
+        } else {
+          throw turnFailure('TURN_NPC_MODEL_FAILED',
+            repair === null
+              ? 'NPC semantic model request failed'
+              : 'NPC format repair request failed', {
+              request_id: currentRequest.request_id,
+              boundary_id: currentBoundary.boundary_id,
+              cause: error instanceof Error ? error.message : String(error)
+            });
+        }
       }
 
       const expectedStateVersion = requestStateVersion(currentRequest, mode);
@@ -251,23 +240,32 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       const structurallyValid = validatePlanForMode(
         rawPlan, safeRequest, mode);
       const domainResult = structurallyValid
-        ? planDomainResult(rawPlan, safeRequest, validatePlan) : null;
+        ? await planDomainResult(rawPlan, safeRequest, validatePlan,
+          validateFreshPlan) : null;
       if (structurallyValid && domainResult?.pass !== false) break;
-      if (domainResult?.pass === false && !domainResult.errors.every(
-        ({ retryable }) => retryable === true
-      )) {
+      if (domainResult?.pass === false
+          && domainResult.fresh_semantic_repair !== true) {
+        if (mode === 'conversation') {
+          fail('TURN_NPC_PLAN_NOT_APPLICABLE',
+            'NPC semantic response is outside the conversation contract', {
+              request_id: currentRequest.request_id,
+              boundary_id: currentBoundary.boundary_id,
+              validation_errors: domainResult.errors });
+        }
         return domainRejectedProposal(currentBoundary, currentRequest,
           currentSignals, rawPlan, domainResult);
       }
       const structuralErrors = structuralPlanErrors(
         rawPlan, safeRequest, mode);
       if (repair !== null) {
+        const reportedErrors = structuralErrors.length > 0
+          ? structuralErrors : repairContext(rawPlan).validation_errors;
         fail(
           'TURN_NPC_PLAN_INVALID',
           'NPC semantic response and its format repair must match the request',
           { request_id: currentRequest.request_id,
             boundary_id: currentBoundary.boundary_id,
-            validation_errors: structuralErrors }
+            validation_errors: reportedErrors }
         );
       }
       repair = repairContext(rawPlan, domainResult?.errors
@@ -356,7 +354,8 @@ export async function requestNpcSemanticDecision({
   orderedSignals = [],
   revalidateStateVersion,
   rebuildDecisionContext = null,
-  validatePlan = null
+  validatePlan = null,
+  validateFreshPlan = null
 } = {}) {
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
@@ -404,7 +403,7 @@ export async function requestNpcSemanticDecision({
         { request_id: request.request_id, boundary_id: boundary.boundary_id }
       );
     }
-    const domainResult = planDomainResult(
+    const domainResult = await planDomainResult(
       persistedTrace.plan, request, validatePlan
     );
     if (domainResult?.pass === false) {
@@ -440,7 +439,8 @@ export async function requestNpcSemanticDecision({
     revalidateStateVersion,
     rebuildDecisionContext,
     mode,
-    validatePlan
+    validatePlan,
+    validateFreshPlan
   });
   const inFlight = { inputSnapshot, pending };
   inFlightDecisions.set(inFlightKey, inFlight);
@@ -453,9 +453,25 @@ export async function requestNpcSemanticDecision({
   }
 }
 
-function planDomainResult(plan, request, validatePlan) {
-  if (validatePlan === null) return null;
-  const result = validatePlan(plan, request);
+async function planDomainResult(plan, request, validatePlan,
+  validateFreshPlan = null) {
+  if (validatePlan !== null) {
+    const rejected = domainValidationResult(await validatePlan(plan, request));
+    if (rejected !== null) return rejected;
+  }
+  if (validateFreshPlan !== null) {
+    const rejected = domainValidationResult(await validateFreshPlan(plan, request));
+    if (rejected !== null) {
+      return rejected.errors.length > 0 && rejected.errors.every(
+        ({ retryable }) => retryable === true)
+        ? immutable({ ...rejected, fresh_semantic_repair: true })
+        : rejected;
+    }
+  }
+  return null;
+}
+
+function domainValidationResult(result) {
   if (result === true) return null;
   if (result === false) {
     return immutable({

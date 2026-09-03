@@ -51,6 +51,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const actionProducedPlans = [];
   const localFirePlans = [];
   const spatialSemanticPlans = [];
+  const backgroundNpcSemanticPlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   let preparedFollowup = null;
@@ -61,6 +62,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       working_projection: structuredClone(workingProjection),
       completed_steps: structuredClone(completedSteps),
       local_fire_atomic_write_plans: structuredClone(localFirePlans),
+      prepared_ordinary_materialization_atomic_write_plan:
+        structuredClone(ordinaryPlans[0] ?? null),
       prepared_chain_context: structuredClone(preparedChainContext),
       remaining_intent: remainingIntent
     })));
@@ -110,8 +113,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
-          preparedChainContext,
-          allowRepair: preparedEffects.length === 0
+          preparedChainContext
         })
       : { plan: preparedPlan, repaired: false };
     if (preparedPlan == null) {
@@ -191,6 +193,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'Only one spatial semantic atomic plan is allowed per turn.');
       spatialSemanticPlans.push(execution.spatial_semantic_atomic_write_plan);
     }
+    if (execution.background_npc_semantic_atomic_write_plan != null) {
+      if (backgroundNpcSemanticPlans.length !== 0) throw turnFailure(
+        'TURN_STEP_BACKGROUND_NPC_SEMANTIC_PLAN_DUPLICATE',
+        'Only one background NPC semantic atomic plan is allowed per turn.');
+      backgroundNpcSemanticPlans.push(
+        execution.background_npc_semantic_atomic_write_plan);
+    }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
       throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
@@ -269,6 +278,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     action_production_atomic_write_plans: actionProducedPlans,
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
+    background_npc_semantic_atomic_write_plan:
+      backgroundNpcSemanticPlans[0] ?? null,
     clarification
   });
 }

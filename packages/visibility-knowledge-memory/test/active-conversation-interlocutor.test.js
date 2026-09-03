@@ -8,6 +8,7 @@ const player = Object.freeze({
 });
 const eremey = Object.freeze({ entity_kind: 'npc', entity_id: 'npc-eremey' });
 const ratsha = Object.freeze({ entity_kind: 'npc', entity_id: 'npc-ratsha' });
+const fisher = Object.freeze({ entity_kind: 'npc', entity_id: 'npc-fisher' });
 
 function session(overrides = {}) {
   return {
@@ -61,6 +62,26 @@ test('active interlocutor projection fails closed for conversation ambiguity', (
       active_participant_refs: [eremey, ratsha, player]
     })]
   }), null);
+});
+
+test('group conversation projects only its last committed NPC speaker', () => {
+  const group = session({
+    active_participant_refs: [player, eremey, ratsha, fisher],
+    last_contribution_ref: {
+      entity_kind: 'conversation_statement', entity_id: 'statement-eremey'
+    }
+  });
+  const statements = [{ statement_id: 'statement-eremey',
+    conversation_id: group.conversation_id, speaker_ref: eremey }];
+  assert.deepEqual(project({ conversation_sessions: [group],
+    conversation_statements: statements }), {
+    entity_ref: eremey, display_label: 'Еремей'
+  });
+  assert.equal(project({ conversation_sessions: [group],
+    conversation_statements: [] }), null);
+  assert.equal(project({ conversation_sessions: [group],
+    conversation_statements: [statements[0], structuredClone(statements[0])] }),
+  null);
 });
 
 test('active interlocutor projection fails closed outside one active current session', () => {

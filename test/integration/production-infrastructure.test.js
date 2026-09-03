@@ -120,7 +120,7 @@ test('production provider adapter uses role runtime transport and exact HTTP pay
   assert.equal(provider.calls[0].url, '/chat/completions');
   assert.equal(provider.calls[0].authorization, 'Bearer test-key');
   assert.equal(provider.calls[0].body.model, 'fixture-model');
-  assert.equal(provider.calls[0].body.max_tokens, 64);
+  assert.equal(provider.calls[0].body.max_tokens, 20_000);
 });
 
 test('production Stage 25 ports execute the actual Stage 24 party_runtime_v2 plan', async () => {

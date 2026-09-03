@@ -123,7 +123,8 @@ export function buildLowerDvinaTracePersistedProjection({
           location_profile_ref: npc.location_profile_ref,
           zone_ref: npc.zone_ref,
           profile_revision: npc.profile_revision,
-          profile_record_digest: npc.profile_record_digest
+          profile_record_digest: npc.profile_record_digest,
+          relationships: structuredClone(npc.relationships ?? [])
         },
         role_ref: structuredClone(npc.role_ref),
         occupation_ref: structuredClone(npc.occupation_ref),
@@ -131,6 +132,7 @@ export function buildLowerDvinaTracePersistedProjection({
         name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
         language_profile_snapshot: {},
         knowledge_profile_snapshot: structuredClone(npc.knowledge_profile_snapshot),
+        schedule_records: structuredClone(npc.schedule_records ?? []),
         profile_candidate_set_digest: npc.profile_candidate_set_digest,
         state_version: 1,
         created_change_set_id: changeSetId,

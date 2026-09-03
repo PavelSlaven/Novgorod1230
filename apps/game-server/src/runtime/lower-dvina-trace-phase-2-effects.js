@@ -2,6 +2,7 @@ import { applyBodyStateChange } from '@rus/body-state';
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { TRACE_PHASE_2_IDS } from './lower-dvina-trace-phase-2-contracts.js';
+import { factPresentationForRef } from './lower-dvina-trace-scene-presentation.js';
 
 export function createTracePhase2BodyEffect({ contracts }) {
   return Object.freeze({
@@ -114,9 +115,14 @@ function applyExactConditionOutcomes(activeConditions, outcomes) {
   return next;
 }
 
-export function createTracePhase2VisibleProjector({ contracts }) {
+export function createTracePhase2VisibleProjector({ contracts, scenePresentation }) {
   return Object.freeze({
-    async project({ consequence, time_update: timeUpdate, body_update: body }) {
+    async project({ consequence, time_update: timeUpdate, body_update: bodyUpdate }) {
+      const observations = consequence.visible_seed.observation_refs.map((factId) =>
+        scenePresentation == null
+          ? historicalFactPresentation(factId)
+          : factPresentationForRef({ scenePresentation, factRef: factId }).text);
+      const conditionChanges = inspectionBodyChanges({ timeUpdate, bodyUpdate });
       const visibleObjects = consequence.clue_materialization
         ? [{
             entity_ref: {
@@ -126,24 +132,27 @@ export function createTracePhase2VisibleProjector({ contracts }) {
             },
             display_label: 'клочок синей шерсти',
             recognition: 'recognized',
-            visible_status: 'замечен на ветке у места крушения'
+            visible_status: 'у вас в руках'
           }]
         : [];
       return {
         version: 1,
         schema: 'visible_context_package',
-        visible_scene: 'Осмотр места крушения завершён.',
-        visible_changes: consequence.observations
-          .map(({ fact_id: factId }) => factId),
-        sensory_details: [],
+        visible_scene: 'место крушения на берегу',
+        visible_changes: [
+          ...consequence.observations.map(({ fact_id: factId }) =>
+            scenePresentation == null
+              ? historicalFactPresentation(factId)
+              : factPresentationForRef({ scenePresentation, factRef: factId }).text),
+          ...(consequence.clue_materialization == null ? [] : [
+            'Клочок синей шерсти теперь у вас в руках.'
+          ]),
+          ...conditionChanges
+        ],
+        sensory_details: observations,
         visible_npc: [],
         visible_objects: visibleObjects,
-        known_context: [
-          `GameTimestamp: ${timeUpdate.clock_after.whole_minutes}`,
-          `health:${body.state_after.health}`,
-          `satiety:${body.state_after.satiety}`,
-          `energy:${body.state_after.energy}`
-        ],
+        known_context: [],
         uncertainties: [
           'Наблюдения сами по себе не устанавливают виновника или мотив.'
         ],
@@ -153,4 +162,32 @@ export function createTracePhase2VisibleProjector({ contracts }) {
       };
     }
   });
+}
+
+function inspectionBodyChanges({ timeUpdate, bodyUpdate }) {
+  const elapsed = timeUpdate?.exact_elapsed?.exact_minutes;
+  const transitions = bodyUpdate?.proposal?.condition_transitions ?? [];
+  if (elapsed?.numerator !== '15' || elapsed.denominator !== '1') return [];
+  const wet = transitions.find(({ condition_profile_ref: profile }) =>
+    profile === 'trace_ld_v1_condition_wet_clothing');
+  const shivering = transitions.find(({ condition_profile_ref: profile }) =>
+    profile === 'trace_ld_v1_condition_cold_shivering');
+  if (!wet || !shivering) return [];
+  return [shivering.outcome === 'worsens'
+    ? 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь усилилась.'
+    : 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь не отступила.'];
+}
+
+function historicalFactPresentation(factId) {
+  return {
+    'visible:wreck_present': 'На берегу лежат обломки разбитой лодки.',
+    'trace_ld_v1_evidence_onisim_barefoot_tracks': 'В мокром песке видны босые следы.',
+    'trace_ld_v1_evidence_boot_track': 'Рядом заметен отдельный след сапога.',
+    'visible:road_bag_missing': 'Дорожной сумки, о которой было известно, здесь нет.',
+    'visible:debris_layering_indicates_sequence': 'Слои обломков и следов различимы.',
+    'trace_ld_v1_evidence_cut_fastening': 'Кожаная застёжка разрезана.',
+    'trace_ld_v1_evidence_side_dent': 'На борту лодки заметна вмятина сбоку.',
+    'trace_ld_v1_evidence_second_boat_trace': 'Среди обломков есть следы ещё одной небольшой лодки.',
+    'trace_ld_v1_evidence_blue_wool': 'На ветке у места крушения найден клочок синей шерсти.'
+  }[factId];
 }

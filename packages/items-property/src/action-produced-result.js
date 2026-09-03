@@ -164,7 +164,8 @@ function validateContext(value) {
   const refs = new Set();
   for (const entity of value.entities) {
     if (!exact(entity, ENTITY_KEYS) || !text(entity.entity_ref)
-        || refs.has(entity.entity_ref) || !text(entity.state_version)
+        || refs.has(entity.entity_ref)
+        || !validEntityStateVersion(entity.state_version)
         || entity.lifecycle_state !== 'active'
         || !ACCESS_STATES.has(entity.access_state)
         || entity.accessible_actor_ref !== value.actor_ref
@@ -289,7 +290,7 @@ function bindEntities(refs, role, byRef, context, profile) {
   const pins = [];
   for (const ref of refs) {
     const entity = byRef.get(ref);
-    if (!entity || entity.state_version !== context.state_version
+    if (!entity
         || entity.accessible_actor_ref !== context.actor_ref
         || !entity.role_membership.includes(role)
         || role === 'tool' && entity.controller_ref !== context.actor_ref
@@ -307,6 +308,11 @@ function bindEntities(refs, role, byRef, context, profile) {
     });
   }
   return { pass: true, pins };
+}
+
+function validEntityStateVersion(value) {
+  return typeof value === 'string' && /^[1-9]\d*$/u.test(value)
+    && Number.isSafeInteger(Number(value));
 }
 
 function snapshotBoundary(value) {

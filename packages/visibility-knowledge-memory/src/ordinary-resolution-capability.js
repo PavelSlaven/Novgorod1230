@@ -3,7 +3,8 @@ import { deepFreeze } from '@rus/kernel';
 const MARKER = deepFreeze({
   ordinary_resolution: deepFreeze({
     discovery_available: false,
-    container_resolution_available: false
+    container_resolution_available: false,
+    scene_seed_available: false
   })
 });
 
@@ -25,9 +26,10 @@ function exactMarker(value) {
   if (!marker || Object.keys(marker).length !== 1
     || !Object.hasOwn(marker, 'ordinary_resolution')) return null;
   const resolution = plainDataRecord(marker.ordinary_resolution);
-  if (!resolution || Object.keys(resolution).length !== 2
+  if (!resolution || Object.keys(resolution).length !== 3
       || typeof resolution.discovery_available !== 'boolean'
-      || resolution.container_resolution_available !== false) return null;
+      || resolution.container_resolution_available !== false
+      || typeof resolution.scene_seed_available !== 'boolean') return null;
   return { ordinary_resolution: resolution };
 }
 

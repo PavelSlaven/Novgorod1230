@@ -154,30 +154,61 @@ BEGIN
   RETURN true;
 END $$;
 
-ALTER TABLE party_runtime.party_items
-  DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check;
-ALTER TABLE party_runtime.party_items
-  ADD CONSTRAINT party_items_mechanics_source_check CHECK (
-    (
-      run_id IS NOT NULL
-      AND template_id IS NOT NULL
-      AND profile_id IS NOT NULL
-      AND category_id IS NOT NULL
-      AND NOT state ? 'runtime_instance_mechanics_snapshot'
-    )
-    OR (
-      run_id IS NULL
-      AND template_id IS NULL
-      AND profile_id IS NULL
-      AND category_id IS NULL
-      AND (
-        party_runtime.runtime_instance_mechanics_snapshot_valid(
-          state->'runtime_instance_mechanics_snapshot'
-        )
-        OR party_runtime
-          .ordinary_world_runtime_instance_mechanics_snapshot_valid(
-            state->'runtime_instance_mechanics_snapshot'
-          )
-      )
-    )
+-- O1 concrete content is placed in the active Spatial v3 scene position.
+ALTER TABLE party_runtime.party_item_placements
+  ADD COLUMN IF NOT EXISTS scene_position_id text;
+
+ALTER TABLE party_runtime.party_item_placements
+  DROP CONSTRAINT IF EXISTS party_item_placements_owner_check;
+ALTER TABLE party_runtime.party_item_placements
+  ADD CONSTRAINT party_item_placements_owner_check CHECK (
+    (CASE WHEN anchor_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN scene_position_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN container_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN holder_npc_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN holder_character_id IS NULL THEN 0 ELSE 1 END)
+    + (CASE WHEN attached_item_id IS NULL THEN 0 ELSE 1 END) = 1
   );
+
+ALTER TABLE party_runtime.party_item_placements
+  DROP CONSTRAINT IF EXISTS party_item_placements_scene_position_fk;
+ALTER TABLE party_runtime.party_item_placements
+  ADD CONSTRAINT party_item_placements_scene_position_fk
+  FOREIGN KEY (scene_position_id)
+  REFERENCES party_runtime.scene_position_nodes(id)
+  ON DELETE RESTRICT;
+
+DO $$
+BEGIN
+  IF to_regprocedure(
+    'party_runtime.ordinary_container_runtime_mechanics_snapshot_valid(jsonb)'
+  ) IS NULL THEN
+    ALTER TABLE party_runtime.party_items
+      DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check;
+    ALTER TABLE party_runtime.party_items
+      ADD CONSTRAINT party_items_mechanics_source_check CHECK (
+        (
+          run_id IS NOT NULL
+          AND template_id IS NOT NULL
+          AND profile_id IS NOT NULL
+          AND category_id IS NOT NULL
+          AND NOT state ? 'runtime_instance_mechanics_snapshot'
+        )
+        OR (
+          run_id IS NULL
+          AND template_id IS NULL
+          AND profile_id IS NULL
+          AND category_id IS NULL
+          AND (
+            party_runtime.runtime_instance_mechanics_snapshot_valid(
+              state->'runtime_instance_mechanics_snapshot'
+            )
+            OR party_runtime
+              .ordinary_world_runtime_instance_mechanics_snapshot_valid(
+                state->'runtime_instance_mechanics_snapshot'
+              )
+          )
+        )
+      );
+  END IF;
+END $$;

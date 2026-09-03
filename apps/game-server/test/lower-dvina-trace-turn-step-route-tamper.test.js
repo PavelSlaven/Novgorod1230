@@ -23,6 +23,46 @@ import {
 const RECONCILIATION_FAILED =
   'TRACE_TURN_STEP_PREPARED_EFFECT_RECONCILIATION_FAILED';
 
+test('prepared route admits only a matching first-entry destination scene',
+  async () => {
+    const scenario = await routeDirectScenario({ firstEntryOnly: true });
+    const route = scenario.factual.time_update.prepared_effect_ledger.slices[0];
+    assert.equal(scenario.semantic.commitCount(), 1);
+
+    const missing = structuredClone(scenario.before);
+    missing.first_entry_preparation.scene.location_profile_ref =
+      'location:other';
+    assert.throws(() => buildLowerDvinaTracePreparedRouteWorkingProjection({
+      projection: routeBeforeProjection(scenario),
+      movement: route.consequence.movement,
+      committedState: missing
+    }), { code: 'TRACE_TURN_STEP_PREPARED_ROUTE_DESTINATION_INVALID' });
+  });
+
+test('prepared lineage keeps stable projection checks with planner overlays',
+  async () => {
+    const scenario = await routeDirectScenario();
+    const overlaid = structuredClone(scenario.writePlan);
+    const traces = overlaid.turn_step_commit.loop_trace.step_traces;
+    for (const trace of traces) {
+      trace.plan_request.player_safe_state.action_production = {
+        available: true
+      };
+      trace.plan_request.player_safe_state.local_world_process = {
+        allowed: []
+      };
+    }
+    bindStepTraceCopies(overlaid, traces);
+    await commit(overlaid, scenario);
+
+    const forged = structuredClone(overlaid);
+    const forgedTraces = forged.turn_step_commit.loop_trace.step_traces;
+    forgedTraces[0].plan_request.player_safe_state.position.g5_anchor_id =
+      'forged-anchor';
+    bindStepTraceCopies(forged, forgedTraces);
+    await assertForgedRejected(forged, scenario);
+  });
+
 test('production commit rejects rebuilt valid ledgers forged past owner outputs',
   async (t) => {
     const scenario = await routeDirectScenario();

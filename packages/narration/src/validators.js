@@ -73,7 +73,9 @@ export function validateNarrationSemanticRepair(value, flaggedIds = []) {
       else if (!flaggedIds.includes(id)) errors.push(`replacement ${index} targets unflagged segment_id: ${id}`);
       else if (seen.has(id)) errors.push(`duplicate replacement segment_id: ${id}`);
       seen.add(id);
-      if (!String(replacement.prose ?? '').trim()) errors.push(`replacement ${index} prose is required`);
+      if (typeof replacement.prose !== 'string') {
+        errors.push(`replacement ${index} prose must be a string`);
+      }
     });
   }
   for (const id of flaggedIds) if (!seen.has(id)) errors.push(`missing replacement segment_id: ${id}`);

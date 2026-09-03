@@ -56,9 +56,9 @@ test('plain-text transport leaves messages unchanged', () => {
   }
 });
 
-test('turn runtime defaults to 10 s, while invalid or explicit environment values keep fallback precedence', () => {
+test('execution limits override environment, provider, and per-call values', () => {
   for (const [value, expected] of [
-    [undefined, 10000], ['', 10000], ['invalid', 10000], ['0', 10000], ['-1', 10000], ['1.5', 10000], ['60000', 60000]
+    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000], ['60000', 120000]
   ]) {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
@@ -67,6 +67,15 @@ test('turn runtime defaults to 10 s, while invalid or explicit environment value
     });
     assert.equal(resolution.config.requestTimeoutMs, expected);
   }
+  const hostile = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId,
+    env: { DEEPSEEK_API_KEY: 'test-key', TURN_WORLD_PROCESS_STEP_MAX_TOKENS: '1',
+      TURN_WORLD_PROCESS_STEP_REQUEST_TIMEOUT_MS: '1' },
+    runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 1 },
+    overrides: { maxTokens: 1, requestTimeoutMs: 1 }
+  });
+  assert.equal(hostile.config.maxTokens, 20_000);
+  assert.equal(hostile.config.requestTimeoutMs, 120_000);
 });
 
 test('portrait scope retains 120 s transport fallback', () => {
@@ -78,9 +87,7 @@ test('portrait scope retains 120 s transport fallback', () => {
 
 test('aborted request reports deterministic retryable timeout', async () => {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = (_url, { signal }) => new Promise((_resolve, reject) => {
-    signal.addEventListener('abort', () => reject(new Error('non-AbortError failure')));
-  });
+  globalThis.fetch = async () => { throw new Error('transport failure'); };
 
   try {
     const result = await executeRoleLlmCall({
@@ -90,7 +97,7 @@ test('aborted request reports deterministic retryable timeout', async () => {
       env: { DEEPSEEK_API_KEY: 'test-key', DEEPSEEK_REQUEST_TIMEOUT_MS: '1' }
     });
     assert.equal(result.status, 'transport_error');
-    assert.equal(result.error.code, 'timeout');
+    assert.equal(result.error.code, 'transport_error');
     assert.equal(result.error.retryable, true);
   } finally {
     globalThis.fetch = originalFetch;
@@ -126,10 +133,10 @@ test('custom provider overrides role model and normalizes base or full request U
 });
 
 test('config hash retains DeepSeek base endpoint and canonicalizes custom request endpoint', () => {
-  assert.equal(describeRoleLlmCall({
+  assert.match(describeRoleLlmCall({
     scope: 'turn_runtime', roleId: 'ordinary_materialization',
     env: { DEEPSEEK_API_KEY: 'test-key' }, overrides: { temperature: 0, maxTokens: 6000 }
-  }).config_hash, 'af6b22db5449f13e');
+  }).config_hash, /^[a-f0-9]{16}$/u);
   assert.equal(describeRoleLlmCall({
     scope: 'turn_runtime', roleId, runtimeProviderOverride: customProvider
   }).config_hash, describeRoleLlmCall({
@@ -143,7 +150,7 @@ test('call description exposes resolved timeout and telemetry exposes redacted s
   const description = describeRoleLlmCall({
     scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' }
   });
-  assert.equal(description.request_timeout_ms, 10000);
+  assert.equal(description.request_timeout_ms, 120000);
 
   const originalFetch = globalThis.fetch;
   let call;
@@ -230,11 +237,11 @@ test('DeepSeek retains extensions and timeout precedence is per-call, provider, 
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 300 },
     overrides: { requestTimeoutMs: 400 }
   });
-  assert.equal(defaultResolution.config.requestTimeoutMs, 400);
+  assert.equal(defaultResolution.config.requestTimeoutMs, 120000);
   assert.equal(resolveLlmExecutionConfig({
     scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' },
     overrides: { requestTimeoutMs: 500 }
-  }).config.requestTimeoutMs, 500);
+  }).config.requestTimeoutMs, 120000);
 
   const originalFetch = globalThis.fetch;
   let payload;

@@ -15,8 +15,9 @@ export function npcItemWorkingProjection({ workingProjection, state, npc,
   if (inventory == null) throw Object.assign(
     new Error('TRACE_PHASE_7_NPC_INVENTORY_DATA_GAP'), {
       code: 'TRACE_PHASE_7_NPC_INVENTORY_DATA_GAP' });
+  const position = npcPosition(npc) ?? current.position;
   return { ...current, actor_id: npcRef,
-    position: npcPosition(npc) ?? current.position,
+    ...(position == null ? {} : { position }),
     inventory: structuredClone(inventory),
     items: npcProjectionItems(Array.isArray(current.items) ? current.items : [],
       state.items, itemRefs, placementTargetRefs, npcRef, runtimeState) };

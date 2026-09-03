@@ -2,6 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
 import { appendPhase4ActivityExecution } from './lower-dvina-trace-phase-4-activity-writes.js';
 import { appendPhase3MovementTraversal } from './lower-dvina-trace-phase-3-movement-writes.js';
+import { appendWorldRouteJourney } from './lower-dvina-trace-world-route-journey.js';
 
 export function appendTemporaryDisposition({ updates, appends, partyId, state, next, factual, turnNumber, changeSetId, idemId, contracts }) {
   const priorNpcs = new Map((state.npcs ?? []).map((npc) => [npc.instance_id, npc]));
@@ -186,7 +187,7 @@ export function appendPacket({ updates, partyId, next, phase9 }) {
 }
 
 export function appendMovement(input) {
-  const { inserts, updates, appends, partyId, state, next, factual, turnNumber, changeSetId, idemId, contracts } = input;
+  const { inserts, updates, deletes, appends, partyId, state, next, factual, turnNumber, changeSetId, idemId, contracts } = input;
   if (!usesPreparedFirstEntry(state, next.position)) {
     updates.push(
       row('party_positions', partyId, {
@@ -216,6 +217,10 @@ export function appendMovement(input) {
     idemId,
     phase3Contracts: { route: contracts.route },
   });
+  appendWorldRouteJourney({ writes: { inserts, updates, deletes }, partyId, state,
+    movement: { destination: { scene_position_id: usesPreparedFirstEntry(state,
+      next.position) ? state.first_entry_preparation.spatial_v3.target.position_id : null } },
+    changeSetId });
   for (const npcId of factual.consequence.phase9.movement.participants.slice(1)) {
     const npc = next.npcs.find(({ instance_id: id }) => id === npcId);
     if (npc)

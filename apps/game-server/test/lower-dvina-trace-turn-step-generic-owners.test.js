@@ -40,8 +40,21 @@ test('semantic schedule owner resolves duration without an actor body',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' }
     });
     assert.equal(resolved.duration_minutes, 1);
-    assert.equal(resolved.profile_ref,
-      'trace_ld_v1_semantic_activity:moment:none');
+  assert.equal(resolved.profile_ref,
+    'trace_ld_v1_semantic_activity:moment:none');
+});
+
+test('explicit requested duration overrides only the temporal schedule',
+  async () => {
+    const owners = await createOwners();
+    const resolved = owners.semanticActivityOwner.resolve({
+      activity: { owner: 'semantic', duration_class: 'brief', effort: 'none',
+        requested_duration_minutes: 10 },
+      actor: { body: body() }
+    });
+    assert.equal(resolved.duration_minutes, 10);
+    assert.equal(resolved.body_effect_profile_ref,
+      'trace_ld_v1_semantic_activity:body:brief:none');
   });
 
 test('direct body event ignores prose and body-state calculates exact result',
@@ -190,7 +203,24 @@ test('generic composition preserves domain body and handles direct visible',
       body_update: { state_after: body({ health: 95 }) }
     });
     assert.equal(projected.visible_scene, 'Заявленное действие завершено.');
-    assert.deepEqual(projected.visible_changes, ['turn_step_x']);
+    assert.deepEqual(projected.visible_changes,
+      ['Вы ощутили перемену в своём состоянии.']);
+
+    const physical = await visible.project({
+      consequence: { visible_seed: { completed_steps: [],
+        clarification: null,
+        turn_step_move: { change: 'moved', relation: 'held_by',
+          display_label: 'длинную доску' },
+        turn_step_action_production_2: { change: 'physical_change',
+          entity_ref: 'board', physical_description:
+            'Доска с обрывком снасти приспособлена как опора для плеча',
+          qualitative_facts: ['опора поддерживает плечо'] } } },
+      body_update: { state_after: body() }
+    });
+    assert.deepEqual(physical.visible_changes, [
+      'Вы взяли в руки длинную доску.',
+      'Доска с обрывком снасти приспособлена как опора для плеча.'
+    ]);
 
     const scene = await visible.project({
       mode_resolution: { decision_trace: { step_traces: [{
@@ -212,12 +242,14 @@ test('generic composition preserves domain body and handles direct visible',
         do_not_imply: []
       } },
       consequence: { visible_seed: { completed_steps: [],
-        clarification: null, turn_step_y: { kind: 'semantic_activity' } } },
+        clarification: null, turn_step_y: { kind: 'semantic_activity',
+          duration_minutes: 5 } } },
       body_update: { state_after: body({ health: 95 }) }
     });
     assert.equal(scene.visible_scene, 'Уже видимый берег.');
     assert.deepEqual(scene.sensory_details, ['cold', 'wet']);
-    assert.deepEqual(scene.visible_changes, ['turn_step_y']);
+    assert.deepEqual(scene.visible_changes,
+      ['Прошло 5 минут.']);
     assert.equal(scene.known_context.includes('health:95'), true);
   });
 
@@ -311,9 +343,9 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
         fireVisible('start', 'started', 'active') }
     } });
     assert.equal(movement.visible_scene,
-      'Группа пришла во двор клети Жданко. Огонь разгорелся.');
+      'Группа пришла во двор клети. Огонь разгорелся.');
     assert.deepEqual(movement.visible_changes, [
-      'trace_ld_v1_route_camp_to_storehouse_committed',
+      'Группа дошла от рыбацкого стана до двора клети.',
       'turn_step_world_process_1:local_fire:started'
     ]);
 
@@ -327,16 +359,34 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
     assert.equal(recovery.visible_scene,
       'Дорожная сумка теперь под вашим контролем. В огонь добавлено топливо.');
     assert.deepEqual(recovery.visible_changes, [
-      'road_bag_recovered', 'turn_step_world_process_1:local_fire:fuel_added'
+      'Вы забрали дорожную сумку.',
+      'turn_step_world_process_1:local_fire:fuel_added'
     ]);
+
+    const combat = await visible.project({ retrieved_state: {
+      actor_id: 'player'
+    }, consequence: { combat_kind: 'exchange', combat: {
+      exchange: { technical_steps: [{ actor_ref: {
+        entity_kind: 'player_character', entity_id: 'player' },
+      check_request: { target_id: 'npc-zhdanko' } }] },
+      harm_packages: [{ target_id: 'npc-zhdanko', health_loss: 5,
+        injury: { label: 'лёгкая рана' } }],
+      session_before: { participant_states: [{ actor_ref: {
+        entity_kind: 'npc', entity_id: 'npc-zhdanko' }, combat_status: 'active' }] },
+      session_after: { status: 'ended', participant_states: [{ actor_ref: {
+        entity_kind: 'npc', entity_id: 'npc-zhdanko' },
+      combat_status: 'incapacitated' }] }
+    }, visible_seed: { completed_steps: [], clarification: null } } });
+    assert.equal(combat.visible_scene,
+      'У вашего противника — лёгкая рана. Ваш противник больше не может продолжать бой. Схватка закончилась.');
 
     const fallback = await visible.project({ consequence: {
       activity_attempt_id: 'attempt:phase8-no-f1', phase8_kind: 'movement',
       visible_seed: { completed_steps: [], clarification: null }
     } });
-    assert.equal(fallback.visible_scene, 'Группа пришла во двор клети Жданко.');
+    assert.equal(fallback.visible_scene, 'Группа пришла во двор клети.');
     assert.deepEqual(fallback.visible_changes,
-      ['trace_ld_v1_route_camp_to_storehouse_committed']);
+      ['Группа дошла от рыбацкого стана до двора клети.']);
   });
 
 test('generic visible projector rejects malformed player F1 facts',

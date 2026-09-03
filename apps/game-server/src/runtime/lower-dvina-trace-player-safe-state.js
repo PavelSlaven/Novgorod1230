@@ -24,6 +24,12 @@ import {
 } from './lower-dvina-trace-player-safe-world.js';
 import { applyLowerDvinaTraceWorkingProjection } from
   './lower-dvina-trace-player-safe-working.js';
+import { projectActiveConversationInterlocutor } from
+  '@rus/visibility-knowledge-memory';
+import { projectLowerDvinaTraceVisibleNpcDetails } from
+  './lower-dvina-trace-player-safe-npc-details.js';
+export { projectLowerDvinaTraceVisibleNpcDetails } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 
 export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
@@ -35,14 +41,35 @@ export function projectLowerDvinaTracePlayerSafeState({
   const profile = committedState.player_profile ?? {};
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
+  const visibleContext = projectVisibleContext(committedState.visible_context);
+  const currentVisibleContext = projectVisibleContext(
+    committedState.current_visible_context,
+    { path: 'current_visible_context' }
+  );
+  const visibleContextPackage = projectVisibleContext(
+    committedState.visible_context_package,
+    { path: 'visible_context_package' }
+  );
   const npcs = projectNpcs(committedState.npcs, { position });
-  const visibleNpcIds = new Set((npcs ?? []).flatMap((npc) => [
-    npc.instance_id, npc.npc_id
-  ]).filter(Boolean));
+  const visibleNpcIds = new Set((currentVisibleContext?.visible_npc ?? [])
+    .flatMap(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
+      ? [ref.entity_id] : []).filter(Boolean));
   const items = projectItems([...(committedState.items ?? []),
     ...containerItems(committedState.containers,
       committedState.container_placements)], {
-    actorId, position, visibleNpcIds
+    actorId, position: committedState.position, visibleNpcIds
+  });
+  const activeInterlocutor = projectActiveConversationInterlocutor({
+    conversation_sessions: committedState.conversation_sessions ?? [],
+    conversation_statements: committedState.conversation_statements ?? [],
+    player_ref: { entity_kind: 'player_character', entity_id: actorId },
+    current_location_ref: position?.location_ref,
+    visible_npcs: projectLowerDvinaTraceVisibleNpcDetails({
+      visibleContext: currentVisibleContext ?? visibleContext ?? visibleContextPackage,
+      projectedNpcs: npcs,
+      committedNpcs: committedState.npcs,
+      committedItems: committedState.items
+    })
   });
   const base = compact({
     actor_id: actorId,
@@ -70,15 +97,10 @@ export function projectLowerDvinaTracePlayerSafeState({
     route_history: projectRouteHistory(committedState.route_history),
     route_knowledge: projectRouteKnowledge(committedState.route_knowledge),
     knowledge: projectKnowledge(committedState.knowledge),
-    visible_context: projectVisibleContext(committedState.visible_context),
-    visible_context_package: projectVisibleContext(
-      committedState.visible_context_package,
-      { path: 'visible_context_package' }
-    ),
-    current_visible_context: projectVisibleContext(
-      committedState.current_visible_context,
-      { path: 'current_visible_context' }
-    ),
+    visible_context: visibleContext,
+    visible_context_package: visibleContextPackage,
+    current_visible_context: currentVisibleContext,
+    active_interlocutor: activeInterlocutor ?? undefined,
     case_evidence_ref: typeof committedState.phase9?.case_evidence_ref
       === 'string' ? committedState.phase9.case_evidence_ref : undefined,
     temporary_disposition_options: projectTemporaryDispositionOptions(
@@ -92,16 +114,18 @@ export function projectLowerDvinaTracePlayerSafeState({
     actorId,
     authority: workingProjectionAuthority
   });
+  const { active_interlocutor: _staleActiveInterlocutor,
+    ...withoutStaleInterlocutor } = playerSafeState;
   return freezeJson({
     actor: projectActor({
       profile,
       body: committedState.body_state ?? profile.body,
       actorId
     }),
-    player_safe_state: playerSafeState
+    player_safe_state: playerSafeState.position?.location_ref
+      === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
   });
 }
-
 function projectTemporaryDispositionOptions(value) {
   if (value?.schema !== 'temporary_disposition_option_set_v1') return undefined;
   return { schema: value.schema, contract_ref: value.contract_ref,

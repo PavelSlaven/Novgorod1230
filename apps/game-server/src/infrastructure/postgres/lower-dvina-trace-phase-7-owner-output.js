@@ -61,14 +61,21 @@ export function phase7OwnerOutputPlans({ ownerOutputs, partyId, changeSetId,
       || localFirePlans.some((plan) => plan.party_id !== partyId
         || plan.change_set_id !== changeSetId)
       || spatialSemanticPlan != null && (spatialSemanticPlan.party_id !== partyId
-        || spatialSemanticPlan.change_set_id !== changeSetId)) throw new Error();
+        || spatialSemanticPlan.change_set_id !== changeSetId)) {
+      throw new Error('owner output identity mismatch');
+    }
     requireOwnerCarrierBindings({ ordinaryPlan, actionProductionPlans,
       localFirePlans: localFirePlans.slice(0,
         ownerOutputs.local_fire_atomic_write_plans.length), spatialSemanticPlan,
       semanticOperations: operations, semanticPlan, carrierPlan, semanticRequest, registeredOwner });
     return { operationBatch, ordinaryPlan, actionProductionPlans,
       localFirePlans, spatialSemanticPlan };
-  } catch { return fail('TRACE_PHASE_7_OWNER_OUTPUT_PLAN_INVALID'); }
+  } catch (error) {
+    return fail('TRACE_PHASE_7_OWNER_OUTPUT_PLAN_INVALID', {
+      cause_code: error?.code ?? null,
+      cause_message: String(error?.message ?? error)
+    });
+  }
 }
 
 function requireSelectedOwnerOutput(outputs, operations, binding) {
@@ -78,6 +85,8 @@ function requireSelectedOwnerOutput(outputs, operations, binding) {
     ?.map((change) => change?.operation_kind
       ?? (change?.kind === 'direct_body_event'
         ? 'apply_body_event' : null)) ?? [];
+  const selectedConsequenceKinds = consequenceKinds.map((kind) =>
+    kind === 'action_production' ? 'request_item_use' : kind);
   const positionTransition =
     outputs.consequence_fragment?.position_transition != null;
   const ordinary = outputs.ordinary_materialization_atomic_write_plan != null;
@@ -94,7 +103,7 @@ function requireSelectedOwnerOutput(outputs, operations, binding) {
       typeof kind !== 'string') || primary.length > 1
       || (modeHandoff !== null && (outputs.consequence_fragment.state_changes.length !== 1
         || MODE_HANDOFF_MODES[op] !== modeHandoff.mode))
-      || [...directKinds, ...consequenceKinds].some((kind) =>
+      || [...directKinds, ...selectedConsequenceKinds].some((kind) =>
         kind !== null && operationFor(kind).length === 0)
       || outputs.consequence_fragment != null
         && (positionTransition
@@ -108,14 +117,19 @@ function requireSelectedOwnerOutput(outputs, operations, binding) {
       || spatialSemantic && op !== 'request_discovery'
       || [ordinary, actionProduction, localFire, spatialSemantic]
         .filter(Boolean).length > 1) {
-    throw new Error();
+    throw new Error(`owner output does not match selected operation: ${JSON.stringify({
+      operations: operations.map(({ op: kind }) => kind),
+      directKinds, consequenceKinds, positionTransition, modeHandoff,
+      ordinary, actionProduction, localFire, spatialSemantic
+    })}`);
   }
   for (const fragment of outputs.write_fragments) {
     requireTurnStepOwnerCarrierBinding({ ...binding, semanticOperations: operations,
       carrier: fragment?.value });
   }
   for (const change of outputs.consequence_fragment?.state_changes ?? []) {
-    if (change?.kind === 'direct_body_event' || change?.mode_handoff != null) continue;
+    if (change?.kind === 'direct_body_event' || change?.mode_handoff != null
+        || change?.operation_kind === 'action_production') continue;
     requireTurnStepOwnerCarrierBinding({ ...binding, semanticOperations: operations,
       carrier: change });
   }
@@ -182,7 +196,7 @@ const MODE_HANDOFF_MODES = Object.freeze({
 });
 function operationFor(op, operations) {
   const matches = operations.filter((operation) => operation.op === op);
-  if (matches.length !== 1) throw new Error();
+  if (matches.length !== 1) throw new Error(`expected one ${op} operation`);
   return matches[0];
 }
 
@@ -194,7 +208,7 @@ function requireO1CarrierBinding({ ordinaryPlan, semanticRequest, ...binding }) 
       || typeof ordinaryPlan.semantic_target_ref !== 'string'
       || ordinaryPlan.item != null
         && ordinaryPlan.item.mechanics_snapshot.provenance.request_id
-          !== requestIdentity) throw new Error();
+          !== requestIdentity) throw new Error('ordinary carrier identity mismatch');
   requireTurnStepOwnerCarrierBinding({ ...binding, semanticRequest, carrier: {
     target_refs: [ordinaryPlan.semantic_target_ref]
   }, carrierOperation: operationFor('request_discovery',
@@ -222,6 +236,7 @@ export function preparePhase7OwnerOperationPersistence({ partyId, writePlan,
     snapshot,
     factual: operationBatch == null
       ? factual : neutralPhase7OwnerFactual(factual, state),
+    preparedFactual: factual,
     changeSetId,
     idemId
   });

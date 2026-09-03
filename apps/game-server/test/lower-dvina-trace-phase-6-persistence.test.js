@@ -61,6 +61,12 @@ const contracts = {
   destinationEndpoint: { endpoint_id: 'camp-endpoint' },
   accessPolicy: { policy_id: 'carry-access' },
   capacity: { contract_id: 'camp-capacity' },
+  terminalEnvironment: {
+    environment_profile_id: 'trace_ld_v1_env_camp_fire',
+    schema: 'rus.trace_environment_profile.v1', version: 1,
+    facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+    source: 'party_environment_snapshot'
+  },
   terminalPlacement: {
     group: {
       location_ref: 'trace_ld_v1_loc_fishing_camp',
@@ -99,6 +105,10 @@ const contracts = {
 
 test('Phase 6 P16 plan atomically persists one owner traversal and terminal carry state', async () => {
   const state = committedState();
+  state.first_entry_preparation = { spatial_v3: { target: {
+    status: 'prepared', position_id: 'camp-position', base_static_template: {
+      position: { capacity: 10, access_class_id: 'camp-access' } } } }, scene: { anchor: {
+    instance_id: 'camp-anchor' } } };
   state.npc_semantic_decision_traces = [{
     plan: { private_marker: 'phase6-private-semantic-plan' }
   }];
@@ -159,12 +169,30 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   ], [79, 35, 57]);
   assert.equal(snapshot.position.zone_ref, 'working_camp');
   assert.equal(snapshot.phase6_carry_execution.progress_ppm, 1000000);
+  assert.equal(snapshot.environment_snapshot.environment_profile_id,
+    contracts.terminalEnvironment.environment_profile_id);
+  assert.equal(snapshot.environment_snapshot.scope.g5_anchor_id,
+    'camp-anchor');
+  assert.equal(snapshot.environment_snapshot.causal_basis.kind,
+    'authored_terminal_environment');
+  assert.equal(snapshot.environment_snapshot.causal_basis.route_ref,
+    contracts.route.route_id);
+  assert.equal(snapshot.environment_snapshot.causal_basis.anchor_template_ref,
+    contracts.terminalPlacement.group.anchor_template_ref);
   const physical = plan.commit_rechecks.find(({ kind }) => kind === 'physical');
   assert.equal(physical.physical_model,
     'trace_phase6_targeted_admission');
   assert.equal('expected_inventory_digest' in physical, false);
   assert.equal('expected_inventory_snapshot' in physical, false);
   assert.equal(physical.assembly_resources.length, 2);
+  const arrival = plan.commit_rechecks.find(({ kind, capacity_model }) =>
+    kind === 'capacity' && capacity_model === 'world_route_s1_arrival');
+  assert.deepEqual({ position: arrival.destination_position_id,
+    capacity: arrival.destination_capacity, access: arrival.destination_access_class },
+  { position: 'camp-position', capacity: 10, access: 'camp-access' });
+  assert.equal(rows(plan, 'party_positions').length, 0);
+  assert.equal(rows(plan, 'party_journey_locations')[0].record.scene_position_id,
+    'camp-position');
 });
 
 test('Phase 6 P16 preserves an interrupted owner traversal and resumes the same execution', async () => {

@@ -55,7 +55,9 @@ export function buildNpcDecision(context, working, boundary,
   const requiredSupportingOperation = context.phase === 'phase_3'
     && !presentedEvidenceRecognized
     ? undefined
-    : context.npcDecisionScope.required_supporting_operation;
+    : latestContribution?.speaker_ref?.entity_kind !== 'player_character'
+      ? undefined
+      : context.npcDecisionScope.required_supporting_operation;
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
   );
@@ -112,6 +114,8 @@ export function buildNpcDecision(context, working, boundary,
         : {})
     },
     available_resources: context.phase === 'phase_4'
+      && context.targetRef.entity_id === context.contracts.actors
+        ?.ratsha_storehouse_helper?.instance_id
       ? [{
           resource_ref: context.contracts.knifeTransition
             .transition_profile_id,
@@ -136,6 +140,9 @@ export function buildNpcDecision(context, working, boundary,
         ? [] : [socialCheckProfile.profile_id],
       allowed_duration_classes: ['domain_owned'],
       operation_contract: context.npcOperationContract,
+      ...(context.npcDecisionScope.allowed_contribution_kinds === undefined
+        ? {} : { allowed_contribution_kinds: structuredClone(
+          context.npcDecisionScope.allowed_contribution_kinds) }),
       ...(context.npcDecisionScope.required_resolution === undefined ? {} : {
         required_resolution: context.npcDecisionScope.required_resolution,
         required_check: structuredClone(context.npcDecisionScope.required_check)

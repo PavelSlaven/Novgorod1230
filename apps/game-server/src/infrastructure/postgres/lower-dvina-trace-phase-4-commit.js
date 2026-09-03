@@ -16,6 +16,9 @@ import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn
 import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dvina-trace-committed-revision.js';
 import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
+import { resolveFirstEntry } from './lower-dvina-trace-phase-3-first-entry.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -30,10 +33,22 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   });
   const nextVersion = state.party_state.state_version + 1, turnNumber = state.party_state.turn_number + 1;
   const changeSetId = `change:${partyId}:trace-phase4:${turnNumber}`, idemId = `idem:${partyId}:${canonicalDigest(factual.player_input.idempotency_key).slice(0, 20)}`;
+  const firstEntry = factual.consequence.phase4_kind === 'movement'
+    ? resolveFirstEntry({ partyId, state, factual: { ...factual,
+      mode_resolution: { command_id:
+        state.first_entry_preparation?.members?.[1]?.binding?.route_command_id },
+      consequence: { ...factual.consequence, phase3_kind: 'movement',
+        movement: { ...factual.consequence.movement,
+          destination: { location_ref:
+            factual.consequence.movement.destination_location_ref } } } },
+    phase3Contracts: { route: phase4Contracts.route,
+      sourceEndpoint: phase4Contracts.sourceEndpoint,
+      destinationEndpoint: phase4Contracts.destinationEndpoint }, changeSetId,
+    scenarioRevision, memberOrdinal: 1 }) : null;
   let next = nextPhase4State({ state, factual, nextVersion, turnNumber,
     inputDigest, changeSetId, contracts: phase4Contracts,
     rootTurnId: semanticContext?.rootTurnId,
-    workingRevision: semanticContext?.workingRevision });
+    workingRevision: semanticContext?.workingRevision, firstEntry });
   const builder = createCombinedWritePlanBuilder({ verifyApproval: async (candidate) => ({ ok: candidate.party_id === partyId && candidate.operation_kind === 'trace_phase_4_turn' }) });
   const context = writePlan.write_targets.find((entry) => entry.target === 'party_visible_context_package')?.value;
   if (!context) throw fail('TRACE_PHASE_4_VISIBLE_CONTEXT_MISSING');
@@ -50,7 +65,8 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     pendingScreen, nextVersion, turnNumber, changeSetId, idemId,
     contracts: phase4Contracts, scenarioRevision,
     rootTurnId: semanticContext?.rootTurnId,
-    workingRevision: semanticContext?.workingRevision }), turnStep.writes);
+    workingRevision: semanticContext?.workingRevision,
+    firstEntry }), turnStep.writes);
   const resumedActivity = resumedPendingConversationActivity(
     state, semanticContext?.semanticExchange
   );
@@ -74,11 +90,16 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
       state.party_state.body_state_version
     ), ...expectedChangedConditions(state,
       factual.body_update.state_after)] : []),
+    ...([...writes.updates, ...writes.deletes].some(({ target_table: table }) =>
+      table === 'party_journey_locations') && state.journey_location != null
+      ? [expected('party_journey_locations', state.journey_location.id,
+        state.journey_location.state_version)] : []),
     ...(writes.updates.some(({ target_table: table }) =>
       table === 'party_obligations') ? [expected(
       'party_obligations', state.promise_instances[0].obligation_id,
       Number(state.promise_instances[0].state_version)
-    )] : [])
+    )] : []),
+    ...(firstEntry?.expected_state_versions ?? [])
   ];
   const turnStepIdempotency = bindLowerDvinaTraceTurnStepIdempotency({
     envelope: writePlan.turn_step_commit,
@@ -117,25 +138,31 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     },
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
-    approved_write_sets: [writes],
+    approved_write_sets: [writes, ...(firstEntry?.approved_write_sets ?? [])],
     lock_context: {
       owner_keys: [`actor:${state.actor_id}`],
       execution_keys: [],
-      g4_keys: [],
-      physical_keys: Object.values(writes).flat().map(
-        (write) => `party_runtime.${write.target_table}:${write.id}`)
+      g4_keys: firstEntry?.lock_context.g4_keys ?? [],
+      physical_keys: [...Object.values(writes).flat().map(
+        (write) => `party_runtime.${write.target_table}:${write.id}`),
+      ...(firstEntry?.lock_context.physical_keys ?? [])]
     },
-    commit_rechecks: phase4CommitRechecks({
-      partyId, state, factual, phase4Contracts, inputDigest
-    })
+    commit_rechecks: [
+      ...phase4CommitRechecks({ partyId, state, factual, phase4Contracts,
+        inputDigest }).filter(({ kind }) => kind !== 'physical'),
+      ...(firstEntry?.commit_rechecks ?? phase4CommitRechecks({ partyId,
+        state, factual, phase4Contracts, inputDigest })
+        .filter(({ kind }) => kind === 'physical'))
+    ]
   };
-  const integratedInput = integrateConversationTemporalWrites({
+  const integratedInput = bindOrdinaryPlanToCombinedInput(
+    integrateConversationTemporalWrites({
     input: baseWritePlanInput,
     semanticExchange: semanticContext?.semanticExchange,
     fail: (error) => {
       throw fail('TRACE_PHASE_4_TEMPORAL_WRITE_CONFLICT', error);
     }
-  });
+    }), writePlan.ordinary_materialization_atomic_write_plan, partyId);
   const built = await builder.build(integratedInput);
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
   const committedPublicResult = committedPendingPhase2PublicResult({ payload: next, screen: pendingScreen });
@@ -156,7 +183,7 @@ export function phase4SemanticCommitContext({
   const semanticExchange = isNegotiation
     ? factual.consequence.negotiation?.semantic_exchange
     : null;
-  if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(scenarioRevision)) {
+  if (!Number.isSafeInteger(scenarioRevision) || scenarioRevision < 14) {
     if (semanticExchange != null) {
       throw fail('TRACE_M2_PHASE_4_SEMANTIC_REVISION_INVALID');
     }

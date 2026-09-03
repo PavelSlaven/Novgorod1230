@@ -229,7 +229,7 @@ function enabled({
 function request() {
   return {
     request: { root_turn_id: "turn:remnant" },
-    committed_state: { position: { g6_id: "ruin", g5_anchor_id: "anchor:ruin" } },
+    committed_state: { position: { g6_id: "ruin", position_id: "scene:ruin" } },
     operation: { target_refs: ["ruin"], query: "взять обломок" },
     working_projection: {},
   };

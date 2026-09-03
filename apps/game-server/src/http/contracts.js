@@ -18,8 +18,12 @@ export function successEnvelope(data, { requestId = null } = {}) {
 
 export function errorEnvelope(error, { requestId = null, developerMode = false } = {}) {
   const status = Number.isInteger(error?.status) ? error.status : 500;
-  const code = text(error?.code) || 'INTERNAL_SERVER_ERROR';
-  const message = status >= 500 && !developerMode ? 'Internal server error.' : text(error?.message) || 'Request failed.';
+  const internal = status >= 500 || error?.public_exposure === 'internal';
+  const code = internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
+    : text(error?.code) || 'REQUEST_FAILED';
+  const message = internal
+    ? 'Действие временно недоступно. Попробуйте ещё раз.'
+    : text(error?.message) || 'Request failed.';
   return Object.freeze({
     status,
     body: Object.freeze({
@@ -34,10 +38,10 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
 
 export function validateNewGameRequest(body) {
   if (!plain(body)) throw serverError('REQUEST_BODY_INVALID', 'JSON object body is required.', { status: 400 });
-  if (text(body.start_text) || !text(body.scenario_id)) {
+  if (!text(body.start_text) && !text(body.scenario_id)) {
     throw serverError(
-      'SCENARIO_ID_REQUIRED',
-      'scenario_id is required.',
+      'NEW_GAME_START_REQUIRED',
+      'start_text or scenario_id is required.',
       { status: 400 }
     );
   }
@@ -55,6 +59,13 @@ export function validateTurnRequest(body) {
   if (!plain(body)) throw serverError('REQUEST_BODY_INVALID', 'JSON object body is required.', { status: 400 });
   if (!text(body.raw_text) && !text(body.selected_action_option_id)) {
     throw serverError('TURN_INPUT_REQUIRED', 'raw_text or selected_action_option_id is required.', { status: 400 });
+  }
+  return body;
+}
+
+export function validatePresentationRecoveryRequest(body) {
+  if (!plain(body) || Object.keys(body).length !== 0) {
+    throw serverError('REQUEST_BODY_INVALID', 'Presentation recovery body must be empty.', { status: 400 });
   }
   return body;
 }

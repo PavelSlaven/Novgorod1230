@@ -42,6 +42,8 @@ test('M1 forward DDL admits only authored or strict direct-runtime item mechanic
   assert.match(sql, /AND NOT state \? 'runtime_instance_mechanics_snapshot'/u);
   assert.match(sql, /run_id IS NULL[\s\S]*template_id IS NULL[\s\S]*profile_id IS NULL[\s\S]*category_id IS NULL[\s\S]*runtime_instance_mechanics_snapshot_valid/u);
   assert.match(sql, /DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check/u);
+  assert.match(sql,
+    /to_regprocedure\([\s\S]*ordinary_world_runtime_instance_mechanics_snapshot_valid\(jsonb\)[\s\S]*IS NULL THEN[\s\S]*DROP CONSTRAINT IF EXISTS party_items_mechanics_source_check/u);
   assert.doesNotMatch(sql, /sentinel/iu);
 });
 
@@ -49,7 +51,10 @@ test('M1 forward DDL adds same-party, exclusive, non-self item attachment', asyn
   const sql = await readFile(migrationPath, 'utf8');
 
   assert.match(sql, /ADD COLUMN IF NOT EXISTS attached_item_id text/u);
+  assert.match(sql, /ADD COLUMN IF NOT EXISTS scene_position_id text/u);
   assert.match(sql, /party_item_placements_owner_check/u);
+  assert.match(sql,
+    /CASE WHEN scene_position_id IS NULL THEN 0 ELSE 1 END/u);
   assert.match(sql, /CASE WHEN attached_item_id IS NULL THEN 0 ELSE 1 END\) = 1/u);
   assert.match(sql, /FOREIGN KEY \(party_id, attached_item_id\)[\s\S]*REFERENCES party_runtime\.party_items\(party_id, item_id\)/u);
   assert.match(sql, /CHECK \(attached_item_id IS NULL OR attached_item_id <> item_id\)/u);

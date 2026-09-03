@@ -6,66 +6,56 @@ import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
+import { richCommittedState } from
+  './lower-dvina-trace-player-safe-state-fixture.js';
 
-test('projects the committed player context needed by the step planner', () => {
-  const committedState = richCommittedState();
+test('canonical NPC names stay hidden without player-safe acquisition', () => {
+  const state = richCommittedState();
+  state.npcs = [{ instance_id: 'unknown-npc', location_ref:
+    state.position.location_ref, identity_state: {
+      canonical_name: 'Скрытое каноническое имя'
+    } }];
+  const projected = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(JSON.stringify(projected).includes(
+    'Скрытое каноническое имя'), false);
+});
 
-  const result = projectLowerDvinaTracePlayerSafeState({
-    committed_state: committedState,
-    actor_id: 'mikula'
-  });
+test('NPC-held items require current perceptual evidence, not co-location', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'npc-knife', category_id: 'utility_knife',
+    placement: { holder_npc_id: 'onisim', physical_position: 'worn_quick' } });
+  state.current_visible_context = { visible_scene: 'Старая сушильня',
+    visible_npc: [], visible_objects: [] };
 
-  assert.deepEqual(result.actor, {
-    actor_id: 'mikula',
-    attributes: { strength: { value: 9 } },
-    skills: { observation: { bonus: 2 } },
-    body: { health: 79, energy: 37 }
+  const hidden = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(JSON.stringify(hidden).includes('npc-knife'), false);
+
+  state.current_visible_context.visible_npc.push({
+    entity_ref: { entity_kind: 'npc', entity_id: 'onisim' },
+    display_label: 'мужчина'
   });
-  assert.deepEqual(result.player_safe_state.position, {
-    location_ref: 'shed',
-    g5_anchor_id: 'shed-anchor'
-  });
-  assert.equal(
-    result.player_safe_state.clock.whole_minutes,
-    '333060'
-  );
-  assert.deepEqual(result.player_safe_state.clock_weather_light.weather, {
-    precipitation: 'rain'
-  });
-  assert.deepEqual(result.player_safe_state.inventory.items, ['knife']);
-  assert.deepEqual(
-    result.player_safe_state.items.map(({ item_id: id }) => id),
-    ['knife', 'open-box', 'closed-box']
-  );
-  assert.deepEqual(
-    result.player_safe_state.items[1].contents,
-    [{ item_id: 'bandage' }]
-  );
-  assert.equal('contents' in result.player_safe_state.items[2], false);
-  assert.deepEqual(
-    result.player_safe_state.npcs.map(({ instance_id: id }) => id),
-    ['onisim']
-  );
-  assert.deepEqual(result.player_safe_state.interactions, [
-    { interaction_id: 'talk-1', statement_ref: 'known-statement' }
-  ]);
-  assert.deepEqual(
-    result.player_safe_state.routes.map(({ route_id: id }) => id),
-    ['shed-camp']
-  );
-  assert.deepEqual(result.player_safe_state.route_history, [
-    { route_ref: 'shore-camp' }
-  ]);
-  assert.deepEqual(result.player_safe_state.route_knowledge, [
-    'shore-camp'
-  ]);
-  assert.deepEqual(result.player_safe_state.knowledge, [
-    { fact_id: 'onisim_stabilized', knowledge_state: 'known' }
-  ]);
-  assert.deepEqual(result.player_safe_state.visible_context, {
-    visible_scene: 'Старая сушильня',
-    visible_objects: ['stretcher']
-  });
+  const visible = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state;
+  assert.equal(visible.items.some(({ item_id: id }) => id === 'npc-knife'),
+    true);
+});
+
+test('projects a committed player-safe item display name from item state', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'held-clue', placement: {
+    holder_character_id: state.actor_id, physical_position: 'hands'
+  }, state: { semantic_category: 'textile_clue',
+    display_name: 'клочок окрашенной шерсти' } });
+  const item = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state.items.find(({ item_id: id }) => id === 'held-clue');
+  assert.equal(item.name, 'клочок окрашенной шерсти');
+  assert.equal(item.state.display_name, 'клочок окрашенной шерсти');
 });
 
 test('combat projection does not disclose private NPC intents', () => {
@@ -309,6 +299,25 @@ test('working projection rejects unknown nested fields and invented positions', 
     },
     actor_id: 'mikula'
   }), { code: 'TRACE_PLAYER_SAFE_WORKING_POSITION_INVALID' });
+});
+
+test('committed first-entry scene remains an admitted movement destination after transient status is stripped', () => {
+  const committedState = richCommittedState();
+  committedState.first_entry_preparation = {
+    spatial_v3: { target: { scene_baseline_id: 'camp-baseline' } },
+    scene: preparedScene('camp', 'camp-node', 'camp-anchor')
+  };
+  const result = projectLowerDvinaTracePlayerSafeState({
+    committed_state: committedState,
+    working_projection: {
+      position: {
+        location_ref: 'camp', g5_node_id: 'camp-node',
+        g5_anchor_id: 'camp-anchor'
+      }
+    },
+    actor_id: 'mikula'
+  });
+  assert.equal(result.player_safe_state.position.location_ref, 'camp');
 });
 
 test('normalized children of closed containers never enter player-safe items', () => {
@@ -655,74 +664,6 @@ test('missing committed actor ownership fails closed', () => {
     actor_id: 'mikula'
   }), { code: 'TRACE_PLAYER_SAFE_PROJECTION_ACTOR_MISMATCH' });
 });
-
-function richCommittedState() {
-  return {
-    party_id: 'party',
-    actor_id: 'mikula',
-    player_profile: {
-      attributes: { strength: { value: 9 } },
-      skills: { observation: { bonus: 2 } },
-      inventory: { items: ['knife'] },
-      selected_candidate_refs: { internal: 'not-player-safe' }
-    },
-    body_state: { health: 79, energy: 37 },
-    position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor' },
-    clock: {
-      whole_minutes: '333060',
-      subminute_numerator: '0',
-      subminute_denominator: '1'
-    },
-    clock_weather_light: {
-      clock: {
-        whole_minutes: '333060',
-        subminute_numerator: '0',
-        subminute_denominator: '1'
-      },
-      weather: { precipitation: 'rain' },
-      light: { band: 'dawn' }
-    },
-    items: [
-      { item_id: 'knife', placement: { holder_character_id: 'mikula' } },
-      {
-        item_id: 'open-box',
-        visible: true,
-        open_state: 'open',
-        contents: [{ item_id: 'bandage' }]
-      },
-      {
-        item_id: 'closed-box',
-        visible: true,
-        open_state: 'closed',
-        contents_state: 'unknown'
-      }
-    ],
-    visible_npcs: [{ instance_id: 'onisim' }],
-    scene_npcs: [{ instance_id: 'ratsha' }],
-    npcs: [
-      { instance_id: 'onisim', anchor_id: 'shed-anchor' },
-      { instance_id: 'eremey', anchor_id: 'camp-anchor' }
-    ],
-    interactions: [
-      { interaction_id: 'talk-1', statement_ref: 'known-statement' }
-    ],
-    routes: [
-      { route_id: 'shed-camp', knowledge_state: 'known' },
-      { route_id: 'shed-secret', knowledge_state: 'closed' }
-    ],
-    available_routes: [{ route_id: 'shed-camp' }],
-    route_history: [{ route_ref: 'shore-camp' }],
-    route_knowledge: ['shore-camp'],
-    knowledge: [
-      { fact_id: 'onisim_stabilized', knowledge_state: 'known' },
-      { fact_id: 'culprit', knowledge_state: 'closed_until_disclosed' }
-    ],
-    visible_context: {
-      visible_scene: 'Старая сушильня',
-      visible_objects: ['stretcher']
-    }
-  };
-}
 
 function preparedScene(locationRef, nodeId, anchorId, entryRouteRef) {
   return {

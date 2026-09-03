@@ -3,7 +3,8 @@ import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promi
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
-import { applyOrdinaryMaterializationProjection, ordinaryPhysicalKeys } from
+import { applyOrdinaryMaterializationProjection,
+  bindOrdinaryPlanToCombinedInput, ordinaryPhysicalKeys } from
   '../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js';
 import { loadLowerDvinaTraceO2bProfile } from
   '../src/internal/lower-dvina-trace-o2b-profile.js';
@@ -102,6 +103,14 @@ test('generic enabled fixture seals positive and zero outcomes without reroll',
     assert.equal(positive.materialized_items.length,1);
     assert.equal(positive.materialized_items[0].disclosure,'concealed');
     assert.equal(positive.ordinary_materialization_atomic_write_plan.items.length,1);
+    const combined = bindOrdinaryPlanToCombinedInput({
+      lock_context:{physical_keys:['legacy:key']}
+    }, positive.ordinary_materialization_atomic_write_plan, partyId);
+    assert.equal(combined.ordinary_materialization_atomic_write_plan.party_id,
+      partyId);
+    assert.equal(combined.lock_context.physical_keys[0],'legacy:key');
+    assert.equal(combined.lock_context.physical_keys.some((key) =>
+      key.includes('party_ordinary_materialization_commits')),true);
     let replayCalls = 0;
     const replay = resolver({load:async () => committedFixture({
       ordinary_aggregate:positive.ordinary_materialization_atomic_write_plan

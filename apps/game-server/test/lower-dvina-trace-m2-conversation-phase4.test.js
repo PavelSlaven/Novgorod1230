@@ -30,7 +30,7 @@ import {
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
-test('Phase 4 persists an offered promise when the target hears nothing', async () => {
+test('Phase 4 persists an unheard promise', async () => {
   const { state, contracts } = phase4ArrivalState();
   state.promise_instances[0].created_change_set_id = 'change:phase4-arrival';
   const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
@@ -91,10 +91,12 @@ test('one arrival event creates distinct others and objective signals', () => {
 test('Phase 4 does not create a promise or check for an ordinary question', async () => {
   const { state, contracts } = phase4ArrivalState();
   const baseModel = createM2ConversationModels().playerConversationModel;
+  let playerRequest;
   const command = semanticNegotiationCommand({
     contracts,
     inputDigest: digest('1'),
     playerConversationModel: async (request) => {
+      playerRequest = structuredClone(request);
       const plan = structuredClone(await baseModel(request));
       plan.resolution = 'automatic';
       plan.check = null;
@@ -106,7 +108,13 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   });
   const availability = await command.availability({
     retrievedState: state,
-    playerInput: { raw_text: 'Ратша, кто велел тебе прийти сюда?' }
+    playerInput: { raw_text: 'Скажи, как тебя зовут и что случилось?' },
+    modeResolution: { decision_trace: { step_traces: [{ approved_plan: {
+      operations: [{ op: 'emit_interaction', interaction_kind: 'request',
+        target_actor_refs: [
+          contracts.actors.onisim_boatman.instance_id
+        ] }]
+    } }] } }
   });
 
   assert.equal(availability.status, 'available');
@@ -114,22 +122,28 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   assert.equal(availability.causal_stages.some(
     ({ schema }) => schema === 'rus.trace_promise_offer_stage.v1'
   ), false);
+  assert.equal(playerRequest.player_safe_context.target_npc_ref.entity_id,
+    contracts.actors.onisim_boatman.instance_id);
+  assert.deepEqual(playerRequest.operation_contract, {});
 });
 
-test('exact Phase 4 promise input requires one valid promise contribution', async () => {
+test('selected Phase 4 promise requires one contribution', async () => {
   const { state, contracts } = phase4ArrivalState();
   const requests = [];
   const { playerConversationModel } = createM2ConversationModels();
-  const prepare = (raw_text, model = playerConversationModel) =>
+  const prepare = (raw_text, model = playerConversationModel,
+    requiresPromise = false) =>
     prepareTracePhase4PlayerConversationPlan({
     state, contracts, playerInput: { raw_text }, inputDigest: digest('promise'),
+    requiresPromise,
     playerConversationModel: async (request) => {
       requests.push(structuredClone(request));
       return model(request);
     }, revalidateStateVersion: async () => state.party_state.state_version
   });
   const plan = await prepare(
-    '  Предложить Ратше  условную защиту и потребовать сдачи.  ');
+    'Обещаю тебе защиту, если ты сдашься.',
+    playerConversationModel, true);
   assert.equal(requests.length, 1);
   assert.equal(requests[0].player_safe_context.required_resolution,
     'check_required');
@@ -183,7 +197,7 @@ test('Phase 4 action-set evaluation does not invoke the conversation interpreter
   assert.equal(playerCalls, 0);
 });
 
-test('revisions 14 and 15 accept exact Phase 4 semantic lineage', () => {
+test('activated semantic revisions retain exact Phase 4 lineage', () => {
   const semanticExchange = { response_kind: 'surrender' };
   const turnId = 'turn:party-1:4';
   const factual = {
@@ -207,6 +221,18 @@ test('revisions 14 and 15 accept exact Phase 4 semantic lineage', () => {
   });
   assert.deepEqual(phase4SemanticCommitContext({
     scenarioRevision: 15,
+    factual,
+    writePlan: {
+      turn_id: turnId,
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    }
+  }), {
+    rootTurnId: turnId,
+    workingRevision: 0,
+    semanticExchange
+  });
+  assert.deepEqual(phase4SemanticCommitContext({
+    scenarioRevision: 32,
     factual,
     writePlan: {
       turn_id: turnId,
@@ -409,6 +435,18 @@ test('Ratsha check admission maps success to surrender and failure to hostile fo
     });
     assert.equal(exchange.result.response_kind, responseKind);
     assert.equal(exchange.npcCalls, 1);
+    if (band === 'failure_with_consequence') {
+      assert.deepEqual(
+        exchange.npcRequest.decision_scope.required_supporting_operation,
+        { op: 'state_bargain' }
+      );
+    }
+    if (band === 'severe_failure') {
+      assert.deepEqual(
+        exchange.npcRequest.decision_scope.allowed_contribution_kinds,
+        ['combat_handoff']
+      );
+    }
   }
   for (const [index, [responseKind, band, code]] of [
     ['lie', 'success', 'TURN_NPC_PLAN_INVALID'],
@@ -419,9 +457,9 @@ test('Ratsha check admission maps success to surrender and failure to hostile fo
     ['combat_handoff', 'success', 'TURN_NPC_PLAN_INVALID'],
     ['surrender', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
     ['lie', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
-    ['speech', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
-    ['silence', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
-    ['leave_conversation', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED']
+    ['speech', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['silence', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['leave_conversation', 'severe_failure', 'TURN_NPC_PLAN_INVALID']
   ].entries()) {
     await assert.rejects(runPhase4({ state, contracts,
       rawText: 'Что ты ответишь?', inputDigest: digest('0123456789a'[index]),

@@ -17,7 +17,7 @@ export function combatTurnRoleDefaults(contractModes) {
     combat_weapon_classification: {
       envPrefix: 'COMBAT_WEAPON_CLASSIFICATION',
       model: 'deepseek-v4-flash', thinking: 'disabled',
-      reasoningEffort: null, responseFormat: 'json_object', maxTokens: 500,
+      reasoningEffort: null, responseFormat: 'json_object', maxTokens: 20_000,
       temperature: 0, topP: 1,
       outputContractMode: contractModes.JSON_OBJECT_WITH_SCHEMA,
       expectedSchema:
@@ -32,7 +32,7 @@ export function combatTurnRoleDefaults(contractModes) {
 function semanticRole(envPrefix, outputContractMode) {
   return {
     envPrefix, model: 'deepseek-v4-flash', thinking: 'disabled',
-    reasoningEffort: null, responseFormat: 'json_object', maxTokens: 8000,
+    reasoningEffort: null, responseFormat: 'json_object', maxTokens: 20_000,
     outputContractMode, expectedSchema: null,
     parseJson: true, targetInputTokens: 100000, comfortableInputTokens: 220000,
     hardInputLimitTokens: 600000, reserveOutputTokens: 8000,
@@ -43,7 +43,7 @@ function semanticRole(envPrefix, outputContractMode) {
 function repairRole(envPrefix, outputContractMode) {
   return {
     envPrefix, model: 'deepseek-v4-flash', thinking: 'disabled',
-    reasoningEffort: null, responseFormat: 'json_object', maxTokens: 4000,
+    reasoningEffort: null, responseFormat: 'json_object', maxTokens: 20_000,
     temperature: 0, topP: 1, outputContractMode,
     expectedSchema: null, parseJson: true,
     targetInputTokens: 30000, comfortableInputTokens: 30000,

@@ -1,0 +1,16 @@
+{
+  "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+  "profile_id": "lower_dvina_trace_npc_actor_step_profile_v1",
+  "revision": 1,
+  "status": "approved",
+  "activation_boundary": {
+    "phase": "phase_7",
+    "npc_participant_slot_ref": "zhdanko_storehouse_controller"
+  },
+  "actor_mechanics_context": {
+    "attributes": [
+      {"attribute_ref": "strength", "label": "сила", "value": 10}
+    ]
+  },
+  "fallback_policy": "forbidden"
+}

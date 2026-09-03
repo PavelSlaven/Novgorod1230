@@ -27,7 +27,7 @@ export async function resolveSpatialSemanticDescriptor({ request, roleRunner, ev
         { role: 'user', content: JSON.stringify(safeEvaluation == null ? safeRequest : {
           ...safeRequest, evaluation_case_id: safeEvaluation.case_id,
           evaluation_intent: safeEvaluation.intent }) }],
-      overrides: { temperature: 0, maxTokens: 400 } });
+      overrides: { temperature: 0, maxTokens: 20_000 } });
   } catch (error) {
     throw turnFailure('TURN_SPATIAL_SEMANTIC_MODEL_FAILED',
       'Spatial semantic model failed.', { cause: message(error) });

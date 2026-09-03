@@ -23,6 +23,14 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
   next.clock_weather_light = { ...structuredClone(next.clock_weather_light),
     clock: structuredClone(next.clock) };
   next.body_state = committedPlayerBody(playerBody, state.body_state);
+  const terminalNpcStatuses = new Map(
+    combat.session_after?.status === 'ended'
+      ? (combat.session_after.participant_states ?? [])
+        .filter(({ actor_ref: actor }) => actor.entity_kind === 'npc')
+        .map(({ actor_ref: actor, combat_status: status }) =>
+          [actor.entity_id, status])
+      : []
+  );
   next.npcs = (next.npcs ?? []).map((npc) => {
     const workingNpc = combat.working_state_after?.npcs?.find(
       ({ instance_id: id }) => id === npc.instance_id);
@@ -36,6 +44,9 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
       zone_ref: workingNpc?.zone_ref ?? npc.zone_ref,
       machine_state: {
       ...npc.machine_state, ...structuredClone(workingNpc?.machine_state ?? {}),
+      ...(terminalNpcStatuses.has(npc.instance_id) ? {
+        combat_terminal_status: terminalNpcStatuses.get(npc.instance_id)
+      } : {}),
       ...(body == null ? {} : { body_condition: {
         ...npc.machine_state?.body_condition, health: body.health,
         combat_conditions: structuredClone(body.active_conditions ?? [])

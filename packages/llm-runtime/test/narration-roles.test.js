@@ -4,10 +4,10 @@ import test from 'node:test';
 import { resolveLlmExecutionConfig } from '../src/provider-config.js';
 
 const gameplayNarrationRoles = {
-  gameplay_narrator: ['json_object', null, 10000],
-  gameplay_narrator_format_repair: ['json_repair', null, 6000],
-  gameplay_narrator_auditor: ['json_object', null, 10000],
-  gameplay_narrator_semantic_repair: ['json_object', null, 6000]
+  gameplay_narrator: ['json_object', null, 120000],
+  gameplay_narrator_format_repair: ['json_repair', null, 120000],
+  gameplay_narrator_auditor: ['json_object', null, 120000],
+  gameplay_narrator_semantic_repair: ['json_object', null, 120000]
 };
 
 for (const [roleId, [outputContractMode, expectedSchema, requestTimeoutMs]] of Object.entries(gameplayNarrationRoles)) {

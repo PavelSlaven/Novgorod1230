@@ -16,6 +16,8 @@ import { bindLowerDvinaTraceFactualTurnStepIdempotency } from
 import { mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence } from
   './lower-dvina-trace-turn-step-persistence.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   inputDigest, loadState, committer }) {
@@ -101,6 +103,8 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
       integrated.error);
     buildInput = integrated.input;
   }
+  buildInput = bindOrdinaryPlanToCombinedInput(buildInput,
+    writePlan.ordinary_materialization_atomic_write_plan, partyId);
   const built = await builder.build(buildInput);
   if (!built.ok) fail('TRACE_COMBAT_WRITE_PLAN_REJECTED', built.error);
   const committedPublicResult = committedPendingPhase2PublicResult({

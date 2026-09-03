@@ -10,16 +10,15 @@ import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
 import { actionProducedPreparedOrdinaryRows } from './action-produced-prepared-ordinary.js';
 import { actionProducedDestinationAfterPreparedActions,
+  actionProducedDestinationAfterPreparedOrdinary,
   actionProducedPreparedActionRows } from
   './action-produced-prepared-ordinary.js';
 import { bindActionProducedResourcePins } from
   './action-produced-resource-pins.js';
-import { actionProducedAccessState,
-  actionProducedControllerPermitted,
-  actionProducedControllerRef,
-  actionProducedPlacementAccessible,
-  loadActionProducedAccessContainers } from
+import { loadActionProducedAccessContainers } from
   './action-produced-contained-access.js';
+import { createActionProducedCommittedRowPin } from
+  './action-produced-committed-row-pin.js';
 
 const INPUT_KEYS = ['party_id', 'actor_ref', 'root_turn_id', 'action_ref',
   'step_index', 'context_ref', 'expected_party_state_version', 'source_refs',
@@ -56,8 +55,9 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     fail('ACTION_PRODUCED_PARTY_STALE');
   }
   const outputDestinationPin = actionProducedDestinationAfterPreparedActions(
-    await loadActionProducedOutputDestination(client, input),
-    input.prepared_action_plans ?? []);
+    actionProducedDestinationAfterPreparedOrdinary(
+      await loadActionProducedOutputDestination(client, input),
+      input.prepared_ordinary_plan ?? null), input.prepared_action_plans ?? []);
 
   const requested = [...input.source_refs, ...input.tool_refs];
   const preparedActions = actionProducedPreparedActionRows(input);
@@ -70,12 +70,14 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   const rows = await client.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
        i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
-       p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+       p.anchor_id,p.scene_position_id AS item_scene_position_id,
+       p.container_id,p.holder_npc_id,p.holder_character_id,
        p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
        e.position_node_id AS scene_position_id,
        e.occupies_capacity_units AS scene_occupies_capacity_units,
        e.state_version AS scene_state_version,
        o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
+       o.owner_external_ref,
        o.controller_npc_id,o.controller_character_id,o.claim_state
      FROM party_runtime.party_items i
      JOIN party_runtime.party_item_placements p
@@ -119,11 +121,10 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   const rowPins = requested.map((itemId) => {
     const futureAction = preparedActions.rows.get(itemId);
     const future = futureAction ?? prepared.get(itemId);
-    return rowPin({
+    return createActionProducedCommittedRowPin({
     row: future?.row ?? byId.get(itemId),
     role: input.source_refs.includes(itemId) ? 'source' : 'tool',
     actorRef: input.actor_ref,
-    contextVersion,
     finite: resources.get(itemId) ?? null,
     accessAnchorId: outputDestinationPin?.anchor_id ?? null,
     accessScenePositionId: outputDestinationPin?.scene_position_id ?? null,
@@ -175,90 +176,6 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   });
 }
 
-function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
-  accessScenePositionId,
-  accessContainer = null, preparedOrdinary = null, preparedAction = null }) {
-  if (!row || !text(row.item_id)
-      || !Number.isSafeInteger(Number(row.state_version))
-      || Number(row.state_version) < 1
-      || preparedOrdinary === null && preparedAction === null
-        && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
-          accessAnchorId)
-      || row.scene_position_id != null && (!text(accessScenePositionId)
-        || row.scene_position_id !== accessScenePositionId)
-      || !validOwnership(row)
-      || !actionProducedControllerPermitted(row, role, actorRef)
-      || row.state?.lifecycle_status != null
-        && row.state.lifecycle_status !== 'active'
-      || finite != null && (
-        finite.persisted_row.position_node_id
-          !== row.state?.resource_position_node_id
-        || finite.persisted_row.property_basis_ref
-          !== row.state?.property_state?.resource_property_basis_ref)) {
-    fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
-  }
-  const access = preparedOrdinary === null && preparedAction === null
-    ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId)
-    : 'quick';
-  const holderRef = [row.holder_character_id, row.holder_npc_id]
-    .includes(actorRef) ? actorRef : null;
-  const item = {
-    item_id: row.item_id,
-    run_id: row.run_id,
-    template_id: row.template_id,
-    profile_id: row.profile_id,
-    category_id: row.category_id,
-    quantity: Number(row.quantity),
-    condition_state: row.condition_state,
-    legal_status: row.legal_status,
-    state: row.state,
-    state_version: Number(row.state_version)
-  };
-  const placement = {
-    anchor_id: row.anchor_id, container_id: row.container_id,
-    holder_npc_id: row.holder_npc_id,
-    holder_character_id: row.holder_character_id,
-    physical_position: row.physical_position,
-    equipment_slot_category_id: row.equipment_slot_category_id,
-    attached_item_id: row.attached_item_id
-  };
-  const ownership = {
-    ownership_id: row.ownership_id,
-    owner_npc_id: row.owner_npc_id,
-    owner_character_id: row.owner_character_id,
-    owner_party: row.owner_party,
-    controller_npc_id: row.controller_npc_id,
-    controller_character_id: row.controller_character_id,
-    claim_state: row.claim_state
-  };
-  return {
-    role, item_id: row.item_id, item, placement, ownership,
-    ...(row.scene_position_id == null ? {} : { scene_placement: {
-      position_node_id: row.scene_position_id,
-      occupies_capacity_units: Number(row.scene_occupies_capacity_units),
-      state_version: Number(row.scene_state_version) } }),
-    entity_snapshot: {
-      schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
-      commit_state: 'committed', role, entity_ref: row.item_id,
-      state_version: contextVersion,
-      lifecycle_state: 'active', access_state: access,
-      holder_ref: holderRef,
-      controller_ref: actionProducedControllerRef(row),
-      ownership_snapshot: structuredClone(ownership),
-      finite_resource: finite?.snapshot ?? null
-    },
-    finite_resource_row: finite?.persisted_row ?? null,
-    ...(accessContainer === null ? {} : {
-      access_container: structuredClone(accessContainer)
-    }),
-    ...(preparedOrdinary === null ? {} : {
-      prepared_ordinary: preparedOrdinary
-    }),
-    ...(preparedAction === null ? {} : {
-      prepared_action: preparedAction
-    })
-  };
-}
 function contextVersionFrom(input) {
   return String(input.expected_party_state_version);
 }
@@ -283,13 +200,6 @@ function validProfiles(input) {
     && policy.profile_version === admission.profile_version
     && Number.isSafeInteger(policy.max_new_entities)
     && policy.max_new_entities >= 1 && policy.max_new_entities <= 8;
-}
-
-function validOwnership(row) {
-  const owners = Number(text(row.owner_character_id))
-    + Number(text(row.owner_npc_id)) + Number(row.owner_party === true);
-  return owners === 1 && typeof row.owner_party === 'boolean'
-    && text(row.claim_state);
 }
 
 function refs(value, empty) {

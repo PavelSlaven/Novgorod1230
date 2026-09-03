@@ -1,0 +1,14 @@
+[
+  {"child_id":"gn_nov_g1_xp017_yp026","child_version":4,"parent_id":"region_novgorod_land","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"gn_nov_g2_xp017_yp026_r2_dry_ridge_belt","child_version":4,"parent_id":"gn_nov_g1_xp017_yp026","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","child_version":4,"parent_id":"gn_nov_g2_xp017_yp026_r2_dry_ridge_belt","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","child_version":4,"parent_id":"gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area","child_version":4,"parent_id":"gn_nov_g1_xp017_yp026","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","child_version":4,"parent_id":"gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","child_version":4,"parent_id":"gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge","child_version":4,"parent_id":"gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge","child_version":4,"parent_id":"gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"trace_ld_v1_g5_wreck_shore","child_version":1,"parent_id":"g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"trace_ld_v1_g5_fishing_camp","child_version":1,"parent_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"},
+  {"child_id":"trace_ld_v1_g5_old_drying_shed","child_version":1,"parent_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge","parent_version":4,"world_revision_id":"novgorod_spatial_v3_production_v6_candidate_001"}
+]

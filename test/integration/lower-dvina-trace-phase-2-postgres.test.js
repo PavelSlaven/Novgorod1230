@@ -39,13 +39,18 @@ import {
 import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
+import { loadLowerDvinaTraceA1Profile } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-a1-profile.js';
+import { createLowerDvinaTraceA1ProductionResolverFactory } from
+  '../../apps/game-server/src/runtime/releases/lower-dvina-trace-a1-production.js';
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
+  installLowerDvinaTraceV6World, lowerDvinaTraceV6World } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync(
@@ -201,6 +206,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'owner_preserved_evidence_held');
   assert.deepEqual(persistedCluePlacement.state.property_state,
     result.clue.property_state);
+  assert.equal(persistedCluePlacement.state.display_name,
+    'клочок синей шерсти');
   assert.deepEqual(persistedCluePlacement.state.inventory_profile_snapshot,
     result.clue.inventory_profile);
   assert.equal(
@@ -282,6 +289,9 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     [opened.party_id]
   )).rows[0].state_payload;
   assert.equal('relevant_hidden_state' in firstSnapshot, false);
+  assert.equal(firstSnapshot.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_blue_wool_fragment')
+    .state.display_name, 'клочок синей шерсти');
   assert.equal(
     containsObjectKey(firstSnapshot, 'hidden_truth'),
     false
@@ -610,13 +620,55 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
       runtimeCatalogPin
     })
   );
-
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
     runtimeCatalogPin,
   });
 });
+
+test('active A1 partial authored result survives reload, retry and reuse',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for isolated A1 PostgreSQL integration');
+      return;
+    }
+    const name = `lower-dvina-a1-${process.pid}`;
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', name]);
+    });
+    const started = docker([
+      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=a1',
+      '-e', 'POSTGRES_DB=a1', 'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    await waitForPostgres(name);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    const port = Number(
+      docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
+    );
+    pool = new pg.Pool({ host: '127.0.0.1', port, user: 'a1',
+      password: 'local_only', database: 'a1', max: 8 });
+    await installSchemas(pool);
+    await installLowerDvinaTraceV6World(pool);
+    const bundle = await loadLowerDvinaTraceMaterializationBundle({
+      scenarioDefinitionRevision: 32
+    });
+    const runtimeCatalogPin = Object.freeze({
+      ...lowerDvinaTracePhase1ADomainPin(bundle),
+      compatible_world_revision_id: lowerDvinaTraceV6World.revision,
+      compatible_world_catalog_digest: lowerDvinaTraceV6World.digest,
+      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest
+    });
+    const release = Object.freeze({ release_id: 'a1-postgres-release',
+      world_revision_id: lowerDvinaTraceV6World.revision,
+      world_catalog_digest: lowerDvinaTraceV6World.digest,
+      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest });
+    await assertPartialAuthoredA1Persists({ pool, release, runtimeCatalogPin });
+  });
 
 async function assertRatshaCaftanTransitionPersists({
   pool,
@@ -665,6 +717,10 @@ async function assertRatshaCaftanTransitionPersists({
     narrationService: { async run() { throw new Error('unexpected narration'); } }
   });
   const initial = await repository.loadPhase2State(opened.party_id);
+  assert.deepEqual(initial.current_visible_context.visible_npc.map(
+    ({ display_label: label }) => label
+  ), ['раненый мужчина', 'мужчина рядом', 'Еремей',
+    'рыбак, пришедший с вами']);
   const ratsha = initial.npcs.find(({ participant_slot_ref: slot }) =>
     slot === 'ratsha_storehouse_helper');
   const caftan = initial.items.find(({ template_id: templateId }) =>
@@ -742,6 +798,203 @@ async function assertRatshaCaftanTransitionPersists({
   });
   assert.equal(playerPortrait.clothing.outer, 'front_open');
   assert.equal(playerPortrait.clothing.main_color, 'dark_blue');
+}
+
+async function assertPartialAuthoredA1Persists({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const loadedProfile = await loadLowerDvinaTraceA1Profile();
+  const runtimeOptions = { pool, release, runtimeCatalogPin,
+    activeScenarioDefinitionRevision: 32,
+    actionProductionProfile: loadedProfile,
+    createTurnStepActionProductionOwner:
+      createLowerDvinaTraceA1ProductionResolverFactory({
+        pool, loadedProfile
+      }) };
+  const runtime = buildRuntime({
+    ...runtimeOptions, turnStepModel: partialAuthoredA1TestModel
+  });
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-a1-partial-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-a1-partial-ack'
+  });
+  const repository = phase2Repository(pool);
+  const initial = await repository.loadPhase2State(opened.party_id);
+  const source = initial.items.find((item) =>
+    item.template_id === 'trace_ld_v1_item_working_outer_garment'
+      && item.placement.holder_character_id === initial.actor_id);
+  assert.ok(source);
+  const input = {
+    request_id: 'phase-2-a1-partial',
+    idempotency_key: 'phase-2-a1-partial',
+    raw_text: 'Отрываю узкую полосу от своей верхней одежды.'
+  };
+  const committed = await runtime.submitTurn(opened.party_id, input);
+  const restarted = phase2Repository(pool);
+  const loaded = await restarted.loadPhase2State(opened.party_id);
+  const loadedSource = loaded.items.find(({ item_id: itemId }) =>
+    itemId === source.item_id);
+  const output = loaded.items.find((item) =>
+    item.item_id !== source.item_id
+      && item.state?.action_production?.causal_identity?.request_id
+        === input.request_id);
+  assert.ok(loadedSource);
+  assert.ok(output);
+  assert.equal(loadedSource.state.action_production.result_class,
+    'partial_transformation');
+  assert.equal(output.state.action_production.source_ref, source.item_id);
+
+  const rows = (await pool.query(`SELECT i.item_id,i.state_version,i.state,
+      p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+      p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
+      o.owner_npc_id,o.owner_character_id,o.owner_party,
+      o.controller_npc_id,o.controller_character_id,o.claim_state
+    FROM party_runtime.party_items i
+    JOIN party_runtime.party_item_placements p
+      ON p.party_id=i.party_id AND p.item_id=i.item_id
+    JOIN party_runtime.party_ownership o
+      ON o.party_id=i.party_id AND o.item_id=i.item_id
+    WHERE i.party_id=$1 AND i.item_id=ANY($2::text[])
+    ORDER BY i.item_id`, [opened.party_id,
+    [source.item_id, output.item_id]])).rows;
+  assert.equal(rows.length, 2);
+  for (const item of [loadedSource, output]) {
+    const row = rows.find(({ item_id: itemId }) => itemId === item.item_id);
+    assert.equal(item.state_version, Number(row.state_version));
+    assert.deepEqual(item.state.runtime_instance_mechanics_snapshot,
+      row.state.runtime_instance_mechanics_snapshot);
+    const { item_id: _itemId, ...placement } = item.placement;
+    assert.deepEqual(placement, {
+      anchor_id: row.anchor_id,
+      container_id: row.container_id,
+      holder_npc_id: row.holder_npc_id,
+      holder_character_id: row.holder_character_id,
+      physical_position: row.physical_position,
+      equipment_slot_category_id: row.equipment_slot_category_id,
+      attached_item_id: row.attached_item_id
+    });
+    for (const key of ['owner_npc_id', 'owner_character_id', 'owner_party',
+      'controller_npc_id', 'controller_character_id', 'claim_state']) {
+      assert.equal(item.ownership[key], row[key]);
+    }
+  }
+  const beforeRetry = await a1PersistenceCounts(pool, opened.party_id);
+  assert.deepEqual(await buildRuntime({
+    ...runtimeOptions, turnStepModel: partialAuthoredA1TestModel
+  }).submitTurn(opened.party_id, input), committed);
+  assert.deepEqual(await a1PersistenceCounts(pool, opened.party_id),
+    beforeRetry);
+
+  await buildRuntime({
+    ...runtimeOptions, turnStepModel: moveDetachedA1OutputTestModel
+  }).submitTurn(opened.party_id, {
+    request_id: 'phase-2-a1-partial-follow-up',
+    idempotency_key: 'phase-2-a1-partial-follow-up',
+    raw_text: 'Беру оторванную полосу ткани в руку.'
+  });
+  const afterFollowUp = await phase2Repository(pool).loadPhase2State(
+    opened.party_id);
+  const sameSource = afterFollowUp.items.find(({ item_id: itemId }) =>
+    itemId === source.item_id);
+  const sameOutput = afterFollowUp.items.find(({ item_id: itemId }) =>
+    itemId === output.item_id);
+  assert.ok(sameSource);
+  assert.ok(sameOutput);
+  assert.equal(sameOutput.placement.holder_character_id,
+    afterFollowUp.actor_id);
+  assert.equal(sameOutput.placement.physical_position, 'hands');
+  assert.deepEqual(sameSource.state.runtime_instance_mechanics_snapshot,
+    loadedSource.state.runtime_instance_mechanics_snapshot);
+  assert.deepEqual(sameOutput.state.runtime_instance_mechanics_snapshot,
+    output.state.runtime_instance_mechanics_snapshot);
+}
+
+function phase2Repository(pool) {
+  return createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: createSpatialV3PostgresCombinedAtomicCommitter({
+      pool,
+      recheck: firstPlayableCommitRecheck,
+      now: () => new Date('2026-07-30T08:00:00.000Z')
+    })
+  });
+}
+
+async function a1PersistenceCounts(pool, partyId) {
+  return (await pool.query(`SELECT
+      (SELECT state_version::int FROM party_runtime.parties
+        WHERE party_id=$1) AS party_version,
+      (SELECT count(*)::int FROM party_runtime.party_items
+        WHERE party_id=$1 AND state ? 'action_production') AS action_items,
+      (SELECT count(*)::int FROM party_runtime.party_command_idempotency
+        WHERE party_id=$1 AND idempotency_key='phase-2-a1-partial') AS commands`,
+  [partyId])).rows[0];
+}
+
+function partialAuthoredA1TestModel(request) {
+  const source = (request.player_safe_state.items ?? []).find((item) =>
+    item.template_id === 'trace_ld_v1_item_working_outer_garment'
+      && item.placement?.holder_character_id === request.actor.actor_id);
+  assert.ok(source, 'authored source is player-safe');
+  return actionProductionPlan(request, source.item_id);
+}
+
+function actionProductionPlan(request, sourceRef) {
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'request_item_use', actor_ref: request.actor.actor_id,
+      item_ref: sourceRef, use_kind: 'other', target_refs: [],
+      action_production: { source_refs: [sourceRef], tool_refs: [],
+        requested_output_count: 1, identity_mode: 'independent_outputs',
+        origin: 'direct_partition', result_class: 'partial_transformation',
+        material_extent: 'minor', result_descriptor: {
+          display_name: 'полоса ткани',
+          physical_description: 'узкая полоса, оторванная от одежды',
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          inscription_text: null, physical_form: 'compact',
+          source_fact_delta: {
+            physical_description: 'у края недостаёт узкой полосы ткани',
+            qualitative_facts: [], removed_physical_fact_refs: [],
+            physical_form: 'regular'
+          }
+        }, output_class: 'ordinary_mundane' }
+    }], check: null, continuation: null, clarification: null,
+    reason_code: 'partial_authored_source_probe',
+    reason: 'От источника отделяется самостоятельная часть.'
+  };
+}
+
+function moveDetachedA1OutputTestModel(request) {
+  const output = (request.player_safe_state.items ?? []).find((item) =>
+    item.state?.action_production?.causal_identity?.request_id
+      === 'phase-2-a1-partial'
+      || item.physical_facts?.includes('узкая полоса, оторванная от одежды'));
+  assert.ok(output, 'detached output is player-safe after reload');
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [{ op: 'move_entity', entity_ref: output.item_id,
+      placement: { relation: 'held_by', target_ref: request.actor.actor_id } }],
+    check: null, continuation: null, clarification: null,
+    reason_code: 'reuse_detached_output',
+    reason: 'Сохранённый предмет перемещается обычным owner.'
+  };
 }
 
 function actorItemMoveTestModel(request) {
@@ -824,7 +1077,7 @@ async function assertGeneralLookAfterInspection({
     raw_text: 'Осмотреть место крушения подробно.'
   });
   assert.equal(narrationRequests[0].visible_context.visible_scene,
-    'Осмотр места крушения завершён.');
+    'место крушения на берегу');
   const beforeLook = {
     checks: await count(pool, 'party_runtime.party_check_resolutions',
       opened.party_id),
@@ -844,8 +1097,7 @@ async function assertGeneralLookAfterInspection({
     'берег крушения');
   assert.notEqual(lookContext.visible_scene,
     narrationRequests[0].visible_context.visible_scene);
-  assert.deepEqual([...lookContext.sensory_details].sort(),
-    [...opened.screen.visible_context.environment.facts].sort());
+  assert.deepEqual(lookContext.sensory_details, []);
   assert.equal(JSON.stringify(lookContext).includes(
     'visible:road_bag_missing'), false);
   assert.equal(randomDraws, beforeLook.randomDraws);
@@ -883,10 +1135,7 @@ async function assertGeneralLookAfterInspection({
     opened.screen.visible_context.place);
   assert.notEqual(campLookContext.visible_scene,
     narrationRequests[2].visible_context.visible_scene);
-  assert.deepEqual([...campLookContext.sensory_details].sort(), [
-    'dry_bank_near_working_water',
-    'local_fishing_work_site'
-  ]);
+  assert.deepEqual(campLookContext.sensory_details, []);
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);
@@ -984,6 +1233,9 @@ function buildRuntime({
   randomDrawObserver = () => {},
   randomValue = null,
   turnStepModel: suppliedTurnStepModel = null,
+  createTurnStepActionProductionOwner = null,
+  actionProductionProfile = null,
+  activeScenarioDefinitionRevision = null,
   repositoryDecorator = (value) => value,
   narrationService = {
     async run(request) {
@@ -1012,6 +1264,8 @@ function buildRuntime({
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
     turnStepModel,
+    createTurnStepActionProductionOwner,
+    actionProductionProfile,
     playerConversationModel,
     npcSemanticModel,
     semanticResolver: async (request) => {
@@ -1059,6 +1313,7 @@ function buildRuntime({
     committer,
     release,
     runtimeCatalogPin,
+    activeScenarioDefinitionRevision,
     traceStartAdapter:
       createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: pool,

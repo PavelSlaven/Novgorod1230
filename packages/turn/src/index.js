@@ -22,6 +22,11 @@ import { resolveOrdinaryMaterializationPresence,
   './ordinary-materialization-presence.js';
 import { resolveWorldProcessStep, validateWorldProcessStepPlan } from './world-process-step.js';
 import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
+import { resolveNpcOrdinarySemanticRemainder } from
+  './npc-ordinary-semantic-remainder.js';
+export { isBackgroundNpcSemanticRemainderInScope,
+  resolveBackgroundNpcSemanticRemainder } from
+  './turn-step-background-npc-remainder.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from
   './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
@@ -61,6 +66,7 @@ import { resolveSpatialV3FirstEntryLifecycle } from
   './spatial-v3-first-entry-lifecycle.js';
 import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
   runAutonomousUpdates } from './autonomous-update.js';
+import { spatialResult } from './stages/narration.js';
 
 export {
   createTurnWorkflowContext,
@@ -100,7 +106,8 @@ export {
   resolveSpatialV3FirstEntryLifecycle,
   createAutonomousUpdateRegistry,
   isCodeOwnedAutonomousUpdate,
-  runAutonomousUpdates
+  runAutonomousUpdates,
+  spatialResult
 };
 export {
   TURN_PRIMARY_MODES,
@@ -153,6 +160,7 @@ export {
   resolveWorldProcessStep,
   validateWorldProcessStepPlan,
   resolveSpatialSemanticDescriptor,
+  resolveNpcOrdinarySemanticRemainder,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

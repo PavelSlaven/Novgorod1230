@@ -14,6 +14,8 @@ import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   './lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceN1ProductionResolverFactory } from
+  './lower-dvina-trace-n1-production.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../lower-dvina-trace-world-process-llm.js';
 import { createOrdinaryMaterializationModel } from
@@ -60,18 +62,17 @@ export function createTraceTurnRuntime({
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
+  npcSemanticRemainderProfile,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
     config.traceTurnDecisionSecret ?? env.RUS_TURN_DECISION_SECRET ?? ''
   ).trim();
-  if (!decisionSecret) return Object.freeze({
-    async submitTurn() {
-      throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
-        'RUS_TURN_DECISION_SECRET is required for semantic intent.',
-        { status: 503 });
-    }
-  });
+  if (!decisionSecret) {
+    const unavailable = async () => { throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
+      'RUS_TURN_DECISION_SECRET is required for semantic intent.', { status: 503 }); };
+    return Object.freeze({ submitTurn: unavailable, recoverPendingPresentation: unavailable });
+  }
   const turnBudget = config.llmTurnBudget ?? config.llmDiagnostics?.turnBudget
     ?? createLlmTurnBudget();
   const llmDiagnostics = config.llmDiagnostics
@@ -84,6 +85,8 @@ export function createTraceTurnRuntime({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity
   });
+  const ordinaryDiscoveryScopeBinding =
+    ordinaryMaterializationProfile?.o2a_ambient?.scope_binding ?? null;
   const ordinaryEnablements =
     createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});
   const ordinaryContainerResolverFactory =
@@ -108,6 +111,13 @@ export function createTraceTurnRuntime({
   const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null
     ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool, roleRunner })
     : null;
+  const backgroundNpcResolverFactory =
+    npcSemanticRemainderProfile?.schema
+      === 'rus.lower_dvina_trace_n1_loaded_profile.v1'
+      && npcSemanticRemainderProfile.profile?.status === 'approved'
+      ? createLowerDvinaTraceN1ProductionResolverFactory({
+          loadedProfile: npcSemanticRemainderProfile, roleRunner
+        }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
@@ -146,7 +156,8 @@ export function createTraceTurnRuntime({
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel
+        ordinaryMaterializationModel,
+        scopeBinding: ordinaryDiscoveryScopeBinding
       }),
     createTurnStepOrdinaryContainerContentsResolver:
       ordinaryContainerResolverFactory,
@@ -156,17 +167,24 @@ export function createTraceTurnRuntime({
       const capabilities =
         enabled.execution_context?.context_bound_capabilities ?? [];
       return Object.freeze({ discovery_available:true,
+        scene_seed_available:enabled.ordinary_aggregate?.seeded === false,
+        scene_details:Object.freeze((enabled.ordinary_aggregate
+          ?.background_groups ?? []).map(({descriptor})=>descriptor)
+          .filter((value)=>typeof value==='string'&&value.trim()===value)),
         sources:Object.freeze(capabilities.map((entry)=>Object.freeze({
           source_ref:entry.candidate_context.target_ref,
           public_name:entry.public_name,
           disclosure_state:entry.disclosure_state }))) });
     },
+    ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
     localFireProfile,
     createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
     spatialSemanticProfile: activeSpatialSemanticProfile,
+    createTurnStepBackgroundNpcResolver: backgroundNpcResolverFactory,
+    npcSemanticRemainderProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

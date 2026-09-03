@@ -51,14 +51,17 @@ test('frozen narration auditor prompts retain both validator-valid forms', async
     const prompt = fixture.messages[0].content;
     assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
     assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-    assert.match(prompt, /"kind":"<one allowed unsupported kind>"/u);
+    assert.match(prompt, /"kind":"<one allowed concern kind>"/u);
     assert.match(prompt, /unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state/u);
-    assert.match(prompt, /action_intent_context is explicitly intent-only/u);
-    assert.match(prompt, /It never proves success, object use, a result, or a world\/NPC state change; those claims require visible_context\./u);
-    assert.match(prompt, /complete sentence copied from visible_context\.visible_scene is supported/u);
-    assert.match(prompt, /tools or objects named by action_intent_context are part of the attempted action and are not completed object use/u);
-    assert.match(prompt, /never an unstated causal bridge, exact object use, or success mechanism/u);
-    assert.match(prompt, /Every other concrete sensory, event, or state claim absent from visible_context is unsupported, even if mundane, plausible, or typical\. Plausibility is not evidence\. If any segment contains such a claim, pass must be false\./u);
+    assert.match(prompt, /action_intent_context may ground only/u);
+    assert.match(prompt, /it never proves success, object use, a result, or a world\/NPC state change/u);
+    assert.match(prompt, /faithful natural paraphrase of visible_context is supported/u);
+    assert.match(prompt, /do not prove that nobody or nothing is present/u);
+    assert.match(prompt, /does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use/u);
+    assert.match(prompt, /tools or objects named there remain intent-only/u);
+    assert.match(prompt, /never an unstated causal bridge or exact mechanism/u);
+    assert.match(prompt, /Plausibility is not evidence\. If any segment has an unsupported claim or technical_presentation, pass must be false\./u);
+    assert.match(prompt, /technical_presentation/u);
   }
 });
 

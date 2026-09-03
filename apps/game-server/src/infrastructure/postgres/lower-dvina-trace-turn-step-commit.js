@@ -33,6 +33,14 @@ import { createSpatialSemanticAtomicWritePlan } from
 import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
 import { projectLowerDvinaTraceS1Resolutions } from
   '../../runtime/releases/lower-dvina-trace-s1-production.js';
+import { applyBackgroundNpcSemanticPlan,
+  createBackgroundNpcSemanticAtomicWritePlan } from
+  './background-npc-semantic-atomic-write-plan.js';
+import {
+  applyS1LocalPositionTransition,
+  backgroundNpcPlanMatchesEnvelope,
+  projectBackgroundNpcRemainder
+} from './lower-dvina-trace-turn-step-commit-projections.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -99,6 +107,23 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_SPATIAL_SEMANTIC_PLAN_INVALID',
       'Spatial semantic atomic plan failed its sealed contract.', { status: 409 });
   }
+  let backgroundNpcSemanticPlan = null;
+  try {
+    if (writePlan.background_npc_semantic_atomic_write_plan != null) {
+      backgroundNpcSemanticPlan = createBackgroundNpcSemanticAtomicWritePlan(
+        writePlan.background_npc_semantic_atomic_write_plan);
+      if (backgroundNpcSemanticPlan.party_id !== partyId
+          || backgroundNpcSemanticPlan.change_set_id !== changeSetId
+          || !backgroundNpcPlanMatchesEnvelope(
+            backgroundNpcSemanticPlan, envelope, state)) {
+        throw new Error();
+      }
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_BACKGROUND_NPC_SEMANTIC_PLAN_INVALID',
+      'Background NPC semantic plan failed its sealed contract.',
+      { status: 409 });
+  }
   const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
     : applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
@@ -108,8 +133,12 @@ export async function commitLowerDvinaTraceTurnStep({
   const committedSpatialResolutions = (state.spatial_semantic ?? [])
     .flatMap(({ resolutions = [] }) => resolutions)
     .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
+  const npcVisibleContext = projectBackgroundNpcRemainder({
+    visibleContext: ordinaryVisibleContext,
+    remainder: backgroundNpcSemanticPlan?.remainder
+  });
   const visibleContext = projectLowerDvinaTraceS1Resolutions({
-    playerSafeState: ordinaryVisibleContext,
+    playerSafeState: npcVisibleContext,
     resolutions: [...committedSpatialResolutions,
       ...(spatialSemanticPlan == null ? [] : [{
         local_ref: spatialSemanticPlan.resolution.local_ref,
@@ -135,6 +164,9 @@ export async function commitLowerDvinaTraceTurnStep({
   }
   for(const plan of localFirePlans)
     applyLocalFireProjection({ next: base.snapshot, plan });
+  const backgroundNpcWrite = backgroundNpcSemanticPlan == null ? null
+    : applyBackgroundNpcSemanticPlan({ plan: backgroundNpcSemanticPlan,
+      state, snapshot: base.snapshot });
   const factual = {
     player_input: envelope.player_input,
     mode_resolution: envelope.mode_resolution,
@@ -166,6 +198,7 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  if (backgroundNpcWrite != null) writes.updates.push(backgroundNpcWrite);
   const committedPublicResult = committedPendingPhase2PublicResult({
     payload: turnStep.snapshot, screen: pendingScreen
   });
@@ -175,7 +208,8 @@ export async function commitLowerDvinaTraceTurnStep({
     const built = await buildLowerDvinaTraceTurnStepCommitPlan({
       partyId, state, envelope, inputDigest, visibleEnvelope, writes,
       turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-      localFirePlans, spatialSemanticPlan
+      localFirePlans, spatialSemanticPlan,
+      temporalResults: envelope.time_update.temporal_results ?? []
     });
   const committed = await committer.commit({
     plan: built.plan,
@@ -187,7 +221,7 @@ export async function commitLowerDvinaTraceTurnStep({
         ? 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT'
         : 'TRACE_TURN_STEP_COMMIT_FAILED',
       'Semantic turn-step P16 commit failed closed.',
-      { status: 409, details: committed.error }
+      { status: 409, public_exposure: 'internal', details: committed.error }
     );
   }
   return {
@@ -198,22 +232,6 @@ export async function commitLowerDvinaTraceTurnStep({
     package_digest: visibleEnvelope.package_digest,
     committed_public_result: committedPublicResult
   };
-}
-
-function applyS1LocalPositionTransition({ snapshot, state, transition }) {
-  if (transition == null) return;
-  if (transition.owner !== '@rus/movement-routes'
-      || transition.actor_id !== state.actor_id
-      || transition.from_position_ref !== state.position?.position_id
-      || typeof transition.to_position_ref !== 'string'
-      || !state.journey_location?.id
-      || state.journey_location.scene_position_id !== transition.from_position_ref
-      || !Number.isSafeInteger(Number(state.journey_location.state_version))) {
-    throw serverError('TRACE_S1_MOVEMENT_TRANSITION_INVALID',
-      'S1 local movement transition failed its committed position binding.', { status: 409 });
-  }
-  snapshot.position = { ...snapshot.position,
-    position_id: transition.to_position_ref };
 }
 
 function requireEnvelope(writePlan) {

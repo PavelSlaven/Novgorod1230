@@ -43,9 +43,12 @@ test('diagnostics accepts telemetry shape, shares turn start, and unions paralle
   assert.equal(JSON.stringify(report).includes('secret prompt'), false);
 });
 
-test('report marks elapsed whole-turn deadline without budget incident', () => {
-  const report = buildLlmTurnReport({ turn_duration_ms: 30_000, turn_deadline_ms: 30_000 });
-  assert.equal(report.aggregate.deadline_exceeded, true);
+test('a valid sixty-second turn has no obsolete whole-turn deadline incident', () => {
+  const report = buildLlmTurnReport({ turn_duration_ms: 60_000 });
+  assert.equal(report.turn_deadline_ms, null);
+  assert.equal(report.llm_budget_ms, null);
+  assert.equal(report.aggregate.deadline_exceeded, false);
+  assert.deepEqual(report.aggregate.incidents, []);
 });
 
 test('diagnostics keeps safe budget and provider failure incidents', async () => {

@@ -50,6 +50,13 @@ export {
 } from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
 export {
+  buildNpcOrdinarySemanticRemainder,
+  validateNpcOrdinarySemanticRemainder,
+  validateNpcOrdinarySemanticRemainderAudit,
+  validateNpcOrdinarySemanticRemainderProposal,
+  validateNpcOrdinarySemanticRemainderRequest
+} from './ordinary-semantic-remainder.js';
+export {
   createNpcScheduleDecisionTerminalEffect,
   NPC_SCHEDULE_DECISION_TERMINAL_EFFECT_REF,
   npcScheduleDecisionTransitionId,

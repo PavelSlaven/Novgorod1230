@@ -15,6 +15,8 @@ export function collectKnownRefs(request) {
   if (plain(request)) {
     visit(request.actor);
     visit(request.player_safe_state);
+    visit(request.available_domain_operations);
+    visit(request.prepared_followup_candidates);
     collectCanonicalMapRefs(request.actor?.attributes, found);
     collectCanonicalMapRefs(request.actor?.skills, found);
   }
@@ -89,6 +91,7 @@ export function jsonProjection(value, path, errors) {
 export function cloneTrace(trace) {
   return {
     knownRefs: new Set(trace.knownRefs),
+    actorRef: trace.actorRef ?? null,
     tempRefs: new Set(trace.tempRefs),
     allTempRefs: trace.allTempRefs,
     retired: new Set(trace.retired),

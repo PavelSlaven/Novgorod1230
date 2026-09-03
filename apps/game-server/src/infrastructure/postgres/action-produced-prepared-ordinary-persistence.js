@@ -7,7 +7,8 @@ export async function lockAndVerifyPreparedActionProducedPin(client, plan,
   const selected = await client.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
        i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
-       p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+       p.anchor_id,p.scene_position_id AS item_scene_position_id,
+       p.container_id,p.holder_npc_id,p.holder_character_id,
        p.physical_position,p.equipment_slot_category_id,p.attached_item_id
      FROM party_runtime.party_items i
      JOIN party_runtime.party_item_placements p
@@ -29,6 +30,9 @@ export async function lockAndVerifyPreparedActionProducedPin(client, plan,
     condition_state: row.condition_state, legal_status: row.legal_status,
     state: row.state, state_version: Number(row.state_version) };
   const placement = { anchor_id: row.anchor_id, container_id: row.container_id,
+    ...(row.item_scene_position_id == null ? {} : {
+      scene_position_id: row.item_scene_position_id
+    }),
     holder_npc_id: row.holder_npc_id,
     holder_character_id: row.holder_character_id,
     physical_position: row.physical_position,

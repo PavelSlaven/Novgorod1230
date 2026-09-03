@@ -202,6 +202,7 @@ function appendCombatBodyHistory({ appends, partyId, factual, changeSetId,
   idemId }) {
   for (const [index, transition] of factual.consequence.combat.body_transitions.entries()) {
     const id = `body-history:${partyId}:combat:${
+      factual.consequence.combat.session_after.combat_id}:${
       factual.consequence.combat.session_after.exchange_ordinal}:${index}`;
     appends.push(row('party_body_temporal_history', id, { history_id: id,
       party_id: partyId, subject_kind: transition.actor_ref.entity_kind,

@@ -6,14 +6,14 @@ import { startLowerDvinaProductionAcceptanceEnv } from
 import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
   '../helpers/lower-dvina-phase-11-llm.js';
 
-test('revision 25 survives production restart and exact replay through Phase 10',
+test('revision 32 survives production restart and exact replay through Phase 10',
   { timeout: 300_000 }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: createCanonicalPhase11LlmResponder()
     });
     context.after(() => environment.close());
     assert.equal(environment.root.health().release_id,
-      'spatial-v3-production-v13');
+      'spatial-v3-production-v14');
     const started = await post(environment, '/api/v1/new-games', {
       scenario_id: 'lower_dvina_trace_v1',
       request_id: 'phase11-new-game'
@@ -31,11 +31,24 @@ test('revision 25 survives production restart and exact replay through Phase 10'
         WHERE party_id = $1 ORDER BY state_version DESC LIMIT 1`,
       [partyId]
     )).rows[0]?.revision;
-    assert.equal(revision, '25');
+    assert.equal(revision, '32');
 
     let restResult;
     for (const [turnId, rawText] of PHASE11_CANONICAL_TURNS) {
       const result = await submit(environment, partyId, turnId, rawText);
+      if (turnId === 'combat') {
+        for (let ordinal = 1; ordinal <= 5; ordinal += 1) {
+          const state = await latestState(environment, partyId);
+          if (state.player_response_boundary == null
+              && !(state.combat_sessions ?? []).some(
+                ({ status }) => status !== 'ended')) break;
+          await submit(environment, partyId, `combat-${ordinal}`, rawText);
+        }
+        const state = await latestState(environment, partyId);
+        assert.equal(state.player_response_boundary, null);
+        assert.equal((state.combat_sessions ?? []).some(
+          ({ status }) => status !== 'ended'), false);
+      }
       if (turnId === 'rest') {
         restResult = result;
         const calls = environment.llm.requests.length;
@@ -58,9 +71,14 @@ test('revision 25 survives production restart and exact replay through Phase 10'
     assert.equal(JSON.stringify(screen).includes('hidden_truth'), false);
     assert.equal(JSON.stringify(screen).includes('роль Жданко доказана'),
       false);
-    assert.equal(screen.screen.visible_context.uncertainties.some(
-      (value) => value.includes('роль Жданко остаётся неустановленным')),
-    true);
+    const publicPrincipalState = [
+      ...screen.screen.visible_context.visible_changes,
+      ...screen.screen.visible_context.uncertainties
+    ];
+    assert.equal(publicPrincipalState.some((value) =>
+      value.includes('роль Жданко подтверждена лишь частично')
+        || value.includes('роль Жданко остаётся неустановленным')), true,
+    JSON.stringify(screen.screen.visible_context));
     const finalCalls = environment.llm.requests.length;
     await environment.restartRoot();
     await submit(environment, partyId, lastId, lastText);
@@ -88,7 +106,7 @@ test('revision 25 survives production restart and exact replay through Phase 10'
       id === 'lower_dvina_late_summer_open_water_v1'), false);
   });
 
-test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alternatives',
+test('production revision 32 admits independent Ratsha, Eremey and Zhdanko alternatives',
   { timeout: 600_000 }, async (context) => {
     let responder = createCanonicalPhase11LlmResponder();
     const environment = await startLowerDvinaProductionAcceptanceEnv({

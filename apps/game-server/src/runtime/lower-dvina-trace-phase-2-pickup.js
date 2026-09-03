@@ -70,6 +70,19 @@ export function materializeBlueWoolPickup({
     quantity: 1,
     condition_state: 'held_evidence_fragment',
     legal_status: 'owner_preserved_evidence_held',
+    ownership: {
+      ownership_id: `ownership:${clue.instance_id}`,
+      owner_npc_id: null,
+      owner_character_id: null,
+      owner_party: false,
+      owner_external_ref: {
+        entity_kind: 'participant_slot',
+        entity_id: transition.owner_preservation
+      },
+      controller_npc_id: null,
+      controller_character_id: state.actor_id,
+      claim_state: 'owner_preserved_evidence_held'
+    },
     property_state: {
       owner_ref: transition.owner_preservation,
       holder_ref: state.actor_id,

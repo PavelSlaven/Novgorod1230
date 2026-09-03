@@ -130,6 +130,7 @@ test('attack produces a separate two-minute player-response boundary without har
 
 test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
   const projector = createTracePhase4VisibleProjector({
+    contracts,
     phase3Projector: { project: async () => assert.fail('unexpected fallback') }
   });
   for (const responseKind of ['surrender', 'speech', 'lie', 'bargain',
@@ -138,7 +139,8 @@ test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
       phase4_kind: 'negotiation', negotiation: { semantic_exchange:
         semanticExchange(responseKind) }
     } });
-    assert.equal(visible.visible_changes.includes('ratsha_surrendered'),
+    assert.equal(visible.visible_changes.includes(
+      'Стоящий рядом мужчина сдался.'),
       responseKind === 'surrender');
   }
   const legacy = await projector.project({ consequence: {
@@ -146,8 +148,30 @@ test('Phase 4 exposes Ratsha surrender marker only for surrender', async () => {
       outcome: 'surrender'
     } }
   } });
-  assert.ok(legacy.visible_changes.includes('ratsha_surrendered'));
+  assert.ok(legacy.visible_changes.includes('Стоящий рядом мужчина сдался.'));
 });
+
+test('Phase 4 arrival exposes perceived actors without leaking canonical names',
+  async () => {
+    const projector = createTracePhase4VisibleProjector({ contracts,
+      phase3Projector: { project: async () => assert.fail('fallback') } });
+    const visible = await projector.project({ consequence: {
+      phase4_kind: 'movement'
+    }, retrieved_state: { npcs: [{ instance_id: 'onisim', machine_state: {
+      binding_item: { holder_npc_id: 'onisim', use_state: 'binding_onisim' }
+    } }] } });
+    assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref,
+      display_label: label, recognition }) => [ref.entity_id, label, recognition]), [
+      ['onisim', 'раненый мужчина', 'unrecognized'],
+      ['ratsha', 'мужчина рядом', 'unrecognized'],
+      ['eremey', 'Еремей', 'recognized'],
+      ['fisher', 'рыбак, пришедший с вами', 'unrecognized']
+    ]);
+    assert.doesNotMatch(visible.visible_scene, /Онисим|Ратша/u);
+    assert.match(visible.visible_scene, /ноги стянуты верёвкой/u);
+    assert.match(visible.visible_npc[0].visible_status, /ноги стянуты верёвкой/u);
+    assert.doesNotMatch(JSON.stringify(visible), /binding_onisim|controller/u);
+  });
 
 test('Phase 4 temporal owner commits route once and preserves separate negotiation roots', async () => {
   const route = routeToShedEffect({

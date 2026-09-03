@@ -20,6 +20,7 @@ import { snapshotOrdinaryMaterializationEnablement } from
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
+  scopeBinding = null,
   verifyStageBCutover = ordinaryMaterializationModel?.verifyStageBCutover,
   inputDigest
 } = {}) {
@@ -51,7 +52,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         : { finite_resource_transition: transition };
     },
     async loadDiscoveryContext(request) {
-      const scopeRef = currentG6(request?.committed_state);
+      const scopeRef = currentG6(request?.committed_state, scopeBinding);
       const rootId = request?.request?.root_turn_id;
       if (scopeRef == null || typeof rootId !== 'string' || !rootId) return null;
       const enabled = snapshotOrdinaryMaterializationEnablement(
@@ -99,6 +100,8 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
           finite_source_initial_amount_estimate_policy: estimatePolicy
         } };
       return { ...enabled, party_id: partyId, scope_ref: scopeRef,
+        seed_semantic_context: seedSemanticContext(
+          request?.request?.player_safe_state?.current_visible_context),
         semantic_target_ref: request.operation.target_refs[0],
         expected_supporting_bases:
           structuredClone(enabled.execution_context.supporting_bases),
@@ -159,10 +162,35 @@ function bindCommittedFiniteSource(execution) {
     matches.length === 1 ? structuredClone(matches[0]) : null };
 }
 
-function currentG6(state) {
+function currentG6(state, scopeBinding) {
   const id = state?.position?.g6_id ?? state?.position?.g6_ref;
-  return typeof id === 'string' && id.length
-    ? { entity_kind: 'g6', entity_id: id } : null;
+  if (typeof id === 'string' && id.length) {
+    return { entity_kind: 'g6', entity_id: id };
+  }
+  return state?.position?.location_ref === scopeBinding?.position_ref
+      && text(scopeBinding?.g6_ref)
+    ? { entity_kind: 'g6', entity_id: scopeBinding.g6_ref } : null;
+}
+function seedSemanticContext(value) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+  const visibleScene = text(value.visible_scene) ? value.visible_scene : null;
+  const sensoryDetails = Array.isArray(value.sensory_details)
+    ? value.sensory_details.filter(text) : [];
+  const visibleObjects = Array.isArray(value.visible_objects)
+    ? value.visible_objects.map(({ display_label: label }) => label)
+      .filter(text) : [];
+  return visibleScene == null && sensoryDetails.length === 0
+      && visibleObjects.length === 0 ? null : {
+    visible_scene: visibleScene,
+    sensory_details: sensoryDetails,
+    visible_objects: visibleObjects
+  };
+}
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
 }
 function validExecution(value) {
   return value != null && typeof value === 'object'

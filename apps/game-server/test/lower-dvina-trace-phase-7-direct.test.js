@@ -16,6 +16,23 @@ import { buildTracePhase7NpcActionDecisionRequest } from
   '../src/runtime/lower-dvina-trace-phase-7-autonomous.js';
 import { validateTracePhase7Plan } from
   '../src/runtime/lower-dvina-trace-phase-7-plan-validation.js';
+import { npcItemWorkingProjection } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-item-context.js';
+
+test('NPC item projection omits an unavailable optional position', () => {
+  const state = phase7CommittedState();
+  const npc = state.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'zhdanko_storehouse_controller');
+  npc.machine_state = { ...npc.machine_state, g6_id: null, g6_ref: null };
+  state.items = [];
+  state.containers = [];
+  const projection = npcItemWorkingProjection({
+    workingProjection: { cumulative_elapsed_minutes: 25 },
+    state, npc, itemRefs: []
+  });
+  assert.equal(Object.hasOwn(projection, 'position'), false);
+  assert.doesNotThrow(() => JSON.stringify(projection));
+});
 
 test('Phase 7 executes only registered NPC-safe direct handler', async () => {
   const state = phase7CommittedState();

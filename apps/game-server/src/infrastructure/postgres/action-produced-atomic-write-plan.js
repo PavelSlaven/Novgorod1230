@@ -1,6 +1,4 @@
 import { isDeepStrictEqual } from 'node:util';
-import { mergeActionProducedPhysicalFacts } from
-  '@rus/items-property';
 import {
   INVALID_ACTION_PRODUCED_DATA,
   actionProducedText as text,
@@ -24,6 +22,8 @@ import { validLowerDvinaTraceActionProductionPlanProfile } from
   '../../internal/lower-dvina-trace-a1-bundle.js';
 import { validActionProducedOuterCausalBinding } from
   './action-produced-causal-binding.js';
+import { deriveActionProducedSourceUpdates } from
+  './action-produced-source-updates.js';
 const REQUEST_KEYS = [
   'schema', 'party_id', 'base_party_state_version', 'change_set_id',
   'committed_load', 'transition_proposal'
@@ -50,7 +50,7 @@ export function createActionProducedAtomicWritePlan(rawInput) {
   const proposal = validateProposal(input.transition_proposal, load);
   const sourcePins = load.row_pins.filter(({ role }) => role === 'source');
   const toolPins = load.row_pins.filter(({ role }) => role === 'tool');
-  const sourceUpdates = deriveSourceUpdates(proposal, sourcePins);
+  const sourceUpdates = deriveActionProducedSourceUpdates(proposal, sourcePins);
   const outputDestination = proposal.identity_mode === 'independent_outputs'
       || load.row_pins.some(({ placement }) => placement.anchor_id != null)
     ? load.output_destination_pin : null;
@@ -73,83 +73,6 @@ export function createActionProducedAtomicWritePlan(rawInput) {
   };
   validatePlan(plan);
   return deepFreeze(plan);
-}
-function deriveSourceUpdates(proposal, sourcePins) {
-  return proposal.source_transitions.flatMap((transition) => {
-    const pin = sourcePins.find(({ item_id: id }) =>
-      id === transition.entity_ref);
-    const primaryRef = proposal.source_transitions[0].entity_ref;
-    const retireSource = transition.finite_resource_transition === null
-      && transition.after.mechanics_snapshot === null
-      && (proposal.identity_mode === 'independent_outputs'
-        || proposal.identity_mode === 'preserve_source'
-          && transition.entity_ref !== primaryRef);
-    const changed = transition.finite_resource_transition !== null
-      || transition.after.mechanics_snapshot !== null || retireSource;
-    if (!changed) return [];
-    const preservedResult = proposal.identity_mode === 'preserve_source'
-      && transition.entity_ref === proposal.results[0].entity_ref
-      ? proposal.results[0] : null;
-    const survivingPartition = proposal.identity_mode === 'independent_outputs' && proposal.result_class === 'partial_transformation'
-      && transition.after.mechanics_snapshot !== null && !retireSource
-      && transition.finite_resource_transition?.lifecycle_state_after !== 'depleted';
-    const descriptor = proposal.qualitative_result.result_descriptor;
-    const sourceDelta = survivingPartition ? descriptor.source_fact_delta : null;
-    const physicalState = preservedResult === null && !survivingPartition ? null
-      : mergeActionProducedPhysicalFacts({ entity_ref: pin.item_id,
-        action_ref: proposal.causal_identity.action_ref,
-        existing: pin.item.state?.ordinary_metadata?.semantic_facts ?? [],
-        existing_inscriptions: pin.item.state?.ordinary_metadata?.physical_inscriptions ?? [],
-        physical_description: sourceDelta === null
-          ? descriptor.physical_description : sourceDelta.physical_description,
-        physical_facts: sourceDelta === null
-          ? preservedResult?.physical_facts ?? descriptor.qualitative_facts
-          : sourceDelta.qualitative_facts,
-        removed_fact_refs: sourceDelta === null
-          ? descriptor.removed_physical_fact_refs ?? []
-          : sourceDelta.removed_physical_fact_refs,
-        inscription_text: preservedResult?.inscription_text ?? null });
-    const nextState = {
-      ...(pin.item.state ?? {}),
-      lifecycle_status: retireSource || transition.finite_resource_transition
-          ?.lifecycle_state_after === 'depleted' ? 'retired' : 'active',
-      ...(transition.after.mechanics_snapshot === null ? {} : {
-        runtime_instance_mechanics_snapshot:
-          structuredClone(transition.after.mechanics_snapshot)
-      }),
-      ...(physicalState === null ? {} : {
-        ordinary_metadata: {
-          ...(pin.item.state?.ordinary_metadata ?? {}),
-          semantic_facts: structuredClone(physicalState.physical_facts),
-          physical_inscriptions: structuredClone(physicalState.physical_inscriptions)
-        },
-        ...(preservedResult === null && !survivingPartition ? {} : {
-          action_production: {
-          schema: 'rus.items.action_production_item_state.v1',
-          causal_identity: structuredClone(proposal.causal_identity),
-          result_class: proposal.result_class,
-          output_class: proposal.qualitative_result.output_class,
-          physical_form: survivingPartition ? sourceDelta.physical_form
-            : proposal.qualitative_result.result_descriptor.physical_form
-        } })
-      })
-    };
-    return [{
-      item_id: pin.item_id,
-      expected_item_state_version: pin.item.state_version,
-      before_item: structuredClone(pin.item),
-      after_item: { ...pin.item,
-        ...(transition.after.mechanics_snapshot === null ? {} : {
-          run_id: null, template_id: null, profile_id: null,
-          category_id: null
-        }),
-        ...(retireSource ? { condition_state: 'retired' } : {}),
-        state: nextState,
-        state_version: pin.item.state_version + 1 },
-      finite_resource_transition: structuredClone(
-        transition.finite_resource_transition)
-    }];
-  });
 }
 export function actionProducedPhysicalKeys(plan) {
   if (plan == null) return [];
@@ -188,8 +111,10 @@ export function validActionProductionExtension(plan) {
 }
 function preparedPinMatches(pin, ordinary, priorPlans) {
   if (pin.prepared_ordinary != null) {
+    const ordinaryItems = Array.isArray(ordinary?.items)
+      ? ordinary.items : ordinary?.item == null ? [] : [ordinary.item];
     return ordinary?.request_identity === pin.prepared_ordinary.request_identity
-      && ordinary.items?.some((item) => item.item_id === pin.item_id);
+      && ordinaryItems.some((item) => item.item_id === pin.item_id);
   }
   if (pin.prepared_action == null) return true;
   const prior = priorPlans.find((candidate) => candidate.transition_proposal
@@ -270,13 +195,14 @@ function validatePlan(value) {
     },
     row_pins: [...value.source_pins, ...value.tool_pins]
   });
-  const contextVersion = String(value.base_party_state_version);
   const destination = validateActionProducedDestinationPin(
     value.output_destination_pin);
   validateActionProducedRowPins(value.source_pins, 'source', value.actor_ref,
-    contextVersion, proposal.causal_identity, destination?.anchor_id ?? null);
+    proposal.causal_identity, destination?.anchor_id ?? null,
+    destination?.scene_position_id ?? null);
   validateActionProducedRowPins(value.tool_pins, 'tool', value.actor_ref,
-    contextVersion, proposal.causal_identity, destination?.anchor_id ?? null);
+    proposal.causal_identity, destination?.anchor_id ?? null,
+    destination?.scene_position_id ?? null);
   const pinnedItemIds = [...value.source_pins, ...value.tool_pins]
     .map(({ item_id: itemId }) => itemId);
   if (new Set(pinnedItemIds).size !== pinnedItemIds.length) {
@@ -287,7 +213,8 @@ function validatePlan(value) {
         value.source_updates, value.result_items, value.source_pins))) {
     fail('ACTION_PRODUCED_DESTINATION_CAPACITY');
   }
-  const expectedUpdates = deriveSourceUpdates(proposal, value.source_pins);
+  const expectedUpdates = deriveActionProducedSourceUpdates(
+    proposal, value.source_pins);
   const expectedItems = proposal.identity_mode === 'independent_outputs'
     ? proposal.results.map((result) => producedItem(result,
       value.source_pins, proposal, value.change_set_id,

@@ -437,6 +437,52 @@ test('replay deadline after visible read does not call narrator', async () => {
   assert.equal(narratorCalls, 0);
 });
 
+test('committed movement replay passes code-confirmed outcome to narrator',
+  async () => {
+    const visiblePayload = {
+      perceived_scene: 'У ворот начинается дорога.', perceived_changes: [],
+      sensory_details: [], visible_npcs: [], visible_objects: [],
+      known_context: [], uncertainties: []
+    };
+    const packageDigest = computeSpatialV3CanonicalDigest(visiblePayload);
+    let narrationRequest = null;
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: {
+        async query() {
+          return { rowCount: 1, rows: [{ visible_payload: visiblePayload,
+            package_digest: packageDigest }] };
+        },
+        connect() { throw new Error('unexpected transaction'); }
+      },
+      committer: { commit() {} }
+    });
+    await assert.rejects(repository.replayPhase2Turn({
+      partyId: 'party',
+      replay: {
+        input_digest: 'input',
+        screen: { screen_status: 'committed_presentation_pending',
+          turn_id: 'turn' },
+        state: { last_turn: {
+          visible_package: { package_id: 'package',
+            package_digest: packageDigest },
+          raw_text: 'Выйти к воротам.',
+          consequence: { movement: {
+            source: { location_ref: 'camp' },
+            destination: { location_ref: 'gate' }
+          } }
+        } }
+      },
+      narrator: { async run(input) {
+        narrationRequest = input;
+        throw new Error('stop after narration request');
+      } }
+    }), /stop after narration request/u);
+    assert.deepEqual(narrationRequest.context, {
+      attempt: { text: 'Выйти к воротам.' },
+      outcome: { movement_committed: true }
+    });
+  });
+
 test('trace retry shares one turn budget context', async () => {
   const budget = createLlmTurnBudget();
   const diagnostics = createLlmDiagnostics({ turnBudget: budget });
@@ -457,21 +503,16 @@ test('trace retry shares one turn budget context', async () => {
   assert.equal(contexts[0], contexts[1]);
 });
 
-test('pre-commit reserve blocks phase 2 repository commit', async () => {
+test('a long valid turn still commits without an obsolete whole-turn deadline', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
   const f = fixture({ llmDiagnostics: diagnostics, beforeRandomSource() { now = 25_000; } });
-  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
+  await f.runtime.submitTurn({ partyId: f.partyId, input: {
     request_id: 'budget-precommit', idempotency_key: 'budget-precommit',
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-  } }), (error) => {
-    assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-    assert.equal(error.budget_exhausted, true);
-    assert.equal(error.deadline_exceeded, false);
-    return true;
-  });
-  assert.equal(f.commitCount(), 0);
+  } });
+  assert.equal(f.commitCount(), 1);
 });
 
 test('pre-commit reserve permits phase 2 repository commit before boundary', async () => {
@@ -487,7 +528,7 @@ test('pre-commit reserve permits phase 2 repository commit before boundary', asy
   assert.equal(f.lastCommitInput().turnBudget, budget);
 });
 
-test('whole-turn deadline returns committed pending screen before narration or screen persistence', async () => {
+test('a former whole-turn deadline does not suppress post-commit presentation', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
@@ -500,9 +541,9 @@ test('whole-turn deadline returns committed pending screen before narration or s
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
   } });
   assert.equal(f.commitCount(), 1);
-  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
-  assert.equal(f.narratorInput(), null);
-  assert.equal(f.events.includes('persist_screen'), false);
+  assert.equal(result.screen.screen_status, 'ready');
+  assert.notEqual(f.narratorInput(), null);
+  assert.equal(f.events.includes('persist_screen'), true);
 });
 
 test('unexpected repository failure after factual commit remains visible', async () => {

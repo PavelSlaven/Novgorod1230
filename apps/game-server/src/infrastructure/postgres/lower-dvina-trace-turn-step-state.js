@@ -209,6 +209,16 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       envelope.time_update.clock_after.subminute_denominator,
     updated_change_set_id: changeSetId
   }));
+  const routeMovement = envelope.consequence?.phase3_kind === 'movement'
+    || envelope.consequence?.phase8_kind === 'movement';
+  if (routeMovement) {
+    writes.updates.push(row('party_positions', partyId, {
+      party_id: partyId,
+      g4_id: snapshot.position.g4_id,
+      g5_node_id: snapshot.position.g5_node_id,
+      g5_anchor_id: snapshot.position.g5_anchor_id
+    }));
+  }
   if (envelope.body_update.applied) writes.updates.push(row(
     'party_actor_body_states', `player_character:${state.actor_id}`, {
       party_id: partyId,

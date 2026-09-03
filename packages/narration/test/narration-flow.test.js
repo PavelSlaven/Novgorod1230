@@ -144,20 +144,24 @@ test('blocks non-empty unsupported used_references after one repair', async () =
   assert.deepEqual(result.diagnostics.errors, ['used_references must be empty until visible_context defines reference vocabulary']);
 });
 
-test('repairs only auditor-flagged segment and re-audits complete prose', async () => {
+test('repairs the coherent prose and re-audits the complete result', async () => {
   const audits = [];
   const result = await runNarrationFlow(request(), ports({
     writer: { async generate() { return output('Сначала видно ворота. Телега скрипит у ворот. Потом всё тихо.'); } },
     auditor: { async audit(input) {
       audits.push(input);
       return audits.length === 1
-        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's2', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
+        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
         : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair(input) {
       assert.equal(input.request_id, 'turn:party-1:1');
-      assert.deepEqual(input.segments.map((segment) => segment.segment_id), ['s2']);
-      return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Телега стоит у ворот. ' }] };
+      assert.deepEqual(input.segments, [{ segment_id: 's1',
+        prose: 'Сначала видно ворота. Телега скрипит у ворот. Потом всё тихо.',
+        nearby_context: [] }]);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'Сначала видно ворота. Телега стоит у ворот. Потом всё тихо.' }] };
     } }
   }));
   assert.equal(result.status, 'approved');
@@ -166,18 +170,98 @@ test('repairs only auditor-flagged segment and re-audits complete prose', async 
   assert.equal(audits[1].output.prose, result.approved_output.prose);
 });
 
-test('shares intent-only player context with audit and semantic repair', async () => {
+test('semantic repair rewrites one coherent paragraph instead of duplicating nearby facts', async () => {
+  let audits = 0;
+  const original = 'Плечо обмотано лентой, узел затянут. Прошло пять минут.';
+  const repaired = 'За пять минут плечо оказывается обмотано лентой, а узел — затянут.';
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output(original); } },
+    auditor: { async audit(input) {
+      audits += 1;
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's1', kind: 'technical_presentation',
+              reason: 'Elapsed time is a standalone report.' }],
+            evidence: ['Both changes are supported.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.deepEqual(input.segments, [{
+        segment_id: 's1', prose: original, nearby_context: []
+      }]);
+      assert.deepEqual(input.concerns.map(({ segment_id: id }) => id), ['s1']);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: repaired }] };
+    } }
+  }));
+
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, repaired);
+});
+
+test('semantic repair returns the complete prose with its spacing', async () => {
+  let audits = 0;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output('Первое. Второе.'); } },
+    auditor: { async audit() {
+      audits += 1;
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+          concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Replace.' }],
+          evidence: ['Replace.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+          concerns: [], evidence: ['Grounded.'] };
+    } },
+    semanticRepairer: { async repair() {
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'Исправлено. Второе.' }] };
+    } }
+  }));
+  assert.equal(result.approved_output.prose, 'Исправлено. Второе.');
+});
+
+test('semantic repair can delete a wholly unsupported segment', async () => {
+  let audits = 0;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() {
+      return output('Вы подняли несуществующую доску. Прошла минута.');
+    } },
+    auditor: { async audit() {
+      audits += 1;
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's1', kind: 'unsupported_object_use',
+              reason: 'Pickup is not confirmed.' }], evidence: ['Time only.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Confirmed time.'] };
+    } },
+    semanticRepairer: { async repair() {
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: 'Прошла минута.' }] };
+    } }
+  }));
+
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, 'Прошла минута.');
+});
+
+test('keeps intent-only context separate from confirmed outcome', async () => {
   const actionIntent = {
-    player_input: { raw_text: 'Постучать в закрытую дверь.' },
-    mode_resolution: { option_id: 'ordinary-attempt' }
+    attempt: { text: 'Постучать в закрытую дверь.' },
+    outcome: { position_changed: false }
   };
   const seen = [];
   const result = await runNarrationFlow(request({ context: actionIntent }), ports({
-    writer: { async generate() {
+    writer: { async generate(input) {
+      assert.equal(Object.hasOwn(input.context, 'attempt'), false);
+      assert.deepEqual(input.context.outcome, actionIntent.outcome);
       return output('Вы пытаетесь постучать в закрытую дверь.');
     } },
     auditor: { async audit(input) {
       seen.push(input.action_intent_context);
+      assert.deepEqual(input.confirmed_outcome, actionIntent.outcome);
       return seen.length === 1
         ? { version: 1, schema: 'narration_audit', pass: false,
             concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
@@ -186,10 +270,8 @@ test('shares intent-only player context with audit and semantic repair', async (
             concerns: [], evidence: ['Attempt is grounded by player intent.'] };
     } },
     semanticRepairer: { async repair(input) {
-      assert.deepEqual(input.action_intent_context, {
-        evidence_scope: 'intent_only_non_evidence_of_success',
-        ...actionIntent
-      });
+      assert.equal(Object.hasOwn(input, 'action_intent_context'), false);
+      assert.deepEqual(input.confirmed_outcome, actionIntent.outcome);
       return { version: 1, schema: 'narration_semantic_repair',
         replacements: [{ segment_id: 's1',
           prose: 'Вы пытаетесь постучать в закрытую дверь.' }] };
@@ -197,15 +279,52 @@ test('shares intent-only player context with audit and semantic repair', async (
   }));
   assert.equal(result.status, 'approved');
   assert.deepEqual(seen, [
-    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent },
-    { evidence_scope: 'intent_only_non_evidence_of_success', ...actionIntent }
+    { evidence_scope: 'intent_only_non_evidence_of_success',
+      attempt: actionIntent.attempt },
+    { evidence_scope: 'intent_only_non_evidence_of_success',
+      attempt: actionIntent.attempt }
   ]);
+});
+
+test('passes confirmed outcome separately to audit and whole-prose repair', async () => {
+  const confirmedOutcome = { movement_committed: true };
+  let audits = 0;
+  const result = await runNarrationFlow(request({ context: {
+    attempt: { text: 'Выйти к воротам.' }, outcome: confirmedOutcome
+  } }), ports({
+    writer: { async generate() { return output('Вы вышли к воротам.'); } },
+    auditor: { async audit(input) {
+      audits += 1;
+      assert.deepEqual(input.action_intent_context, {
+        evidence_scope: 'intent_only_non_evidence_of_success',
+        attempt: { text: 'Выйти к воротам.' }
+      });
+      assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
+      return audits === 1
+        ? { version: 1, schema: 'narration_audit', pass: false,
+            concerns: [{ segment_id: 's1', kind: 'technical_presentation',
+              reason: 'Rewrite as coherent prose.' }],
+            evidence: ['Movement is confirmed.'] }
+        : { version: 1, schema: 'narration_audit', pass: true,
+            concerns: [], evidence: ['Movement is confirmed.'] };
+    } },
+    semanticRepairer: { async repair(input) {
+      assert.equal(Object.hasOwn(input, 'action_intent_context'), false);
+      assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
+      return { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1',
+          prose: 'За воротами перед вами открывается дорога.' }] };
+    } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose,
+    'За воротами перед вами открывается дорога.');
 });
 
 test('intent-only context does not ground an unsupported success claim', async () => {
   let repairCalls = 0;
   const result = await runNarrationFlow(request({ context: {
-    player_input: { raw_text: 'Открыть закрытую дверь.' }
+    attempt: { text: 'Открыть закрытую дверь.' }
   } }), ports({
     writer: { async generate() { return output('Вы открыли закрытую дверь.'); } },
     auditor: { async audit(input) {
@@ -227,13 +346,13 @@ test('intent-only context does not ground an unsupported success claim', async (
   assert.equal(repairCalls, 1);
 });
 
-test('blocks malformed auditor, unflagged repair, and failed final audit without another repair', async (t) => {
+test('blocks malformed auditor, invalid repair target, and failed final audit without another repair', async (t) => {
   await t.test('malformed auditor', async () => {
     const result = await runNarrationFlow(request(), ports({ auditor: { async audit() { return {}; } } }));
     assert.equal(result.status, 'blocked');
     assert.equal(result.diagnostics.phase, 'audit_validation');
   });
-  await t.test('unflagged repair', async () => {
+  await t.test('invalid repair target', async () => {
     const result = await runNarrationFlow(request(), ports({
       auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'hidden_knowledge', reason: 'Hidden fact.' }], evidence: ['Hidden.'] }; } },
       semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Нет.' }] }; } }

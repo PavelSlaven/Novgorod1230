@@ -44,6 +44,90 @@ const revision25Bundle = await loadLowerDvinaTraceMaterializationBundle({
 const revision25DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
   revision25Bundle
 );
+const revision26Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 26
+});
+const revision26DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
+  revision26Bundle
+);
+const revision32Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 32
+});
+const revision32DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
+  revision32Bundle
+);
+
+test('revision 32 materializes the sealed packet inside the road bag', () => {
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-32-party',
+    scenario_definition_revision: 32,
+    scenario_manifest_digest: revision32Bundle.manifest_digest,
+    world_revision_id: revision32Bundle.location_topology_set.spatial_source_ref
+      .world_revision_id,
+    world_catalog_digest: revision32Bundle.location_topology_set
+      .spatial_source_ref.world_revision_catalog_digest,
+    domain_catalog_pin: revision32DomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-32-idempotency',
+    scenario_bundle: revision32Bundle
+  }));
+  const bag = result.immediate.containers.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_container_road_bag');
+  const packet = result.immediate.items.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_item_sealed_packet');
+  assert.equal(packet.container_id, bag.instance_id);
+  assert.equal(packet.state.seal_state, 'intact');
+  assert.equal(result.immediate.npcs.length, 6);
+  const eremey = result.immediate.npcs.find(({ profile_id: ref }) =>
+    ref === 'trace_ld_v1_eremey_local_fisher_v1');
+  assert.equal(eremey.machine_state.schedule_state, 'working');
+  assert.equal(eremey.machine_state.current_activity.summary,
+    'На рыбацкой стоянке осматривает и чинит принадлежащие ему сети.');
+  assert.equal(eremey.machine_state.current_activity.status, 'active');
+  assert.equal(eremey.machine_state.current_activity
+    .can_continue_automatically, true);
+  assert.equal(eremey.schedule_records[0].schedule_profile_id,
+    'trace_ld_v1_schedule_eremey_net_work_v1');
+  const onisim = result.immediate.npcs.find(({ profile_id: ref }) =>
+    ref === 'trace_ld_v1_onisim_hired_boatman_v1');
+  assert.equal(onisim.machine_state.schedule_state, 'interrupted');
+  assert.equal(onisim.machine_state.current_activity.status, 'paused');
+  assert.equal(onisim.machine_state.current_activity
+    .can_continue_automatically, false);
+  assert.equal(result.immediate.npcs.every(({ schedule_records: records }) =>
+    records.length === 1), true);
+});
+
+test('revision 26 exposes camp and drying-shed first-entry members', async () => {
+  const revision26 = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 26
+  });
+  assert.equal(revision26.definition_revision, 26);
+  assert.deepEqual(revision26.materialization_bindings.first_entry_preparation
+    .members.map(({ ordinal, binding }) => [ordinal,
+      binding.destination.location_profile_ref]), [
+    [0, 'trace_ld_v1_loc_fishing_camp'],
+    [1, 'trace_ld_v1_loc_old_drying_shed']
+  ]);
+});
+
+test('revision 26 prepares drying-shed arrival from its persisted member', () => {
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-26-party',
+    scenario_definition_revision: 26,
+    scenario_manifest_digest: revision26Bundle.manifest_digest,
+    world_revision_id: revision26Bundle.location_topology_set.spatial_source_ref
+      .world_revision_id,
+    world_catalog_digest: revision26Bundle.location_topology_set.spatial_source_ref
+      .world_revision_catalog_digest,
+    domain_catalog_pin: revision26DomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-26-idempotency',
+    scenario_bundle: revision26Bundle
+  }));
+  const shed = result.first_entry_preparation.members[1];
+  assert.equal(shed.scene.location_profile_ref, 'trace_ld_v1_loc_old_drying_shed');
+  assert.equal(shed.binding.route_ref, 'trace_ld_v1_route_camp_to_shed');
+  assert.equal(shed.s1_physical_writes.length, 6);
+});
 
 test('revision 24 rejects a stale S1 definition pin', () => {
   assert.throws(() => validateDefinitionPins({
@@ -189,8 +273,16 @@ test('revision 25 loads NPC actor-step profile and materializes inherited state'
   }));
   assert.equal(revision25Bundle.npc_actor_step_profile.activation_boundary
     .npc_participant_slot_ref, 'zhdanko_storehouse_controller');
-  assert.ok(result.immediate.npcs.some(({ participant_slot_ref }) =>
-    participant_slot_ref === 'zhdanko_storehouse_controller'));
+  const zhdanko = result.immediate.npcs.find(({ participant_slot_ref }) =>
+    participant_slot_ref === 'zhdanko_storehouse_controller');
+  assert.ok(zhdanko);
+  assert.ok(zhdanko.relationships.some(({ actor_ref, relation, status }) =>
+    actor_ref === 'ratsha_storehouse_helper'
+      && relation === 'kinship_uncle_of'
+      && status === 'active'));
+  assert.ok(zhdanko.relationships.some(({ actor_ref, relation }) =>
+    actor_ref === 'ratsha_storehouse_helper'
+      && relation === 'work_supervisor_of'));
 });
 
 function worldSnapshot() {
@@ -205,7 +297,25 @@ function worldSnapshot() {
   wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position.water_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
   wreckShore.movement_edges = [];
   wreckShore.visibility_links = [];
-  return { scene_template_closures: [fishingCamp, wreckShore],
+  const dryingShed = structuredClone(fishingCamp);
+  dryingShed.header = { id: 'trace_ld_v1_tpl_old_drying_shed', version: 1 };
+  dryingShed.g6_slots = [g6('shed_approach', 'spatial.g6.semi_enclosed', 'shed_approach', 'partial'),
+    g6('s1_enclosed_space', 'spatial.g6.enclosed', 'ordinary_local', 'full')];
+  dryingShed.position_slots = [{ position_slot_key: 'shed_approach',
+    g6_scene_slot_key: 'shed_approach', position_type_id: 'scene_position.approach',
+    capacity: 7, access_class_id: 'trace_ld_v1_access_old_drying_shed' },
+  { position_slot_key: 's1_enclosed_space.interior',
+    g6_scene_slot_key: 's1_enclosed_space', position_type_id: 'scene_position.central',
+    capacity: 5, access_class_id: 'trace_ld_v1_access_old_drying_shed' }];
+  dryingShed.movement_edges = [edge('s1_enclosed_space.out', 'shed_approach',
+    's1_enclosed_space.interior', 's1_enclosed_space.back'), edge(
+    's1_enclosed_space.back', 's1_enclosed_space.interior', 'shed_approach',
+    's1_enclosed_space.out')];
+  dryingShed.visibility_links = [link('s1_enclosed_space.visible_out',
+    'shed_approach', 's1_enclosed_space.interior', 's1_enclosed_space.visible_back'),
+  link('s1_enclosed_space.visible_back', 's1_enclosed_space.interior',
+    'shed_approach', 's1_enclosed_space.visible_out')];
+  return { scene_template_closures: [fishingCamp, wreckShore, dryingShed],
     canonical_g5_scene_bindings: lowerDvinaTraceCanonicalG5SceneBindings };
 }
 

@@ -6,7 +6,10 @@ export function projectM2ConversationExecutionResult({
   npcOutcomes,
   resumedOutcome
 }) {
-  const primaryDecision = exchange.npc_decisions[0] ?? null;
+  const primaryDecision = exchange.npc_decisions.find(({ request }) =>
+    request.npc_ref.entity_kind === context.targetRef.entity_kind
+      && request.npc_ref.entity_id === context.targetRef.entity_id)
+    ?? exchange.npc_decisions[0] ?? null;
   const projectedOutcomes = exchange.npc_decisions.map(({ request }) => {
     const outcome = npcOutcomes.get(request.request_id);
     return {
@@ -34,7 +37,7 @@ export function projectM2ConversationExecutionResult({
     ?? null;
   return {
     exchange,
-    decision: primaryDecision ?? exchange.npc_decisions[0] ?? null,
+    decision: primaryDecision,
     decisions: exchange.npc_decisions,
     statements: exchange.working_state.statements,
     audiences: exchange.working_state.audiences,

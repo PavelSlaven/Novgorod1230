@@ -27,11 +27,50 @@ import {
   runPhase3,
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+import { createLowerDvinaTraceNpcSemanticModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { projectM2ConversationExecutionResult } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-result.js';
+
+test('multi-NPC result selects the addressed NPC as the primary decision', () => {
+  const background = ref('npc', 'background');
+  const target = ref('npc', 'target');
+  const decisions = [background, target].map((npcRef) => ({
+    request: { request_id: `request:${npcRef.entity_id}`, npc_ref: npcRef }
+  }));
+  const outcomes = new Map(decisions.map(({ request }) => [
+    request.request_id,
+    { kind: 'speech', contributionRef: ref('conversation_statement',
+      `statement:${request.npc_ref.entity_id}`) }
+  ]));
+  const result = projectM2ConversationExecutionResult({
+    exchange: {
+      npc_decisions: decisions,
+      contributions: [...outcomes.values()].map(({ contributionRef }) => ({
+        schema: 'conversation_statement_event_v1',
+        statement_id: contributionRef.entity_id
+      })),
+      working_state: { statements: [], audiences: [],
+        supporting_operation_perceptions: [], new_signal_records: [],
+        consumed_signal_ids: [], terminal_npc_outcomes: [], clock: {},
+        elapsed_minutes: 0 },
+      temporal_boundary_refs: []
+    },
+    context: { targetRef: target, socialDeliveryResult: null },
+    pendingExecution: null,
+    pendingPlayerExecution: null,
+    npcOutcomes: outcomes,
+    resumedOutcome: null
+  });
+  assert.equal(result.decision.request.npc_ref.entity_id, 'target');
+  assert.equal(result.npcOutcome.contributionRef.entity_id, 'statement:target');
+});
 
 test('player conversation meaning controls whether the common social check runs', async () => {
   const state = phase3State();
   const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
   const baseModel = createM2ConversationModels().playerConversationModel;
+  let ordinaryRequest;
   const common = {
     contracts,
     evidence: false,
@@ -41,14 +80,19 @@ test('player conversation meaning controls whether the common social check runs'
   const ordinary = createTracePhase3ConversationCommand({
     ...common,
     inputDigest: digest('a'),
-    playerConversationModel: baseModel
+    playerConversationModel: async (request) => {
+      ordinaryRequest = structuredClone(request);
+      return baseModel(request);
+    }
   });
   const ordinaryAvailability = await ordinary.availability({
     retrievedState: state,
-    playerInput: { raw_text: 'Еремей, что ты видел?' }
+    playerInput: { raw_text:
+      'Еремей, рассказываю про клочок синей шерсти. Что ты видел?' }
   });
   assert.equal(ordinaryAvailability.status, 'available');
   assert.deepEqual(ordinaryAvailability.check_requests, []);
+  assert.deepEqual(ordinaryRequest.operation_contract, {});
 
   const persuasive = createTracePhase3ConversationCommand({
     ...common,
@@ -66,6 +110,94 @@ test('player conversation meaning controls whether the common social check runs'
   });
   assert.equal(persuasiveAvailability.status, 'check_required');
   assert.equal(persuasiveAvailability.check_requests.length, 1);
+});
+
+test('NPC adapter retries an initial JSON parse failure with its format role',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    const calls = [];
+    const baseModel = createM2ConversationModels().npcSemanticModel;
+    const npcSemanticModel = createLowerDvinaTraceNpcSemanticModel({
+      roleRunner: { async run(call) {
+        calls.push(call);
+        if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
+          code: 'json_parse_failed'
+        });
+        if (call.role_id === 'npc_conversation_grounding_auditor') {
+          return { output: { pass: true, concerns: [] } };
+        }
+        const payload = JSON.parse(call.messages[1].content);
+        return { output: baseModel(payload.request ?? payload) };
+      } }
+    });
+    const exchange = await runPhase3({
+      state, contracts, rawText: 'Что случилось?', inputDigest: digest('a'),
+      responseKind: 'speech', npcSemanticModel
+    });
+    assert.equal(exchange.result.response_kind, 'withhold');
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder',
+      'npc_conversation_responder_format_repair',
+      'npc_conversation_grounding_auditor'
+    ]);
+  });
+
+test('NPC speech owner accepts exact route disclosure and ordinary reply', async (t) => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+  const baseModel = createM2ConversationModels().npcSemanticModel;
+  const calls = [];
+  const npcSemanticModel = createLowerDvinaTraceNpcSemanticModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (call.role_id === 'npc_conversation_grounding_auditor') {
+        return { output: { pass: true, concerns: [] } };
+      }
+      const payload = JSON.parse(call.messages[1].content);
+      return { output: baseModel(payload.request ?? payload) };
+    } }
+  });
+  await t.test('exact supplied route candidate commits without repair', async () => {
+    const exchange = await runPhase3({
+      state, contracts,
+      rawText: 'Show the evidence and ask for directions.', inputDigest: digest('b'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true }, npcSemanticModel
+    });
+    assert.equal(exchange.result.response_kind, 'route_disclosure');
+    assert.equal(exchange.result.route_disclosure.route_ref,
+      'trace_ld_v1_route_camp_to_shed');
+    assert.equal(exchange.result.statements.filter(({ speaker_ref: speaker }) =>
+      speaker.entity_kind === 'npc').length, 1);
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+    ]);
+  });
+
+  await t.test('ordinary grounded reply commits without repair', async () => {
+    const ordinaryCalls = [];
+    const ordinaryModel = createLowerDvinaTraceNpcSemanticModel({
+      roleRunner: { async run(call) {
+        ordinaryCalls.push(call);
+        if (call.role_id === 'npc_conversation_grounding_auditor') {
+          return { output: { pass: true, concerns: [] } };
+        }
+        const payload = JSON.parse(call.messages[1].content);
+        return { output: baseModel(payload.request ?? payload) };
+      } }
+    });
+    const ordinary = await runPhase3({
+      state, contracts, rawText: 'What did you notice?', inputDigest: digest('c'),
+      responseKind: 'withhold', npcSemanticModel: ordinaryModel
+    });
+    assert.equal(ordinary.result.response_kind, 'withhold');
+    assert.deepEqual(ordinaryCalls.map(({ role_id }) => role_id), [
+      'npc_conversation_responder', 'npc_conversation_grounding_auditor'
+    ]);
+  });
 });
 
 test('action-set evaluation does not require player input or invoke the interpreter', async () => {
@@ -94,7 +226,7 @@ test('action-set evaluation does not require player input or invoke the interpre
   assert.equal(playerCalls, 0);
 });
 
-test('revisions 14 and 15 bind exact semantic persistence to the root turn', () => {
+test('supported semantic revisions bind exact semantic persistence to the root turn', () => {
   const semanticExchange = { response_kind: 'withhold' };
   const factual = {
     mode_resolution: { turn_id: 'turn:party-1:3' },
@@ -103,7 +235,7 @@ test('revisions 14 and 15 bind exact semantic persistence to the root turn', () 
       conversation: { semantic_exchange: semanticExchange }
     }
   };
-  for (const scenarioRevision of [14, 15]) {
+  for (const scenarioRevision of [14, 15, 27, 32]) {
     assert.deepEqual(phase3SemanticCommitContext({
       scenarioRevision,
       factual,
@@ -213,6 +345,11 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
   assert.equal(
     disclosed.npcRequest.knowledge.private_persistence_marker,
     persistenceMarker
+  );
+  assert.deepEqual(
+    disclosed.npcRequest.decision_scope.operation_contract
+      .disclose_known_route.player_safe_context,
+    { destination_label: 'старая сушильня' }
   );
   assert.equal(
     disclosed.npcRequest.public_conversation_history[0].utterance_text,
@@ -389,6 +526,73 @@ test('Eremey may answer with ordinary speech and an intent paraphrase becomes na
     'Еремей, скажи по совести: что ты видел у лодки?'
   );
 });
+
+test('an unsupported NPC promise is rejected without semantic rewrite',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    withAccessibleBlueWool(state, contracts);
+    let npcCalls = 0;
+    await assert.rejects(runPhase3({
+      state,
+      contracts,
+      rawText: 'Показываю улику и жду ответа.',
+      inputDigest: digest('e'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true },
+      transformNpcPlan(plan, { call_index: call }) {
+        npcCalls = call;
+        plan.speech.dominant_act = 'promise';
+        plan.supporting_operations = [];
+        return plan;
+      }
+    }), { code: 'TURN_NPC_PLAN_NOT_APPLICABLE' });
+
+    assert.equal(npcCalls, 1);
+  });
+
+test('route speech without its exact operation is rejected without rewrite',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+    withAccessibleBlueWool(state, contracts);
+    let npcCalls = 0;
+    await assert.rejects(runPhase3({
+      state,
+      contracts,
+      rawText: 'Показываю улику и жду ответа.',
+      inputDigest: digest('f'),
+      responseKind: 'route_disclosure',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      playerPlanOptions: { evidence: true },
+      transformNpcPlan(plan, { call_index: call }) {
+        npcCalls = call;
+        plan.supporting_operations = [];
+        return plan;
+      }
+    }), { code: 'TURN_NPC_PLAN_NOT_APPLICABLE' });
+
+    assert.equal(npcCalls, 1);
+  });
+
+test('a present ordinary camp NPC answers through the Phase 3 conversation owner',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({ state,
+      bundle: revision14Bundle });
+    const fisher = contracts.actors.find(
+      ({ ref: actorRef }) => actorRef !== contracts.ids.eremeyRef);
+    const exchange = await runPhase3({ state, contracts,
+      rawText: 'Рыбак в буром кафтане, что ты видел?',
+      inputDigest: digest('7'), responseKind: 'speech',
+      targetActorId: fisher.instance_id });
+    assert.equal(exchange.npcRequest.npc_ref.entity_id, fisher.instance_id);
+    assert.deepEqual(exchange.npcRequest.decision_scope.operation_contract, {});
+    const next = projectPhase3Conversation({ state, contracts,
+      result: exchange.result, inputDigest: digest('7') });
+    assert.equal(next.interactions.at(-1).npc_id, fisher.instance_id);
+  });
 
 function socialCheck(profile) {
   return {

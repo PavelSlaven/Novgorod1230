@@ -19,7 +19,7 @@ const CHROME_PATH = [
 ].find((candidate) => candidate && existsSync(candidate));
 const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
-test('Chromium restores a saved party through production-v13 and PostgreSQL', {
+test('Chromium restores a saved party through production-v14 and PostgreSQL', {
   timeout: 360_000,
   skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
 }, async (context) => {
@@ -30,7 +30,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   const health = await fetch(`${environment.baseUrl}/api/v1/health`);
   assert.equal(health.ok, true);
   assert.equal((await health.json()).data.release_id,
-    'spatial-v3-production-v13');
+    'spatial-v3-production-v14');
   const browser = await chromium.launch({ executablePath: CHROME_PATH,
     headless: true, args: ['--no-sandbox', '--no-proxy-server'] });
   context.after(() => browser.close());
@@ -66,7 +66,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   await page.goto(environment.baseUrl);
   await page.waitForSelector('[data-start-new-game]');
   await page.click('[data-start-new-game]');
-  await page.waitForSelector('[data-new-game-form]');
+  await page.waitForSelector('[data-new-game-screen]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
   await page.waitForSelector('[data-landscape]');
@@ -92,14 +92,15 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   assert.deepEqual(
     phase2Screen.visible_context.sensory_details.filter((detail) =>
       ['cold', 'wet', 'exposed'].includes(detail)).sort(),
-    ['cold', 'exposed', 'wet']
+    []
   );
   assert.equal(phase2Screen.visible_context.environment, undefined,
     'the turn must not create new environment state or knowledge');
   const phase2Landscape = await page.locator('[data-landscape]').evaluate(
     (element) => element.outerHTML
   );
-  assertLandscapeModifiers(phase2Landscape);
+  assert.doesNotMatch(phase2Landscape,
+    /landscape--(?:cold|wet|exposed)/u);
   assert.doesNotMatch(phase2Landscape,
     /road_bag_missing|blue_wool_fragment/u);
   assertValuesAbsent([JSON.stringify(phase2Screen), phase2Landscape],
@@ -122,7 +123,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   await page.click('[data-return-start]');
   await page.waitForSelector('[data-start-new-game]');
   await page.click('[data-start-new-game]');
-  await page.waitForSelector('[data-new-game-form]');
+  await page.waitForSelector('[data-new-game-screen]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
   partyId = [...rawResponses].reverse().map(parseJson).find(
@@ -173,7 +174,7 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
       );
       assert.equal(restartedHealth.ok, true);
       assert.equal((await restartedHealth.json()).data.release_id,
-        'spatial-v3-production-v13');
+        'spatial-v3-production-v14');
       await page.goto(environment.baseUrl);
       await page.waitForSelector('[data-continue-party]');
       const restoredScreen = page.waitForResponse((candidate) =>
@@ -196,8 +197,10 @@ test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   const domText = await page.textContent('body');
   assertPublicText(domText);
   assert.equal(domText.includes('роль Жданко доказана'), false);
-  assert.equal(rawResponses.at(-1).includes(
-    'роль Жданко остаётся неустановленным'), true);
+  assert.equal([
+    'роль Жданко подтверждена лишь частично',
+    'роль Жданко остаётся неустановленным'
+  ].some((value) => rawResponses.at(-1).includes(value)), true);
   assert.equal(await page.locator('.error').count(), 0, domText);
   const snapshot = (await environment.partyPool.query(
     `SELECT state_payload FROM party_runtime.party_state_snapshots

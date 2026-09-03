@@ -1,7 +1,9 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import {
+  enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
-  projectCurrentSceneForVisibleOverlay
+  projectCurrentSceneForVisibleOverlay,
+  projectDirectSeedChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
@@ -29,10 +31,16 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
-        return projectWithoutFire({ input, consequence, seedEntries, fallback });
+        return enrichLowerDvinaTraceVisibleNpcCues({
+          visibleContext: await projectWithoutFire({
+            input, consequence, seedEntries, fallback
+          }),
+          committedState: input.retrieved_state
+        });
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
+      const ordinaryDetails = ordinarySceneDetails(seedEntries);
       const body = input.body_update?.state_after ?? {};
       const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
@@ -41,7 +49,11 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             directSeedKeys: directSeedKeys(seedEntries),
             body
           });
-      return overlayFireVisible(base, fireVisible);
+      return enrichLowerDvinaTraceVisibleNpcCues({
+        visibleContext: overlayFireVisible(
+          overlayOrdinaryScene(base, ordinaryDetails), fireVisible),
+        committedState: input.retrieved_state
+      });
     }
   });
 }
@@ -61,6 +73,16 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
 
 async function projectWithoutFire({ input, consequence, seedEntries,
   fallback }) {
+  const ordinaryDetails = ordinarySceneDetails(seedEntries);
+  if (ordinaryDetails.length > 0) {
+    const body = input.body_update?.state_after ?? {};
+    const base = hasVisibleDomainProjection(consequence)
+      ? await fallback.project(input)
+      : projectCurrentSceneForVisibleOverlay({
+          input, directSeedKeys: directSeedKeys(seedEntries), body
+        });
+    return overlayOrdinaryScene(base, ordinaryDetails);
+  }
   const synthetic = plain(consequence?.visible_seed)
     && Array.isArray(consequence.visible_seed.completed_steps)
     && !hasVisibleDomainProjection(consequence);
@@ -78,7 +100,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     version: 1,
     schema: 'visible_context_package',
     visible_scene: 'Заявленное действие завершено.',
-    visible_changes: directSeeds.map(([key]) => key),
+    visible_changes: projectDirectSeedChanges({ input,
+      directSeedKeys: directSeeds.map(([key]) => key) }),
     sensory_details: [],
     visible_npc: [],
     visible_objects: [],
@@ -87,13 +110,39 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ],
-    uncertainties: consequence.visible_seed.clarification
-      ? ['Фактическое действие не применено до уточнения.'] : [],
+    uncertainties: [
+      ...(consequence.visible_seed.clarification
+        ? ['Фактическое действие не применено до уточнения.'] : []),
+      ...(consequence.status === 'partial'
+        ? ['Удалось осуществить лишь часть задуманного; остальное ещё не произошло.']
+        : [])
+    ],
     allowed_tensions: [],
     do_not_imply: [
       'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
     ]
   });
+}
+
+function ordinarySceneDetails(entries) {
+  const seeds = entries.filter(([key]) => key === 'ordinary_scene_seed');
+  if (seeds.length === 0) return [];
+  if (seeds.length !== 1) ownerFail(
+    'TRACE_TURN_STEP_ORDINARY_SCENE_VISIBLE_SEED_INVALID');
+  const value = seeds[0][1];
+  const details = value?.sensory_details;
+  if (!plain(value) || value.kind !== 'ordinary_scene_seed'
+      || Object.keys(value).length !== 2 || !Array.isArray(details)
+      || details.length === 0 || details.some((detail) => !text(detail))) {
+    ownerFail('TRACE_TURN_STEP_ORDINARY_SCENE_VISIBLE_SEED_INVALID');
+  }
+  return details;
+}
+
+function overlayOrdinaryScene(base, details) {
+  if (details.length === 0) return base;
+  return deepFreeze({ ...structuredClone(base), sensory_details:
+    unique([...base.sensory_details, ...details]) });
 }
 
 function overlayFireVisible(base, fireVisible) {
@@ -117,6 +166,7 @@ function directSeedKeys(entries) {
 
 function hasVisibleDomainProjection(consequence) {
   return Array.isArray(consequence?.observations)
+    || consequence?.combat_kind != null
     || Object.keys(consequence ?? {}).some((key) =>
       /^phase\d+_kind$/u.test(key) && consequence[key] != null);
 }
@@ -127,6 +177,11 @@ function stepIndex(key) {
 
 function unique(values) {
   return [...new Set(values)];
+}
+
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
 }
 
 function projectSeed([key,value]) {

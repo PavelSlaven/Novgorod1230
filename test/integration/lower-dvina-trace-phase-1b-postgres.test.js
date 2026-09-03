@@ -42,8 +42,10 @@ import { buildLowerDvinaV2ImportSql } from
   '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
-import { buildS1AuthoringV5ImportSql } from
+import { buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
+import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 
 const docker = (args) => spawnSync(
   'docker',
@@ -163,6 +165,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
         committer: { commit: async () => ({ ok: true }) },
         release,
         runtimeCatalogPin,
+        activePhase1AManifestDigest:
+          TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+        activeScenarioDefinitionRevision: 32,
         traceStartAdapter: runtimeAdapter,
         partyRepository,
         publicationLoader
@@ -442,7 +447,7 @@ async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
   );
   await pool.query(await readFile('infra/world-base/schema/21.sql', 'utf8'));
   await pool.query(await buildCharacterAppearanceV1ImportSql());
-  await pool.query(await buildS1AuthoringV5ImportSql());
+  await pool.query(await buildS1AuthoringV6ImportSql());
   await activation(
     buildSpatialV3ProductionV12ActivationBundle,
     applySpatialV3ProductionV12ActivationBundle

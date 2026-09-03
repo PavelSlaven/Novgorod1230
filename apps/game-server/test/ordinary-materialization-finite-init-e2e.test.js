@@ -225,7 +225,7 @@ function request(root_turn_id = "turn:1") {
   return {
     request: { root_turn_id },
     committed_state: {
-      position: { g6_id: "river-bank", g5_anchor_id: "anchor:river-bank" },
+      position: { g6_id: "river-bank", position_id: "scene:river-bank" },
     },
     operation: { target_refs: ["river-bank"], query: "взять глину" },
     working_projection: {},

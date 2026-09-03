@@ -18,6 +18,7 @@ import {
 import {
   appendPhase4Movement
 } from './lower-dvina-trace-phase-4-movement-writes.js';
+import { appendWorldRouteJourney } from './lower-dvina-trace-world-route-journey.js';
 import {
   appendPhase4ActivityExecution
 } from './lower-dvina-trace-phase-4-activity-writes.js';
@@ -34,7 +35,7 @@ import { exactActivityRoots, validPersistedOfferStage } from './lower-dvina-trac
 
 export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
   pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts,
-  scenarioRevision, rootTurnId, workingRevision }) {
+  scenarioRevision, rootTurnId, workingRevision, firstEntry = null }) {
   const inserts = [];
   const updates = [
     row('parties', partyId, { party_id: partyId, status: 'active' }),
@@ -51,14 +52,19 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     id: changeSetId, party_id: partyId, operation_kind: 'trace_phase_4_turn',
     idempotency_record_id: idemId
   })];
+  const deletes = [];
 
   if (factual.consequence.phase4_kind === 'movement') {
+    if (firstEntry?.operation_kind !== 'first_entry') appendWorldRouteJourney({
+      writes: { inserts, updates, deletes }, partyId,
+      state, movement: { destination: { scene_position_id: null } }, changeSetId
+    });
     appendPhase4Movement({ inserts, updates, appends, partyId, state, next, factual,
       turnNumber, changeSetId, idemId, contracts });
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase4:${turnNumber}` });
   } else if (factual.consequence.phase4_kind === 'negotiation') {
-    if ([14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(scenarioRevision)) {
+    if (Number.isSafeInteger(scenarioRevision) && scenarioRevision >= 14) {
       appendSemanticNegotiation({
         inserts, updates, appends, partyId, state, next, factual,
         turnNumber, changeSetId, idemId, contracts, rootTurnId,
@@ -76,7 +82,7 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     party_id: partyId, state_version: nextVersion, state_payload: next,
     state_digest: canonicalDigest(next)
   }));
-  return { inserts, updates, appends, deletes: [] };
+  return { inserts, updates, appends, deletes };
 }
 function appendNegotiation({ inserts, updates, appends, partyId, state, next,
   factual, turnNumber, changeSetId, idemId, contracts }) {

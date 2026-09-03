@@ -4,7 +4,8 @@ import { resolveTurnStepDomainOwner } from './turn-step-domain-owner-resolution.
 export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   semanticBindings, availableOptions, actor, committedState, services,
   isDomainStepOperation, isOrdinaryDiscoveryInScope,
-  isSpatialSemanticRemainderInScope, isActionProductionOwnerInScope,
+  isSpatialSemanticRemainderInScope, isBackgroundNpcSemanticRemainderInScope,
+  isActionProductionOwnerInScope,
   turnCommandError }) {
   const cachedOwners = new Map();
   const resolve = ({ operation, plan, request, preparedChainContext }) => {
@@ -15,6 +16,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
       playerSafeState: request.player_safe_state, committedState,
       externalRegistry, semanticBindings, availableOptions, preparedChainContext,
       services, isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+      isBackgroundNpcSemanticRemainderInScope,
       isActionProductionOwnerInScope });
     cachedOwners.set(key, owner);
     return owner;
@@ -36,19 +38,23 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
         rule: 'prepared_followup_binding', code: 'prepared_followup_binding',
         message: 'must bind the current available prepared command' });
     }
-    for (const { operation, path } of plannedDomainOperations(plan,
-      isDomainStepOperation)) {
-      const owner = resolve({ operation, plan, request, preparedChainContext });
-      if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
-        turnCommandError);
-      if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
-        plan, path, preparedChainContext
-      })) errors.push({ path,
-        rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
-        message: 'must resolve to one available domain owner' });
-    }
-    if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
-      'Semantic plan references an unavailable domain owner.', { errors });
+    const validateOwners = () => {
+      for (const { operation, path } of plannedDomainOperations(plan,
+        isDomainStepOperation)) {
+        const owner = resolve({ operation, plan, request,
+          preparedChainContext });
+        if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
+          turnCommandError);
+        if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
+          plan, path, preparedChainContext
+        })) errors.push({ path,
+          rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
+          message: 'must resolve to one available domain owner' });
+      }
+      if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
+        'Semantic plan references an unavailable domain owner.', { errors });
+    };
+    return validateOwners();
   };
   validate.resolve = resolve;
   return validate;

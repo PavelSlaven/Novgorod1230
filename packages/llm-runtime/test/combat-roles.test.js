@@ -20,7 +20,7 @@ test('LLM runtime exposes combat planner, repair and weapon classifier roles',
   assert.deepEqual(roles.combat_weapon_classification, {
     envPrefix: 'COMBAT_WEAPON_CLASSIFICATION', model: 'deepseek-v4-flash',
     thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 500, temperature: 0, topP: 1,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: 'json_object_with_schema', expectedSchema:
       'rus.combat.action_produced_weapon_classification.v1',
     parseJson: true, targetInputTokens: 4000,

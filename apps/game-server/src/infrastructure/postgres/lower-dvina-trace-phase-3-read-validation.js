@@ -144,10 +144,7 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
     evidence_refs: row.evidence
   }));
   const currentPosition = position.rows[0];
-  const preparedTarget = payload.first_entry_preparation?.spatial_v3?.target;
-  const modernFirstEntry = preparedTarget?.status === 'prepared';
-  const expectedJourneyPosition = payload.position?.position_id
-    ?? preparedTarget?.position_id;
+  const expectedJourneyPosition = payload.position?.position_id;
   const npcProof = phase3NpcReadProof(payload, npcs.rows);
   const expectedClue = (payload.items ?? []).find((item) =>
     item.template_id === 'trace_ld_v1_item_blue_wool_fragment');
@@ -160,14 +157,15 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
         !== payload.clock.subminute_numerator
       || clock.rows[0].subminute_denominator
         !== payload.clock.subminute_denominator
-      || (!modernFirstEntry
+      || (expectedJourneyPosition == null
         && (currentPosition.g4_id !== payload.position.g4_id
           || currentPosition.g5_node_id !== payload.position.g5_node_id
           || currentPosition.g5_anchor_id !== payload.position.g5_anchor_id))
-      || (modernFirstEntry
+      || (expectedJourneyPosition != null
         && (journeyLocation.rowCount !== 1
           || journeyLocation.rows[0].scene_position_id
             !== expectedJourneyPosition))
+      || (expectedJourneyPosition == null && journeyLocation.rowCount !== 0)
       || activityProof.valid !== true
       || canonicalDigest(activityProof.actual)
         !== canonicalDigest(activityProof.expected)

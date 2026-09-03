@@ -4,6 +4,9 @@ import { validateTurnStepCommitEnvelope } from './validators.js';
 
 export function buildTurnStepCommitEnvelope(input) {
   const loop = input.draft?.loop_result;
+  const stepTraces = persistedStepTraces(loop.step_traces);
+  const modeResolution = structuredClone(input.modeResolution);
+  modeResolution.decision_trace.step_traces = structuredClone(stepTraces);
   const envelope = {
     version: 1,
     schema: 'turn_step_commit_envelope_v1',
@@ -11,7 +14,7 @@ export function buildTurnStepCommitEnvelope(input) {
     root_turn_id: input.modeResolution.turn_id,
     base_state_version: Number(input.retrievedState.party_state?.state_version),
     player_input: structuredClone(input.playerInput),
-    mode_resolution: structuredClone(input.modeResolution),
+    mode_resolution: modeResolution,
     checks: structuredClone(input.checks),
     consequence: structuredClone(input.consequence),
     time_update: structuredClone(input.timeUpdate),
@@ -30,7 +33,7 @@ export function buildTurnStepCommitEnvelope(input) {
       next_step_index: loop.next_step_index,
       remaining_intent: loop.remaining_intent,
       completed_steps: structuredClone(loop.completed_steps),
-      step_traces: structuredClone(loop.step_traces),
+      step_traces: stepTraces,
       check_results: structuredClone(input.checks.results),
       clarification: structuredClone(loop.clarification)
     }
@@ -44,6 +47,15 @@ export function buildTurnStepCommitEnvelope(input) {
     );
   }
   return deepFreeze(envelope);
+}
+
+function persistedStepTraces(traces) {
+  const projected = structuredClone(traces);
+  for (const trace of projected) {
+    delete trace?.plan_request?.player_safe_state?.active_interlocutor
+      ?.portrait_spec_v1;
+  }
+  return projected;
 }
 
 export function requireTurnStepCommitEnvelope(value, binding = null) {

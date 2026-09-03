@@ -82,6 +82,7 @@ export const M13_REQUIRED_ARTIFACTS = Object.freeze([
   ...M12_REQUIRED_ARTIFACTS,
   'npc_actor_step_profile'
 ]);
+export const M14_REQUIRED_ARTIFACTS = M13_REQUIRED_ARTIFACTS;
 
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
@@ -340,4 +341,42 @@ export const M13_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   npc_actor_step_profile: [
     'rus.lower_dvina_trace_npc_actor_step_profile.v1', 1
   ]
+});
+export const M14_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M13_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 22],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 22
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 26]
+});
+export const M15_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M14_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 23],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 23
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 27],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 7]
+});
+export const M16_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M15_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 28]
+});
+export const M17_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M16_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 29],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 8]
+});
+export const M18_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M17_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 30]
+});
+export const M19_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M18_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 31]
+});
+export const M20_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M19_ARTIFACT_CONTRACT_OVERRIDES,
+  definition: ['rus.trace_scenario_definition.v1', 32]
 });

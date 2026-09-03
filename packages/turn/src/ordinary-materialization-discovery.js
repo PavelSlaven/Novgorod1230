@@ -36,9 +36,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
     const rootId = request.request.root_turn_id;
-    const runtimeAnchorId = request.committed_state?.position?.g5_anchor_id;
-    if (typeof runtimeAnchorId !== 'string' || runtimeAnchorId.length === 0
-        || runtimeAnchorId.trim() !== runtimeAnchorId) {
+    const runtimePositionId = request.committed_state?.position?.position_id;
+    if (typeof runtimePositionId !== 'string' || runtimePositionId.length === 0
+        || runtimePositionId.trim() !== runtimePositionId) {
       return ordinaryNoop(request);
     }
     const objective = { ...enabled.objective_context,
@@ -53,6 +53,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           authority_context: seedAuthorityContext({ execution,
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
+        semanticContext: enabled.seed_semantic_context ?? null,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -79,6 +80,13 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         ?? execution.supporting_bases),
       ...structuredClone(newBases)].sort((left, right) =>
       left.basis_ref.localeCompare(right.basis_ref));
+    if (request.operation?.discovery_kind === 'look') {
+      if (transitions.length === 0) return ordinaryNoop(request);
+      return resolvedPlan({ request, enabled, partyId, scopeRef,
+        inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+        next: projection.ordinary_materialization_aggregate,
+        requestIdentity: objective.request_id, resolution: 'no_change' });
+    }
     if (modelBudget.hasRemaining() === false
         && enabled.code_owned_resolution == null) {
       return resolvedPlan({ request, enabled, partyId, scopeRef,
@@ -119,7 +127,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       basisCatalog: admissionBases(bases), beforeModel: () =>
         verifyStageBCutover({
           eval_contract: execution.stage_b_classification_eval
-        }), codeOwnedResolution: enabled.code_owned_resolution ?? null });
+        }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
+      mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
     if (presence.status === 'no_change' && presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
@@ -181,7 +190,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         } };
       const admitted = admitOrdinaryWorldMaterialization(
         structuredClone(admissionInput));
-      if (!admitted.pass) return ordinaryNoop(request);
+      if (!admitted.pass) throw turnFailure(
+        'TURN_ORDINARY_ITEM_ADMISSION_REJECTED',
+        'Code-owned ordinary item admission rejected the model proposal.');
       const identityKey = `ordinary_identity_${canonicalDigest({
         candidate_key: envelope.identity.candidate_key,
         coverage_key: envelope.identity.coverage_key,
@@ -194,7 +205,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, transition });
       item = admittedItem({ partyId, scopeRef, envelope,
         presence: authorizedPresence, admitted,
-        runtimeAnchorId, authorityProfile });
+        runtimePositionId, authorityProfile });
     }
     if (transition != null && next?.state_version ===
         projection.ordinary_materialization_aggregate.state_version) {
@@ -236,7 +247,7 @@ function seedAuthorityContext({ execution, objective, scopeRef }) {
 }
 
 function semanticModelCallBudget(model) {
-  let remaining = 2;
+  let remaining = 4;
   return Object.freeze({
     hasRemaining: () => remaining > 0,
     invoke: async (request, context) => {
@@ -289,10 +300,21 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     next_aggregate: structuredClone(next), item: structuredClone(item),
     ...(finiteResourceEffects == null ? {}
       : structuredClone(finiteResourceEffects)) });
+  const sceneDetails = transitions
+    .filter(({ kind }) => kind === 'seed')
+    .flatMap(({ background_groups: groups }) => groups)
+    .map(({ descriptor }) => descriptor);
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
     duration_minutes: 0,
-    player_response_boundary: true,
+    ...(request.operation?.discovery_kind === 'look'
+      ? { goal_result: 'achieved' } : {}),
+    ...(sceneDetails.length === 0 ? {} : { consequence_fragment: {
+      visible_seed: { ordinary_scene_seed: {
+        kind: 'ordinary_scene_seed', sensory_details: sceneDetails
+      } }
+    } }),
+    player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });
 }
 
@@ -334,7 +356,7 @@ function presenceTransition({ envelope, presence, aggregate,
     ...(identityKey == null ? {} : { identity_key: identityKey }) };
 }
 function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
-  runtimeAnchorId, authorityProfile }) {
+  runtimePositionId, authorityProfile }) {
   const proposal = admitted.proposal;
   return { item_id: `ordinary_item_${canonicalDigest({ party_id: partyId,
     scope_ref: scopeRef, candidate_key: envelope.identity.candidate_key,
@@ -359,7 +381,7 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   } : {}),
   property_basis_ref: proposal.property_basis_ref,
   position_ref: proposal.placement.position_ref,
-  runtime_placement: { anchor_id: runtimeAnchorId },
+  runtime_placement: { scene_position_id: runtimePositionId },
   mechanics_policy_ref: proposal.runtime_item_mechanics_policy_ref,
   ...(authorityProfile?.weapon_mechanics_snapshot == null ? {}
     : { weapon_mechanics_snapshot:

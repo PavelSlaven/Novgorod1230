@@ -75,15 +75,29 @@ export function createCanonicalPhase11LlmResponder({
       )) {
         return generalLookModel(request);
       }
-      const plan = planTurnStep(request, turn10Actors);
       if (turn10Actors == null
           && request.root_player_action?.startsWith('Отдохнуть у огня')) {
-        turn10Actors = actorIds(request);
+        const targets = request.prepared_followup_candidates?.[0]?.operation
+          ?.target_actor_refs ?? [];
+        turn10Actors = {
+          ...actorIds(request),
+          eremey: targets[0], fisher: targets[1], otherFisher: targets[2]
+        };
       }
       if (request.root_player_action?.startsWith('Попросить Онисима')) {
-        turn10Actors = { ...turn10Actors, onisim: actorIds(request).onisim };
+        const onisim = request.available_domain_operations?.find(
+          ({ op, interaction_kind: kind, content }) =>
+            op === 'emit_interaction' && kind === 'request'
+              && /Онисим/iu.test(content ?? '')
+        )?.target_actor_refs?.[0]
+          ?? actorIds(request).onisim ?? turn10Actors?.onisim;
+        turn10Actors = { ...turn10Actors, onisim };
       }
+      const plan = planTurnStep(request, turn10Actors, generalLookModel);
       return plan;
+    }
+    if (model === 'fixture-turn-step-grounding-auditor') {
+      return { pass: true, concerns: [] };
     }
     if (['fixture-player-conversation-interpreter',
       'fixture-player-conversation-interpreter-repair'].includes(model)) {
@@ -119,16 +133,30 @@ export function createCanonicalPhase11LlmResponder({
         turn10Actors
       });
     }
+    if (model === 'fixture-npc-conversation-grounding-auditor') {
+      return { pass: true, concerns: [] };
+    }
     if (['fixture-npc-autonomous-decider',
       'fixture-npc-autonomous-decider-repair'].includes(model)) {
-      turn10Actors = { ...turn10Actors, zhdanko: input.npc_ref };
-      const plan = phase7AutonomousPlan(input, phase7Choice);
+      const request = input.request ?? input;
+      turn10Actors = { ...turn10Actors, zhdanko: request.npc_ref };
+      const plan = phase7AutonomousPlan(request, phase7Choice);
+      const bagRef = request.npc?.available_resources?.[0]?.resource_ref;
+      const bagMove = request.decision_scope?.operation_contract?.move_entity
+        ?.allowed?.find(({ placement, entity_refs: refs }) =>
+          placement?.relation === 'held_by'
+            && placement.target_ref === request.npc_ref
+            && refs?.includes(bagRef));
       return {
         interpretation: plan.interpretation,
         resolution: plan.resolution,
         operation_choice: phase7Choice === 'move_bag'
-          ? 'request_activity:1' : 'request_activity:0',
-        operations: [],
+          ? null : 'request_activity:0',
+        operations: phase7Choice === 'move_bag' && bagMove != null
+          ? [{ op: 'move_entity', entity_ref: bagRef,
+            placement: bagMove.placement },
+          { operation_choice: 'request_activity:0' }]
+          : [],
         check: plan.check,
         reason_code: plan.reason_code,
         reason: plan.reason
@@ -165,8 +193,22 @@ function resolveIntent(request) {
   };
 }
 
-function planTurnStep(request, knownActors) {
+function planTurnStep(request, knownActors, generalLookModel) {
   const ids = { ...actorIds(request), ...knownActors };
+  if (request.root_player_action === PHASE11_CANONICAL_TURNS[3][1]) {
+    const route = request.available_domain_operations?.find((operation) =>
+      operation.op === 'request_movement'
+        && operation.movement_kind === 'route');
+    if (route != null) return suppliedChoicePlan(request, route,
+      'supplied_known_route');
+  }
+  if (PHASE11_CANONICAL_TURNS.slice(4, 7).some(([, text]) =>
+    request.root_player_action === text)) {
+    const plan = generalLookModel(request);
+    const operation = plan.operations?.[0];
+    if (operation != null) return suppliedChoicePlan(request, operation,
+      plan.reason_code);
+  }
   if (request.root_player_action?.startsWith('Отдохнуть у огня')) {
     return turn10Plan(request, ids);
   }
@@ -178,6 +220,10 @@ function planTurnStep(request, knownActors) {
   const actor = request.actor.actor_id;
   const text = request.remaining_intent;
   const bag = entityByTemplate(
+    request.player_safe_state.containers,
+    'trace_ld_v1_container_road_bag',
+    'container_id'
+  ) ?? entityByTemplate(
     request.player_safe_state.items,
     'trace_ld_v1_container_road_bag',
     'item_id'
@@ -188,11 +234,18 @@ function planTurnStep(request, knownActors) {
     'item_id'
   );
   let operation;
-  if (text.includes('Забрать дорожную')) operation = {
-    op: 'request_item_use', actor_ref: actor, use_kind: 'operate',
-    item_ref: bag, target_refs: []
-  };
-  else if (text.includes('Открыть возвращённую')) operation = {
+  if (text.includes('Забрать дорожную')) {
+    operation =
+    request.available_domain_operations?.find((candidate) =>
+      (candidate.op === 'request_item_use' && candidate.item_ref === bag
+        && candidate.use_kind === 'operate')
+        || (candidate.op === 'move_entity' && candidate.entity_ref === bag
+          && candidate.placement?.relation === 'held_by'
+          && candidate.placement.target_ref === actor)) ?? {
+      op: 'request_item_use', actor_ref: actor, use_kind: 'operate',
+      item_ref: bag, target_refs: []
+    };
+  } else if (text.includes('Открыть возвращённую')) operation = {
     op: 'request_container_access', actor_ref: actor, access_kind: 'open',
     container_ref: bag
   };
@@ -213,6 +266,34 @@ function planTurnStep(request, knownActors) {
   } else {
     operation = activity(actor, dispositionSelection(request));
   }
+  const supplied = request.available_domain_operations?.find((candidate) =>
+    candidate.op === operation.op
+      && (operation.entity_ref == null
+        || candidate.entity_ref === operation.entity_ref)
+      && (operation.placement == null
+        || candidate.placement?.relation === operation.placement.relation
+          && candidate.placement?.target_ref === operation.placement.target_ref)
+      && (operation.item_ref == null || candidate.item_ref === operation.item_ref)
+      && (operation.container_ref == null
+        || candidate.container_ref === operation.container_ref)
+      && (operation.use_kind == null || candidate.use_kind === operation.use_kind)
+      && (operation.access_kind == null
+        || candidate.access_kind === operation.access_kind)
+      && (operation.movement_kind == null
+        || candidate.movement_kind === operation.movement_kind)
+      && (operation.interaction_kind == null
+        || candidate.interaction_kind === operation.interaction_kind)
+      && (operation.target_actor_refs == null
+        || sameStringSet(candidate.target_actor_refs,
+          operation.target_actor_refs))
+      && (operation.target_refs == null
+        || sameStringSet(candidate.target_refs, operation.target_refs))
+      && (operation.activity_kind == null
+        || candidate.activity_kind === operation.activity_kind)
+      && (operation.target_ref == null
+        || candidate.target_ref === operation.target_ref));
+  if (supplied != null) return suppliedChoicePlan(request, supplied,
+    'phase9_step');
   return turnStepPlan(request, operation, null, 'phase9_step');
 }
 
@@ -274,6 +355,39 @@ function turnStepPlan(request, operation, continuation, reasonCode) {
   };
 }
 
+function turnStepChoicePlan(request, operationChoice, operationFamily,
+  reasonCode) {
+  const plan = turnStepPlan(request, null, null, reasonCode);
+  delete plan.operations;
+  plan.operation_choice = operationChoice;
+  plan.operation_family = operationFamily;
+  return plan;
+}
+
+function suppliedChoicePlan(request, operation, reasonCode) {
+  const operations = [...(request.available_domain_operations ?? []),
+    ...(request.player_safe_state?.local_world_process?.allowed ?? [])]
+    .filter((candidate, index, all) => all.findIndex((entry) =>
+      JSON.stringify(entry) === JSON.stringify(candidate)) === index);
+  const index = operations.findIndex((candidate) =>
+    JSON.stringify(candidate) === JSON.stringify(operation));
+  if (index < 0) return turnStepPlan(request, operation, null, reasonCode);
+  const qualifier = operation.process_action ?? operation.discovery_kind
+    ?? operation.access_kind ?? operation.movement_kind ?? operation.use_kind
+    ?? operation.activity_kind ?? operation.interaction_kind;
+  const collision = operations.filter((candidate) => candidate.op === operation.op
+    && (candidate.process_action ?? candidate.discovery_kind
+      ?? candidate.access_kind ?? candidate.movement_kind ?? candidate.use_kind
+      ?? candidate.activity_kind ?? candidate.interaction_kind) === qualifier)
+    .length > 1;
+  const label = collision ? String(operation.description ?? '').normalize('NFKC')
+    .toLocaleLowerCase('ru-RU').replace(/[^\p{L}\p{N}]+/gu, '_')
+    .replace(/^_+|_+$/gu, '') || 'variant' : null;
+  const choice = ['domain_operation', index + 1, operation.op, qualifier, label]
+    .filter((part) => part != null).join('_');
+  return turnStepChoicePlan(request, choice, operation.op, reasonCode);
+}
+
 function phase8Plan(request, ids) {
   const activeSession = request.player_safe_state.combat_sessions?.find(
     ({ status }) => status !== 'ended');
@@ -302,6 +416,22 @@ function phase8Plan(request, ids) {
     content: 'предъявить обвинение и потребовать вернуть дорожную сумку',
     instrument_refs: []
   };
+  const supplied = request.available_domain_operations?.find((candidate) =>
+    candidate.op === operation.op
+      && (operation.movement_kind == null
+        || candidate.movement_kind === operation.movement_kind)
+      && (operation.interaction_kind == null
+        || candidate.interaction_kind === operation.interaction_kind)
+      && (operation.intent_kind == null
+        || candidate.intent_kind === operation.intent_kind)
+      && (operation.target_ref == null
+        || candidate.target_ref === operation.target_ref)
+      && (operation.target_refs == null
+        || operation.target_refs.every((ref) => ref == null
+          ||
+          candidate.target_refs?.includes(ref))));
+  if (supplied != null) return suppliedChoicePlan(request, supplied,
+    route ? 'route_to_storehouse' : combat ? 'combat_response' : 'accusation');
   return turnStepPlan(request, operation, null,
     route ? 'route_to_storehouse' : combat ? 'combat_response' : 'accusation');
 }
@@ -419,6 +549,12 @@ function sameRef(left, right) {
     && left?.entity_id === right?.entity_id;
 }
 
+function sameStringSet(left, right) {
+  return Array.isArray(left) && Array.isArray(right)
+    && left.length === right.length
+    && right.every((value) => left.includes(value));
+}
+
 function npcConversationPlan(request, {
   conversation,
   combatConversation,
@@ -450,6 +586,16 @@ function npcConversationPlan(request, {
       && request.npc_ref.entity_id !== turn10Actors?.ratsha) {
     turn10Actors.zhdanko = request.npc_ref.entity_id;
     return combatConversation.npcSemanticModel(request);
+  }
+  if (request.npc_ref?.entity_id === turn10Actors?.onisim) {
+    return onisimResponse === 'speech'
+      ? npcSpeechPlan(request, {
+          utteranceText: ONISIM_TESTIMONY,
+          dominantAct: 'inform',
+          claims: [testimonyClaim()],
+          supportingOperations: []
+        })
+      : nonSpeechPlan(request, onisimResponse);
   }
   const routeOperation = request.decision_scope?.operation_contract
     ?.disclose_known_route;
@@ -491,16 +637,6 @@ function npcConversationPlan(request, {
         'Пойду к клети, но больше сейчас ничего объяснять не стану.');
     }
     return companionPlan(request, turn10Actors);
-  }
-  if (request.npc_ref?.entity_id === turn10Actors?.onisim) {
-    return onisimResponse === 'speech'
-      ? npcSpeechPlan(request, {
-          utteranceText: ONISIM_TESTIMONY,
-          dominantAct: 'inform',
-          claims: [testimonyClaim()],
-          supportingOperations: []
-        })
-      : nonSpeechPlan(request, onisimResponse);
   }
   return conversation.npcSemanticModel(request);
 }

@@ -113,6 +113,7 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber, change
       idempotency_record_id: idemId,
     }),
   ];
+  const deletes = [];
   appendBody(updates, appends, {
     partyId,
     state,
@@ -125,6 +126,7 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber, change
     appendActivity({
       inserts,
       updates,
+      deletes,
       appends,
       partyId,
       state,
@@ -158,6 +160,7 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber, change
     appendMovement({
       inserts,
       updates,
+      deletes,
       appends,
       partyId,
       state,
@@ -194,5 +197,5 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber, change
       contracts,
     });
   appendKnowledge({ inserts, partyId, state, next, changeSetId });
-  return { inserts, updates, appends, deletes: [] };
+  return { inserts, updates, appends, deletes };
 }

@@ -8,7 +8,7 @@ import {
   unexpectedNpcSemanticModel,
   unexpectedPlayerConversationModel,
 } from './lower-dvina-trace-phase-2-fixture-support.js';
-import { canonicalDigest } from '@rus/materialization';
+import { canonicalDigest } from '@rus/materialization'; import { spatialResult } from '@rus/turn';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createLowerDvinaTracePhase2Runtime } from '../src/runtime/lower-dvina-trace-phase-2.js';
 import { commitGeneric } from './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
@@ -194,8 +194,8 @@ function fixture({
         surface: 'turn',
         visible_context: visibleContext,
         context: {
-          player_input: structuredClone(replay.factual.player_input),
-          mode_resolution: structuredClone(replay.factual.mode_resolution),
+          attempt: { text: replay.factual.player_input.raw_text },
+          outcome: spatialResult({ consequence: replay.factual.consequence })
         },
         style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
         max_repairs: 1,
@@ -366,9 +366,15 @@ function fixture({
             item_id: clue.instance_id,
             template_id: clue.template_id,
             profile_id: clue.profile_id,
+            category_id: clue.semantic_category,
             quantity: clue.quantity,
+            condition_state: clue.condition_state,
+            legal_status: clue.legal_status,
+            ownership: structuredClone(clue.ownership),
             placement: structuredClone(clue.placement),
             state: {
+              semantic_category: clue.semantic_category,
+              display_name: 'клочок синей шерсти',
               evidence_ref: 'trace_ld_v1_evidence_blue_wool',
               property_state: structuredClone(clue.property_state),
               inventory_profile_snapshot: structuredClone(clue.inventory_profile),

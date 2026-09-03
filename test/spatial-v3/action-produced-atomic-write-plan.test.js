@@ -301,7 +301,7 @@ test('validated proposal requires exact one-to-one source and tool coverage', ()
   const toolLoad = structuredClone(toolRequest.committed_load);
   const toolProposal = structuredClone(toolRequest.transition_proposal);
   const toolPin = (itemId) => ({ role: 'tool', item_id: itemId,
-    entity_snapshot: { entity_ref: itemId, state_version: '7',
+    entity_snapshot: { entity_ref: itemId, state_version: '2',
       holder_ref: 'actor:mikula', controller_ref: 'actor:mikula' } });
   const firstTool = toolPin('item:tool-a');
   toolLoad.row_pins.push(firstTool, toolPin('item:tool-b'));
@@ -626,7 +626,7 @@ function fixture() {
   const entity = {
     schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state: 'committed', role: 'source', entity_ref: 'item:pole',
-    state_version: '7', lifecycle_state: 'active',
+    state_version: String(item.state_version), lifecycle_state: 'active',
     access_state: 'immediate', holder_ref: 'actor:mikula',
     controller_ref: 'actor:mikula',
     ownership_snapshot: structuredClone(ownership),
@@ -653,7 +653,7 @@ function fixture() {
         state_version: '7',
         commit_state: 'committed', root_turn_id: 'turn-8',
         action_ref: 'action-1', step_index: 1, actor_ref: 'actor:mikula',
-        entities: [{ entity_ref: 'item:pole', state_version: '7',
+        entities: [{ entity_ref: 'item:pole', state_version: String(item.state_version),
           lifecycle_state: 'active', access_state: 'immediate',
           accessible_actor_ref: 'actor:mikula', holder_ref: 'actor:mikula',
           controller_ref: 'actor:mikula', role_membership: ['source'] }]
@@ -681,12 +681,12 @@ function fixtureWithTool() {
   value.committed_load.tool_snapshots.push(
     structuredClone(tool.entity_snapshot));
   value.committed_load.committed_context.entities.push({
-    entity_ref: tool.item_id, state_version: '7', lifecycle_state: 'active',
+    entity_ref: tool.item_id, state_version: String(tool.item.state_version), lifecycle_state: 'active',
     access_state: 'immediate', accessible_actor_ref: 'actor:mikula',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
     role_membership: ['tool']
   });
-  const before = { state_version: '7', holder_ref: 'actor:mikula',
+  const before = { state_version: String(tool.item.state_version), holder_ref: 'actor:mikula',
     controller_ref: 'actor:mikula' };
   value.transition_proposal.tool_state_pins.push({
     entity_ref: tool.item_id, before, after: structuredClone(before)
@@ -727,7 +727,7 @@ function technicalPolicy() {
 function proposal() {
   const mechanics = mechanicsSnapshot();
   const before = {
-    state_version: '7',
+    state_version: '2',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula'
   };
   return {
@@ -748,7 +748,7 @@ function proposal() {
     result_class: 'ordinary_physical_result',
     actual_output_count: 0,
     source_transitions: [{ entity_ref: 'item:pole', before,
-      after: { state_version: '8', mechanics_snapshot: structuredClone(mechanics),
+      after: { state_version: '3', mechanics_snapshot: structuredClone(mechanics),
         holder_ref: before.holder_ref, controller_ref: before.controller_ref },
       finite_resource_transition: null }],
     tool_state_pins: [],

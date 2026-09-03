@@ -59,14 +59,18 @@ export function semanticNegotiationCommand({
       (precondition) =>
         tracePhase4PreconditionSatisfied(precondition, state, contracts)
     ),
-    prepareAvailability: async ({ state, playerInput }) => {
+    prepareAvailability: async ({ state, playerInput, modeResolution }) => {
+      const selectedInteraction = selectedConversationOperation(
+        modeResolution, contracts);
+      const targetActorRef = selectedInteraction.targetActorRef;
       const playerPlan = await prepareTracePhase4PlayerConversationPlan({
         state,
         contracts,
         playerInput,
         inputDigest,
         playerConversationModel,
-        revalidateStateVersion
+        revalidateStateVersion,
+        targetActorRef
       });
       const offersProtection = playerPlan.supporting_operations.some(
         ({ op } = {}) => op === PROMISE_OPERATION
@@ -90,7 +94,8 @@ export function semanticNegotiationCommand({
       retrievedState,
       availability,
       checks,
-      playerInput
+      playerInput,
+      modeResolution
     }) => {
       const playerPlan = availability.causal_stages?.find(
         ({ schema }) => schema === 'rus.trace_player_conversation_plan_stage.v1'
@@ -137,7 +142,9 @@ export function semanticNegotiationCommand({
           npcSemanticModel,
           npcSocialCheckResolver,
           temporalAdvanceOwner,
-          revalidateStateVersion
+          revalidateStateVersion,
+          targetActorRef: selectedConversationTarget(
+            modeResolution, contracts)
         });
       const combatInitialization = contracts.combatBindings == null
         ? null
@@ -166,6 +173,25 @@ export function semanticNegotiationCommand({
       });
     }
   });
+}
+
+function selectedConversationTarget(modeResolution, contracts) {
+  return selectedConversationOperation(modeResolution, contracts)
+    .targetActorRef;
+}
+
+function selectedConversationOperation(modeResolution, contracts) {
+  const operation = [...(modeResolution?.decision_trace?.step_traces ?? [])]
+    .reverse()
+    .flatMap(({ approved_plan: plan }) => plan?.operations ?? [])
+    .find(({ op, target_actor_refs: targets }) => op === 'emit_interaction'
+      && targets?.length === 1);
+  const selectedId = operation?.target_actor_refs[0];
+  const selected = Object.entries(contracts.actors).find(
+    ([, actor]) => actor.instance_id === selectedId);
+  return {
+    targetActorRef: selected?.[0] ?? 'ratsha_storehouse_helper'
+  };
 }
 
 function semanticConsequence({ contracts, inputDigest, checkResult,

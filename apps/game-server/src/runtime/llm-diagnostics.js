@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { createLlmTurnBudget, GAMEPLAY_LLM_BUDGET_MS, GAMEPLAY_TURN_DEADLINE_MS } from './llm-turn-budget.js';
+import { createLlmTurnBudget } from './llm-turn-budget.js';
 
 const SAFE_WRITE_PLAN_FAILURES = new Set([
   'write_plan_invariant:visible_package_persistence_gap:presentation_write_owner_invalid',
@@ -76,8 +76,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
     async runTurn({ party_id, request_id }, execute) {
       const startedAt = now();
       const turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
-        started_at: startedAt, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, incidents: [], details: [] };
+        started_at: startedAt, incidents: [], details: [] };
       if (!turn.party_id || !turn.request_id) throw new TypeError('party_id and request_id are required.');
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
@@ -104,8 +103,8 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
 
 export function buildLlmTurnReport(input = {}) {
   const { party_id, request_id, calls = [], turn_duration_ms = 0,
-    turn_deadline_ms = GAMEPLAY_TURN_DEADLINE_MS,
-    llm_budget_ms = GAMEPLAY_LLM_BUDGET_MS, incidents = [], failure = null } = input;
+    turn_deadline_ms = null,
+    llm_budget_ms = null, incidents = [], failure = null } = input;
   const waterfall = calls.map((call, index) => Object.freeze({
     sequence: index + 1,
     role: text(call.role ?? call.roleId) || null,
@@ -140,8 +139,8 @@ export function buildLlmTurnReport(input = {}) {
     party_id: text(party_id),
     request_id: text(request_id),
     turn_duration_ms: number(turn_duration_ms),
-    turn_deadline_ms: number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS,
-    llm_budget_ms: number(llm_budget_ms) || GAMEPLAY_LLM_BUDGET_MS,
+    turn_deadline_ms: turn_deadline_ms == null ? null : nonNegative(turn_deadline_ms),
+    llm_budget_ms: llm_budget_ms == null ? null : nonNegative(llm_budget_ms),
     failure: safeTurnFailure(failure),
     waterfall: Object.freeze(waterfall),
     aggregate: Object.freeze({
@@ -155,8 +154,7 @@ export function buildLlmTurnReport(input = {}) {
       slowest_llm_call_ms: durations.at(-1) ?? 0,
       llm_calls: count,
       repair_calls: repairs,
-      deadline_exceeded: number(turn_duration_ms) >= (number(turn_deadline_ms) || GAMEPLAY_TURN_DEADLINE_MS)
-        || incidents.some((incident) => incident.deadline_exceeded),
+      deadline_exceeded: incidents.some((incident) => incident.deadline_exceeded),
       budget_exhausted: incidents.some((incident) => incident.budget_exhausted),
       incidents: Object.freeze(incidents.map((incident) => Object.freeze({ ...incident }))),
       p50_ms: percentile(durations, 0.5),

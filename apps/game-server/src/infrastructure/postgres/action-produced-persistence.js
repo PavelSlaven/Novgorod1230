@@ -70,9 +70,11 @@ async function lockAndVerifyPins(client, plan) {
     const selected = await client.query(
       `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
          i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
-         p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
+         p.anchor_id,p.scene_position_id AS item_scene_position_id,
+         p.container_id,p.holder_npc_id,p.holder_character_id,
          p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
          o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
+         o.owner_external_ref,
          o.controller_npc_id,o.controller_character_id,o.claim_state
        FROM party_runtime.party_items i
        JOIN party_runtime.party_item_placements p
@@ -106,7 +108,8 @@ async function lockAndVerifyPins(client, plan) {
     if (pin.prepared_action == null
           && !accessibleByActor(normalized.placement, normalized.ownership,
             accessContainer, plan.actor_ref,
-            plan.output_destination_pin?.anchor_id ?? null, pin.role)
+            plan.output_destination_pin?.anchor_id ?? null,
+            plan.output_destination_pin?.scene_position_id ?? null, pin.role)
         || !isDeepStrictEqual(normalized.item, pin.item)
         || !isDeepStrictEqual(normalized.placement, pin.placement)
         || !isDeepStrictEqual(normalized.ownership, pin.ownership)
@@ -139,12 +142,12 @@ async function lockAndVerifyPins(client, plan) {
 }
 
 function accessibleByActor(placement, ownership, accessContainer, actorRef,
-  accessAnchorId, role) {
+  accessAnchorId, accessScenePositionId, role) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
     + Number(ownership.owner_party === true);
   return actionProducedPlacementAccessible(placement, accessContainer,
-    actorRef, accessAnchorId)
+    actorRef, accessAnchorId, accessScenePositionId)
     && actionProducedControllerPermitted(ownership, role, actorRef)
     && owners === 1 && typeof ownership.owner_party === 'boolean'
     && text(ownership.claim_state);
@@ -202,12 +205,14 @@ async function insertResult(client, partyId, result, changeSetId,
   await client.query(
     `INSERT INTO party_runtime.party_ownership
       (party_id,ownership_id,item_id,container_id,owner_npc_id,
-       owner_character_id,owner_party,controller_npc_id,
+       owner_character_id,owner_party,owner_external_ref,controller_npc_id,
        controller_character_id,claim_state)
-     VALUES ($1,$2,$3,NULL,$4,$5,$6,$7,$8,$9)`,
+     VALUES ($1,$2,$3,NULL,$4,$5,$6,$7::jsonb,$8,$9,$10)`,
   [partyId, ownership.ownership_id, result.item_id,
     ownership.owner_npc_id, ownership.owner_character_id,
-    ownership.owner_party, ownership.controller_npc_id,
+    ownership.owner_party, ownership.owner_external_ref == null
+      ? null : JSON.stringify(ownership.owner_external_ref),
+    ownership.controller_npc_id,
     ownership.controller_character_id, ownership.claim_state]);
   if (scenePositionId !== null) await client.query(
     `INSERT INTO party_runtime.entity_placements
@@ -227,7 +232,10 @@ function normalizedRows(row) {
       state: row.state, state_version: Number(row.state_version)
     },
     placement: {
-      anchor_id: row.anchor_id, container_id: row.container_id,
+      anchor_id: row.anchor_id,
+      ...(row.item_scene_position_id == null ? {}
+        : { scene_position_id: row.item_scene_position_id }),
+      container_id: row.container_id,
       holder_npc_id: row.holder_npc_id,
       holder_character_id: row.holder_character_id,
       physical_position: row.physical_position,
@@ -238,6 +246,9 @@ function normalizedRows(row) {
       ownership_id: row.ownership_id, owner_npc_id: row.owner_npc_id,
       owner_character_id: row.owner_character_id,
       owner_party: row.owner_party,
+      ...(row.owner_external_ref == null ? {} : {
+        owner_external_ref: row.owner_external_ref
+      }),
       controller_npc_id: row.controller_npc_id,
       controller_character_id: row.controller_character_id,
       claim_state: row.claim_state

@@ -15,17 +15,21 @@ import { resolveTracePhase4Contracts } from './lower-dvina-trace-phase-4-contrac
 import { resolveTracePhase5Contracts } from './lower-dvina-trace-phase-5-contracts.js';
 import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
 import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
+import { createTraceKnownRouteCommands } from
+  './lower-dvina-trace-known-route-command.js';
 
 export function resolveTracePhase2InheritedContracts({ state, bundle }) {
   const revision = bundle.definition_revision;
-  const ready = ![24, 25].includes(revision)
+  const ready = ![24, 25, 26, 27, 28, 29, 30, 31, 32].includes(revision)
     || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
-  const enabled = (first) => revision >= first && revision <= 25;
+  const enabled = (first) => revision >= first && revision <= 32;
   return {
     phase3Contracts: enabled(9) ? resolveTracePhase3Contracts({ state, bundle }) : null,
     phase4Contracts: enabled(10) && ready ? resolveTracePhase4Contracts({ state, bundle }) : null,
     phase5Contracts: enabled(11) && ready ? resolveTracePhase5Contracts({ state, bundle }) : null,
-    phase6Contracts: enabled(12) && ready ? resolveTracePhase6Contracts({ bundle }) : null,
+    phase6Contracts: enabled(12) && ready
+      && state.phase5_treatment?.activity_execution?.status === 'completed'
+      ? resolveTracePhase6Contracts({ bundle }) : null,
     phase7Contracts: enabled(15) && ready ? resolveTracePhase7Contracts({ state, bundle }) : null,
   };
 }
@@ -134,9 +138,11 @@ export function buildTracePhase2Registry(context) {
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
             genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-            localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
+            localFireProfile,
             worldProcessResolver:
-              [22, 23, 24, 25].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
+              typeof createTurnStepWorldProcessResolver === 'function'
+                && [22, 23, 24, 25, 26].includes(bundle.definition_revision)
+                && localFireProfile?.profile?.status === 'approved'
                 ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest })
                 : null,
             projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
@@ -160,13 +166,18 @@ export function buildTracePhase2Registry(context) {
     ...(phase9?.commands ?? []),
     ...(combatCommand ? [combatCommand] : []),
   ];
-  const registry = createTurnCommandRegistry(
-    bindLowerDvinaTraceTurnStepCommands({
+  const boundCommands = bindLowerDvinaTraceTurnStepCommands({
       commands,
       bundle,
       targetRefs: buildTracePhase2TargetRefs({ state, contracts, phase3Contracts, phase4Contracts, phase5Contracts, turn10, phase8, phase9 }),
-    }),
-  );
+    });
+  const registry = createTurnCommandRegistry([
+    ...boundCommands,
+    ...(phase3Contracts == null || bundle.definition_revision < 13 ? [] : createTraceKnownRouteCommands({
+      state, contracts: phase3Contracts, inputDigest,
+      authoredCommands: boundCommands
+    }))
+  ]);
 
   return registry;
 }

@@ -22,21 +22,16 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         provider_snapshot ?? settings?.providerSnapshot());
       const description = describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
-      const requestedTimeoutMs = description?.request_timeout_ms
-        ?? description?.config?.requestTimeoutMs ?? overrides?.requestTimeoutMs ?? null;
       const isRepair = repair === true || isRepairRole(role_id, description?.contract);
-      let requestTimeoutMs;
       try {
         if (isRepair) turnBudget?.claimRepair({ requestIdentity: request_identity,
           repairKind: role_id });
-        requestTimeoutMs = turnBudget?.clamp({ requestedTimeoutMs,
-          repair: isRepair });
       } catch (error) {
         Object.assign(error, safeBudgetIdentity(description, role_id));
         throw error;
       }
-      const effectiveOverrides = requestTimeoutMs == null ? overrides
-        : { ...(overrides ?? {}), requestTimeoutMs };
+      const effectiveOverrides = { ...(overrides ?? {}), maxTokens: 20_000,
+        requestTimeoutMs: 120_000 };
       let result;
       try {
         result = await execute({
@@ -103,7 +98,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       const result = await execute({
         scope: 'turn_runtime', roleId: 'intent_router',
         messages: [{ role: 'user', content: 'Reply with {}.' }],
-        overrides: { maxTokens: 16, temperature: 0, requestTimeoutMs: 120000 }, runtimeProviderOverride,
+        overrides: { maxTokens: 20_000, temperature: 0, requestTimeoutMs: 120_000 }, runtimeProviderOverride,
         telemetry: probeTelemetry(telemetry)
       });
       return Object.freeze({

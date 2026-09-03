@@ -82,6 +82,8 @@ export function createServices(log = [], overrides = {}) {
           log.push('narration');
           assert.equal(request.schema, 'narration_request');
           assert.equal(JSON.stringify(request).includes('hidden_sentinel'), false);
+          assert.equal(Object.hasOwn(request.context, 'mode_resolution'), false);
+          assert.equal(Object.hasOwn(request.context, 'player_input'), false);
           return approvedNarration(request.request_id, 'На оглобле темнеет свежая полоса грязи.');
         }
       },

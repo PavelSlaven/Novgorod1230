@@ -13,7 +13,38 @@ import { loadLowerDvinaTraceRevision19Publication, TRACE_REVISION19_PHASE_1A_MAN
 import { loadLowerDvinaTraceActionProductionPublication, TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-action-production-publication.js';
 import { loadLowerDvinaTraceLocalFirePublication, TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-local-fire-publication.js';
 import { loadLowerDvinaTraceSpatialSemanticPublication, loadLowerDvinaTraceRevision23SpatialSemanticPublication, TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST, TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-spatial-semantic-publication.js';
-export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(), phase1AManifestDigest = null } = {}) {
+import { loadLowerDvinaTraceRevision26Publication, TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision-26-publication.js';
+import { loadLowerDvinaTraceRevision27Publication, TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision-27-publication.js';
+import { loadLowerDvinaTraceRevision28Publication,
+  TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision-28-publication.js';
+import { loadLowerDvinaTraceRevision29Publication } from './lower-dvina-trace-revision-29-publication.js';
+import { loadLowerDvinaTraceRevision30Publication } from './lower-dvina-trace-revision-30-publication.js';
+import { loadLowerDvinaTraceRevision31Publication } from './lower-dvina-trace-revision-31-publication.js';
+import { loadLowerDvinaTraceRevision32Publication } from
+  './lower-dvina-trace-revision-32-publication.js';
+export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(),
+  phase1AManifestDigest = null, scenarioDefinitionRevision = null } = {}) {
+  if (scenarioDefinitionRevision === 27) {
+    return loadLowerDvinaTraceRevision27Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 29) {
+    return loadLowerDvinaTraceRevision29Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 30) {
+    return loadLowerDvinaTraceRevision30Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 31) {
+    return loadLowerDvinaTraceRevision31Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 32) {
+    return loadLowerDvinaTraceRevision32Publication({ rootDir,
+      phase1AManifestDigest });
+  }
+  if (scenarioDefinitionRevision === 28
+      || phase1AManifestDigest === TRACE_REVISION28_PHASE_1A_MANIFEST_DIGEST) {
+    return loadLowerDvinaTraceRevision28Publication({ rootDir, phase1AManifestDigest });
+  }
+  if (phase1AManifestDigest === TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceRevision26Publication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest == null || phase1AManifestDigest === TRACE_NPC_ACTOR_STEP_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceNpcActorStepPublication({ rootDir, phase1AManifestDigest }); if (phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceSpatialSemanticPublication({ rootDir, phase1AManifestDigest }); if (phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceRevision23SpatialSemanticPublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest === TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST
       || phase1AManifestDigest === TRACE_PHASE_1B_REVISION22_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceLocalFirePublication({ rootDir, phase1AManifestDigest });

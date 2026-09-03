@@ -9,12 +9,14 @@ import { phase2LockContext } from './lower-dvina-trace-phase-2-commit-plan.js';
 import {
   bindLowerDvinaTraceTurnStepIdempotency
 } from './lower-dvina-trace-turn-step-idempotency.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
 
 export async function buildLowerDvinaTracePhase2P16Plan(input) {
   const {
     partyId, state, factual, visibleEnvelope, writes, turnNumber,
     changeSetId, idemId, inputDigest, contracts, turnStepCommit,
-    localFirePlans
+    localFirePlans, ordinaryPlan
   } = input;
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
@@ -24,7 +26,7 @@ export async function buildLowerDvinaTracePhase2P16Plan(input) {
           && candidate.canonical_input_digest === canonicalInputDigest
       })
   });
-  const built = await builder.build({
+  const built = await builder.build(bindOrdinaryPlanToCombinedInput({
     plan_id: `p16:${partyId}:trace-phase2:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -75,7 +77,7 @@ export async function buildLowerDvinaTracePhase2P16Plan(input) {
     commit_rechecks: buildLowerDvinaTracePhase2CommitRechecks({
       partyId, state, factual, contracts, inputDigest
     })
-  });
+  }, ordinaryPlan, partyId));
   if (!built.ok) {
     throw serverError(
       'TRACE_PHASE_2_WRITE_PLAN_REJECTED',

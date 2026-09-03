@@ -156,7 +156,7 @@ function validateTechnicalLimits(value,errors) {
 
 function validateBackgroundGroup(value,path,errors) {
   if (!exactObject(value, ['descriptor', 'functional_bucket', 'availability_class', 'allowed_admission_classes', 'causal_basis', 'property_basis_ref', 'permission_refs', 'disclosure_policy_ref'], path, errors)) return;
-  nonemptyString(value.descriptor, `${path}.descriptor`, errors);
+  semanticString(value.descriptor, `${path}.descriptor`, errors);
   enumValue(value.functional_bucket, ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket, `${path}.functional_bucket`, errors);
   enumValue(value.availability_class, ORDINARY_MATERIALIZATION_V1_ENUMS.availability_class, `${path}.availability_class`, errors);
   arrayOfEnum(value.allowed_admission_classes, ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class, `${path}.allowed_admission_classes`, errors);
@@ -175,8 +175,18 @@ function validateEntity(value, path, errors) {
 function validateSemanticDescriptor(value,path,errors) {
   if (!exactObject(value, ['semantic_type', 'name', 'facts'], path, errors)) return;
   nonemptyString(value.semantic_type, `${path}.semantic_type`, errors);
-  nonemptyString(value.name, `${path}.name`, errors);
+  semanticString(value.name, `${path}.name`, errors);
   arrayOfStrings(value.facts, `${path}.facts`, errors);
+  for (const [index, fact] of (value.facts ?? []).entries()) {
+    if (typeof fact === 'string') semanticString(fact, `${path}.facts[${index}]`, errors);
+  }
+}
+
+function semanticString(value, path, errors) {
+  nonemptyString(value, path, errors);
+  if (typeof value === 'string' && /^<[^<>]+>$/u.test(value)) {
+    issue(errors, path, 'placeholder', `${path} must contain concrete semantic text.`);
+  }
 }
 
 function validateCausalBasis(value,path,errors) {

@@ -27,6 +27,6 @@ test('turn runtime resolves the S1 spatial semantic descriptor role', () => {
   assert.equal(role.model, 'fixture-s1');
   assert.equal(role.expectedSchema, 'rus.s1_spatial_semantic_proposal.v1');
   assert.equal(role.temperature, 0);
-  assert.equal(role.maxTokens, 400);
+  assert.equal(role.maxTokens, 20_000);
   assert.equal(role.contextBudget.reserveRepairTokens, 0);
 });

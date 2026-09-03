@@ -159,10 +159,11 @@ function terminalZhdankoStatus(state, contracts) {
       === actorRefs(state, contracts).zhdanko_storehouse_controller)
     ?.combat_status ?? null;
   if (combatStatus != null) return combatStatus;
-  return (state.npcs ?? []).some((npc) =>
-    npc.participant_slot_ref === 'zhdanko_storehouse_controller'
-    && npc.machine_state?.surrender_state
-      === 'surrendered_without_further_attack') ? 'surrendered' : null;
+  const zhdanko = (state.npcs ?? []).find((npc) =>
+    npc.participant_slot_ref === 'zhdanko_storehouse_controller');
+  return zhdanko?.machine_state?.combat_terminal_status
+    ?? (zhdanko?.machine_state?.surrender_state
+      === 'surrendered_without_further_attack' ? 'surrendered' : null);
 }
 function actorRefs(state, contracts) {
   const zhdanko = (state.npcs ?? []).find(({ participant_slot_ref: slot }) =>

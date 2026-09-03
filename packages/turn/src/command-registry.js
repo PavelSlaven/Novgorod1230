@@ -413,24 +413,35 @@ function structuredCloneHandlers(value) {
 function normalizeSemanticBinding(value) {
   if (value == null) return null;
   let operationDto = null;
+  let operationDtos = null;
   if (value.operation_dto != null) {
     try { operationDto = structuredClone(value.operation_dto); }
     catch { throw new TypeError('semantic_binding operation_dto must be cloneable.'); }
   }
+  if (value.operation_dtos != null) {
+    try { operationDtos = structuredClone(value.operation_dtos); }
+    catch { throw new TypeError('semantic_binding operation_dtos must be cloneable.'); }
+  }
+  const validDto = (dto) => plain(dto) && dto.op === value.operation
+    && validateTurnStepOperationDto(dto).ok;
   if (!plain(value) || !stable(value.binding_id)
       || !isDomainStepOperation(value.operation)
       || typeof value.matches !== 'function'
       || Object.keys(value).some((key) =>
-        !['binding_id', 'operation', 'operation_dto', 'matches'].includes(key))
-      || (operationDto != null && (!plain(operationDto)
-        || operationDto.op !== value.operation
-        || !validateTurnStepOperationDto(operationDto).ok))) {
+        !['binding_id', 'operation', 'operation_dto', 'operation_dtos',
+          'matches'].includes(key))
+      || (operationDto != null && operationDtos != null)
+      || (operationDto != null && !validDto(operationDto))
+      || (operationDtos != null && (!Array.isArray(operationDtos)
+        || operationDtos.length === 0 || operationDtos.some(
+          (dto) => !validDto(dto))))) {
     throw new TypeError('semantic_binding requires binding_id, domain operation and code matcher.');
   }
   return {
     binding_id: value.binding_id,
     operation: value.operation,
     operation_dto: operationDto,
+    ...(operationDtos == null ? {} : { operation_dtos: operationDtos }),
     matches: value.matches
   };
 }

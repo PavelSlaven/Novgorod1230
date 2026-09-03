@@ -12,24 +12,59 @@ const APPROVED_MANIFEST_DIGEST =
   '9e731bde97b8dd3a6d13926f709be9a7c78ff8d66528a131b1e59007f41bb647';
 const APPROVED_BINDING_DIGEST =
   '295f2c4f9a9af37c26c3fd1e366341a5f9f1f0708e107c3fd5c1af8bbd402714';
+const V27 = Object.freeze({
+  manifest: `${ROOT}/phase-2-v27/manifest.json`,
+  binding: `${ROOT}/phase-2-v27/wreck-inspection-execution-binding.json`,
+  manifestDigest: '47dbb945a70ed29254f9ad4e6dd3206d9905e79bf0d930d99501c1c07a9e26ea',
+  bindingDigest: '0231ded307485da2f125d4d5516ecb43f16e6a225f5cffe1ab0cabf0244d2a1d',
+  packageId: 'lower_dvina_trace_phase_2_v27', scenarioRevision: 27, bindingRevision: 27
+});
+const V29 = Object.freeze({
+  manifest: `${ROOT}/phase-2-v29/manifest.json`,
+  binding: `${ROOT}/phase-2-v29/wreck-inspection-execution-binding.json`,
+  manifestDigest: 'eca29ab8181169bc7d6bb1ced45a0e68074b42b68d3441a958ef27c298fe2d21',
+  bindingDigest: '18b6f9cd01a4a5fc3b6a08f8d6d3bca078f6712a8544c6d3eedc9395cc1ecd62',
+  packageId: 'lower_dvina_trace_phase_2_v29', scenarioRevision: 29, bindingRevision: 29
+});
+const V30 = Object.freeze({
+  manifest: `${ROOT}/phase-2-v30/manifest.json`,
+  binding: `${ROOT}/phase-2-v30/wreck-inspection-execution-binding.json`,
+  manifestDigest: 'ba485df35cc8122f430a5043741f4a1a9efc9ad46e6176eec925a65899d902c8',
+  bindingDigest: '446e795a370408bb4b8d953cbd1669e01e3e665187e3163cd6739e8e1a721c15',
+  packageId: 'lower_dvina_trace_phase_2_v30', scenarioRevision: 30, bindingRevision: 30
+});
+const V31 = Object.freeze({
+  manifest: `${ROOT}/phase-2-v31/manifest.json`,
+  binding: `${ROOT}/phase-2-v31/wreck-inspection-execution-binding.json`,
+  manifestDigest: '83a428a71d5c9e89ec5e806cfda3203ced5f6ed334c19a1e62e4e15d7c8fbfa9',
+  bindingDigest: 'e4450ec310929514faf6817fe99ecd6792211a974cfa264de61fd71df069a29b',
+  packageId: 'lower_dvina_trace_phase_2_v31', scenarioRevision: 31, bindingRevision: 31
+});
 
 export async function loadLowerDvinaTracePhase2Bundle({
-  rootDir = process.cwd()
+  rootDir = process.cwd(), scenarioDefinitionRevision = null
 } = {}) {
+  const selected = [31, 32].includes(scenarioDefinitionRevision) ? V31 : scenarioDefinitionRevision === 30 ? V30 : scenarioDefinitionRevision === 29 ? V29
+    : [27, 28].includes(scenarioDefinitionRevision) ? V27 : {
+    manifest: MANIFEST_PATH, binding: BINDING_PATH,
+    manifestDigest: APPROVED_MANIFEST_DIGEST,
+    bindingDigest: APPROVED_BINDING_DIGEST,
+    packageId: 'lower_dvina_trace_phase_2_v1', scenarioRevision: 7, bindingRevision: 1
+  };
   const [manifestFile, bindingFile] = await Promise.all([
-    readJson(rootDir, MANIFEST_PATH),
-    readJson(rootDir, BINDING_PATH)
+    readJson(rootDir, selected.manifest),
+    readJson(rootDir, selected.binding)
   ]);
   const manifest = manifestFile.value;
   const binding = bindingFile.value;
-  if (manifestFile.digest !== APPROVED_MANIFEST_DIGEST
-      || bindingFile.digest !== APPROVED_BINDING_DIGEST
+  if (manifestFile.digest !== selected.manifestDigest
+      || bindingFile.digest !== selected.bindingDigest
       || manifest.schema !== 'rus.lower_dvina_trace_phase_2_manifest.v1'
-      || manifest.package_id !== 'lower_dvina_trace_phase_2_v1'
-      || manifest.revision !== 1
+      || manifest.package_id !== selected.packageId
+      || manifest.revision !== selected.bindingRevision
       || manifest.status !== 'approved'
       || manifest.scenario_id !== 'lower_dvina_trace_v1'
-      || manifest.scenario_definition_revision !== 7
+      || manifest.scenario_definition_revision !== selected.scenarioRevision
       || manifest.fallback_policy !== 'forbidden'
       || manifest.normalization_policy !== 'forbidden'
       || manifest.alias_policy !== 'forbidden'
@@ -38,7 +73,7 @@ export async function loadLowerDvinaTracePhase2Bundle({
         !== 'rus.lower_dvina_trace_phase_2_wreck_inspection_binding.v1'
       || binding.binding_id
         !== 'lower_dvina_trace_phase_2_wreck_inspection_v1'
-      || binding.revision !== 1
+      || binding.revision !== selected.bindingRevision
       || binding.status !== 'approved'
       || binding.scenario_id !== manifest.scenario_id
       || binding.scenario_definition_revision
@@ -54,7 +89,7 @@ export async function loadLowerDvinaTracePhase2Bundle({
   assertExactRef(
     manifest.content_refs?.wreck_inspection_execution_binding,
     {
-      path: BINDING_PATH,
+      path: selected.binding,
       id: binding.binding_id,
       revision: binding.revision,
       schema: binding.schema,

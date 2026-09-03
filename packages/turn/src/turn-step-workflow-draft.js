@@ -43,6 +43,10 @@ export function turnStepDraftSpatialSemanticAtomicWritePlan(draft) {
   return draft?.loop_result?.spatial_semantic_atomic_write_plan ?? null;
 }
 
+export function turnStepDraftBackgroundNpcSemanticAtomicWritePlan(draft) {
+  return draft?.loop_result?.background_npc_semantic_atomic_write_plan ?? null;
+}
+
 export function turnStepDraftPreparedDomainSlice(draft) {
   return turnStepDraftPreparedDomainSlices(draft)[0] ?? null;
 }

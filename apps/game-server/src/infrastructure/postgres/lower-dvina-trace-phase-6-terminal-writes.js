@@ -1,6 +1,7 @@
 import { row } from './first-playable/plan-shared.js';
+import { appendWorldRouteJourney } from './lower-dvina-trace-world-route-journey.js';
 
-export function appendTerminal({ inserts, updates, appends, partyId, state, next,
+export function appendTerminal({ inserts, updates, appends, deletes, partyId, state, next,
   intent, changeSetId, idemId }) {
   const preparedFirstEntry = usesPreparedFirstEntry(state, next.position);
   if (!preparedFirstEntry) updates.push(row('party_positions', partyId, {
@@ -9,6 +10,10 @@ export function appendTerminal({ inserts, updates, appends, partyId, state, next
     g5_node_id: next.position.g5_node_id,
     g5_anchor_id: next.position.g5_anchor_id
   }));
+  appendWorldRouteJourney({ writes: { inserts, updates, deletes }, partyId, state,
+    movement: { destination: { scene_position_id: preparedFirstEntry
+      ? state.first_entry_preparation.spatial_v3.target.position_id : null } },
+    changeSetId });
   for (const npc of next.npcs ?? []) {
     if (!intent.terminal_group_ids.includes(npc.instance_id)) continue;
     updates.push(row('party_npcs', npc.instance_id, {

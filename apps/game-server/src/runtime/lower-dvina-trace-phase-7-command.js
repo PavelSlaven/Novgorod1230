@@ -1,5 +1,7 @@
 import { resolveTracePhase7FireRestConsequence } from
   './lower-dvina-trace-phase-7-command-consequence.js';
+import { tracePhase7FireEnvironmentSatisfied } from
+  './lower-dvina-trace-phase-7-contracts.js';
 
 const PRECONDITION = 'phase7_fire_rest_admission';
 
@@ -116,7 +118,8 @@ export function tracePhase7PreconditionSatisfied(
 
 function admitted(state, contracts) {
   const carry = state?.phase6_carry_execution;
-  const atCamp = state?.position?.location_ref === contracts.campLocationRef;
+  const atCamp = ['location_ref', 'g5_node_id', 'g5_anchor_id', 'zone_ref']
+    .every((key) => state?.position?.[key] === contracts.campScope?.[key]);
   const onisim = (state?.npcs ?? []).find(
     ({ participant_slot_ref: slot }) => slot === 'onisim_boatman'
   );
@@ -126,7 +129,10 @@ function admitted(state, contracts) {
     );
   return carry?.status === 'completed'
     && atCamp
-    && onisim?.machine_state?.spatial_zone_ref === 'fire_rest_area'
+    && onisim?.anchor_id === contracts.campScope.g5_anchor_id
+    && onisim?.machine_state?.spatial_zone_ref
+      === contracts.campPlacement.carried_actor.zone_ref
+    && tracePhase7FireEnvironmentSatisfied(state, contracts)
     && contracts.zhdanko?.machine_state?.status !== 'incapacitated'
     && !alreadyCompleted;
 }

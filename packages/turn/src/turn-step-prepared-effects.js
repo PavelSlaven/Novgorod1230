@@ -113,7 +113,6 @@ export async function orchestrateTurnStepPreparedEffect({
     prepared_effect: effect
   });
 }
-
 export function buildTurnStepPreparedEffectLedger({
   rootTurnId,
   committedStateVersion,
@@ -188,7 +187,6 @@ export function buildTurnStepPreparedEffectLedger({
     ledger_digest: sha256(payload)
   });
 }
-
 export function requireTurnStepPreparedEffectLedger(value) {
   let ledger;
   try {
@@ -252,6 +250,8 @@ export function buildTurnStepPreparedTimeUpdate(value) {
       processed_boundary_ids: ledger.slices.flatMap((slice) =>
         slice.time_update.boundary_trace?.processed_boundary_ids ?? [])
     },
+    temporal_results: ledger.slices.flatMap((slice) =>
+      structuredClone(slice.time_update.temporal_results ?? [])),
     prepared_effect_ledger_digest: ledger.ledger_digest,
     prepared_effect_ledger: structuredClone(ledger)
   });

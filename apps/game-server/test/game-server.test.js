@@ -224,6 +224,7 @@ test('API route matcher is declarative and bounded', () => {
   assert.deepEqual(matchApiRoute('GET', '/api/v1/scenarios'), { id: 'scenarios', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/portrait-spec'), { id: 'portrait_spec', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/new-games'), { id: 'new_game', status: 201 });
+  assert.deepEqual(matchApiRoute('POST', '/api/v1/parties/party-1/presentation-recovery'), { id: 'presentation_recovery', partyId: 'party-1', status: 200 });
   assert.equal(matchApiRoute('DELETE', '/api/v1/new-games'), null);
   assert.equal(matchApiRoute('GET', '/api/v2/health'), null);
 });
@@ -273,7 +274,33 @@ test('hidden fields are blocked at the HTTP success boundary', async () => {
   server.close();
   const body = await response.json();
   assert.equal(response.status, 500);
-  assert.equal(body.error.code, 'PUBLIC_PAYLOAD_HIDDEN_LEAK');
+  assert.equal(body.error.code, 'TEMPORARY_ACTION_UNAVAILABLE');
+  assert.equal(body.error.message, 'Действие временно недоступно. Попробуйте ещё раз.');
+});
+
+test('HTTP boundary hides runtime contract failures from the player', async (t) => {
+  const root = { submitTurn: async () => {
+    const error = new Error('Approved route body effect cannot be applied: trace_ld_v1_body_fire_rest_30m');
+    error.code = 'TRACE_ROUTE_BODY_CONDITION_STATE_MISMATCH';
+    error.status = 409;
+    error.public_exposure = 'internal';
+    throw error;
+  } };
+  const server = createGameHttpServer({ root, developerMode: true });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ raw_text: 'Отдохнуть' })
+  });
+  const body = await response.json();
+  assert.equal(response.status, 409);
+  assert.deepEqual(body.error, {
+    code: 'TEMPORARY_ACTION_UNAVAILABLE',
+    message: 'Действие временно недоступно. Попробуйте ещё раз.'
+  });
+  assert.equal(JSON.stringify(body).includes('TRACE_ROUTE_BODY'), false);
+  assert.equal(JSON.stringify(body).includes('trace_ld_v1_body'), false);
 });
 
 test('infrastructure adapters require explicit provider and database ports', async () => {

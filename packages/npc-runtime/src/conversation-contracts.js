@@ -71,7 +71,7 @@ function validateDecisionScope(value) {
     && keys.every((key) => Object.hasOwn(value, key))
     && Object.keys(value).every((key) => keys.includes(key)
       || ['required_resolution', 'required_check',
-        'required_supporting_operation'].includes(key))
+        'required_supporting_operation', 'allowed_contribution_kinds'].includes(key))
     && value.conversation_mode === true
     && typeof value.action_handoff_available === 'boolean'
     && typeof value.combat_handoff_available === 'boolean'
@@ -85,6 +85,12 @@ function validateDecisionScope(value) {
     && new Set(value.allowed_duration_classes).size
       === value.allowed_duration_classes.length
     && plainRecord(value.operation_contract)
+    && (value.allowed_contribution_kinds === undefined
+      || Array.isArray(value.allowed_contribution_kinds)
+        && value.allowed_contribution_kinds.length > 0
+        && value.allowed_contribution_kinds.every((kind) =>
+          ['speech', 'silence', 'leave_conversation', 'action_handoff',
+            'combat_handoff'].includes(kind)))
     && validateContributionRequirement(value, value.operation_contract)
     && (value.required_check === undefined
       || value.allowed_attribute_refs.includes(value.required_check.attribute_ref)
@@ -201,7 +207,10 @@ export function validateConversationContributionPlan(value, request = null) {
     && value.exchange_id === request.exchange_id
     && value.state_version === request.state_version
     && refKey(value.speaker_ref) === refKey(request.npc_ref)
-    && validateContributionBody(value, request));
+    && validateContributionBody(value, request)
+    && (request.decision_scope.allowed_contribution_kinds === undefined
+      || request.decision_scope.allowed_contribution_kinds.includes(
+        value.contribution_kind)));
 }
 
 export function buildConversationContributionPlan(value, request = null) {

@@ -52,6 +52,25 @@ test('validated opening projection supplies the initial current scene', () => {
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 });
 
+test('revision 28 initial scene uses the authored presentation, not environment IDs', () => {
+  const screen = {
+    version: 1, schema: 'first_game_screen', screen_status: 'ready',
+    party_id: 'party-28', main_prose: 'Старт.',
+    visible_context: { place: 'берег крушения', calendar: 'утро',
+      environment: { facts: ['cold', 'wet', 'exposed'] } }
+  };
+  const current = phase2InitialCurrentVisibleContext({
+    screen, openingScreenDigest: canonicalDigest(screen),
+    initialState: { position: { location_ref: 'shore' } },
+    scenePresentation: { locations: [{ location_ref: 'shore',
+      display_name: 'берег крушения',
+      player_visible_physical_facts: ['Мокрый песок и ивняк тянутся вдоль берега реки.'] }] }
+  });
+  assert.deepEqual(current.sensory_details,
+    ['Мокрый песок и ивняк тянутся вдоль берега реки.']);
+  assert.equal(JSON.stringify(current).match(/cold|wet|exposed/), null);
+});
+
 test('public Phase 2 check omits private RNG audit', () => {
   const payload = {
     party_id: 'party-1',

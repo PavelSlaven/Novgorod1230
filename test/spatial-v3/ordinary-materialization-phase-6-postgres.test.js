@@ -144,10 +144,12 @@ function plan({ aggregate, party_state_version, request_identity,
 }
 
 function admittedItem({ request_identity, candidate_key, coverage_key, context_version, supporting_basis_ref, token = candidate_key, scope = scope_ref, propertyPlacement = propertyPlacementContext() }) {
-  const property_basis_ref = 'property', position_ref = 'position', mechanics_policy_ref = `mechanics-${token}`;
+  const property_basis_ref = propertyPlacement.property_catalog[0].property_basis_ref;
+  const position_ref = propertyPlacement.placement_catalog[0].position_ref;
+  const mechanics_policy_ref = `mechanics-${token}`;
   const evidence = structuredClone(resolveOrdinaryWorldPropertyPlacement({...propertyPlacement,supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],requested_position_ref:position_ref}).evidence);
   const source_refs = [candidate_key,coverage_key,supporting_basis_ref,property_basis_ref,position_ref,mechanics_policy_ref,evidence.property_source_ref,evidence.property_catalog_version_ref,evidence.placement_catalog_version_ref,evidence.placement_context_ref,evidence.property_placement_context_digest].sort();
-  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,runtime_placement:{anchor_id:'ordinary-anchor'},mechanics_policy_ref,
+  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,runtime_placement:{scene_position_id:position_ref},mechanics_policy_ref,
     item_proposal:{schema:'ordinary_world_item_proposal_v1',request_id:request_identity,scope_ref:{...scope},candidate_key,coverage_key,context_version,semantic_descriptor:{semantic_type:'household_tool',name:'wooden spoon',facts:['ordinary']},supporting_basis_ref,property_basis_ref,property_placement_evidence:evidence,placement:{scope_ref:scope.entity_id,position_ref},runtime_item_mechanics_policy_ref:mechanics_policy_ref},
     mechanics_snapshot:{schema:'rus.items.runtime_instance_mechanics_snapshot.v2',version:2,provenance:{source_kind:'ordinary_world_materialization',causal_ref:`cause-${token}`,request_id:request_identity,candidate_key,coverage_key,context_version,policy_ref:mechanics_policy_ref,source_refs},mechanics:{mass_grams:80,external_hand_cost:0,carry_form:'compact',packing_slot_cost:1,quantity:{value:1,unit:'item'},container:null}}};
 }
@@ -456,7 +458,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,
      rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`, [partyId]);
-  await insertPartyAnchor(pool, partyId);
+  await insertPartyAnchor(pool, partyId, 'o2a-position');
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)
     VALUES ($1,$2,$3,$4,$5::jsonb)`, [partyId, scope.entity_kind, scope.entity_id,
@@ -548,7 +550,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     causal_basis_refs: [supportingBasis.basis_ref], causal_basis_kind: 'personal_possession',
     condition_state: 'serviceable', permission_refs: ['armament-profile-a'],
     property_basis_ref: 'o2a-property', position_ref: 'o2a-position',
-    runtime_placement: { anchor_id: 'ordinary-anchor' },
+    runtime_placement: { scene_position_id: 'o2a-position' },
     mechanics_policy_ref: 'o2a-mechanics',
     weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
       mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
@@ -636,43 +638,13 @@ async function assertFiniteSourceP16Integration(pool) {
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`,
   [partyId]);
-  await insertPartyAnchor(pool, partyId);
+  await insertPartyAnchor(pool, partyId, 'finite-position');
   await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
     (id,party_id,operation_kind,expected_state_version_set_digest,
      expected_state_version_set,committed_state_version_set_digest,
      write_plan_digest,created_at_turn,committed_at_turn)
     VALUES ('finite-fixture',$1,'fixture',$2,'[]'::jsonb,$2,$2,0,0)`,
   [partyId, 'f'.repeat(64)]);
-  await pool.query(`INSERT INTO party_runtime.party_g5_sites
-    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ('finite-g5',$1,'canonical','finite-g4',$2::jsonb,'active',0,
-      'finite-fixture','finite-fixture')`, [partyId,
-    JSON.stringify({ entity_id: 'finite-g5' })]);
-  await pool.query(`INSERT INTO party_runtime.party_scene_baselines
-    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
-     materialization_trace_id,materializer_version,catalog_digest,status,
-     state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('finite-baseline',$1,'g5_site','finite-g5','canonical_template',
-      $2::jsonb,'trace','materializer','catalog','active',0,
-      'finite-fixture','finite-fixture')`, [partyId,
-    JSON.stringify({ entity_id: 'finite-scene' })]);
-  await pool.query(`INSERT INTO party_runtime.party_g6_instances
-    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
-     host_kind,host_id,physical_class_id,primary_scene_role_id,
-     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
-     default_visibility_distance_band,acoustic_uniformity,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ('finite-g6',$1,'finite-baseline',$2::jsonb,'main','g5_site',
-      'finite-g5','interior','room','ground','open','default_clear','near',
-      'uniform','active',0,'finite-fixture','finite-fixture')`, [partyId,
-    JSON.stringify({ entity_id: 'finite-scene' })]);
-  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
-    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
-     template_instance_ordinal,capacity,access_class_id,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ('position',$1,'finite-g6','ground','source',0,4,'open',
-      'active',0,'finite-fixture','finite-fixture')`, [partyId]);
   const aggregate = seedFiniteAggregate(finiteScope);
   const placement = finitePropertyPlacementContext(finiteScope);
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
@@ -691,7 +663,8 @@ async function assertFiniteSourceP16Integration(pool) {
     (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
     VALUES ($1,$2,$3,$4,NULL,$5::jsonb)`, [partyId, finiteScope.entity_kind,
     finiteScope.entity_id, sourceBasis.basis_ref, JSON.stringify(sourceBasis)]);
-  await insertFiniteResource(pool, partyId, 'finite-source-node', initialAmountBounds);
+  await insertFiniteResource(pool, partyId, 'finite-source-node',
+    initialAmountBounds, 'finite-position');
   const firstOptions = { partyId, scope: finiteScope, aggregate,
     partyStateVersion: 0, sourceStateVersion: 2,
     before: { numerator: 3, denominator: 1, unit: 'item' },
@@ -814,42 +787,13 @@ async function assertFiniteResolverReloadLifecycle(pool) {
     (party_id,schema_version,world_revision_id,world_catalog_digest,
      materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`, [partyId]);
-  await insertPartyAnchor(pool, partyId);
+  await insertPartyAnchor(pool, partyId, 'position-reload');
   await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
     (id,party_id,operation_kind,expected_state_version_set_digest,
      expected_state_version_set,committed_state_version_set_digest,
      write_plan_digest,created_at_turn,committed_at_turn)
     VALUES ('finite-reload-fixture',$1,'fixture',$2,'[]'::jsonb,$2,$2,0,0)`,
   [partyId, 'e'.repeat(64)]);
-  await pool.query(`INSERT INTO party_runtime.party_g5_sites
-    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ('finite-reload-g5',$1,'canonical','finite-reload-g4',$2::jsonb,
-      'active',0,'finite-reload-fixture','finite-reload-fixture')`,
-  [partyId, JSON.stringify({ entity_id: 'finite-reload-g5' })]);
-  await pool.query(`INSERT INTO party_runtime.party_scene_baselines
-    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
-     materialization_trace_id,materializer_version,catalog_digest,status,
-     state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('finite-reload-baseline',$1,'g5_site','finite-reload-g5',
-      'canonical_template',$2::jsonb,'trace','materializer','catalog','active',0,
-      'finite-reload-fixture','finite-reload-fixture')`,
-  [partyId, JSON.stringify({ entity_id: 'finite-reload-scene' })]);
-  await pool.query(`INSERT INTO party_runtime.party_g6_instances
-    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
-     host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,
-     overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,
-     acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('finite-reload-g6',$1,'finite-reload-baseline',$2::jsonb,'main',
-      'g5_site','finite-reload-g5','interior','room','ground','open','default_clear',
-      'near','uniform','active',0,'finite-reload-fixture','finite-reload-fixture')`,
-  [partyId, JSON.stringify({ entity_id: 'finite-reload-scene' })]);
-  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
-    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
-     template_instance_ordinal,capacity,access_class_id,status,state_version,
-     created_change_set_id,updated_change_set_id)
-    VALUES ('position-reload',$1,'finite-reload-g6','ground','source',0,4,'open',
-      'active',0,'finite-reload-fixture','finite-reload-fixture')`, [partyId]);
   const aggregate = seedFiniteAggregate(scope);
   const basis = { basis_ref: sourceRef, state: 'committed', scope_ref: { ...scope },
     prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
@@ -999,7 +943,8 @@ function finiteResolverPropertyContext(scope, sourceRef) {
 
 function finiteResolverRequest(rootTurnId, query) {
   return { request: { root_turn_id: rootTurnId }, committed_state: { position: {
-    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor' } },
+    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor',
+    position_id: 'position-reload' } },
   operation: { target_refs: ['finite-reload-scope'], query }, working_projection: {} };
 }
 
@@ -1035,6 +980,7 @@ function finitePropertyPlacementContext(scope) {
   context.property_catalog[0].scope_ref = structuredClone(scope);
   context.placement_catalog[0].scope_ref = structuredClone(scope);
   context.placement_catalog[0].g6_ref = scope.entity_id;
+  context.placement_catalog[0].position_ref = 'finite-position';
   return context;
 }
 
@@ -1095,21 +1041,21 @@ function finitePlanInput({ partyId, scope, aggregate, partyStateVersion,
   return raw;
 }
 
-async function insertFiniteResource(pool, partyId, id, initialAmountBounds) {
+async function insertFiniteResource(pool, partyId, id, initialAmountBounds, positionId) {
   await pool.query(`INSERT INTO party_runtime.party_resource_nodes
     (resource_node_id,party_id,source_resource_ref,position_node_id,
      quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
      access_policy_ref,state_version,created_change_set_id,updated_change_set_id,
      lifecycle_state,initial_amount_bounds,initialization_identity,
      initial_amount_evidence,property_basis_ref)
-    VALUES ($1,$2,$3::jsonb,'position',0,1,$4::jsonb,$3::jsonb,
-      $3::jsonb,1,'finite-fixture','finite-fixture','uninitialized',$5::jsonb,
-      NULL,NULL,'property')`, [id, partyId, JSON.stringify({ ref: id }),
+     VALUES ($1,$2,$3::jsonb,$4,0,1,$5::jsonb,$3::jsonb,
+       $3::jsonb,1,'finite-fixture','finite-fixture','uninitialized',$6::jsonb,
+       NULL,NULL,'property')`, [id, partyId, JSON.stringify({ ref: id }), positionId,
     JSON.stringify({ kind: 'unit', id: 'item' }),
     JSON.stringify(initialAmountBounds)]);
 }
 
-async function insertPartyAnchor(pool, partyId) {
+async function insertPartyAnchor(pool, partyId, positionId = 'position') {
   await pool.query(`INSERT INTO party_runtime.party_materialization_runs
       (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
        materializer_version,rng_version,result_digest,idempotency_key,status)
@@ -1126,6 +1072,55 @@ async function insertPartyAnchor(pool, partyId) {
   await pool.query(`INSERT INTO party_runtime.party_positions
       (party_id,g4_id,g5_node_id,g5_anchor_id)
     VALUES ($1,'ordinary-g4','ordinary-node','ordinary-anchor')`, [partyId]);
+  const ids = {
+    site: `${partyId}:ordinary-site`,
+    baseline: `${partyId}:ordinary-baseline`,
+    g6: `${partyId}:ordinary-g6`,
+    actor: `${partyId}:ordinary-actor`,
+    journey: `${partyId}:ordinary-journey`
+  };
+  await pool.query(`INSERT INTO party_runtime.party_g5_sites
+      (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+       created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'canonical','ordinary-g4',$3::jsonb,'active',1,
+      'ordinary-fixture','ordinary-fixture')`,
+  [ids.site, partyId, JSON.stringify({ entity_kind: 'g5',
+    entity_id: ids.site })]);
+  await pool.query(`INSERT INTO party_runtime.party_scene_baselines
+      (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+       materialization_trace_id,materializer_version,catalog_digest,status,
+       state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,'g5_site',$3,'canonical_template',$4::jsonb,
+      'ordinary-trace','ordinary-materializer','ordinary-catalog','active',1,
+      'ordinary-fixture','ordinary-fixture')`,
+  [ids.baseline, partyId, ids.site,
+    JSON.stringify({ entity_kind: 'scene_template', entity_id: 'ordinary' })]);
+  await pool.query(`INSERT INTO party_runtime.party_g6_instances
+      (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+       host_kind,host_id,physical_class_id,primary_scene_role_id,
+       vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
+       default_visibility_distance_band,acoustic_uniformity,status,
+       state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,$4::jsonb,'main','g5_site',$5,'ordinary','ordinary',
+      'ground','open','default_clear','near','uniform','active',1,
+      'ordinary-fixture','ordinary-fixture')`,
+  [ids.g6, partyId, ids.baseline,
+    JSON.stringify({ entity_kind: 'scene_template', entity_id: 'ordinary' }),
+    ids.site]);
+  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
+      (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+       template_instance_ordinal,capacity,access_class_id,status,state_version,
+       created_change_set_id,updated_change_set_id)
+    VALUES ($1,$2,$3,'ground','main',0,16,'open','active',1,
+      'ordinary-fixture','ordinary-fixture')`, [positionId, partyId, ids.g6]);
+  await pool.query(`INSERT INTO party_runtime.party_player_characters
+      (party_id,character_id,profile) VALUES ($1,$2,'{}'::jsonb)`,
+  [partyId, ids.actor]);
+  await pool.query(`INSERT INTO party_runtime.party_journey_locations
+      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,
+       state_version,updated_change_set_id)
+    VALUES ($1,$2,'actor',$3,'scene',$4,1,'ordinary-fixture')`,
+  [ids.journey, partyId, ids.actor, positionId]);
 }
 
 async function removePartyAnchor(pool, partyId) {

@@ -64,11 +64,14 @@ export async function requestPlayerConversationContribution({
   try {
     rawPlan = await conversationModel(safeRequest, immutableClone({ repair: null }));
   } catch (error) {
-    throw turnFailure(
-      'TURN_CONVERSATION_MODEL_FAILED',
-      'Player conversation model request failed',
-      { cause: causeMessage(error) }
-    );
+    if (error?.code === 'json_parse_failed') rawPlan = {};
+    else {
+      throw turnFailure(
+        'TURN_CONVERSATION_MODEL_FAILED',
+        'Player conversation model request failed',
+        { cause: causeMessage(error) }
+      );
+    }
   }
 
   if (!acceptedPlan(rawPlan, safeRequest, validatePlan)) {

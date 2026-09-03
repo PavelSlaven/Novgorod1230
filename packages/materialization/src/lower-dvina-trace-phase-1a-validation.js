@@ -27,6 +27,33 @@ export function assertLowerDvinaTracePhase1AValidation({
 
 function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scenarioId) {
   const bindings = bundle.materialization_bindings;
+  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,
+    revisions.m20].includes(definitionRevision)) {
+    if (bindings?.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v23'
+      || bindings.scenario_definition_revision !== 27
+      || bundle.artifact_pins?.materialization_bindings?.digest
+        !== 'a7da7b435647ad62f46b90bdabca1a2eed0dd13aa81dc50f4e6e77199fc6cf3d') {
+      fail('TRACE_PHASE_1A_BINDING_INVALID',
+        'Revision 28–31 must reuse the exact immutable Phase 1A v23 binding.');
+    }
+    return;
+  }
+  if (definitionRevision === revisions.m14 || definitionRevision === revisions.m15) {
+    const members = bindings?.first_entry_preparation?.members;
+    const revision27 = definitionRevision === revisions.m15;
+    if (bindings.binding_set_id
+        !== `lower_dvina_trace_phase_1a_materialization_bindings_v${revision27 ? 23 : 22}`
+      || bindings.scenario_definition_revision !== definitionRevision
+      || !Array.isArray(members) || members.length !== 2
+      || members[0]?.ordinal !== 0 || members[1]?.ordinal !== 1
+      || members[1]?.binding?.destination?.location_profile_ref
+        !== 'trace_ld_v1_loc_old_drying_shed') {
+      fail('TRACE_PHASE_1A_BINDING_INVALID',
+        'Prepared-member revisions require both exact first-entry members.');
+    }
+    return;
+  }
   const phase3Definition = [
     revisions.phase3,
     revisions.phase3Pickup,
@@ -161,6 +188,31 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,
+    revisions.m20].includes(definitionRevision)) {
+    const manifest = bundle.phase_1a_manifest;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v23'
+      || manifest.revision !== 23 || manifest.scenario_definition_revision !== 27
+      || bundle.artifact_pins?.phase_1a_manifest?.digest
+        !== '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101') {
+      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID',
+        'Revision 28–31 must reuse the exact immutable Phase 1A v23 manifest.');
+    }
+    return;
+  }
+  if (definitionRevision === revisions.m14 || definitionRevision === revisions.m15) {
+    const manifest = bundle.phase_1a_manifest;
+    const revision27 = definitionRevision === revisions.m15;
+    if (manifest?.package_id !== `lower_dvina_trace_phase_1a_v${revision27 ? 23 : 22}`
+      || manifest.revision !== (revision27 ? 23 : 22)
+      || manifest.scenario_definition_revision !== definitionRevision
+      || bundle.materialization_bindings?.binding_set_id
+        !== `lower_dvina_trace_phase_1a_materialization_bindings_v${revision27 ? 23 : 22}`) {
+      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID',
+        'Prepared-member revision requires its immutable Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m13) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

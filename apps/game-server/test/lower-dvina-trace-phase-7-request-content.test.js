@@ -14,6 +14,12 @@ import {
 test('Phase 7 LLM request carries Zhdanko subjective policy context',
   async () => {
     const state = phase7CommittedState();
+    const zhdanko = state.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller');
+    zhdanko.semantic_state = {
+      relationships: structuredClone(zhdanko.relationships)
+    };
+    delete zhdanko.relationships;
     const contracts = approvedPhase7Contracts(state);
     let request = null;
     await phase7Command({

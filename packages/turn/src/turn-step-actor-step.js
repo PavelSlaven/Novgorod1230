@@ -50,6 +50,7 @@ export async function executeTurnStepActorStep({
   const actionProducedPlans = [];
   const localFirePlans = [];
   const spatialSemanticPlans = [];
+  const backgroundNpcSemanticPlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -135,7 +136,8 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans, localFirePlans, spatialSemanticPlans
+        actionProducedPlans, localFirePlans, spatialSemanticPlans,
+        backgroundNpcSemanticPlans
       }));
   }
 
@@ -160,7 +162,8 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans, localFirePlans, spatialSemanticPlans
+        actionProducedPlans, localFirePlans, spatialSemanticPlans,
+        backgroundNpcSemanticPlans
       }));
   }
   if (plan.activity?.owner === 'semantic') {
@@ -194,7 +197,8 @@ export async function executeTurnStepActorStep({
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
           summaries, writes, consequences, preparedEffects, ordinaryPlans,
-          actionProducedPlans, localFirePlans, spatialSemanticPlans
+          actionProducedPlans, localFirePlans, spatialSemanticPlans,
+          backgroundNpcSemanticPlans
         }));
     }
   }
@@ -215,6 +219,8 @@ export async function executeTurnStepActorStep({
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
+    background_npc_semantic_atomic_write_plan:
+      backgroundNpcSemanticPlans[0] ?? null,
     preparedChainContext: chainContext
   };
 }

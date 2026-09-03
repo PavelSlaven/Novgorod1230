@@ -26,6 +26,7 @@ import {
   turnStepDraftActionProductionAtomicWritePlans,
   turnStepDraftLocalFireAtomicWritePlans,
   turnStepDraftSpatialSemanticAtomicWritePlan,
+  turnStepDraftBackgroundNpcSemanticAtomicWritePlan,
   turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
   turnStepDraftPreparedEffectLedger
@@ -155,6 +156,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       spatial_semantic_atomic_write_plan:
         turnStepDraftSpatialSemanticAtomicWritePlan(
           getTurnStepWorkflowDraft(state.modeResolution)),
+      background_npc_semantic_atomic_write_plan:
+        turnStepDraftBackgroundNpcSemanticAtomicWritePlan(
+          getTurnStepWorkflowDraft(state.modeResolution)),
       commandRegistry: services.commandRegistry
     }), context)),
     stage(14, 'commit', async (state) => {
@@ -188,6 +192,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
       visibleContext: state.persistedVisibleContext,
+      consequence: state.consequence,
+      retrievedState: state.revalidatedState,
       narrator: services.narrator
     }), context)),
     stage(17, 'screen_projection', async (state) => next(state, 'screen', buildScreenProjectionStage({

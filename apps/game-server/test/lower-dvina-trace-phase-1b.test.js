@@ -32,6 +32,17 @@ const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'
 });
 
+test('active publication has an exact readable session identity', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 31
+  });
+  const identity = TRACE_PHASE_1B_SESSION_IDENTITIES.find((candidate) =>
+    candidate.publication_manifest_digest === publication.manifest_digest);
+  assert.equal(identity?.publication_binding_digest,
+    publication.binding_digest);
+  assert.equal(identity?.scenario_definition_revision, 31);
+});
+
 test('Phase 1B publishes only trace metadata', async () => {
   const runtime = createRuntime(fixture());
   const catalog = await runtime.listScenarios();
@@ -46,12 +57,10 @@ test('Phase 1B publishes only trace metadata', async () => {
   ]);
 });
 
-test('public start accepts only current trace scenario', async () => {
+test('public start maps free text to the current published trace', async () => {
   const runtime = createRuntime(fixture());
-  await assert.rejects(
-    () => runtime.startNewGame({ start_text: 'Начать путь' }),
-    { code: 'SCENARIO_NOT_SUPPORTED' }
-  );
+  const started = await runtime.startNewGame({ start_text: 'Начать путь' });
+  assert.equal(started.screen.scenario_id, 'lower_dvina_trace_v1');
   await assert.rejects(
     () => runtime.startNewGame({
       scenario_id: 'lower_dvina_late_summer_open_water_v1'
@@ -70,10 +79,13 @@ test('trace dispatch commits before its safe screen', async () => {
   assert.equal(f.materializeCalls.length, 1);
   assert.equal(f.repository.createInitialCalls, 0);
   assert.equal(f.events.join('>'),
-    'loadSession>loadInternal>materialize>loadInternal>loadVisible>project>attach>loadSession');
+    'loadSession>loadInternal>materialize>loadInternal>provisionInitialOrdinary>'
+      + 'loadVisible>project>attach>loadSession');
   assert.equal(started.screen.schema, 'first_game_screen');
   assert.equal(started.screen.screen_status, 'ready');
   assert.equal(started.screen.panels.character.data.name, 'Микула');
+  assert.deepEqual(started.screen.visible_context.environment.facts,
+    ['cold', 'wet', 'exposed']);
   assert.deepEqual(started.screen.action_panel.suggested_actions, []);
   assert.equal(started.party_id, f.materializeCalls[0].party_id);
   assert.equal(
@@ -108,7 +120,6 @@ test('trace dispatch commits before its safe screen', async () => {
     'materialization_trace'
   ]) assert.doesNotMatch(serialized, new RegExp(forbidden, 'u'));
 });
-
 
 test('trace recovery rehydrates Phase 1A and attaches one stable session', async () => {
   const f = fixture({ failFirstAttach: true });
@@ -392,7 +403,7 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
   assert.equal(session.delivery_ack_result, null);
 });
 
-test('public turn deadline includes initial session read', async () => {
+test('initial session read does not impose an obsolete whole-turn deadline', async () => {
   let now = 0;
   let exhaustRead = false;
   const budget = createLlmTurnBudget({ now: () => now });
@@ -412,10 +423,10 @@ test('public turn deadline includes initial session read', async () => {
     llmDiagnostics: diagnostics,
     async submitTurn() { submitted += 1; }
   });
-  await assert.rejects(() => runtime.submitTurn(opening.party_id, {
+  await runtime.submitTurn(opening.party_id, {
     request_id: 'deadline-initial-read', raw_text: 'Осматриваюсь'
-  }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
-  assert.equal(submitted, 0);
+  });
+  assert.equal(submitted, 1);
   assert.equal(diagnostics.report({ party_id: opening.party_id,
     request_id: 'deadline-initial-read' }).turn_duration_ms, 30_000);
 });
@@ -670,6 +681,10 @@ function fixture({
         party_id: partyId,
         request_identity: structuredClone(lastRequest)
       };
+    },
+    async provisionInitialOrdinary() {
+      events.push('provisionInitialOrdinary');
+      return { provisioned: true };
     },
     async loadVisible(partyId) {
       events.push('loadVisible');

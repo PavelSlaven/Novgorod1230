@@ -33,6 +33,8 @@ export function createLowerDvinaTracePublicRuntime({
   traceStartAdapter = null,
   traceTurnRuntime = null,
   publicationLoader = loadLowerDvinaTracePhase1BPublication,
+  activePhase1AManifestDigest = null,
+  activeScenarioDefinitionRevision = null,
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
   partyRepository = null
 } = {}) {
@@ -53,7 +55,10 @@ export function createLowerDvinaTracePublicRuntime({
       production_activation: release.production_activation === true
     }),
     listScenarios: async () => {
-      const publication = await publicationLoader();
+      const publication = await publicationLoader({
+        phase1AManifestDigest: activePhase1AManifestDigest,
+        scenarioDefinitionRevision: activeScenarioDefinitionRevision
+      });
       return {
         version: 1,
         schema: 'public_scenario_catalog',
@@ -70,6 +75,8 @@ export function createLowerDvinaTracePublicRuntime({
       idFactory,
       traceStartAdapter,
       publicationLoader,
+      activePhase1AManifestDigest,
+      activeScenarioDefinitionRevision,
       traceOpeningProjector
     }),
     acknowledgeOpening: (partyId, input) => acknowledgeOpening({
@@ -92,6 +99,19 @@ export function createLowerDvinaTracePublicRuntime({
         turn_number: session.turn_number,
         screen: session.screen
       };
+    },
+    recoverPendingPresentation: async (partyId) => {
+      const session = await repository.loadSession(partyId);
+      validateLowerDvinaTraceSessionRead({ partyId, session });
+      if (typeof traceTurnRuntime?.recoverPendingPresentation !== 'function') {
+        throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
+          'Повтор презентации требует настроенный runtime фазы 2.', { status: 503 });
+      }
+      await traceTurnRuntime.recoverPendingPresentation({ partyId, session });
+      const recovered = await repository.loadSession(partyId);
+      validateLowerDvinaTraceSessionRead({ partyId, session: recovered });
+      return { party_id: partyId, turn_number: recovered.turn_number,
+        screen: recovered.screen };
     },
     submitTurn: async (partyId, input) => {
       const requestId = String(input?.request_id ?? `turn:${idFactory()}`);
@@ -140,10 +160,14 @@ async function startNewGame({
   idFactory,
   traceStartAdapter,
   publicationLoader,
-  traceOpeningProjector
+  traceOpeningProjector,
+  activePhase1AManifestDigest,
+  activeScenarioDefinitionRevision
 }) {
-  const scenario = String(input.scenario_id ?? '').trim();
-  if (scenario !== TRACE_SCENARIO_ID || String(input.start_text ?? '').trim()) {
+  const startText = String(input.start_text ?? '').trim();
+  const scenario = String(input.scenario_id ?? '').trim()
+    || (startText ? TRACE_SCENARIO_ID : '');
+  if (scenario !== TRACE_SCENARIO_ID) {
     throw serverError(
       'SCENARIO_NOT_SUPPORTED',
       'Scenario is not supported.',
@@ -186,6 +210,8 @@ async function startNewGame({
     repository,
     traceStartAdapter,
     publicationLoader,
+    activePhase1AManifestDigest,
+    activeScenarioDefinitionRevision,
     traceOpeningProjector
   });
 }

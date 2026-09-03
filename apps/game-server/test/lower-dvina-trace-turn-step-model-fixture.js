@@ -14,10 +14,22 @@ export function createLowerDvinaTraceTurnStepTestModel({
   return (request) => {
     onCall(request);
     if (generalLook(request)) {
-      return spatialLook(request) ?? directPlan(request);
+      return spatialLook(request) ?? ordinarySceneSeed(request)
+        ?? directPlan(request);
     }
     return domainPlan(request, operationFor(request));
   };
+}
+
+function ordinarySceneSeed(request) {
+  if (request?.player_safe_state?.ordinary_resolution
+      ?.scene_seed_available !== true) return null;
+  return domainPlan(request, {
+    op: 'request_discovery', actor_ref: requiredActorRef(request),
+    discovery_kind: 'look',
+    target_refs: [request.player_safe_state.position.location_ref],
+    query: 'общий вид ближайшего окружения'
+  });
 }
 
 function spatialLook(request) {
@@ -47,7 +59,6 @@ function operationFor(request) {
       op: 'request_activity',
       actor_ref: actorRef,
       activity_kind: 'carry',
-      target_refs: [npcRef(request, 'onisim_boatman')],
       description: 'перенести Онисима в рыбацкий стан'
     };
   }
@@ -57,7 +68,6 @@ function operationFor(request) {
       op: 'request_activity',
       actor_ref: actorRef,
       activity_kind: 'recover',
-      target_refs: [npcRef(request, 'onisim_boatman')],
       description: 'оказать помощь раненой ноге Онисима'
     };
   }
@@ -73,8 +83,8 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'мужчина рядом')],
       interaction_kind: 'offer',
-      target_actor_refs: [npcRef(request, 'ratsha_storehouse_helper')],
       instrument_refs: [],
       content: 'условная защита в обмен на сдачу'
     };
@@ -83,8 +93,8 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'Еремей')],
       interaction_kind: 'offer',
-      target_actor_refs: [npcRef(request, 'eremey_fisher')],
       instrument_refs: [REFS.evidence],
       content: 'показать синюю шерсть и попросить содействия'
     };
@@ -93,8 +103,8 @@ function operationFor(request) {
     return {
       op: 'emit_interaction',
       actor_ref: actorRef,
+      target_actor_refs: [requiredVisibleNpcRef(request, 'Еремей')],
       interaction_kind: 'request',
-      target_actor_refs: [npcRef(request, 'eremey_fisher')],
       instrument_refs: [],
       content: 'расспросить Еремея о крушении'
     };
@@ -120,6 +130,7 @@ function operationFor(request) {
 }
 
 function domainPlan(request, operation) {
+  operation = exactAvailableOperation(request, operation) ?? operation;
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
@@ -141,6 +152,32 @@ function domainPlan(request, operation) {
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
   };
+}
+
+function exactAvailableOperation(request, intended) {
+  const candidates = (request.available_domain_operations ?? []).filter(
+    (candidate) => candidate.op === intended.op
+      && sameScalar(candidate, intended, 'discovery_kind')
+      && sameScalar(candidate, intended, 'movement_kind')
+      && sameScalar(candidate, intended, 'activity_kind')
+      && sameScalar(candidate, intended, 'interaction_kind'));
+  const matches = candidates.filter((candidate) =>
+      sameScalar(candidate, intended, 'target_ref')
+      && sameRefs(candidate.target_refs, intended.target_refs)
+      && sameRefs(candidate.target_actor_refs, intended.target_actor_refs)
+      && sameRefs(candidate.instrument_refs, intended.instrument_refs));
+  return matches.length === 1 ? matches[0]
+    : candidates.length === 1 ? candidates[0] : null;
+}
+
+function sameScalar(left, right, key) {
+  return right[key] == null || left[key] === right[key];
+}
+
+function sameRefs(left, right) {
+  return right == null || Array.isArray(left)
+    && left.length === right.length
+    && right.every((ref) => left.includes(ref));
 }
 
 function directPlan(request) {
@@ -175,14 +212,14 @@ function requiredActorRef(request) {
   return actorRef;
 }
 
-function npcRef(request, participantSlotRef) {
-  const npc = request?.player_safe_state?.npcs?.find(
-    ({ participant_slot_ref: slot }) => slot === participantSlotRef
-  );
-  if (typeof npc?.instance_id !== 'string' || npc.instance_id.length === 0) {
-    fail(`Visible NPC is missing: ${participantSlotRef}`);
+function requiredVisibleNpcRef(request, displayLabel) {
+  const matches = (request?.player_safe_state?.current_visible_context
+    ?.visible_npc ?? []).filter(({ display_label: label }) => label === displayLabel);
+  const npcRef = matches[0]?.entity_ref?.entity_id;
+  if (matches.length !== 1 || typeof npcRef !== 'string' || npcRef.length === 0) {
+    fail(`Lower Dvina test turn step requires visible NPC ${displayLabel}.`);
   }
-  return npc.instance_id;
+  return npcRef;
 }
 
 function contains(text, fragments) {

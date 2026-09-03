@@ -5,7 +5,7 @@ import { npcConversationCandidates, requiredNpcConversationCandidate,
 const INVALID_OPERATION_CHOICE = Symbol('invalid operation choice');
 
 export function assemblePlayerConversationPlan(choice, request) {
-  return assembleConversationPlan(choice,
+  let assembled = assembleConversationPlan(choice,
     requiredPlayerConversationCandidate(request), {
       schema: 'player_conversation_contribution_plan_v1',
       request_id: request.request_id,
@@ -13,6 +13,24 @@ export function assemblePlayerConversationPlan(choice, request) {
       state_version: request.state_version,
       speaker_ref: structuredClone(request.speaker_ref)
     });
+  if (assembled.contribution_kind !== 'speech') return assembled;
+  if (assembled.input_mode === 'verbatim'
+    && typeof request.player_safe_context?.verbatim_utterance_text === 'string') {
+    assembled = { ...assembled, speech: { ...assembled.speech,
+      utterance_text: request.player_safe_context.verbatim_utterance_text } };
+  }
+  const required = request.player_safe_context?.required_intended_addressee_refs;
+  const target = request.player_safe_context?.target_npc_ref;
+  const intended = Array.isArray(required) && required.length > 0
+    ? structuredClone(required)
+    : target?.entity_kind === 'npc' && typeof target.entity_id === 'string'
+      ? [structuredClone(target)] : null;
+  if (intended === null) return assembled;
+  const primary = intended.some((reference) => sameRef(
+    reference, assembled.primary_addressee_ref))
+    ? assembled.primary_addressee_ref : intended[0];
+  return { ...assembled, primary_addressee_ref: structuredClone(primary),
+    intended_addressee_refs: intended };
 }
 
 export function assembleNpcConversationPlan(choice, request) {
@@ -61,6 +79,11 @@ function operationChoice(operations) {
 function singleOperation(candidate) {
   return candidate.supporting_operations.length === 1
     ? candidate.supporting_operations[0].op : null;
+}
+
+function sameRef(left, right) {
+  return left?.entity_kind === right?.entity_kind
+    && left?.entity_id === right?.entity_id;
 }
 
 function preserveNpcConversationSemantics(bound, semantic) {

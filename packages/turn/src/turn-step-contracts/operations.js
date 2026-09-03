@@ -57,6 +57,7 @@ export function validateTurnStepOperationDto(value) {
   const trace = {
     knownRefs: collectKnownRefs({ actor: { actor_ref: value?.actor_ref },
       player_safe_state: value }),
+    actorRef: typeof value?.actor_ref === 'string' ? value.actor_ref : null,
     tempRefs: new Set(), allTempRefs: new Set(), retired: new Set(),
     placements: new Map(), inside: new Map()
   };
@@ -217,12 +218,19 @@ function validateContainerAccess(value, path, errors, trace) {
 
 function validateMovement(value, path, errors, trace) {
   if (!strict(value, path,
-    ['op', 'actor_ref', 'target_ref', 'movement_kind'], errors)) return;
+    ['op', 'actor_ref', 'target_ref', 'movement_kind'], errors,
+    { optional: ['description', 'route_ref'] })) return;
   constant(value.op, 'request_movement', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
   knownRef(value.target_ref, `${path}.target_ref`, errors, trace);
   enumValue(value.movement_kind, ['local', 'route', 'long_course'],
     `${path}.movement_kind`, errors);
+  if (Object.hasOwn(value, 'route_ref')) {
+    knownRef(value.route_ref, `${path}.route_ref`, errors, trace);
+  }
+  if (Object.hasOwn(value, 'description')) {
+    requiredText(value.description, `${path}.description`, errors);
+  }
 }
 
 function validateItemUse(value, path, errors, trace) {
@@ -385,6 +393,18 @@ function validatePlacement(value, path, errors, trace, entityRef) {
     ['held_by', 'worn_by', 'inside', 'located_at', 'attached_to'],
     `${path}.relation`, errors);
   knownRef(value.target_ref, `${path}.target_ref`, errors, trace);
+  if (typeof trace?.actorRef === 'string') {
+    if (['held_by', 'worn_by'].includes(value.relation)
+        && value.target_ref !== trace.actorRef) {
+      add(errors, `${path}.target_ref`, 'placement_target_kind',
+        'held_by and worn_by must target the current actor');
+    }
+    if (['inside', 'attached_to'].includes(value.relation)
+        && value.target_ref === trace.actorRef) {
+      add(errors, `${path}.target_ref`, 'placement_target_kind',
+        'inside and attached_to must target a visible item or container, not the actor; use held_by or worn_by for actor-carried placement');
+    }
+  }
   if (entityRef && value.target_ref === entityRef) {
     add(errors, `${path}.target_ref`, 'cycle',
       'entity cannot contain or attach to itself');

@@ -1,0 +1,29 @@
+{
+  "schema": "rus.lower_dvina_trace_n1_profile.v1",
+  "profile_id": "lower_dvina_trace_n1_background_npc_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_definition_revision": 31,
+  "eligible_participant_profiles": [
+    {
+      "profile_id": "trace_ld_v1_background_fisher_v1",
+      "revision": 2
+    }
+  ],
+  "eligible_profile_levels": ["background"],
+  "allowed_semantic_facets": ["ordinary_descriptor", "ordinary_activity"],
+  "forbidden_authority": [
+    "canonical_name",
+    "demographic",
+    "appearance_mechanics",
+    "equipment",
+    "schedule",
+    "knowledge",
+    "route",
+    "ownership",
+    "hidden_fact",
+    "new_entity"
+  ],
+  "max_text_length": 240,
+  "fallback_policy": "forbidden"
+}

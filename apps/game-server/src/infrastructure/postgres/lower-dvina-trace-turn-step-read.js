@@ -44,7 +44,8 @@ export async function assertTurnStepAuthoredItemRows(pool, payload) {
   const result = await pool.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
             i.quantity,i.condition_state,i.legal_status,i.state,
-            p.item_id AS placement_item_id,p.anchor_id,p.container_id,
+            p.item_id AS placement_item_id,p.anchor_id,p.scene_position_id,
+            p.container_id,
             p.holder_npc_id,p.holder_character_id,p.physical_position,
             p.equipment_slot_category_id,p.attached_item_id,
             o.ownership_id,o.owner_npc_id,o.owner_character_id,
@@ -73,7 +74,8 @@ export async function assertTurnStepRuntimeItemRows(pool, payload) {
   const result = await pool.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
             i.quantity,i.condition_state,i.legal_status,i.state,
-            p.item_id AS placement_item_id,p.anchor_id,p.container_id,
+            p.item_id AS placement_item_id,p.anchor_id,p.scene_position_id,
+            p.container_id,
             p.holder_npc_id,p.holder_character_id,p.physical_position,
             p.equipment_slot_category_id,p.attached_item_id
        FROM party_runtime.party_items i
@@ -207,6 +209,9 @@ function placementProof(value = {}) {
   value ??= {};
   return {
     anchor_id: value.anchor_id ?? null,
+    ...(value.scene_position_id == null ? {} : {
+      scene_position_id: value.scene_position_id
+    }),
     container_id: value.container_id ?? null,
     holder_npc_id: value.holder_npc_id ?? null,
     holder_character_id: value.holder_character_id ?? null,

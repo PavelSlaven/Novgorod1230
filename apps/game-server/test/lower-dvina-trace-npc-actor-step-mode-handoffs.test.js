@@ -121,10 +121,9 @@ test('production handoffs expose only current NPC-safe actor targets', async () 
 
 test('Phase 7 initializes an approved NPC combat handoff before player response', async () => {
   const current = phase7CommittedState();
-  current.position.g5_anchor_id = 'storehouse';
   const speaker = current.npcs.find(({ instance_id: id }) => id === 'zhdanko-1');
-  current.position.location_ref = 'trace_ld_v1_loc_zhdanko_storehouse';
-  speaker.machine_state.location_ref = 'trace_ld_v1_loc_zhdanko_storehouse';
+  speaker.machine_state.location_ref = current.position.location_ref;
+  speaker.machine_state.spatial_zone_ref = current.position.zone_ref;
   speaker.perception_snapshot = { present_actors: [{ actor_ref: 'mikula',
     source_event_ref: { entity_kind: 'event', entity_id: 'seen:player' } }] };
   const phase7Contracts = approvedPhase7Contracts(current);
@@ -188,7 +187,7 @@ const approvedNpcCombatModel = async (request) => ({
 function approvedCombatBundle() {
   return { combat_semantic_bindings: { phase_4: null, phase_8: {
     actor_slot: 'zhdanko_storehouse_controller',
-    scope_location_ref: 'trace_ld_v1_loc_zhdanko_storehouse',
+    scope_location_ref: 'trace_ld_v1_loc_fishing_camp',
     signal_descriptor: { category: 'objective', significance: 'material',
       perception_required: false },
     operation_contract: { allowed_intent_kinds: ['engage'],

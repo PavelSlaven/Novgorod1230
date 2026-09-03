@@ -120,7 +120,7 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
           validation_errors: repair.validation_errors
         } : request)
       }],
-      overrides: { temperature: 0, maxTokens: repair ? 4000 : 8000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     if (!plainObject(response?.output)) {
       throw dependencyError('NPC autonomous decider returned no JSON object.');

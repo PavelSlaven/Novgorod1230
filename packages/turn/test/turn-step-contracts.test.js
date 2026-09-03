@@ -124,6 +124,10 @@ test('schemas are deeply frozen and expose strict v1 top-level contracts', () =>
   assert.equal(Object.isFrozen(TURN_STEP_PLAN_V1_SCHEMA.$defs.create_entity), true);
   assert.equal(TURN_STEP_PLAN_V1_SCHEMA.additionalProperties, false);
   assert.equal(TURN_STEP_PLAN_V1_SCHEMA.$defs.clarification.additionalProperties, false);
+  assert.deepEqual(TURN_STEP_PLAN_V1_SCHEMA.$defs.request_movement
+    .properties.description, { type: 'string', minLength: 1 });
+  assert.equal(TURN_STEP_PLAN_V1_SCHEMA.$defs.request_movement
+    .required.includes('description'), false);
 });
 
 test('structured-output schema represents exact start and affect fire branches',
@@ -221,6 +225,21 @@ test('continuation rejects a reserved future domain operation', () => {
     code === 'additional_property'), true);
 });
 
+test('continuation cannot repeat intent after a non-discovery domain step', () => {
+  const source = request();
+  const repeated = plan({ continuation: {
+    remaining_intent: source.remaining_intent, depends_on_refs: []
+  } });
+  const invalid = validateTurnStepPlan(repeated, { request: source });
+  assert.equal(invalid.errors.some(({ code }) =>
+    code === 'continuation_progress'), true);
+
+  repeated.operations = [{ op: 'request_discovery',
+    actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+    target_refs: ['sand_bank'], query: 'осмотреть берег' }];
+  assert.equal(validateTurnStepPlan(repeated, { request: source }).ok, true);
+});
+
 test('plan validation admits refs exposed through a plural ref array', () => {
   const source = request();
   source.player_safe_state.destination_refs = ['location:camp'];
@@ -238,6 +257,42 @@ test('plan validation admits refs exposed through a plural ref array', () => {
     ok: true,
     errors: []
   });
+  movement.operations[0].description = 'Follow the marked path.';
+  assert.deepEqual(validateTurnStepPlan(movement, { request: source }), {
+    ok: true,
+    errors: []
+  });
+});
+
+test('plan validation admits only refs supplied by available domain operations', () => {
+  const source = request({ available_domain_operations: [{
+    op: 'request_movement', actor_ref: 'actor_mikula', movement_kind: 'route',
+    target_ref: 'location:admitted-only'
+  }] });
+  const movement = plan({ operations: [{
+    op: 'request_movement', actor_ref: 'actor_mikula', movement_kind: 'route',
+    target_ref: 'location:admitted-only'
+  }], continuation: null });
+
+  assert.equal(validateTurnStepPlan(movement, { request: source }).ok, true);
+  movement.operations[0].target_ref = 'location:invented';
+  assert.equal(validateTurnStepPlan(movement, { request: source }).errors.some(
+    ({ path, code }) => path === '$.operations[0].target_ref'
+      && code === 'unknown_ref'), true);
+});
+
+test('continuation admits refs supplied by prepared followup candidates', () => {
+  const source = request({ prepared_followup_candidates: [{
+    prepared_followup_ref: 'continue-conversation',
+    precursor_operation: { op: 'request_activity', target_refs: ['fire_1'] },
+    operation: { op: 'emit_interaction', target_actor_refs: ['npc_fisher'] }
+  }] });
+  const continued = plan({ continuation: {
+    remaining_intent: 'попросить рыбака идти дальше',
+    depends_on_refs: ['npc_fisher']
+  } });
+
+  assert.equal(validateTurnStepPlan(continued, { request: source }).ok, true);
 });
 
 test('plan validation admits an exact player combat intent request', () => {
@@ -402,6 +457,15 @@ test('relational validation fails closed on echoes, mixed resolutions and malfor
     continuation: { remaining_intent: 'продолжить', depends_on_refs: ['unknown_ref'] }
   });
   assert.equal(validateTurnStepPlan(unknownDependency, { request: request() }).errors.some(({ code }) => code === 'unknown_ref'), true);
+  const stalledDirect = directPlan({
+    goal_result: 'pending',
+    continuation: {
+      remaining_intent: request().remaining_intent,
+      depends_on_refs: []
+    }
+  });
+  assert.equal(validateTurnStepPlan(stalledDirect, { request: request() })
+    .errors.some(({ code }) => code === 'continuation_progress'), true);
   const extraField = directPlan({ interpretation: { ...directPlan().interpretation, invented: true } });
   assert.equal(validateTurnStepPlan(extraField, { request: request() }).errors.some(({ code }) => code === 'additional_property'), true);
 });
@@ -489,6 +553,23 @@ test('operation validation enforces known and ordered refs, retirement, placemen
     }]
   });
   assert.equal(validateTurnStepPlan(valid, { request: request() }).ok, true);
+
+  const exactWait = directPlan({ activity: { owner: 'semantic',
+    duration_class: 'brief', effort: 'none',
+    requested_duration_minutes: 10 } });
+  assert.equal(validateTurnStepPlan(exactWait, { request: request() }).ok,
+    true);
+  exactWait.activity.requested_duration_minutes = 0;
+  assert.equal(validateTurnStepPlan(exactWait, { request: request() }).ok,
+    false);
+
+  const actorIsNotAContainer = directPlan({ operations: [{
+    op: 'move_entity', entity_ref: 'chest_1', placement: {
+      relation: 'inside', target_ref: 'actor_mikula' }
+  }] });
+  assert.equal(validateTurnStepPlan(actorIsNotAContainer, {
+    request: request()
+  }).errors.some(({ code }) => code === 'placement_target_kind'), true);
 
   const invalid = directPlan({
     operations: [{

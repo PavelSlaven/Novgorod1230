@@ -58,10 +58,15 @@ test('combat body histories have stable distinct idempotency records', () => {
     } }
   }, turnNumber: 2, changeSetId: 'change-1', idemId: 'idem-1',
   visibleEnvelope: {}, pendingScreen: {} });
-  const ids = writes.appends.filter(({ target_table }) =>
+  const history = writes.appends.filter(({ target_table }) =>
     target_table === 'party_body_temporal_history').map(({ record }) =>
-    record.idempotency_record_id);
+    ({ id: record.history_id, idempotency: record.idempotency_record_id }));
+  const ids = history.map(({ idempotency }) => idempotency);
   assert.deepEqual(ids, ['idem-1:combat-body:0', 'idem-1:combat-body:1']);
+  assert.deepEqual(history.map(({ id }) => id), [
+    'body-history:party-1:combat:combat-1:1:0',
+    'body-history:party-1:combat:combat-1:1:1'
+  ]);
 });
 
 function stamp() { return { whole_minutes: '1', subminute_numerator: '0',

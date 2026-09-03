@@ -78,7 +78,7 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
     execution_context };
 }
 function request() { return { request: { root_turn_id: 'turn:party:1' },
-  committed_state: { position: { g6_id: 'shore', g5_anchor_id: 'anchor:shore' } },
+  committed_state: { position: { g6_id: 'shore', position_id: 'scene:shore' } },
   operation: { target_refs: ['shore'], query: 'свободная формулировка' }, working_projection: {} }; }
 function model(request, publicName = 'обычный наконечник копья',
   semanticType = 'ordinary_spear') {

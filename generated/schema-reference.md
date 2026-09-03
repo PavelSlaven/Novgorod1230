@@ -191,7 +191,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/012_party_runtime_external_ownership.sql` | sql | 1878 | `f075187ee20cee962d7f215881eb89169770f555e5b556b3aa82f45afc5b9bab` |
 | `schemas/party-db/013_party_runtime_obligations.sql` | sql | 6406 | `9fa0ddd3fdb9a9f63266533fdf9124a0178dd8a8dd2805c23aca2532f6c64b68` |
 | `schemas/party-db/014_party_runtime_activity_resume_terminal.sql` | sql | 5728 | `877954824b980740281cd9b5737771559ce38ac8817751703bb4996967fdb0c2` |
-| `schemas/party-db/015_party_runtime_turn_step_items.sql` | sql | 8182 | `86734c9beac056974a1b16f46dcee8d889362dfbbf507d7281813b0fa509e77c` |
+| `schemas/party-db/015_party_runtime_turn_step_items.sql` | sql | 8580 | `0b8e439caeeb4669f5c638f8d9923609b74fdae075799736b9fa5118ddef64cc` |
 | `schemas/party-db/016_party_runtime_npc_semantic_conversation.sql` | sql | 11809 | `6c1f48de83313bf32b31d33d74e9c78d9dbd8b8963f7167b99cc0ac4cedc8b7f` |
 | `schemas/party-db/017_party_runtime_conversation_transcript.sql` | sql | 1762 | `3eed33f61aca6f0889057d9758e22e0aa7550f38359e6563c3b4a5b0141a6611` |
 | `schemas/party-db/018_party_runtime_phase7_container_state.sql` | sql | 444 | `ed6e61b2a1a7d9d0f882ba4904f48ff61426d5e0037571f8af35ff449848053f` |
@@ -200,7 +200,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/021_party_runtime_ordinary_materialization.sql` | sql | 679 | `1ca6fc28b89d475d64766fb7e70c6a2013aaf062717ded1543bbb7a467e9ec2e` |
 | `schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql` | sql | 8281 | `674c4dc998ff1191f5c89b81de33be508a8ae954b3a9de94a719f4e3493259e9` |
 | `schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql` | sql | 1231 | `7b288909880e472a72c59bf74f8a4a169272e3adab7dfb3b0e15d29698b6f949` |
-| `schemas/party-db/024_party_runtime_ordinary_world_items.sql` | sql | 5348 | `f7592aa2599b93e15f4e8004405bff65053e972e6cc7139c2815ae1b8877f177` |
+| `schemas/party-db/024_party_runtime_ordinary_world_items.sql` | sql | 6691 | `bf46190a2d8196be79cfd2a9ec476be9f1ea89039c6aa8c982c8c5e26d24c3d3` |
 | `schemas/party-db/025_party_runtime_finite_resource_transitions.sql` | sql | 10446 | `202370f150359de58d1da68d27db7ea104e71c306a160ff257fb03e9160c4846` |
 | `schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql` | sql | 18261 | `0a992319808bb09c8633ec322a464b142b2c0e0eca6e93d0618486c9db14c99d` |
 | `schemas/party-db/027_party_runtime_action_production.sql` | sql | 894 | `61b46a84bb664ab5552db3fc209a4ad4b1e4f5b5ac806467e8bcd5c3177f81cd` |

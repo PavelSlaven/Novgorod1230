@@ -30,10 +30,16 @@ import {
 import {
   committedTraceScenarioDefinitionRevision
 } from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { resolveGenericKnownRouteContracts } from
+  '../../runtime/lower-dvina-trace-known-route-contracts.js';
 import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { resumedPendingConversationActivity } from
   './lower-dvina-trace-pending-activity-state.js';
+import { bindOrdinaryPlanToCombinedInput } from
+  './lower-dvina-trace-ordinary-p16.js';
+import { withoutPhase2CurrentVisibleContext } from
+  './lower-dvina-trace-phase-2-current-visible.js';
 
 import {
   expectedChangedConditions,
@@ -66,8 +72,11 @@ export async function commitLowerDvinaTracePhase3({
   }
   const state = await loadState(partyId, {
     presentationIdempotencyKey:
-      factual.player_input.idempotency_key
+      factual.player_input.idempotency_key,
+    includeCurrentVisibleContextForValidation: true
   });
+  phase3Contracts = resolveGenericKnownRouteContracts({ state,
+    phase3Contracts, factual });
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
   const scenarioRevision = committedTraceScenarioDefinitionRevision(state);
   const semanticContext = phase3SemanticCommitContext({
@@ -81,11 +90,11 @@ export async function commitLowerDvinaTracePhase3({
   const idemId = `idem:${partyId}:${canonicalDigest(
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
-  let next = nextState({
+  let next = withoutPhase2CurrentVisibleContext(nextState({
     state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
     rootTurnId: semanticContext?.rootTurnId,
     workingRevision: semanticContext?.workingRevision
-  });
+  }));
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId,
     phase3Contracts, turnStepApprovedOwners
@@ -145,6 +154,10 @@ export async function commitLowerDvinaTracePhase3({
         state.party_state.body_state_version
       ), ...expectedChangedConditions(state,
         factual.body_update.state_after)] : []),
+      ...([...writes.updates, ...writes.deletes].some(({ target_table: table }) =>
+        table === 'party_journey_locations') && state.journey_location != null
+        ? [expected('party_journey_locations', state.journey_location.id,
+          state.journey_location.state_version)] : []),
       ...(firstEntry?.expected_state_versions ?? [])
     ],
     validation_report: {
@@ -197,13 +210,23 @@ export async function commitLowerDvinaTracePhase3({
       ...phase3CommitRechecks({ partyId, state, factual, phase3Contracts,
         inputDigest }).filter(({ kind }) => kind !== 'physical').map((check) =>
           operationKind === 'first_entry' && check.kind === 'capacity'
-            ? sealedCheck('capacity', { party_id: partyId }) : check),
+            ? sealedCheck('capacity', {
+              ...withoutDigest(firstEntry.commit_rechecks.find(
+                ({ kind }) => kind === 'physical')),
+              capacity_model: 'trace_phase3_prepared_location_actor_capacity',
+              capacity_contract_ref: phase3Contracts.capacity.contract_id,
+              max_actors: phase3Contracts.capacity.zones.find(
+                ({ zone_id: id }) => id === 'working_camp'
+              )?.max_actors,
+              expected_present_npcs: state.first_entry_preparation?.npcs ?? []
+            }) : check),
       ...(firstEntry?.commit_rechecks ?? phase3CommitRechecks({ partyId,
         state, factual, phase3Contracts, inputDigest })
         .filter(({ kind }) => kind === 'physical'))
     ]
   };
-  const integratedInput = integrateConversationTemporalWrites({
+  const integratedInput = bindOrdinaryPlanToCombinedInput(
+    integrateConversationTemporalWrites({
     input: baseWritePlanInput,
     semanticExchange: semanticContext?.semanticExchange,
     fail: (error) => {
@@ -213,7 +236,7 @@ export async function commitLowerDvinaTracePhase3({
         { status: 409, details: error }
       );
     }
-  });
+    }), writePlan.ordinary_materialization_atomic_write_plan, partyId);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
         ok: candidate.party_id === partyId
@@ -241,7 +264,9 @@ export async function commitLowerDvinaTracePhase3({
     fail(
       committed.error?.code === 'idempotency_conflict'
         ? 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT'
-        : 'TRACE_PHASE_3_COMMIT_FAILED',
+        : `TRACE_PHASE_3_COMMIT_${String(
+          committed.error?.code ?? 'FAILED'
+        ).toUpperCase()}`,
       { commit_error: committed.error }
     );
   }
@@ -254,3 +279,5 @@ export async function commitLowerDvinaTracePhase3({
     committed_public_result: committedPublicResult
   };
 }
+
+function withoutDigest({ kind, digest, ...check }) { return check; }

@@ -38,6 +38,36 @@ test('A1 output and changed source accept later operations in one batch', () => 
   }
 });
 
+test('A1 untouched source snapshot stays identical to its atomic row', () => {
+  const state = baseState();
+  const snapshot = structuredClone(state);
+  snapshot.party_state.turn_number = 1;
+  const plan = actionPlan();
+  plan.source_updates[0].after_item.state.ordinary_metadata = {
+    semantic_facts: [], physical_inscriptions: []
+  };
+  applyActionProductionProjection({ next: snapshot, plan });
+  const batch = operationBatch();
+  batch.value.operations = batch.value.operations.filter(({ value }) =>
+    value.operation_kind !== 'move_entity'
+      || value.payload.entity_ref !== 'board');
+  const envelope = commitEnvelope({ clarification: false, check: false });
+  envelope.loop_trace.step_traces[0].plan_request.player_safe_state
+    .visible_entities.push({ entity_ref: 'wedge' });
+  bindCommitEnvelopeToBatch(envelope, batch);
+
+  const result = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId: 'p', state, snapshot, factual: null,
+    changeSetId: 'change:p:turn-step:1', idemId: 'idem-1',
+    writePlan: { turn_id: 'turn:p:1', base_state_version: 3,
+      command_trace: envelope.mode_resolution.decision_trace,
+      write_targets: [batch], turn_step_commit: envelope }
+  });
+
+  assert.deepEqual(result.snapshot.items.find(({ item_id: id }) =>
+    id === 'board').state, plan.source_updates[0].after_item.state);
+});
+
 function operationBatch() {
   const operations = ['board', 'wedge'].map((entityRef) => ({
     target: 'party_items', value: { version: 1,

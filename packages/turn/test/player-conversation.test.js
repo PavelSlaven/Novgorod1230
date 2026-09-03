@@ -81,6 +81,50 @@ test('one invalid player contribution receives one structural repair attempt', a
   assert.equal(calls[1].repair.validation_errors.length, 1);
 });
 
+test('initial player JSON parse failure reaches one format repair only', async () => {
+  const source = request();
+  let calls = 0;
+  const result = await requestPlayerConversationContribution({
+    request: source,
+    conversationModel: async () => {
+      calls += 1;
+      if (calls === 1) throw Object.assign(new Error('bad JSON'), {
+        code: 'json_parse_failed'
+      });
+      return plan(source);
+    },
+    revalidateStateVersion: async () => 2
+  });
+  assert.equal(result.status, 'planned');
+  assert.equal(calls, 2);
+});
+
+test('player repair parse failure remains failed', async () => {
+  let calls = 0;
+  await assert.rejects(requestPlayerConversationContribution({
+    request: request(),
+    conversationModel: async () => {
+      calls += 1;
+      throw Object.assign(new Error('bad JSON'), { code: 'json_parse_failed' });
+    },
+    revalidateStateVersion: async () => 2
+  }), { code: 'TURN_CONVERSATION_MODEL_FAILED' });
+  assert.equal(calls, 2);
+});
+
+test('player non-parse model failure does not request repair', async () => {
+  let calls = 0;
+  await assert.rejects(requestPlayerConversationContribution({
+    request: request(),
+    conversationModel: async () => {
+      calls += 1;
+      throw Object.assign(new Error('provider failed'), { code: 'http_500' });
+    },
+    revalidateStateVersion: async () => 2
+  }), { code: 'TURN_CONVERSATION_MODEL_FAILED' });
+  assert.equal(calls, 1);
+});
+
 test('second invalid player response returns a typed contract failure', async () => {
   let modelCalls = 0;
   await assert.rejects(requestPlayerConversationContribution({

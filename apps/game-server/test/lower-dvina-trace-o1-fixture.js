@@ -53,7 +53,8 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
 
 function request(query) { return { request: { root_turn_id: 'turn:party:1' },
   committed_state: { position: { g6_id: 'shore',
-    g5_anchor_id: 'shore-anchor' } }, operation: { target_refs: ['shore'], query },
+    g5_anchor_id: 'shore-anchor', position_id: 'shore-position' } },
+  operation: { target_refs: ['shore'], query },
   working_projection: {} }; }
 function group() { return { descriptor: 'ordinary layer', functional_bucket: 'other_ordinary',
   availability_class: 'common', allowed_admission_classes: ['common_mundane'],

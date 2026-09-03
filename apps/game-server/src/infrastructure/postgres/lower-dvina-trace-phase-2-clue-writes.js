@@ -19,6 +19,7 @@ export function appendPhase2Clue({ inserts, state, clue, partyId }) {
       exactPickup ? clue.legal_status : 'evidence_not_transferred',
     state: exactPickup ? {
       semantic_category: clue.semantic_category,
+      display_name: 'клочок синей шерсти',
       property_state: structuredClone(clue.property_state),
       causal_basis: clue.causal_basis,
       evidence_ref: 'trace_ld_v1_evidence_blue_wool',

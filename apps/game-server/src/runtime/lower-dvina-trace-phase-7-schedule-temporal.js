@@ -20,15 +20,20 @@ import { replaceLocalFireTemporalCandidates } from
 
 export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId,
-  restLimitTimestamp = null }) {
+  restLimitTimestamp = null, priorScheduleTemporal = null }) {
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
   const composed = composedConversationAdvance({ state, actorStep, temporal });
   if (composed != null) return composed;
-  const processed = new Set(
-    temporal.result.trace.processed_boundary_ids ?? []
-  );
+  const resumed = priorScheduleTemporal?.rest_completed === false;
+  const priorResult = resumed ? priorScheduleTemporal.result : null;
+  const projectionBefore = resumed
+    ? priorScheduleTemporal.projection : actorStep.working_projection;
+  const processed = new Set([
+    ...(temporal.result.trace.processed_boundary_ids ?? []),
+    ...(priorResult?.trace?.processed_boundary_ids ?? [])
+  ]);
   const committedCandidates = (state.temporal_boundary_candidates ?? []).filter(
     ({ boundary_id: id }) => !processed.has(id)
   );
@@ -43,16 +48,23 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     rootTurnId,
     clockBefore: temporal.result.clock_after,
     sourceCandidates,
-    projection: structuredClone(actorStep.working_projection),
+    projection: structuredClone(projectionBefore),
+    clockBefore: priorResult?.clock_after ?? temporal.result.clock_after,
     segment: 'schedule'
   });
-  const completionEffect = createNpcActorStepCompletionEffect({
-    party_ref: { entity_kind: 'party', entity_id: state.party_id },
-    active_actor_step: tracePhase7ActorStep(
-      actorStep.working_projection, actorStep.result),
-    visibility_policy_ref: versioned('visibility_modifier',
-      'lower-dvina-trace-phase-7-hidden-npc', '1')
-  });
+  const activeBefore = tracePhase7ActorStep(
+    projectionBefore, actorStep.result);
+  const completionEffect = activeBefore.status === 'started'
+    ? createNpcActorStepCompletionEffect({
+        party_ref: { entity_kind: 'party', entity_id: state.party_id },
+        active_actor_step: activeBefore,
+        visibility_policy_ref: versioned('visibility_modifier',
+          'lower-dvina-trace-phase-7-hidden-npc', '1')
+      })
+    : structuredClone(priorScheduleTemporal?.completion_effect);
+  if (completionEffect?.candidate == null) {
+    fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
+  }
   const completion = completionEffect.candidate;
   const completionWithinRest = compareGameTimestamp(
     completion.scheduled_at, request.inclusive_limit_timestamp
@@ -66,7 +78,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     source_provider_ref: TRACE_PHASE7_EXTERNAL_PROVIDER,
     source_candidates: sourceCandidates,
     registered_provider_ref: TRACE_PHASE7_PROVIDER,
-    registered_effects: completionWithinRest ? [completionEffect] : [],
+    registered_effects: completionWithinRest
+      && activeBefore.status === 'started' ? [completionEffect] : [],
     continuous_effect: {
       effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
       input: { execution_id: temporal.execution_id }
@@ -77,9 +90,14 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     },
     stop_after_source_batch: false
   });
-  const elapsed = exactIntegerElapsed(
-    temporal.result.clock_after, advanced.result.clock_after
+  const segmentElapsed = exactIntegerElapsed(
+    request.clock_before, advanced.result.clock_after
   );
+  const elapsed = (priorScheduleTemporal?.elapsed_after_decision ?? 0)
+    + segmentElapsed;
+  const result = resumed
+    ? cumulativeResult(priorResult, advanced.result)
+    : advanced.result;
   const active = tracePhase7ActorStep(
     advanced.state_projection, actorStep.result);
   if (advanced.result.temporal_status === 'paused') {
@@ -90,7 +108,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     return Object.freeze({
       elapsed_after_decision: elapsed,
       rest_completed: false,
-      result: advanced.result,
+      result,
       projection: structuredClone(advanced.state_projection),
       completion_candidate: structuredClone(completion),
       completion_effect: structuredClone(completionEffect)
@@ -113,11 +131,25 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   return Object.freeze({
     elapsed_after_decision: elapsed,
     rest_completed: restCompleted,
-    result: advanced.result,
+    result,
     projection: structuredClone(advanced.state_projection),
     completion_candidate: structuredClone(completion),
     completion_effect: structuredClone(completionEffect)
   });
+}
+
+function cumulativeResult(prior, current) {
+  return {
+    ...structuredClone(current),
+    clock_before: structuredClone(prior.clock_before),
+    trace: {
+      ...structuredClone(current.trace),
+      processed_boundary_ids: [...new Set([
+        ...(prior.trace?.processed_boundary_ids ?? []),
+        ...(current.trace?.processed_boundary_ids ?? [])
+      ])]
+    }
+  };
 }
 
 function composedConversationAdvance({ state, actorStep, temporal }) {

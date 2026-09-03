@@ -31,7 +31,6 @@ export function runtimeEntities(items) {
     dbState.ordinary_metadata.operation_history ??= [];
     item.runtime_instance_mechanics_snapshot = mechanics;
     item.db_state = dbState;
-    item.state = dbState;
     item.quantity ??= databaseQuantity();
     if (item.quantity !== 1) fail('TRACE_TURN_STEP_ITEM_INSTANCE_INVALID', {
       entity_ref: item.item_id,
@@ -49,6 +48,7 @@ export function runtimeEntities(items) {
 export function physicalPlacement(value) {
   return {
     anchor_id: value.anchor_id ?? null,
+    scene_position_id: value.scene_position_id ?? null,
     container_id: value.container_id ?? null,
     holder_npc_id: value.holder_npc_id ?? null,
     holder_character_id: value.holder_character_id ?? null,

@@ -85,14 +85,27 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.equal(rolls, 0);
     assert.deepEqual(result.check_results, []);
     assert.deepEqual(result.write_fragments, []);
-  });
+});
+
+test('active conversation does not reject an unrelated direct plan', () => {
+  const validate = preflight();
+  const request = { player_safe_state: { active_interlocutor: {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' }
+  } }, available_domain_operations: [{ op: 'emit_interaction',
+    target_actor_refs: ['npc:visible'] }] };
+  const direct = { resolution: 'direct', operations: [], check: null };
+  assert.doesNotThrow(() => validate({ plan: direct, request,
+    prepared_chain_context: null }));
+});
 
 test('planner receives only available exact domain operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
+  const wait = { ...dto, activity_kind: 'wait', description: 'Ждать.' };
   const run = async (available) => {
     const { services } = createServices([], { command: { matches: () => false,
       availability: () => ({ version: 1, schema: 'turn_availability_decision', status: available ? 'available' : 'blocked', can_attempt: available, reasons: [], check_requests: [] }),
-      semantic_binding: { binding_id: 'activity', operation: 'request_activity', operation_dto: dto, matches: () => false } },
+      semantic_binding: { binding_id: 'activity', operation: 'request_activity',
+        operation_dtos: [dto, wait], matches: () => false } },
       playerSafeStateProjector: () => ({ actor: { actor_ref: 'party-1' }, player_safe_state: {} }),
       turnStepExecutionRegistry: createTurnStepExecutionRegistry({
         applySemanticActivity: async ({ working_projection }) => ({
@@ -113,7 +126,7 @@ test('planner receives only available exact domain operation DTOs', async () => 
     let request; services.turnStepModel = (value) => (request = value, turnStepPlan(value));
     await runTurnWorkflow(workflowInput(), services); return request;
   };
-  assert.deepEqual((await run(true)).available_domain_operations, [dto]);
+  assert.deepEqual((await run(true)).available_domain_operations, [dto, wait]);
   assert.deepEqual((await run(false)).available_domain_operations, []);
 });
 
@@ -268,6 +281,37 @@ test('direct continuation does not reuse initial domain operation DTOs', async (
     /second request captured/u);
   assert.deepEqual(requests.map((request) => request.available_domain_operations),
     [[dto], []]);
+});
+
+test('direct continuation retains the active conversation owner', async () => {
+  const dto = { op: 'emit_interaction', actor_ref: 'party-1',
+    target_actor_refs: ['npc-1'], interaction_kind: 'speech',
+    content: 'Говорить.', instrument_refs: [] };
+  const { services } = createServices([], { command: {
+    matches: () => false,
+    availability: () => ({ version: 1, schema: 'turn_availability_decision',
+      status: 'available', can_attempt: true, reasons: [], check_requests: [] }),
+    semantic_binding: { binding_id: 'conversation',
+      operation: 'emit_interaction', operation_dto: dto,
+      matches: ({ operation }) => operation.op === 'emit_interaction' } },
+    playerSafeStateProjector: () => ({ actor: { actor_ref: 'party-1' },
+      player_safe_state: { active_interlocutor: { entity_ref: {
+        entity_kind: 'npc', entity_id: 'npc-1' } } } }),
+    turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+      applySemanticActivity: async ({ working_projection }) => ({
+        working_projection, write_fragments: [], player_response_boundary: false })
+    }) });
+  const requests = [];
+  services.turnStepModel = (request) => {
+    requests.push(request);
+    if (request.step_index === 2) throw new Error('second request captured');
+    return turnStepPlan(request, { goal_result: 'pending', continuation: {
+      remaining_intent: 'спрашиваю рыбака', depends_on_refs: [] } });
+  };
+  await assert.rejects(() => runTurnWorkflow(workflowInput(), services),
+    /second request captured/u);
+  assert.deepEqual(requests.map((request) => request.available_domain_operations),
+    [[dto], [dto]]);
 });
 
 function clock(value) {

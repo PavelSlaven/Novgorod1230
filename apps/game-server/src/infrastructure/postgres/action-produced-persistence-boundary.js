@@ -1,8 +1,11 @@
 export const INVALID_ACTION_PRODUCED_DATA = Symbol('invalid action data');
+const OMIT_ACTION_PRODUCED_DATA = Symbol('omit optional action data');
 
 export function snapshotActionProducedPersistenceData(value) {
   const seen = new WeakSet();
-  function visit(input) {
+  function visit(input, arrayValue = false) {
+    if (input === undefined) return arrayValue
+      ? INVALID_ACTION_PRODUCED_DATA : OMIT_ACTION_PRODUCED_DATA;
     if (input === null || typeof input === 'string'
         || typeof input === 'boolean') return input;
     if (typeof input === 'number') return Number.isFinite(input)
@@ -28,13 +31,16 @@ export function snapshotActionProducedPersistenceData(value) {
           || (array && key !== String(output.length))) {
         return INVALID_ACTION_PRODUCED_DATA;
       }
-      const child = visit(descriptor.value);
+      const child = visit(descriptor.value, array);
       if (child === INVALID_ACTION_PRODUCED_DATA) return child;
+      if (child === OMIT_ACTION_PRODUCED_DATA) continue;
       if (array) output.push(child); else output[key] = child;
     }
     return output;
   }
-  return visit(value);
+  const snapshot = visit(value);
+  return snapshot === OMIT_ACTION_PRODUCED_DATA
+    ? INVALID_ACTION_PRODUCED_DATA : snapshot;
 }
 
 export function deepFreezeActionProducedPersistenceData(value) {

@@ -116,6 +116,30 @@ export function phase7CommittedState() {
       zone_ref: 'working_camp', g4_id: 'camp-g4',
       g5_node_id: 'camp-node', g5_anchor_id: 'camp-anchor'
     },
+    prepared_scenes: [{
+      location_profile_ref: 'trace_ld_v1_loc_fishing_camp',
+      node: { instance_id: 'camp-node' },
+      anchor: {
+        instance_id: 'camp-anchor', template_id: 'camp-anchor-template'
+      }
+    }],
+    environment_snapshot: {
+      environment_profile_id: 'trace_ld_v1_env_camp_fire',
+      schema: 'rus.trace_environment_profile.v1', version: 1,
+      facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+      source: 'party_environment_snapshot',
+      scope: {
+        location_ref: 'trace_ld_v1_loc_fishing_camp',
+        g5_node_id: 'camp-node', g5_anchor_id: 'camp-anchor',
+        zone_ref: 'working_camp'
+      },
+      causal_basis: {
+        kind: 'authored_terminal_environment',
+        environment_profile_ref: 'trace_ld_v1_env_camp_fire',
+        route_ref: 'trace_ld_v1_route_shed_to_camp_carry_onisim',
+        anchor_template_ref: 'camp-anchor-template'
+      }
+    },
     phase6_carry_execution: { status: 'completed' },
     body_state: {
       health: 70, energy: 30, satiety: 40,

@@ -125,6 +125,7 @@ export function phase6Writes({ partyId, state, next, factual, turnNumber,
       idempotency_record_id: idemId
     })
   ];
+  const deletes = [];
   appendTraversal({ inserts, updates, appends, partyId, state, factual,
     traversal, intent, first, terminal, turnNumber, changeSetId, idemId });
   appendActivity({ inserts, updates, appends, state, factual, intent,
@@ -133,7 +134,7 @@ export function phase6Writes({ partyId, state, next, factual, turnNumber,
     appendPlayerBodyEffect({ updates, appends, partyId, state, next, factual,
       intent, changeSetId, idemId });
   }
-  if (terminal) appendTerminal({ inserts, updates, appends, partyId, state,
+  if (terminal) appendTerminal({ inserts, updates, appends, deletes, partyId, state,
     next, intent, changeSetId, idemId });
-  return { inserts, updates, appends, deletes: [] };
+  return { inserts, updates, appends, deletes };
 }

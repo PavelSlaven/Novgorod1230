@@ -9,6 +9,12 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
         ? phase3Contracts?.routeBodyEffect
         : input.consequence?.phase4_kind === 'movement'
           ? phase4Contracts?.routeBodyEffect : null;
+      if (effect == null && (input.consequence?.phase3_kind === 'movement'
+          || input.consequence?.phase4_kind === 'movement'
+          || input.consequence?.phase8_kind === 'movement')) {
+        return { owner: '@rus/body-state', applied: false, proposal: null,
+          state_after: structuredClone(input.committed_state.body_state) };
+      }
       return effect == null ? phase2BodyEffect.apply(input)
         : applyApprovedTraceRouteBodyEffect({ ...input, effect });
     }
@@ -17,7 +23,14 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
 
 export function applyApprovedTraceRouteBodyEffect({ effect, ...input }) {
   const elapsed = input.time_update?.exact_elapsed?.exact_minutes;
-  if (!valid(effect) || elapsed?.numerator !== String(effect.elapsed_minutes) || elapsed?.denominator !== '1') throw fail('TRACE_ROUTE_BODY_PROFILE_MISMATCH');
+  if (!valid(effect) || elapsed?.numerator !== String(effect.elapsed_minutes)
+      || elapsed?.denominator !== '1') {
+    throw fail('TRACE_ROUTE_BODY_PROFILE_MISMATCH', {
+      effect_profile_ref: effect?.effect_profile_id ?? null,
+      expected_elapsed_minutes: effect?.elapsed_minutes ?? null,
+      actual_elapsed: structuredClone(elapsed ?? null)
+    });
+  }
   const delta = effect.exact_deltas;
   const metrics = applyBodyStateChange(input.committed_state.body_state, {
     restore: Object.fromEntries(Object.entries(delta).map(([key, value]) => [key, Math.max(value, 0)])),
@@ -27,7 +40,15 @@ export function applyApprovedTraceRouteBodyEffect({ effect, ...input }) {
   const conditions = structuredClone(input.committed_state.body_state.active_conditions ?? []);
   for (const outcome of effect.condition_outcomes) {
     const matches = conditions.filter(({ id }) => id === outcome.from);
-    if (matches.length !== 1 || typeof outcome.to !== 'string') throw fail('TRACE_ROUTE_BODY_CONDITION_STATE_MISMATCH');
+    if (matches.length !== 1 || typeof outcome.to !== 'string') {
+      throw fail('TRACE_ROUTE_BODY_CONDITION_STATE_MISMATCH', {
+        effect_profile_ref: effect.effect_profile_id,
+        expected_from: outcome.from,
+        expected_to: outcome.to ?? null,
+        matching_condition_count: matches.length,
+        actual_condition_states: conditions.map(({ id }) => id)
+      });
+    }
     const condition = matches[0];
     condition.id = outcome.to;
     condition.condition_profile_ref = { ...condition.condition_profile_ref, state: outcome.to, last_effect_ref: effect.effect_profile_id };
@@ -50,4 +71,7 @@ function valid(effect) {
     && Array.isArray(effect.condition_outcomes);
 }
 
-function fail(code) { return serverError(code, 'Approved route body effect cannot be applied.', { status: 409 }); }
+function fail(code, details = null) { return serverError(code,
+  'Approved route body effect cannot be applied.', {
+  status: 409, public_exposure: 'internal', details
+}); }

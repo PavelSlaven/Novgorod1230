@@ -99,7 +99,7 @@ export function actionProducedOwnerOutputDestination(destinationPin,
 }
 
 export function validateActionProducedRowPins(pins, role, actorRef,
-  contextVersion, causalIdentity, accessAnchorId = null) {
+  causalIdentity, accessAnchorId = null, accessScenePositionId = null) {
   const seenItems = new Set();
   const seenResources = new Set();
   for (const pin of pins) {
@@ -118,20 +118,8 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       : accessContainer !== null ? exact(pin, [...baseKeys, 'access_container'])
         : exact(pin, baseKeys);
     if (!exactPin
-        || prepared !== null && (!exact(prepared,
-          ['schema', 'request_identity', 'root_turn_id',
-            'step_index'])
-          || prepared.schema
-            !== 'action_production_prepared_ordinary_pin_v1'
-          || !text(prepared.request_identity)
-          || prepared.root_turn_id !== causalIdentity.root_turn_id
-          || !Number.isSafeInteger(prepared.step_index)
-          || prepared.step_index < 1
-          || prepared.step_index >= causalIdentity.step_index
-          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
-            ?.root_turn_id !== prepared.root_turn_id
-          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
-            ?.step_index !== prepared.step_index)
+        || prepared !== null && !validPreparedOrdinary(prepared, pin,
+          causalIdentity)
         || preparedAction !== null && (!exact(preparedAction,
           ['schema', 'root_turn_id', 'step_index'])
           || preparedAction.schema
@@ -161,12 +149,32 @@ export function validateActionProducedRowPins(pins, role, actorRef,
     }
     const finite = finiteSnapshot(pin.finite_resource_row, pin.item_id,
       role, seenResources);
-    const expected = expectedEntity(pin, role, actorRef, contextVersion,
-      finite, accessAnchorId, accessContainer);
+    const expected = expectedEntity(pin, role, actorRef, finite,
+      accessAnchorId, accessScenePositionId, accessContainer);
     if (!isDeepStrictEqual(pin.entity_snapshot, expected)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
   }
+}
+
+function validPreparedOrdinary(value, pin, causalIdentity) {
+  if (!text(value.request_identity)
+      || value.root_turn_id !== causalIdentity.root_turn_id) return false;
+  const provenance = pin.item.state
+    ?.runtime_instance_mechanics_snapshot?.provenance;
+  if (value.schema === 'action_production_prepared_ordinary_pin_v1') {
+    return exact(value, ['schema', 'request_identity', 'root_turn_id',
+      'step_index'])
+      && Number.isSafeInteger(value.step_index) && value.step_index >= 1
+      && value.step_index < causalIdentity.step_index
+      && provenance?.root_turn_id === value.root_turn_id
+      && provenance?.step_index === value.step_index;
+  }
+  return value.schema === 'action_production_prepared_ordinary_pin_v2'
+    && exact(value, ['schema', 'request_identity', 'root_turn_id'])
+    && causalIdentity.step_index > 1
+    && value.request_identity === `${value.root_turn_id}:ordinary:presence`
+    && provenance?.request_id === value.request_identity;
 }
 
 function validScenePlacement(value) {
@@ -177,14 +185,14 @@ function validScenePlacement(value) {
     && Number.isSafeInteger(value.state_version) && value.state_version >= 0;
 }
 
-function expectedEntity(pin, role, actorRef, contextVersion, finite,
-  accessAnchorId, accessContainer) {
+function expectedEntity(pin, role, actorRef, finite,
+  accessAnchorId, accessScenePositionId, accessContainer) {
   const { item, placement, ownership } = pin;
   const prepared = pin.prepared_ordinary != null
     || pin.prepared_action != null;
   const accessState = prepared ? 'quick'
     : actionProducedAccessState(placement, accessContainer, actorRef,
-      accessAnchorId);
+      accessAnchorId, accessScenePositionId);
   const holderRef = [placement.holder_character_id, placement.holder_npc_id]
     .includes(actorRef) ? actorRef : null;
   if (!exact(pin.entity_snapshot, ENTITY_KEYS)
@@ -192,7 +200,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
       || item.state?.lifecycle_status != null
         && item.state.lifecycle_status !== 'active'
       || !prepared && !actionProducedPlacementAccessible(placement,
-        accessContainer, actorRef, accessAnchorId)
+        accessContainer, actorRef, accessAnchorId, accessScenePositionId)
       || !validOwnership(ownership)
       || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
@@ -200,7 +208,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
   return {
     schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state: 'committed', role, entity_ref: pin.item_id,
-    state_version: contextVersion, lifecycle_state: 'active',
+    state_version: String(item.state_version), lifecycle_state: 'active',
     access_state: accessState, holder_ref: holderRef,
     controller_ref: actionProducedControllerRef(ownership),
     ownership_snapshot: structuredClone(ownership),
@@ -210,9 +218,15 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
 
 function validOwnership(value) {
   const owners = Number(text(value.owner_character_id))
-    + Number(text(value.owner_npc_id)) + Number(value.owner_party === true);
+    + Number(text(value.owner_npc_id)) + Number(value.owner_party === true)
+    + Number(validExternalOwner(value.owner_external_ref));
   return owners === 1 && typeof value.owner_party === 'boolean'
     && text(value.claim_state);
+}
+
+function validExternalOwner(value) {
+  return exact(value, ['entity_kind', 'entity_id'])
+    && text(value.entity_kind) && text(value.entity_id);
 }
 
 function finiteSnapshot(row, itemId, role, seenResources) {

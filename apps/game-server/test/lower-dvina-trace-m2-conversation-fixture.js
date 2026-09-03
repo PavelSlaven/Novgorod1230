@@ -31,6 +31,12 @@ import {
 } from './lower-dvina-trace-phase-2-fixture.js';
 import { requireRatshaSocialCheck } from
   './lower-dvina-trace-m2-social-check-fixture.js';
+export { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
+import { npcSpeechPlan } from
+  './lower-dvina-trace-m2-conversation-speech-fixture.js';
+export { assertPersistedStatePayloadSafe } from
+  './lower-dvina-trace-m2-conversation-persistence-fixture.js';
 
 export const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 export const digest = (character) => character.repeat(64);
@@ -67,8 +73,9 @@ export function createM2ConversationModels({
       offer: Boolean(request.player_safe_context.offer_policy_ref)
     }),
     npcSemanticModel: (request) => {
-      const routeOperation = request.decision_scope
-        ?.operation_contract?.disclose_known_route;
+      const operationContract = request.decision_scope
+        ?.operation_contract ?? {};
+      const routeOperation = operationContract.disclose_known_route;
       if (routeOperation) {
         const responseKind = (request.social_context?.delivery_cues ?? [])
           .some((cue) => EREMEY_DISCLOSURE_CUES.has(cue))
@@ -77,10 +84,36 @@ export function createM2ConversationModels({
         onNpcCall(request, responseKind);
         return eremeyPlan(request, responseKind, routeOperation);
       }
+      const ratshaBoundary = ['commit_surrender', 'state_bargain',
+        'state_known_falsehood'].some((operation) =>
+        Object.hasOwn(operationContract, operation))
+        || request.decision_scope?.allowed_contribution_kinds
+          ?.includes('combat_handoff')
+        || ratshaResponseKind === 'combat_handoff';
+      if (!ratshaBoundary) {
+        onNpcCall(request, 'speech');
+        return npcSpeechPlan(request, {
+          utteranceText: 'Я занят своим делом, но слышу тебя.',
+          dominantAct: 'answer'
+        });
+      }
+      const requiredOperation = request.decision_scope
+        ?.required_supporting_operation?.op;
+      const requiredResponseKind = {
+        commit_surrender: 'surrender',
+        state_bargain: 'bargain',
+        state_known_falsehood: 'lie'
+      }[requiredOperation];
+      const responseKind = request.decision_scope
+        ?.allowed_contribution_kinds?.length === 1
+        && request.decision_scope.allowed_contribution_kinds[0]
+          === 'combat_handoff'
+        ? 'combat_handoff'
+        : requiredResponseKind ?? ratshaResponseKind;
       const playerId = request.public_conversation_history.at(-1)
         .speaker_ref.entity_id;
-      onNpcCall(request, ratshaResponseKind);
-      return ratshaPlan(request, ratshaResponseKind, playerId);
+      onNpcCall(request, responseKind);
+      return ratshaPlan(request, responseKind, playerId);
     }
   };
 }
@@ -211,7 +244,9 @@ export async function runPhase3({
   npcDurationClasses = ['domain_owned'],
   transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
-  resolveTemporalBoundary = null
+  npcSemanticModel: customNpcSemanticModel = null,
+  resolveTemporalBoundary = null,
+  targetActorId = null
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -223,6 +258,7 @@ export async function runPhase3({
     playerInput: { raw_text: rawText },
     inputDigest,
     checkResult: resolvedCheck,
+    targetActorId,
     playerConversationModel: async (request) => {
       playerCalls += 1;
       const plan = transformPlayerPlan(playerPlan(request, {
@@ -234,26 +270,25 @@ export async function runPhase3({
       );
       return plan;
     },
-    npcSemanticModel: async (request) => {
+    npcSemanticModel: customNpcSemanticModel ?? (async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
       npcRequests.push(structuredClone(request));
       const selectedResponseKind = typeof responseKind === 'function'
         ? responseKind(request, npcCalls)
         : responseKind;
-      const plan = transformNpcPlan(eremeyPlan(
-        request,
-        selectedResponseKind,
-        request.decision_scope.operation_contract.disclose_known_route ?? {
-          route_ref: 'unused-route',
-          source_knowledge_scope_ref: 'unused-knowledge-scope'
-        }
-      ), { request, call_index: npcCalls });
+      const plan = transformNpcPlan(
+        request.decision_scope.operation_contract.disclose_known_route
+          ? eremeyPlan(request, selectedResponseKind,
+              request.decision_scope.operation_contract.disclose_known_route)
+          : npcSpeechPlan(request, { utteranceText: 'Я слышу тебя.',
+              dominantAct: 'answer' }),
+        { request, call_index: npcCalls });
       plan.activity.duration_class = durationForCall(
         npcDurationClasses, npcCalls
       );
       return plan;
-    },
+    }),
     temporalAdvanceOwner: conversationTemporalOwner(
       state, resolveTemporalBoundary
     ),
@@ -278,7 +313,8 @@ export async function runPhase4({
   transformNpcPlan = (plan) => plan,
   npcSocialCheckResolver = async ({ request }) =>
     checkResult(`npc:${request.request_id}`, 'success'),
-  resolveTemporalBoundary = null
+  resolveTemporalBoundary = null,
+  targetActorRef = 'ratsha_storehouse_helper'
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -292,6 +328,7 @@ export async function runPhase4({
     checkResult: resolvedCheck,
     offerStage,
     checkRequest,
+    targetActorRef,
     npcSocialCheckResolver,
     playerConversationModel: async (request) => {
       playerCalls += 1;
@@ -428,6 +465,7 @@ function eremeyPlan(request, responseKind, routeOperation) {
     dominantAct: disclosure ? 'inform' : ordinarySpeech ? 'answer' : 'evade',
     interactionTags: ordinarySpeech
       ? [] : [disclosure ? 'route_disclosure' : 'withhold'],
+    topicRefs: disclosure ? [routeRef] : [],
     claims: disclosure ? [{
       claim_id: 'eremey-route-disclosure',
       content_summary: 'К старой сушильне ведёт тропа.',
@@ -491,43 +529,6 @@ function ratshaPlan(request, responseKind, playerId) {
     : plan;
 }
 
-export function npcSpeechPlan(request, {
-  utteranceText,
-  dominantAct,
-  interactionTags = [],
-  claims = [],
-  supportingOperations = []
-}) {
-  const playerRef = request.public_conversation_history.at(-1)?.speaker_ref
-    ?? null;
-  return {
-    schema: 'conversation_contribution_plan_v1',
-    request_id: request.request_id,
-    boundary_id: request.boundary_id,
-    conversation_id: request.conversation_id,
-    exchange_id: request.exchange_id,
-    state_version: request.state_version,
-    speaker_ref: request.npc_ref,
-    contribution_kind: 'speech',
-    primary_addressee_ref: playerRef,
-    intended_addressee_refs: playerRef === null ? [] : [playerRef],
-    affected_actor_refs: [],
-    speech: speech({
-      utteranceText,
-      dominantAct,
-      interactionTags,
-      claims
-    }),
-    interpretation: interpretation('respond in the current conversation'),
-    resolution: 'automatic',
-    activity: activity(),
-    supporting_operations: supportingOperations,
-    check: null,
-    handoff: null,
-    reason: 'The response follows the NPC subjective state.'
-  };
-}
-
 function npcNonSpeechPlan(request, responseKind, playerId) {
   const combat = responseKind === 'combat_handoff';
   return {
@@ -567,13 +568,14 @@ function speech({
   utteranceText,
   dominantAct,
   interactionTags = [],
+  topicRefs = [],
   claims = []
 }) {
   return {
     utterance_text: utteranceText,
     dominant_act: dominantAct,
     interaction_tags: interactionTags,
-    topic_refs: [],
+    topic_refs: topicRefs,
     claims,
     response_expectation: { kind: 'none', target_refs: [] }
   };
@@ -674,43 +676,6 @@ export function projectPhase3Conversation({ state, contracts, result, inputDiges
     rootTurnId: `turn:${inputDigest.slice(0, 12)}`,
     workingRevision: 0
   });
-}
-
-export function assertPersistedStatePayloadSafe({
-  payload,
-  persistenceMarker,
-  historyBranch
-}) {
-  const serialized = JSON.stringify(payload);
-  assert.equal(
-    Object.hasOwn(payload, 'npc_semantic_decision_traces'),
-    false
-  );
-  assert.equal(serialized.includes(persistenceMarker), false);
-  assert.equal(serialized.includes('"decision_request"'), false);
-  assert.equal(serialized.includes('"decision_plan"'), false);
-  assert.equal(
-    serialized.includes('npc_conversation_response_request_v1'),
-    false
-  );
-  assert.equal(
-    serialized.includes('conversation_contribution_plan_v1'),
-    false
-  );
-  assert.equal(Object.hasOwn(historyBranch, 'semantic_exchange'), false);
-  assert.ok(historyBranch.semantic_exchange_projection);
-  assert.equal(
-    payload.npc_semantic_decision_refs.at(-1).request_id,
-    historyBranch.semantic_exchange_projection.request_id
-  );
-  assert.equal(
-    Object.hasOwn(
-      payload.last_turn.consequence.conversation
-        ?? payload.last_turn.consequence.negotiation,
-      'semantic_exchange'
-    ),
-    false
-  );
 }
 
 export function projectPhase4Negotiation({

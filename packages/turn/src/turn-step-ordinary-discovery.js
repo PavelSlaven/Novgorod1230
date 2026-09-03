@@ -1,26 +1,38 @@
 export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
-  if (!['inspect', 'search'].includes(operation?.discovery_kind)
+  const capability = ordinaryResolutionCapability(playerSafeState);
+  const supportedKind = ['inspect', 'search'].includes(operation?.discovery_kind)
+    ? capability?.discovery_available === true
+    : operation?.discovery_kind === 'look'
+      && capability?.scene_seed_available === true;
+  if (!supportedKind
       || !Array.isArray(operation.target_refs)
       || operation.target_refs.length !== 1
       || typeof operation.query !== 'string'
       || operation.query.trim().length === 0
-      || !ordinaryDiscoveryAvailable(playerSafeState)) return false;
+      || capability == null) return false;
   return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
 }
 
-function ordinaryDiscoveryAvailable(playerSafeState) {
+function ordinaryResolutionCapability(playerSafeState) {
   const marker = ownPlainDataRecord(ownDataProperty(playerSafeState,
     'ordinary_resolution'), [
-    'discovery_available', 'container_resolution_available'
+    'discovery_available', 'container_resolution_available',
+    'scene_seed_available'
   ]);
-  return marker?.discovery_available === true
-    && marker.container_resolution_available === false;
+  return marker?.container_resolution_available === false
+    && typeof marker.discovery_available === 'boolean'
+    && typeof marker.scene_seed_available === 'boolean' ? marker : null;
 }
 
 function exactVisibleScope(...projections) {
   const refs = new Set();
   for (const projection of projections) {
     addRef(refs, projection?.position?.location_ref);
+    const spatial = ownPlainDataRecord(ownDataProperty(projection,
+      'spatial_semantic'), ['semantic_grounding_available', 'position_ref']);
+    if (spatial?.semantic_grounding_available === true) {
+      addRef(refs, spatial.position_ref);
+    }
     for (const entity of projection?.visible_entities ?? []) addRef(refs,
       entity?.entity_ref);
     for (const entity of projection?.visible_objects ?? []) addRef(refs,

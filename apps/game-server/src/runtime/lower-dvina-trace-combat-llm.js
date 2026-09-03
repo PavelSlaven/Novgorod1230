@@ -56,7 +56,7 @@ export function createLowerDvinaTraceNpcCombatModel({ roleRunner } = {}) {
           validation_errors: repair.validation_errors
         } : request)
       }],
-      overrides: { temperature: 0, maxTokens: 4000 }
+      overrides: { temperature: 0, maxTokens: 20_000 }
     });
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) {

@@ -1,14 +1,6 @@
-import {
-  assertAllowedKeys,
-  compact,
-  finite,
-  physicalFactRecords,
-  plain,
-  projectionError,
-  scalarRecord,
-  text,
-  textArray
-} from './lower-dvina-trace-player-safe-json.js';
+import { assertAllowedKeys, compact, finite, physicalFactRecords, plain,
+  projectionError, scalarRecord, text, textArray } from
+  './lower-dvina-trace-player-safe-json.js';
 import {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
   runtimeItemContentsAreOpen as contentsAreOpen,
@@ -154,10 +146,13 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
     return true;
   }
   const location = placement.location_ref ?? item.location_ref;
+  const scenePosition = placement.scene_position_id
+    ?? item.scene_position_id;
   const anchor = placement.g5_anchor_id ?? placement.anchor_id
     ?? item.g5_anchor_id ?? item.anchor_id;
-  if (location != null || anchor != null) {
+  if (location != null || scenePosition != null || anchor != null) {
     return location != null && location === position?.location_ref
+    || scenePosition != null && scenePosition === position?.position_id
     || anchor != null && [position?.g5_anchor_id, position?.anchor_id]
       .includes(anchor);
   }
@@ -172,7 +167,8 @@ function projectItem(item, strict) {
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: text(item.name), semantic_type: text(item.semantic_type),
+    name: text(item.name ?? item.state?.display_name),
+    semantic_type: text(item.semantic_type),
     physical_facts: projectPhysicalFacts(item, strict),
     physical_fact_records: physicalFactRecords(item.physical_fact_records
       ?? item.state?.ordinary_metadata?.semantic_facts?.map?.((fact) => ({
@@ -211,7 +207,7 @@ function projectPlacement(value, strict) {
     'holder_character_id', 'holder_npc_id', 'owner_character_id',
     'physical_position', 'equipment_slot_category_id',
     'container_id', 'attached_item_id', 'location_ref', 'g5_node_id',
-    'g5_anchor_id', 'anchor_id', 'zone_ref'
+    'g5_anchor_id', 'anchor_id', 'scene_position_id', 'zone_ref'
   ]);
   if (strict) assertAllowedKeys(value, allowed, 'placement', invalidCode());
   return compact(Object.fromEntries([...allowed].map((key) => [
@@ -229,7 +225,6 @@ function projectReferenceState(value, strict, path) {
     key, typeof value[key] === 'boolean' ? value[key] : text(value[key])
   ])));
 }
-
 function projectContents(value, strict) {
   if (!Array.isArray(value)) return undefined;
   return value.filter((item) => plain(item) && !recordIsClosed(item))
@@ -246,11 +241,10 @@ function projectContents(value, strict) {
     });
   }).filter(Boolean);
 }
-
 function projectItemState(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
-    'semantic_category', 'evidence_ref', 'condition', 'condition_state',
+    'semantic_category', 'display_name', 'evidence_ref', 'condition', 'condition_state',
     'property_state', 'accessibility', 'access_state', 'visibility_state',
     'use_state'
   ]);
@@ -259,6 +253,7 @@ function projectItemState(value, strict) {
     path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS });
   return compact({
     semantic_category: text(value.semantic_category),
+    display_name: text(value.display_name),
     evidence_ref: text(value.evidence_ref),
     condition: typeof value.condition === 'string' ? value.condition
       : scalarRecord(value.condition, { strict, path: 'item.state.condition',
@@ -275,7 +270,6 @@ function projectItemState(value, strict) {
       path: 'item.state.use_state', allowedKeys: USE_STATE_KEYS })
   });
 }
-
 function assertNoPlacementCycles(records, byId) {
   for (const item of records) {
     const origin = item?.item_id ?? item?.instance_id;
@@ -293,7 +287,6 @@ function assertNoPlacementCycles(records, byId) {
     }
   }
 }
-
 function invalidCode() {
   return 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID';
 }

@@ -38,9 +38,10 @@ export function phase3RouteTimeUpdate(factual) {
   const route = factual.time_update?.prepared_effect_ledger?.slices?.find(
     ({ effect_kind: kind, owner_ref: owner }) =>
       kind === 'domain_command'
-      && ['lower_dvina_trace.follow_path_to_fishing_camp',
+      && (['lower_dvina_trace.follow_path_to_fishing_camp',
         'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse']
-        .includes(owner));
+        .includes(owner)
+        || owner?.startsWith('lower_dvina_trace.follow_admitted_known_route:')));
   return route?.time_update ?? factual.time_update;
 }
 

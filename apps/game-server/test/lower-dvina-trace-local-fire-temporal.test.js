@@ -214,7 +214,7 @@ test('production prepared route advances prior fire and hides retired fuel',
     assert.equal(visible.visible_scene,
       'Микула пришёл в рыбацкий стан. Огонь разгорелся.');
     assert.deepEqual(visible.visible_changes,[
-      'trace_ld_v1_route_wreck_to_camp_committed',
+      'Вы добрались от места крушения до рыбацкого стана.',
       'turn_step_world_process_1:local_fire:started']);
     assert.equal(visible.visible_changes.some((change)=>
       change.includes(':complete')),false);

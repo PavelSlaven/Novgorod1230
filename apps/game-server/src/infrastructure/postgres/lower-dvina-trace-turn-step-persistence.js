@@ -1,7 +1,5 @@
 import { requireTurnStepOperationBatch, TURN_STEP_OPERATION_BATCH_TARGET } from '@rus/turn';
-import { row } from './first-playable/plan-shared.js';
 import {
-  appendTurnStepSemanticActivityWrites,
   requireTurnStepSemanticActivityTimeline
 } from './lower-dvina-trace-turn-step-activity-writes.js';
 import { prepareTurnStepBodyHistory } from './lower-dvina-trace-turn-step-body-history.js';
@@ -13,26 +11,30 @@ import {
 } from './lower-dvina-trace-turn-step-commit-validation.js';
 import { validateNoBatchFactualCommit } from './lower-dvina-trace-turn-step-state-reconciliation.js';
 import { applyItemOperation } from './lower-dvina-trace-turn-step-item-operations.js';
-import { itemRecord, mergeKnowledge, physicalPlacement, runtimeEntities } from
+import { runtimeEntities } from
   './lower-dvina-trace-turn-step-item-state.js';
 import { validateFragment } from
   './lower-dvina-trace-turn-step-operation-validation.js';
 import { attachTurnStepCommit, emptyTurnStepPersistence, fail,
   mergeLowerDvinaTraceTurnStepWrites } from
   './lower-dvina-trace-turn-step-persistence-support.js';
-import { appendAuthoredTurnStepWrites } from './lower-dvina-trace-turn-step-authored-writes.js';
 import { requiresFinalTurnStepInventoryValidation,
   validateFinalTurnStepInventory } from
   './lower-dvina-trace-turn-step-final-inventory.js';
 import { validateTurnStepBatchPlanBindings } from
   './lower-dvina-trace-turn-step-plan-binding.js';
 import { validatePreparedEffectCommit } from './lower-dvina-trace-turn-step-prepared-effect-validation.js';
-import { authoredTurnStepContainers, projectPersistedTurnStepContainers } from
+import { authoredTurnStepContainers } from
   './lower-dvina-trace-turn-step-container-persistence.js';
+import { isDeepStrictEqual } from 'node:util';
+import {
+  buildTurnStepPersistenceWrites,
+  projectTurnStepPersistenceSnapshot
+} from './lower-dvina-trace-turn-step-persistence-projection.js';
 export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
-  phase3Contracts = null,
+  phase3Contracts = null, preparedFactual = factual,
   turnStepApprovedOwners = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
@@ -69,7 +71,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   const preparedEffect = validatePreparedEffectCommit({
     batch,
     envelope: commit,
-    factual,
+    factual: preparedFactual,
     state, phase3Contracts, turnStepApprovedOwners,
     localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
@@ -94,7 +96,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   };
   // Every envelope and owner binding is checked before the first mutation.
   if (writePlan.turn_step_commit != null) {
-    validateTurnStepBatchPlanBindings({ batch, factual: commit, state });
+    validateBatchPlanBindings({ batch, factual: commit, state, actorRef });
   }
   for (const [index, fragment] of batch.operations.entries()) {
     prevalidateFragment({ fragment, index, batch, commit, state, context });
@@ -102,9 +104,14 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   if (!preparedEffect.prepared) {
     validateBodyComponentOrder(batch, commit, state);
   }
-  const activityTimeline = requireTurnStepSemanticActivityTimeline({
-    factual: commit, batch, expectedClockBefore: state.clock
-  });
+  const hasActivityFragments = batch.operations.some(({ target }) =>
+    target === 'party_events');
+  const activityTimeline = actorRef !== state.actor_id
+      && preparedEffect.prepared && !hasActivityFragments
+    ? { semanticDuration: 0, resolutions: new Map() }
+    : requireTurnStepSemanticActivityTimeline({
+        factual: commit, batch, expectedClockBefore: state.clock
+      });
   context.semanticDuration = activityTimeline.semanticDuration;
   context.activityResolutions = activityTimeline.resolutions;
   for (const fragment of batch.operations) {
@@ -146,7 +153,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       });
     }
   }
-  projectSnapshot({ next, authoredItems, authoredContainers, entities,
+  projectTurnStepPersistenceSnapshot({
+    next, authoredItems, authoredContainers, entities,
     context, batch,
     writePlan, idemId });
   context.bodyHistory = preparedEffect.prepared ? null
@@ -163,7 +171,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   })) {
     validateFinalTurnStepInventory(next, committedSnapshot);
   }
-  const writes = buildWrites({
+  const writes = buildTurnStepPersistenceWrites({
     partyId, state, next, commit, changeSetId, idemId, entities,
     authoredItems, authoredContainers, context
   });
@@ -175,6 +183,31 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       (write) => `party_runtime.${write.target_table}:${write.id}`),
     semanticDuration: context.semanticDuration
   };
+}
+
+function validateBatchPlanBindings({ batch, factual, state, actorRef }) {
+  if (actorRef === state.actor_id) {
+    validateTurnStepBatchPlanBindings({ batch, factual, state });
+    return;
+  }
+  const phase7 = factual.consequence?.phase7;
+  const plan = phase7?.autonomous?.proposal?.plan;
+  const fragments = phase7?.actor_step_owner_outputs?.write_fragments;
+  if (!Array.isArray(fragments)
+      || !isDeepStrictEqual(batch.operations, fragments)
+      || !Number.isSafeInteger(plan?.decision_index)) {
+    fail('TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH', {
+      reason: 'NPC owner batch is detached from the approved actor step'
+    });
+  }
+  validateTurnStepBatchPlanBindings({ batch, state, factual: {
+    loop_trace: { step_traces: [{
+      applied: true,
+      step_index: plan.decision_index,
+      approved_plan: plan,
+      check_outcome: phase7.actor_step_check?.result?.outcome?.band ?? null
+    }] }
+  } });
 }
 function requireBatch(value) {
   try {
@@ -222,78 +255,4 @@ function prevalidateFragment({ fragment, index, batch, commit, state, context })
       fragment.value.payload.origin
     );
   }
-}
-
-function projectSnapshot({
-  next, authoredItems, authoredContainers, entities, context, batch,
-  writePlan, idemId
-}) {
-  next.items = [
-    ...authoredItems.map((item) => structuredClone(item)),
-    ...entities.values()
-      .filter((entity) => !entity.created_in_batch
-        || entity.lifecycle_status === 'active')
-      .map(({ db_state: _dbState, lifecycle_status: _status,
-        created_in_batch: _created, ...item }) => structuredClone(item))
-  ].sort((left, right) => left.item_id.localeCompare(right.item_id));
-  projectPersistedTurnStepContainers(next, authoredContainers);
-  next.knowledge = mergeKnowledge(next.knowledge, context.knowledgeInserts);
-  next.turn_step_activity_history = [
-    ...(next.turn_step_activity_history ?? []), ...context.activityHistory
-  ];
-  next.last_turn = {
-    ...next.last_turn,
-    turn_step_operation_batch: structuredClone(batch),
-    turn_step_idempotency_record_id: idemId,
-    decision_trace: structuredClone(writePlan.command_trace),
-    semantic_activity_duration_minutes: context.semanticDuration
-  };
-}
-
-function buildWrites({
-  partyId, state, next, commit, changeSetId, idemId, entities, authoredItems,
-  authoredContainers, context
-}) {
-  const writes = { inserts: [], updates: [], appends: [], deletes: [] };
-  if (context.bodyHistory != null) {
-    writes.appends.push(context.bodyHistory.write);
-  }
-  appendTurnStepSemanticActivityWrites({
-    writes,
-    activities: context.activityHistory,
-    partyId, state, snapshot: next, factual: commit, changeSetId, idemId
-  });
-  for (const entity of entities.values()) {
-    if (!context.touched.has(entity.item_id)
-        || (entity.created_in_batch
-          && entity.lifecycle_status === 'retired')) continue;
-    const mode = context.creates.has(entity.item_id) ? 'inserts' : 'updates';
-    writes[mode].push(row(
-      'party_items', entity.item_id, itemRecord(partyId, entity)));
-    if (context.placements.has(entity.item_id)) {
-      writes[mode].push(row('party_item_placements', entity.item_id, {
-        party_id: partyId,
-        item_id: entity.item_id,
-        ...physicalPlacement(entity.placement)
-      }));
-    }
-  }
-  appendAuthoredTurnStepWrites({
-    writes, authoredItems, authoredContainers,
-    authoredStateTouched: context.authoredStateTouched,
-    placements: context.placements,
-    ownerships: context.ownerships,
-    partyId, changeSetId
-  });
-  for (const knowledge of context.knowledgeInserts) {
-    writes.inserts.push(row('party_character_knowledge',
-      `${state.actor_id}:${knowledge.fact_id}`, {
-        party_id: partyId,
-        character_id: state.actor_id,
-        fact_id: knowledge.fact_id,
-        knowledge_state: knowledge.knowledge_state,
-        evidence: knowledge.evidence_refs
-      }));
-  }
-  return writes;
 }

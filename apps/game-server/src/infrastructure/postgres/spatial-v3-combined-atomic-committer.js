@@ -288,7 +288,7 @@ export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, 
   return createSpatialV3CombinedAtomicCommitter({
     now,
     recheck, ordinaryFirstEntryProvisioner,
-    withTransaction: (work, turnBudget = null) => turnBudget?.remaining?.() == null
+    withTransaction: (work, turnBudget = null) => !Number.isFinite(turnBudget?.remaining?.()?.deadline_ms)
       ? withPostgresTransaction(pool, work)
       : withTurnDeadlineTransaction(pool, turnBudget, work, {
           commit: (result) => result?.ok === true

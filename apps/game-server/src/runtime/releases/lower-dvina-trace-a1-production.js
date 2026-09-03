@@ -31,7 +31,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   });
   return ({ partyId, requestId, applyWorkingProjection }) => {
     const load = async (rawEnvelope, requireEvidence) => {
-      const envelope = snapshot(rawEnvelope);
+      const envelope = snapshotA1ExecutionEnvelope(rawEnvelope);
       if (envelope === INVALID_ACTION_PRODUCED_DATA) {
         fail('TRACE_A1_SCOPE_INVALID');
       }
@@ -159,7 +159,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           return Object.freeze({
             working_projection: structuredClone(envelope.working_projection),
             summary: 'action_production:no_useful_result', write_fragments: [],
-            duration_minutes: 0,
+            duration_minutes: 0, goal_result: 'not_achieved',
             action_production_atomic_write_plan: null
           });
         }
@@ -180,11 +180,36 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
             ? 'action_production:no_useful_result'
             : 'action_production:physical_change',
           write_fragments: [], duration_minutes: 0,
-          action_production_atomic_write_plan: atomicPlan
+          goal_result: semantic.identity_mode === 'no_useful_result'
+            ? 'not_achieved' : 'achieved',
+          action_production_atomic_write_plan: atomicPlan,
+          consequence_fragment: createActionProductionVisibleConsequence({
+            actionRef, stepIndex, semantic
+          })
         });
       }
     });
   };
+}
+
+export function createActionProductionVisibleConsequence({ actionRef, stepIndex,
+  semantic }) {
+  const descriptor = semantic.result_descriptor;
+  return {
+    visible_seed: { [`turn_step_action_production_${stepIndex}`]: {
+      change: 'physical_change', entity_ref: semantic.source_refs[0],
+      physical_description: descriptor.physical_description,
+      qualitative_facts: structuredClone(descriptor.qualitative_facts)
+    } },
+    state_changes: [{ operation_id: actionRef,
+      operation_kind: 'action_production' }]
+  };
+}
+
+export function snapshotA1ExecutionEnvelope(rawEnvelope) {
+  return snapshot({ ...rawEnvelope, committed_state: { party_state: {
+    turn_number: rawEnvelope?.committed_state?.party_state?.turn_number
+  } } });
 }
 
 function currentPhysicalFactRefs(item) {

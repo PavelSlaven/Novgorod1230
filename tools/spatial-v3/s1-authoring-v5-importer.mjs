@@ -7,20 +7,36 @@ import { validateControlledValue } from
 import { buildWorldBaseSchemaReference } from
   '../../scripts/generate-world-base-schema-reference.mjs';
 
-const ROOT =
-  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5';
+const V5 = Object.freeze({ root:
+  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5',
+  id: 'novgorod_spatial_v3_production_v5_candidate_001',
+  digest: 'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
+  g5Count: 2 });
+const V6 = Object.freeze({ root:
+  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6',
+  id: 'novgorod_spatial_v3_production_v6_candidate_001',
+  digest: '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
+  g5Count: 3 });
 
 export async function buildS1AuthoringV5ImportSql({
   root = process.cwd(), rollback = false
 } = {}) {
-  const candidateRoot = resolve(root, ROOT);
+  return buildS1AuthoringImportSql({ root, rollback, candidate: V5 });
+}
+
+export async function buildS1AuthoringV6ImportSql({
+  root = process.cwd(), rollback = false
+} = {}) {
+  return buildS1AuthoringImportSql({ root, rollback, candidate: V6 });
+}
+
+async function buildS1AuthoringImportSql({ root, rollback, candidate }) {
+  const candidateRoot = resolve(root, candidate.root);
   const manifest = JSON.parse(await readFile(
     resolve(candidateRoot, 'manifest.json'), 'utf8'
   ));
-  if (manifest.world_revision_id
-      !== 'novgorod_spatial_v3_production_v5_candidate_001'
-    || manifest.catalog_digest
-      !== 'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad'
+  if (manifest.world_revision_id !== candidate.id
+    || manifest.catalog_digest !== candidate.digest
     || manifest.status !== 'approved') {
     throw new Error('s1_authoring_v5_manifest_mismatch');
   }
@@ -39,7 +55,7 @@ export async function buildS1AuthoringV5ImportSql({
     }
     datasets.set(dataset.table, JSON.parse(rowsText));
   }
-  validateS1AuthoringV5Candidate({ manifest, datasets,
+  validateS1AuthoringCandidate({ manifest, datasets, g5Count: candidate.g5Count,
     lineageDatasets: await readLineageDatasets({ root, manifest }) });
   const sql = ['BEGIN;', 'SET CONSTRAINTS ALL DEFERRED;'];
   for (const dataset of manifest.datasets) {
@@ -72,6 +88,18 @@ export async function buildS1AuthoringV5ImportSql({
 
 export function validateS1AuthoringV5Candidate({ manifest, datasets,
   lineageDatasets = new Map() } = {}) {
+  return validateS1AuthoringCandidate({ manifest, datasets, lineageDatasets,
+    g5Count: V5.g5Count });
+}
+
+export function validateS1AuthoringV6Candidate({ manifest, datasets,
+  lineageDatasets = new Map() } = {}) {
+  return validateS1AuthoringCandidate({ manifest, datasets, lineageDatasets,
+    g5Count: V6.g5Count });
+}
+
+function validateS1AuthoringCandidate({ manifest, datasets,
+  lineageDatasets = new Map(), g5Count } = {}) {
   const current = (table) => datasets?.get(table) ?? [];
   const all = (table) => [...current(table), ...(lineageDatasets.get(table) ?? [])];
   const exact = (table, id, version) => all(table).filter((row) =>
@@ -121,7 +149,7 @@ export function validateS1AuthoringV5Candidate({ manifest, datasets,
     }
   }
   const g5 = nodes.filter(({ spatial_level }) => spatial_level === 'G5');
-  if (g5.length !== 2 || current('spatial_v3_g1_grid_cells').length !== 1) {
+  if (g5.length !== g5Count || current('spatial_v3_g1_grid_cells').length !== 1) {
     throw new Error('s1_authoring_v5_canonical_g5_closure_gap');
   }
 

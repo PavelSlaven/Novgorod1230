@@ -97,7 +97,7 @@ export function validateTurnWritePlan(value) {
   const errors = [];
   if (!plain(value)) return fail('turn write plan must be an object');
   if (value.schema !== 'party_turn_write_plan' || value.version !== 2 || value.sealed_by !== 'turn_code_planner_v2') errors.push('write plan must be sealed party_turn_write_plan v2');
-  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','turn_step_commit','first_entry_materialization','destination_position','ordinary_materialization_atomic_write_plan','action_production_atomic_write_plans','local_fire_atomic_write_plans','spatial_semantic_atomic_write_plan']);
+  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','turn_step_commit','first_entry_materialization','destination_position','ordinary_materialization_atomic_write_plan','action_production_atomic_write_plans','local_fire_atomic_write_plans','spatial_semantic_atomic_write_plan','background_npc_semantic_atomic_write_plan']);
   for (const key of Object.keys(value)) if (!allowedKeys.has(key)) errors.push(`write plan field is forbidden: ${key}`);
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.turn_id, 'turn_id');
@@ -107,7 +107,8 @@ export function validateTurnWritePlan(value) {
         && value.ordinary_materialization_atomic_write_plan == null
         && !(value.action_production_atomic_write_plans?.length)
         && !(value.local_fire_atomic_write_plans?.length)
-        && value.spatial_semantic_atomic_write_plan == null) {
+        && value.spatial_semantic_atomic_write_plan == null
+        && value.background_npc_semantic_atomic_write_plan == null) {
     errors.push('write_targets must be non-empty unless turn-step or an atomic extension owns the change');
   }
   for (const target of Array.isArray(value.write_targets) ? value.write_targets : []) {

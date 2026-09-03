@@ -1,0 +1,34 @@
+[
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "link_slot_key": "s1_open_one_space.visible_out",
+    "from_position_slot_key": "working_camp",
+    "to_position_slot_key": "s1_open_one_space.interior",
+    "quality": "clear",
+    "distance_band": "near",
+    "portal_template_id": null,
+    "portal_template_version": null,
+    "condition_profile_id": null,
+    "condition_profile_version": null,
+    "reverse_link_slot_key": "s1_open_one_space.visible_back",
+    "stable_asymmetry_evidence_ref": null
+  },
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "link_slot_key": "s1_open_one_space.visible_back",
+    "from_position_slot_key": "s1_open_one_space.interior",
+    "to_position_slot_key": "working_camp",
+    "quality": "clear",
+    "distance_band": "near",
+    "portal_template_id": null,
+    "portal_template_version": null,
+    "condition_profile_id": null,
+    "condition_profile_version": null,
+    "reverse_link_slot_key": "s1_open_one_space.visible_out",
+    "stable_asymmetry_evidence_ref": null
+  },
+  {"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","scene_template_version":1,"link_slot_key":"s1_enclosed_space.visible_out","from_position_slot_key":"shed_approach","to_position_slot_key":"s1_enclosed_space.interior","quality":"clear","distance_band":"near","portal_template_id":null,"portal_template_version":null,"condition_profile_id":null,"condition_profile_version":null,"reverse_link_slot_key":"s1_enclosed_space.visible_back","stable_asymmetry_evidence_ref":null},
+  {"scene_template_id":"trace_ld_v1_tpl_old_drying_shed","scene_template_version":1,"link_slot_key":"s1_enclosed_space.visible_back","from_position_slot_key":"s1_enclosed_space.interior","to_position_slot_key":"shed_approach","quality":"clear","distance_band":"near","portal_template_id":null,"portal_template_version":null,"condition_profile_id":null,"condition_profile_version":null,"reverse_link_slot_key":"s1_enclosed_space.visible_out","stable_asymmetry_evidence_ref":null}
+]

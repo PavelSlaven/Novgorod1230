@@ -18,7 +18,7 @@ export function createLowerDvinaTraceWorldProcessStepModel({ roleRunner } = {}) 
     const refChoices = worldProcessRefChoices(request);
     const response = await roleRunner.run({ scope: 'turn_runtime',
       role_id: 'world_process_step', overrides: { temperature: 0,
-        maxTokens: 800 }, messages: [{ role: 'system', content: [
+        maxTokens: 20_000 }, messages: [{ role: 'system', content: [
         'Return only the qualitative world-process semantic choice.',
         `Use this complete semantic shape:\n${choiceShape()}`,
         `Choose one applicable code-owned outcome by choice_id: ${JSON.stringify(outcomeChoices)}`,

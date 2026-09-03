@@ -79,6 +79,12 @@ export const contracts = {
   destinationEndpoint: { endpoint_id: 'camp-endpoint' },
   accessPolicy: { policy_id: 'carry-access' },
   capacity: { contract_id: 'camp-capacity' },
+  terminalEnvironment: {
+    environment_profile_id: 'trace_ld_v1_env_camp_fire',
+    schema: 'rus.trace_environment_profile.v1', version: 1,
+    facts: ['sheltered_from_wind', 'lit_fire', 'drying_place'],
+    source: 'party_environment_snapshot'
+  },
   terminalPlacement: { group: { location_ref: 'camp', zone_ref: 'working_camp', anchor_template_ref: 'camp-anchor' }, carried_actor: { location_ref: 'camp', zone_ref: 'fire_rest_area' }, ratsha_observation: { state: 'observing', committed_fact_output: 'ratsha_under_group_observation_committed' } },
   bodyEffectBindings: { player_clerk: 'carrier10', eremey_fisher: 'carrier20', ratsha_storehouse_helper: 'carrier20', resolved_participating_fisher: 'carrier10', onisim_boatman: { onisim_stabilized_unable_to_walk: 'carried20' } },
   bodyEffects: [{ effect_profile_id: 'carrier20' },

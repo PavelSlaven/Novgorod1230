@@ -94,6 +94,14 @@ function applyKind(next, state, kind, phase9, factual, changeSetId) {
       location_ref: movement.destination.location_ref,
       g5_anchor_id: movement.destination.g5_anchor_id,
       g5_node_id: movement.destination.g5_node_id };
+    const target = next.first_entry_preparation?.spatial_v3?.target;
+    if (target?.status === 'prepared') {
+      next.position.position_id = target.position_id;
+      next.position.g6_id = target.g6_instance_id;
+    } else {
+      delete next.position.position_id;
+      delete next.position.g6_id;
+    }
     const moved = new Set(movement.participants.slice(1));
     next.npcs = (next.npcs ?? []).map((npc) => !moved.has(npc.instance_id)
       ? npc : { ...npc, anchor_id: movement.destination.g5_anchor_id,

@@ -70,19 +70,39 @@ export function nextState({
         : npc);
       next.first_entry_preparation.spatial_v3.target.status = 'prepared';
     }
+    const destinationPositionId = factual.consequence.movement.destination.scene_position_id
+      ?? (firstEntry?.target?.status === 'prepared'
+        && state.first_entry_preparation?.scene?.location_profile_ref
+          === factual.consequence.movement.destination.location_ref
+        ? firstEntry.target.position_id : null)
+      ?? (firstEntryPending ? firstEntry.target.position_id : null);
     next.position = {
       ...next.position,
-      ...(!firstEntryPending ? {} : {
-        position_id: firstEntry.target.position_id,
-        g6_id: firstEntry.target.g6_instance_id
-      }),
+      ...(firstEntryPending ? { position_id: firstEntry.target.position_id,
+        g6_id: firstEntry.target.g6_instance_id }
+        : (factual.consequence.movement.destination.scene_position_id
+          ?? (firstEntry?.target?.status === 'prepared'
+            && state.first_entry_preparation?.scene?.location_profile_ref
+              === factual.consequence.movement.destination.location_ref
+            ? firstEntry.target.position_id : null)) != null
+        ? { position_id: factual.consequence.movement.destination.scene_position_id
+          ?? firstEntry.target.position_id,
+          g6_id: firstEntry?.target?.g6_instance_id }
+        : {}),
       location_ref:
         factual.consequence.movement.destination.location_ref,
       g5_anchor_id:
         factual.consequence.movement.destination.g5_anchor_id,
+      ...(factual.consequence.phase8_kind === 'movement' ? {
+        zone_ref: factual.consequence.movement.destination.zone_ref
+      } : {}),
       g5_node_id: preparedScene(next,
         factual.consequence.movement.destination.location_ref).node.instance_id
     };
+    if (destinationPositionId == null) {
+      delete next.position.position_id;
+      delete next.position.g6_id;
+    }
     next.route_history = [...(next.route_history ?? []), {
       route_ref: factual.consequence.movement.route_ref,
       activity_ref: factual.consequence.movement.activity_ref,
@@ -103,7 +123,15 @@ export function nextState({
     const moved = new Set(factual.consequence.movement.participants ?? []);
     next.npcs = (next.npcs ?? []).map((npc) => moved.has(npc.instance_id)
       ? { ...npc, anchor_id:
-          factual.consequence.movement.destination.g5_anchor_id }
+          factual.consequence.movement.destination.g5_anchor_id,
+        ...(factual.consequence.phase8_kind === 'movement' ? {
+          location_profile_ref:
+            factual.consequence.movement.destination.location_ref,
+          zone_ref: factual.consequence.movement.destination.zone_ref,
+          machine_state: { ...npc.machine_state,
+            location_ref: factual.consequence.movement.destination.location_ref,
+            spatial_zone_ref: factual.consequence.movement.destination.zone_ref }
+        } : {}) }
       : npc);
   } else {
     const conversation = factual.consequence.conversation;

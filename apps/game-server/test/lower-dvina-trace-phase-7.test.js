@@ -18,6 +18,10 @@ import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { resolveTracePhase7Contracts } from
   '../src/runtime/lower-dvina-trace-phase-7-contracts.js';
+import { isPreparedPhase7RestLedger } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-prepared-validation.js';
+import { isPreparedTurn10Ledger } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-10-prepared-validation.js';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import {
@@ -32,6 +36,9 @@ import {
   phase7CommittedState as committedState,
   phase7PlayerInput as playerInput
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
+import { externalBoundary, factualTurn, phase7ReadPool, rows, timeUpdate,
+  versioned, visibleContext } from
+  './lower-dvina-trace-phase-7-persistence-fixture.js';
 
 const digest = 'a'.repeat(64);
 
@@ -67,6 +74,13 @@ test('Phase 7 exact matches admit only the registered rest command', () => {
   assert.equal(command.matches({
     raw_text: 'Давайте немного погреемся у костра и просушим одежду'
   }), false);
+});
+
+test('completed Phase 7 rest is not misclassified as Turn 10', () => {
+  const rest = { owner_ref: 'lower_dvina_trace.rest_by_fire_and_dry_clothing',
+    consequence: { duration_minutes: 30 } };
+  assert.equal(isPreparedPhase7RestLedger({ slices: [rest] }), true);
+  assert.equal(isPreparedTurn10Ledger({ slices: [rest] }), false);
 });
 
 test('Phase 7 executes a direct NPC step and continues the rest interval',
@@ -164,6 +178,123 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       'reaction_decision');
   });
 
+test('Phase 7 preserves an external pause and resumes without a second NPC decision',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const ruleRef = versioned('action_contract', 'external-pause');
+    const policyRef = versioned('activity_contract', 'external-pause');
+    state.temporal_boundary_candidates = [externalBoundary(
+      state.party_id, ruleRef, policyRef, '127')];
+    const temporalAdvanceOwner = createTemporalAdvanceOwner({
+      source_registrations: [{
+        rule_ref: ruleRef,
+        policy_ref: policyRef,
+        resolve(candidate, context) {
+          return {
+            disposition: 'execute', proposals: [],
+            state_projection: structuredClone(context.projection),
+            follow_up_candidates: [], stop_after_current_batch: true
+          };
+        }
+      }],
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
+    });
+    let modelCalls = 0;
+    const first = await commandFor({ state, contracts,
+      temporalAdvanceOwner,
+      model: async (request) => {
+        modelCalls += 1;
+        return autonomousPlan(request, 'wait');
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'external-pause')
+    });
+    assert.equal(first.duration_minutes, 27);
+    assert.equal(first.phase7.schedule_temporal.rest_completed, false);
+    const firstTime = timeUpdate(state, first, 27);
+    const firstBody = createTracePhase7BodyEffect({ contracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: state, consequence: first,
+      time_update: firstTime });
+    assert.equal(firstBody.applied, false);
+    const firstCommit = await buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id,
+      factual: factualTurn(state, first, firstTime, firstBody),
+      state, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: contracts
+    });
+    const paused = rows(firstCommit.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    const pausedExecution = rows(firstCommit.plan,
+      'party_timed_activity_executions')[0].record;
+    const pausedAttempt = rows(firstCommit.plan,
+      'party_timed_activity_attempts')[0].record;
+    assert.equal(paused.phase7_fire_rest.status, 'paused');
+    assert.equal(paused.clock.whole_minutes, '127');
+    assert.equal(pausedExecution.status, 'paused');
+    assert.equal(pausedExecution.cumulative_elapsed_numerator, 27);
+    assert.equal(pausedExecution.remaining_time_numerator, 3);
+    assert.equal(pausedAttempt.result_kind, 'paused');
+    assert.equal(rows(firstCommit.plan, 'party_body_temporal_history').length,
+      0);
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool(firstCommit.plan, paused), paused));
+
+    const resumedContracts = approvedContracts(paused);
+    const second = await commandFor({ state: paused,
+      contracts: resumedContracts, temporalAdvanceOwner,
+      model: async () => {
+        modelCalls += 1;
+        throw new Error('resume must not ask the NPC model again');
+      }
+    }).consequence({
+      retrievedState: paused,
+      playerInput: playerInput(paused, 'external-resume')
+    });
+    assert.equal(second.duration_minutes, 3);
+    assert.equal(second.phase7.resumed, true);
+    assert.equal(second.phase7.schedule_temporal.rest_completed, true);
+    assert.equal(modelCalls, 1);
+    const secondTime = timeUpdate(paused, second, 3);
+    const secondBody = createTracePhase7BodyEffect({
+      contracts: resumedContracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: paused, consequence: second,
+      time_update: secondTime });
+    assert.equal(secondBody.applied, true);
+    const secondCommit = await buildLowerDvinaTracePhase7Commit({
+      partyId: paused.party_id,
+      factual: factualTurn(paused, second, secondTime, secondBody),
+      state: paused, inputDigest: digest, visibleContext: visibleContext(),
+      phase7Contracts: resumedContracts
+    });
+    const completed = rows(secondCommit.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    const completedExecution = rows(secondCommit.plan,
+      'party_timed_activity_executions')[0].record;
+    const completedAttempt = rows(secondCommit.plan,
+      'party_timed_activity_attempts')[0].record;
+    assert.equal(completed.phase7_fire_rest.status, 'completed');
+    assert.equal(completed.clock.whole_minutes, '130');
+    assert.equal(completedExecution.status, 'completed');
+    assert.equal(completedExecution.cumulative_elapsed_numerator, 30);
+    assert.equal(completedExecution.remaining_time_numerator, 0);
+    assert.equal(completedAttempt.attempt_ordinal, 1);
+    assert.equal(completedAttempt.actual_time_numerator, 3);
+    assert.equal(rows(secondCommit.plan,
+      'party_npc_decision_traces').length, 0);
+    assert.equal(rows(secondCommit.plan,
+      'party_body_temporal_history').length, 1);
+    await assert.doesNotReject(() => assertPhase7NormalizedRows(
+      phase7ReadPool([firstCommit.plan, secondCommit.plan], completed),
+      completed));
+  });
+
 test('Phase 7 delegates an autonomous concealment attempt to the item owner',
   async () => {
     const state = committedState();
@@ -230,9 +361,22 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       contracts,
       fallback: { apply() { throw new Error('unexpected fallback'); } }
     }).apply({ committed_state: state, consequence, time_update: timeUpdate });
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Рыбацкий стан на песчаном берегу.',
+      visible_changes: [], sensory_details: ['На кольях сохнут сети.'],
+      visible_npc: [{
+        entity_ref: { entity_kind: 'npc', entity_id: 'onisim-1' },
+        display_label: 'раненый мужчина', recognition: 'unrecognized',
+        observable_cues: { identity: { sex_category: 'male' } }
+      }],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: []
+    };
     const visible = await createTracePhase7VisibleProjector({
       fallback: { async project() { throw new Error('unexpected fallback'); } }
-    }).project({ consequence, body_update: bodyUpdate });
+    }).project({ consequence, body_update: bodyUpdate,
+      retrieved_state: state });
 
     assert.deepEqual([
       bodyUpdate.state_after.health,
@@ -244,6 +388,13 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       'damp', 'mild_shivering', 'headache', 'shoulder_bruise'
     ]);
     const visibleJson = JSON.stringify(visible);
+    assert.equal(visible.visible_scene,
+      'Рыбацкий стан на песчаном берегу.');
+    assert.equal(visible.sensory_details.includes(
+      'На кольях сохнут сети.'), true);
+    assert.equal(visible.visible_npc[0].display_label, 'раненый мужчина');
+    assert.equal(visible.visible_npc[0].observable_cues.identity.sex_category,
+      'male');
     for (const hidden of ['npc_decision_signal',
       'npc_action_decision_request', 'zhdanko_plan',
       'road_bag_new_location']) {
@@ -255,149 +406,29 @@ test('revision 15 materialized state resolves the approved Phase 7 chain',
   async () => {
     const revision15 = await loadScenarioBundle(15);
     const state = fixture({ scenarioBundle: revision15 }).state;
+    state.body_state.active_conditions = [{ id: 'mild_shivering' }];
     const contracts = resolveTracePhase7Contracts({
       state, bundle: revision15
     });
     assert.equal(revision15.definition_revision, 15);
     assert.equal(contracts.zhdanko.participant_slot_ref,
       'zhdanko_storehouse_controller');
+    assert.deepEqual(contracts.bodyEffect.condition_outcomes.map(
+      ({ condition_profile_ref: ref }) => ref),
+    ['trace_ld_v1_condition_cold_shivering']);
     assert.equal(contracts.roadBag.item_ref,
       'trace_ld_v1_container_road_bag');
+    assert.deepEqual(contracts.bodyEffect.condition_outcomes.find(
+      ({ condition_profile_ref: ref }) =>
+        ref === 'trace_ld_v1_condition_cold_shivering'
+    ), {
+      condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
+      from: 'mild_shivering', to: 'mild_shivering', outcome: 'persists'
+    });
     assert.equal(Object.hasOwn(
       revision15.autonomous_semantic_bindings,
       'activity_profile_bindings'
     ), false);
-  });
-
-test('Phase 7 P16 persists decision, body and approved schedule atomically',
-  async () => {
-    const state = committedState();
-    state.npc_semantic_decision_traces = [{ private_marker: 'private-plan' }];
-    const contracts = approvedContracts(state);
-    const command = commandFor({ state, contracts,
-      model: async (request) => autonomousPlan(request, 'move_bag') });
-    const consequence = await command.consequence({
-      retrievedState: state,
-      playerInput: playerInput(state, 'persist')
-    });
-    const timeUpdate = {
-      clock_before: state.clock,
-      clock_after: consequence.phase7.schedule_execution.clock_after,
-      exact_elapsed: { exact_minutes: { numerator: '30', denominator: '1' } }
-    };
-    const bodyUpdate = createTracePhase7BodyEffect({
-      contracts,
-      fallback: { apply() { throw new Error('unexpected fallback'); } }
-    }).apply({ committed_state: state, consequence, time_update: timeUpdate });
-    const factual = factualTurn(state, consequence, timeUpdate, bodyUpdate);
-    const committed = await buildLowerDvinaTracePhase7Commit({
-      partyId: state.party_id,
-      factual,
-      state,
-      inputDigest: digest,
-      visibleContext: visibleContext(),
-      phase7Contracts: contracts
-    });
-    const plan = committed.plan;
-    assert.equal(plan.operation_kind, 'trace_phase_7_fire_rest');
-    assert.equal(rows(plan, 'party_clocks').length, 1);
-    assert.equal(rows(plan, 'party_timed_activity_attempts').length, 1);
-    assert.equal(rows(plan, 'party_npc_decision_traces').length, 1);
-    assert.equal(rows(plan, 'party_body_temporal_history').length, 1);
-    assert.equal(rows(plan, 'party_npcs').length, 1);
-    assert.equal(rows(plan, 'party_containers').length, 1);
-    const trace = rows(plan, 'party_npc_decision_traces')[0].record;
-    assert.equal(trace.decision_mode, 'autonomous');
-    assert.equal(trace.semantic_request.schema,
-      'npc_action_decision_request_v1');
-    assert.equal(trace.semantic_plan.schema, 'npc_step_plan_v1');
-    const snapshot = rows(plan, 'party_state_snapshots')[0].record.state_payload;
-    assert.equal(snapshot.phase7_fire_rest.exact_elapsed_minutes, 30);
-    assert.equal(snapshot.phase7_fire_rest.schedule_option_id, 'move_bag');
-    assert.equal(snapshot.clock.whole_minutes, '130');
-    assert.equal(snapshot.containers[0].state.zone_ref, 'river_access');
-    assert.equal(snapshot.npcs[1].machine_state.spatial_zone_ref,
-      'river_access');
-    assert.equal(Object.hasOwn(snapshot, 'npc_semantic_decision_traces'), false);
-    assert.equal(JSON.stringify(snapshot).includes('private-plan'), false);
-    assert.equal(JSON.stringify(plan.visible_package_envelope)
-      .includes('road_bag_new_location'), false);
-
-    const pool = phase7ReadPool(plan, snapshot);
-    await assert.doesNotReject(() =>
-      assertPhase7NormalizedRows(pool, snapshot));
-    const tampered = structuredClone(snapshot);
-    tampered.containers[0].state.zone_ref = 'storehouse_inside';
-    await assert.rejects(() => assertPhase7NormalizedRows(pool, tampered),
-      ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
-
-    const forgedTracePlan = structuredClone(plan);
-    const forgedCausality = rows(
-      forgedTracePlan, 'party_timed_activity_attempts'
-    )[0].record.trace.causality;
-    const forgedTraceRef = {
-      entity_kind: 'npc_decision_trace',
-      entity_id: 'unpersisted-request'
-    };
-    forgedCausality.decision_trace_ref = structuredClone(forgedTraceRef);
-    forgedCausality.actor_step_completion_candidate.source_ref
-      = structuredClone(forgedTraceRef);
-    forgedCausality.actor_step_completion_candidate.causal_parent_refs
-      = [structuredClone(forgedTraceRef)];
-    await assert.rejects(() => assertPhase7NormalizedRows(
-      phase7ReadPool(forgedTracePlan, snapshot), snapshot
-    ), ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
-
-    const scalarTamperedSnapshot = structuredClone(snapshot);
-    const scalarTamperedPlan = structuredClone(plan);
-    const candidateId = 'npc-waiting:substituted:zhdanko:terminal';
-    const transitionId = `waiting-transition:${candidateId}`;
-    const tamperedDecision = rows(
-      scalarTamperedPlan, 'party_npc_decision_traces'
-    )[0].record;
-    const signal = tamperedDecision.signal_records[0];
-    const boundary = tamperedDecision.boundary_snapshot;
-    const signalId =
-      `decision-signal:npc_activity_factual_transition:${transitionId}:${
-        signal.subject_ref.entity_id}:${signal.category}`;
-    const batchId = 'temporal-batch:substituted';
-    const boundaryId =
-      `npc-decision:autonomous:${batchId}:${boundary.npc_ref.entity_id}`;
-    scalarTamperedSnapshot.phase7_fire_rest.waiting_terminal_candidate_id
-      = candidateId;
-    scalarTamperedSnapshot.phase7_fire_rest.waiting_transition_id
-      = transitionId;
-    scalarTamperedSnapshot.phase7_fire_rest.decision_signal_id
-      = signalId;
-    scalarTamperedSnapshot.phase7_fire_rest.decision_boundary_id
-      = boundaryId;
-    const tamperedCausality = rows(
-      scalarTamperedPlan, 'party_timed_activity_attempts'
-    )[0].record.trace.causality;
-    tamperedCausality.waiting_terminal_candidate.boundary_id = candidateId;
-    tamperedCausality.waiting_terminal_candidate.idempotency_key = candidateId;
-    tamperedCausality.waiting_terminal_candidate_ref.entity_id = candidateId;
-    tamperedCausality.waiting_transition.transition_id = transitionId;
-    tamperedCausality.waiting_transition.source_candidate_ref.entity_id
-      = candidateId;
-    tamperedCausality.waiting_transition.causal_parent_refs[0].entity_id
-      = candidateId;
-    tamperedCausality.waiting_transition_ref.entity_id = transitionId;
-    tamperedCausality.decision_signal_ref.entity_id = signalId;
-    tamperedCausality.decision_boundary_ref.entity_id = boundaryId;
-    signal.signal_id = signalId;
-    signal.idempotency_key = signalId;
-    signal.source_event_ref.entity_id = transitionId;
-    signal.causal_parent_refs[0].entity_id = candidateId;
-    boundary.same_time_batch_ref.entity_id = batchId;
-    boundary.boundary_id = boundaryId;
-    boundary.idempotency_key = boundaryId;
-    boundary.signal_refs[0].entity_id = signalId;
-    tamperedDecision.boundary_id = boundaryId;
-    await assert.rejects(() => assertPhase7NormalizedRows(
-      phase7ReadPool(scalarTamperedPlan, scalarTamperedSnapshot),
-      scalarTamperedSnapshot
-    ), ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
   });
 
 test('Phase 7 P16 rejects a schedule detached from temporal completion',
@@ -523,77 +554,3 @@ test('Phase 7 P16 persists an item-owner concealment without movement',
     assert.equal(snapshot.npcs[1].machine_state.spatial_zone_ref,
       'storehouse_inside');
   });
-
-function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
-  return {
-    player_input: playerInput(state, 'persist'),
-    mode_resolution: {
-      option_id: 'rest_by_fire_and_dry_clothing',
-      turn_id: consequence.phase7.autonomous.request.root_turn_id,
-      decision_trace: {
-        state_version: state.party_state.state_version,
-        action_set_digest: 'action-set'
-      }
-    },
-    consequence,
-    time_update: timeUpdate,
-    body_update: bodyUpdate
-  };
-}
-
-function visibleContext() {
-  return {
-    visible_scene: 'У костра прошло полчаса.',
-    visible_changes: ['elapsed_30_minutes'],
-    sensory_details: ['Одежда немного подсохла.'],
-    visible_npc: [],
-    visible_objects: [],
-    known_context: ['Одежда всё ещё сыровата.'],
-    uncertainties: []
-  };
-}
-
-function rows(plan, table) {
-  return [...plan.inserts, ...plan.updates, ...plan.appends]
-    .filter(({ target_table: id }) => id === table);
-}
-
-function phase7ReadPool(plan, snapshot) {
-  const one = (table) => rows(plan, table)[0]?.record;
-  return {
-    async query(sql) {
-      let resultRows;
-      if (sql.includes('party_timed_activity_executions')) {
-        resultRows = [one('party_timed_activity_executions')];
-      } else if (sql.includes('party_timed_activity_attempts')) {
-        resultRows = [one('party_timed_activity_attempts')];
-      } else if (sql.includes('party_npc_decision_traces')) {
-        resultRows = [one('party_npc_decision_traces')];
-      } else if (sql.includes('party_npcs')) {
-        const persisted = one('party_npcs');
-        const npc = snapshot.npcs.find(
-          ({ instance_id: id }) => id === persisted.npc_id);
-        resultRows = [{ ...npc, ...persisted }];
-      } else if (sql.includes('party_containers')) {
-        const persisted = one('party_containers');
-        const container = snapshot.containers.find(
-          ({ container_id: id }) => id === persisted.container_id);
-        resultRows = [{ ...container, ...persisted }];
-      } else if (sql.includes('party_actor_active_conditions')) {
-        resultRows = snapshot.body_state.active_conditions.map(
-          (condition) => ({
-            condition_id: condition.storage_condition_id,
-            condition_profile_ref: condition.condition_profile_ref,
-            status: condition.status,
-            state_version: condition.state_version
-          })).sort((left, right) => left.condition_id.localeCompare(
-            right.condition_id));
-      } else if (sql.includes('party_body_temporal_history')) {
-        resultRows = [one('party_body_temporal_history')];
-      } else {
-        throw new Error(`Unexpected Phase 7 read query: ${sql}`);
-      }
-      return { rowCount: resultRows.length, rows: resultRows };
-    }
-  };
-}

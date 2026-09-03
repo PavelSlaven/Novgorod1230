@@ -12,6 +12,31 @@ import {
   phase7PlayerInput
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
 
+test('Phase 7 requires the committed camp fire environment', () => {
+  const state = phase7CommittedState();
+  const contracts = approvedPhase7Contracts(state);
+  const command = phase7Command({ state, contracts,
+    model: async () => assert.fail('blocked rest must not call the NPC') });
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    true);
+  state.local_fire_runtime = [{ process_state: {
+    status: 'active', scope_ref: 'storehouse-anchor'
+  } }];
+  state.position.g5_anchor_id = 'foreign-camp-anchor';
+  state.environment_snapshot.scope.g5_anchor_id = 'foreign-camp-anchor';
+  state.npcs.find(({ participant_slot_ref: slot }) => slot === 'onisim_boatman')
+    .anchor_id = 'foreign-camp-anchor';
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    false);
+  state.position.g5_anchor_id = 'camp-anchor';
+  state.environment_snapshot = {
+    ...structuredClone(contracts.bodyEnvironment),
+    environment_profile_id: 'trace_ld_v1_env_storehouse_yard'
+  };
+  assert.equal(command.availability({ committed_state: state }).can_attempt,
+    false);
+});
+
 test('Phase 7 preserves the boundary causality chain', async () => {
   const state = phase7CommittedState();
   const contracts = approvedPhase7Contracts(state);
@@ -32,6 +57,8 @@ test('Phase 7 preserves the boundary causality chain', async () => {
           ]
         }
       ]);
+      assert.equal(request.npc.available_resources.some(({ template_ref: ref }) =>
+        ref === 'trace_ld_v1_container_road_bag'), true);
       return phase7AutonomousPlan(request, 'move_bag');
     }
   }).consequence({
@@ -83,6 +110,33 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     .causal_parent_refs, [consequence.phase7.schedule_temporal.projection
     .active_npc_actor_steps[0].decision_trace_ref]);
 });
+
+test('Phase 7 omits domain item operations absent from NPC-safe resources',
+  async () => {
+    const state = phase7CommittedState();
+    const zhdanko = state.npcs.find(({ instance_id: id }) => id === 'zhdanko-1');
+    zhdanko.machine_state.spatial_zone_ref = 'yard';
+    zhdanko.zone_ref = 'yard';
+    const contracts = approvedPhase7Contracts(state);
+    contracts.localTransition.source_zone_candidates.push('yard');
+    await phase7Command({
+      state,
+      contracts,
+      model: async (request) => {
+        const contract = request.decision_scope.operation_contract;
+        assert.deepEqual(contract.request_activity.allowed,
+          [{ activity_kind: 'wait', target_refs: [] }]);
+        assert.equal(Object.hasOwn(contract, 'request_item_use'), false);
+        assert.equal(Object.hasOwn(contract, 'request_movement'), true);
+        assert.equal(request.npc.available_resources.some(({ template_ref: ref }) =>
+          ref === contracts.roadBag.item_ref), false);
+        return phase7AutonomousPlan(request, 'wait');
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'npc-safe-domain-contract')
+    });
+  });
 
 test('Phase 7 discards a stale response so the root turn can retry',
   async () => {

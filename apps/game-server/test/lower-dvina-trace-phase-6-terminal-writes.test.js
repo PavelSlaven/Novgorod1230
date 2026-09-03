@@ -6,9 +6,10 @@ import { appendTerminal } from
 test('Phase 6 terminal keeps modern first-entry placement out of legacy rows', () => {
   const inserts = [];
   const updates = [];
-  appendTerminal({ inserts, updates, appends: [], partyId: 'party',
+  const deletes = [];
+  appendTerminal({ inserts, updates, deletes, appends: [], partyId: 'party',
     state: { actor_id: 'mikula', first_entry_preparation: {
-      spatial_v3: { target: { status: 'prepared' } },
+      spatial_v3: { target: { status: 'prepared', position_id: 'position:camp' } },
       scene: { anchor: { instance_id: 'modern:camp' } }
     } }, next: { position: { g5_anchor_id: 'modern:camp' }, npcs: [{
       instance_id: 'onisim', anchor_id: 'modern:camp', machine_state: {}
@@ -20,4 +21,8 @@ test('Phase 6 terminal keeps modern first-entry placement out of legacy rows', (
     target_table === 'party_positions'), false);
   assert.equal(updates.find(({ target_table }) =>
     target_table === 'party_npcs').record.anchor_id, null);
+  assert.equal(inserts.find(({ target_table }) =>
+    target_table === 'party_journey_locations').record.scene_position_id,
+  'position:camp');
+  assert.equal(deletes.length, 0);
 });

@@ -77,7 +77,8 @@ export function createSpatialV3TargetShadowComposition({
       'startNewGame',
       'acknowledgeOpening',
       'submitTurn',
-      'getPartyScreen'
+      'getPartyScreen',
+      'recoverPendingPresentation'
     ]) {
       requirePort(
         releaseVerticalSliceExecutor[method],

@@ -114,6 +114,16 @@ function applyTemporalNpcWrites(next, temporalResult) {
 
 function applyTerminalState(next, intent, changeSetId) {
   next.position = structuredClone(intent.terminal_group_position);
+  next.environment_snapshot = structuredClone(
+    intent.terminal_environment_snapshot);
+  const target = next.first_entry_preparation?.spatial_v3?.target;
+  if (target?.status === 'prepared') {
+    next.position.position_id = target.position_id;
+    next.position.g6_id = target.g6_instance_id;
+  } else {
+    delete next.position.position_id;
+    delete next.position.g6_id;
+  }
   for (const npc of next.npcs ?? []) {
     if (!intent.terminal_group_ids.includes(npc.instance_id)) continue;
     npc.anchor_id = intent.terminal_group_position.g5_anchor_id;

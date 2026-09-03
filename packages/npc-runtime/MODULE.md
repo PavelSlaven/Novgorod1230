@@ -86,14 +86,15 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
-Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
-Phase 1A v21 / Phase 1B v20 и активирует approved Phase-7 autonomous NPC
+Current `spatial-v3-production-v14` inherits the approved Phase-7 autonomous NPC
 actor-step profile. Общий current actor-step path: в `operation_contract` входят
 только зарегистрированные и state-applicable owner capabilities с текущими
 NPC-safe refs и exact executable structural combinations, не narrative
 whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,
 special Жданко action logic или fallback. Жданко остаётся первым activation
 participant/probe.
+The v14 cutover additionally pins revision 32 / M20 / Phase 1A v23 /
+Phase 1B v27 and only the profile-specific background-fisher N1 remainder.
 Phase 7 фиксирует fire rest на 30 минут и boundary Жданко на +25; применимый
 semantic plan исполняет зарегистрированный domain handler на том же timestamp,
 а temporal/persistence/visibility остаются code-owned. Revision 19 /

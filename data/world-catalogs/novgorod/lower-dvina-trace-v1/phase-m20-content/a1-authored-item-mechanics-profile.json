@@ -1,0 +1,28 @@
+{
+  "schema": "rus.lower_dvina_trace_a1_authored_item_mechanics_profile.v1",
+  "profile_id": "lower_dvina_trace_a1_authored_item_mechanics_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 32,
+  "mechanics_owner": "@rus/items-property",
+  "fallback_policy": "forbidden",
+  "profiles": [
+    {"profile_ref":"trace_ld_v1_inventory_profile_blue_wool_fragment","packing_slot_cost":1,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_bandage_cloth","packing_slot_cost":1,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_fishing_net_group_load","packing_slot_cost":3,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_carry_poles_group_load","packing_slot_cost":3,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_eremey_drinking_water_vessel","packing_slot_cost":1,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_ratsha_binding_rope","packing_slot_cost":3,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_base_shirt","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_working_outer_garment","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_ratsha_caftan","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"trace_ld_v1_inventory_profile_sealed_packet_v1","packing_slot_cost":1,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_birch_bark_sheet_v1","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_cloak_v1","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_fishing_net_v1","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_rope_v1","packing_slot_cost":2,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_utility_knife_v1","packing_slot_cost":1,"quantity":null,"container":null},
+    {"profile_ref":"inventory_item_tpl_nov_working_axe_v1","packing_slot_cost":2,"quantity":null,"container":null}
+  ]
+}

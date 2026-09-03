@@ -4,6 +4,8 @@ import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { ordinaryContainerRuntimeItemState } from
   './ordinary-materialization-container-batch-item.js';
+import { buildOrdinaryMaterializedRuntimeItem } from
+  './ordinary-materialization-runtime-item.js';
 import { failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
 
@@ -14,10 +16,15 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
     plan = createOrdinaryMaterializationAtomicWritePlan(
       input.prepared_ordinary_plan);
   } catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
-  if (plan.schema !== 'ordinary_container_contents_atomic_write_plan_v2'
-      || plan.party_id !== input.party_id
+  if (plan.party_id !== input.party_id
       || plan.expected_versions.party_state_version
         !== input.expected_party_state_version) {
+    fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  }
+  if (plan.schema === 'ordinary_materialization_atomic_write_plan_v1') {
+    return preparedWorldRows(plan, input, requested);
+  }
+  if (plan.schema !== 'ordinary_container_contents_atomic_write_plan_v2') {
     fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
   }
   const byId = new Map();
@@ -43,6 +50,50 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
     });
   }
   return byId;
+}
+
+function preparedWorldRows(plan, input, requested) {
+  const item = plan.item;
+  if (item == null || plan.resolution !== 'materialize'
+      || plan.request_identity !== `${input.root_turn_id}:ordinary:presence`) {
+    fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  }
+  if (!requested.includes(item.item_id)) return new Map();
+  let runtime;
+  try {
+    runtime = buildOrdinaryMaterializedRuntimeItem({
+      partyId: input.party_id, item
+    });
+  } catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+  const record = runtime.item_record;
+  const placement = runtime.placement_record;
+  const ownership = runtime.ownership_record;
+  return new Map([[item.item_id, {
+    row: {
+      ...structuredClone(record), state_version: 1,
+      anchor_id: placement.anchor_id,
+      item_scene_position_id: placement.scene_position_id,
+      container_id: placement.container_id,
+      holder_npc_id: placement.holder_npc_id,
+      holder_character_id: placement.holder_character_id,
+      physical_position: placement.physical_position,
+      equipment_slot_category_id: placement.equipment_slot_category_id,
+      attached_item_id: placement.attached_item_id,
+      ownership_id: ownership.ownership_id,
+      owner_npc_id: ownership.owner_npc_id,
+      owner_character_id: ownership.owner_character_id,
+      owner_party: ownership.owner_party,
+      owner_external_ref: structuredClone(ownership.owner_external_ref),
+      controller_npc_id: ownership.controller_npc_id,
+      controller_character_id: ownership.controller_character_id,
+      claim_state: ownership.claim_state
+    },
+    preparedOrdinary: {
+      schema: 'action_production_prepared_ordinary_pin_v2',
+      request_identity: plan.request_identity,
+      root_turn_id: input.root_turn_id
+    }
+  }]]);
 }
 
 export function actionProducedPreparedActionRows(input) {
@@ -151,6 +202,33 @@ export function actionProducedDestinationAfterPreparedActions(pin, values) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   return { ...pin, used_item_ids: [...used].sort() };
+}
+
+export function actionProducedDestinationAfterPreparedOrdinary(pin, raw) {
+  if (pin == null || raw == null) return pin;
+  let plan;
+  try { plan = createOrdinaryMaterializationAtomicWritePlan(raw); }
+  catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+  const item = plan.schema === 'ordinary_materialization_atomic_write_plan_v1'
+    && plan.resolution === 'materialize' ? plan.item : null;
+  if (item == null) return pin;
+  if (pin.destination_kind === 'party_current_scene_position') {
+    if (item.runtime_placement.scene_position_id !== pin.scene_position_id) {
+      return pin;
+    }
+    const occupancy = pin.scene_occupancy + 1;
+    if (occupancy > pin.scene_capacity) {
+      fail('ACTION_PRODUCED_DESTINATION_INVALID');
+    }
+    return { ...pin, scene_occupancy: occupancy };
+  }
+  if (pin.destination_kind !== 'party_current_anchor'
+      || item.runtime_placement.anchor_id !== pin.anchor_id) return pin;
+  const used = [...new Set([...pin.used_item_ids, item.item_id])].sort();
+  if (used.length > pin.item_capacity) {
+    fail('ACTION_PRODUCED_DESTINATION_INVALID');
+  }
+  return { ...pin, used_item_ids: used };
 }
 
 function preparedActionRow({ item, placement, ownership,

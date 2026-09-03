@@ -42,7 +42,7 @@ export function validateConversationDependencies({
   playerConversationModel,
   npcSemanticModel
 }) {
-  if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
     .includes(scenarioDefinitionRevision)) return;
   if (typeof playerConversationModel !== 'function'
       || typeof npcSemanticModel !== 'function') {

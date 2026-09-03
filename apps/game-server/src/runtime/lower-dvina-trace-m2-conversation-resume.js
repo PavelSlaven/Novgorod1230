@@ -4,19 +4,22 @@ import { fail } from './lower-dvina-trace-m2-conversation-shared.js';
 export function findResumableConversationSession(state, playerRef, targetRef) {
   const pending = state.pending_npc_conversation_execution
     ?? state.pending_player_conversation_execution ?? null;
-  const candidates = (state.conversation_sessions ?? []).filter((session) =>
-    (session?.status === 'active'
-      || (session?.status === 'suspended'
-        && pending?.conversation_id === session.conversation_id
-        && pending?.npc_ref?.entity_kind === targetRef.entity_kind
-        && pending?.npc_ref?.entity_id === targetRef.entity_id))
-      && session.location_ref?.entity_id === state.position.location_ref
+  const candidates = (state.conversation_sessions ?? []).filter((session) => {
+    const localPlayerSession =
+      session?.location_ref?.entity_id === state.position.location_ref
       && session.active_participant_refs?.some((participant) =>
         participant.entity_kind === playerRef.entity_kind
-          && participant.entity_id === playerRef.entity_id)
-      && session.active_participant_refs?.some((participant) =>
+          && participant.entity_id === playerRef.entity_id);
+    if (!localPlayerSession) return false;
+    if (session.status === 'active') return true;
+    return session.status === 'suspended'
+      && pending?.conversation_id === session.conversation_id
+      && pending?.npc_ref?.entity_kind === targetRef.entity_kind
+      && pending?.npc_ref?.entity_id === targetRef.entity_id
+      && session.active_participant_refs.some((participant) =>
         participant.entity_kind === targetRef.entity_kind
-          && participant.entity_id === targetRef.entity_id));
+          && participant.entity_id === targetRef.entity_id);
+  });
   if (candidates.length > 1) {
     fail(
       'TRACE_M2_CONVERSATION_SESSION_AMBIGUOUS',

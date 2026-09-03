@@ -234,6 +234,13 @@ test('UI store keeps screen read model instead of duplicating party state', () =
   assert.equal('worldState' in state, false);
 });
 
+test('starting a new game drops the previous party turn draft', () => {
+  const store = createUiStore();
+  store.setDraft('turn', 'Незавершённое действие');
+  store.showNewGame();
+  assert.equal(store.getState().turnDraft, '');
+});
+
 test('UI store keeps one exact pending opening identity and clears it after acknowledgement', () => {
   const store = createUiStore();
   store.setScreen(firstScreen(), {
@@ -279,7 +286,7 @@ test('landing always renders the Lovable-style shell and Continue only for remem
   assert.doesNotMatch(html, /data-screen-schema/u);
 });
 
-test('new-game view keeps free text and scenario inputs as separate branches', () => {
+test('new-game view keeps free text and published scenarios as start choices', () => {
   const store = createUiStore({ rememberedPartyId: 'party-old' });
   store.setScenarios([{
     scenario_id: 'lower_dvina_late_summer_open_water_v1',
@@ -289,6 +296,7 @@ test('new-game view keeps free text and scenario inputs as separate branches', (
   }]);
   store.showNewGame();
   const html = renderAppState(store.getState());
+  assert.match(html, /data-new-game-screen/u);
   assert.match(html, /data-new-game-form/u);
   assert.match(html, /textarea id="start-text" name="start_text" required/u);
   assert.match(html, /data-scenario-id="lower_dvina_late_summer_open_water_v1"/u);

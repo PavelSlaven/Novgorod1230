@@ -20,6 +20,7 @@ import {
 export async function resolveOrdinaryMaterializationSeedScope({
   request, ordinaryMaterializationModel, workingProjection, basisCatalog,
   allowedDisclosurePolicyRefs, resolveIdentityBudget,
+  semanticContext = null,
   repairAvailable = () => true
 } = {}) {
   assertSeedRequest(request);
@@ -31,7 +32,7 @@ export async function resolveOrdinaryMaterializationSeedScope({
   const normalizedWorkingProjection = assertMatchingWorkingScope(
     safeRequest, workingProjection);
   let rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest,
-    { repair: null }, false);
+    modelContext(null, semanticContext), false);
   let errors = validateOrdinaryMaterializationPlanV1(rawPlan, safeRequest);
   let repaired = false;
   if (errors.length !== 0) {
@@ -41,10 +42,10 @@ export async function resolveOrdinaryMaterializationSeedScope({
         { request_id: safeRequest.request_id, repair_attempted: false,
           validation_errors: errors });
     }
-    rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest, {
-      repair: { schema: 'ordinary_materialization_repair_context_v1',
-        original_output: safeModelOutput(rawPlan), validation_errors: errors }
-    }, true);
+    rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest,
+      modelContext({ schema: 'ordinary_materialization_repair_context_v1',
+        original_output: safeModelOutput(rawPlan), validation_errors: errors },
+      semanticContext), true);
     errors = validateOrdinaryMaterializationPlanV1(rawPlan, safeRequest);
     repaired = true;
     if (errors.length !== 0) {
@@ -103,6 +104,12 @@ export async function resolveOrdinaryMaterializationSeedScope({
     identity_budget_resolution: identityBudgetResolution,
     working_projection: nextWorkingProjection
   });
+}
+
+function modelContext(repair, semanticContext) {
+  return semanticContext == null ? { repair } : {
+    repair, semantic_context: immutable(semanticContext)
+  };
 }
 
 function assertSeedRequest(request) {

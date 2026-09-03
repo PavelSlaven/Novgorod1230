@@ -1,23 +1,21 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { runTurnStepLoop } from '@rus/turn';
 import { createAmbientOrdinaryPortionAdmission } from
   '@rus/items-property/ambient-ordinary-portion';
 import { ambientContextPort } from './ambient-ordinary-portion-fixture.js';
-import {
-  createLowerDvinaTraceTurnStepRuntimePorts,
-  resolveLowerDvinaTraceTurnStepCheckContext
-} from '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
+import { createLowerDvinaTraceTurnStepRuntimePorts,
+  resolveLowerDvinaTraceTurnStepCheckContext } from
+  '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 
-const ownerProfiles = JSON.parse(await readFile(new URL(
-  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
-  import.meta.url
-)));
+import { activityOwner, actor, authorityCommittedState, createPorts, createSand,
+  execution, genericCheck, loopInput, mechanics, plan, preparedOrdinary,
+  projectedCheckOwner, projection, testOrdinaryPolicy, testPolicyProfilePin } from
+  './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 
 test('create_entity returns a deterministic self-contained ordinary item draft',
   async () => {
@@ -71,6 +69,26 @@ test('legacy ambient direct action remains available without an O2a admission po
   });
   const result = await ports.executionRegistry.direct(createSand())(execution(createSand()));
   assert.equal(result.write_fragments[0].target, 'party_items');
+});
+
+test('revision 32 leaves active Phase9 container access to its authored owner', () => {
+  const committedState = {
+    materialization_trace: {
+      seed_context: { scenario_definition_revision: 32 }
+    },
+    phase9: {}
+  };
+  const active = createPorts({ committedState });
+  assert.equal(active.executionRegistry.domain({
+    op: 'request_container_access'
+  }), null);
+
+  const inactive = createPorts({
+    committedState: { ...committedState, phase9: null }
+  });
+  assert.equal(typeof inactive.executionRegistry.domain({
+    op: 'request_container_access'
+  }), 'function');
 });
 
 test('an active O2a profile fails closed when its binding has drifted', () => {
@@ -194,6 +212,52 @@ test('entity operations reject stale refs and unsupported projection relations',
     }, created.working_projection)), {
       code: 'ITEM_RUNTIME_PLACEMENT_CYCLE'
     });
+  });
+
+test('same-turn prepared ordinary item can move through the generic owner',
+  async () => {
+    const ports = createPorts();
+    const itemId = 'ordinary_item:prepared-board';
+    const prepared = preparedOrdinary(itemId);
+    const visible = projection();
+    visible.items.push({ item_id: itemId, name: 'длинная доска',
+      semantic_type: 'ordinary_object_candidate',
+      placement: { anchor_id: 'shore' } });
+    const input = execution({ op: 'move_entity', entity_ref: itemId,
+      placement: { relation: 'held_by', target_ref: 'mikula' } }, visible);
+    input.prepared_ordinary_materialization_atomic_write_plan = prepared;
+
+    const moved = await ports.executionRegistry.direct({ op: 'move_entity' })(
+      input);
+    assert.equal(moved.working_projection.items[0].placement
+      .holder_character_id, 'mikula');
+    assert.equal(moved.working_projection.inventory.occupied_hands, 1);
+    assert.equal(moved.write_fragments[0].value.payload.entity_ref, itemId);
+  });
+
+test('ordinary discovery projects its prepared item into the same root',
+  async () => {
+    const itemId = 'ordinary_item:discovered-board';
+    const prepared = preparedOrdinary(itemId);
+    const ports = createPorts({ ordinaryDiscoveryResolver: async (input) => ({
+      working_projection: input.working_projection,
+      write_fragments: [], summary: 'ordinary discovery resolved',
+      ordinary_materialization_atomic_write_plan: prepared
+    }) });
+    const discovered = await ports.ordinaryDiscoveryResolver(execution({
+      op: 'request_discovery', actor_ref: 'mikula', discovery_kind: 'search',
+      target_refs: ['shore'], query: 'найти доску'
+    }));
+    assert.equal(discovered.working_projection.items[0].item_id, itemId);
+
+    const moveInput = execution({ op: 'move_entity', entity_ref: itemId,
+      placement: { relation: 'held_by', target_ref: 'mikula' } },
+    discovered.working_projection, 2);
+    moveInput.prepared_ordinary_materialization_atomic_write_plan = prepared;
+    const moved = await ports.executionRegistry.direct({ op: 'move_entity' })(
+      moveInput);
+    assert.equal(moved.working_projection.items[0].placement
+      .holder_character_id, 'mikula');
   });
 
 test('committed runtime mechanics hydrate a fresh per-turn adapter', async () => {
@@ -481,228 +545,3 @@ test('semantic activity requires an approved owner and preserves its profile',
         duration_class: 'short', effort: 'heavy' }
     });
   });
-
-function execution(operation, workingProjection = projection(), step = 1) {
-  return {
-    plan: {},
-    request: {
-      root_turn_id: 'turn:party:1',
-      step_index: step,
-      actor: actor()
-    },
-    operation,
-    working_projection: workingProjection,
-    check_result: null
-  };
-}
-
-function createPorts(options = {}) {
-  return createLowerDvinaTraceTurnStepRuntimePorts({
-    ...options,
-    genericCheckContextOwner:
-      options.genericCheckContextOwner ?? projectedCheckOwner(),
-    ordinaryResultPolicy:
-      options.ordinaryResultPolicy ?? testOrdinaryPolicy(),
-    admitAmbientOrdinaryPortion:
-      options.admitAmbientOrdinaryPortion ?? null,
-    workingProjectionAuthority:
-      createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
-  });
-}
-
-function testOrdinaryPolicy() {
-  const policy = structuredClone(ownerProfiles.ordinary_result_policy);
-  policy.candidates.find(({ semantic_type: type, name }) =>
-    type === 'material_portion' && name === 'горсть мокрого песка')
-    .approved_fact_texts.push(
-      'песок теперь лежит плотным влажным комком');
-  return policy;
-}
-
-function authorityCommittedState() {
-  return {
-    actor_id: 'mikula',
-    player_profile: {
-      attributes: { strength: { value: 9 } },
-      skills: { athletics: { bonus: 1 } },
-      inventory: projection().inventory
-    },
-    position: { location_ref: 'shore' },
-    items: [],
-    knowledge: projection().knowledge
-  };
-}
-
-function loopInput() {
-  return {
-    requestId: 'turn-step:party:1',
-    rootTurnId: 'turn:party:1',
-    committedStateVersion: 7,
-    rootPlayerAction: 'выполнить обычное действие',
-    actor: actor(),
-    initialWorkingProjection: projection(),
-    maxInternalSteps: 8
-  };
-}
-
-function actor() {
-  return {
-    actor_id: 'mikula',
-    attributes: { strength: { value: 9, bonus: -1 } },
-    skills: { athletics: { bonus: 1 } },
-    body: { body_parts: { left_arm: { id: 'left_arm' } } }
-  };
-}
-
-function projection() {
-  return {
-    actor_id: 'mikula',
-    position: { location_ref: 'shore' },
-    destination_refs: ['camp'],
-    inventory: {
-      items: [],
-      total_weight: { grams: 400 },
-      load_category: 'light',
-      occupied_hands: 0
-    },
-    items: [],
-    knowledge: [{
-      fact_id: 'shore',
-      knowledge_state: 'known_from_committed_source',
-      text: 'доступный речной берег'
-    }]
-  };
-}
-
-function createSand() {
-  return {
-    op: 'create_entity',
-    temp_ref: 'new_entity_1',
-    semantic_type: 'material_portion',
-    name: 'горсть мокрого песка',
-    origin: { kind: 'ambient_ordinary', source_refs: ['shore'] },
-    facts: [{
-      temp_ref: 'new_fact_1',
-      text: 'это мокрый речной песок, набранный с берега'
-    }],
-    mechanics: mechanics(),
-    placement: { relation: 'held_by', target_ref: 'mikula' }
-  };
-}
-
-function mechanics(overrides = {}) {
-  return {
-    mass_grams: 300,
-    external_hand_cost: 1,
-    carry_form: 'compact',
-    packing_slot_cost: 1,
-    quantity: { value: 1, unit: 'handful' },
-    container: null,
-    ...overrides
-  };
-}
-
-function plan(request, overrides = {}) {
-  return {
-    schema: 'turn_step_plan_v1',
-    request_id: request.request_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    step_index: request.step_index,
-    interpretation: {
-      player_goal: request.root_player_action,
-      grounded_attempt: request.remaining_intent,
-      adaptation: 'literal'
-    },
-    resolution: 'direct',
-    goal_result: 'achieved',
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    operations: [],
-    check: null,
-    continuation: null,
-    clarification: null,
-    reason_code: 'ordinary_direct_action',
-    reason: 'Обычное прямое действие.',
-    ...overrides
-  };
-}
-
-function genericCheck() {
-  const outcome = {
-    goal_result: 'achieved',
-    additional_activity: null,
-    operations: [],
-    continuation: null
-  };
-  return {
-    purpose: 'удержать обычный предмет',
-    attribute_ref: 'strength',
-    skill_ref: 'athletics',
-    difficulty_id: 'ordinary',
-    outcomes: Object.fromEntries([
-      'clean_success', 'success', 'success_with_cost',
-      'failure_with_consequence', 'severe_failure'
-    ].map((band) => [band, structuredClone(outcome)]))
-  };
-}
-
-function activityOwner(overrides = {}) {
-  return {
-    async resolve({ activity }) {
-      return {
-        profile_ref: 'approved_activity:moment_none',
-        profile_pin: { artifact_id: 'test', revision: 1,
-          digest: '1'.repeat(64) },
-        duration_minutes: 0,
-        duration_class: activity.duration_class,
-        effort: activity.effort,
-        body_effect_ref: null,
-        body_effect_profile_ref: 'approved_body_effect:activity',
-        exact_deltas: { health: 0, satiety: 0, energy: 0 },
-        body_state_after: { health: 100, satiety: 100, energy: 100,
-          active_conditions: [], body_parts: {} },
-        ...overrides
-      };
-    }
-  };
-}
-
-function projectedCheckOwner() {
-  return {
-    resolve({ check, actor: value }) {
-      const attribute = value.attributes?.[check.attribute_ref];
-      if (!Number.isFinite(attribute?.value)) {
-        throw Object.assign(new Error('attribute gap'), {
-          code: 'TRACE_TURN_STEP_CHECK_ATTRIBUTE_DATA_GAP'
-        });
-      }
-      const skill = check.skill_ref == null
-        ? { bonus: 0 } : value.skills?.[check.skill_ref];
-      if (!Number.isFinite(skill?.bonus)) {
-        throw Object.assign(new Error('skill gap'), {
-          code: 'TRACE_TURN_STEP_CHECK_SKILL_DATA_GAP'
-        });
-      }
-      return { attribute_value: attribute.value, skill_bonus: skill.bonus,
-        state_modifier: 0, equipment_modifier: 0,
-        circumstance_modifier: 0,
-        policy_profile_ref: 'test_check_policy',
-        policy_profile_pin: testPolicyProfilePin(),
-        check_policy_ref: {
-          entity_kind: 'check_policy', entity_id: 'test_check_policy',
-          authoring_version: '1'
-        },
-        consequence_policy_ref: {
-          entity_kind: 'consequence_policy',
-          entity_id: 'test_consequence_policy', authoring_version: '1'
-        } };
-    }
-  };
-}
-
-function testPolicyProfilePin() {
-  return {
-    artifact_id: 'test_turn_step_owner_profiles', revision: 1,
-    digest: 'a'.repeat(64)
-  };
-}

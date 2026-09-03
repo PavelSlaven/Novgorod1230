@@ -11,12 +11,14 @@ import { classifyRatshaPlan } from
   '../src/runtime/lower-dvina-trace-m2-conversation-plans.js';
 import {
   assembleNpcConversationPlan,
+  assemblePlayerConversationPlan,
   createLowerDvinaTraceNpcSemanticModel,
   createLowerDvinaTracePlayerConversationModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import {
   npcConversationCandidates,
   npcConversationInstructions,
+  playerConversationInstructions,
   requiredNpcConversationCandidate,
   requiredPlayerConversationCandidate
 } from
@@ -279,6 +281,29 @@ test('NPC route disclosure candidate is validator-valid and preserves route refs
     /"route_ref":"route-1"/u);
 });
 
+test('NPC route prompt treats refs as opaque and excludes route context from operations', () => {
+  const request = npcRequest();
+  request.allowed_references.entity_refs.push(ref('route', 'route-1'));
+  request.allowed_references.knowledge_refs.push(ref('knowledge_scope', 'knowledge-1'));
+  request.decision_scope.operation_contract = { disclose_known_route: {
+    owner: '@rus/visibility-knowledge-memory',
+    route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1',
+    player_safe_context: { destination_label: 'старая сушильня' }
+  } };
+  const prompt = npcConversationInstructions(null, request);
+  const routeCandidate = npcConversationCandidates(request).find((candidate) =>
+    candidate.supporting_operations[0]?.op === 'disclose_known_route');
+  assert.match(prompt, /Treat every ref and id as opaque/u);
+  assert.match(prompt,
+    /utterance_text may identify only the exact[\s\S]*destination_label/u);
+  assert.match(prompt,
+    /Final route constraint:[\s\S]*старая сушильня/u);
+  assert.deepEqual(routeCandidate.supporting_operations, [{
+    op: 'disclose_known_route', route_ref: 'route-1',
+    source_knowledge_scope_ref: 'knowledge-1'
+  }]);
+});
+
 test('NPC participation request states acceptance binding choice', async () => {
   const request = npcRequest();
   request.decision_scope.operation_contract = {
@@ -290,6 +315,8 @@ test('NPC participation request states acceptance binding choice', async () => {
 
   assert.match(fixture.calls[0].messages[0].content,
     /accepting, promising, or agreeing means choose exactly one allowed binding/u);
+  assert.match(fixture.calls[0].messages[0].content,
+    /never evade it by relabeling agreement/u);
   assert.match(fixture.calls[0].messages[0].content,
     /The NPC chooses the binding/u);
 });
@@ -327,7 +354,8 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
       assert.equal(prompt.includes(JSON.stringify(semantic)), true);
     }
     assert.match(prompt, /not an exhaustive choice set/u);
-    assert.match(prompt, /Ordinary speech may use any allowed dominant_act/u);
+    assert.match(prompt,
+      /except offer, accept, or promise when no exact supporting operation permits/u);
     assert.match(prompt, /silence and leave_conversation mappings available/u);
     assert.doesNotMatch(prompt, /Choose exactly one/u);
   }
@@ -377,6 +405,25 @@ test('NPC assembly restores admitted structure while preserving semantic speech'
     assembleNpcConversationPlan(semanticSpeech, request), request), false);
 });
 
+test('player speech binds code-owned target and verbatim text', () => {
+  const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1'),
+    verbatim_utterance_text: 'Скажи правду.' });
+  request.player_safe_context.allowed_references.actor_refs.unshift(
+    ref('npc', 'unrelated'));
+  const semantic = playerPlan(request, {
+    input_mode: 'verbatim',
+    primary_addressee_ref: ref('npc', 'unrelated'),
+    intended_addressee_refs: [ref('npc', 'unrelated')],
+    speech: { ...playerPlan(request).speech,
+      utterance_text: 'Модель изменила буквы.' }
+  });
+  const assembled = assemblePlayerConversationPlan(semantic, request);
+  assert.deepEqual(assembled.primary_addressee_ref, ref('npc', 'npc-1'));
+  assert.deepEqual(assembled.intended_addressee_refs, [ref('npc', 'npc-1')]);
+  assert.equal(assembled.speech.utterance_text,
+    request.player_safe_context.verbatim_utterance_text);
+});
+
 test('player required candidate is validator-valid and preserves operation', () => {
   const required = {
     verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',
@@ -419,6 +466,9 @@ test('player promise candidate is validator-valid with target from safe context'
   assert.deepEqual(candidate.supporting_operations,
     [required.required_supporting_operation]);
   assert.deepEqual(candidate.check.attribute_ref, required.required_check.attribute_ref);
+  const prompt = playerConversationInstructions(null, request);
+  assert.match(prompt,
+    /offer_conditional_protection[\s\S]*actually offers the target protection[\s\S]*different proposal, bargain, cooperation/u);
 });
 
 test('player required candidate is omitted for target outside allowed actors', () => {

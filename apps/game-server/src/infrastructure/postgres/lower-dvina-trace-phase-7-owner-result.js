@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { validPhase7ScheduleExecution } from
+  './lower-dvina-trace-phase-7-schedule-validation.js';
 import {
   addElapsedTime,
   compareGameTimestamp,
@@ -16,8 +18,10 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   const temporal = phase7.temporal;
   const scheduleTemporal = phase7.schedule_temporal;
   const schedule = phase7.schedule_execution;
-  if (phase7.autonomous.request.root_turn_id
-        !== factual.mode_resolution?.turn_id
+  const resumed = phase7.resumed === true;
+  if ((!resumed && phase7.autonomous.request.root_turn_id
+        !== factual.mode_resolution?.turn_id)
+      || (resumed && !validResume({ phase7, factual, state, phase7Contracts }))
       || temporal.elapsed_before_decision !== 25
       || temporal.result.temporal_status !== 'paused'
       || !['completed', 'paused'].includes(
@@ -32,19 +36,27 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
           factual.time_update.clock_after))
       || !sameClock(scheduleTemporal.result.clock_before,
         temporal.result.clock_after)
-      || !sameClock(temporal.result.clock_before, state.clock)
+      || (!resumed
+        && !sameClock(temporal.result.clock_before, state.clock))
       || !['executed', 'started'].includes(schedule.status)
       || schedule.exact_elapsed.exact_minutes.denominator !== '1'
       || schedule.root_clock_write_count !== 0
-      || schedule.parent_state_version !== state.party_state.state_version
+      || schedule.parent_state_version !== (resumed
+        ? state.phase7_fire_rest.resume_state.schedule_execution
+          .parent_state_version
+        : state.party_state.state_version)
       || !validActorStepCompletion(phase7)
       || !validCausality(phase7)
-      || !validScheduleExecution(schedule, phase7Contracts,
+      || !validPhase7ScheduleExecution(schedule, phase7Contracts,
         phase7.autonomous.request, phase7.autonomous.proposal.plan,
         phase7.actor_step_check)
-      || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
-        state)
-      || temporal.result.combined_change_set.change_set_id !== changeSetId
+      || (resumed
+        ? !sameValue(phase7.actor_step_check,
+          state.phase7_fire_rest.resume_state.actor_step_check)
+        : !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
+          state))
+      || (!resumed
+        && temporal.result.combined_change_set.change_set_id !== changeSetId)
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
       || (scheduleTemporal.result.temporal_status === 'completed'
@@ -59,6 +71,40 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
     );
   }
 }
+
+function validResume({ phase7, factual, state, phase7Contracts }) {
+  const rest = state.phase7_fire_rest;
+  const prior = rest?.resume_state;
+  const before = prior?.schedule_execution;
+  const after = phase7.schedule_execution;
+  if (prior?.temporal == null || prior?.autonomous == null
+      || prior?.actor_step == null || prior?.actor_step_owner_outputs == null
+      || prior?.schedule_temporal == null || before == null) return false;
+  const changed = before?.status !== after?.status;
+  return rest?.status === 'paused'
+    && rest.activity_execution_id === factual.consequence.activity_attempt_id
+    && Number.isSafeInteger(rest.exact_elapsed_minutes)
+    && rest.exact_elapsed_minutes >= 25
+    && rest.exact_elapsed_minutes < 30
+    && rest.approved_body_effect_ref
+      === phase7Contracts.bodyEffect.effect_profile_id
+    && phase7.approved_body_effect_ref
+      === phase7Contracts.bodyEffect.effect_profile_id
+    && sameValue(state.clock, prior?.schedule_temporal?.result?.clock_after)
+    && sameValue(phase7.temporal, prior?.temporal)
+    && sameValue(phase7.autonomous, prior?.autonomous)
+    && sameValue(phase7.actor_step, prior?.actor_step)
+    && sameValue(phase7.actor_step_owner_outputs,
+      prior?.actor_step_owner_outputs)
+    && before?.status != null
+    && ['started', 'executed'].includes(before.status)
+    && ['started', 'executed'].includes(after?.status)
+    && (before.status !== 'executed' || after.status === 'executed')
+    && phase7.schedule_applied_in_this_attempt === changed;
+}
+
+const sameValue = (left, right) =>
+  canonicalDigest(left) === canonicalDigest(right);
 
 function validCausality(phase7) {
   const candidate = phase7.temporal.terminal_candidate;
@@ -159,122 +205,6 @@ function validActorStepCompletion(phase7) {
     return false;
   }
   return canonicalDigest(actorStep) === canonicalDigest(schedule);
-}
-
-function validScheduleExecution(schedule, contracts, request, plan,
-  actorStepCheck) {
-  const operation = schedule.semantic_operation;
-  if (!operation || schedule.npc_ref !== request.npc_ref) return false;
-  const semantic = operation.op === 'apply_semantic_activity';
-  const semanticProfile = semantic
-    ? contracts.semanticActivityProfiles.find((profile) =>
-      profile.duration_class === plan.activity?.duration_class
-        && profile.effort === plan.activity?.effort)
-    : null;
-  const profiles = Object.values(contracts.scheduleExecutions);
-  const additionalOperations = schedule.additional_semantic_operations ?? [];
-  const selectedOutcome = plan.resolution === 'generic_check'
-    ? plan.check.outcomes[actorStepCheck?.result?.outcome?.band] : null;
-  const selectedOperations = selectedOutcome?.operations ?? [];
-  const selectedDomain = selectedOperations.filter(({ op }) =>
-    !DIRECT.has(op)
-      && Object.hasOwn(request.decision_scope.operation_contract, op));
-  const additionalActivities = selectedOutcome?.additional_activity == null
-    ? [] : [selectedOutcome.additional_activity];
-  const planDomain = plan.operations.filter(({ op }) => !DIRECT.has(op));
-  const actionProduction = plan.resolution === 'domain_request'
-    && planDomain.length === 1
-    && planDomain[0]?.op === 'request_item_use'
-    && planDomain[0]?.action_production != null;
-  const possibleAdditionalOperations = [
-    ...((actionProduction || plan.resolution === 'generic_check'
-      && selectedDomain.length === 1)
-      ? [plan.activity] : []),
-    ...additionalActivities
-  ].map(
-    (activity) => ({
-      op: 'apply_semantic_activity',
-      activity: { owner: 'semantic', ...activity }
-    }));
-  const additionalDuration = additionalOperations.reduce((sum, candidate) => {
-    const profile = contracts.semanticActivityProfiles.find((value) =>
-      value.duration_class === candidate.activity?.duration_class
-        && value.effort === candidate.activity?.effort);
-    return profile == null ? Number.NaN : sum + profile.duration_minutes;
-  }, 0);
-  const additionalMatch = canonicalDigest(additionalOperations)
-    === canonicalDigest(possibleAdditionalOperations);
-  const profileMatch = semantic
-    ? ['direct', 'generic_check'].includes(plan.resolution)
-      && (plan.resolution !== 'direct'
-        || plan.operations.every(({ op }) => ['create_entity', 'move_entity',
-          'change_entity_facts', 'set_entity_mechanics', 'retire_entity',
-          'apply_body_event'].includes(op)))
-      && canonicalDigest(operation.activity) === canonicalDigest(plan.activity)
-      && schedule.execution_binding_ref === null
-      && schedule.schedule_option_id === null
-      && schedule.activity_profile_ref === semanticProfile?.profile_ref
-      && Number(schedule.exact_elapsed.exact_minutes.numerator)
-        === semanticProfile?.duration_minutes + additionalDuration
-      && additionalMatch
-    : (plan.resolution === 'domain_request'
-        ? planDomain : selectedDomain).length === 1
-      && canonicalDigest(operation) === canonicalDigest(
-        (plan.resolution === 'domain_request'
-          ? planDomain : selectedDomain)[0])
-      && Object.hasOwn(request.decision_scope.operation_contract, operation.op)
-      && (schedule.execution_binding_ref === null
-        ? schedule.activity_profile_ref === null
-          && schedule.schedule_option_id === null
-        : profiles.some((profile) =>
-          profile.execution_binding_id === schedule.execution_binding_ref
-            && profile.activity_profile_ref === schedule.activity_profile_ref
-          && profile.schedule_option_id === schedule.schedule_option_id));
-  if (!profileMatch || (!semantic && (plan.resolution === 'domain_request'
-    ? actionProduction
-      ? !additionalMatch || Number(schedule.exact_elapsed.exact_minutes.numerator)
-        !== additionalDuration
-      : additionalOperations.length !== 0
-    : selectedDomain.length !== 1 || !additionalMatch))) {
-    return false;
-  }
-  if (semantic && (schedule.movement_proposal || schedule.property_proposal)) {
-    return false;
-  }
-  const propertyTransitionRef =
-    schedule.property_proposal?.transition_profile_id;
-  if (propertyTransitionRef != null && ![
-    contracts.bagTransition?.transition_profile_id,
-    contracts.bagConcealTransition?.transition_profile_id
-  ].includes(propertyTransitionRef)) return false;
-  const execution = profiles.find((profile) =>
-    profile.execution_binding_id === schedule.execution_binding_ref);
-  if (!semantic && schedule.execution_binding_ref !== null
-      && (execution == null
-        || (execution.movement_ref == null
-          ? schedule.movement_proposal != null
-          : schedule.movement_proposal?.transition_ref
-            !== execution.movement_ref)
-        || canonicalDigest(execution.property_transition_refs ?? [])
-          !== canonicalDigest(propertyTransitionRef == null
-            ? [] : [propertyTransitionRef]))) return false;
-  if (!validPinnedMovementShape(schedule.movement_proposal, contracts)) {
-    return false;
-  }
-  return true;
-}
-
-const DIRECT = new Set(['create_entity', 'move_entity', 'change_entity_facts',
-  'set_entity_mechanics', 'retire_entity', 'apply_body_event']);
-
-function validPinnedMovementShape(proposal, contracts) {
-  if (proposal == null) return true;
-  const binding = contracts.localTransition;
-  if (binding == null) return false;
-  // Shape-check against pinned transition binding; do not re-plan proposals.
-  return proposal.transition_ref === binding.transition_id
-    && proposal.location_ref === binding.location_ref
-    && proposal.destination_zone_ref === binding.destination_zone_ref;
 }
 
 function exactIntegerElapsed(from, to) {

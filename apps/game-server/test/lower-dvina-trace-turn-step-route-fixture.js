@@ -13,20 +13,61 @@ import { commitLowerDvinaTracePhase2 } from
 import {
   buildLowerDvinaTracePreparedRouteWorkingProjection
 } from '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
+import { projectLowerDvinaTracePlayerSafeState } from
+  '../src/runtime/lower-dvina-trace-player-safe-state.js';
 
 const bundle13 = await loadScenarioBundle(13);
 
-export async function routeDirectScenario() {
+export async function routeDirectScenario({ firstEntryOnly = false,
+  plannerPortrait = false, plannerPresentationOverlay = false } = {}) {
   const bootstrap = fixture({ scenarioBundle: bundle13,
     materializationBundle: bundle13, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
     'Осмотреть место крушения подробно.'));
   const before = stateWithCommittedBlueWool(bootstrap.state);
+  if (firstEntryOnly) {
+    const camp = before.prepared_scenes.find(({ location_profile_ref: ref }) =>
+      ref === 'trace_ld_v1_loc_fishing_camp')
+      ?? before.first_entry_preparation?.scene;
+    before.prepared_scenes = before.prepared_scenes.filter(
+      ({ location_profile_ref: ref }) => ref !== camp.location_profile_ref);
+    before.first_entry_preparation = {
+      ...(before.first_entry_preparation ?? {}),
+      spatial_v3: {
+        ...(before.first_entry_preparation?.spatial_v3 ?? {}),
+        target: {
+          ...(before.first_entry_preparation?.spatial_v3?.target ?? {}),
+          status: 'prepared'
+        }
+      },
+      scene: structuredClone(camp)
+    };
+  }
   const semantic = fixture({
     scenarioBundle: bundle13,
     materializationBundle: bundle13,
     committedState: before,
     rollValue: 0.99,
+    ...(plannerPortrait || plannerPresentationOverlay
+      ? { playerSafeStateProjector: (input) => {
+      const projected = projectLowerDvinaTracePlayerSafeState(input);
+      return { ...projected, player_safe_state: {
+        ...projected.player_safe_state,
+        ...(plannerPresentationOverlay ? { current_visible_context: {
+          ...projected.player_safe_state.current_visible_context,
+          known_context: [
+            ...(projected.player_safe_state.current_visible_context
+              ?.known_context ?? []),
+            'runtime-only presentation overlay'
+          ]
+        } } : {}),
+        ...(plannerPortrait ? { active_interlocutor: {
+          entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' },
+          display_label: 'Visible interlocutor',
+          portrait_spec_v1: { schema: 'portrait_spec_v1' }
+        } } : {})
+      } };
+    } } : {}),
     turnStepModel(request) {
       if (request.step_index === 1) {
         return domainPlan(request, {
@@ -236,7 +277,10 @@ export async function commit(writePlan, scenario, plans = []) {
   return commitLowerDvinaTracePhase2({
     ...scenario.semantic.lastCommitInput(),
     writePlan,
-    loadState: async () => structuredClone(scenario.before),
+    loadState: async (_partyId, options) => {
+      scenario.commitLoadOptions = structuredClone(options);
+      return structuredClone(scenario.before);
+    },
     committer: { async commit({ plan }) {
       plans.push(plan);
       return { ok: true, replay: false, change_set_id: plan.change_set_id };

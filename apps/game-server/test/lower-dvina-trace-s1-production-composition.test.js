@@ -42,15 +42,19 @@ test('S1 exact profile rejects mismatched structural requirements', async () => 
   }
 });
 
-test('S1 exact profile accepts inherited revision 25 bundle only with exact S1 pins',
+test('S1 exact profile accepts current inherited bundle only with exact S1 pins',
   async () => {
-    const [loaded, revision24, revision25] = await Promise.all([
+    const [loaded, revision24, revision25, revision31, revision32] = await Promise.all([
       loadLowerDvinaTraceSpatialSemanticProfile(),
       loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 24 }),
-      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 25 })
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 25 }),
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 31 }),
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 })
     ]);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision24, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision25, loaded), true);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision31, loaded), true);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision32, loaded), true);
     for (const [key, pinKey] of [
       ['action_production_materialization', 'action_production_profile'],
       ['local_fire_materialization', 'local_fire_profile'],
@@ -73,6 +77,11 @@ test('S1 exact profile accepts inherited revision 25 bundle only with exact S1 p
       mutate(tampered);
       assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(tampered, loaded), false);
     }
+    const currentTampered = structuredClone(revision31);
+    currentTampered.definition.immutable_content_refs.spatial_semantic_profile.digest
+      = '0'.repeat(64);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(
+      currentTampered, loaded), false);
   });
 
 test('S1 player-safe projection keeps current committed detail descriptive after reload',

@@ -341,7 +341,7 @@ test('production LLM role resolves A1 weapon classification at combat boundary',
         actor_ref: player, request_id: 'combat-weapon:production', classify });
       assert.deepEqual(result, { item_ref: 'a1-spear', weapon_danger: 2 });
       assert.equal(resolveTraceOrdinaryWeaponDanger([item], player, result), 2);
-      assert.equal(requestBody.max_tokens, 500);
+      assert.equal(requestBody.max_tokens, 20_000);
       assert.equal(requestBody.temperature, 0);
       assert.deepEqual(requestBody.response_format, { type: 'json_object' });
     } finally {

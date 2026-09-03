@@ -31,12 +31,19 @@ export function classifyEremeyPlan(plan, {
       'Eremey returned an unavailable handoff contribution.'
     );
   }
+  requireActionableNpcSpeech(plan);
   const operation = plan.supporting_operations[0] ?? null;
   if (operation?.op !== ROUTE_OPERATION) {
     if (operation !== null) {
       fail(
         'TRACE_M2_EREMEY_OPERATION_INVALID',
         'Eremey returned an unsupported operation.'
+      );
+    }
+    if (mentionsRouteDisclosure(plan.speech, routeRef, knowledgeScopeRef)) {
+      fail(
+        'TRACE_M2_ROUTE_DISCLOSURE_UNBACKED',
+        'Route references require the exact authored route operation.'
       );
     }
     return {
@@ -51,6 +58,7 @@ export function classifyEremeyPlan(plan, {
       || operation.route_ref !== routeRef
       || operation.source_knowledge_scope_ref !== knowledgeScopeRef
       || !plan.speech.interaction_tags.includes('route_disclosure')
+      || !plan.speech.topic_refs.includes(routeRef)
       || !plan.speech.claims.some((claim) =>
         claim.source_knowledge_refs.some((sourceRef) =>
           sourceRef.entity_kind === 'knowledge_scope'
@@ -64,6 +72,17 @@ export function classifyEremeyPlan(plan, {
     );
   }
   return { kind: 'route_disclosure', statementRef: null };
+}
+
+function mentionsRouteDisclosure(speech, routeRef, knowledgeScopeRef) {
+  return speech.topic_refs.includes(routeRef)
+    || speech.claims.some((claim) =>
+      claim.source_knowledge_refs.some((sourceRef) =>
+        sourceRef.entity_kind === 'knowledge_scope'
+        && sourceRef.entity_id === knowledgeScopeRef)
+      || claim.mentioned_entity_refs.some((mentionedRef) =>
+        mentionedRef.entity_kind === 'route'
+        && mentionedRef.entity_id === routeRef));
 }
 
 export function classifyRatshaPlan(plan, {
@@ -91,6 +110,7 @@ export function classifyRatshaPlan(plan, {
       'Ratsha response is outside the accepted conversation boundary.'
     );
   }
+  requireActionableNpcSpeech(plan);
   const operation = plan.supporting_operations[0] ?? null;
   const checkRequired = plan.resolution === 'check_required'
     && plan.check !== null;
@@ -144,6 +164,7 @@ export function classifyOrdinaryConversationPlan(plan) {
   }
   if (plan.contribution_kind === 'speech'
       && plan.supporting_operations.length === 0) {
+    requireActionableNpcSpeech(plan);
     return { kind: 'speech', statementRef: null };
   }
   fail(
@@ -241,5 +262,13 @@ function requireDomainOwned(plan) {
   if (plan?.activity?.duration_class !== 'domain_owned') {
     fail('TRACE_M2_CONVERSATION_DURATION_CLASS_INVALID',
       'Lower Dvina revision 14 conversation duration is domain-owned.');
+  }
+}
+
+function requireActionableNpcSpeech(plan) {
+  if (plan.supporting_operations.length === 0
+      && ['offer', 'promise'].includes(plan.speech?.dominant_act)) {
+    fail('TRACE_M2_NPC_OPERATION_REQUIRED',
+      'An offer or promise requires an exact supported operation.');
   }
 }

@@ -94,6 +94,7 @@ export async function assertPhase2NormalizedRows(pool, payload, head) {
     (entry) => entry.check_scope_key?.request_id
       === payload.last_turn.request_id
   );
+  const currentCheckExpected = payload.last_turn.check_result != null;
   const semanticSnapshot =
     idempotency.rows[0]?.semantic_command_snapshot;
   const expectedConditions = normalizedConditionProof(
@@ -120,28 +121,29 @@ export async function assertPhase2NormalizedRows(pool, payload, head) {
         !== payload.clock.subminute_denominator
       || canonicalDigest(actualKnowledge)
         !== canonicalDigest(expectedKnowledge)
-      || check.rows.length !== payload.party_state.turn_number
-      || currentCheck?.roll_value !== payload.last_turn.check_result.roll
-      || canonicalDigest(currentCheck?.modifier_snapshot)
-        !== canonicalDigest(payload.last_turn.check_result.modifiers)
-      || currentCheck?.target_value
-        !== payload.last_turn.check_result.difficulty
-      || currentCheck?.deterministic_roll_input_digest
-        !== canonicalDigest({
-          input_digest: payload.last_turn.input_digest,
-          request: payload.last_turn.check_request,
-          audit: payload.last_turn.check_result.audit
-        })
-      || currentCheck?.canonical_digest
-        !== canonicalDigest({
-          input_digest: payload.last_turn.input_digest,
-          scope: {
-            request_id: payload.last_turn.request_id,
-            option_id: payload.last_turn.option_id
-          },
-          result: payload.last_turn.check_result,
-          consequence: payload.last_turn.consequence
-        })
+      || currentCheckExpected !== Boolean(currentCheck)
+      || (currentCheckExpected
+        && (currentCheck.roll_value !== payload.last_turn.check_result.roll
+          || canonicalDigest(currentCheck.modifier_snapshot)
+            !== canonicalDigest(payload.last_turn.check_result.modifiers)
+          || currentCheck.target_value
+            !== payload.last_turn.check_result.difficulty
+          || currentCheck.deterministic_roll_input_digest
+            !== canonicalDigest({
+              input_digest: payload.last_turn.input_digest,
+              request: payload.last_turn.check_request,
+              audit: payload.last_turn.check_result.audit
+            })
+          || currentCheck.canonical_digest
+            !== canonicalDigest({
+              input_digest: payload.last_turn.input_digest,
+              scope: {
+                request_id: payload.last_turn.request_id,
+                option_id: payload.last_turn.option_id
+              },
+              result: payload.last_turn.check_result,
+              consequence: payload.last_turn.consequence
+            })))
       || visible.rows.length !== 1
       || idempotency.rows.length !== 1
       || idempotency.rows[0].request_id

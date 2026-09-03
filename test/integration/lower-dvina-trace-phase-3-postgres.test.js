@@ -48,7 +48,9 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-26-publication.js';
+import { installLowerDvinaTraceV6World, lowerDvinaTraceV6World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync(
@@ -88,9 +90,9 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     max: 8
   });
   await installSchemas(pool);
-  await installLowerDvinaTraceV5World(pool);
+  await installLowerDvinaTraceV6World(pool);
   const bundle = await loadLowerDvinaTraceMaterializationBundle({
-    scenarioDefinitionRevision: 9
+    scenarioDefinitionRevision: 26
   });
   const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
   const runtimeCatalogPin = Object.freeze({
@@ -126,13 +128,13 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
   assert.equal(movedA.movement.result.elapsed_minutes, 8);
   assert.equal(movedA.check, null);
   assert.equal(await count(pool,
-    'party_runtime.party_route_plans', partyA.party_id), 2);
+    'party_runtime.party_route_plans', partyA.party_id), 3);
   assert.equal(await count(pool,
-    'party_runtime.party_route_plan_executions', partyA.party_id), 2);
+    'party_runtime.party_route_plan_executions', partyA.party_id), 3);
   assert.equal(await count(pool,
     'party_runtime.traveller_travel_states', partyA.party_id), 1);
   assert.equal(await traversalIntervalCount(pool, partyA.party_id), 1);
-  assert.equal(await traversalLifecycleCount(pool, partyA.party_id), 4);
+  assert.equal(await traversalLifecycleCount(pool, partyA.party_id), 5);
   const firstTalk = await pathA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-talk',
     idempotency_key: 'phase-3-a-talk',
@@ -861,6 +863,9 @@ function buildRuntime({
     committer,
     release,
     runtimeCatalogPin,
+    activePhase1AManifestDigest:
+      TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST,
+    activeScenarioDefinitionRevision: 26,
     traceStartAdapter:
       createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: pool,

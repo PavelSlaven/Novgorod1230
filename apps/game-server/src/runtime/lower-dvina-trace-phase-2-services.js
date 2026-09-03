@@ -16,17 +16,20 @@ export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    turnStepModel, playerSafeStateProjector, locationProfiles,
+    turnStepModel, playerSafeStateProjector, locationProfiles, scenePresentation,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
     ordinaryDiscoveryEnablementMarker,
+    ordinaryDiscoveryScopeBinding,
     createTurnStepActionProductionOwner,
     actionProductionProfile,
     createTurnStepWorldProcessResolver,
     localFireProfile,
     createTurnStepSpatialSemanticResolver,
+    createTurnStepBackgroundNpcResolver,
+    npcSemanticRemainderProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -55,12 +58,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     );
   }
   const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({ committedState, locationProfiles });
+  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({
+    committedState, locationProfiles, scenePresentation
+  });
   const { temporalAdvance, bodyEffect, evaluatePrecondition, createVisibleProjector } =
     createLowerDvinaTracePhase2ServiceFlow({
       contracts, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts,
       phase7Contracts, turn10Contracts, phase8Contracts, phase9Contracts,
-      temporalAdvanceOwner, turnStepGenericBodyEffect
+      temporalAdvanceOwner, turnStepGenericBodyEffect, scenePresentation
     });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,
@@ -89,7 +94,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
       localFireProfile,
       createTurnStepWorldProcessResolver,
       createTurnStepSpatialSemanticResolver,
+      createTurnStepBackgroundNpcResolver,
+      npcSemanticRemainderProfile,
       ordinaryDiscoveryEnablementMarker,
+      ordinaryDiscoveryScopeBinding,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
       playerSafeStateProjector,
@@ -130,6 +138,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     } : {}),
     ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
       turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
+    } : {}),
+    ...(typeof createTurnStepBackgroundNpcResolver === 'function'
+        && npcSemanticRemainderProfile?.profile?.status === 'approved' ? {
+      turnStepBackgroundNpcResolver: createTurnStepBackgroundNpcResolver({
+        partyId, requestId, inputDigest,
+        applyWorkingProjection: workingProjectionAuthority.admit
+      })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

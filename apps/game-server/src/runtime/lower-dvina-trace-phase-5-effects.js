@@ -79,8 +79,7 @@ export function createTracePhase5BodyEffect({ phase2BodyEffect, contracts }) {
           exact_deltas: structuredClone(outcome.exact_deltas),
           condition_transitions:
             structuredClone(outcome.condition_outcomes),
-          selection_policy:
-            contracts.bodyEffect.selection_policy,
+          selection_policy: 'fixed_by_committed_check_outcome',
           rng_consumption: 'forbidden'
         },
         state_after: structuredClone(input.committed_state.body_state)
@@ -109,16 +108,17 @@ export function createTracePhase5VisibleProjector({ phase4Projector }) {
           : treatment.interrupted
             ? 'Лечение прервано на временной границе; достигнутый прогресс сохранён.'
             : 'Очередной этап помощи Онисиму завершён.',
-        visible_changes: [
-          ...(treatment.stage_completion_facts ?? []),
-          ...(treatment.outcome_fact ? [treatment.outcome_fact] : [])
-        ],
+        visible_changes: [final
+          ? stabilized
+            ? 'Перевязка завершена; Онисим остаётся ранен, но его состояние устойчивее.'
+            : 'Перевязка завершена без заметного улучшения.'
+          : treatment.interrupted
+            ? 'Помощь прервалась, но уже сделанное не пропало.'
+            : 'Помощь Онисиму продвинулась.'],
         sensory_details: [],
         visible_npc: [],
         visible_objects: [],
-        known_context: [
-          `Прогресс лечения: ${treatment.progress_after} из 25 минут.`
-        ],
+        known_context: final ? [] : ['Помощь Онисиму ещё не закончена.'],
         uncertainties: final && !stabilized
           ? ['Неудача проверки не создаёт неутверждённого ухудшения.'] : [],
         allowed_tensions: [],

@@ -280,6 +280,44 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
         firstEntryBinding:{g6_instance_id:'g6:revision20',
           position_id:'position:revision20'}}));
     assert.equal(replayProvision.provisioned,false);
+    const unseeded=(await pool.query(`SELECT aggregate_payload FROM
+      party_runtime.party_ordinary_materialization_aggregates
+      WHERE party_id=$1 AND scope_kind='g6' AND scope_id='g6:revision20'`,
+    [activeParty])).rows[0].aggregate_payload;
+    assert.equal(unseeded.seeded,false);
+
+    const seededParty='party-o1-initial-seed';
+    await provisionFirstEntryParty(pool,seededParty,{
+      g6Id:'g6:initial-wreck',positionId:'position:initial-wreck'});
+    const initialProvisioner=createOrdinaryMaterializationFirstEntryProvisioner({
+      profile:profiles.ordinaryMaterializationProfile,
+      includeContextBoundCapabilities:false,
+      initialSceneSeed:{descriptor:'обжитой берег у места крушения',density_band:'ordinary'}});
+    const seededInput={transaction:null,partyId:seededParty,
+      changeSetId:`first-entry:${seededParty}`,firstEntryBinding:{
+        g6_instance_id:'g6:initial-wreck',position_id:'position:initial-wreck'}};
+    const firstSeed=await inTransaction(pool,async(transaction)=>
+      initialProvisioner.provision({...seededInput,transaction}));
+    const replaySeed=await inTransaction(pool,async(transaction)=>
+      initialProvisioner.provision({...seededInput,transaction}));
+    assert.equal(firstSeed.provisioned,true);
+    assert.equal(replaySeed.provisioned,false);
+    const seeded=(await pool.query(`SELECT aggregate_payload FROM
+      party_runtime.party_ordinary_materialization_aggregates
+      WHERE party_id=$1 AND scope_kind='g6' AND scope_id='g6:initial-wreck'`,
+    [seededParty])).rows[0].aggregate_payload;
+    assert.equal(seeded.seeded,true);
+    assert.equal(seeded.density_band,'ordinary');
+    assert.deepEqual(seeded.background_groups.map(({descriptor})=>descriptor),
+      ['обжитой берег у места крушения']);
+    const seedBases=(await pool.query(`SELECT origin_request_identity,basis_snapshot
+      FROM party_runtime.party_ordinary_materialization_basis_catalog
+      WHERE party_id=$1 AND scope_kind='g6' AND scope_id='g6:initial-wreck'
+      ORDER BY basis_ref`,[seededParty])).rows;
+    assert.ok(seedBases.every(({origin_request_identity:identity})=>
+      identity===null));
+    assert.ok(seedBases.every(({basis_snapshot:basis})=>
+      basis.state==='committed'&&basis.prepared_seed_provenance===null));
     const activeRef='trace_ld_v1_container_player_small_pouch';
     const activeLoader=createPostgresOrdinaryContainerContentsLoader({pool});
     const activeCommitted=await activeLoader({party_id:activeParty,

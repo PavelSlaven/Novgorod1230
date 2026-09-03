@@ -1,0 +1,134 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_2_wreck_inspection_binding.v1",
+  "binding_id": "lower_dvina_trace_phase_2_wreck_inspection_v1",
+  "revision": 31,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 31,
+  "owner": "@rus/turn",
+  "co_owners": [
+    "@rus/checks-rng",
+    "@rus/time-events-history",
+    "@rus/body-state",
+    "@rus/visibility-knowledge-memory",
+    "@rus/items-property",
+    "@rus/party-store",
+    "@rus/presentation",
+    "@rus/narration"
+  ],
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "activity_ref": {
+    "id": "trace_ld_v1_activity_detailed_wreck_inspection",
+    "version": 1,
+    "record_digest": "51fdfe321378fb87d6a629bcb96e3eb68f195ab3af86377b65e673bd61222462"
+  },
+  "check_ref": {
+    "id": "trace_ld_v1_check_detailed_wreck_inspection",
+    "version": 1,
+    "record_digest": "8d94cfb38ed8ebaee2f48c2f1caa0fa2f3c6a4cd352c468d2cf3a8c154a52560"
+  },
+  "body_effect_ref": {
+    "id": "trace_ld_v1_body_wreck_inspection_15m",
+    "record_digest": "8cd02b88346c66bc48ace1e6fa7d0faa312ae9e98e84f51b1e36579cd37b0a74",
+    "profile_set_id": "trace_ld_v1_body_environment_profiles",
+    "profile_set_revision": 8,
+    "profile_set_digest": "fac0e95be64faf91f45daf95d96ce972541b1b244a6a3e6d2bbbaedaa6e22660"
+  },
+  "attempt_policy": {
+    "attempt_identity": "one_activity_attempt_per_exact_turn_request",
+    "same_request_replay": "return_committed_attempt_without_new_rng_or_elapsed",
+    "new_request_after_completion": "create_new_activity_attempt",
+    "new_attempt_rng": "new_code_owned_d20",
+    "new_attempt_elapsed_minutes": 15,
+    "clock_writes_per_attempt": 1
+  },
+  "body_application_variants": [
+    {
+      "variant_id": "initial_cold_exposure",
+      "required_prior_effect_state": "not_committed_for_actor",
+      "exact_deltas": {
+        "health": 0,
+        "satiety": 0,
+        "energy": -1
+      },
+      "condition_outcomes": [
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_wet_clothing",
+          "from": "wet",
+          "to": "wet",
+          "outcome": "persists"
+        },
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_cold_shivering",
+          "from": "mild_shivering",
+          "to": "mild_shivering",
+          "outcome": "worsens"
+        }
+      ],
+      "selection_policy": "exact_committed_condition_state",
+      "rng_consumption": "forbidden"
+    },
+    {
+      "variant_id": "repeated_mild_shivering",
+      "required_prior_effect_state": "committed_for_actor",
+      "exact_deltas": {
+        "health": 0,
+        "satiety": 0,
+        "energy": -1
+      },
+      "condition_outcomes": [
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_wet_clothing",
+          "from": "wet",
+          "to": "wet",
+          "outcome": "persists"
+        },
+        {
+          "condition_profile_ref": "trace_ld_v1_condition_cold_shivering",
+          "from": "mild_shivering",
+          "to": "mild_shivering",
+          "outcome": "persists"
+        }
+      ],
+      "selection_policy": "exact_committed_condition_state",
+      "rng_consumption": "forbidden"
+    }
+  ],
+  "evidence_repeat_policy": {
+    "source_contract": "trace_ld_v1_clue_evidence_graph_set",
+    "repeat_discovery_creates_duplicate": false,
+    "existing_item_instance_is_reused": true,
+    "existing_observation_and_knowledge_records_are_not_duplicated": true
+  },
+  "clue_placement_contract": {
+    "item_template_ref": "trace_ld_v1_item_blue_wool_fragment",
+    "item_capacity_class": "evidence",
+    "placement_model": "local_evidence_slot_within_g5_anchor",
+    "placement_slot_ref": "trace_ld_v1_slot_wreck_willow_branch",
+    "location_ref": "trace_ld_v1_loc_wreck_shore",
+    "local_anchor_semantics": "willow_branch",
+    "g5_anchor_binding": {
+      "template_id": "trace_ld_v1_g5_anchor_wreck_open_shore_v1",
+      "slot_key": "open_shore",
+      "capacity_contract_ref": "trace_ld_v1_capacity_wreck_shore",
+      "zone_ref": "open_shore",
+      "item_capacity_application": "not_consumed_by_local_evidence_slot",
+      "expected_item_capacity": 0
+    },
+    "placement_slot_capacity": 1,
+    "existing_instance_policy": "reuse_exact_item_instance",
+    "commit_recheck_policy": "exact_anchor_scene_zone_slot_and_unique_item"
+  },
+  "forbidden_capabilities": [
+    "semantic_fallback",
+    "body_state_alias",
+    "body_rng",
+    "llm_selected_dc",
+    "llm_selected_outcome",
+    "llm_selected_elapsed",
+    "duplicate_clue_materialization",
+    "phase_3_transition"
+  ]
+}

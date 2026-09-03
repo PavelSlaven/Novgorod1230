@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 19);
+  assert.equal(corpus.corpus_version, 25);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -59,7 +59,7 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
       config_hash: report.results.find(({ role_id }) => role_id === 'turn_step_planner').config_hash,
-      request_timeout_ms: 10000, thinking: 'disabled', reasoning_effort: null, max_tokens: 8000,
+      request_timeout_ms: 120000, thinking: 'disabled', reasoning_effort: null, max_tokens: 20000,
       context_budget: { targetInputTokens: 100000, comfortableInputTokens: 220000,
         hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000 }
     });
@@ -183,14 +183,14 @@ test('combat eval records its single bounded production repair', async () => {
       baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
     } });
     assert.equal(requests.length, 2);
-    assert.equal(requests.every(({ max_tokens }) => max_tokens === 4000), true);
+    assert.equal(requests.every(({ max_tokens }) => max_tokens === 20000), true);
     assert.equal(report.results[0].pass, true);
     assert.equal(report.results[0].valid, true);
     assert.equal(report.results[0].llm_calls, 2);
     assert.equal(report.results[0].repair_calls, 1);
     assert.equal(report.aggregates.total.repairs, 1);
     assert.equal(report.metadata.role_config_policy.find(({ role_id }) =>
-      role_id === 'npc_combat_decider').max_tokens, 4000);
+      role_id === 'npc_combat_decider').max_tokens, 20000);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
@@ -546,7 +546,7 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
 
 test('narration semantic repair accepts grounded equivalent prose', async () => {
   const fixture = corpus.fixtures.find(({ id }) =>
-    id === 'gameplay-narrator-semantic-repair-localized');
+    id === 'gameplay-narrator-semantic-repair-whole-prose');
   const output = structuredClone(fixture.expected_output);
   output.replacements[0].prose = 'У ворот видна телега.';
   const server = createServer(async (request, response) => {
@@ -569,7 +569,7 @@ test('narration semantic repair accepts grounded equivalent prose', async () => 
 
 test('narration semantic repair rejects unchanged unsupported prose', async () => {
   const fixture = corpus.fixtures.find(({ id }) =>
-    id === 'gameplay-narrator-semantic-repair-localized');
+    id === 'gameplay-narrator-semantic-repair-whole-prose');
   const output = structuredClone(fixture.expected_output);
   output.replacements[0].prose = 'Телега скрипит у ворот.';
   const server = createServer(async (request, response) => {

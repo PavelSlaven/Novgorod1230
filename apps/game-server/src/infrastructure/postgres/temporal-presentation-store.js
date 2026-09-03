@@ -22,7 +22,7 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
   if (!Number.isSafeInteger(leaseDurationMs) || leaseDurationMs <= 0) throw new TypeError('leaseDurationMs must be a positive integer');
 
   async function transaction(work, turnBudget = null) {
-    if (turnBudget?.remaining?.() != null) {
+    if (Number.isFinite(turnBudget?.remaining?.()?.deadline_ms)) {
       return withTurnDeadlineTransaction(pool, turnBudget, work);
     }
     const client = await pool.connect();

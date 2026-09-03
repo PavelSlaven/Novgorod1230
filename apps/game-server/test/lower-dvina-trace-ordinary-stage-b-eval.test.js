@@ -12,14 +12,14 @@ import { buildOrdinaryMaterializationMessages } from
   '../src/runtime/ordinary-materialization-llm.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
-import { buildOrdinaryMaterializationPresenceRequest } from
-  '../src/runtime/ordinary-materialization-seed-request.js';
 import { describeRoleLlmCall } from '@rus/llm-runtime';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
 import { createOrdinaryMaterializationStageBQualifier } from
   '../src/runtime/ordinary-materialization-stage-b-qualification.js';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
+import { absentPlan, modelIdentity, presenceRequest } from
+  './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -82,11 +82,29 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
   assert.match(prompt, /derive it only from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /general question about people, current activity, or the situation is not an ordinary item candidate/u);
+  assert.match(prompt, /never turn a person, event, place, or question into an item name or item fact/u);
   assert.match(prompt, /server assembles/u);
   assert.match(prompt, /availability_class is common or context_bound/u);
   assert.match(prompt, /authority_envelope/u);
   assert.doesNotMatch(prompt, /простая верёвка|cordage/u);
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
+});
+
+test('ordinary materialization prompt exposes exact code-owned mechanics bounds', () => {
+  const prompt = buildOrdinaryMaterializationMessages(presenceRequest('обломок доски'), {
+    mechanicsPolicy: { policy_ref: 'mechanics', max_mass_grams: 20_000,
+      allowed_external_hand_costs: [0, 1, 2],
+      allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+      max_packing_slot_cost: 16, max_quantity: 1 }
+  })[0].content;
+  assert.match(prompt, /mass_grams is an integer from 1 to 20000/u);
+  assert.match(prompt, /external_hand_cost is exactly one of \[0,1,2\]/u);
+  assert.match(prompt,
+    /carry_form is exactly one of \["compact","regular","long","bulky"\]/u);
+  assert.match(prompt, /packing_slot_cost is an integer from 0 to 16/u);
+  assert.match(prompt, /quantity\.value is an integer from 1 to 1/u);
+  assert.match(prompt, /Never invent another carry_form/u);
 });
 
 test('ordinary materialization absent prompt permits only its exact absent plan', () => {
@@ -138,9 +156,36 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(prompt, /seed_scope permits only seeded or no_change/u);
   assert.match(prompt, /"resolution":"seeded"/u);
-  assert.match(prompt, /"descriptor":"<semantic_group_descriptor>"/u);
+  assert.match(prompt, /"descriptor":null/u);
+  assert.match(prompt, /Never copy angle-bracket placeholders/u);
+  assert.match(prompt, /natural Russian suitable for later player-facing prose/u);
   assert.match(prompt, /"basis_refs":\["basis"\]/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
+});
+
+test('ordinary seed prompt receives a player-safe scene basis without reading refs', () => {
+  const source = presenceRequest('ложка');
+  const request = { ...source, mode: 'seed_scope', candidate_query: null,
+    ordinary_state: { ...source.ordinary_state, seeded: false,
+      density_band: null },
+    authority_envelope: { stage: 'seed_scope', density_bands: ['ordinary'],
+      disclosure_policy_refs: ['disclosure'], group_bases: [{
+        basis_ref: 'basis', basis_state: 'committed',
+        functional_buckets: ['other_ordinary'],
+        allowed_admission_classes: ['common_mundane'], permission_refs: [] }] }
+  };
+  const prompt = buildOrdinaryMaterializationMessages(request, {
+    semanticContext: { visible_scene: 'речной берег',
+      sensory_details: ['У воды лежат обломки досок.'],
+      visible_objects: [] }
+  })[0].content;
+  assert.match(prompt, /All refs and IDs are opaque/u);
+  assert.match(prompt, /У воды лежат обломки досок/u);
+  assert.match(prompt, /one to three concrete co-present mundane physical groups/u);
+  assert.match(prompt, /Never answer with an abstract category/u);
+  assert.match(prompt, /never invent a visit, owner, action, purpose, origin, or past event/u);
+  assert.match(prompt, /propose one distinct new ordinary group/u);
+  assert.match(prompt, /do not restate, paraphrase, combine, or summarize/u);
 });
 
 test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
@@ -163,6 +208,8 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   assert.match(admitted, /"mass_grams":"<semantic_integer_mass_grams>"/u);
   assert.match(admitted, /"external_hand_cost":"<semantic_integer_external_hand_cost>"/u);
   assert.match(admitted, /"packing_slot_cost":"<semantic_integer_packing_slot_cost>"/u);
+  assert.match(admitted,
+    /never copy the player's intended use, action, goal, or hoped-for result/u);
   assert.doesNotMatch(admitted, /"mass_grams":1/u);
 });
 
@@ -401,53 +448,3 @@ test('production O1 cutover rejects a jointly forged activation receipt', async 
   await assert.rejects(model.verifyStageBCutover({ eval_contract: contract }), {
     code: 'TRACE_ORDINARY_STAGE_B_EVAL_INPUT_INVALID' });
 });
-
-function presenceRequest(query) {
-  const scope_ref = { entity_kind: 'g6', entity_id: 'scope' };
-  return buildOrdinaryMaterializationPresenceRequest({ objective_context: {
-    request_id: 'turn:eval:ordinary:presence', scope_ref: { ...scope_ref },
-    context_refs: { period_ref: 'period', region_ref: 'region',
-      function_refs: [], environment_refs: [], occupation_household_refs: [],
-      economic_context_ref: 'economy', occupancy_state_ref: 'occupied',
-      material_culture_refs: [], property_context_ref: 'property' },
-    policy_refs: { authority_policy_ref: 'authority',
-      density_policy_ref: 'density', ordinary_presence_policy_ref: 'presence',
-      runtime_item_mechanics_policy_ref: 'mechanics',
-      allowed_admission_classes: ['common_mundane'],
-      context_bound_permission_refs: [], allowed_supporting_bases: [{
-        basis_ref: 'generic_basis', basis_state: 'committed' }] },
-    ordinary_state: { seeded: true, density_band: 'ordinary',
-      remaining_identity_budget: 1, background_groups: [],
-      presence_resolutions: [], closed_observation_scopes: [] },
-    technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
-      max_resolution_records: 4 }, ordinary_state_version: 1,
-    property_placement_context: { scope_ref: { ...scope_ref }, item_kind: 'man_made',
-      property_catalog_version_ref: 'property-v1',
-      placement_catalog_version_ref: 'placement-v1', personal_communal_refs: [],
-      occupied_site_refs: ['house'], unowned_cause_refs: [],
-      placement_context_refs: ['scene'], property_catalog: [{
-        property_basis_ref: 'property', state: 'committed',
-        scope_ref: { ...scope_ref },
-        basis_class: 'occupied_site_default', source_ref: 'house',
-        unowned_cause_ref: null }], placement_catalog: [{ position_ref: 'bench',
-        state: 'committed', scope_ref: { ...scope_ref },
-        g6_ref: 'scope', containment_depth: 1,
-        placement_context_ref: 'scene' }] }
-  }, candidate_context: { normalized_candidate_ref: 'ordinary-household',
-    normalizer_version: 'normalizer-v1', semantic_type: 'household_tool',
-    candidate_hint: query, functional_bucket: 'household',
-    admission_class: 'common_mundane', availability_class: 'common',
-    coverage_kind: 'visible_surface', coverage_ref: 'surface',
-    policy_version: 'presence' }, selected_supporting_basis_ref: 'generic_basis' }).request;
-}
-function absentPlan(request) { return {
-  schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
-  resolution: 'absent', density_band_proposal: null, background_groups: [],
-  entities: [], presence_resolutions: [{
-    candidate_key: request.candidate_query.candidate_key,
-    coverage_key: request.candidate_query.coverage_key,
-    resolution: 'absent' }], reason_code: 'eval_absent' };
-}
-function modelIdentity() { return { provider: 'deepseek', model: 'deepseek-v4-flash',
-  scope: 'turn_runtime', role_id: 'ordinary_materialization',
-  config_hash: 'af6b22db5449f13e' }; }

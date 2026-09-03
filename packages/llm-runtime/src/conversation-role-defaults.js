@@ -15,7 +15,32 @@ export function conversationTurnRoleDefaults(contractModes) {
     npc_conversation_responder_format_repair: repairRole(
       'NPC_CONVERSATION_RESPONDER_REPAIR',
       contractModes.JSON_REPAIR
+    ),
+    npc_conversation_grounding_auditor: auditRole(
+      'NPC_CONVERSATION_GROUNDING_AUDITOR',
+      contractModes.JSON_OBJECT
     )
+  };
+}
+
+function auditRole(envPrefix, outputContractMode) {
+  return {
+    envPrefix,
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
+    responseFormat: 'json_object',
+    maxTokens: 20_000,
+    temperature: 0,
+    topP: 1,
+    outputContractMode,
+    expectedSchema: null,
+    parseJson: true,
+    targetInputTokens: 100000,
+    comfortableInputTokens: 220000,
+    hardInputLimitTokens: 600000,
+    reserveOutputTokens: 800,
+    reserveRepairTokens: 0
   };
 }
 
@@ -26,7 +51,7 @@ function semanticRole(envPrefix, outputContractMode) {
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
-    maxTokens: 8000,
+    maxTokens: 20_000,
     outputContractMode,
     expectedSchema: null,
     parseJson: true,
@@ -45,7 +70,7 @@ function repairRole(envPrefix, outputContractMode) {
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
-    maxTokens: 4000,
+    maxTokens: 20_000,
     temperature: 0,
     topP: 1,
     outputContractMode,

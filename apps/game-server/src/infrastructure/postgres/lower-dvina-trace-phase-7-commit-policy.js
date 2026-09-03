@@ -10,13 +10,19 @@ export function expectedVersions({ partyId, state, factual,
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
       state.party_state.session_state_version),
-    expected('party_clocks', partyId, state.party_state.clock_state_version),
+    expected('party_clocks', partyId, state.party_state.clock_state_version)
+  ];
+  if (factual.body_update.applied === true) values.push(
     expected('party_actor_body_states',
       `player_character:${state.actor_id}`,
-      state.party_state.body_state_version)
-  ];
+      state.party_state.body_state_version));
+  if (factual.consequence.phase7.resumed === true) {
+    values.push(expected('party_timed_activity_executions',
+      state.phase7_fire_rest.activity_execution_id,
+      state.phase7_fire_rest.next_attempt_ordinal + 1));
+  }
   const changed = new Set(
-    (factual.body_update.proposal.condition_transitions ?? []).map(
+    (factual.body_update.proposal?.condition_transitions ?? []).map(
       ({ storage_condition_id: id, condition_id: fallback, from }) =>
         id ?? fallback ?? from
     )
@@ -28,7 +34,9 @@ export function expectedVersions({ partyId, state, factual,
       `player_character:${state.actor_id}:${condition.storage_condition_id}`,
       condition.state_version));
   }
-  if (factual.consequence.phase7.schedule_execution.property_proposal) {
+  if (factual.consequence.phase7.schedule_execution.property_proposal
+      && factual.consequence.phase7.schedule_applied_in_this_attempt
+        !== false) {
     const bag = roadBag(state);
     if (!Number.isInteger(bag.state_version)) {
       fail('TRACE_PHASE_7_ROAD_BAG_VERSION_MISSING');
@@ -102,14 +110,17 @@ export function commitRechecks({ partyId, state, factual, phase7Contracts,
     }),
     sealedCheck('time', {
       expected_clock_state_version: state.party_state.clock_state_version,
-      exact_elapsed_minutes: 30
+      exact_elapsed_minutes: Number(
+        factual.time_update.exact_elapsed.exact_minutes.numerator)
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest })
   ];
 }
 
 export function scheduleItemKeys(state, factual) {
-  if (!factual.consequence.phase7.schedule_execution.property_proposal) {
+  if (!factual.consequence.phase7.schedule_execution.property_proposal
+      || factual.consequence.phase7.schedule_applied_in_this_attempt
+        === false) {
     return [];
   }
   return [`party_runtime.party_containers:${roadBag(state).container_id}`];

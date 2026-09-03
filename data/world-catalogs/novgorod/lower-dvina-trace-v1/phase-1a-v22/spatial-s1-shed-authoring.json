@@ -1,0 +1,10 @@
+{
+  "schema": "rus.lower_dvina_trace_s1_prepared_scene_authoring.v1",
+  "authoring_id": "lower_dvina_trace_s1_old_drying_shed_v1",
+  "revision": 1,
+  "status": "approved",
+  "canonical_g5": {"id":"trace_ld_v1_g5_old_drying_shed","parent_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge","parent_version":4,"spatial_level":"G5","class_id":"spatial.g5.structure"},
+  "scene_materialization_profile": {"id":"trace_ld_v1_smp_old_drying_shed","scene_template_id":"trace_ld_v1_tpl_old_drying_shed"},
+  "base_position": {"slot_key":"shed_approach","access_policy_ref":"trace_ld_v1_access_old_drying_shed","capacity_contract_ref":"trace_ld_v1_capacity_old_drying_shed","capacity":7},
+  "s1_topology": {"g6_slot_key":"s1_enclosed_space","position_slot_key":"s1_enclosed_space.interior","movement_edge_slot_keys":["s1_enclosed_space.out","s1_enclosed_space.back"],"visibility_link_slot_keys":["s1_enclosed_space.visible_out","s1_enclosed_space.visible_back"]}
+}

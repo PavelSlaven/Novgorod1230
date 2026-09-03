@@ -16,18 +16,20 @@ const COMPANION_COMMAND =
   'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
 
 export function isPreparedTurn10Ledger(ledger) {
-  return ledger?.slices?.[0]?.owner_ref === REST_COMMAND;
+  return ledger?.slices?.length === 2
+    && ledger.slices[0]?.owner_ref === REST_COMMAND
+    && ledger.slices[0]?.consequence?.duration_minutes === 25
+    && ledger.slices[1]?.owner_ref === COMPANION_COMMAND;
 }
 
 export function validatePreparedTurn10({ ledger, traces, envelope, factual,
-  state, batch }) {
+  state }) {
   const [rest, conversation] = ledger.slices;
   const [restTrace, conversationTrace] = traces ?? [];
   const restOperation = restTrace?.approved_plan?.operations?.[0];
   const conversationOperation =
     conversationTrace?.approved_plan?.operations?.[0];
-  if (batch != null
-      || ledger.slices.length !== 2
+  if (ledger.slices.length !== 2
       || traces?.length !== 2
       || ledger.committed_state_version !== state.party_state.state_version
       || envelope.loop_trace.working_revision !== 2

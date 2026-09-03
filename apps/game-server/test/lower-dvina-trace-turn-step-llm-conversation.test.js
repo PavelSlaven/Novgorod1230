@@ -92,6 +92,8 @@ test('conversation prompts supply complete shapes and request-bound mappings',
       assert.match(prompt, /speech: null/u);
       assert.match(prompt, /refs\/handoff only from request contract/u);
       assert.match(prompt, /greet, farewell, question, answer, inform/u);
+      assert.match(prompt, /topic_refs contain only string ids/u);
+      assert.match(prompt, /never entity-ref objects/u);
       assert.match(prompt, /supporting_operations must be \[required_supporting_operation\]/u);
     }
     assert.match(npc, /required_check\.attribute_ref, skill_ref, and difficulty_band/u);

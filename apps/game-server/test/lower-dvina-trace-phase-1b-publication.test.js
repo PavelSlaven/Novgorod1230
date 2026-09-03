@@ -16,6 +16,8 @@ import {
 import {
   loadHistoricalLowerDvinaTracePhase1BPublication
 } from '../src/internal/lower-dvina-trace-phase-1b-historical-publication.js';
+import { TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST } from
+  '../src/internal/lower-dvina-trace-revision-27-publication.js';
 
 test('publication loader rejects an exact binding digest mismatch', async (t) => {
   const root = await copyPublicationClosure();
@@ -108,6 +110,62 @@ test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 NPC acto
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v21'
   );
+});
+
+test('explicit revision 27 identity resolves only the revision 27 publication', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 27
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v22');
+  assert.equal(publication.binding.execution_identity.scenario_definition_revision, 27);
+  assert.equal(publication.definition.resolved_policy_refs.body_environment_profiles.revision, 7);
+});
+
+test('revision 28 selects the new public presentation over the shared Phase 1A pin', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    phase1AManifestDigest: TRACE_REVISION27_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 28
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v23');
+  assert.equal(publication.definition.revision, 28);
+  assert.deepEqual(publication.scene_presentation.locations.map(
+    ({ player_visible_physical_facts: facts }) => facts
+  ).flat().some((fact) => /cold|wet|exposed|landscape_basis|economic_basis/i.test(fact)), false);
+});
+
+test('revision 31 pins scene presentation v2 without scene authority', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 31
+  });
+  const camp = publication.scene_presentation.locations.find(
+    ({ location_ref }) => location_ref === 'trace_ld_v1_loc_fishing_camp'
+  );
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v26');
+  assert.equal(publication.definition.revision, 31);
+  assert.equal(publication.scene_presentation.presentation_id,
+    'lower_dvina_trace_scene_presentation_v2');
+  assert.deepEqual(camp.player_visible_physical_facts.slice(-5), [
+    'Сухой песчаный берег тянется вдоль воды.',
+    'Сети развешены на кольях и между навесами.',
+    'Лодки стоят у воды.',
+    'Под навесом сложены свёрнутые снасти.',
+    'В воздухе держится речная сырость.'
+  ]);
+  assert.equal(/entity|inventory|affordance/i.test(JSON.stringify(camp)), false);
+});
+
+test('revision 32 publishes the authored A1 item mechanics cutover', async () => {
+  const publication = await loadLowerDvinaTracePhase1BPublication({
+    scenarioDefinitionRevision: 32
+  });
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v27');
+  assert.equal(publication.definition.revision, 32);
+  assert.equal(publication.binding.execution_identity
+    .scenario_definition_revision, 32);
+  assert.equal(publication.definition.immutable_content_refs
+    .a1_authored_item_mechanics_profile.digest,
+  '2e12636428e94881360dc926b2455f9a7aefefdf09c4d0d43795fdb815b35d90');
 });
 
 test('current publication rejects tampered Phase 1A v21 or revision 25 content', async (t) => {

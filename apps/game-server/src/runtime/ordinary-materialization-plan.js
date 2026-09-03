@@ -8,7 +8,7 @@ export function ordinaryMaterializationResponseShape(request) {
     if (!plain(group)) return null;
     return { ...base, resolution: 'seeded',
       density_band_proposal: authority.density_bands[0], background_groups: [{
-        descriptor: '<semantic_group_descriptor>',
+        descriptor: null,
         functional_bucket: group.functional_buckets[0],
         availability_class: 'common',
         allowed_admission_classes: group.allowed_admission_classes,

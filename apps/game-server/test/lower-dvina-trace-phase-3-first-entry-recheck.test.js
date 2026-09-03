@@ -17,10 +17,11 @@ const check = {
   g6_instance_id: 'g6', position_id: 'position'
 };
 
-test('Phase 3 first entry rechecks its sealed preparation member', async () => {
+test('first-entry recheck accepts its sealed member through both route owners', async () => {
+  for (const operationKind of ['first_entry', 'trace_phase_4_turn']) {
   let calls = 0;
   const result = await firstPlayableCommitRecheck({
-    party_id: 'party', check, plan: { operation_kind: 'first_entry' },
+    party_id: 'party', check, plan: { operation_kind: operationKind },
     transaction: { async query(sql) {
       calls += 1;
       if (sql.includes('preparation_snapshots')) return { rows: [{
@@ -46,4 +47,5 @@ test('Phase 3 first entry rechecks its sealed preparation member', async () => {
     scene_baseline_id: 'baseline', g5_site_id: 'g5',
     g6_instance_id: 'g6', position_id: 'position'
   } });
+  }
 });

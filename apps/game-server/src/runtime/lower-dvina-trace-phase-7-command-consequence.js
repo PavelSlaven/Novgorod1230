@@ -34,6 +34,12 @@ export async function resolveTracePhase7FireRestConsequence({
       || actualRootTurnId !== expectedRootTurnId) {
     fail('TRACE_PHASE_7_ROOT_TURN_ID_INVALID');
   }
+  if (state.phase7_fire_rest?.status === 'paused') {
+    return resumeFireRest({
+      state, playerInput, inputDigest, temporalAdvanceOwner,
+      actualRootTurnId, contracts
+    });
+  }
   let actorStepRuntime = null;
   const deferRestCompletion = continuationTargetsMatch(
     semanticPlan?.continuation, preparedFollowupRef
@@ -127,6 +133,7 @@ export async function resolveTracePhase7FireRestConsequence({
       ? 30
       : scheduleTemporal.elapsed_after_decision + temporal.elapsed_before_decision,
     phase7: {
+      approved_body_effect_ref: contracts.bodyEffect.effect_profile_id,
       input_digest: inputDigest,
       temporal,
       autonomous: flow.decision.autonomous,
@@ -142,6 +149,70 @@ export async function resolveTracePhase7FireRestConsequence({
     visible_seed: {},
     hidden_update: {},
     state_changes: [],
+    suggested_actions: []
+  };
+}
+
+function resumeFireRest({ state, playerInput, inputDigest,
+  temporalAdvanceOwner, actualRootTurnId, contracts }) {
+  const prior = state.phase7_fire_rest?.resume_state;
+  if (prior?.temporal == null || prior?.autonomous == null
+      || prior?.actor_step == null || prior?.schedule_temporal == null
+      || prior.schedule_execution == null
+      || prior.schedule_temporal.rest_completed !== false) {
+    fail('TRACE_PHASE_7_RESUME_STATE_INVALID');
+  }
+  const actorStep = {
+    result: structuredClone(prior.actor_step),
+    working_projection: structuredClone(prior.schedule_temporal.projection),
+    owner_outputs: structuredClone(prior.actor_step_owner_outputs),
+    check: structuredClone(prior.actor_step_check),
+    local_fire_atomic_write_plans: []
+  };
+  const scheduleTemporal = resolveTracePhase7ScheduleTemporalAdvance({
+    state,
+    temporal: prior.temporal,
+    actorStep,
+    temporalAdvanceOwner,
+    commandIdempotencyKey: playerInput.idempotency_key,
+    rootTurnId: actualRootTurnId,
+    priorScheduleTemporal: prior.schedule_temporal
+  });
+  const scheduleExecution = finalizeTracePhase7ScheduleExecution({
+    actorStep,
+    scheduleTemporal
+  });
+  const duration = Number(scheduleTemporal.result.clock_after.whole_minutes)
+    - Number(state.clock.whole_minutes);
+  if (!Number.isSafeInteger(duration) || duration <= 0 || duration > 5) {
+    fail('TRACE_PHASE_7_RESUME_INTERVAL_INVALID');
+  }
+  const restCompleted = scheduleTemporal.rest_completed === true;
+  return {
+    version: 1,
+    schema: 'turn_consequence_package',
+    status: 'resolved',
+    phase7_kind: 'fire_rest',
+    activity_attempt_id: state.phase7_fire_rest.activity_execution_id,
+    body_effect_ref: restCompleted
+      ? contracts.bodyEffect.effect_profile_id : null,
+    duration_minutes: duration,
+    phase7: {
+      resumed: true,
+      approved_body_effect_ref: contracts.bodyEffect.effect_profile_id,
+      schedule_applied_in_this_attempt:
+        prior.schedule_execution.status !== scheduleExecution.status,
+      input_digest: inputDigest,
+      temporal: structuredClone(prior.temporal),
+      autonomous: structuredClone(prior.autonomous),
+      actor_step: structuredClone(prior.actor_step),
+      actor_step_owner_outputs:
+        structuredClone(prior.actor_step_owner_outputs),
+      actor_step_check: structuredClone(prior.actor_step_check),
+      schedule_temporal: scheduleTemporal,
+      schedule_execution: scheduleExecution
+    },
+    visible_seed: {}, hidden_update: {}, state_changes: [],
     suggested_actions: []
   };
 }

@@ -17,15 +17,13 @@ const CLOCK_KEYS = new Set([
   'whole_minutes', 'subminute_numerator', 'subminute_denominator',
   'day', 'hour', 'minute'
 ]);
-const VISIBLE_CONTEXT_KEYS = new Set([
-  'version', 'schema', 'visible_scene', 'visible_changes', 'sensory_details',
-  'visible_npc', 'visible_objects', 'known_context', 'uncertainties'
-]);
 const WEATHER_KEYS = new Set([
   'state', 'precipitation', 'temperature', 'temperature_c', 'wind',
   'wind_strength', 'visibility'
 ]);
 const LIGHT_KEYS = new Set(['state', 'band', 'level', 'visibility']);
+export { projectVisibleContext } from
+  './lower-dvina-trace-player-safe-visible-context.js';
 
 export function projectPosition(value, { strict = false } = {}) {
   if (!plain(value)) return undefined;
@@ -172,37 +170,14 @@ export function projectKnowledge(records, { strict = false } = {}) {
   });
 }
 
-export function projectVisibleContext(value, { strict = false,
-  path = 'visible_context' } = {}) {
-  if (!plain(value)) return undefined;
-  if (strict) {
-    assertAllowedKeys(value, VISIBLE_CONTEXT_KEYS, path, invalidCode());
-  }
-  return compact({
-    version: finite(value.version), schema: text(value.schema),
-    visible_scene: text(value.visible_scene),
-    visible_changes: textArray(value.visible_changes, { strict,
-      path: `${path}.visible_changes` }),
-    sensory_details: textArray(value.sensory_details, { strict,
-      path: `${path}.sensory_details` }),
-    visible_npc: projectVisibleRefs(value.visible_npc, strict,
-      `${path}.visible_npc`),
-    visible_objects: projectVisibleRefs(value.visible_objects, strict,
-      `${path}.visible_objects`),
-    known_context: textArray(value.known_context, { strict,
-      path: `${path}.known_context` }),
-    uncertainties: textArray(value.uncertainties, { strict,
-      path: `${path}.uncertainties` })
-  });
-}
-
 function admittedScenes(state) {
   const knownRoutes = new Set((state.route_knowledge ?? []).map((record) =>
     typeof record === 'string' ? record : record?.route_ref ?? record?.route_id)
     .filter(Boolean));
-  const firstEntryScene =
-    state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared'
-      ? state.first_entry_preparation.scene : null;
+  // A persisted party snapshot is already the commit boundary. New-game route
+  // normalization intentionally strips the transient preparation status.
+  const firstEntryScene = state.first_entry_preparation?.spatial_v3?.target
+    == null ? null : state.first_entry_preparation.scene;
   const unique = new Map();
   [...(state.prepared_scenes ?? []), firstEntryScene].forEach((scene) => {
     const locationRef = text(scene?.location_profile_ref);
@@ -215,36 +190,6 @@ function admittedScenes(state) {
     unique.set(locationRef, { locationRef, nodeId, anchorId });
   });
   return [...unique.values()];
-}
-
-function projectVisibleRefs(records, strict, path) {
-  if (!Array.isArray(records)) return undefined;
-  return records.map((record) => {
-    if (typeof record === 'string') return record;
-    if (!plain(record)) {
-      if (strict) throw projectionError(invalidCode(), `${path} is invalid.`);
-      return undefined;
-    }
-    const allowed = new Set([
-      'entity_ref', 'display_label', 'recognition', 'visible_status'
-    ]);
-    if (strict) assertAllowedKeys(record, allowed, `${path}[]`, invalidCode());
-    return compact({
-      entity_ref: projectEntityRef(record.entity_ref, strict, path),
-      display_label: text(record.display_label),
-      recognition: text(record.recognition),
-      visible_status: text(record.visible_status)
-    });
-  }).filter(Boolean);
-}
-
-function projectEntityRef(value, strict, path) {
-  if (!plain(value)) return undefined;
-  const allowed = new Set(['entity_kind', 'entity_id']);
-  if (strict) assertAllowedKeys(value, allowed, `${path}.entity_ref`, invalidCode());
-  return compact({
-    entity_kind: text(value.entity_kind), entity_id: text(value.entity_id)
-  });
 }
 
 function recordIsClosed(record, includeAccess = false) {

@@ -1,6 +1,8 @@
 import { deterministicInstanceId } from './core.js';
 import { failLowerDvinaTraceMaterialization as fail } from './lower-dvina-trace-contract.js';
 import { materializeS1FirstEntryPreparation } from './spatial-v3-s1-first-entry.js';
+import { materializeLowerDvinaTraceNpcSchedule, materializeNpcRelationships }
+  from './lower-dvina-trace-npc.js';
 
 export function materializeLowerDvinaTracePreparedCamp({
   input,
@@ -54,15 +56,8 @@ export function materializeLowerDvinaTracePreparedCamp({
     }
   };
   const npcs = bundle.materialization_bindings.initial_participant_placements
-    .map((placement, ordinal) => materializeNpc({
-      input,
-      bundle,
-      runId,
-      participantSelections,
-      placement,
-      ordinal,
-      anchorId
-    }));
+    .map((placement, ordinal) => materializeNpc({ input, bundle, runId,
+      participantSelections, placement, ordinal, anchorId, nodeId }));
   if (new Set(npcs.map((value) => value.instance_id)).size !== npcs.length
     || npcs.length > scene.anchor.npc_capacity) {
     fail(
@@ -70,7 +65,8 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Prepared camp NPC identities or capacity are invalid.'
     );
   }
-  if (input.scenario_definition_revision < 24) return { scene, npcs };
+  if (input.scenario_definition_revision < 24
+      || input.scenario_definition_revision >= 26) return { scene, npcs };
   const firstEntry = materializeS1FirstEntryPreparation({
     party_id: input.party_id,
     binding: bundle.materialization_bindings.first_entry_preparation,
@@ -87,6 +83,40 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Approved first-entry S1 topology is incomplete.');
   }
   return { scene, npcs, first_entry_preparation: firstEntry.preparation };
+}
+
+export function materializeLowerDvinaTraceFirstEntryPreparationMembers({ input,
+  bundle, camp, shed, locationSelections }) {
+  if (input.scenario_definition_revision < 26) return null;
+  const members = bundle.materialization_bindings.first_entry_preparation?.members;
+  if (!Array.isArray(members) || members.length !== 2
+      || members.some(({ ordinal }, index) => ordinal !== index)) {
+    fail('TRACE_FIRST_ENTRY_MEMBER_BINDING_INVALID',
+      'Revision 26 requires exactly camp and drying-shed first-entry members.');
+  }
+  const scenes = [camp, shed];
+  const preparations = members.map((member, ordinal) => {
+    const prepared = scenes[ordinal];
+    const source = member.source_binding
+      ?? bundle.materialization_bindings.start_spatial_binding;
+    const sourceG4 = ordinal === 0
+      ? locationSelections.find(({ slot_key: key }) => key === source.location_profile_ref)
+        ?.selected?.g4_node_ref?.id
+      : camp.scene.node.parent_g4_id;
+    const materialized = materializeS1FirstEntryPreparation({
+      party_id: input.party_id,
+      binding: member.binding,
+      start_binding: source,
+      source_g4_id: sourceG4,
+      scene: prepared.scene,
+      npcs: prepared.npcs,
+      world_base_reference_snapshot: input.world_base_reference_snapshot
+    });
+    if (!materialized.ok) fail('TRACE_FIRST_ENTRY_S1_TOPOLOGY_INVALID',
+      'Approved first-entry S1 topology is incomplete.');
+    return { ordinal, ...materialized.preparation };
+  });
+  return { ...preparations[0], members: preparations };
 }
 
 export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {
@@ -111,7 +141,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     node: { instance_id: nodeId, parent_g4_id: location.selected.g4_node_ref.id, template_id: spatial.node_template_ref, slot_key: spatial.node_slot_ref, state: { location_profile_ref: location.location.location_profile_id, prepared_for_first_entry: true } },
     anchor: { instance_id: anchorId, node_id: nodeId, template_id: spatial.anchor_template.template_id, slot_key: spatial.anchor_template.slot_key, npc_capacity: spatial.anchor_template.npc_capacity, item_capacity: spatial.anchor_template.item_capacity, container_capacity: spatial.anchor_template.container_capacity, state: structuredClone(spatial.anchor_template.state) }
   };
-  const npcs = binding.initial_participant_placements.map((placement, ordinal) => materializeNpc({ input, bundle, runId, participantSelections, placement, ordinal, anchorId }));
+  const npcs = binding.initial_participant_placements.map((placement, ordinal) => materializeNpc({ input, bundle, runId, participantSelections, placement, ordinal, anchorId, nodeId }));
   const bySlot = new Map(npcs.map((npc) => [npc.participant_slot_ref, npc]));
   const onisim = bySlot.get('onisim_boatman');
   const ratsha = bySlot.get('ratsha_storehouse_helper');
@@ -140,7 +170,8 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(input.scenario_definition_revision)) {
+  if (input.scenario_definition_revision >= 12
+      && input.scenario_definition_revision <= 32) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -196,7 +227,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const placement = binding?.npc_placement;
   const bag = binding?.container_placement;
   const weapon = binding?.weapon_placement ?? null;
-  const weaponRequired = [16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  const weaponRequired = [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     .includes(input.scenario_definition_revision);
   const location = locationSelections.find(
     ({ slot_key: key }) => key === spatial?.location_profile_ref
@@ -288,7 +319,8 @@ export function materializeLowerDvinaTracePreparedStorehouse({
     participantSelections,
     placement,
     ordinal: 0,
-    anchorId
+    anchorId,
+    nodeId
   });
   const roadBagResource = requiredById(
     bundle.npc_decision_schedule_policies.schedule_resource_bindings,
@@ -338,9 +370,22 @@ export function materializeLowerDvinaTracePreparedStorehouse({
       content_materialization: 'deferred_until_exact_inventory_profiles_are_approved'
     }
   };
+  if (input.scenario_definition_revision >= 30) {
+    const profile = binding.packet_placement?.parent_container_inventory_profile;
+    if (profile?.id !== containerTemplate.base_catalog_ref?.inventory_profile_id
+        || profile.container_template_id !== containerTemplate.container_template_id
+        || profile.mass_grams !== containerTemplate.mass_grams
+        || profile.carry_form !== 'regular' || profile.external_hand_cost !== 1
+        || profile.inventory_role !== 'primary_container' || profile.status !== 'approved') {
+      fail('TRACE_REVISION_30_ROAD_BAG_PROFILE_INVALID',
+        'Revision 30 or later requires the exact approved road-bag inventory profile.');
+    }
+    container.state.inventory_profile_snapshot = structuredClone(profile);
+  }
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
-  const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25].includes(input.scenario_definition_revision)
+  const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    30, 31, 32].includes(input.scenario_definition_revision)
     ? materializeHiddenPacket({ input, bundle, runId, container, npc,
       roadBagResource })
     : null;
@@ -438,29 +483,16 @@ function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {
     inventory_profile_snapshot: structuredClone(profile) } };
 }
 
-function materializeNpc({
-  input,
-  bundle,
-  runId,
-  participantSelections,
-  placement,
-  ordinal,
-  anchorId
-}) {
+function materializeNpc({ input, bundle, runId, participantSelections,
+  placement, ordinal, anchorId, nodeId }) {
   const selection = participantSelections.find(
     (value) => value.slot_key === placement.participant_slot_ref
   );
-  if (!selection || selection.materialization_rule !== placement.materialization_depth) {
-    fail(
-      'TRACE_PHASE_3_PARTICIPANT_SELECTION_MISSING',
-      `The sealed participant ${placement.participant_slot_ref} is missing or incompatible.`
-    );
-  }
-  const profile = requiredById(
-    bundle.participant_profile_set.profiles,
-    'profile_id',
-    selection.selected_profile.profile_id
-  );
+  if (!selection || selection.materialization_rule !== placement.materialization_depth)
+    fail('TRACE_PHASE_3_PARTICIPANT_SELECTION_MISSING',
+      `The sealed participant ${placement.participant_slot_ref} is missing or incompatible.`);
+  const profile = requiredById(bundle.participant_profile_set.profiles,
+    'profile_id', selection.selected_profile.profile_id);
   if (profile.revision !== selection.selected_profile.revision
     || profile.knowledge_scope_ref == null
     || !Object.hasOwn(profile, 'canonical_name')
@@ -468,16 +500,16 @@ function materializeNpc({
     || typeof profile.occupation_id !== 'string'
     || typeof profile.scenario_function !== 'string'
     || typeof profile.causal_basis !== 'string') {
-    fail(
-      'TRACE_PHASE_3_PARTICIPANT_PROFILE_INVALID',
-      `The participant profile for ${placement.participant_slot_ref} is not exact.`
-    );
+    fail('TRACE_PHASE_3_PARTICIPANT_PROFILE_INVALID',
+      `The participant profile for ${placement.participant_slot_ref} is not exact.`);
   }
   const knowledgeScope = requiredById(
-    bundle.participant_profile_set.knowledge_scope_profiles,
-    'profile_id',
-    profile.knowledge_scope_ref
-  );
+    bundle.participant_profile_set.knowledge_scope_profiles, 'profile_id',
+    profile.knowledge_scope_ref);
+  const schedule = materializeLowerDvinaTraceNpcSchedule({
+    definitionRevision: input.scenario_definition_revision, profile,
+    scheduleProfile: bundle.initial_npc_schedule_profile, nodeId
+  });
   return {
     instance_id: deterministicInstanceId(
       input.party_id,
@@ -509,12 +541,16 @@ function materializeNpc({
     },
     machine_state: {
       status: 'active',
-      materialization_depth: placement.materialization_depth
+      materialization_depth: placement.materialization_depth,
+      ...schedule.machineState
     },
     semantic_state: {
       scenario_function: profile.scenario_function,
       causal_basis: profile.causal_basis
     },
+    relationships: materializeNpcRelationships(bundle.participant_profile_set,
+      placement.participant_slot_ref),
+    ...(schedule.records == null ? {} : { schedule_records: schedule.records }),
     knowledge_profile_snapshot: structuredClone(knowledgeScope),
     profile_candidate_set_digest: selection.candidate_set_digest,
     profile_record_digest: selection.record_digest
@@ -523,8 +559,7 @@ function materializeNpc({
 
 function requiredById(values, key, id) {
   const matches = values.filter((value) => value?.[key] === id);
-  if (matches.length !== 1) {
-    fail('TRACE_SCENARIO_REFERENCE_INVALID', `Expected exactly one ${key}=${id}.`);
-  }
+  if (matches.length !== 1) fail('TRACE_SCENARIO_REFERENCE_INVALID',
+    `Expected exactly one ${key}=${id}.`);
   return matches[0];
 }

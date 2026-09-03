@@ -27,14 +27,11 @@ const APPLY_RESULT_KEYS = [
   'session_status',
   'handoff'
 ];
-
 function fail(code, message, details = {}) {
   throw turnFailure(code, message, details);
 }
 
-function causeMessage(error) {
-  return error instanceof Error ? error.message : String(error);
-}
+function causeMessage(error) { return error instanceof Error ? error.message : String(error); }
 
 function plainRecord(value) {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -377,7 +374,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       semanticModel: ports.npcSemanticModel,
       persistedTrace: decision.persisted_trace,
       revalidateStateVersion: ports.revalidateNpcStateVersion,
-      validatePlan: ports.validateNpcPlan ?? null
+      validatePlan: ports.validateNpcPlan ?? null,
+      validateFreshPlan: ports.validateFreshNpcPlan ?? null
     });
     const npcCheck = await resolveNpcContributionSocialCheck({
       plan: proposal.plan,

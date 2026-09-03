@@ -120,7 +120,9 @@ export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, bou
       active_conditions: npc.check_body_state.active_conditions
     },
     mood_snapshot: npc.mood ?? null,
-    relationship_snapshots: npc.relationships ?? [],
+    relationship_snapshots: npc.relationships
+      ?? npc.semantic_state?.relationships
+      ?? [],
     resource_snapshots: [
       ...(state.containers ?? []),
       ...(state.items ?? [])

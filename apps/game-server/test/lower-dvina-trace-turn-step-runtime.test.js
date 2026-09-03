@@ -187,7 +187,7 @@ test('current production revision keeps exact fast path and sends free input to 
       turnStepModel: createLowerDvinaTraceTurnStepModel({
         roleRunner: { async run(call) {
           plannerCall = call;
-          return { output: discoveryPlan(JSON.parse(call.messages[1].content)) };
+          return { output: discoveryChoice() };
         } }
       })
     });
@@ -426,6 +426,10 @@ function stateWithCommittedBlueWool(source) {
 }
 
 function discoveryPlan(request) {
+  const operation = request.available_domain_operations.find(
+    ({ op, discovery_kind: kind }) =>
+      op === 'request_discovery' && kind === 'inspect');
+  assert.ok(operation);
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
@@ -440,13 +444,25 @@ function discoveryPlan(request) {
     resolution: 'domain_request',
     goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [{
-      op: 'request_discovery',
-      actor_ref: request.actor.actor_id,
-      discovery_kind: 'inspect',
-      target_refs: [request.player_safe_state.position.location_ref],
-      query: 'какие следы видны на месте крушения'
-    }],
+    operations: [structuredClone(operation)],
+    check: null,
+    continuation: null,
+    clarification: null,
+    reason_code: 'inspect_visible_wreck',
+    reason: 'Осмотр принадлежит существующему discovery owner.'
+  };
+}
+
+function discoveryChoice() {
+  return {
+    interpretation: {
+      player_goal: 'понять, что случилось на месте крушения',
+      grounded_attempt: 'осмотреть видимое место крушения',
+      adaptation: 'literal'
+    },
+    resolution: 'domain_request',
+    operation_family: 'request_discovery',
+    operation_choice: 'domain_operation_1_request_discovery_inspect',
     check: null,
     continuation: null,
     clarification: null,

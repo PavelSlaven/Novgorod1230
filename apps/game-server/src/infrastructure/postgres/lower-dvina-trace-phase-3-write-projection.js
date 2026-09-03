@@ -5,6 +5,7 @@ import { appendConversation, appendKnowledge } from './lower-dvina-trace-phase-3
 import {
   appendPhase3MovementTraversal
 } from './lower-dvina-trace-phase-3-movement-writes.js';
+import { appendWorldRouteJourney } from './lower-dvina-trace-world-route-journey.js';
 import { routeMovement } from './lower-dvina-trace-phase-3-state.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 import {
@@ -50,7 +51,8 @@ export function phase3Writes(input) {
       updated_change_set_id: changeSetId
     })
   ];
-  if (routeMovement(factual) && operationKind !== 'first_entry') {
+  if (routeMovement(factual) && operationKind !== 'first_entry'
+      && factual.consequence.movement.destination.scene_position_id == null) {
     updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: next.position.g4_id,
@@ -64,7 +66,12 @@ export function phase3Writes(input) {
     operation_kind: operationKind ?? 'trace_phase_3_turn',
     idempotency_record_id: idemId
   })];
+  const deletes = [];
   if (routeMovement(factual)) {
+    if (operationKind !== 'first_entry') {
+      appendWorldRouteJourney({ writes: { inserts, updates, deletes }, partyId,
+        state, movement: factual.consequence.movement, changeSetId });
+    }
     appendPhase3MovementTraversal({
       inserts, updates, appends, state, factual, partyId, turnNumber,
       changeSetId, idemId, phase3Contracts
@@ -169,7 +176,7 @@ export function phase3Writes(input) {
       });
     }
   }
-  return { inserts, updates, appends, deletes: [] };
+  return { inserts, updates, appends, deletes };
 }
 
 function appendPhase3SemanticConsequences({

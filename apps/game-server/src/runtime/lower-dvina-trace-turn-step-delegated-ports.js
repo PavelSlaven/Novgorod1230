@@ -216,6 +216,7 @@ export async function applySemanticActivity(execution, state,
           kind: 'semantic_activity',
           profile_ref: resolved.profile_ref,
           duration_class: activity.duration_class,
+          duration_minutes: duration,
           effort: activity.effort
         }
       },

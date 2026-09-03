@@ -23,8 +23,9 @@ import { assertSupportingOperationPerceptions } from
   './lower-dvina-trace-semantic-conversation-read-supporting-perceptions.js';
 
 export function isLowerDvinaTraceSemanticRevision(payload) {
-  return [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25].includes(Number(payload?.materialization_trace?.seed_context
-    ?.scenario_definition_revision));
+  const revision = Number(payload?.materialization_trace?.seed_context
+    ?.scenario_definition_revision);
+  return Number.isSafeInteger(revision) && revision >= 14;
 }
 
 export async function assertLowerDvinaTraceSemanticConversationRows(

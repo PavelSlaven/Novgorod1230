@@ -4,7 +4,7 @@ import { autonomousTurnRoleDefaults } from
   './autonomous-role-defaults.js';
 import { CombatTurnRuntimeRoles, combatTurnRoleDefaults } from
   './combat-role-defaults.js';
-import { applyProviderOverrides, normalizeBaseUrl, normalizeRequestUrl, resolveRuntimeProviderOverride } from
+import { applyProviderOverrides, normalizeBaseUrl, normalizeExecutionLimits, normalizeRequestUrl, resolveRuntimeProviderOverride } from
   './provider-request.js';
 
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
@@ -32,12 +32,17 @@ export const TurnRuntimeRoles = Object.freeze({
   WORLD_PROCESS_STEP: 'world_process_step',
   ORDINARY_MATERIALIZATION: 'ordinary_materialization',
   SPATIAL_SEMANTIC_DESCRIPTOR: 'spatial_semantic_descriptor',
+  NPC_ORDINARY_SEMANTIC_REMAINDER: 'npc_ordinary_semantic_remainder',
+  NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR:
+    'npc_ordinary_semantic_remainder_auditor',
   PLAYER_CONVERSATION_INTERPRETER: 'player_conversation_interpreter',
   PLAYER_CONVERSATION_INTERPRETER_REPAIR:
     'player_conversation_interpreter_format_repair',
   NPC_CONVERSATION_RESPONDER: 'npc_conversation_responder',
   NPC_CONVERSATION_RESPONDER_REPAIR:
     'npc_conversation_responder_format_repair',
+  NPC_CONVERSATION_GROUNDING_AUDITOR:
+    'npc_conversation_grounding_auditor',
   NPC_AUTONOMOUS_DECIDER: 'npc_autonomous_decider',
   NPC_AUTONOMOUS_DECIDER_REPAIR:
     'npc_autonomous_decider_format_repair',
@@ -51,7 +56,7 @@ export const PortraitLabRoles = Object.freeze({
 const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
   [PortraitLabRoles.SPEC_NORMALIZER]: {
     envPrefix: 'PORTRAIT_SPEC_NORMALIZER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1600, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'portrait_spec_v1', parseJson: true, targetInputTokens: 4000, comfortableInputTokens: 8000,
     hardInputLimitTokens: 16000, reserveOutputTokens: 1600, reserveRepairTokens: 0
   }
@@ -60,7 +65,7 @@ const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
 const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.INTENT_ROUTER]: {
     envPrefix: 'TURN_INTENT_ROUTER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 2500, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
+    responseFormat: 'json_object', maxTokens: 20_000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
     targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
@@ -69,7 +74,7 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     thinking: 'disabled',
     reasoningEffort: null,
     responseFormat: 'json_object',
-    maxTokens: 8000,
+    maxTokens: 20_000,
     outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null,
     parseJson: true,
@@ -81,50 +86,70 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR]: {
     envPrefix: 'TURN_STEP_PLANNER_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 4000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: null, parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_REPAIR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_AUDITOR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 800, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.GAMEPLAY_NARRATOR_SEMANTIC_REPAIR]: {
     envPrefix: 'TURN_GAMEPLAY_NARRATOR_SEMANTIC_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 1200, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
     hardInputLimitTokens: 60000, reserveOutputTokens: 1200, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
     envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 6000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema: 'ordinary_materialization_plan_v1', parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 6000, reserveRepairTokens: 6000
   },
   [TurnRuntimeRoles.SPATIAL_SEMANTIC_DESCRIPTOR]: {
     envPrefix: 'TURN_SPATIAL_SEMANTIC_DESCRIPTOR',model:'deepseek-v4-flash',thinking:'disabled',reasoningEffort:null,
-    responseFormat:'json_object',maxTokens:400,temperature:0,topP:1,outputContractMode:OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    responseFormat:'json_object',maxTokens:20_000,temperature:0,topP:1,outputContractMode:OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
     expectedSchema:'rus.s1_spatial_semantic_proposal.v1',parseJson:true,targetInputTokens:4000,comfortableInputTokens:8000,
     hardInputLimitTokens: 30000, reserveOutputTokens: 400, reserveRepairTokens: 0
+  },
+  [TurnRuntimeRoles.NPC_ORDINARY_SEMANTIC_REMAINDER]: {
+    envPrefix: 'TURN_NPC_ORDINARY_SEMANTIC_REMAINDER',
+    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'npc_ordinary_semantic_remainder_proposal_v1',
+    parseJson: true, targetInputTokens: 4000, comfortableInputTokens: 8000,
+    hardInputLimitTokens: 30000, reserveOutputTokens: 1000,
+    reserveRepairTokens: 0
+  },
+  [TurnRuntimeRoles.NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR]: {
+    envPrefix: 'TURN_NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR',
+    model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'npc_ordinary_semantic_remainder_audit_v1',
+    parseJson: true, targetInputTokens: 5000, comfortableInputTokens: 10000,
+    hardInputLimitTokens: 30000, reserveOutputTokens: 600,
+    reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.WORLD_PROCESS_STEP]: {
     envPrefix: 'TURN_WORLD_PROCESS_STEP', model: 'deepseek-v4-flash',
     thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT,
     expectedSchema: null, parseJson: true,
     targetInputTokens: 6000, comfortableInputTokens: 12000,
@@ -192,10 +217,12 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     tier_id: tierId ?? null,
     provider: provider?.provider ?? (shared.enabled ? shared.provider : 'deepseek'),
     compatibility: provider?.compatibility ?? 'deepseek',
-    apiKey: provider?.apiKey ?? (shared.enabled ? shared.apiKey : null),
+    apiKey: provider ? provider.apiKey : (shared.enabled ? shared.apiKey : null),
     baseUrl: provider?.baseUrl ?? (shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
     requestUrl: provider?.requestUrl ?? normalizeRequestUrl(shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
-    requestTimeoutMs: provider?.requestTimeoutMs ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`]) ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? (scopeKey !== LLM_SCOPES.TURN_RUNTIME ? 120000 : String(roleId).includes('repair') ? 6000 : 10000),
+    requestTimeoutMs: provider?.requestTimeoutMs
+      ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`])
+      ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? 120_000,
     api: scopeDefaults.api,
     model: provider?.model ?? readRoleModel(defaults, env, shared.model),
     thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,
@@ -221,6 +248,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
 
   applyProviderOverrides(config, overrides);
   applyRuntimeSafetyNormalization(config);
+  normalizeExecutionLimits(config);
 
   if (!config.enabled) {
     return {

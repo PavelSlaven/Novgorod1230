@@ -79,6 +79,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
       clock_after: advanced.result.clock_after,
       exact_elapsed: exactElapsed,
       nearest_boundary: null,
+      temporal_results: [advanced.result],
       local_fire_atomic_write_plans:plans,
       boundary_trace: {
         owner: '@rus/time-events-history/temporal-boundaries',

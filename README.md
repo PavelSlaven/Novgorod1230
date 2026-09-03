@@ -24,8 +24,8 @@
 ## Текущий runtime
 
 Локальный запуск использует production release
-`spatial-v3-production-v13` с `builtin:production-spatial-v3` и
-`builtin:spatial-v3-production-v13`. Spatial v3 и Temporal World v4 —
+`spatial-v3-production-v14` с `builtin:production-spatial-v3` и
+`builtin:spatial-v3-production-v14`. Spatial v3 и Temporal World v4 —
 единственные владельцы authoritative reads/writes; runtime fallback запрещён.
 `versioned production activation cutover` завершён на stage `13`.
 

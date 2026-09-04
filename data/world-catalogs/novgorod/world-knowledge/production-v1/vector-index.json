@@ -1802,6 +1802,76 @@
       "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Под 1223 годом летопись сообщает о походе Ярослава к Колываню со всей областью, разорении Чудской земли и невзятии города. Это один эпизод, не политика или текущая экспедиция. посадник делегация полк Кесь Колывань Ярослав поход"
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-bare-iron-rust-humidity-salts:en",
+      "target_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Iron corrosion and protective film Universal material relations, not historical inventory. Bare iron rusts faster in humid air and faster still beneath a thin water film; soluble salts accelerate rusting. This is a universal material relation, not a historical care custom or a scene item. iron rust oil humidity salt"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-bare-iron-rust-humidity-salts:ru",
+      "target_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Коррозия и защитная плёнка железа Универсальные отношения материала, не исторический инвентарь. Оголённое железо ржавеет быстрее во влажном воздухе, ещё быстрее под тонкой водной плёнкой; растворимые соли ускоряют ржавление. Это универсальная связь материала, не исторический обычай ухода или предмет в сцене. железо ржавчина масло влага соль"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-five-novgorod-ends-own-assemblies-territory:en",
+      "target_ref": "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Assembly, territory, and court-demand records Separate bounded historical records, not an operative system. Britannica describes five Novgorod ends, each with its own assembly and a share of territorial possessions. This is not a 1230 boundary, active assembly, competence, or property title. veche ends court assembly territory"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-five-novgorod-ends-own-assemblies-territory:ru",
+      "target_ref": "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Собрание, территория и судебное требование Разные ограниченные исторические записи, не действующая система. Britannica описывает пять новгородских концов, каждый со своим собранием и долей территориальных владений. Это не границы 1230 года, действующее собрание, полномочие или титул собственности. вече концы суд собрание территория"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector:en",
+      "target_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Otrok documentary role context A narrow late-twelfth-century word use. In a late-twelfth-century Novgorod documentary context, otrok can denote an administrative debt collector rather than a child. It is a narrow record meaning, not a general hierarchy, office, or NPC role. otrok debt collector"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector:ru",
+      "target_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документальный контекст отрока Узкое значение слова в позднем XII веке. В позднем XII-вековом новгородском документальном контексте «отрок» может обозначать административное лицо, сборщика долгов, а не ребёнка. Это узкое значение записи, не общая иерархия, должность или роль NPC. отрок сборщик долгов"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting:en",
+      "target_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Iron corrosion and protective film Universal material relations, not historical inventory. A thin oil film can temporarily reduce iron rusting. This is a universal material relation, not evidence that a medieval weapon was oiled, maintained, or present. iron rust oil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting:ru",
+      "target_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Коррозия и защитная плёнка железа Универсальные отношения материала, не исторический инвентарь. Тонкая масляная плёнка может временно уменьшать ржавление железа. Это универсальная связь материала, не доказательство смазки, ухода или наличия средневекового оружия. железо ржавчина масло"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-veche-elected-prince-chiefly-military-commander:en",
+      "target_ref": "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Assembly, territory, and court-demand records Separate bounded historical records, not an operative system. Britannica describes the post-1019 veche as electing the prince chiefly as military commander. This is broad secondary history, not exact 1230 procedure, a current prince, election, or command. veche ends court prince military commander"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v9-veche-elected-prince-chiefly-military-commander:ru",
+      "target_ref": "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Собрание, территория и судебное требование Разные ограниченные исторические записи, не действующая система. Britannica описывает вече после 1019 года как избирающее князя главным образом военным предводителем. Это широкое вторичное историческое описание, не точный порядок 1230 года, текущий князь, выбор или командование. вече концы суд князь военный предводитель"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
       "target_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
       "domain": "biology_physiology",
@@ -22186,6 +22256,20 @@
       "retrieval_text": "Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями Выталкивающая сила, гидростатическое давление и фазовый переход воды являются универсальными физическими связями; конкретный исход зависит от состояния, геометрии и точных механик."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:candidate-v9-iron-care-relations:en",
+      "target_ref": "wk:physics_material_science:candidate-v9-iron-care-relations",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Iron corrosion and protective film Universal material relations, not historical inventory. iron rust oil"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:candidate-v9-iron-care-relations:ru",
+      "target_ref": "wk:physics_material_science:candidate-v9-iron-care-relations",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Коррозия и защитная плёнка железа Универсальные отношения материала, не исторический инвентарь. железо ржавчина масло"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:capillary-action:en",
       "target_ref": "wk:physics_material_science:capillary-action",
       "domain": "physics_material_science",
@@ -24228,6 +24312,34 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Письменное упражнение и запрос о краже Отдельные каталоговые записи, не школа или судебный порядок. азбука посадник кража"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v9-assembly-territory-relations:en",
+      "target_ref": "wk:social_law_economy:candidate-v9-assembly-territory-relations",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Assembly, territory, and court-demand records Separate bounded historical records, not an operative system. veche ends court"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v9-assembly-territory-relations:ru",
+      "target_ref": "wk:social_law_economy:candidate-v9-assembly-territory-relations",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Собрание, территория и судебное требование Разные ограниченные исторические записи, не действующая система. вече концы суд"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v9-otrok-role-record:en",
+      "target_ref": "wk:social_law_economy:candidate-v9-otrok-role-record",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Otrok documentary role context A narrow late-twelfth-century word use. otrok debt collector"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v9-otrok-role-record:ru",
+      "target_ref": "wk:social_law_economy:candidate-v9-otrok-role-record",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документальный контекст отрока Узкое значение слова в позднем XII веке. отрок сборщик долгов"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-wife-authored-cow-redemption-letter:en",

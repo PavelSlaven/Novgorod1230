@@ -1240,6 +1240,14 @@
       "location_applicability": "Record-specific Novgorod chronicle, letter and museum contexts; no claim supplies a present 1230 scene, institution, possession, skill or outcome.",
       "applicability": {"resource":"none","material":"bounded record or collection context","process":"dated event or document interpretation","npc":"named people only within the source record"},
       "coverage": "twenty-one independently approved bounded historical premises"
+    },
+    {
+      "id": "macro-historical-p1-closeout-v9",
+      "source_path": "macro-historical-p1-closeout-v9.json",
+      "domains": ["physics_material_science", "social_law_economy"],
+      "location_applicability": "Universal iron-response relations and bounded Novgorod documentary or secondary-history context; none supplies a current scene, office, item, or outcome.",
+      "applicability": {"resource":"none","material":"conditional iron or record context","process":"bounded material response or historical interpretation","npc":"no current role or authority"},
+      "coverage": "five independently approved bounded closeout premises"
     }
   ],
   "families": [
@@ -3007,7 +3015,9 @@
         "claim:population-joining-metal-cold-work",
         "claim:population-joining-metal-anneal",
         "claim:population-joining-steel-quench",
-        "claim:population-joining-steel-temper"
+        "claim:population-joining-steel-temper",
+        "claim:candidate-v9-bare-iron-rust-humidity-salts",
+        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
       ]
     },
     {
@@ -4319,7 +4329,7 @@
       "applicability": {"resource":"none","material":"record context only","process":"bounded event or document interpretation","npc":"named people only within the source record"},
       "coverage": "fifteen independently verified dated historical premises",
       "evidence_boundary": "No present force, institution, authority, policy, marriage rule, status, school, crime, guilt, sanction, actor, skill, possession, or outcome follows.",
-      "claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin", "claim:candidate-v7-gramota9-reports-another-wife", "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection", "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"]
+      "claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin", "claim:candidate-v7-gramota9-reports-another-wife", "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection", "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:candidate-v7-museum-onfim-learning-writing-reading-counting", "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"]
     },
     {
       "id": "material-v7-dated-military-and-recreation-records",
@@ -5230,9 +5240,9 @@
       "applicability": {"resource":"weapon and armour materials","material":"arms protective equipment and fittings","process":"use damage upkeep and repair context","npc":"combatant guard craft and owner roles"},
       "consumer_refs": ["potential:combat_semantics", "potential:equipment_materialization"],
       "coverage": "partial",
-      "reason": "The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour provide bounded military-material contexts. The residual is bounded P2: a present weapon, armour set, ownership, wear, repair or skill needs a concrete scene premise; exact combat and damage stay code-owned.",
-      "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence", "material-dated-novgorod-helmet-comparator"],
-      "supporting_claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find", "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour"]
+      "reason": "The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. The residual is bounded P2: a present weapon, armour set, ownership, wear, repair or skill needs a concrete scene premise; exact combat and damage stay code-owned.",
+      "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence", "material-dated-novgorod-helmet-comparator", "materials-metal-state-thermal-treatment"],
+      "supporting_claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find", "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour", "claim:candidate-v9-bare-iron-rust-humidity-salts", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"]
     },
     {
       "id": "warfare-organization-logistics-and-aftermath",
@@ -5269,9 +5279,9 @@
       "applicability": {"resource":"conditional access and obligations","material":"status-linked material context only when evidenced","process":"role expectation and social response","npc":"socially situated role without deterministic behavior"},
       "consumer_refs": ["potential:npc_interaction", "potential:work", "potential:law"],
       "coverage": "partial",
-      "reason": "Gramota 109 and the 1220 wife-and-children monastic event provide bounded gendered household/status context. The residual is bounded P2: rank, dependency, freedom, gender and age role in any interaction require a concrete historical and world-state premise, never a deterministic social system.",
-      "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines", "social-v5-dated-document-context"],
-      "supporting_claim_refs": ["claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event"]
+      "reason": "Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. The residual is bounded P2: rank, dependency, freedom, gender and age role in any interaction require a concrete historical and world-state premise, never a deterministic social system.",
+      "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines", "social-v5-dated-document-context", "social-material-v7-dated-historical-records"],
+      "supporting_claim_refs": ["claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"]
     },
     {
       "id": "pregnancy-childbirth-and-postnatal-care",
@@ -5334,9 +5344,9 @@
       "applicability": {"resource":"conditional public revenue and levies","material":"documents seals and civic spaces only when evidenced","process":"bounded institutional action","npc":"office roles and authority limits"},
       "consumer_refs": ["potential:politics", "potential:law", "potential:administration"],
       "coverage": "partial",
-      "reason": "Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant supply concrete political contexts. The residual is bounded P2: office holder, jurisdiction, competence, valid order and levy require a concrete 1230 authority/state premise; the records do not form an institution map.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space", "social-office-address-and-external-expedition-texts"],
-      "supporting_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod"]
+      "reason": "Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince and five-ends assembly context. The residual is bounded P2: office holder, jurisdiction, competence, valid order and levy require a concrete 1230 authority/state premise; the records do not form an institution map.",
+      "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space", "social-office-address-and-external-expedition-texts", "social-material-v7-dated-historical-records"],
+      "supporting_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"]
     },
     {
       "id": "diplomacy-tribute-and-external-relations",
@@ -5360,9 +5370,9 @@
       "applicability": {"resource":"disputed goods and compensation","material":"evidence and records only when present","process":"classification inquiry responsibility and sanction context","npc":"parties witnesses officials and community"},
       "consumer_refs": ["potential:law", "potential:crime", "potential:public_safety"],
       "coverage": "partial",
-      "reason": "Theft inquiry addressed to a posadnik supplements bounded obligations, accusation, compensation and court-choice fragments. The residual is bounded P2: offence classification, responsibility, jurisdiction, sanction and public response require a concrete applicable legal premise; no guilt or outcome follows from WK.",
+      "reason": "Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. The residual is bounded P2: offence classification, responsibility, jurisdiction, sanction and public response require a concrete applicable legal premise; no guilt or outcome follows from WK.",
       "supporting_family_ids": ["social-law-practice", "social-property-and-market", "social-administration", "social-dated-novgorod-human-record-comparators"],
-      "supporting_claim_refs": ["claim:candidate-gramota213-official-obligations-document", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry"]
+      "supporting_claim_refs": ["claim:candidate-gramota213-official-obligations-document", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:social-settlement-demand-reports-court-choice"]
     },
     {
       "id": "education-apprenticeship-and-skill-transmission",

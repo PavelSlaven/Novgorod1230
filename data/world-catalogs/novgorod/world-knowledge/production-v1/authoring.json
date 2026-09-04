@@ -100,6 +100,8 @@
     "macro-universal-gap-closure-v6.json",
     "verification-macro-universal-gap-closure-v6.json",
     "macro-historical-p1-closure-v7.json",
-    "verification-macro-historical-p1-closure-v7.json"
+    "verification-macro-historical-p1-closure-v7.json",
+    "macro-historical-p1-closeout-v9.json",
+    "verification-macro-historical-p1-closeout-v9.json"
   ]
 }

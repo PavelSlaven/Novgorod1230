@@ -3,7 +3,7 @@
   "status": "superseded_research_draft_not_active_cartography",
   "pack_ref": "wk-pack:novgorod-1230",
   "basis_revision": "revision:production-v1",
-  "purpose": "Superseded historical gameplay-need-first working map. Production-v1/category-cartography.json is the active 904-claim authoring inventory; this draft is retained for provenance only and is not a profile closure, materialization catalogue, claim approval, or competing authoritative map.",
+  "purpose": "Superseded historical gameplay-need-first working map. Production-v1/category-cartography.json is the sole active category map. All assessments and candidate statuses below describe the original research snapshot, not the current backlog; see audits/pr92-static-phase.md for subsequent reconciliation. This draft is not a profile closure, materialization catalogue, claim approval, or competing authoritative map.",
   "assessment_values": ["covered", "partial", "missing", "disputed", "not_applicable"],
   "method": {
     "need_source": "PR92 plan sections 7-18 and 37, expanded by open-world causal gameplay needs rather than current claim families.",

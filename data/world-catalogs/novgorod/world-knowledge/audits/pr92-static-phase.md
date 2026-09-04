@@ -1,5 +1,80 @@
 # PR92 — static coverage phase, 2026-09-04
 
+## Current static reconciliation — 945 claims
+
+This section supersedes checkpoint counts and provisional gap labels below.
+The active descriptor compiles 945 independently approved claims, 732 concepts,
+327 sources and 619 evidence records. The sole active category cartography
+classifies every claim into 128 supported families, across 15 broad need
+dimensions, with 29 explicitly bounded partial needs. All 1,497 archive files
+retain dispositions; neither counts nor dispositions prove factual completeness.
+
+The last six premises cover small-heel floating-body righting, wind-driven rain
+through openings, carbon-monoxide colour/odour limits, local source-capture
+exhaust, cold-water muscle impairment and fire-plume layer transport. Existing
+claim-level verification binds the first two to candidate `6d021ea5`, the next
+three to `65d49f08`, and corrected plume transport to `79cbbdc4`. Source reviewer
+`/root/food_source_verifier` approved each independently of its author. A vague
+FDS-manual reference was rejected; only the narrower directly supported CFAST
+transport relation was promoted. No repeated approval of unchanged claims or
+additional proof mechanism was introduced.
+
+Independent need-first reconciliation by
+`/root/static_completeness_reconciliation` found no P0 and identified three
+remaining P1 premises: CO perceptibility, local exhaust and cold-water muscle
+control. All three are now promoted. Its §37 reconciliation found the required
+physiological families represented by existing protective-reflex, respiratory,
+circulatory, thermal and orienting premises. Twelve additional physiology probes
+and three compositional probes test those existing facts without duplicating
+claims. Six probes exercise the new floating/weather/exposure facts. No previous
+query, relevance set or benchmark threshold was weakened.
+
+Residual P2 limits remain explicit: arbitrary enclosure/vessel geometry,
+cross-material storage conditions, aquatic anchoring/harvesting details,
+additional taxa, and period/place-specific historical practices. These are
+bounded support limits, not permission to invent scene facts. Current ownership,
+inventory, weather, concentration, legal authority, perception, exact mechanics
+and outcomes belong to their existing owners, not to missing universal claims.
+Static acceptance does not claim exhaustive world knowledge or gameplay saturation.
+
+The same independent reviewer completed architectural acceptance with
+`PASS_WITH_NOTES`: no P0/P1,
+one read-only factual Module and no second materializer/state owner. Using
+`codebase-design`, the existing Interface remains sufficient: compiler inputs
+hold source verification, while gameplay callers and tests cross
+`resolveWorldKnowledge`. Query planning does not manufacture evidence; missing
+support stays explicit. Materialization and actor-safe projection retain their
+owners. Gameplay Gap Auditor stays isolated development tooling under the
+future-phase contract, without live activation.
+
+Its P2 note is a pre-existing release-status discrepancy: WK/index prose calls
+v15 active while `production-spatial-v3-release.js` declares
+`validated_candidate_not_active` / `production_activation: false`. The active
+binding/code governs activation; this static report does not activate v15.
+Reconciliation belongs to the separate spatial release/activation owner.
+
+Aligned snapshot checks PASS: strict compilation, cartography, 163 focused
+tests, `docs:check`, `knowledge:controls` and `git diff --check`. The pinned CPU
+encoder rebuilt 3,354 × 1,024 float32 entries (13,737,984 bytes; encoding
+266,622 ms). A premature test run during vector rebuilding correctly rejected
+the old 939-claim vector metadata; all 163 tests passed after alignment.
+
+Both retrieval benchmarks pass unchanged gates on this same 945-claim bundle.
+The 69-query coverage set achieves hybrid Recall@10 0.99275, Recall@20 1.0,
+noise 0.70487, applicability precision 1.0 and hard-constraint recall 1.0;
+mean query encoding is 71.93 ms and vector scan 0.951 ms. The 133-query baseline
+achieves hybrid Recall@10/20 0.96992, noise 0.57632 and both applicability and
+hard-constraint recall 1.0. The mixed fire/water probe still places the smoke
+optical premise at rank 12 (rank 11 at the prior checkpoint): an explicit
+top-ten ranking limit, not a missing
+fact or lexical-admission defect. No live campaign was run.
+
+Static result: `PASS_WITH_P2` for the current game-focused scope and recorded
+limits, not exhaustive world knowledge. Full GitHub CI on the exact published
+HEAD remains the final merge gate; a previous green commit does not certify
+this tree. Check the PR's commit-bound CI result rather than the historical
+checkpoint results below. No merge or deployment is performed by this task.
+
 ## Governing scope clarification
 
 The user's September 4 phase clarification supersedes the prior task's live

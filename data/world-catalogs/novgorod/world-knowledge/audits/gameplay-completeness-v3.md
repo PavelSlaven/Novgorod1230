@@ -1,5 +1,11 @@
 # Independent gameplay factual-completeness audit v3
 
+> Historical audit of the 906-claim snapshot. Current static work and scope
+> are recorded in `pr92-static-phase.md`; the active need map is
+> `production-v1/category-cartography.json`. Live gameplay saturation is a
+> separate future phase, not a blocker for the current static phase. The
+> original verdict below does not certify subsequent corpus revisions.
+
 ## Verdict
 
 **PASS** for static factual classification in active

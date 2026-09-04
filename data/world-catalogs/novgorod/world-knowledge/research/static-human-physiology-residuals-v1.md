@@ -1,9 +1,12 @@
 # Static human physiology residuals v1 — research only
 
-**Status:** potential open-RPG factual premises. Not production authoring, medical
-guidance, actor diagnosis, body-state assertion, forced action, threshold, treatment,
-or runtime-owner change. Existing claims below are from current 912-claim production
-pack. Proposed relations need independent verification before any controlled authoring.
+**Status:** original research snapshot against the 912-claim pack. The six
+proposals below have since been independently approved and promoted in
+`production-v1/static-human-physiology-v1.json`; see
+`verification/static-human-physiology-v1.md`. The table's partial/missing labels
+describe that earlier discovery, not current production gaps. These premises
+are not medical guidance, actor diagnosis, body-state assertions, forced actions,
+thresholds, treatment or runtime-owner changes.
 
 ## Reconciliation against plan §§11/37
 
@@ -66,4 +69,12 @@ pack. Proposed relations need independent verification before any controlled aut
 - **Anchor:** Bradley, *Natural selective attention: Orienting and emotion*, **Novelty and Significance — Stimulus Novelty**. [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC3645482/)
 - **Limit:** no actual notice, direction of gaze/body, recognition, emotion, threat, decision, action or perception of a concrete actor.
 
-Candidate authoring is now available in `../production-v1/static-human-physiology-v1.json`, outside the active descriptor. All six claims still require independent source/domain verification before production inclusion.
+All six claims are included in the active descriptor with
+`verification-static-human-physiology-v1.json`. Their six static retrieval
+probes cover syncope, circulatory tissue supply, pupil response, heat storage,
+cold stress and orienting/habituation. Additional `phys_*` probes in
+`benchmarks/gameplay-coverage-v3.json` exercise the existing respiratory,
+protective-reflex, blood-volume, hydration, alcohol and sweating premises from
+plan §37. They test retrieval of conditional facts, not clinical outcomes or
+live gameplay. Shivering and vestibular correction retain their existing
+`cold_body_response_ru` and `boat_turn_balance_en` probes.

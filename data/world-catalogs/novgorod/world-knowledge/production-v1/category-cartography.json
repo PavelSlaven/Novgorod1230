@@ -1115,6 +1115,22 @@
       "coverage": "bounded independently approved premises"
     },
     {
+      "id": "static-floating-weather-envelope-v1",
+      "source_path": "static-floating-weather-envelope-v1.json",
+      "domains": ["physics_material_science"],
+      "location_applicability": "Floating-body and weather-exposed enclosure contexts",
+      "applicability": {"resource":"conditional","material":"conditional","process":"conditional physical mechanism","npc":"none"},
+      "coverage": "bounded independently approved premises"
+    },
+    {
+      "id": "static-exposure-mechanisms-v1",
+      "source_path": "static-exposure-mechanisms-v1.json",
+      "domains": ["physics_material_science", "biology_physiology"],
+      "location_applicability": "Fuel-burning enclosures, ventilation and cold-water immersion contexts",
+      "applicability": {"resource":"conditional","material":"conditional","process":"conditional transport and exposure","npc":"conditional physiology, not outcome"},
+      "coverage": "bounded independently approved premises"
+    },
+    {
       "id": "static-historical-household-practice-v1",
       "source_path": "static-historical-household-practice-v1.json",
       "domains": ["social_law_economy"],
@@ -2485,7 +2501,9 @@
         "claim:foundations-phys-04-fluid-viscous-resistance",
         "claim:foundations-phys-05-flow-regime-speed",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
-        "claim:foundations-phys-07-surface-tension-interface"
+        "claim:foundations-phys-07-surface-tension-interface",
+        "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+        "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ]
     },
     {
@@ -3877,27 +3895,29 @@
         "process": "conditional formation and accumulation",
         "npc": "exposure context only"
       },
-      "coverage": "bounded approved formation and accumulation premises",
+      "coverage": "bounded approved formation, accumulation and perceptibility premises",
       "claim_refs": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
-        "claim:research-carbon-monoxide-can-accumulate-indoors"
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-carbon-monoxide-is-colorless-and-odorless"
       ]
     },
     {
       "id": "physiology-cold-water-immersion",
       "domain": "biology_physiology",
       "subdomain": "environmental_exposure",
-      "family": "cold_water_immersion_and_hypothermia",
+      "family": "cold_water_immersion_hypothermia_and_muscle_control",
       "location_applicability": "Immersion contexts where actual conditions establish cold water; no temperature or duration is inferred.",
       "applicability": {
         "resource": "conditional water",
         "material": "none",
         "process": "conditional physiological exposure",
-        "npc": "possible hypothermia, not diagnosis or outcome"
+        "npc": "possible hypothermia and impaired muscle control, not diagnosis or outcome"
       },
       "coverage": "bounded approved immersion premise",
       "claim_refs": [
-        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-cold-water-immersion-can-impair-muscle-control"
       ]
     },
     {
@@ -3974,20 +3994,22 @@
     {
       "id": "indoor-air-moisture",
       "domain": "physics_material_science",
-      "subdomain": "indoor_air_and_moisture",
-      "family": "stove_water_vapour_and_condensation_mitigation",
+      "subdomain": "indoor_air_transport_and_moisture",
+      "family": "combustion_products_air_transport_and_condensation_mitigation",
       "location_applicability": "Enclosures, shelters, stores and fuel-burning contexts; no room conditions inferred.",
       "applicability": {
         "resource": "none",
-        "material": "conditional moisture",
+        "material": "conditional moisture and airborne combustion products",
         "process": "conditional combustion and air movement",
         "npc": "none"
       },
-      "coverage": "grounded conditional indoor moisture relations",
-      "evidence_boundary": "No appliance, ventilation, temperature, humidity, condensation event or successful drying.",
+      "coverage": "grounded conditional indoor air transport and moisture relations",
+      "evidence_boundary": "No appliance, effective ventilation, temperature, humidity, condensation, smoke concentration, layer height, safety or successful drying.",
       "claim_refs": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
-        "claim:research-increased-ventilation-can-help-reduce-condensation"
+        "claim:research-increased-ventilation-can-help-reduce-condensation",
+        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ]
     },
     {
@@ -4229,17 +4251,25 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Cargo, private boat-use arrangements, boat work and repair are supported. Reconcile launch/mooring/shore transfer against existing buoyancy, load and access premises before adding facts. Vessel, capacity, stability, current conditions and crew remain state/mechanics.",
+      "reason": "Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics.",
       "supporting_family_ids": [
         "material-transport",
         "built-river-landing-access",
-        "npc-river-occupations"
+        "npc-river-occupations",
+        "fluids-buoyancy-flow-porosity",
+        "mechanics-impact-friction-fracture",
+        "fibre-rope-condition"
       ],
       "supporting_claim_refs": [
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-private-boat-arrangement",
         "claim:population-boat-work",
-        "claim:household-boat-repair-clamp"
+        "claim:household-boat-repair-clamp",
+        "claim:population-physics-floating-shape",
+        "claim:population-physics-immersion-buoyancy",
+        "claim:population-physics-static-friction",
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+        "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ]
     },
     {
@@ -4357,16 +4387,20 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Oak-shingle roofs, wood/moisture and joint condition are supported. Reconcile rain/wind ingress, coverings/openings and drainage against existing fluid/material premises before adding repair facts. Local roof customs need historical evidence; actual defect/weather are state.",
+      "reason": "Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state.",
       "supporting_family_ids": [
         "built-storage-and-household",
-        "materials-wood-moisture-and-coatings"
+        "materials-wood-moisture-and-coatings",
+        "fluids-buoyancy-flow-porosity"
       ],
       "supporting_claim_refs": [
         "claim:settlement-oak-shingle-roof",
         "claim:population-material-wood-moisture",
         "claim:population-joining-bond-moisture",
-        "claim:foundations-mat-02-wood-drying-crack-strength"
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:foundations-phys-06-pressure-driven-liquid-outflow",
+        "claim:wood-liquid-capillary-uptake",
+        "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ]
     },
     {
@@ -4497,16 +4531,18 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Conditional pooled-work output reduction and role expectations are grounded. Reconcile coordination/complementarity premises with existing mechanics before research; staffing, task dependencies, rates, schedule and decisions are not universal corpus facts.",
+      "reason": "Conditional pooled-work output reduction, role expectations and documented division of labour in pre-Mongol building projects supply bounded support. They do not establish universal coordination benefits or a mandatory labour hierarchy. Specific coordination effects remain conditional factual questions; staffing, task dependencies, rates, schedule and decisions remain owner/state responsibilities.",
       "supporting_family_ids": [
         "social-group-influence-and-coordination",
         "npc-craft-occupations",
-        "npc-household-routines"
+        "npc-household-routines",
+        "built-monumental-church-construction"
       ],
       "supporting_claim_refs": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms-32-social-role",
-        "claim:foundations-ms-33-role-predictability"
+        "claim:foundations-ms-33-role-predictability",
+        "claim:construction-auxiliary-construction-work"
       ]
     },
     {
@@ -4587,15 +4623,19 @@
         "potential:body_exposure"
       ],
       "coverage": "partial",
-      "reason": "Approved premises now establish possible CO production from fuel combustion and possible indoor accumulation. Residual research: perceptibility and ventilation/exposure relations. These claims establish no actual room, fuel, ventilation, concentration, symptoms or harm; exact current state and outcome remain owner-supplied.",
+      "reason": "Approved premises cover CO production, indoor accumulation, colour/odour limits, local exhaust and fire-plume transport. Coverage is bounded: effective airflow, concentrations, exposure and outcome depend on actual enclosure and process state; no universal safe ventilation or scene diagnosis follows.",
       "supporting_family_ids": [
         "process-combustion-and-pyrolysis",
         "chemistry-exposure-and-routes",
-        "combustion-carbon-monoxide-exposure"
+        "combustion-carbon-monoxide-exposure",
+        "indoor-air-moisture"
       ],
       "supporting_claim_refs": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
-        "claim:research-carbon-monoxide-can-accumulate-indoors"
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-carbon-monoxide-is-colorless-and-odorless",
+        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ]
     },
     {
@@ -4616,14 +4656,16 @@
         "potential:travel"
       ],
       "coverage": "partial",
-      "reason": "Approved premise now establishes that cold-water immersion can cause immersion hypothermia. Residual research: heat-exchange mechanisms and conditional functional effects; no unsupported speed comparison is retained. Temperature, duration, clothing, diagnosis, treatment and survival are not established for a concrete actor.",
+      "reason": "Approved premises cover possible immersion hypothermia and impaired muscle control; existing thermal-gradient heat flow supplies the general heat-exchange relation. Coverage remains conditional, without unsupported water/air speed comparisons, temperatures, durations, clothing, diagnosis, treatment or survival of a concrete actor.",
       "supporting_family_ids": [
         "body-thermoregulation-energy-and-fatigue",
         "thermal-phase-heat-transfer",
         "physiology-cold-water-immersion"
       ],
       "supporting_claim_refs": [
-        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-cold-water-immersion-can-impair-muscle-control",
+        "claim:foundations-thm-10-thermal-gradient-heat-flow"
       ]
     },
     {
@@ -4728,7 +4770,7 @@
         "potential:semantic_resolution"
       ],
       "coverage": "partial",
-      "reason": "Atmospheric transport/inversion and conditional indoor air-movement/condensation premises are grounded. Indoor smoke-flow and source-specific buoyancy remain distinct conditional research needs; no current plume, concentration, dose or safe location follows.",
+      "reason": "Atmospheric transport/inversion, source-capture exhaust and conditional fire-plume lower-to-upper-layer transport are grounded. Arbitrary enclosure geometry, mixing and source-specific quantitative flow remain bounded needs; no current plume, concentration, layer height, dose or safe location follows.",
       "supporting_family_ids": [
         "smoke-optical-visibility",
         "thermal-phase-heat-transfer",
@@ -4738,7 +4780,9 @@
       ],
       "supporting_claim_refs": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
-        "claim:research-surface-inversion-can-trap-smoke-near-ground"
+        "claim:research-surface-inversion-can-trap-smoke-near-ground",
+        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ]
     },
     {

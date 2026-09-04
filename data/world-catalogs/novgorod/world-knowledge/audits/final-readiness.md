@@ -1,5 +1,9 @@
 # PR92 World Knowledge readiness
 
+> Current static-phase reconciliation and acceptance scope:
+> [pr92-static-phase.md](pr92-static-phase.md#current-static-reconciliation--945-claims).
+> The historical chronology below is not the current readiness report.
+
 > Historical snapshot record, not current merge approval. The September 4
 > review supersedes every earlier acceptance label below: the 81-cell matrix
 > did not establish category cartography, per-claim machine approval was

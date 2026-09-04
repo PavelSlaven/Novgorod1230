@@ -1,5 +1,10 @@
 # Game-need cartography v3 — independent completeness review
 
+> Historical pre-promotion review of the 871-claim snapshot. Its gap labels
+> describe that snapshot, not the current backlog. The active need map is
+> `production-v1/category-cartography.json`; current static reconciliation and
+> phase limits are recorded in `audits/pr92-static-phase.md`.
+
 ## Scope and method
 
 Pre-promotion design review of

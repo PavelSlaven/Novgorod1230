@@ -76,6 +76,10 @@
     "static-food-contact-v1.json",
     "verification-static-food-contact-v1.json",
     "static-historical-household-practice-v1.json",
-    "verification-static-historical-household-practice-v1.json"
+    "verification-static-historical-household-practice-v1.json",
+    "static-floating-weather-envelope-v1.json",
+    "verification-static-floating-weather-envelope-v1.json",
+    "static-exposure-mechanisms-v1.json",
+    "verification-static-exposure-mechanisms-v1.json"
   ]
 }

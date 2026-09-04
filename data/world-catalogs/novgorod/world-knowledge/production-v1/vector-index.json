@@ -11000,6 +11000,20 @@
       "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении. Угарный газ может накапливаться в воздухе помещения. Это не устанавливает помещение, вентиляцию, концентрацию, длительность воздействия, человека, симптом, диагноз или исход в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-carbon-monoxide-is-colorless-and-odorless:en",
+      "target_ref": "claim:research-carbon-monoxide-is-colorless-and-odorless",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Carbon monoxide perceptibility Colour and odour limits on sensory detection of carbon monoxide. Carbon monoxide is colorless and odorless. This establishes no presence, concentration, source, exposure, detector state, symptoms, diagnosis, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-carbon-monoxide-is-colorless-and-odorless:ru",
+      "target_ref": "claim:research-carbon-monoxide-is-colorless-and-odorless",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Восприятие угарного газа Цвет и запах угарного газа как пределы его чувственного обнаружения. Угарный газ не имеет цвета и запаха. Это не устанавливает его наличие, концентрацию, источник, воздействие, состояние датчика, симптомы, диагноз или исход конкретной сцены."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-cold-water-immersion-can-cause-immersion-hypothermia:en",
       "target_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
       "domain": "biology_physiology",
@@ -11012,6 +11026,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения. Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-cold-water-immersion-can-impair-muscle-control:en",
+      "target_ref": "claim:research-cold-water-immersion-can-impair-muscle-control",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-water immersion and muscle control Conditional relation between cold-water immersion and muscle control. Cold-water immersion can impair muscle control. This establishes no water temperature, duration, clothing, person, degree of impairment, diagnosis, injury, survival, treatment, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-cold-water-immersion-can-impair-muscle-control:ru",
+      "target_ref": "claim:research-cold-water-immersion-can-impair-muscle-control",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Холодное погружение и контроль мышц Условная связь холодного погружения и контроля мышц. Погружение в холодную воду может нарушать контроль мышц. Это не устанавливает температуру воды, длительность, одежду, человека, степень нарушения, диагноз, травму, выживание, лечение или исход конкретной сцены."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-corylus-avellana-hazelnuts-are-documented-edible:en",
@@ -11068,6 +11096,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Стежковое соединение частей кожаного изделия Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков. В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer:en",
+      "target_ref": "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fire-plume upper-layer transport Conditional relation between a fire plume, combustion-product transport and an enclosure upper layer. A fire plume can transfer entrained combustion products from a lower layer to an upper layer in an enclosure. This establishes no fire, enclosure, openings, smoke quantity, layer height, temperature, concentration, visibility, exposure, safe location, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer:ru",
+      "target_ref": "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Перенос продуктов горения пожарным факелом в верхний слой Условная связь пожарного факела, переноса продуктов горения и верхнего слоя помещения. Пожарный факел может переносить увлечённые продукты горения из нижнего слоя в верхний слой помещения. Это не устанавливает огонь, помещение, проёмы, количество дыма, высоту слоя, температуру, концентрацию, видимость, воздействие, безопасное место или исход конкретной сцены."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-flood-can-leave-high-water-mark-types:en",
@@ -11196,6 +11238,20 @@
       "retrieval_text": "Болезненное поведение позвоночных при инфекции Качественная условная связь инфекции и изменений поведения у позвоночных. Инфекция у позвоночных может быть связана с болезненным поведением, включая изменённые социальные взаимодействия или режимы еды и питья. Это не устанавливает инфекцию, причину, диагноз, конкретное поведение, передачу, намерение, смертность или лечение."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-local-exhaust-can-remove-contaminated-air-from-a-room:en",
+      "target_ref": "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Local exhaust airflow Conditional relation between local exhaust, contaminated air and outdoor discharge. Local exhaust ventilation can capture contaminated air at its source and exhaust it outside a room. This establishes no exhaust, draught, sealing, airflow rate, concentration, safe level, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-local-exhaust-can-remove-contaminated-air-from-a-room:ru",
+      "target_ref": "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Местная вытяжная вентиляция Условная связь местной вытяжки, загрязнённого воздуха и отвода наружу. Местная вытяжная вентиляция может захватывать загрязнённый воздух у источника и отводить его наружу из помещения. Это не устанавливает вытяжку, тягу, герметичность, расход воздуха, концентрацию, безопасный уровень или исход конкретной сцены."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous:en",
       "target_ref": "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
       "domain": "biology_physiology",
@@ -11278,6 +11334,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Капиллярное впитывание может поместить отметку высокой воды на пористой поверхности выше фактического пика воды; близкие непористые отметки могут подтвердить её оценку. Это не устанавливает отметку, материал, высоту, степень уверенности, обследование, паводок или вывод в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-positive-metacentric-height-can-right-small-floating-body-heel:en",
+      "target_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Small-angle floating-body stability Conditional relation between a small heel, metacenter, center of gravity, and righting torque of a floating body. For a symmetric floating body under a small heel with unchanged submerged volume, a metacenter above the center of gravity produces a righting torque. This does not establish that a particular boat floats, is stable, safe, properly loaded, or withstands waves, current, wind, damage, flooding, shifting cargo, or a manoeuvre. heel stability metacenter righting torque boat heel boat stability capsize"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-positive-metacentric-height-can-right-small-floating-body-heel:ru",
+      "target_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Остойчивость плавающего тела при малом крене Условная связь малого крена, метацентра, центра тяжести и восстанавливающей пары плавающего тела. Для симметричного плавающего тела при малом крене и неизменном объёме погружённой части метацентр выше центра тяжести создаёт восстанавливающую пару. Это не утверждает, что конкретная лодка плавает, остойчива, безопасна, правильно загружена или выдержит волну, течение, ветер, повреждение, затопление, смещение груза либо манёвр. крен остойчивость метацентр восстанавливающий момент лодка накренилась остойчивость лодки переворот"
     },
     {
       "entry_ref": "wk-retrieval:claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces:en",
@@ -11376,6 +11446,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть брусники Узкая предпосылка о плоде Vaccinium vitis-idaea. Плод Vaccinium vitis-idaea документирован как съедобный. Это не устанавливает растение или ягоду, определение по сходству, зрелость, количество, безопасность или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-wind-pressure-difference-can-force-rain-across-building-opening:en",
+      "target_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wind-driven rain and opening pressure Conditional relation between wind pressure difference, rain, and water passage through an opening or enclosure imperfection. A wind-induced pressure difference can force rainwater through an opening or imperfection in a building enclosure. This establishes no building, roof, wall, opening, rain, wind, leak, water amount, damage, indoor wetness, repair method, historical practice, or concrete-scene outcome. driving rain wind-driven rain opening water ingress rain in house wind drives rain opening leak"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-wind-pressure-difference-can-force-rain-across-building-opening:ru",
+      "target_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Ветровой перепад давления и дождь у проёма Условная связь ветрового перепада давления, дождя и прохода воды через проём или дефект ограждения. Перепад давления, создаваемый ветром, может проталкивать дождевую воду через проём или дефект ограждения постройки. Это не устанавливает постройку, крышу, стену, проём, дождь, ветер, течь, количество воды, ущерб, влажность внутри, способ ремонта, историческую практику или исход конкретной сцены. косой дождь ветровой дождь проём протекание дождь в доме ветер загоняет дождь протекает проём"
     },
     {
       "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
@@ -15772,6 +15856,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-muscle-control:en",
+      "target_ref": "wk:biology_physiology:research-cold-water-immersion-muscle-control",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-water immersion and muscle control Conditional relation between cold-water immersion and muscle control."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-muscle-control:ru",
+      "target_ref": "wk:biology_physiology:research-cold-water-immersion-muscle-control",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Холодное погружение и контроль мышц Условная связь холодного погружения и контроля мышц."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-hazelnut-food-part:en",
@@ -21318,6 +21416,48 @@
       "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-perceptibility:en",
+      "target_ref": "wk:physics_material_science:research-carbon-monoxide-perceptibility",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Carbon monoxide perceptibility Colour and odour limits on sensory detection of carbon monoxide."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-perceptibility:ru",
+      "target_ref": "wk:physics_material_science:research-carbon-monoxide-perceptibility",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Восприятие угарного газа Цвет и запах угарного газа как пределы его чувственного обнаружения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-fire-plume-upper-layer-transport:en",
+      "target_ref": "wk:physics_material_science:research-fire-plume-upper-layer-transport",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fire-plume upper-layer transport Conditional relation between a fire plume, combustion-product transport and an enclosure upper layer."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-fire-plume-upper-layer-transport:ru",
+      "target_ref": "wk:physics_material_science:research-fire-plume-upper-layer-transport",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Перенос продуктов горения пожарным факелом в верхний слой Условная связь пожарного факела, переноса продуктов горения и верхнего слоя помещения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-floating-body-small-angle-stability:en",
+      "target_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Small-angle floating-body stability Conditional relation between a small heel, metacenter, center of gravity, and righting torque of a floating body. heel stability metacenter righting torque"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-floating-body-small-angle-stability:ru",
+      "target_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Остойчивость плавающего тела при малом крене Условная связь малого крена, метацентра, центра тяжести и восстанавливающей пары плавающего тела. крен остойчивость метацентр восстанавливающий момент"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour:en",
       "target_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
       "domain": "physics_material_science",
@@ -21344,6 +21484,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Воздухообмен и конденсация"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-local-exhaust-airflow:en",
+      "target_ref": "wk:physics_material_science:research-local-exhaust-airflow",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Local exhaust airflow Conditional relation between local exhaust, contaminated air and outdoor discharge."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-local-exhaust-airflow:ru",
+      "target_ref": "wk:physics_material_science:research-local-exhaust-airflow",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Местная вытяжная вентиляция Условная связь местной вытяжки, загрязнённого воздуха и отвода наружу."
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-smoke-transport-dispersion:en",
@@ -21386,6 +21540,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Стежковая поддержка ослабленного текстиля Условная связь стежков, повреждённого текстиля и поддерживающей ткани."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-wind-driven-rain-opening-pressure:en",
+      "target_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wind-driven rain and opening pressure Conditional relation between wind pressure difference, rain, and water passage through an opening or enclosure imperfection. driving rain wind-driven rain opening water ingress"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-wind-driven-rain-opening-pressure:ru",
+      "target_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Ветровой перепад давления и дождь у проёма Условная связь ветрового перепада давления, дождя и прохода воды через проём или дефект ограждения. косой дождь ветровой дождь проём протекание"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:smoke-optical-obscuration:en",

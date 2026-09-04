@@ -13,6 +13,364 @@
   },
   "cases": [
     {
+      "case_id": "static_co_sensory_limits_ru",
+      "locale": "ru",
+      "query_text": "Можно ли обнаружить угарный газ по собственному цвету или запаху, если его наличие и концентрация в комнате неизвестны?",
+      "relevant_claim_refs": ["claim:research-carbon-monoxide-is-colorless-and-odorless"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_local_exhaust_capture_en",
+      "locale": "en",
+      "query_text": "How can local exhaust capture polluted air near its source and discharge it outdoors without proving that this room has effective ventilation?",
+      "relevant_claim_refs": ["claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_cold_immersion_muscle_control_ru",
+      "locale": "ru",
+      "query_text": "Может ли холодное погружение ухудшить управление мышцами без утверждения, что конкретный человек уже потерял способность двигаться?",
+      "relevant_claim_refs": ["claim:research-cold-water-immersion-can-impair-muscle-control"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_fire_plume_layer_transport_en",
+      "locale": "en",
+      "query_text": "How can a fire plume transport entrained combustion products between the lower and upper layers of an enclosure?",
+      "relevant_claim_refs": ["claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_floating_small_heel_en",
+      "locale": "en",
+      "query_text": "A symmetric floating body heels slightly without changing its submerged volume. Under what relation between metacenter and center of gravity does buoyancy produce a righting torque?",
+      "relevant_claim_refs": ["claim:research-positive-metacentric-height-can-right-small-floating-body-heel"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_wind_driven_rain_opening_ru",
+      "locale": "ru",
+      "query_text": "Почему ветровой перепад давления может загонять дождевую воду через щель в ограждении постройки, не доказывая течь в этом доме?",
+      "relevant_claim_refs": ["claim:research-wind-pressure-difference-can-force-rain-across-building-opening"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "phys_airway_oxygen_awareness_en",
+      "locale": "en",
+      "query_text": "Could a blocked airway impair oxygen delivery, and how can low blood oxygen affect alertness without diagnosing the person?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+        "claim:candidate-physiology-v3-oxygen-delivery-brain-function"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_immersion_not_necessarily_drowning_ru",
+      "locale": "ru",
+      "query_text": "Человек оказался погружён в жидкость. Почему одного погружения недостаточно, чтобы назвать это утоплением, и какое нарушение для этого требуется?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_irritated_nose_airway_ru",
+      "locale": "ru",
+      "query_text": "Раздражены носовые ходы и дыхательные пути. Какие непроизвольные реакции возможны и почему кашель сам по себе не доказывает, что дыхание восстановлено?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+        "claim:candidate-physiology-v3-cough-reflex-airway-irritation"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_pharynx_gag_swallow_en",
+      "locale": "en",
+      "query_text": "How does a reflex triggered by touching the back of the mouth differ from deciding to swallow, and which swallowing phases become involuntary?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+        "claim:candidate-physiology-v3-swallowing-airway-protection"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_emesis_without_nausea_ru",
+      "locale": "ru",
+      "query_text": "Может ли рефлекторное изгнание содержимого желудка произойти без предшествующей тошноты и без доказанного отравления?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-emesis-reflex-response"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_corneal_touch_blink_en",
+      "locale": "en",
+      "query_text": "Can touching the cornea trigger an involuntary eyelid response without proving that an eye is undamaged or vision intact?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-blink-corneal-protection"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_painful_contact_withdrawal_ru",
+      "locale": "ru",
+      "query_text": "При болезненном или потенциально повреждающем касании возможен ли непроизвольный отдёргивающий ответ без гарантии успешной защиты?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-protective-withdrawal"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_sudden_stimulus_startle_en",
+      "locale": "en",
+      "query_text": "Can an unexpected strong stimulus briefly trigger muscular and autonomic changes without proving fear, a fall, or a deliberate decision?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_volume_loss_compensation_ru",
+      "locale": "ru",
+      "query_text": "Значительная потеря крови или жидкости может уменьшить кровоснабжение тканей. Может ли организм пытаться компенсировать это, не гарантируя достаточного кровотока?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_water_loss_function_en",
+      "locale": "en",
+      "query_text": "Can continued body-water loss without adequate replacement impair function and, when severe, consciousness, without assigning a specific dehydration level?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-dehydration-functional-risk"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_alcohol_coordination_awareness_ru",
+      "locale": "ru",
+      "query_text": "Как употребление алкоголя может сказаться на согласованности движений, решениях и сознании с учётом количества, времени и индивидуальных различий?",
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "phys_sweating_heat_water_en",
+      "locale": "en",
+      "query_text": "How can evaporation of sweat remove heat from skin while continued sweating also reduces body water, without deciding this person's thermal or hydration state?",
+      "relevant_claim_refs": [
+        "claim:sweat-evaporation-reduces-surface-heat",
+        "claim:continued-sweating-can-cause-body-water-loss"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_sinking_load_buoyant_support_ru",
+      "locale": "ru",
+      "query_text": "Груз частично погрузился в воду и продолжает тонуть. Исчезла ли поддержка воды и почему одного названия материала недостаточно для решения, будет ли он плавать?",
+      "relevant_claim_refs": ["claim:population-physics-immersion-buoyancy", "claim:population-physics-floating-shape"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_wet_wooden_opening_en",
+      "locale": "en",
+      "query_text": "Water touches a wooden wall containing an opening. How do pressure-driven liquid flow through the opening and capillary uptake into wood differ, without declaring a leak rate or successful repair?",
+      "relevant_claim_refs": ["claim:foundations-phys-06-pressure-driven-liquid-outflow", "claim:wood-liquid-capillary-uptake"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_building_auxiliary_work_ru",
+      "locale": "ru",
+      "query_text": "Какие простые вспомогательные работы при возведении домонгольских каменных зданий подтверждены исследованием, без назначения каждому персонажу профессии и платы?",
+      "relevant_claim_refs": ["claim:construction-auxiliary-construction-work"],
+      "purpose": "semantic_resolution",
+      "domains": ["architecture_settlement"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
       "case_id": "static_monthbook_day_commemoration_en",
       "locale": "en",
       "query_text": "What relationship between numbered days and commemorations is documented in a thirteenth-century church monthbook, without assuming its use in a particular Novgorod church?",

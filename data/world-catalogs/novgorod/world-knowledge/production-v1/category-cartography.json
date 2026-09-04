@@ -5288,7 +5288,7 @@
     "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one."
   ],
   "gameplay_need_cartography": {
-    "status": "static_need_expansion_in_progress_not_completeness_approval",
+    "status": "reviewed_static_with_bounded_limits",
     "purpose": "Open-RPG need-first map: approved families classify current support; missing_families records independently identified unmet or partial needs, including potential consumers beyond current scenes. Fragment reconciliation below is inventory only, not the origin or boundary of needs. No action, item, recipe or room-content whitelist.",
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",

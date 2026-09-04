@@ -1,7 +1,7 @@
 # World Knowledge Platform — полный implementation contract
 
 **Проект:** `PavelSlaven/Novgorod1230` / «Русь XIII век»
-**Статус:** `ACTIVE` для World Knowledge Platform production-v1 в versioned gameplay cutover `4.13.0-world-knowledge.1` (spatial-v3 production v15); неактивированные optional stages остаются target именно там, где это указано.
+**Статус:** `ACTIVE` как норматив реализованной World Knowledge Platform production-v1 в PR92 (`4.13.0-world-knowledge.1`). Runtime wiring spatial-v3 production v15 имеет статус `validated_candidate_not_active`; production activation не заявляется этим документом и определяется actual versioned release/binding. Неактивированные optional stages остаются target именно там, где это указано.
 **Главный production target:** fully offline gameplay с локальной World Knowledge Platform и локальными весами моделей; облачные модели — пользовательская опция для отдельных LLM-ролей.
 **Первый game Knowledge Pack:** factual model реальности, необходимой игре `Novgorod1230`, включая Новгородскую землю около 1230 года и общие знания физики, материалов, химии, биологии и других естественно-научных/бытовых областей.
 **Первый target embedding profile:** `ai-sage/Giga-Embeddings-instruct-480M-0826` с exact revision pin при реальном embedding cutover.
@@ -11,6 +11,9 @@
 # 0. Статус документа и порядок работы
 
 Этот документ задаёт активные границы World Knowledge Platform production-v1 и target для явно неактивированных optional stages. Точное production state определяют versioned release/bindings, pack/profile manifests, код и тесты.
+
+Этот документ не активирует runtime release: статус spatial-v3 production v15
+и `production_activation` определяет actual versioned release/binding.
 
 Перед первой правкой и перед каждым отдельным cutover агент обязан:
 

@@ -47,11 +47,25 @@ support stays explicit. Materialization and actor-safe projection retain their
 owners. Gameplay Gap Auditor stays isolated development tooling under the
 future-phase contract, without live activation.
 
-Its P2 note is a pre-existing release-status discrepancy: WK/index prose calls
-v15 active while `production-spatial-v3-release.js` declares
-`validated_candidate_not_active` / `production_activation: false`. The active
-binding/code governs activation; this static report does not activate v15.
-Reconciliation belongs to the separate spatial release/activation owner.
+Its P2 release-status note is resolved in the WK documentation: the contract
+and index now describe the implemented WK norm separately from runtime release
+activation. `production-spatial-v3-release.js` remains unchanged with
+`validated_candidate_not_active` / `production_activation: false`; this work
+does not activate v15. The reviewer approved this narrow status correction.
+Cartography status is `reviewed_static_with_bounded_limits`, preserving every
+partial need and the explicit non-saturation limit.
+
+The separate required Open-world/Anti-script check by the same independent
+reviewer passes on `68a82f827aa84cf8a58768bef15f591613c5733a`: arbitrary hints
+use generic retrieval, no-hit returns `unresolved`, compiler records are facts
+rather than actions/recipes, benchmark probes are not loaded by production,
+and development gap classes do not branch on scenario nouns. Subsequent
+changes only correct documentation/cartography status and generated document
+indexes; WK code, claims, runtime bundle, vectors and benchmarks are unchanged.
+After this status correction, 54 knowledge-source tests, cartography validation,
+`knowledge:check`, `knowledge:controls`, `docs:check` and `git diff --check` pass.
+Canonical document metadata and its existing generated graph/RAG were refreshed;
+no gameplay knowledge or embedding profile changed.
 
 Aligned snapshot checks PASS: strict compilation, cartography, 163 focused
 tests, `docs:check`, `knowledge:controls` and `git diff --check`. The pinned CPU

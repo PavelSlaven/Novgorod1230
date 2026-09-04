@@ -45,6 +45,17 @@
       "citation": "https://seagrant.uaf.edu/bookstore/boatkeeper/rope.pdf; Rope Maintenance.",
       "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
       "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:us-army-natural-fibre-rope-strength",
+      "title": "TM 3-34.86 / MCRP 3-17.7J: Rigging Techniques, Procedures, and Applications",
+      "authors": [],
+      "publication": "U.S. Army / U.S. Marine Corps technical manual",
+      "source_kind": "official_documentation",
+      "citation": "https://rdl.train.army.mil/catalog-ws/view/100.ATSC/1676C9DD-7ADF-4E41-9130-6BCEE7BBC5A9-1343151324082/tm3_34x86.pdf; §§1-12–1-15, Fiber Rope / Strength.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
     }
   ],
   "evidence": [
@@ -78,6 +89,14 @@
       "source_ref": "source:uaf-sea-grant-fibre-rope-maintenance",
       "anchor": {"section": "Rope Maintenance"},
       "note": "Contemporary fibre-rope guidance identifies chafe, abrasion, prior stress, bends, knots and splices as strength-relevant. Candidate prepared pending independent review; it is not wire-rope evidence and does not establish historical hemp-line properties.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-army-natural-fibre-rope-strength",
+      "source_ref": "source:us-army-natural-fibre-rope-strength",
+      "anchor": {"section": "§§1-12–1-15, Fiber Rope / Strength"},
+      "note": "Army manual identifies Manila and sisal as fibre rope and names knots and sharp bends among stresses reducing rope strength after use/exposure. Candidate amendment prepared pending independent review; no exact table value or historical line property follows.",
       "review_status": "approved"
     }
   ],
@@ -125,13 +144,13 @@
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:modern-fibre-rope-condition",
       "predicate": "supported_fact",
-      "object": {"kind": "literal", "value": "chafe_abrasion_prior_loading_bends_and_knots_can_reduce_available_strength_of_modern_fibre_rope"},
+      "object": {"kind": "literal", "value": "abrasion_bends_and_knots_can_reduce_available_strength_of_fibre_rope"},
       "polarity": "support",
       "applicability": {"context_scope": "universal"},
-      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "qualifiers": {"typicality": "common", "confidence": "medium", "directness": "inferred"},
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
-      "evidence_refs": ["evidence:gameplay-pe3-uaf-fibre-rope-condition"],
+      "evidence_refs": ["evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
       "review_status": "approved",
       "conflict_group_ref": null
     }
@@ -141,15 +160,15 @@
     {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:smoke-optical-obscuration", "locale": "en", "labels": ["Smoke optical obscuration"], "short_definition": "Light attenuation by smoke particles along a line of sight.", "search_aliases": ["smoke visibility", "smoke light attenuation"]},
     {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment", "locale": "ru", "labels": ["Форма и прикрепление водных макрофитов"], "short_definition": "Связь формы водного макрофита с грунтом и поверхностью воды.", "search_aliases": ["водные растения форма", "плавающие и погружённые растения"]},
     {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment", "locale": "en", "labels": ["Aquatic macrophyte form and attachment"], "short_definition": "Relation of aquatic macrophyte form to substrate attachment and water surface.", "search_aliases": ["aquatic plant forms", "floating submerged emergent"]},
-    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "ru", "labels": ["Состояние современной волокнистой верёвки"], "short_definition": "Состояние волокнистой верёвки, влияющее на доступную прочность.", "search_aliases": ["истирание верёвки", "износ верёвки"]},
-    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "en", "labels": ["Modern fibre-rope condition"], "short_definition": "Fibre-rope condition relevant to available strength.", "search_aliases": ["rope chafe", "rope abrasion"]}
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "ru", "labels": ["Состояние волокнистой верёвки"], "short_definition": "Состояние волокнистой верёвки, влияющее на доступную прочность.", "search_aliases": ["истирание верёвки", "износ верёвки"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "en", "labels": ["Fibre-rope condition"], "short_definition": "Fibre-rope condition relevant to available strength.", "search_aliases": ["rope chafe", "rope abrasion"]}
   ],
   "claim_localizations": [
     {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "locale": "ru", "runtime_text": "Частицы дыма могут ослаблять проходящий свет и уменьшать зрительную различимость; дым, видимость, восприятие и результат в конкретной сцене не подразумеваются.", "search_aliases": ["дым видимость", "задымление"]},
     {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "locale": "en", "runtime_text": "Smoke particles can attenuate transmitted light and reduce visual discrimination; no smoke, visibility value, perception, or scene outcome is implied.", "search_aliases": ["smoke visibility", "light attenuation"]},
     {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position", "locale": "ru", "runtime_text": "Погружённые, укоренённо-плавающие, надводные укоренённые и свободноплавающие формы водных макрофитов различаются прикреплением к грунту и положением листьев; вид, местное растение и проходимость не подразумеваются.", "search_aliases": ["водные растения форма", "плавающие растения"]},
     {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position", "locale": "en", "runtime_text": "Submerged, rooted floating-leaf, rooted emergent, and free-floating aquatic macrophyte forms differ in substrate attachment and leaf position; no species, local plant, or passability is implied.", "search_aliases": ["aquatic plant forms", "floating submerged emergent"]},
-    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "ru", "runtime_text": "Истирание, прежняя нагрузка, изгибы и узлы могут уменьшать доступную прочность современной волокнистой верёвки; это не устанавливает прочность, узел, нагрузку, обрыв, историческую пеньковую снасть или верёвку в сцене.", "search_aliases": ["истирание верёвки", "узел прочность"]},
-    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "en", "runtime_text": "Chafe, prior loading, bends, and knots can reduce the available strength of modern fibre rope; this establishes no strength, knot, load, break, historical hemp line, or scene rope.", "search_aliases": ["rope chafe", "knot strength"]}
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "ru", "runtime_text": "Истирание, изгибы и узлы могут уменьшать доступную прочность волокнистой верёвки; это не устанавливает прочность, узел, нагрузку, обрыв, точные свойства исторической пеньковой снасти или верёвку в сцене.", "search_aliases": ["истирание верёвки", "узел прочность"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "en", "runtime_text": "Abrasion, bends, and knots can reduce the available strength of fibre rope; this establishes no strength, knot, load, break, exact historical hemp-line property, or scene rope.", "search_aliases": ["rope chafe", "knot strength"]}
   ]
 }

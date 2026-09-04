@@ -12,7 +12,7 @@ mechanic, or an approval recommendation.
 | Knot hold / slip | `population-physics-static-friction`, `population-physics-sliding-friction` | **Composition closure for slip.** The current runtime text expressly says a knot or grip does not hold unconditionally. No candidate makes a named knot secure. |
 | Smoke/aerosol visibility | `foundations-earth-27-fog-visibility` | Fog is not smoke. A smoke-specific optical-obscuration bridge remains useful. |
 | Aquatic macrophyte form/function | `common-reed-rhizome-produces-stems-in-wetland-habitat`, animal-diet uses of aquatic vegetation | Species/habitat records do not supply the general form distinction between rooted emergent, rooted floating-leaf, submerged, and free-floating plants. |
-| Fibre line condition | `population-processes-hemp-cordage`, `population-net-cord`, friction claims | Historical cordage compatibility and friction do not establish how chafe, bending, knots, and prior load affect a modern fibre rope’s remaining strength. |
+| Fibre line condition | `population-processes-hemp-cordage`, `population-net-cord`, friction claims | Historical cordage compatibility and friction do not establish a particular line’s capacity. Modern synthetic and natural-fibre manuals jointly support only a general fibre-rope abrasion/bend/knot strength premise. |
 
 ## Independently read modern anchors
 
@@ -40,6 +40,11 @@ mechanic, or an approval recommendation.
    vessel guidance with modern rope materials; it does not establish medieval
    cordage construction, a specific line, safe load, interval, or repair
    practice.
+5. [U.S. Army TM 3-34.86 / Marine Corps MCRP
+   3-17.7J](https://rdl.train.army.mil/catalog-ws/view/100.ATSC/1676C9DD-7ADF-4E41-9130-6BCEE7BBC5A9-1343151324082/tm3_34x86.pdf),
+   §§1-12–1-15, identifies Manila/sisal fibre ropes and says knots and sharp
+   bends can reduce strength. Its tables, safety factors and any transfer to
+   historical hemp are excluded.
 
 ## Bounded candidate premises
 
@@ -47,7 +52,7 @@ mechanic, or an approval recommendation.
 | --- | --- | --- | --- |
 | PE-01 | **RU:** Частицы дыма на пути зрения могут ослаблять свет и уменьшать различимость объекта на фоне; степень зависит от свойств дыма, пути света и объекта. **EN:** Smoke particles along a line of sight can attenuate light and reduce an object’s contrast against its background; degree depends on smoke, light path, and object properties. | NIST §7.10. | Qualitative optical premise only. No smoke, fire, dose, irritation, toxicity, visibility distance, route blockage, or bodily outcome. |
 | PE-02 | **RU:** Водные макрофиты могут иметь погружённую, укоренённо-плавающую, надводную укоренённую либо свободноплавающую форму; связь с грунтом и положение листьев зависят от формы. **EN:** Aquatic macrophytes can have submerged, rooted floating-leaf, rooted emergent, or free-floating forms; substrate attachment and leaf position vary by form. | USGS “Life Forms”; UF/IFAS “Basic aquatic plant types”. | A broad modern form relation, not a species identification, local plant, density, passability, harvestability, habitat proof, or historical vegetation claim. Forms overlap and exceptions exist. |
-| PE-03 | **RU:** У современной волокнистой верёвки истирание, прежняя нагрузка, изгибы и узлы могут уменьшать доступную прочность; величина зависит от материала, конструкции, состояния и нагрузки. **EN:** For modern fibre rope, chafe, prior loading, bends, and knots can reduce available strength; the extent depends on material, construction, condition, and load. | UAF Sea Grant, “Rope Maintenance”. | Modern rope condition relation only. No named knot, slip result, safe working load, break probability, historical hemp-line practice, present rope, or repair success. Static-friction claims remain the existing slip closure. |
+| PE-03 | **RU:** У волокнистой верёвки истирание, изгибы и узлы могут уменьшать доступную прочность. **EN:** In fibre rope, abrasion, bends, and knots can reduce available strength. | UAF Sea Grant, “Rope Maintenance”; Army TM 3-34.86/MCRP 3-17.7J §§1-12–1-15. The cross-material wording is an inference from modern synthetic and natural-fibre manuals. | No named knot, slip result, safe working load, break probability, exact Cannabis-hemp property, historical line construction/practice, present rope, or repair success. Static-friction claims remain the existing slip closure. |
 
 ## General unseen probes
 

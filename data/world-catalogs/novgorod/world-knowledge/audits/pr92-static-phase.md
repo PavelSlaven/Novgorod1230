@@ -66,6 +66,56 @@ The next authoring step must isolate residual factual relations. Actual title,
 debt balance, testimony, judgment, prices, inventory, route condition and
 dispatch schedules remain code/state questions, not new corpus facts.
 
+## Static exposure and household increment
+
+The next production increment contains six independently approved premises:
+fuel combustion can produce carbon monoxide; CO can accumulate indoors;
+cold-water immersion can cause hypothermia; stitching can support weakened
+textile; failed stitching can separate components of a leather assembly; and
+household boiling alone does not establish drinkability of chemically
+contaminated water. The last premise is a treatment-evidence boundary, not a
+universal physical impossibility of removing every chemical.
+
+The corpus now has 912 claims, 703 concepts, 297 sources and 585 evidence
+records. Cartography classifies 124 families across 15 broad need dimensions.
+These are inventory counts, not a completeness verdict. General aquatic
+temperature/oxygen relations are compositionally closed by existing claims;
+taxon-specific requirements are not claimed to be exhaustive. There remain
+33 missing/partial need families requiring reconciliation or further research.
+
+Verification reports are `verification/static-exposure-water-v1.md` and
+`verification/static-household-water-v1.md`. The compiler consumes one
+independent APPROVE per promoted claim, bound to committed candidates. The
+metadata-only removal of stale draft prefixes is separately rebound against
+candidate `a060f68f0fcfe030ddd6dbdeca682c362c06a8f9`; it does not alter the
+scientific premises or their translations.
+
+Not promoted:
+
+- A heating-water/microbial-inactivation candidate duplicates
+  `claim:heating-reduces-microbial-viability`.
+- The earlier absolute boiling/chemical-removal wording is NEEDS_REVIEW and
+  is superseded only by the separately verified narrower candidate.
+- Raw-food transfer via hands/utensils remains NEEDS_REVIEW: the independent
+  reviewer could not retrieve the full USDA anchor. This is a source-access
+  limitation, not proof that the relation is false.
+- Five environment residual proposals remain research-only, covering soil
+  freeze–thaw, flood marks and smoke transport; none enters the runtime pack.
+
+The static retrieval benchmark adds nine bilingual probes to the existing
+12-query coverage set. These are offline retrieval queries, not live gameplay
+campaigns, replay or saturation evidence. Final exact-HEAD CI and full static
+completeness acceptance are still separate gates; this increment does not
+declare the PR ready to merge.
+
+Increment checks: strict compilation and 138 focused tests passed across WK
+authoring, production approval bindings, archive dispositions, cartography,
+runtime retrieval and documentation retrieval. Production checks resolve each
+candidate Git object and verify the exact compiled bundle and embedding-entry
+list. Documentation/knowledge-source checks and `git diff --check` passed.
+The flat index was rebuilt with the unchanged pinned model: 3,230 entries,
+1,024 dimensions, 13,230,080 bytes. This test set is not the full CI suite.
+
 ## Future-testing finding: unowned ordinary item → action production
 
 - Classification: `CODE_MECHANICS_GAP`, P1, open; outside static WK repair scope.

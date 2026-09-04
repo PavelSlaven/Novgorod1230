@@ -56,6 +56,10 @@
     "gameplay-plant-identification-v3.json",
     "verification-gameplay-plant-identification-v3.json",
     "gameplay-granular-materials-v3.json",
-    "verification-gameplay-granular-materials-v3.json"
+    "verification-gameplay-granular-materials-v3.json",
+    "static-exposure-v1.json",
+    "verification-static-exposure-v1.json",
+    "static-household-water-v1.json",
+    "verification-static-household-water-v1.json"
   ]
 }

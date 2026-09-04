@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 12,
-    "lexical_recall_at_10": 0.7916666666666666,
+    "case_count": 21,
+    "lexical_recall_at_10": 0.8809523809523809,
     "hybrid_recall_at_10": 1,
-    "lexical_recall_at_20": 0.8333333333333334,
+    "lexical_recall_at_20": 0.8809523809523809,
     "hybrid_recall_at_20": 1,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.6625000000000001,
-    "hybrid_noise_at_10": 0.7180555555555556,
+    "lexical_noise_at_10": 0.5146258503401361,
+    "hybrid_noise_at_10": 0.6801587301587302,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 84.95108333333333,
-    "vector_scan_mean_ms": 1.2706000000001343,
-    "runtime_bundle_bytes": 5305998,
-    "vector_bundle_bytes": 13139968,
-    "encoder_model_load_ms": 2623.511,
-    "peak_process_rss_bytes": 2389475328,
+    "query_embedding_mean_ms": 69.5402380952381,
+    "vector_scan_mean_ms": 1.5018761904760876,
+    "runtime_bundle_bytes": 5363743,
+    "vector_bundle_bytes": 13230080,
+    "encoder_model_load_ms": 3215.455,
+    "peak_process_rss_bytes": 2403270656,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -39,8 +39,219 @@
   },
   "cases": [
     {
+      "case_id": "weak_cloth_support_ru",
+      "vector_scan_ms": 15.564800000000105,
+      "lexical_at_10": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
+      "hybrid_at_10": [
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:material-water-textile-water-load",
+        "claim:population-material-wet-silk"
+      ],
+      "lexical_at_20": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
+      "hybrid_at_20": [
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:material-water-textile-water-load",
+        "claim:population-material-wet-silk"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "leather_joint_failure_en",
+      "vector_scan_ms": 0.811200000000099,
+      "lexical_at_10": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:oil-fat-vegetable-leather-flexibility"
+      ],
+      "hybrid_at_10": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:population-material-leather-dry"
+      ],
+      "lexical_at_20": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:oil-fat-vegetable-leather-flexibility"
+      ],
+      "hybrid_at_20": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:population-material-leather-dry"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "boiling_chemical_drinkability_ru",
+      "vector_scan_ms": 0.5401000000019849,
+      "lexical_at_10": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "hybrid_at_10": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+        "claim:foundations-chm-10-metal-environment-corrosion"
+      ],
+      "lexical_at_20": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "hybrid_at_20": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+        "claim:foundations-chm-10-metal-environment-corrosion"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "fuel_water_boiling_en",
+      "vector_scan_ms": 0.4844999999986612,
+      "lexical_at_10": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "hybrid_at_10": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:food-preservation-qualitative"
+      ],
+      "lexical_at_20": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "hybrid_at_20": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:food-preservation-qualitative"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "fuel_fumes_gas_ru",
+      "vector_scan_ms": 0.7713000000003376,
+      "lexical_at_10": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "hybrid_at_10": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:population-physics-point-pressure"
+      ],
+      "lexical_at_20": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "hybrid_at_20": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:population-physics-point-pressure"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "enclosed_fuel_fire_en",
+      "vector_scan_ms": 0.8443000000006577,
+      "lexical_at_10": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "hybrid_at_10": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:population-ceramic-colour"
+      ],
+      "lexical_at_20": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "hybrid_at_20": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:population-ceramic-colour"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "enclosed_air_co_ru",
+      "vector_scan_ms": 0.8930999999975029,
+      "lexical_at_10": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
+      ],
+      "hybrid_at_10": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:population-physics-point-pressure"
+      ],
+      "lexical_at_20": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
+      ],
+      "hybrid_at_20": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:population-physics-point-pressure"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "immersion_hypothermia_ru",
+      "vector_scan_ms": 1.4549000000006345,
+      "lexical_at_10": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:fauna-perch-group-behavior",
+        "claim:fauna-crayfish-diet",
+        "claim:fauna-crayfish-egg-carrying",
+        "claim:fauna-crayfish-habitat",
+        "claim:fauna-crayfish-juvenile-activity"
+      ],
+      "hybrid_at_10": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-dehydration-functional-risk",
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "lexical_at_20": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:fauna-perch-group-behavior",
+        "claim:fauna-crayfish-diet",
+        "claim:fauna-crayfish-egg-carrying",
+        "claim:fauna-crayfish-habitat",
+        "claim:fauna-crayfish-juvenile-activity"
+      ],
+      "hybrid_at_20": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-dehydration-functional-risk",
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "cold_water_body_en",
+      "vector_scan_ms": 1.394799999998213,
+      "lexical_at_10": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis"
+      ],
+      "hybrid_at_10": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "lexical_at_20": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis"
+      ],
+      "hybrid_at_20": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 8.954900000000634,
+      "vector_scan_ms": 1.0643999999992957,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
@@ -69,7 +280,7 @@
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 0.8813000000009197,
+      "vector_scan_ms": 1.1475999999966007,
       "lexical_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:fauna-mallard-residency",
@@ -126,14 +337,13 @@
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:fauna-mallard-brood",
-        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
-        "claim:bearberry-lingonberry-resemblance-not-identification"
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.44879999999830034,
+      "vector_scan_ms": 0.6080000000001746,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:grain-processing-bread-ground-plant-base",
@@ -194,7 +404,7 @@
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.42039999999906286,
+      "vector_scan_ms": 0.7799000000013621,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -215,7 +425,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 0.6810999999979686,
+      "vector_scan_ms": 0.7341999999989639,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -256,7 +466,7 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.5511000000005879,
+      "vector_scan_ms": 0.47330000000147265,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -291,7 +501,7 @@
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 0.7415000000000873,
+      "vector_scan_ms": 0.8961999999992258,
       "lexical_at_10": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -339,7 +549,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 0.8372000000017579,
+      "vector_scan_ms": 1.0763999999981024,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-vestibular-postural-correction",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
@@ -376,8 +586,9 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.43219999999928405,
+      "vector_scan_ms": 0.5358000000014727,
       "lexical_at_10": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -386,21 +597,21 @@
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:clay-firing-structural-transformation",
-        "claim:wood-liquid-fibre-saturation",
-        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
+        "claim:wood-liquid-fibre-saturation"
       ],
       "hybrid_at_10": [
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "claim:wood-liquid-fibre-saturation",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
-        "claim:foundations-mat-12-material-thermal-insulation-porosity",
-        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+        "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ],
       "lexical_at_20": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -409,35 +620,24 @@
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:clay-firing-structural-transformation",
-        "claim:wood-liquid-fibre-saturation",
-        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
-        "claim:stored-grain-airflow-can-reduce-temperature-differences",
-        "claim:population-material-leather-dry",
-        "claim:pine-pitch-severe-oxidation",
-        "claim:pine-pitch-woven-basket-coating",
-        "claim:clay-fired-no-replasticization",
-        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
-        "claim:material-water-leather-water-processing",
-        "claim:material-water-textile-water-load",
-        "claim:material-water-vegetable-leather-water",
-        "claim:water-can-cool-class-a-fire-fuel-and-flame"
+        "claim:wood-liquid-fibre-saturation"
       ],
       "hybrid_at_20": [
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "claim:wood-liquid-fibre-saturation",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
-        "claim:foundations-mat-12-material-thermal-insulation-porosity",
-        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+        "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.40120000000024447,
+      "vector_scan_ms": 0.5413000000007742,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -462,7 +662,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.5231999999996333,
+      "vector_scan_ms": 0.5187000000005355,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -483,7 +683,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.37430000000313157,
+      "vector_scan_ms": 0.40460000000166474,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"

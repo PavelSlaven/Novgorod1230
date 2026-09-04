@@ -13,6 +13,205 @@
   },
   "cases": [
     {
+      "case_id": "weak_cloth_support_ru",
+      "locale": "ru",
+      "query_text": "У ослабленного полотна есть разрыв. Могут ли стежки удержать этот участок на подложенной ткани, без обещания восстановить прежнюю прочность?",
+      "relevant_claim_refs": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "leather_joint_failure_en",
+      "locale": "en",
+      "query_text": "The sides and sole of a leather object are held together by stitching. Could failure of that stitching let the parts separate without leather itself tearing?",
+      "relevant_claim_refs": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "boiling_chemical_drinkability_ru",
+      "locale": "ru",
+      "query_text": "В воде установлена токсичная химическая примесь. Доказывает ли одно кипячение пригодность для питья, если вещество и эффективность удаления не определены?",
+      "relevant_claim_refs": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fuel_water_boiling_en",
+      "locale": "en",
+      "query_text": "Water is contaminated with fuel. Does household boiling alone establish that it is drinkable, without evidence about the contaminant and removal process?",
+      "relevant_claim_refs": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fuel_fumes_gas_ru",
+      "locale": "ru",
+      "query_text": "При горении топлива может ли возникнуть угарный газ, если количество дыма и состав воздуха ещё не измерены?",
+      "relevant_claim_refs": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "enclosed_fuel_fire_en",
+      "locale": "en",
+      "query_text": "A fuel fire is described inside a shelter. What possible carbon monoxide relation matters for the air there without asserting an actual dose or poisoning?",
+      "relevant_claim_refs": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "enclosed_air_co_ru",
+      "locale": "ru",
+      "query_text": "Может ли угарный газ накопиться в помещении? Наличие пострадавшего, время и вентиляция пока неизвестны.",
+      "relevant_claim_refs": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "immersion_hypothermia_ru",
+      "locale": "ru",
+      "query_text": "Человек оказался в холодной речной воде. Какой риск переохлаждения связан с погружением, если длительность, одежда и температура тела неизвестны?",
+      "relevant_claim_refs": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "cold_water_body_en",
+      "locale": "en",
+      "query_text": "Could immersion in cold lake water cause hypothermia? Do not infer duration, body temperature, survival, or a comparison with cold air.",
+      "relevant_claim_refs": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
       "case_id": "plant_unknown_lookalike_ru",
       "locale": "ru",
       "query_text": "У тропы растёт зонтичное растение, похожее на знакомое. Достаточно ли названия и одного листа, или что ещё сравнить, прежде чем считать его тем же растением?",

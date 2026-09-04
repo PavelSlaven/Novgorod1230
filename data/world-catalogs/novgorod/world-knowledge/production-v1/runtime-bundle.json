@@ -4802,6 +4802,86 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "title": "Stitches Used in Textile Conservation — Canadian Conservation Institute (CCI) Notes 13/10",
+      "authors": [
+        "Canadian Conservation Institute Textile Lab"
+      ],
+      "publication": "Canadian Conservation Institute Notes 13/10, revised 2008; page details 2019-05-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/stitches-textile-conservation.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "title": "Carbon Monoxide Poisoning Basics",
+      "authors": [
+        "Centers for Disease Control and Prevention, National Center for Environmental Health"
+      ],
+      "publication": "CDC, updated 2026-01-12",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/carbon-monoxide/about/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-household-water-treatment-2024",
+      "title": "Household Water Treatment",
+      "authors": [
+        "Centers for Disease Control and Prevention, National Center for Emerging and Zoonotic Infectious Diseases"
+      ],
+      "publication": "CDC Global Water, Sanitation, and Hygiene, updated 2024-04-22",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/global-water-sanitation-hygiene/about/about-household-water-treatment.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-niosh-cold-related-illnesses-2026",
+      "title": "Cold-related Illnesses in Workers",
+      "authors": [
+        "National Institute for Occupational Safety and Health"
+      ],
+      "publication": "CDC/NIOSH, updated 2026-03-03",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/niosh/cold-stress/about/related-illness.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "title": "Conserve O Gram 9/1: Fatty Acid Spew on Leather Objects",
+      "authors": [
+        "National Park Service"
+      ],
+      "publication": "National Park Service Conserve O Gram 9/1, published 2025-01; updated 2025-07-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/articles/conserve-o-gram-9-1-leather-dressings.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:rscMetals",
       "title": "Iron and copper element references",
       "authors": [],
@@ -10834,6 +10914,66 @@
         "section": "Историко-текстовый комментарий перед Пространной редакцией"
       },
       "note": "Древнейшая Пространная редакция отнесена к XII–первой четверти XIII века после переработок; применение указанных санкций прямо поставлено под сомнение. Нет утверждения о местном исполнении.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-leather-stitched-join-failure",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "anchor": {
+        "section": "Research on Leather Dressings, treatment-report quotation beginning ‘The stitching attaching the sides to the sole’"
+      },
+      "note": "NPS records a shoe in which weakened and broken stitching attaching sides to the sole was followed by separation of the parts. The candidate is limited to a stitched leather assembly; it is not evidence that every leather object is stitched, nor of a current object, cause, load, repair, durability, medieval practice or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-textile-stitch-support",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "anchor": {
+        "section": "Attaching Fragile Textiles to Support Fabrics — Self-couching stitch"
+      },
+      "note": "CCI says a self-couching stitch secures torn, frayed or weak textile areas to a new support fabric. This is a modern conditional conservation relation, not medieval practice, a current textile, thread, support, tool, skill, repair success, strength or item identity.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-boiling-fuel-toxic-chemicals",
+      "source_ref": "source:research-cdc-household-water-treatment-2024",
+      "anchor": {
+        "section": "Overview, paragraph beginning ‘Water that has fuel’; Ways to make water safe — Boiling"
+      },
+      "note": "CDC says water containing fuel or toxic chemicals is not made drinkable by boiling or household treatment. The bounded candidate is epistemic: boiling alone does not establish drinkability for those named contaminant classes; it does not assert a universal physical non-removal result for every substance or treatment. No contamination, water source, treatment event, drinking permission or health outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-co-combustion",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "anchor": {
+        "section": "What it is; Reducing risk, paragraph beginning ‘CO is found in fumes’"
+      },
+      "note": "CDC identifies CO as an odorless/colorless gas in fumes produced when fuel burns. No concrete fuel, fire, concentration, source rate, room, exposure, symptom, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-co-indoor-accumulation",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "anchor": {
+        "section": "Reducing risk, paragraph beginning ‘CO is found in fumes’"
+      },
+      "note": "CDC says CO can build up indoors and poison people and animals who breathe it. No actual enclosure, ventilation, concentration, duration, person, symptom, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-cold-water-immersion",
+      "source_ref": "source:research-cdc-niosh-cold-related-illnesses-2026",
+      "anchor": {
+        "section": "Immersion hypothermia from cold water"
+      },
+      "note": "CDC/NIOSH names cold-water immersion as a cause of immersion hypothermia. The candidate deliberately does not retain the source’s comparative speed wording because no comparison conditions are supplied. No local water temperature, duration, clothing, body temperature, impairment, injury, survival or treatment outcome.",
       "review_status": "approved"
     },
     {
@@ -17512,6 +17652,37 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+          "locale": "ru",
+          "labels": [
+            "Переохлаждение при погружении в холодную воду"
+          ],
+          "short_definition": "Качественная связь погружения в холодную воду и переохлаждения.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+          "locale": "en",
+          "labels": [
+            "Cold-water immersion hypothermia"
+          ],
+          "short_definition": "Qualitative relation between cold-water immersion and hypothermia.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:ruminant-digestion",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -18897,6 +19068,37 @@
             "Reactant concentration and reaction rate"
           ],
           "short_definition": "Qualified universal physical or chemical premise, not a fact about a particular object.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+          "locale": "ru",
+          "labels": [
+            "Нагрев воды и границы удаления загрязнителей"
+          ],
+          "short_definition": "Различие между инактивацией микроорганизмов нагревом и химическими примесями.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+          "locale": "en",
+          "labels": [
+            "Water heating and contaminant-removal boundary"
+          ],
+          "short_definition": "Distinction between heating-induced germ inactivation and chemical contaminants.",
           "search_aliases": []
         }
       }
@@ -29980,6 +30182,99 @@
             "Pressure-driven liquid outflow"
           ],
           "short_definition": "Qualified universal physical or chemical premise, not a fact about a particular object.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+          "locale": "ru",
+          "labels": [
+            "Угарный газ при горении и воздух в помещении"
+          ],
+          "short_definition": "Качественная связь горения топлива, угарного газа и воздуха в помещении.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+          "locale": "en",
+          "labels": [
+            "Carbon monoxide from combustion and indoor air"
+          ],
+          "short_definition": "Qualitative relation between fuel combustion, carbon monoxide, and indoor air.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+          "locale": "ru",
+          "labels": [
+            "Стежковое соединение частей кожаного изделия"
+          ],
+          "short_definition": "Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+          "locale": "en",
+          "labels": [
+            "Stitched leather component join"
+          ],
+          "short_definition": "Conditional relation between a stitched leather-component join and separation when it fails.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+          "locale": "ru",
+          "labels": [
+            "Стежковая поддержка ослабленного текстиля"
+          ],
+          "short_definition": "Условная связь стежков, повреждённого текстиля и поддерживающей ткани.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+          "locale": "en",
+          "labels": [
+            "Stitched support for weakened textile"
+          ],
+          "short_definition": "Conditional relation between stitching, damaged textile, and support textile.",
           "search_aliases": []
         }
       }
@@ -74624,6 +74919,288 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "boiling_alone_does_not_establish_drinkability_of_water_containing_fuel_or_toxic_chemicals"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-boiling-fuel-toxic-chemicals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+          "locale": "ru",
+          "runtime_text": "Одно кипячение само по себе не устанавливает пригодность для питья воды с топливом или токсичными химическими примесями. Это не утверждает универсальную невозможность удаления любого вещества и не устанавливает загрязнение, источник воды, обработку, разрешение на питьё или исход для здоровья в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+          "locale": "en",
+          "runtime_text": "Boiling alone does not establish the drinkability of water containing fuel or toxic chemicals. This does not assert universal impossibility of removing every substance and establishes no contamination, water source, treatment event, drinking permission, or health outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-household-water-v1-boiling-drinkability-boundary"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "carbon_monoxide_can_accumulate_in_indoor_air"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-co-indoor-accumulation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+          "locale": "ru",
+          "runtime_text": "Угарный газ может накапливаться в воздухе помещения. Это не устанавливает помещение, вентиляцию, концентрацию, длительность воздействия, человека, симптом, диагноз или исход в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+          "locale": "en",
+          "runtime_text": "Carbon monoxide can accumulate in indoor air. This establishes no enclosure, ventilation, concentration, exposure duration, person, symptom, diagnosis, or outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-exposure-v1-carbon-monoxide-indoors"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cold_water_immersion_can_cause_immersion_hypothermia"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-cold-water-immersion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+          "locale": "ru",
+          "runtime_text": "Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+          "locale": "en",
+          "runtime_text": "Cold-water immersion can cause immersion hypothermia. This establishes no water temperature, duration, clothing, body temperature, functional impairment, injury, survival, or outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-exposure-v1-cold-water-immersion-hypothermia"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "failure_of_stitching_joining_components_of_a_leather_assembly_can_separate_the_components"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-household-leather-stitched-join-failure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+          "locale": "ru",
+          "runtime_text": "В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+          "locale": "en",
+          "runtime_text": "In a leather assembly whose components are joined by stitching, failure of the joining stitches can separate the components. This establishes no object, stitch type, seam condition, load, failure cause, repair, durability, historical practice, or outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-household-water-v1-stitched-leather-join-failure"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fuel_combustion_can_produce_carbon_monoxide"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-co-combustion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+          "locale": "ru",
+          "runtime_text": "При горении топлива может образовываться угарный газ. Это не устанавливает топливо, огонь, количество, скорость образования, место или исход в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+          "locale": "en",
+          "runtime_text": "Fuel combustion can produce carbon monoxide. This establishes no fuel, fire, amount, production rate, place, or outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-exposure-v1-fuel-combustion-carbon-monoxide"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "stitching_can_secure_a_torn_frayed_or_weak_textile_area_to_a_support_textile"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-household-textile-stitch-support"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+          "locale": "ru",
+          "runtime_text": "Стежки могут закреплять порванный, осыпающийся или ослабленный участок текстиля на поддерживающей ткани. Это не устанавливает текстиль, нить, поддержку, инструмент, навык, историческую практику, прочность или результат ремонта в конкретной сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+          "locale": "en",
+          "runtime_text": "Stitching can secure a torn, frayed, or weak textile area to a support textile. This establishes no textile, thread, support, tool, skill, historical practice, strength, or repair result in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-household-water-v1-textile-stitch-support"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:resource-occupation-needs-setting",
       "domain": "npc_daily_life",
       "subject_ref": "wk:npc_daily_life:resource-occupation-needs-setting",
@@ -83919,6 +84496,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:research-cold-water-immersion-hypothermia": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:ruminant-digestion": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:ruminant-digestion",
@@ -84309,6 +84895,15 @@
       "wk:chemistry_process:reaction-rate-reactant-concentration": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:chemistry_process:reaction-rate-reactant-concentration",
+        "domain": "chemistry_process",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:chemistry_process:research-water-heating-contaminant-boundary": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "domain": "chemistry_process",
         "broader_refs": [],
         "related_refs": [],
@@ -87496,6 +88091,33 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "domain": "physics_material_science",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:physics_material_science:research-stitched-leather-component-join": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+        "domain": "physics_material_science",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:physics_material_science:research-textile-stitch-support": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+        "domain": "physics_material_science",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:physics_material_science:smoke-optical-obscuration": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:physics_material_science:smoke-optical-obscuration",
@@ -89463,6 +90085,9 @@
       "wk:biology_physiology:plant-root-uptake": [
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients"
       ],
+      "wk:biology_physiology:research-cold-water-immersion-hypothermia": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ],
       "wk:biology_physiology:ruminant-digestion": [
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
@@ -89600,6 +90225,9 @@
       ],
       "wk:chemistry_process:reaction-rate-reactant-concentration": [
         "claim:foundations-chm-02-reaction-rate-reactant-concentration"
+      ],
+      "wk:chemistry_process:research-water-heating-contaminant-boundary": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "wk:chemistry_process:solubility-saturation": [
         "claim:foundations-physical-b2-chm-05-solubility-saturation"
@@ -90808,6 +91436,16 @@
       "wk:physics_material_science:pressure-driven-liquid-outflow": [
         "claim:foundations-phys-06-pressure-driven-liquid-outflow"
       ],
+      "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
+      ],
+      "wk:physics_material_science:research-stitched-leather-component-join": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
+      "wk:physics_material_science:research-textile-stitch-support": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
       "wk:physics_material_science:smoke-optical-obscuration": [
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
       ],
@@ -91563,6 +92201,7 @@
         "claim:population-material-leather-mould",
         "claim:population-material-wood-decay",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "claim:skeletal-muscle-contraction-depends-on-atp",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
@@ -91616,6 +92255,7 @@
         "claim:population-material-iron-rust",
         "claim:population-material-wood-combustion",
         "claim:population-material-wood-pyrolysis",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:vegetable-tanning-collagen-stabilization",
@@ -92049,6 +92689,10 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-static-friction",
         "claim:population-physics-stress-failure",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
@@ -93065,6 +93709,12 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -94026,6 +94676,12 @@
         "claim:population-physics-static-friction",
         "claim:population-physics-stress-failure",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:seasonal-plant-development-depends-on-photoperiod",
@@ -96127,7 +96783,8 @@
       ],
       "вентиляцию": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
-        "claim:foundations-thm-09-combustion-oxygen-supply"
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "венцами": [
         "claim:construction-rjaz-riverbed-foundation"
@@ -96347,6 +97004,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:population-physics-freezing-condensation-energy",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:food-energy-nutrients",
         "wk:biology_physiology:foundation-cell-substances",
@@ -97256,13 +97914,15 @@
         "claim:foundations-physical-material3-03-antler-water-workability",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:population-ceramic-water",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:biology_physiology:fauna-atlantic-salmon",
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:foundation-cell-substances",
         "wk:biology_physiology:foundation-pathogen-transport",
-        "wk:biology_physiology:plant-root-uptake"
+        "wk:biology_physiology:plant-root-uptake",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "воды": [
         "claim:activity-fluid-balance",
@@ -97297,6 +97957,8 @@
         "claim:population-material-clay-plasticity",
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-evaporation-humidity",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:soil-texture-affects-infiltration-rate",
         "claim:water-capillary-rise-depression",
         "claim:water-percolation-openings",
@@ -97316,6 +97978,7 @@
         "wk:biology_physiology:sweating-water-loss",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:chemistry_process:lime-transformations",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:environment:candidate-water-circulation-oxygen",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:environment:river-ice-jam-flow-obstruction",
@@ -97423,6 +98086,7 @@
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:oil-rawhide-moisture-resistance",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:chemistry_process:chemical-exposure-modifiers",
         "wk:chemistry_process:environmental-exposure-routes"
@@ -97441,6 +98105,7 @@
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "wk:biology_physiology:food-drying-airflow-humidity",
         "wk:environment:rising-air-cooling-cloud-condensation",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
       ],
       "воздуха": [
@@ -97461,10 +98126,12 @@
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:air-drag-fall",
         "wk:physics_material_science:partially-saturated-granular-deformation",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
       ],
       "воздухе": [
-        "claim:foundations-life-46-airborne-tuberculosis-exposure"
+        "claim:foundations-life-46-airborne-tuberculosis-exposure",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "воздухом": [
         "claim:foundations-life-13-alveolar-exchange",
@@ -98309,7 +98976,8 @@
         "wk:material_culture:iron-pan-lifter"
       ],
       "выживание": [
-        "claim:care-direct-pressure-bleeding"
+        "claim:care-direct-pressure-bleeding",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
       ],
       "выжившие": [
         "claim:drying-reduces-microbial-growth-conditions"
@@ -98333,6 +99001,7 @@
         "claim:population-joining-assembly-expansion",
         "claim:population-material-clay-quartz",
         "claim:population-material-clay-steam",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:environment:river-ice-jam-flow-obstruction"
       ],
@@ -98616,9 +99285,12 @@
         "claim:foundations-life-13-alveolar-exchange",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "wk:biology_physiology:foundation-alveolar-exchange",
-        "wk:biology_physiology:stomatal-regulation"
+        "wk:biology_physiology:stomatal-regulation",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "газа": [
         "claim:foundations-life-12-respiration",
@@ -98627,7 +99299,8 @@
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
         "wk:biology_physiology:foundation-respiration",
         "wk:biology_physiology:plant-growth-requirements",
-        "wk:physics_material_science:gas-temperature-pressure-volume"
+        "wk:physics_material_science:gas-temperature-pressure-volume",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "газов": [
         "claim:foundations-physical-b2-chm-06-temperature-solubility-conditional",
@@ -99229,11 +99902,14 @@
         "wk:chemistry_process:combustion-fuel-oxidizer"
       ],
       "горении": [
-        "wk:chemistry_process:combustion-oxygen-supply"
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "wk:chemistry_process:combustion-oxygen-supply",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "горения": [
         "claim:foundations-thm-09-combustion-oxygen-supply",
         "claim:population-material-wood-combustion",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "гореть": [
@@ -99502,6 +100178,7 @@
       "границы": [
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:physics_material_science:liquid-surface-wetting",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
@@ -100292,6 +100969,7 @@
         "claim:fluid-osmotic-balance-depends-on-water-solutes",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:wound-healing-time-dependent",
         "wk:chemistry_process:chemical-exposure-modifiers"
@@ -100399,6 +101077,8 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:population-material-iron-rust",
         "claim:population-material-leather-dry",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:textile-dye-application",
         "claim:wood-liquid-moisture-change",
         "wk:biology_physiology:foundation-airborne-exposure"
@@ -100501,6 +101181,7 @@
         "claim:pottery-handmade-temper",
         "claim:probable-travel-chalice-communion",
         "claim:religion-olenin-church-people",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:river-landing-surfacing-allocation",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -100851,7 +101532,8 @@
         "wk:social_law_economy:debt-record"
       ],
       "долговечность": [
-        "claim:pine-pitch-woven-basket-coating"
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "долгового": [
         "claim:social-debt-record-may-contain-entry",
@@ -102372,6 +103054,7 @@
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-life-44-pathogen-transport",
         "claim:material-water-textile-liquid-contaminants",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions"
       ],
@@ -102403,7 +103086,8 @@
       ],
       "загрязнителей": [
         "claim:foundations-haz-03-exposure-routes",
-        "wk:chemistry_process:environmental-exposure-routes"
+        "wk:chemistry_process:environmental-exposure-routes",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "загрязнителем": [
         "claim:foundations-haz-02-exposure-not-illness",
@@ -102719,6 +103403,9 @@
       ],
       "закрепляли": [
         "claim:construction-iron-clamp-caulking"
+      ],
+      "закреплять": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "закрываемой": [
         "wk:craft_technology:pit-charcoal-burning"
@@ -103304,7 +103991,8 @@
         "claim:livestock-ruminant-membership"
       ],
       "здоровья": [
-        "claim:fodder-healthy-horse-forage"
+        "claim:fodder-healthy-horse-forage",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "зелёная": [
         "claim:textile-indigo-yellow-analysis"
@@ -103814,7 +104502,11 @@
       ],
       "изделие": [
         "claim:population-material-clay-drying",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:textile-dye-application"
+      ],
+      "изделии": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "изделий": [
         "claim:household-furniture-wood",
@@ -103822,7 +104514,8 @@
         "claim:population-woodwork-material"
       ],
       "изделия": [
-        "wk:architecture_settlement:construction-pottery-production"
+        "wk:architecture_settlement:construction-pottery-production",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "изложении": [
         "claim:river-landing-category",
@@ -104249,6 +104942,12 @@
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -104579,6 +105278,9 @@
         "wk:npc_daily_life:neutral-household-context",
         "wk:social_law_economy:conditional-dependant-care"
       ],
+      "инактивацией": [
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
+      ],
       "индивидами": [
         "claim:foundations-ms-17-individual-variation",
         "wk:psychology_behavior:foundations-ms-17-individual-variation"
@@ -104625,6 +105327,7 @@
         "claim:food-practices-threshing-chaff",
         "claim:occupation-wood-plane",
         "claim:population-iron-hook",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rural-agriculture-crop-context",
         "claim:textile-fibres-twist-yarn",
         "wk:material_culture:cutting-tool",
@@ -105083,6 +105786,8 @@
         "claim:material-water-plant-fibre-cellulose",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:social-hired-work-relates-business-record",
         "claim:social-kin-request-reports-contingent-return",
         "claim:textile-dye-application",
@@ -105118,6 +105823,7 @@
         "claim:occupation-wood-plane",
         "claim:population-hide-leather-distinction",
         "claim:pottery-handmade-local-clay",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:technology-circuit-prerequisite",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
@@ -105198,6 +105904,11 @@
         "claim:foundations-life-47-host-susceptibility",
         "claim:judicial-accusation-record",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:social-settlement-demand-reports-court-choice",
@@ -105259,6 +105970,7 @@
         "claim:settlement-skate-footwear",
         "claim:social-debt-record-may-contain-entry",
         "wk:physics_material_science:natural-fibre-water-response",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:social_behavior:foundations-ms-26-group-context"
       ],
       "ищут": [
@@ -105639,7 +106351,9 @@
       "качественная": [
         "claim:clay-firing-structural-transformation",
         "wk:biology:candidate-plant-diagnostic-identity",
-        "wk:environment:candidate-deciduous-tree-leaf-flower-sequence"
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+        "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "качественное": [
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
@@ -105849,6 +106563,9 @@
       ],
       "кипения": [
         "claim:population-physics-evaporation-below-boiling"
+      ],
+      "кипячение": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "кирпичи": [
         "claim:construction-construction-pottery-products"
@@ -106143,8 +106860,14 @@
         "claim:population-leather-shoes",
         "wk:material_culture:footwear"
       ],
+      "кожаного": [
+        "wk:physics_material_science:research-stitched-leather-component-join"
+      ],
       "кожаной": [
         "claim:population-shoe-output"
+      ],
+      "кожаном": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "кожаному": [
         "claim:population-weight-cord"
@@ -106165,6 +106888,9 @@
       ],
       "кожаным": [
         "claim:clothing-male-shirt-belt"
+      ],
+      "кожаных": [
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "коже": [
         "claim:oil-fat-vegetable-leather-flexibility",
@@ -106309,6 +107035,7 @@
         "claim:grain-processing-bread-liquid",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:social-daily-honey-documentary-entry",
         "claim:terrain-parent-material-assemblage",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
@@ -106568,6 +107295,12 @@
         "claim:occupation-wood-plane",
         "claim:population-material-wet-silk",
         "claim:population-material-wood-shrinkage",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-category",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:rural-agriculture-crop-context",
@@ -106996,6 +107729,9 @@
         "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
         "wk:chemistry_process:ionic-precipitation-threshold"
       ],
+      "концентрацию": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
       "концентрация": [
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
@@ -107334,6 +108070,9 @@
       ],
       "косы": [
         "claim:household-scythe-cutting"
+      ],
+      "которого": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "которое": [
         "claim:foundations-earth-03-soil-phases",
@@ -108534,6 +109273,7 @@
         "claim:livestock-ruminant-membership",
         "claim:oil-rawhide-moisture-resistance",
         "claim:pottery-handmade-temper",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:stone-whetstone-edge-maintenance",
         "claim:textile-fibres-twist-yarn",
         "claim:transport-hired-boatman"
@@ -109090,6 +109830,7 @@
         "wk:biology:candidate-plant-food-part-bound",
         "wk:biology_physiology:foundation-alveolar-exchange",
         "wk:biology_physiology:foundation-circulation",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:craft_technology:plank-gap-caulking",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:environment:precipitation-infiltration-runoff-limit",
@@ -109289,6 +110030,7 @@
         "claim:population-household-storage",
         "claim:population-storage-vessels",
         "claim:probable-travel-chalice-communion",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "wk:architecture_settlement:assembly-space",
         "wk:architecture_settlement:drying-workspace",
         "wk:architecture_settlement:fishing-workspace",
@@ -109538,7 +110280,8 @@
         "claim:microbial-growth-depends-on-species-temperature-range",
         "wk:biology_physiology:food-drying-microbial-conditions",
         "wk:biology_physiology:microbial-growth",
-        "wk:chemistry_process:fermentation-conditions"
+        "wk:chemistry_process:fermentation-conditions",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "микроорганизмы": [
         "claim:drying-reduces-microbial-growth-conditions"
@@ -109806,6 +110549,7 @@
         "claim:population-ceramic-joint",
         "claim:population-joining-assembly-expansion",
         "claim:population-joining-bond-contamination",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rp-minor-children-conditional-care",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:textile-fibres-twist-yarn",
@@ -110012,6 +110756,10 @@
         "claim:population-physics-static-friction",
         "claim:population-physics-stress-failure",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:textile-dye-application",
@@ -110447,6 +111195,8 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:probable-travel-chalice-communion",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -110577,6 +111327,7 @@
         "claim:early-rus-hunting-ground-terms",
         "claim:foundations-ms-12-practice-correction",
         "claim:occupation-smith-role",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-lac-dye-analysis",
         "wk:psychology_behavior:foundations-ms-12-practice-correction"
       ],
@@ -110612,7 +111363,8 @@
         "claim:population-joining-assembly-expansion",
         "claim:population-material-clay-steam",
         "wk:biology_physiology:food-heating",
-        "wk:chemistry_process:food-preservation-qualitative"
+        "wk:chemistry_process:food-preservation-qualitative",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "нагрева": [
         "claim:brittle-fracture-defects",
@@ -110637,6 +111389,7 @@
         "claim:population-material-wood-pyrolysis"
       ],
       "нагревом": [
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:physics_material_science:bread-dough-formation-and-baking"
       ],
       "нагретое": [
@@ -110668,7 +111421,8 @@
         "claim:population-glass-fracture"
       ],
       "нагрузку": [
-        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "над": [
         "claim:foundations-earth-29-advection-fog",
@@ -110812,6 +111566,9 @@
       "найм": [
         "claim:population-boat-work",
         "claim:transport-hired-boatman"
+      ],
+      "накапливаться": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "накапливают": [
         "claim:fauna-bird-migration-energy"
@@ -111172,6 +111929,7 @@
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
         "wk:biology_physiology:candidate-drowning-respiratory-impairment"
       ],
@@ -111791,6 +112549,12 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
@@ -112057,6 +112821,9 @@
       ],
       "небольшое": [
         "claim:population-material-wood-shrinkage"
+      ],
+      "невозможность": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "негативными": [
         "claim:foundations-ms4-01-reappraisal-negative-experience"
@@ -112509,6 +113276,7 @@
       ],
       "нить": [
         "claim:population-processes-weaving-thread",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-fibres-twist-yarn",
         "wk:material_culture:textile-thread"
       ],
@@ -113271,7 +114039,8 @@
       "обработку": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
-        "claim:occupation-wood-plane"
+        "claim:occupation-wood-plane",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "образа": [
         "claim:foundations-ms-06-visual-selection",
@@ -113299,7 +114068,8 @@
         "claim:foundations-earth-17-sedimentary-rock-formation"
       ],
       "образования": [
-        "claim:fauna-culex-female-blood"
+        "claim:fauna-culex-female-blood",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
       ],
       "образованное": [
         "wk:material_culture:woven-textile"
@@ -113323,6 +114093,7 @@
       ],
       "образовываться": [
         "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "wk:chemistry_process:acid-base-neutralization"
       ],
       "образом": [
@@ -113949,6 +114720,9 @@
       "оголовье": [
         "claim:transport-horse-sledge-equipment"
       ],
+      "огонь": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
+      ],
       "огородами": [
         "claim:household-garden-shovel",
         "claim:household-scythe-cutting"
@@ -114034,6 +114808,9 @@
       "одежде": [
         "claim:clothing-rank-material-not-cut"
       ],
+      "одежду": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ],
       "одежды": [
         "claim:clothing-hemp",
         "claim:clothing-linen",
@@ -114111,6 +114888,7 @@
       ],
       "одно": [
         "claim:metal-properties-depend-on-state",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:physics_material_science:metal-properties-depend-on-state"
       ],
       "одновременно": [
@@ -114865,6 +115643,12 @@
       "ослабление": [
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
+      "ослабленного": [
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
+      "ослабленный": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
       "ослабляла": [
         "claim:foundations-ms3-02-working-memory"
       ],
@@ -115082,6 +115866,9 @@
       "осыпанием": [
         "claim:pine-pitch-severe-oxidation"
       ],
+      "осыпающийся": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
       "осязания": [
         "wk:psychology_behavior:foundations-ms-05-tactile-components"
       ],
@@ -115168,6 +115955,7 @@
         "claim:population-rod-input",
         "claim:population-wool-lining",
         "claim:religion-olenin-adjudication",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:river-landing-market-approaches",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -116201,8 +116989,13 @@
       "переотложенном": [
         "claim:food-practices-millet-cleaning-waste"
       ],
+      "переохлаждение": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
+      ],
       "переохлаждения": [
-        "claim:candidate-physiology-v3-shivering-thermogenesis"
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "переохлаждённые": [
         "claim:foundations-earth-31-freezing-fog-rime"
@@ -116513,6 +117306,12 @@
       "питающиеся": [
         "claim:fauna-culex-life-cycle",
         "wk:biology_physiology:fauna-culex-mosquito"
+      ],
+      "питьё": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "питья": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "пища": [
         "claim:food-energy-nutrients",
@@ -116862,6 +117661,7 @@
         "claim:population-material-wood-decay",
         "claim:population-wood-float",
         "claim:population-woodwork-practice",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -117052,7 +117852,8 @@
         "wk:biology_physiology:pain-nociception-distinct"
       ],
       "повреждённого": [
-        "claim:burial-coffin-lid-transverse-plank"
+        "claim:burial-coffin-lid-transverse-plank",
+        "wk:physics_material_science:research-textile-stitch-support"
       ],
       "повреждённое": [
         "claim:population-material-iron-coating"
@@ -117187,13 +117988,19 @@
         "wk:environment:buried-soil"
       ],
       "погружение": [
-        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
       ],
       "погружением": [
         "claim:textile-dye-application"
       ],
+      "погружении": [
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
+      ],
       "погружения": [
-        "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "погружённые": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
@@ -117313,8 +118120,18 @@
       "поддерживают": [
         "claim:construction-wooden-nail-planking"
       ],
+      "поддерживающей": [
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
+      "поддержка": [
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
       "поддержки": [
         "claim:civic-defence-stake-support"
+      ],
+      "поддержку": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "поджидают": [
         "claim:fauna-tick-questing",
@@ -117859,11 +118676,18 @@
       "помещает": [
         "claim:occupation-carpenter-role"
       ],
+      "помещение": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
       "помещением": [
         "claim:settlement-underfloor-utility"
       ],
+      "помещении": [
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
+      ],
       "помещения": [
-        "claim:household-riverside-storage"
+        "claim:household-riverside-storage",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "поминание": [
         "claim:social-religious-name-list-relates-disjunctive-context",
@@ -117980,6 +118804,9 @@
       "порах": [
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "wk:environment:freeze-thaw-rock-fracture"
+      ],
+      "порванный": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "пористая": [
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
@@ -118646,6 +119473,8 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:pine-pitch-woven-basket-coating",
         "claim:regional-agriculture-practice",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:transport-winter-sledge-1220",
@@ -119169,6 +119998,7 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-stress-failure",
         "claim:population-weight-cord",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:river-landing-named-list",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -119194,6 +120024,7 @@
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:biology_physiology:foundation-fertilization",
         "wk:biology_physiology:foundation-mitosis",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:chemistry_process:acid-base-neutralization",
         "wk:chemistry_process:combustion-oxygen-supply",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
@@ -119214,6 +120045,8 @@
         "wk:physics_material_science:natural-fibre-water-response",
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:porous-bone-fragility",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:sound-frequency-pitch",
         "wk:physics_material_science:stored-grain-moisture-migration",
         "wk:physics_material_science:support-polygon-center-of-mass",
@@ -119254,7 +120087,8 @@
         "wk:npc_daily_life:neutral-household-context"
       ],
       "привести": [
-        "claim:population-joining-metal-fatigue"
+        "claim:population-joining-metal-fatigue",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "приветствия": [
         "claim:social-priest-fragment-relates-office-address"
@@ -119298,6 +120132,7 @@
         "claim:foundations-mat-02-wood-drying-crack-strength",
         "claim:foundations-mat-08-abrasive-hardness-material-removal",
         "claim:hard-stone-abrasive-shaping",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
         "claim:transport-sledge-summer-cargo",
@@ -119471,6 +120306,10 @@
       "примеси": [
         "claim:population-ceramic-water"
       ],
+      "примесями": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
+      ],
       "примыкать": [
         "claim:settlement-vestibule-log"
       ],
@@ -119640,7 +120479,8 @@
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
-        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "причины": [
         "claim:candidate-physiology-v3-emesis-reflex-response",
@@ -120271,6 +121111,7 @@
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:population-joining-bond-cure",
         "claim:population-physics-section-response",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-fibres-twist-yarn",
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
@@ -120792,8 +121633,12 @@
         "claim:construction-auxiliary-construction-work",
         "claim:foundations-physical-material3-04-osseous-shaping-operations"
       ],
+      "разделению": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
       "разделения": [
-        "claim:religion-olenin-adjudication"
+        "claim:religion-olenin-adjudication",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "разделяться": [
         "claim:fauna-goat-sociality",
@@ -120873,7 +121718,8 @@
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
       ],
       "различие": [
-        "claim:foundations-phys-01-air-drag-fall"
+        "claim:foundations-phys-01-air-drag-fall",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "различий": [
         "claim:foundations-life-08-cell-specialization",
@@ -121038,7 +121884,8 @@
         "wk:physics_material_science:light-refraction-medium-boundary"
       ],
       "разрешение": [
-        "claim:posadnik-fedor-conflict-1224"
+        "claim:posadnik-fedor-conflict-1224",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "разрушая": [
         "claim:fibre-flax-breaker-shive"
@@ -121048,16 +121895,21 @@
         "claim:clay-fired-no-replasticization",
         "claim:foundations-earth2-01-rock-weathering-physical-chemical",
         "claim:population-material-wood-decay",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:wood-liquid-directional-uptake",
         "wk:environment:rock-weathering-physical-chemical",
         "wk:physics_material_science:brittle-fracture-defects"
+      ],
+      "разрушении": [
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "разрушению": [
         "claim:population-joining-metal-cold-work",
         "claim:population-joining-metal-fatigue"
       ],
       "разрушения": [
-        "claim:pine-pitch-severe-oxidation"
+        "claim:pine-pitch-severe-oxidation",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "разрушиться": [
         "claim:population-joining-bond-weak-link",
@@ -121889,6 +122741,7 @@
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:pottery-handmade-local-clay",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stone-grinding-metal-use",
@@ -122020,12 +122873,14 @@
       "ремонт": [
         "claim:population-shoe-input",
         "claim:population-shoe-output",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:craft_technology:boat-repair",
         "wk:craft_technology:shoemaking"
       ],
       "ремонта": [
         "claim:household-boat-repair-clamp",
-        "claim:population-shoe-form"
+        "claim:population-shoe-form",
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "ремонтная": [
         "wk:material_culture:iron-repair-clamp"
@@ -122713,6 +123568,7 @@
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:foundations-phys-01-air-drag-fall",
         "claim:population-wood-float",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:wild-mushroom-resemblance-not-edibility",
         "wk:biology_physiology:wild-mushroom-identification"
       ],
@@ -123240,9 +124096,13 @@
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:craft_technology:leather-broad-context",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:environment:poozerie-cereal-millet-source",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:social_behavior:foundations-ms-28-ostracism-conditional",
         "wk:social_law_economy:priest-baptism-statutory-context"
       ],
@@ -123337,6 +124197,7 @@
         "claim:material-water-textile-liquid-contaminants",
         "claim:population-material-wood-decay",
         "claim:population-wood-float",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:rp-minor-children-conditional-care",
         "claim:water-permeability-connected-pores",
         "claim:wild-mushroom-resemblance-not-edibility",
@@ -123726,6 +124587,9 @@
       "симпатический": [
         "claim:candidate-physiology-v3-threat-autonomic-arousal"
       ],
+      "симптом": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
       "синантропной": [
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific"
@@ -123926,6 +124790,7 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:population-glass-cooling",
         "claim:population-physics-conduction-gradient",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:soil-texture-affects-infiltration-rate",
         "claim:water-percolation-openings",
         "claim:wood-liquid-capillary-uptake",
@@ -124678,12 +125543,14 @@
         "claim:population-joining-bond-cure",
         "claim:population-joining-bond-weak-link",
         "wk:craft_technology:vessel-joinery",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:wood-bond"
       ],
       "соединения": [
         "claim:construction-aspen-cladding-joint",
         "claim:population-joining-bond-moisture",
         "wk:material_culture:wooden-peg",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:thermal-assembly"
       ],
       "соединениях": [
@@ -124694,6 +125561,9 @@
       ],
       "соединённых": [
         "claim:population-joining-assembly-expansion"
+      ],
+      "соединены": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "соединяла": [
         "claim:population-net-cord"
@@ -124707,6 +125577,9 @@
       ],
       "соединяющие": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion"
+      ],
+      "соединяющих": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "создавать": [
         "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
@@ -125097,6 +125970,7 @@
         "claim:population-joining-metal-melt",
         "claim:population-leather-shoes",
         "claim:population-material-leather-dry",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:textile-conditioning-matters",
@@ -126051,6 +126925,26 @@
       "стеблями": [
         "claim:common-reed-rhizome-produces-stems-in-wetland-habitat"
       ],
+      "стежками": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
+      "стежки": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
+      "стежков": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
+      "стежковая": [
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
+      "стежкового": [
+        "wk:physics_material_science:research-stitched-leather-component-join"
+      ],
+      "стежковое": [
+        "wk:physics_material_science:research-stitched-leather-component-join"
+      ],
       "стекла": [
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
@@ -126625,6 +127519,12 @@
         "claim:population-processes-malt-context",
         "claim:population-processes-oven-baking",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:social-priest-fragment-relates-office-address",
@@ -126969,6 +127869,7 @@
         "wk:social_law_economy:church-people-statutory-category"
       ],
       "текстиль": [
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "wk:physics_material_science:textile-water-damage"
       ],
       "текстильная": [
@@ -126993,8 +127894,10 @@
         "claim:clothing-nerev-coloured-wool",
         "claim:material-water-textile-liquid-contaminants",
         "claim:material-water-textile-water-load",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "wk:chemistry_process:textile-dyeing",
-        "wk:material_culture:textile-colourants"
+        "wk:material_culture:textile-colourants",
+        "wk:physics_material_science:research-textile-stitch-support"
       ],
       "текстов": [
         "wk:social_law_economy:urban-textual-context"
@@ -127106,6 +128009,7 @@
         "claim:foundations-physical-b2-snd-01-sound-source-vibration",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:population-physics-load-deformation",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:biology_physiology:exercise-heat-dissipation",
         "wk:biology_physiology:fluid-osmotic-balance",
         "wk:biology_physiology:foundation-infection-entry",
@@ -127212,6 +128116,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:occupation-smith-heat-treatment",
         "claim:oil-tanning-crosslinking-fibres",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:textile-dye-application"
       ],
       "температуры": [
@@ -127430,6 +128335,7 @@
       "тип": [
         "claim:material-water-alum-skin-water",
         "claim:pottery-handmade-temper",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:social-debt-record-may-contain-entry",
         "claim:transport-boat-cargo-dispatch",
         "wk:social_law_economy:debt-record",
@@ -127481,6 +128387,7 @@
         "claim:material-water-linen-flax-origin",
         "claim:material-water-new-linen-water",
         "claim:population-material-wet-silk",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-chrysin-analysis",
         "claim:textile-conditioning-matters",
         "claim:textile-indigo-yellow-analysis",
@@ -127490,6 +128397,7 @@
         "wk:biology_physiology:tissue-injury-response",
         "wk:material_culture:onuchi",
         "wk:physics_material_science:plant-cellulosic-fibres",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:textile-conditioning-matters",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
@@ -127656,6 +128564,9 @@
       "токсичности": [
         "claim:foundations-haz-01-exposure-modifiers"
       ],
+      "токсичными": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
       "толкование": [
         "wk:social_law_economy:christian-exegetical-text"
       ],
@@ -127723,8 +128634,10 @@
       "топлива": [
         "claim:construction-construction-pottery-products",
         "claim:fuel-charcoal-metallurgy-fuel",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:chemistry_process:combustion-fuel-oxidizer",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "топливе": [
@@ -127740,8 +128653,12 @@
         "claim:fuel-charcoal-metallurgy-fuel",
         "claim:metalworking-broad-context",
         "claim:occupation-smith-role",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "wk:craft_technology:metalworking-broad-context",
         "wk:material_culture:charcoal"
+      ],
+      "топливом": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "топологии": [
         "claim:burial-hollowed-log-container"
@@ -127870,7 +128787,8 @@
         "wk:biology_physiology:fauna-tick"
       ],
       "травму": [
-        "claim:candidate-physiology-v3-protective-withdrawal"
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
       ],
       "травмы": [
         "claim:foundations-phys-02-impulse-momentum-change"
@@ -128227,6 +129145,14 @@
       "увлажнении": [
         "claim:population-material-wood-shrinkage"
       ],
+      "угарного": [
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
+      ],
+      "угарный": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
+      ],
       "угла": [
         "claim:water-capillary-height",
         "claim:water-capillary-rise-depression"
@@ -128332,6 +129258,10 @@
         "claim:foundations-life-12-respiration",
         "claim:population-physics-evaporation-humidity",
         "wk:biology_physiology:foundation-respiration"
+      ],
+      "удаления": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "удаляется": [
         "claim:fauna-mammals-domestic-cattle-flight-zone",
@@ -128728,6 +129658,7 @@
       ],
       "универсальную": [
         "claim:debt-record-practice",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:social_law_economy:debt-record-practice"
       ],
       "универсальными": [
@@ -128981,6 +129912,8 @@
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
         "wk:environment:precipitation-infiltration-runoff-limit",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:social_law_economy:contingent-return-request"
       ],
       "условно": [
@@ -129085,6 +130018,12 @@
         "claim:population-material-wood-shrinkage",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:social-payment-register-records-entry",
         "claim:social-settlement-demand-reports-court-choice",
         "claim:textile-chrysin-analysis",
@@ -129261,7 +130200,8 @@
         "wk:material_culture:household-utensil"
       ],
       "утверждает": [
-        "claim:foundations-chm-03-heterogeneous-reaction-interface"
+        "claim:foundations-chm-03-heterogeneous-reaction-interface",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "утверждается": [
         "claim:clothing-votola-cloak"
@@ -129485,6 +130425,7 @@
       ],
       "участок": [
         "claim:household-apple-orchard",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "wk:architecture_settlement:garden-orchard"
       ],
       "учебный": [
@@ -129911,6 +130852,7 @@
       "функций": [
         "claim:dietary-macronutrients-support-cellular-energy",
         "claim:foundations-life-09-organ-systems",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:biology_physiology:dietary-macronutrient-energy",
         "wk:biology_physiology:foundation-organ-systems"
       ],
@@ -130093,7 +131035,9 @@
       ],
       "химическими": [
         "claim:fauna-animal-signals",
-        "wk:biology_physiology:fauna-animal-communication"
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "wk:biology_physiology:fauna-animal-communication",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "химических": [
         "claim:foundations-thm-08-temperature-reaction-rate"
@@ -130272,6 +131216,10 @@
         "claim:foundations-earth-29-advection-fog",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture"
+      ],
+      "холодную": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "холодные": [
         "wk:environment:novgorod-pre1300-cold-extremes"
@@ -130620,9 +131568,11 @@
         "claim:foundations-phys-08-momentum-closed-system",
         "claim:occupation-smith-heat-treatment",
         "claim:population-net-weights",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology:candidate-plant-food-part-bound",
-        "wk:physics_material_science:fishing-net-serviceability"
+        "wk:physics_material_science:fishing-net-serviceability",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "части": [
         "claim:agriculture-fauna-bort-climbing-hooks",
@@ -130631,6 +131581,7 @@
         "claim:construction-bast-vessel-fastening",
         "claim:fauna-tawny-owl-pellets",
         "claim:population-joining-steel-temper",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "wk:biology:candidate-plant-food-part-bound",
         "wk:craft_technology:steel-working-part-heat-treatment",
@@ -130789,6 +131740,7 @@
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
         "claim:human-thermoregulation-depends-on-heat-exchange",
         "claim:population-net-work",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:rural-household-economy-context",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:transport-winter-sledge-1220",
@@ -131048,7 +132000,8 @@
         "wk:architecture_settlement:composite-urban-quarter"
       ],
       "шва": [
-        "claim:pine-pitch-woven-basket-coating"
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "шёлк": [
         "wk:material_culture:silk"
@@ -131834,6 +132787,12 @@
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-category",
         "claim:river-landing-surfacing-allocation",
         "claim:rp-caretaker-principal-goods",
@@ -133291,7 +134250,8 @@
         "wk:social_law_economy:payment-register"
       ],
       "accumulate": [
-        "claim:fauna-bird-migration-energy"
+        "claim:fauna-bird-migration-energy",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "accumulation": [
         "claim:foundations-earth-17-sedimentary-rock-formation",
@@ -133727,6 +134687,7 @@
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:population-material-wood-moisture",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:wood-liquid-directional-uptake",
         "wk:biology_physiology:foundation-alveolar-exchange",
@@ -133736,6 +134697,7 @@
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:air-drag-fall",
         "wk:physics_material_science:partially-saturated-granular-deformation",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
       ],
       "airborne": [
@@ -133849,6 +134811,7 @@
         "claim:population-material-wood-decay",
         "claim:population-physics-floating-shape",
         "claim:population-wood-float",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:technology-circuit-prerequisite",
         "claim:technology-rotation-prerequisite",
         "claim:water-permeability-connected-pores",
@@ -134010,6 +134973,7 @@
         "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
         "claim:foundations-phys-10-gas-temperature-pressure-volume",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:social-daily-fur-sale-accounting",
         "claim:social-daily-honey-documentary-entry",
@@ -134680,6 +135644,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:resource-occupation-needs-setting",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-named-list",
@@ -134845,6 +135810,7 @@
         "wk:biology_physiology:pain-nociception-distinct",
         "wk:biology_physiology:plant-growth-requirements",
         "wk:biology_physiology:plant-root-uptake",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:ruminant-digestion",
         "wk:biology_physiology:stomatal-opening-tradeoff",
         "wk:biology_physiology:stomatal-regulation",
@@ -134866,6 +135832,7 @@
         "wk:chemistry_process:lime-transformations",
         "wk:chemistry_process:metal-classes-composition",
         "wk:chemistry_process:reaction-rate-reactant-concentration",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:solubility-saturation",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:chemistry_process:temperature-reaction-rate",
@@ -134978,6 +135945,9 @@
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:plant-cellulosic-fibres",
         "wk:physics_material_science:porous-medium-water-flow",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:sound-absorption-soft-material",
         "wk:physics_material_science:sound-material-medium",
         "wk:physics_material_science:stationary-charge-distance-force",
@@ -135411,6 +136381,7 @@
         "claim:pottery-handmade-temper",
         "claim:probable-travel-chalice-communion",
         "claim:religion-olenin-church-people",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -135471,6 +136442,7 @@
         "claim:household-apple-orchard",
         "claim:household-ploughshare-tillage",
         "claim:population-physics-point-pressure",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "wk:architecture_settlement:grain-processing-area-evidence",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:physics_material_science:force-contact-geometry",
@@ -135690,9 +136662,13 @@
       ],
       "assembly": [
         "claim:civic-public-assembly",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:technology-motor-boundary",
         "wk:architecture_settlement:assembly-space",
         "wk:physics_material_science:thermal-assembly"
+      ],
+      "assert": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "asserted": [
         "claim:clothing-votola-cloak",
@@ -136639,11 +137615,16 @@
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology:candidate-plant-food-part-bound",
         "wk:biology_physiology:foundation-alveolar-exchange",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:craft_technology:plank-gap-caulking",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:physics_material_science:bread-dough-formation-and-baking",
         "wk:physics_material_science:light-refraction-medium-boundary",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:wet-granular-capillary-cohesion",
         "wk:psychology_behavior:foundations-ms-04-attention-competition"
       ],
@@ -136867,6 +137848,7 @@
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:population-ceramic-porosity",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:water-temperature-affects-aquatic-organism-range",
         "wk:biology_physiology:dietary-macronutrient-energy",
         "wk:biology_physiology:exercise-heat-dissipation",
@@ -136880,7 +137862,8 @@
         "wk:physics_material_science:support-polygon-center-of-mass"
       ],
       "boiling": [
-        "claim:population-physics-evaporation-below-boiling"
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "bolus": [
         "claim:candidate-physiology-v3-swallowing-airway-protection"
@@ -136965,6 +137948,7 @@
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:religion-priest-child-baptism",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:physics_material_science:light-refraction-medium-boundary"
@@ -137359,6 +138343,7 @@
         "claim:population-storage-role",
         "claim:population-weaving-practice",
         "claim:population-woodwork-practice",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-daily-honey-documentary-entry",
         "claim:social-spousal-complaint-reports-marital-treatment",
@@ -137667,6 +138652,11 @@
         "claim:population-physics-static-friction",
         "claim:population-physics-stress-failure",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rp-minor-children-conditional-care",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:social-alphabet-exercise-records-text",
@@ -137837,12 +138827,15 @@
         "claim:pigment-blue-lime-basis",
         "claim:pigment-carbon-black-pigment",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "wk:biology_physiology:foundation-alveolar-exchange",
         "wk:biology_physiology:foundation-respiration",
         "wk:biology_physiology:plant-growth-requirements",
         "wk:biology_physiology:stomatal-regulation",
-        "wk:material_culture:carbon-black-pigment"
+        "wk:material_culture:carbon-black-pigment",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "carbonation": [
         "claim:lime-transformations",
@@ -138118,6 +139111,8 @@
         "claim:population-material-clay-quartz",
         "claim:population-material-clay-steam",
         "claim:population-physics-stress-failure",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:chemistry_process:common-ion-precipitation-shift",
         "wk:environment:river-ice-jam-flow-obstruction"
@@ -138516,6 +139511,7 @@
         "wk:chemistry_process:metal-environment-corrosion",
         "wk:chemistry_process:mixing-diffusion-control",
         "wk:chemistry_process:reaction-rate-reactant-concentration",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:chemistry_process:temperature-reaction-rate",
         "wk:environment:rock-weathering-physical-chemical",
@@ -138549,7 +139545,8 @@
         "wk:environment:water-mineral-chemical-weathering"
       ],
       "chemicals": [
-        "claim:foundations-earth-26-runoff-contaminant-transport"
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "chemistry": [
         "claim:fauna-salmon-homing"
@@ -138852,6 +139849,7 @@
         "claim:clothing-votola-cloak",
         "claim:clothing-wool",
         "claim:population-wool-lining",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:material_culture:svita",
         "wk:material_culture:votola"
       ],
@@ -138951,7 +139949,9 @@
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
         "claim:population-joining-metal-anneal",
         "claim:population-joining-metal-cold-work",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:architecture_settlement:underfloor-space",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:environment:novgorod-pre1300-cold-extremes"
       ],
       "colder": [
@@ -139058,8 +140058,10 @@
       "combustion": [
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "wk:chemistry_process:combustion-fuel-oxidizer",
-        "wk:chemistry_process:combustion-oxygen-supply"
+        "wk:chemistry_process:combustion-oxygen-supply",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
       "come": [
         "claim:population-leather-shoes",
@@ -139415,7 +140417,8 @@
         "claim:foundations-thm-03-combustion-mixture-conditions",
         "claim:population-processes-weaving-device",
         "wk:material_culture:weaving-device-component",
-        "wk:physics_material_science:bone-organic-inorganic-structure"
+        "wk:physics_material_science:bone-organic-inorganic-structure",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "components": [
         "claim:foundations-life-02-cell-substances",
@@ -139424,6 +140427,7 @@
         "claim:foundations-ms-05-tactile-components",
         "claim:population-net-weights",
         "claim:population-shoe-form",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:biology_physiology:foundation-cell-substances",
         "wk:biology_physiology:foundation-immune-components",
         "wk:biology_physiology:foundation-infection-chain",
@@ -139489,6 +140493,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:chemistry_process:chemical-exposure-modifiers",
@@ -139538,6 +140543,12 @@
         "claim:iron-corrosion-moisture-oxygen",
         "claim:novgorod-leather-items",
         "claim:novgorod-wooden-urban-elements",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:urban-wooden-coverings",
         "claim:wood-anisotropy-moisture",
         "wk:architecture_settlement:architectural-material-classes",
@@ -139585,6 +140596,7 @@
         "claim:population-leather-shoes",
         "claim:population-material-leather-dry",
         "claim:population-material-wood-moisture",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:rp-mother-household-care-succession",
         "claim:textile-conditioning-matters",
         "claim:urban-pavements",
@@ -139624,6 +140636,8 @@
         "wk:environment:candidate-flood-woody-debris-transport-retention",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:physics_material_science:natural-fibre-water-response",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:textile-water-damage",
         "wk:social_behavior:foundations-ms-28-ostracism-conditional",
         "wk:social_law_economy:conditional-dependant-care",
@@ -139905,6 +140919,7 @@
       ],
       "containing": [
         "claim:fauna-tawny-owl-pellets",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:vegetable-tanning-prepared-hide"
       ],
       "contains": [
@@ -139921,11 +140936,13 @@
         "claim:material-water-textile-liquid-contaminants",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:chemistry_process:environmental-exposure-routes",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:environment:runoff-contaminant-transport"
       ],
       "contaminants": [
         "claim:foundations-earth-26-runoff-contaminant-transport",
-        "claim:material-water-textile-liquid-contaminants"
+        "claim:material-water-textile-liquid-contaminants",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "contaminated": [
         "claim:care-waterproof-wound-cover",
@@ -139941,6 +140958,7 @@
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-life-44-pathogen-transport",
         "claim:material-water-textile-liquid-contaminants",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions",
         "wk:physics_material_science:textile-water-damage"
@@ -140689,7 +141707,8 @@
         "claim:coagulation-reduces-blood-loss",
         "claim:fauna-cross-spider-egg-sac",
         "claim:population-material-iron-coating",
-        "wk:biology_physiology:coagulation"
+        "wk:biology_physiology:coagulation",
+        "wk:physics_material_science:research-textile-stitch-support"
       ],
       "damaging": [
         "claim:candidate-physiology-v3-protective-withdrawal"
@@ -141329,6 +142348,7 @@
         "claim:fluid-osmotic-balance-depends-on-water-solutes",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:wound-healing-time-dependent",
         "wk:chemistry_process:chemical-exposure-modifiers"
@@ -141666,6 +142686,9 @@
         "wk:physics_material_science:plant-cellulosic-fibres",
         "wk:physics_material_science:porous-medium-water-flow"
       ],
+      "distinction": [
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
+      ],
       "distinguishable": [
         "claim:environment-p1-bird-taxa"
       ],
@@ -141879,6 +142902,7 @@
         "claim:population-processes-weaving-thread",
         "claim:population-wood-float",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:skeletal-muscle-contraction-depends-on-atp",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
@@ -142051,6 +143075,12 @@
       "drills": [
         "claim:population-woodwork-drill"
       ],
+      "drinkability": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "drinking": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
       "drinks": [
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
@@ -142140,6 +143170,7 @@
       "durability": [
         "claim:clay-firing-structural-transformation",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:textile-dye-mordant-fixation"
       ],
       "durable": [
@@ -142161,6 +143192,8 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:population-material-iron-rust",
         "claim:population-material-leather-dry",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:rp-minor-children-conditional-care",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:textile-dye-application",
@@ -142648,6 +143681,9 @@
       "enclosing": [
         "claim:civic-earth-rampart"
       ],
+      "enclosure": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
       "encoding": [
         "claim:foundations-ms-09-memory-systems",
         "wk:psychology_behavior:foundations-ms-09-memory-systems"
@@ -142950,6 +143986,7 @@
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-floating-shape",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:social-written-complaint-may-assert-compensation",
         "claim:stone-grinding-metal-use",
         "claim:textile-chrysin-analysis",
@@ -143048,6 +144085,12 @@
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:pottery-handmade-local-clay",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:social-daily-wax-commodity-context",
         "claim:social-payment-register-records-entry",
         "claim:social-settlement-demand-reports-court-choice",
@@ -143120,7 +144163,8 @@
       ],
       "event": [
         "claim:foundations-earth-30-upslope-fog",
-        "claim:probable-travel-chalice-communion"
+        "claim:probable-travel-chalice-communion",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "every": [
         "claim:agriculture-fauna-hunting-economic-context",
@@ -143169,6 +144213,7 @@
         "claim:population-shoe-form",
         "claim:pottery-handmade-local-clay",
         "claim:pottery-handmade-temper",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:rural-agriculture-crop-context",
         "claim:social-daily-economic-activities",
         "claim:stone-grinding-metal-use",
@@ -143531,6 +144576,7 @@
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:foundations-ms3-02-working-memory",
         "claim:oil-rawhide-moisture-resistance",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:chemistry_process:chemical-exposure-modifiers",
@@ -143763,13 +144809,15 @@
         "claim:casting-defective-casting"
       ],
       "fails": [
-        "claim:foundations-haz-05-slope-water-triggers"
+        "claim:foundations-haz-05-slope-water-triggers",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "failure": [
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:pine-pitch-severe-oxidation",
         "claim:population-joining-bond-weak-link",
         "claim:population-joining-metal-fatigue",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:wood-liquid-directional-uptake",
         "wk:environment:slope-water-triggers"
       ],
@@ -144172,6 +145220,7 @@
       "fire": [
         "claim:grain-processing-bread-open-fire-baking",
         "claim:ha-firesteel-ignition",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:craft_technology:fire-ignition",
@@ -144748,6 +145797,7 @@
         "wk:material_culture:water",
         "wk:physics_material_science:capillary-action",
         "wk:physics_material_science:porous-medium-water-flow",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:static-force-equilibrium",
         "wk:physics_material_science:support-polygon-center-of-mass",
         "wk:physics_material_science:textile-conditioning-matters",
@@ -145053,6 +146103,9 @@
         "wk:biology_physiology:foundation-infection-chain",
         "wk:social_behavior:foundations-ms-36-socialization"
       ],
+      "frayed": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
       "free": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:foundations-ms3-01-initial-attention",
@@ -145277,6 +146330,7 @@
         "wk:physics_material_science:force-contact-geometry",
         "wk:physics_material_science:lever-force-arm-tradeoff",
         "wk:physics_material_science:plant-cellulosic-fibres",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:sound-reflection-surface",
         "wk:physics_material_science:sound-source-vibration",
         "wk:physics_material_science:support-polygon-center-of-mass"
@@ -145315,11 +146369,14 @@
         "claim:fuel-charcoal-metallurgy-fuel",
         "claim:metalworking-broad-context",
         "claim:occupation-smith-role",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:chemistry_process:combustion-fuel-oxidizer",
         "wk:craft_technology:metalworking-broad-context",
         "wk:material_culture:charcoal",
         "wk:physics_material_science:moisture-vaporization-heat-demand",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "function": [
@@ -145338,6 +146395,7 @@
       "functional": [
         "claim:foundations-life-01-cell",
         "claim:foundations-ms-09-memory-systems",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:architecture_settlement:drying-workspace",
         "wk:architecture_settlement:fishing-workspace",
         "wk:architecture_settlement:riverbank-workspace",
@@ -145667,6 +146725,9 @@
         "claim:pigment-red-ochre",
         "claim:pigment-wet-dry-techniques",
         "claim:pigment-yellow-ochre"
+      ],
+      "germ": [
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "germinate": [
         "claim:fauna-mammals-red-squirrel-forgotten-cache-germination"
@@ -146304,7 +147365,8 @@
         "claim:fodder-healthy-horse-forage",
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:livestock-rumen-fermentation-nutrients",
-        "claim:livestock-ruminant-membership"
+        "claim:livestock-ruminant-membership",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "healthy": [
         "claim:fodder-healthy-horse-forage",
@@ -146383,6 +147445,7 @@
         "claim:population-physics-conduction-gradient",
         "wk:biology_physiology:food-heating",
         "wk:chemistry_process:food-preservation-qualitative",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:brittle-fracture-defects"
       ],
@@ -146583,6 +147646,8 @@
         "claim:population-fish-dried-form",
         "claim:population-storage-role",
         "claim:religion-olenin-church-people",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-surfacing-allocation",
@@ -146989,7 +148054,9 @@
         "wk:biology_physiology:fungal-mycelium-nutrition"
       ],
       "hypothermia": [
-        "claim:candidate-physiology-v3-shivering-thermogenesis"
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "hypothesis": [
         "claim:rp-caretaker-principal-goods",
@@ -147133,7 +148200,9 @@
       ],
       "immersion": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
-        "claim:textile-dye-application"
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:textile-dye-application",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia"
       ],
       "immune": [
         "claim:foundations-life-36-immune-memory",
@@ -147172,6 +148241,7 @@
       ],
       "impairment": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
         "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
         "wk:biology_physiology:candidate-drowning-respiratory-impairment"
@@ -147250,6 +148320,9 @@
       ],
       "imported": [
         "claim:textile-indigo-yellow-analysis"
+      ],
+      "impossibility": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "impregnated": [
         "wk:material_culture:tarred-tow"
@@ -147543,6 +148616,12 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -147709,6 +148788,9 @@
         "wk:social_law_economy:religious-name-list",
         "wk:social_law_economy:urban-textual-context"
       ],
+      "inactivation": [
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
+      ],
       "inactive": [
         "claim:fauna-culex-dusk-rest",
         "claim:fauna-mammals-eurasian-lynx-solitary-cover-activity",
@@ -147869,9 +148951,14 @@
         "claim:foundations-ms-17-individual-variation",
         "wk:psychology_behavior:foundations-ms-17-individual-variation"
       ],
+      "indoor": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
+      ],
       "induced": [
         "claim:foundations-life-33-acquired-immunity",
-        "wk:biology_physiology:foundation-acquired-immunity"
+        "wk:biology_physiology:foundation-acquired-immunity",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary"
       ],
       "industry": [
         "claim:construction-plinth-patterns-1207"
@@ -148028,6 +149115,7 @@
       "injury": [
         "claim:candidate-physiology-v3-protective-withdrawal",
         "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "wk:biology_physiology:tissue-injury-response"
       ],
@@ -148929,6 +150017,7 @@
         "wk:chemistry_process:temperature-solubility-conditional",
         "wk:environment:water-mineral-chemical-weathering",
         "wk:material_culture:novgorod-urban-metalworking",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:static-force-equilibrium",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
       ],
@@ -149050,13 +150139,15 @@
         "wk:environment:river-ice-jam-flow-obstruction"
       ],
       "join": [
-        "claim:fauna-great-tit-winter-flocks"
+        "claim:fauna-great-tit-winter-flocks",
+        "wk:physics_material_science:research-stitched-leather-component-join"
       ],
       "joined": [
         "claim:construction-wooden-peg-vessel-joint",
         "claim:population-bark-float",
         "claim:population-joining-assembly-expansion",
-        "claim:population-rod-cord"
+        "claim:population-rod-cord",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "joinery": [
         "wk:craft_technology:vessel-joinery"
@@ -149066,6 +150157,7 @@
         "claim:population-bark-cut",
         "claim:population-bark-input",
         "claim:population-bark-pierce",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:craft_technology:bark-assembly",
         "wk:craft_technology:vessel-joinery",
         "wk:material_culture:wooden-peg"
@@ -149546,6 +150638,7 @@
         "claim:population-shoe-output",
         "claim:population-weight-cord",
         "claim:population-weight-strap",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:textile-conditioning-matters",
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:craft_technology:leather-broad-context",
@@ -149558,6 +150651,7 @@
         "wk:material_culture:rawhide",
         "wk:material_culture:strap",
         "wk:material_culture:vegetable-tanned-leather",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:textile-conditioning-matters"
       ],
       "leatherworking": [
@@ -149959,6 +151053,7 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-static-friction",
         "claim:population-wood-float",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:physics_material_science:lever-force-arm-tradeoff"
       ],
       "loading": [
@@ -151390,6 +152485,11 @@
         "claim:livestock-swine-membership",
         "wk:biology_physiology:swine-digestion"
       ],
+      "monoxide": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
+      ],
       "monumental": [
         "claim:construction-compared-church-masonry"
       ],
@@ -152069,6 +153169,12 @@
         "claim:probable-travel-chalice-communion",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
         "claim:rp-minor-children-conditional-care",
@@ -152538,6 +153644,7 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:resource-occupation-needs-setting",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
@@ -153116,6 +154223,7 @@
         "claim:population-physics-conduction-gradient",
         "claim:population-physics-elastic-recovery",
         "claim:population-physics-immersion-buoyancy",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:water-capillary-rise-depression",
         "wk:chemistry_process:catalyst-rate-not-equilibrium",
         "wk:chemistry_process:combustion-fuel-oxidizer",
@@ -153510,6 +154618,8 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:river-landing-surfacing-allocation",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -154326,6 +155436,12 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -154824,6 +155940,11 @@
         "claim:occupation-smith-heat-treatment",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
@@ -155657,7 +156778,8 @@
       ],
       "permission": [
         "claim:occupation-carpenter-role",
-        "claim:posadnik-fedor-conflict-1224"
+        "claim:posadnik-fedor-conflict-1224",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "permits": [
         "claim:foundations-earth-16-igneous-cooling-texture",
@@ -155684,6 +156806,7 @@
         "claim:foundations-ms-38-reference-group",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-mother-household-care-succession",
         "claim:rp-property-claim-relates-acquisition-chain",
@@ -155907,6 +157030,7 @@
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
         "claim:occupation-smith-anvil",
         "claim:population-fishing-workspace",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:urban-wooden-coverings",
         "wk:craft_technology:urban-wooden-coverings"
       ],
@@ -156314,6 +157438,8 @@
         "claim:livestock-swine-membership",
         "claim:pine-pitch-woven-basket-coating",
         "claim:regional-agriculture-practice",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:social-written-prayer-relates-invocation",
         "claim:textile-dye-application",
@@ -157004,7 +158130,8 @@
       ],
       "produce": [
         "claim:fauna-culex-female-blood",
-        "claim:population-processes-bone-skate-output"
+        "claim:population-processes-bone-skate-output",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide"
       ],
       "produces": [
         "claim:exercise-heat-dissipation",
@@ -157041,6 +158168,7 @@
         "claim:fuel-pit-charcoal-burning-form",
         "claim:leather-broad-context",
         "claim:lime-transformations",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:work-waste-context",
@@ -157479,8 +158607,10 @@
         "claim:clay-firing-structural-transformation",
         "claim:fuel-pit-charcoal-burning-charcoal-output",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:ruminant-digestion",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
       ],
       "quality": [
@@ -157678,6 +158808,7 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:population-glass-cooling",
         "claim:population-physics-conduction-gradient",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:social-church-instruction-reports-demand",
         "claim:social-collector-instruction-relates-task-context",
         "claim:social-daily-fur-sale-accounting",
@@ -158253,8 +159384,12 @@
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:horse-forage-feeding",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:physics_material_science:gas-temperature-pressure-volume",
+        "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:social_law_economy:priest-baptism-statutory-context"
       ],
       "relations": [
@@ -158385,6 +159520,7 @@
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:foundations-life-12-respiration",
         "wk:biology_physiology:foundation-respiration",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:physics_material_science:abrasive-hardness-material-removal"
       ],
       "remove": [
@@ -158397,11 +159533,14 @@
         "claim:foundations-mat-08-abrasive-hardness-material-removal"
       ],
       "removing": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:material_culture:iron-pan-lifter"
       ],
       "repair": [
         "claim:household-boat-repair-clamp",
         "claim:population-shoe-form",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "wk:biology_physiology:tissue-injury-response",
         "wk:craft_technology:boat-repair",
@@ -158787,6 +159926,7 @@
         "claim:population-rod-input",
         "claim:pottery-handmade-local-clay",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:stone-grinding-metal-use",
         "claim:textile-chrysin-analysis",
         "claim:vegetable-tanning-prepared-hide",
@@ -159560,6 +160700,12 @@
         "claim:population-processes-malt-context",
         "claim:population-processes-oven-baking",
         "claim:regional-fish-exploitation",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
@@ -159684,7 +160830,8 @@
         "wk:craft_technology:plank-gap-caulking"
       ],
       "seam": [
-        "claim:pine-pitch-woven-basket-coating"
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
       ],
       "search": [
         "claim:fauna-bee-swarming"
@@ -159747,6 +160894,9 @@
       "sections": [
         "claim:foundations-physical-material3-03-antler-water-workability",
         "claim:river-landing-surfacing-allocation"
+      ],
+      "secure": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "secured": [
         "claim:construction-animal-glue-pegged-planks"
@@ -159840,6 +160990,7 @@
         "claim:novgorod-leather-items",
         "claim:population-boat-work",
         "claim:population-processes-weaving-textile",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:wild-food-and-fur-evidence",
         "wk:biology_physiology:horse-forage-feeding",
         "wk:environment:regional-quaternary-deposits",
@@ -159862,6 +161013,7 @@
       "separation": [
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:stationary-charge-distance-force"
       ],
       "sequence": [
@@ -160366,6 +161518,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-net-work",
         "claim:religion-olenin-church-people",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
         "claim:textile-chrysin-analysis",
         "claim:textile-dye-application",
@@ -160820,6 +161973,7 @@
         "claim:population-hide-leather-distinction",
         "claim:population-woodwork-material",
         "claim:pottery-handmade-local-clay",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:technology-circuit-prerequisite",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
@@ -161428,6 +162582,21 @@
       "stirrup": [
         "claim:population-tack-context"
       ],
+      "stitch": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
+      "stitched": [
+        "wk:physics_material_science:research-stitched-leather-component-join",
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
+      "stitches": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
+      "stitching": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "wk:physics_material_science:research-textile-stitch-support"
+      ],
       "stock": [
         "claim:agriculture-fauna-borts-honey",
         "claim:agriculture-fauna-borts-wax",
@@ -161607,6 +162776,7 @@
         "claim:population-joining-bond-cure",
         "claim:population-material-iron-rust",
         "claim:population-physics-section-response",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-fibres-twist-yarn",
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
@@ -161764,6 +162934,7 @@
         "claim:foundations-phys-10-gas-temperature-pressure-volume",
         "claim:foundations-physical-b2-chm-05-solubility-saturation",
         "claim:grain-processing-bread-optional-leaven",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:chemistry_process:solubility-saturation"
       ],
       "substances": [
@@ -161977,11 +163148,13 @@
         "claim:material-water-textile-water-load",
         "claim:population-physics-immersion-buoyancy",
         "claim:regional-agriculture-practice",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rural-household-economy-context",
         "wk:architecture_settlement:polygonal-log-crib",
         "wk:environment:regional-agriculture-practice",
         "wk:material_culture:anvil",
         "wk:physics_material_science:force-contact-geometry",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:support-polygon-center-of-mass"
       ],
       "supported": [
@@ -162106,7 +163279,8 @@
       ],
       "survival": [
         "claim:care-direct-pressure-bleeding",
-        "claim:clay-dried-replasticization"
+        "claim:clay-dried-replasticization",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
       ],
       "surviving": [
         "claim:civic-earth-rampart",
@@ -162192,6 +163366,9 @@
       ],
       "sympathetic": [
         "claim:candidate-physiology-v3-threat-autonomic-arousal"
+      ],
+      "symptom": [
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "synanthropic": [
         "claim:urban-bird-period-specific",
@@ -162463,6 +163640,7 @@
         "claim:population-physics-evaporation-humidity",
         "claim:population-physics-freezing-condensation-energy",
         "claim:population-physics-melting-vaporization-energy",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
@@ -162583,6 +163761,7 @@
         "claim:material-water-textile-water-load",
         "claim:population-processes-weaving-textile",
         "claim:population-processes-weaving-thread",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-conditioning-matters",
         "claim:textile-dye-application",
         "claim:textile-fibres-twist-yarn",
@@ -162593,6 +163772,7 @@
         "wk:material_culture:textile-thread",
         "wk:material_culture:woven-textile",
         "wk:physics_material_science:fibre-twisting",
+        "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:textile-conditioning-matters",
         "wk:physics_material_science:textile-water-damage"
       ],
@@ -162983,6 +164163,8 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -163492,6 +164674,12 @@
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-surfacing-allocation",
@@ -163575,6 +164763,7 @@
       "thread": [
         "claim:population-processes-weaving-textile",
         "claim:population-processes-weaving-thread",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:textile-fibres-twist-yarn",
         "wk:material_culture:textile-thread"
       ],
@@ -163908,6 +165097,7 @@
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:regional-agriculture-practice",
         "claim:religion-olenin-adjudication",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
         "claim:river-landing-surfacing-allocation",
@@ -164068,6 +165258,7 @@
         "claim:population-iron-hook",
         "claim:population-processes-weaving-device",
         "claim:regional-agriculture-practice",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:rural-agriculture-crop-context",
         "claim:textile-fibres-twist-yarn",
         "wk:environment:regional-agriculture-practice",
@@ -164100,6 +165291,9 @@
       ],
       "topology": [
         "claim:burial-hollowed-log-container"
+      ],
+      "torn": [
+        "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
       "total": [
         "claim:foundations-phys-08-momentum-closed-system",
@@ -164138,6 +165332,9 @@
       "townspeople": [
         "claim:clothing-linen",
         "claim:clothing-wool"
+      ],
+      "toxic": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "toxicity": [
         "claim:foundations-haz-01-exposure-modifiers"
@@ -164348,6 +165545,7 @@
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:population-joining-metal-anneal",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "wk:craft_technology:steel-working-part-heat-treatment",
         "wk:social_law_economy:asserted-marital-treatment"
       ],
@@ -164519,6 +165717,7 @@
         "claim:clothing-votola-cloak",
         "claim:fuel-pit-charcoal-burning-wood-input",
         "claim:pottery-handmade-temper",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:social-debt-record-may-contain-entry",
         "claim:technology-newcomen-boundary",
         "claim:transport-boat-cargo-dispatch",
@@ -164673,6 +165872,7 @@
         "claim:harvest-sickle-wooden-handle",
         "claim:population-physics-sliding-friction",
         "claim:practical-document-genres",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:river-landing-category",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
@@ -165131,7 +166331,8 @@
       ],
       "ventilation": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
-        "claim:foundations-thm-09-combustion-oxygen-supply"
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "vertical": [
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
@@ -165535,6 +166736,8 @@
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-evaporation-below-boiling",
         "claim:population-physics-evaporation-humidity",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:secondary-clay-forms-through-water-transport-deposition",
         "claim:soil-texture-affects-infiltration-rate",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
@@ -165563,12 +166766,14 @@
         "wk:biology_physiology:foundation-pathogen-transport",
         "wk:biology_physiology:plant-growth-requirements",
         "wk:biology_physiology:plant-root-uptake",
+        "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:stomatal-opening-tradeoff",
         "wk:biology_physiology:stomatal-regulation",
         "wk:biology_physiology:sweating-water-loss",
         "wk:chemistry_process:acid-base-neutralization",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:chemistry_process:lime-transformations",
+        "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:solute-solvation",
         "wk:chemistry_process:temperature-solubility-conditional",
         "wk:environment:candidate-water-circulation-oxygen",
@@ -165663,11 +166868,15 @@
       ],
       "weak": [
         "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization"
       ],
       "weaken": [
         "claim:population-joining-bond-contamination",
         "claim:population-joining-bond-pressure"
+      ],
+      "weakened": [
+        "wk:physics_material_science:research-textile-stitch-support"
       ],
       "weakening": [
         "claim:material-water-textile-liquid-contaminants"
@@ -165882,6 +167091,7 @@
         "wk:biology_physiology:fauna-eurasian-lynx",
         "wk:environment:cloud-droplet-growth-precipitation",
         "wk:environment:slope-force-strength",
+        "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:sound-source-vibration",
         "wk:physics_material_science:support-polygon-center-of-mass"
       ],
@@ -165960,6 +167170,7 @@
         "claim:household-spindle-whorl"
       ],
       "whose": [
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:rp-mother-household-care-succession",
         "claim:social-priest-fragment-relates-office-address"

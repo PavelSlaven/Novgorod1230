@@ -1003,6 +1003,38 @@
       "location_applicability": "Wet granular material and deformation contexts only when state supplies material and phase conditions",
       "applicability": {"resource":"none","material":"conditional","process":"conditional","npc":"none"},
       "coverage": "bounded capillary-cohesion and pore-phase configuration premises"
+    },
+    {
+      "id": "static-exposure-v1",
+      "source_path": "static-exposure-v1.json",
+      "domains": [
+        "biology_physiology",
+        "physics_material_science"
+      ],
+      "location_applicability": "Conditional fuel-burning, enclosed-air and cold-water contexts; not local presence or measured exposure.",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "conditional",
+        "npc": "conditional"
+      },
+      "coverage": "independently source-verified qualitative exposure premises"
+    },
+    {
+      "id": "static-household-water-v1",
+      "source_path": "static-household-water-v1.json",
+      "domains": [
+        "chemistry_process",
+        "physics_material_science"
+      ],
+      "location_applicability": "Conditional textile/leather work and household-water treatment, not historical or scene presence.",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "bounded",
+        "npc": "no actor state"
+      },
+      "coverage": "independently verified stitching and treatment-limit premises"
     }
   ],
   "families": [
@@ -3644,7 +3676,77 @@
     {"id":"smoke-optical-visibility","domain":"physics_material_science","subdomain":"smoke_optics","family":"smoke_particle_light_attenuation_and_visibility","location_applicability":"smoke contexts only after smoke state exists","applicability":{"resource":"none","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved optical premise","claim_refs":["claim:smoke-particles-can-attenuate-light-and-reduce-visibility"]},
     {"id":"fibre-rope-condition","domain":"physics_material_science","subdomain":"fibre_rope_condition","family":"condition_dependent_available_rope_strength","location_applicability":"modern fibre-rope contexts only after condition/load are established","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved condition premise, not safe-load mechanics","claim_refs":["claim:modern-fibre-rope-condition-can-reduce-available-strength"]},
     {"id":"aquatic-macrophyte-growth-forms","domain":"biology_physiology","subdomain":"aquatic_plant_form","family":"attachment_and_leaf_position_by_growth_form","location_applicability":"aquatic-plant contexts; no species/density/passability inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved form premise","claim_refs":["claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"]},
-    {"id":"plant-diagnostic-and-part-bounds","domain":"biology_physiology","subdomain":"plant_identity_and_food_part_boundary","family":"diagnostic_identity_lookalikes_and_part_specific_food_status","location_applicability":"plant-recognition/proposed-use contexts; no taxon/presence/food outcome inferred","applicability":{"resource":"partial","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved botanical premises, not foraging guidance","claim_refs":["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters","claim:candidate-edible-plant-status-does-not-transfer-to-every-part","claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"]}
+    {"id":"plant-diagnostic-and-part-bounds","domain":"biology_physiology","subdomain":"plant_identity_and_food_part_boundary","family":"diagnostic_identity_lookalikes_and_part_specific_food_status","location_applicability":"plant-recognition/proposed-use contexts; no taxon/presence/food outcome inferred","applicability":{"resource":"partial","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved botanical premises, not foraging guidance","claim_refs":["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters","claim:candidate-edible-plant-status-does-not-transfer-to-every-part","claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"]},
+    {
+      "id": "combustion-carbon-monoxide-exposure",
+      "domain": "physics_material_science",
+      "subdomain": "combustion_products",
+      "family": "fuel_combustion_and_possible_indoor_carbon_monoxide",
+      "location_applicability": "Fuel-burning contexts, especially enclosures; no source or indoor concentration is inferred.",
+      "applicability": {
+        "resource": "conditional fuel and air",
+        "material": "conditional combustion products",
+        "process": "conditional formation and accumulation",
+        "npc": "exposure context only"
+      },
+      "coverage": "bounded approved formation and accumulation premises",
+      "claim_refs": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ]
+    },
+    {
+      "id": "physiology-cold-water-immersion",
+      "domain": "biology_physiology",
+      "subdomain": "environmental_exposure",
+      "family": "cold_water_immersion_and_hypothermia",
+      "location_applicability": "Immersion contexts where actual conditions establish cold water; no temperature or duration is inferred.",
+      "applicability": {
+        "resource": "conditional water",
+        "material": "none",
+        "process": "conditional physiological exposure",
+        "npc": "possible hypothermia, not diagnosis or outcome"
+      },
+      "coverage": "bounded approved immersion premise",
+      "claim_refs": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ]
+    },
+    {
+      "id": "materials-stitched-textile-and-leather-assemblies",
+      "domain": "physics_material_science",
+      "subdomain": "joined_flexible_materials",
+      "family": "stitched_support_and_component_joint_failure",
+      "location_applicability": "Actual textile support or stitched leather assembly; no material, tool, skill or repair result is inferred.",
+      "applicability": {
+        "resource": "conditional fibre",
+        "material": "conditional textile or leather",
+        "process": "conditional support and joining failure",
+        "npc": "not historical practice or current action"
+      },
+      "coverage": "bounded approved stitching premises",
+      "claim_refs": [
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ]
+    },
+    {
+      "id": "process-household-water-treatment-limits",
+      "domain": "chemistry_process",
+      "subdomain": "household_water_treatment",
+      "family": "boiling_and_chemical_contamination_evidence_limits",
+      "location_applicability": "Water-treatment reasoning where chemical contamination is independently established; no drinking permission.",
+      "applicability": {
+        "resource": "conditional water",
+        "material": "conditional contaminant",
+        "process": "bounded treatment inference",
+        "npc": "no diagnosis or outcome"
+      },
+      "coverage": "bounded household-treatment safety premise, not universal chemical-removal impossibility",
+      "claim_refs": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ]
+    }
   ],
   "missing_families": [
     {
@@ -3825,11 +3927,22 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing fibre preparation, twisting, weaving and historical garment-form claims cover major lifecycle stages. Residual under source review: qualified stitching-to-support for weakened textiles, not another generic spinning/weaving claim. Actual cloth, tools, skill, dimensions, damage, duration and repair result are item/process state.",
-      "supporting_claim_refs": ["claim:textile-fibres-twist-yarn","claim:population-processes-weaving-thread","claim:population-processes-weaving-textile","claim:population-weaving-practice","claim:clothing-tunic-shirt-folded-panel","claim:clothing-shirt-gussets","claim:fibre-flax-breaker-shive","claim:fibre-hackle-removes-shive"],
+      "reason": "Existing spinning, weaving and garment construction compose with approved stitching-to-support repair. Residual factual work concerns other repair/finishing mechanisms and period-local practice if asserted; actual textile, tool, skill, strength and repair outcome remain state/mechanics.",
+      "supporting_claim_refs": [
+        "claim:textile-fibres-twist-yarn",
+        "claim:population-processes-weaving-thread",
+        "claim:population-processes-weaving-textile",
+        "claim:population-weaving-practice",
+        "claim:clothing-tunic-shirt-folded-panel",
+        "claim:clothing-shirt-gussets",
+        "claim:fibre-flax-breaker-shive",
+        "claim:fibre-hackle-removes-shive",
+        "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
-        "materials-fibre-leather-water-response"
+        "materials-fibre-leather-water-response",
+        "materials-stitched-textile-and-leather-assemblies"
       ]
     },
     {
@@ -3848,12 +3961,22 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing claims cover hide/leather distinction, tanning, shoe components, historical shoemaking and repair. Residual under source review: conditional failure of a stitched component joint, not proof every leather object is stitched. Stock, dimensions, seam condition, load, durability and successful repair are state/mechanics.",
-      "supporting_claim_refs": ["claim:population-hide-leather-distinction","claim:vegetable-tanning-prepared-hide","claim:vegetable-tanning-collagen-stabilization","claim:population-shoe-input","claim:population-shoe-form","claim:population-shoe-output","claim:material-water-vegetable-leather-water"],
+      "reason": "Existing hide preparation, tanning, shoemaking/repair and water response compose with possible separation when a stitched leather join fails. This is not proof of every assembly type or medieval maintenance method; material condition, exact load, damage, repair and identity remain owner-supplied.",
+      "supporting_claim_refs": [
+        "claim:population-hide-leather-distinction",
+        "claim:vegetable-tanning-prepared-hide",
+        "claim:vegetable-tanning-collagen-stabilization",
+        "claim:population-shoe-input",
+        "claim:population-shoe-form",
+        "claim:population-shoe-output",
+        "claim:material-water-vegetable-leather-water",
+        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+      ],
       "supporting_family_ids": [
         "biology-skin-fur-and-hide-preservation",
         "process-textile-dye-and-collagen-tanning",
-        "material-organic-materials"
+        "material-organic-materials",
+        "materials-stitched-textile-and-leather-assemblies"
       ]
     },
     {
@@ -4064,11 +4187,28 @@
       "subdomain": "combustion_products",
       "family": "fuel_combustion_carbon_monoxide_and_ventilation_limits",
       "location_applicability": "enclosed or poorly ventilated shelters, workshops, bathhouses and sleeping spaces; potential contexts, not activated locations",
-      "applicability": {"resource":"fuel and air","material":"combustion products","process":"burning and ventilation","npc":"exposure context, never diagnosis or action"},
-      "consumer_refs": ["potential:semantic_resolution", "potential:fire_process", "potential:body_exposure"],
-      "coverage": "missing",
-      "reason": "Need-first research identifies combustion-product and perceptibility relations not entailed by fuel/oxidizer or smoke-visibility claims. Source direction: research/gameplay-natural-science-gap-map-v1.md. Candidate source/domain verification remains required; no current concentration, ventilation or harm follows.",
-      "supporting_family_ids": ["process-combustion-and-pyrolysis", "chemistry-exposure-and-routes"]
+      "applicability": {
+        "resource": "fuel and air",
+        "material": "combustion products",
+        "process": "burning and ventilation",
+        "npc": "exposure context, never diagnosis or action"
+      },
+      "consumer_refs": [
+        "potential:semantic_resolution",
+        "potential:fire_process",
+        "potential:body_exposure"
+      ],
+      "coverage": "partial",
+      "reason": "Approved premises now establish possible CO production from fuel combustion and possible indoor accumulation. Residual research: perceptibility and ventilation/exposure relations. These claims establish no actual room, fuel, ventilation, concentration, symptoms or harm; exact current state and outcome remain owner-supplied.",
+      "supporting_family_ids": [
+        "process-combustion-and-pyrolysis",
+        "chemistry-exposure-and-routes",
+        "combustion-carbon-monoxide-exposure"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ]
     },
     {
       "id": "cold-water-immersion-heat-loss",
@@ -4076,11 +4216,27 @@
       "subdomain": "environmental_exposure",
       "family": "immersion_heat_exchange_and_functional_limits",
       "location_applicability": "river, lake, flooded or wet-work contexts; any season where actual conditions warrant",
-      "applicability": {"resource":"water","material":"wet clothing and body interfaces","process":"immersion and heat exchange","npc":"conditional physiological context"},
-      "consumer_refs": ["potential:semantic_resolution", "potential:body_exposure", "potential:travel"],
-      "coverage": "missing",
-      "reason": "Ordinary wetness and general thermoregulation do not alone establish the source-specific immersion relation. Research and independent verification required. Actual temperature, duration, impairment, treatment and survival remain outside the factual premise.",
-      "supporting_family_ids": ["body-thermoregulation-energy-and-fatigue", "thermal-phase-heat-transfer"]
+      "applicability": {
+        "resource": "water",
+        "material": "wet clothing and body interfaces",
+        "process": "immersion and heat exchange",
+        "npc": "conditional physiological context"
+      },
+      "consumer_refs": [
+        "potential:semantic_resolution",
+        "potential:body_exposure",
+        "potential:travel"
+      ],
+      "coverage": "partial",
+      "reason": "Approved premise now establishes that cold-water immersion can cause immersion hypothermia. Residual research: heat-exchange mechanisms and conditional functional effects; no unsupported speed comparison is retained. Temperature, duration, clothing, diagnosis, treatment and survival are not established for a concrete actor.",
+      "supporting_family_ids": [
+        "body-thermoregulation-energy-and-fatigue",
+        "thermal-phase-heat-transfer",
+        "physiology-cold-water-immersion"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ]
     },
     {
       "id": "water-heating-pathogens-versus-chemicals",
@@ -4088,11 +4244,28 @@
       "subdomain": "water_treatment",
       "family": "thermal_microbe_inactivation_and_chemical_contaminant_limits",
       "location_applicability": "household, camp, cooking, vessel and water-source contexts; no local water quality presumed",
-      "applicability": {"resource":"water and fuel","material":"dissolved and suspended substances","process":"water heating and storage","npc":"food and water context"},
-      "consumer_refs": ["potential:semantic_resolution", "potential:food_process", "potential:ordinary_household"],
-      "coverage": "missing",
-      "reason": "Need to distinguish microbial treatment from chemical removal rather than infer drinkability from boiling. Source direction recorded in natural-science gap map; exact source/claim verification pending. No numeric treatment recipe, contamination or safe-water result is authorized.",
-      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "chemistry-solution-equilibrium-and-solubility"]
+      "applicability": {
+        "resource": "water and fuel",
+        "material": "dissolved and suspended substances",
+        "process": "water heating and storage",
+        "npc": "food and water context"
+      },
+      "consumer_refs": [
+        "potential:semantic_resolution",
+        "potential:food_process",
+        "potential:ordinary_household"
+      ],
+      "coverage": "partial",
+      "reason": "Existing heating/microbial-viability premise and approved household-boiling limit distinguish biological inactivation from evidence of chemical drinkability. No duplicate heating claim is promoted. Residual research must identify an actual contaminant/process relation, not infer current contamination, removal, drinking permission or health outcome.",
+      "supporting_family_ids": [
+        "biology-pathogen-immunity-and-infection",
+        "chemistry-solution-equilibrium-and-solubility",
+        "process-household-water-treatment-limits"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:heating-reduces-microbial-viability"
+      ]
     },
     {
       "id": "freeze-thaw-soil-bank-integrity",
@@ -4117,18 +4290,6 @@
       "coverage": "missing",
       "reason": "Debris transport does not establish mark reliability or corroboration requirements. Static research needed for conditional evidential relations; no hidden clue, date, flood event, exact level or authoritative conclusion may be manufactured.",
       "supporting_family_ids": ["riparian-woody-debris", "environment-hydrology"]
-    },
-    {
-      "id": "water-temperature-oxygen-habitat-relations",
-      "domain": "environment",
-      "subdomain": "aquatic_habitat",
-      "family": "temperature_dissolved_oxygen_and_taxon_constraints",
-      "location_applicability": "rivers, lakes, ponds and enclosed waters; local measurements and taxa not supplied",
-      "applicability": {"resource":"water","material":"dissolved gases","process":"gas exchange metabolism and circulation","npc":"fauna habitat context"},
-      "consumer_refs": ["potential:fauna_context", "potential:fishing", "potential:semantic_resolution"],
-      "coverage": "partial",
-      "reason": "Existing oxygen contributors and selected fish risks do not close temperature/oxygen interactions for all taxa. Research bounded physical and taxon relations separately; fish absence, concentration, illness and mortality are not inferred outcomes.",
-      "supporting_family_ids": ["water-dissolved-oxygen-contributors", "fauna-fish-migration-spawning-and-water-conditions"]
     },
     {
       "id": "smoke-transport-and-dispersion",
@@ -4401,7 +4562,8 @@
         "physiology-oxygen-and-perfusion",
         "physiology-autonomic-and-functional-response",
         "aquatic-macrophyte-growth-forms",
-        "plant-diagnostic-and-part-bounds"
+        "plant-diagnostic-and-part-bounds",
+        "physiology-cold-water-immersion"
       ]
     },
     {
@@ -4414,7 +4576,8 @@
         "process-combustion-and-pyrolysis",
         "process-food-preservation-and-fermentation",
         "process-mineral-and-lime-transformation",
-        "process-textile-dye-and-collagen-tanning"
+        "process-textile-dye-and-collagen-tanning",
+        "process-household-water-treatment-limits"
       ]
     },
     {
@@ -4514,7 +4677,9 @@
         "net-serviceability-maintenance",
         "smoke-optical-visibility",
         "fibre-rope-condition",
-        "materials-wet-granular-cohesion-and-deformation"
+        "materials-wet-granular-cohesion-and-deformation",
+        "combustion-carbon-monoxide-exposure",
+        "materials-stitched-textile-and-leather-assemblies"
       ]
     },
     {
@@ -4559,7 +4724,8 @@
         "fluids-buoyancy-flow-porosity",
         "materials-wood-moisture-and-coatings",
         "material-transport",
-        "materials-wet-granular-cohesion-and-deformation"
+        "materials-wet-granular-cohesion-and-deformation",
+        "physiology-cold-water-immersion"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -4578,7 +4744,11 @@
         "materials-fibre-leather-water-response",
         "materials-wood-moisture-and-coatings",
         "fluids-buoyancy-flow-porosity",
-        "mechanics-impact-friction-fracture"
+        "mechanics-impact-friction-fracture",
+        "physiology-cold-water-immersion",
+        "combustion-carbon-monoxide-exposure",
+        "materials-stitched-textile-and-leather-assemblies",
+        "process-household-water-treatment-limits"
       ],
       "coverage": "partial: camp/ecology/occupation context"
     },
@@ -4592,7 +4762,10 @@
         "materials-fibre-leather-water-response",
         "thermal-phase-heat-transfer",
         "material-vessels-furniture-ritual",
-        "npc-household-routines"
+        "npc-household-routines",
+        "combustion-carbon-monoxide-exposure",
+        "materials-stitched-textile-and-leather-assemblies",
+        "process-household-water-treatment-limits"
       ],
       "coverage": "partial: built-space and drying-process context"
     },
@@ -4609,7 +4782,10 @@
         "npc-household-routines",
         "material-food-resources",
         "social-property-and-market",
-        "npc-clothing-and-personal-kit"
+        "npc-clothing-and-personal-kit",
+        "combustion-carbon-monoxide-exposure",
+        "materials-stitched-textile-and-leather-assemblies",
+        "process-household-water-treatment-limits"
       ],
       "coverage": "partial: storage/occupation/economic context"
     }
@@ -4657,7 +4833,9 @@
         "mechanics-impact-friction-fracture",
         "mechanics-statics-support",
         "craft-technology-boundaries",
-        "materials-wet-granular-cohesion-and-deformation"
+        "materials-wet-granular-cohesion-and-deformation",
+        "materials-stitched-textile-and-leather-assemblies",
+        "process-household-water-treatment-limits"
       ],
       "coverage": "partial: qualitative transformation context; no recipe or output whitelist"
     },
@@ -4669,7 +4847,8 @@
         "thermal-phase-heat-transfer",
         "material-tools",
         "material-fuel-resin-wax",
-        "materials-wood-moisture-and-coatings"
+        "materials-wood-moisture-and-coatings",
+        "combustion-carbon-monoxide-exposure"
       ],
       "coverage": "partial: fire lifecycle and water interaction"
     },
@@ -4738,15 +4917,60 @@
       {"source_path":"gameplay-granular-materials-v3.json","claim_count":2,"family_refs":["materials-wet-granular-cohesion-and-deformation"],"location_refs":["trace_ld_v1_loc_wreck_shore"],"consumer_refs":["lower_dvina_trace_o2a_first_entry_profile_v1","lower_dvina_trace_a1_open_physical_action_profile_v1"],"limits":"Partial wetting and phase conditions must come from actual state; no local water discharge, force, quantity, cohesion strength or formed result follows."}
     ],
     "domain_subdomain_dimensions": [
+      {"domain":"environment","subdomain":"aquatic_temperature_oxygen","disposition":"composition_closed","family_refs":["environment-animal-ecology","fauna-fish-migration-spawning-and-water-conditions","water-dissolved-oxygen-contributors"],"limit":"General temperature/oxygen/aquatic-habitat relation is supported by claim:water-temperature-affects-aquatic-organism-range, claim:fauna-fish-summer-night-oxygen and claim:fauna-fish-low-oxygen. No particular waterbody measurement, taxon, presence, illness or mortality follows. Species-specific requirements and thresholds remain separate needs, not universal taxon coverage."},
       {"domain":"physics_material_science","subdomain":"contact_support_and_failure","disposition":"active_plus_code_owned","family_refs":["mechanics-impact-friction-fracture","mechanics-statics-support","fibre-rope-condition"],"limit":"Exact load, geometry and break result are mechanics."},
-      {"domain":"physics_material_science","subdomain":"thermal_fire_smoke","disposition":"active_plus_code_owned","family_refs":["thermal-phase-heat-transfer","fire-water-cooling","smoke-optical-visibility"],"limit":"No fire state, smoke dose/range or suppression outcome."},
+      {
+        "domain": "physics_material_science",
+        "subdomain": "thermal_fire_smoke",
+        "disposition": "active_plus_code_owned",
+        "family_refs": [
+          "thermal-phase-heat-transfer",
+          "fire-water-cooling",
+          "smoke-optical-visibility",
+          "combustion-carbon-monoxide-exposure"
+        ],
+        "limit": "No fire state, smoke dose/range or suppression outcome."
+      },
       {"domain":"physics_material_science","subdomain":"storage_and_wet_work","disposition":"active_bounded","family_refs":["storage-grain-airflow-and-moisture","net-serviceability-maintenance","materials-wet-granular-cohesion-and-deformation"],"limit":"No timer, current condition, phase quantity or repair/deformation result."},
-      {"domain":"biology_physiology","subdomain":"involuntary_response_consciousness_and_function","disposition":"active_plus_code_owned","family_refs":["physiology-protective-reflexes","physiology-oxygen-and-perfusion","physiology-autonomic-and-functional-response"],"limit":"No diagnosis, actor state, threshold or forced action."},
+      {
+        "domain": "biology_physiology",
+        "subdomain": "involuntary_response_consciousness_and_function",
+        "disposition": "active_plus_code_owned",
+        "family_refs": [
+          "physiology-protective-reflexes",
+          "physiology-oxygen-and-perfusion",
+          "physiology-autonomic-and-functional-response",
+          "physiology-cold-water-immersion"
+        ],
+        "limit": "No diagnosis, actor state, threshold or forced action."
+      },
       {"domain":"biology_physiology","subdomain":"plant_identity_and_aquatic_form","disposition":"active_bounded","family_refs":["aquatic-macrophyte-growth-forms","plant-diagnostic-and-part-bounds"],"limit":"No taxon, food result, local plant or passability."},
       {"domain":"environment","subdomain":"flora_riparian_and_water_conditions","disposition":"active_bounded","family_refs":["flora-tree-phenology","flora-nettle-fibre","riparian-woody-debris","water-dissolved-oxygen-contributors"],"limit":"No local ecology, stock, water state or historical practice."},
       {"domain":"architecture_settlement","subdomain":"interior_function_and_storage_conditions","disposition":"composition_closed","family_refs":["built-storage-and-household","built-river-workspace"],"limit":"No room contents or current ventilation/cleanliness/light state."},
-      {"domain":"craft_technology","subdomain":"open_transformation","disposition":"active_plus_code_owned","family_refs":["craft-material-classes","process-wood-and-ceramic","craft-fibre-fishing-processing"],"limit":"No recipe whitelist or output guarantee."},
-      {"domain":"chemistry_process","subdomain":"exposure_preservation_and_material_change","disposition":"active_plus_code_owned","family_refs":["chemistry-exposure-and-routes","process-food-preservation-and-fermentation","materials-moisture-corrosion"],"limit":"No current contamination, dose, diagnosis, spoilage state or reaction calculation."},
+      {
+        "domain": "craft_technology",
+        "subdomain": "open_transformation",
+        "disposition": "active_plus_code_owned",
+        "family_refs": [
+          "craft-material-classes",
+          "process-wood-and-ceramic",
+          "craft-fibre-fishing-processing",
+          "materials-stitched-textile-and-leather-assemblies"
+        ],
+        "limit": "No recipe whitelist or output guarantee."
+      },
+      {
+        "domain": "chemistry_process",
+        "subdomain": "exposure_preservation_and_material_change",
+        "disposition": "active_plus_code_owned",
+        "family_refs": [
+          "chemistry-exposure-and-routes",
+          "process-food-preservation-and-fermentation",
+          "materials-moisture-corrosion",
+          "process-household-water-treatment-limits"
+        ],
+        "limit": "No current contamination, dose, diagnosis, spoilage state or reaction calculation."
+      },
       {"domain":"material_culture","subdomain":"ordinary_objects_transport_and_food_context","disposition":"active_bounded","family_refs":["material-food-resources","material-tools","material-transport","material-vessels-furniture-ritual"],"limit":"Historical compatibility is not current object identity, placement, stock, ownership or access."},
       {"domain":"npc_daily_life","subdomain":"occupation_and_independent_routine_context","disposition":"active_plus_code_owned","family_refs":["npc-household-routines","npc-craft-occupations","npc-river-occupations"],"limit":"No current NPC roster, schedule, knowledge or decision follows."},
       {"domain":"psychology_behavior","subdomain":"attention_stress_and_variation","disposition":"active_bounded","family_refs":["psychology-attention-and-perception","psychology-affect-regulation-and-stress","psychology-attribution-attitude-and-individual-variation"],"limit":"No motive or deterministic decision."},

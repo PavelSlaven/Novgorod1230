@@ -70,6 +70,14 @@ function query(domains, focus_refs, overrides = {}) {
 
 test('gameplay gap premises compose without granting scene facts or actor expertise', () => {
   const cases = [
+    ['claim:research-stitching-can-secure-weak-textile-to-support',
+      'claim:research-failure-of-stitched-leather-join-can-separate-components'],
+    ['claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability',
+      'claim:heating-reduces-microbial-viability'],
+    ['claim:research-fuel-combustion-can-produce-carbon-monoxide',
+      'claim:research-carbon-monoxide-can-accumulate-indoors'],
+    ['claim:research-cold-water-immersion-can-cause-immersion-hypothermia',
+      'claim:candidate-physiology-v3-shivering-thermogenesis'],
     ['claim:candidate-nettle-bast-fibre-retting-decortication',
       'claim:modern-fibre-rope-condition-can-reduce-available-strength'],
     ['claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position',
@@ -95,7 +103,7 @@ test('gameplay gap premises compose without granting scene facts or actor expert
       return claim;
     });
     const domains = [...new Set(claims.map(claim => claim.domain))];
-    const focus = claims.map(claim => claim.subject_ref);
+    const focus = [...new Set(claims.map(claim => claim.subject_ref))];
     for (const query_locale of ['ru', 'en']) {
       const slice = query(domains, focus, { query_locale });
       for (const ref of refs) assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);

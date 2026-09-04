@@ -10916,6 +10916,90 @@
       "retrieval_text": "Крещение священником в уставном контексте Связь священника с крещением детей как регулируемым действием в Пространной редакции Устава Ярослава. Пространная редакция Устава Ярослава рассматривает крещение детей священником в чужом уезде как регулируемое действие. Неясная формула исключения не толкуется; местная граница, обряд, его действительность, болезнь, согласие, умение и исполнение нормы не устанавливаются."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability:en",
+      "target_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water heating and contaminant-removal boundary Distinction between heating-induced germ inactivation and chemical contaminants. Boiling alone does not establish the drinkability of water containing fuel or toxic chemicals. This does not assert universal impossibility of removing every substance and establishes no contamination, water source, treatment event, drinking permission, or health outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability:ru",
+      "target_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Нагрев воды и границы удаления загрязнителей Различие между инактивацией микроорганизмов нагревом и химическими примесями. Одно кипячение само по себе не устанавливает пригодность для питья воды с топливом или токсичными химическими примесями. Это не утверждает универсальную невозможность удаления любого вещества и не устанавливает загрязнение, источник воды, обработку, разрешение на питьё или исход для здоровья в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-carbon-monoxide-can-accumulate-indoors:en",
+      "target_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Carbon monoxide from combustion and indoor air Qualitative relation between fuel combustion, carbon monoxide, and indoor air. Carbon monoxide can accumulate in indoor air. This establishes no enclosure, ventilation, concentration, exposure duration, person, symptom, diagnosis, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-carbon-monoxide-can-accumulate-indoors:ru",
+      "target_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении. Угарный газ может накапливаться в воздухе помещения. Это не устанавливает помещение, вентиляцию, концентрацию, длительность воздействия, человека, симптом, диагноз или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-cold-water-immersion-can-cause-immersion-hypothermia:en",
+      "target_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-water immersion hypothermia Qualitative relation between cold-water immersion and hypothermia. Cold-water immersion can cause immersion hypothermia. This establishes no water temperature, duration, clothing, body temperature, functional impairment, injury, survival, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-cold-water-immersion-can-cause-immersion-hypothermia:ru",
+      "target_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения. Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-failure-of-stitched-leather-join-can-separate-components:en",
+      "target_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stitched leather component join Conditional relation between a stitched leather-component join and separation when it fails. In a leather assembly whose components are joined by stitching, failure of the joining stitches can separate the components. This establishes no object, stitch type, seam condition, load, failure cause, repair, durability, historical practice, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-failure-of-stitched-leather-join-can-separate-components:ru",
+      "target_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стежковое соединение частей кожаного изделия Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков. В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fuel-combustion-can-produce-carbon-monoxide:en",
+      "target_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Carbon monoxide from combustion and indoor air Qualitative relation between fuel combustion, carbon monoxide, and indoor air. Fuel combustion can produce carbon monoxide. This establishes no fuel, fire, amount, production rate, place, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fuel-combustion-can-produce-carbon-monoxide:ru",
+      "target_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении. При горении топлива может образовываться угарный газ. Это не устанавливает топливо, огонь, количество, скорость образования, место или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-stitching-can-secure-weak-textile-to-support:en",
+      "target_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stitched support for weakened textile Conditional relation between stitching, damaged textile, and support textile. Stitching can secure a torn, frayed, or weak textile area to a support textile. This establishes no textile, thread, support, tool, skill, historical practice, strength, or repair result in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-stitching-can-secure-weak-textile-to-support:ru",
+      "target_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стежковая поддержка ослабленного текстиля Условная связь стежков, повреждённого текстиля и поддерживающей ткани. Стежки могут закреплять порванный, осыпающийся или ослабленный участок текстиля на поддерживающей ткани. Это не устанавливает текстиль, нить, поддержку, инструмент, навык, историческую практику, прочность или результат ремонта в конкретной сцене."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
       "target_ref": "claim:resource-occupation-needs-setting",
       "domain": "npc_daily_life",
@@ -15284,6 +15368,20 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-hypothermia:en",
+      "target_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-water immersion hypothermia Qualitative relation between cold-water immersion and hypothermia."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-hypothermia:ru",
+      "target_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:ruminant-digestion:en",
       "target_ref": "wk:biology_physiology:ruminant-digestion",
       "domain": "biology_physiology",
@@ -15898,6 +15996,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Концентрация реагентов и скорость реакции Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-water-heating-contaminant-boundary:en",
+      "target_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water heating and contaminant-removal boundary Distinction between heating-induced germ inactivation and chemical contaminants."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-water-heating-contaminant-boundary:ru",
+      "target_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Нагрев воды и границы удаления загрязнителей Различие между инактивацией микроорганизмов нагревом и химическими примесями."
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:solubility-saturation:en",
@@ -20588,6 +20700,48 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Истечение жидкости из-за разности давления Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air:en",
+      "target_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Carbon monoxide from combustion and indoor air Qualitative relation between fuel combustion, carbon monoxide, and indoor air."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air:ru",
+      "target_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-stitched-leather-component-join:en",
+      "target_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stitched leather component join Conditional relation between a stitched leather-component join and separation when it fails."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-stitched-leather-component-join:ru",
+      "target_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стежковое соединение частей кожаного изделия Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-textile-stitch-support:en",
+      "target_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stitched support for weakened textile Conditional relation between stitching, damaged textile, and support textile."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-textile-stitch-support:ru",
+      "target_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Стежковая поддержка ослабленного текстиля Условная связь стежков, повреждённого текстиля и поддерживающей ткани."
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:smoke-optical-obscuration:en",

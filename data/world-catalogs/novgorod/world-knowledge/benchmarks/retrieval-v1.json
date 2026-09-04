@@ -1971,7 +1971,6 @@
       ],
       "query_text": "Можно ли по щепе установить, что именно здесь изготовили?",
       "relevant_claim_refs": [
-        "claim:woodworked-objects-and-waste",
         "claim:work-waste-context"
       ],
       "expected_hard_constraint_refs": [],

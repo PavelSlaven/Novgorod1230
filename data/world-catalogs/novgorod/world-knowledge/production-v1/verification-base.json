@@ -1,0 +1,1418 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-novgorod-wooden-urban-elements",
+      "claim_ref": "claim:novgorod-wooden-urban-elements",
+      "claim_digest": "492f167d46da20bb4a1fc7950160795e0aabd486a80a3fb68f92011c20c5a2dc",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:novgorod-wooden-urban-elements",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the reopened Kolchin settlement source and SC urban building/paving candidates.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Kolchin supports broad medieval urban-Novgorod wooden structures, streets and paving only; no concrete object, form, condition, stock or access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-novgorod-waterlogged-organic-preservation",
+      "claim_ref": "claim:novgorod-waterlogged-organic-preservation",
+      "claim_digest": "b50a8943b6be6af39f832206ebd90e4e8061e3fc8e8c27be5b589b2a44dbbc91",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:novgorod-waterlogged-organic-preservation",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent ENV-01 verdict.",
+      "evidence_checked": [
+        "evidence:orton"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate ENV-01; applies to excavated deposit/taphonomy only, not citywide terrain or present availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-gramota-73-debt-record",
+      "claim_ref": "claim:gramota-73-debt-record",
+      "claim_digest": "c41c5dda56dca346e8a549c76a9ea7ab205108a281b4128b1c326d90ed0990d0",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:gramota-73-debt-record",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-01 verdict.",
+      "evidence_checked": [
+        "evidence:gramota73"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-01; one dated record only, not literacy, profession, interest, enforceability, or arbitrary NPC debt."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-gramota-73-grivna-term",
+      "claim_ref": "claim:gramota-73-grivna-term",
+      "claim_digest": "6df40274b10eb64cca9cd67df04a6a1d23bffda73fe97b5776eb3d75b27cc9b9",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:gramota-73-grivna-term",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live gramoty.ru record 73 supplies date, genre, and text.",
+      "evidence_checked": [
+        "evidence:gramota73"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#gramota73",
+      "verdict": "APPROVE",
+      "limits": "One dated debt record and lexical term only; no value, enforcement, or universal usage."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-novgorod-leather-items",
+      "claim_ref": "claim:novgorod-leather-items",
+      "claim_digest": "ea705c6df9dc275313cf196ed9525f1e9871697b2d4eac2fea72a42403942dee",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:novgorod-leather-items",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the independently reopened Rybina leather/workshop passage (PHC-14/15/18 limits).",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Rybina's leather-object/footwear-workshop context supports broad medieval personal leather items, not a particular form, item, owner, workshop or presence."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-novgorod-urban-metalworking",
+      "claim_ref": "claim:novgorod-urban-metalworking",
+      "claim_digest": "32ca3fb4bc6f2f96ee9572811cd235bc2879489b545ca897f19d737d2582d1a1",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:novgorod-urban-metalworking",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of JSTOR/Oxbow chapter 13, exact RU/EN comparison.",
+      "evidence_checked": [
+        "evidence:novgorodContext"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#jstor-novgorod-context",
+      "verdict": "APPROVE",
+      "limits": "Broad medieval-Novgorod metalworking only; no forge, alloy, technology, or particular yard."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-structural-and-object-wood",
+      "claim_ref": "claim:structural-and-object-wood",
+      "claim_digest": "e50e440e01b1d285106e6eaef1a0a9ce49d8f274bd8da9a3c1a3b3f7e60b82d0",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:structural-and-object-wood",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Whole-claim reconciliation uses two complementary independently reopened anchors, rather than treating either structural or artefactual evidence alone as sufficient.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement",
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Kolchin covers structural urban wood; Rybina covers the material-object collection. Together they support only the broad paired class, not a present blank, object, function, stock or access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-urban-wooden-coverings",
+      "claim_ref": "claim:urban-wooden-coverings",
+      "claim_digest": "f8bcbe2e276d53abe8d42ba0071c81f03dbc826402d569fc470b56a4f8b13901",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:urban-wooden-coverings",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with SC-01–09 and SC-13 urban settlement evidence in the reopened Kolchin source.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Kolchin supports wooden urban buildings and roof/street coverings as broad medieval Novgorod categories; no particular construction, place, cover condition or access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-leather-broad-context",
+      "claim_ref": "claim:leather-broad-context",
+      "claim_digest": "fb76059832fb1d5e04f09854ff9675f1cb52e4b4d4997b4a5315244faa15023a",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:leather-broad-context",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the independently reopened Rybina leather-object and workshop passage.",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Broad medieval Novgorod leather-item context only; neither local tanning nor instant production, a present hide/item, workshop, skill, stock or access follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-metalworking-broad-context",
+      "claim_ref": "claim:metalworking-broad-context",
+      "claim_digest": "484996b12f2fec346243b7ef6c6272a6323f0572560b2c3b8f9f9ecfcaa33b1f",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:metalworking-broad-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of JSTOR/Oxbow chapter 13, exact RU/EN comparison.",
+      "evidence_checked": [
+        "evidence:novgorodContext"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#jstor-novgorod-context",
+      "verdict": "APPROVE",
+      "limits": "Broad medieval-Novgorod metalworking only; no hearth, fuel, metal, or process in scene."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-ceramic-material-category",
+      "claim_ref": "claim:ceramic-material-category",
+      "claim_digest": "df2848b75399941d7b33d0847db106f20967b863dd86d2777ccdcd1eb9f238dc",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:ceramic-material-category",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of JSTOR/Oxbow chapter 6, exact RU/EN comparison.",
+      "evidence_checked": [
+        "evidence:novgorodContext"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#jstor-novgorod-context",
+      "verdict": "APPROVE",
+      "limits": "Ceramic category only; no form, kiln, or firing regime."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-work-waste-context",
+      "claim_ref": "claim:work-waste-context",
+      "claim_digest": "4e77fd9e59def70431af2472aa3e5fbe9da075f97560ce12fff1f4acf8b554c3",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:work-waste-context",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Whole-claim reconciliation uses independently reopened leather-workshop and Desyatinny casting-trace evidence; no claim is made for a specific waste type.",
+      "evidence_checked": [
+        "evidence:population-things-leather",
+        "evidence:ha-desyatinny"
+      ],
+      "review_ref": "verification/foundation-evidence-repair-v2.md#approved-replacements",
+      "verdict": "APPROVE",
+      "limits": "Leather offcuts and casting traces ground a contextual material-work relation only; they do not identify an author, date, occupation, hidden result, current workshop or waste in a scene."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-excavated-urban-structures",
+      "claim_ref": "claim:excavated-urban-structures",
+      "claim_digest": "0d5280eb501224ee3603fb14f4f09f79fa6be39ae6e05e16e7e2e8aa472e9681",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:excavated-urban-structures",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU expedition page reports medieval structures.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Broad excavated-city context only; no particular structure or scene presence."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-composite-urban-quarter",
+      "claim_ref": "claim:composite-urban-quarter",
+      "claim_digest": "17130bfc00be3a6f01fb98e4e0327ce30baf84f32671d1286fea8391966b7356",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:composite-urban-quarter",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU expedition page reports whole medieval quarters.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Broad excavated-quarter context only; no scene layout or location inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-contextual-evidence-classes",
+      "claim_ref": "claim:contextual-evidence-classes",
+      "claim_digest": "8353551d9163e9fdb4af4f5e1f9831d21695ebbf1d85111c9ca93222b3783216",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:contextual-evidence-classes",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU page lists archaeological object classes.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Collection classes only; no item presence, ownership, or access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-urban-pavements",
+      "claim_ref": "claim:urban-pavements",
+      "claim_digest": "74ea61ec8e36a76731118b4659f3b9cd5090087b23c3bebb9e4256fe6e9272d5",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:urban-pavements",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU page names pavements.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Archaeological urban context only; no pavement at a current location."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-localized-improvement-context",
+      "claim_ref": "claim:localized-improvement-context",
+      "claim_digest": "3d33484b51ad23bdce77323c51ed463a59db00d0712711e1c4f1ee3568fe7c39",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:localized-improvement-context",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU page names improvement system.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Historic improvement-system context only; no local infrastructure fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-architectural-material-classes",
+      "claim_ref": "claim:architectural-material-classes",
+      "claim_digest": "0201a4a5e60118ed454ecb5e91709b3391125c2a30ea3998fcf5b5c0d5ecf52d",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:architectural-material-classes",
+      "auditor_ref": "/root/completeness_auditor",
+      "independence_basis": "new independent primary-source review; live MSU page describes finds from medieval materials.",
+      "evidence_checked": [
+        "evidence:msuNovgorod"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#msu-novgorod",
+      "verdict": "APPROVE",
+      "limits": "Broad collection/material context only; no exact construction material in scene."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-regional-fish-exploitation",
+      "claim_ref": "claim:regional-fish-exploitation",
+      "claim_digest": "76c21c5c7de354e0ad5208ee8a9cdbb857df466b5357745f54c8d501d3ca3d52",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:regional-fish-exploitation",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent ENV-03 verdict.",
+      "evidence_checked": [
+        "evidence:fishFur"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate ENV-03; regional compatibility only, no stock, species, access, season, water body, or catch."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-regional-agriculture-practice",
+      "claim_ref": "claim:regional-agriculture-practice",
+      "claim_digest": "28e298c4d607a36691606c71a9ec0845425548629548dd9012785a4132a0c07e",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:regional-agriculture-practice",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent AGR-01 verdict.",
+      "evidence_checked": [
+        "evidence:implements"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate AGR-01; regional practice only, no household inventory, crop, field, labour obligation, or exact 1230 tool."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-domestic-animal-context",
+      "claim_ref": "claim:domestic-animal-context",
+      "claim_digest": "cd987bc0113dad4d51a2b0d6a9b33ed4622566aa221da46ed2f0a931dccb9fd2",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:domestic-animal-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent FAU-01 verdict.",
+      "evidence_checked": [
+        "evidence:animals"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate FAU-01; managed context only, not a live animal, owner, herd, breed, or use."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-wild-food-and-fur-evidence",
+      "claim_ref": "claim:wild-food-and-fur-evidence",
+      "claim_digest": "d39d2153ce443647563c22e0e13cf6bcc79cd22b7e6e37172005fa218231d88f",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:wild-food-and-fur-evidence",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent FAU-02 verdict.",
+      "evidence_checked": [
+        "evidence:fishFur"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate FAU-02; regional evidence only, no species frequency, hunt, pelt, or encounter."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-urban-bird-period-specific",
+      "claim_ref": "claim:urban-bird-period-specific",
+      "claim_digest": "e193590fd804f89e939daf9c44a61438afec4fd3421124662cac431b6fbc565f",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:urban-bird-period-specific",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent FAU-03 verdict.",
+      "evidence_checked": [
+        "evidence:birds"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
+      "verdict": "APPROVE",
+      "limits": "candidate FAU-03; taxon/date-specific compatibility only, never an everyday flock."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-agriculture-rural-role-context",
+      "claim_ref": "claim:agriculture-rural-role-context",
+      "claim_digest": "d1435aec95c68fc9efea34a92370b09ac015e4aaa54674652b28bebe427fa321",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:agriculture-rural-role-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-04 verdict.",
+      "evidence_checked": [
+        "evidence:implements"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-04; grounded rural context only, no job, tool, crop, landholding, or current task."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-animal-care-needs-presence",
+      "claim_ref": "claim:animal-care-needs-presence",
+      "claim_digest": "fd28dcdc9db668a61d75541b9b420cdcd0af6d0aefdb40b5067c3b85fab4541c",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:animal-care-needs-presence",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-05 verdict.",
+      "evidence_checked": [
+        "evidence:animals"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-05; only where a specific domesticated animal/context already exists; no owner, profession, health, or wealth inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-resource-occupation-needs-setting",
+      "claim_ref": "claim:resource-occupation-needs-setting",
+      "claim_digest": "d147b880aa2b791df6ec1db21ef1b26f3555492fa64451274e8266592294ce87",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:resource-occupation-needs-setting",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-06 verdict.",
+      "evidence_checked": [
+        "evidence:fishFur"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-06; requires separately grounded source, setting, and practice; no composite occupation or individual skills."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-neutral-household-context",
+      "claim_ref": "claim:neutral-household-context",
+      "claim_digest": "ab68d2899b348287a214bf22b74eeaf275ec7bce7eff0cff70c839ee9efa12a9",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:neutral-household-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-07 verdict.",
+      "evidence_checked": [
+        "evidence:novgorodContext"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-07; causally established dwelling/property only; no kinship, residents, gendered work, wealth, privacy, livestock, or possessions."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-debt-record-practice",
+      "claim_ref": "claim:debt-record-practice",
+      "claim_digest": "2989ec48931edfa22c3947a042342690062f129bdf404bff372eefb802329a43",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:debt-record-practice",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent SLE-01 verdict.",
+      "evidence_checked": [
+        "evidence:gramota73"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#social--law--economy",
+      "verdict": "APPROVE",
+      "limits": "candidate SLE-01; one debt record only, not universal credit, interest, collateral, or literacy."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-judicial-accusation-record",
+      "claim_ref": "claim:judicial-accusation-record",
+      "claim_digest": "247d18eebb2394ca2ee7547a039983984d59ce7a698f61cc62a5a5644afd4264",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:judicial-accusation-record",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent NPC-02 verdict.",
+      "evidence_checked": [
+        "evidence:gramota510"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#npc--occupation--daily-life",
+      "verdict": "APPROVE",
+      "limits": "candidate NPC-02; dated judicial record only, no procedure, officeholder, sanction, guilt, or present access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-practical-document-genres",
+      "claim_ref": "claim:practical-document-genres",
+      "claim_digest": "49cd05afcaf3e39e0e666eae60bda2d869d9fa3fea582181af37658ff66dff84",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:practical-document-genres",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent SLE-04 verdict.",
+      "evidence_checked": [
+        "evidence:gramota73"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#social--law--economy",
+      "verdict": "APPROVE",
+      "limits": "candidate SLE-04; limited documentary-practice observation only, not literacy prevalence, author/writer identity, or rank."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-debt-needs-parties-and-basis",
+      "claim_ref": "claim:debt-needs-parties-and-basis",
+      "claim_digest": "f517b47795076b14de4dbb962c2869cdc8f2388c5a8d3a82daa498c16aaf1eef",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:debt-needs-parties-and-basis",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent SLE-05 verdict.",
+      "evidence_checked": [
+        "evidence:gramota73"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#social--law--economy",
+      "verdict": "APPROVE",
+      "limits": "candidate SLE-05; present obligation still requires established parties and basis; no later presentation, enforcement, interest, seizure, or default consequence."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-russkaya-pravda-comparative-only",
+      "claim_ref": "claim:russkaya-pravda-comparative-only",
+      "claim_digest": "7ac6743138a84e295156c8439d9cd0785087502c51be431fcd73c07382603721",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:russkaya-pravda-comparative-only",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent SLE-06 verdict.",
+      "evidence_checked": [
+        "evidence:rusPravda"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#social--law--economy",
+      "verdict": "APPROVE",
+      "limits": "candidate SLE-06; comparative legal language/tradition only, not an executable Novgorod-1230 code."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-later-novgorod-judicial-charter",
+      "claim_ref": "claim:later-novgorod-judicial-charter",
+      "claim_digest": "bf4ccf00ee8c7033c9d436702d66abc1b22f1d3d1d0552e2b93c8d8ff938a8b9",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:later-novgorod-judicial-charter",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent SLE-07 verdict.",
+      "evidence_checked": [
+        "evidence:novgorodCharter"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#social--law--economy",
+      "verdict": "APPROVE",
+      "limits": "candidate SLE-07; negative anachronism boundary only; it does not imply absence of earlier disputes."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-buoyancy-pressure-phase-change",
+      "claim_ref": "claim:buoyancy-pressure-phase-change",
+      "claim_digest": "7ddabde7ad71651d3cc4b3ca648a5c7d18cfaba6d011732ca744209775805834",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:buoyancy-pressure-phase-change",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official OpenStax College Physics 2e §§11.3–11.7 and 13.5, exact claim/evidence comparison.",
+      "evidence_checked": [
+        "evidence:openstax"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#openstax-fluids",
+      "verdict": "APPROVE",
+      "limits": "General fluid-pressure, buoyancy, and pressure/temperature phase relations only; no object-specific float, pressure, or transition outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-force-contact-geometry",
+      "claim_ref": "claim:force-contact-geometry",
+      "claim_digest": "cde95c5fab35e879f7f192dd4b35118a6cb7055e547da7cd8d3fa59b3073b1b5",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:force-contact-geometry",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official OpenStax College Physics 2e §4.5, exact claim/evidence comparison.",
+      "evidence_checked": [
+        "evidence:openstax"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#openstax-forces",
+      "verdict": "APPROVE",
+      "limits": "Normal force is perpendicular to the contact surface; no exact force, geometry, or object-specific outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-dry-friction",
+      "claim_ref": "claim:dry-friction",
+      "claim_digest": "1e93fb79095b1682c3a5bc8ce7c9d834bec2b0a283836f1a221e6f12f27452bb",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:dry-friction",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official OpenStax College Physics 2e §5.1, exact claim/evidence comparison.",
+      "evidence_checked": [
+        "evidence:openstax"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#openstax-friction",
+      "verdict": "APPROVE",
+      "limits": "Friction is a contact force opposing relative/attempted motion; no universal coefficient, force, or object-specific outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-wood-anisotropy-moisture",
+      "claim_ref": "claim:wood-anisotropy-moisture",
+      "claim_digest": "cfdca36b9e266ec8790902614d6de75ed36ac42274b4eb16269c3b3f88f63aea",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:wood-anisotropy-moisture",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official USDA Forest Service Wood Handbook material.",
+      "evidence_checked": [
+        "evidence:wood"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#usda-wood",
+      "verdict": "APPROVE",
+      "limits": "Direction, species, and moisture dependency only; no numeric strength for a concrete piece."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-metal-properties-depend-on-state",
+      "claim_ref": "claim:metal-properties-depend-on-state",
+      "claim_digest": "80a72b92cd6be45643e4c1132f2a8d60e966618a66b9793b94f03ff9eaa97fc8",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:metal-properties-depend-on-state",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of DoITPoMS-authorized LibreTexts modules plus approved composition evidence; exact RU/EN full-claim comparison.",
+      "evidence_checked": [
+        "evidence:materials",
+        "evidence:rscMetals"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#doitpoms-material-state",
+      "verdict": "APPROVE",
+      "limits": "General composition, structure, processing, and temperature dependence only; no numeric property for an unknown object."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-brittle-fracture-defects",
+      "claim_ref": "claim:brittle-fracture-defects",
+      "claim_digest": "32c98015fcdbe3a6ce0015ee305b8d9c9dd250d9f64c5623116fabd612abdfeb",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:brittle-fracture-defects",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official NIST SP 960-16e3 Fractography of Ceramics and Glasses.",
+      "evidence_checked": [
+        "evidence:fracture"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#nist-fractography",
+      "verdict": "APPROVE",
+      "limits": "Glass/ceramic brittle-fracture generality only; no concrete impact/heating result without object state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-textile-conditioning-matters",
+      "claim_ref": "claim:textile-conditioning-matters",
+      "claim_digest": "02c1587007caedf8ff4c75620880096d6f881916f22eb72413199d908e555610",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:textile-conditioning-matters",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Independent reading of official ASTM D1776/D1776M scope/significance.",
+      "evidence_checked": [
+        "evidence:textile"
+      ],
+      "review_ref": "verification/foundation-source-review-v2.md#astm-d1776",
+      "verdict": "APPROVE",
+      "limits": "Testing-condition relevance only; no property of historical fabric or leather."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-exercise-heat-dissipation",
+      "claim_ref": "claim:exercise-heat-dissipation",
+      "claim_digest": "051a38bd36a4ffbd5b3376e8b5e1167e6225b4edce59c1e70541bc5c8a7b2198",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:exercise-heat-dissipation",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:heat reconciled with independent BIO-01 verdict.",
+      "evidence_checked": [
+        "evidence:heat"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-01; B-HEAT supports qualitative metabolic heat/dissipation only; no temperature, diagnosis, threshold, duration, clothing model, or historical practice."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-activity-fluid-balance",
+      "claim_ref": "claim:activity-fluid-balance",
+      "claim_digest": "2e6bb04871866f3b65fc94388bb77a44136bf50f053bba80f83e7a0215f47ae9",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:activity-fluid-balance",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:fluid reconciled with independent BIO-02 verdict.",
+      "evidence_checked": [
+        "evidence:fluid"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-02; B-FLUID supports contextual fluid balance only; exclude volumes, timing, water safety, electrolyte content, diagnosis, and individual outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-work-intensity-duration",
+      "claim_ref": "claim:work-intensity-duration",
+      "claim_digest": "da695741d7c0fe83d404eb537623c2182dbcb1cd32efe42ee339f7c22241545c",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:work-intensity-duration",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:load reconciled with independent BIO-03 verdict.",
+      "evidence_checked": [
+        "evidence:load"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-03; B-LOAD supports qualitative intensity-duration constraint only; no pulse, VO2, athlete class, universal maximum, or specific actor result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-acute-sleep-loss-performance",
+      "claim_ref": "claim:acute-sleep-loss-performance",
+      "claim_digest": "f1160ccb9ce79ceea88642e4d35c97ae6bd383ac992265213af0fbbf055f8cdc",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:acute-sleep-loss-performance",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:sleep reconciled with independent BIO-04 verdict.",
+      "evidence_checked": [
+        "evidence:sleep"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-04; B-SLEEP supports general direction only; no historical sleep pattern, person history, diagnosis, or automatic effect after idle time."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-wound-healing-time-dependent",
+      "claim_ref": "claim:wound-healing-time-dependent",
+      "claim_digest": "62696f70331514718927ac989315947ddfc9691f8c537194b2c6748b9be1b359",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:wound-healing-time-dependent",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:wound reconciled with independent BIO-05 verdict.",
+      "evidence_checked": [
+        "evidence:wound"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-05; B-WOUND supports high-level time-dependent process only; no infection, treatment, severity, schedule, mortality, or individual prognosis."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-pain-nociception-distinct",
+      "claim_ref": "claim:pain-nociception-distinct",
+      "claim_digest": "b7aa3fcedcbb7cb962069386104ac44e418ee88083021a6208d0f089ad6effb0",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:pain-nociception-distinct",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:pain reconciled with independent BIO-06 verdict.",
+      "evidence_checked": [
+        "evidence:pain"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-06; B-PAIN supports terminology boundary only; no individual pain, withdrawal, hidden injury, or psychological condition."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-food-energy-nutrients",
+      "claim_ref": "claim:food-energy-nutrients",
+      "claim_digest": "22aeb50d68d21fa7dc60110564db806d36fc0797c89cb06f0eb889da711a2469",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:food-energy-nutrients",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:diet reconciled with independent BIO-07 verdict.",
+      "evidence_checked": [
+        "evidence:diet"
+      ],
+      "review_ref": "verification/verification-architecture-biology.md#biology-and-physiology-candidates",
+      "verdict": "APPROVE",
+      "limits": "candidate BIO-07; B-DIET supports nutrition premise only; no medieval food, individual deficit, calories, disease, or short-term gameplay result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-iron-corrosion-moisture-oxygen",
+      "claim_ref": "claim:iron-corrosion-moisture-oxygen",
+      "claim_digest": "7d57ece9673f38d711bc6edfb7e9d8939fa67e1ad63f8af75df6fc85f879b8af",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:iron-corrosion-moisture-oxygen",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:nistCorrosion reconciled with independent CMF-02 verdict.",
+      "evidence_checked": [
+        "evidence:nistCorrosion"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#chemistry--metallurgy--food-processes",
+      "verdict": "APPROVE",
+      "limits": "candidate CMF-02; evidence:nistCorrosion supports moisture/oxygen promotion only; no rate, residual strength, or object-specific destruction."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-lime-transformations",
+      "claim_ref": "claim:lime-transformations",
+      "claim_digest": "43963136d1718c4674fed8830edaba70a1341e964cd5dd8f130d42f1ee6215f6",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:lime-transformations",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:lime reconciled with independent CMF-03 verdict.",
+      "evidence_checked": [
+        "evidence:lime"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#chemistry--metallurgy--food-processes",
+      "verdict": "APPROVE",
+      "limits": "candidate CMF-03; evidence:lime supports distinct transformations only; exact firing, mix, cure, and structural quality need composition/environment."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-metal-classes-composition",
+      "claim_ref": "claim:metal-classes-composition",
+      "claim_digest": "2ece754973b5be5e63c8457140dfb4dac3c8df42525f3541c45cfcf6fae7cb50",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:metal-classes-composition",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:rscMetals reconciled with independent CMF-05 verdict.",
+      "evidence_checked": [
+        "evidence:rscMetals"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#chemistry--metallurgy--food-processes",
+      "verdict": "APPROVE",
+      "limits": "candidate CMF-05; evidence:rscMetals supports material-class distinction only; no alloy, steel quality, temperature, method, or exact unknown-object properties."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-food-preservation-qualitative",
+      "claim_ref": "claim:food-preservation-qualitative",
+      "claim_digest": "84c64a03a5bc7d07985328dc4da92f73c255488f24880e23fdce3f4bf66d138a",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:food-preservation-qualitative",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:foodPreservation reconciled with independent CMF-07 verdict.",
+      "evidence_checked": [
+        "evidence:foodPreservation"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#chemistry--metallurgy--food-processes",
+      "verdict": "APPROVE",
+      "limits": "candidate CMF-07; evidence:foodPreservation supports modern mechanism only; no 1230 practice, shelf-life, or batch safety certainty."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-fermentation-conditions",
+      "claim_ref": "claim:fermentation-conditions",
+      "claim_digest": "eca9a3791c9694984c4574bb843f4751c7b70728e66f6d7efcade0e9c65e1f3b",
+      "candidate_ref": "candidate:pr92-source-repair-v2:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:fermentation-conditions",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual claim/evidence evidence:fermentation reconciled with independent CMF-08 verdict.",
+      "evidence_checked": [
+        "evidence:fermentation"
+      ],
+      "review_ref": "verification/verification-environment-npc-social-chemistry.md#chemistry--metallurgy--food-processes",
+      "verdict": "APPROVE",
+      "limits": "candidate CMF-08; evidence:fermentation supports conditional process only; no historic drink, starter, vessel, safety, or specific product."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-net-floats",
+      "claim_ref": "claim:population-net-floats",
+      "claim_digest": "9b67022fc0659dc16f928d36046862cb26b078f1b2d29d4d174737d0d05713e8",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-net-floats",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-04 correction.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-04; only the described nets, not all fishing methods."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-net-weights",
+      "claim_ref": "claim:population-net-weights",
+      "claim_digest": "fdb7572306e80ebebff0d4414ce978241c36f887bc5461053452909adf3accbf",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-net-weights",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-04 correction.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-04; only the described nets, not all fishing methods."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-net-cord",
+      "claim_ref": "claim:population-net-cord",
+      "claim_digest": "4a382753688733f64d20b83ab98c61044a54847c84b44b6b18f9d1aec653780c",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-net-cord",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-02 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; attested gear component relation only, not a present net or catch."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-bark-float",
+      "claim_ref": "claim:population-bark-float",
+      "claim_digest": "ba590d82e1f3e8fc8b7601f1a62f1f2cdfb31af173704aef6f8fb0abde6ba1c5",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-bark-float",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-03; documented material/category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-pine-float",
+      "claim_ref": "claim:population-pine-float",
+      "claim_digest": "48b44623ad4bcb80b3fcd0b5b15ae376830c29d167967fd8eb79b9c8dc79d78f",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-pine-float",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-224"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-03; documented material/category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-wood-float",
+      "claim_ref": "claim:population-wood-float",
+      "claim_digest": "bf09ac962fb0dd2a22d2325318968af0b2951b9fb59d6beff67e180f56607cde",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-wood-float",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-224"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-03; documented material/category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-stone-weight",
+      "claim_ref": "claim:population-stone-weight",
+      "claim_digest": "da13208bf0246290a59fa9b6a4ed44ed8ea4b517e10b57dc976cbb3c71ab7796",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-stone-weight",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-226"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-03; documented material/category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-iron-hook",
+      "claim_ref": "claim:population-iron-hook",
+      "claim_digest": "49e2b11c781eb2aa975aee26da1d0bad7808b1fef11e22c29bc2e27a8f89bc59",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-iron-hook",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-03; documented material/category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-bark-input",
+      "claim_ref": "claim:population-bark-input",
+      "claim_digest": "154962101f6a59aedd5a88cdc1232fd9c49f602492026329ca303618d533e307",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-bark-input",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-bark-bast",
+      "claim_ref": "claim:population-bark-bast",
+      "claim_digest": "5295aaa104827fffdfe6ca15629bd15c91a4519074517e2c87eb29604a96adc3",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-bark-bast",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-bark-cut",
+      "claim_ref": "claim:population-bark-cut",
+      "claim_digest": "461511606af1429161cf30884bee1ddc0042c5a27b69e4d7f4e32e0de8277cdb",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-bark-cut",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-bark-pierce",
+      "claim_ref": "claim:population-bark-pierce",
+      "claim_digest": "bcbf5ed372eca60942f3e45cd1e7fab1db360fc385aad139be4a7af00347637f",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-bark-pierce",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-rod-input",
+      "claim_ref": "claim:population-rod-input",
+      "claim_digest": "23de4e32c72a81ef07d7a6b32acef0838f93b8f4c8808ebedb9d61d2a521d8c3",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-rod-input",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-224"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-rod-cord",
+      "claim_ref": "claim:population-rod-cord",
+      "claim_digest": "55ea2566eb5a09d95255ae6e297ded74233405a45f9951ce9fc5433e59f11e49",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-rod-cord",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-224"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic attested process, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-weight-stone",
+      "claim_ref": "claim:population-weight-stone",
+      "claim_digest": "5efc3c5d0d86c4fc84486ec2015c9edcce75fce7f84056c0a8fd85255d876a9b",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-weight-stone",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-226"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic relation, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-weight-strap",
+      "claim_ref": "claim:population-weight-strap",
+      "claim_digest": "9ab25c21d565911d1982d1df67a9a5a4d47f7496675158c474183bf8d2e2f6f9",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-weight-strap",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-226"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic relation, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-weight-cord",
+      "claim_ref": "claim:population-weight-cord",
+      "claim_digest": "a854bb832af834efc8f52a98ab472465752ae464897fff59854fc9c6eccbe2f6",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-weight-cord",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-226"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic relation, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-weight-bark",
+      "claim_ref": "claim:population-weight-bark",
+      "claim_digest": "b4cfa19fb0c7af24857b13a36058e9c3a9f542ca760e081d9ec64b9f17bbd015",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-weight-bark",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-02.",
+      "evidence_checked": [
+        "evidence:population-fishing-226"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-02; atomic relation, not recipe."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-net-work",
+      "claim_ref": "claim:population-net-work",
+      "claim_digest": "1a794938ce169d04200b8df8e59fdc041da1464e93bebf6a3b742003dec2dcc9",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-net-work",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-01.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-01; regional practice, not individual skill."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-boat-work",
+      "claim_ref": "claim:population-boat-work",
+      "claim_digest": "ace711fed9036437e923445c2b7c71ddd27aa2152fb17278984cad23c3d7d786",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-boat-work",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-09.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-09; shore/boat handling only, not route/right."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-fish-food",
+      "claim_ref": "claim:population-fish-food",
+      "claim_digest": "a733ba7bec21a44b6b53433ecabeaee3c7ff8f5b4018ef3bb09d882a85955059",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-fish-food",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-07.",
+      "evidence_checked": [
+        "evidence:population-fishing-220"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-07; food/exchange category, no catch/obligation."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-fish-dried-form",
+      "claim_ref": "claim:population-fish-dried-form",
+      "claim_digest": "2f8618dbd4a605ff010b3b7d23e5f1edd6bae07a51c64ee92c3b9308fb939065",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-fish-dried-form",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-08 correction.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-river-work",
+      "claim_ref": "claim:population-river-work",
+      "claim_digest": "4591fb341b0ada65764c821b9593ef27946f468d043440b2a339e22595f4f0ce",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-river-work",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-09.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-09; shore handling only, not specific access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-fishing-workspace",
+      "claim_ref": "claim:population-fishing-workspace",
+      "claim_digest": "318fdeae681588ed4c841af5deae0fe2da3fa028e008245dde4ab38f053ed447",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-fishing-workspace",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-10 correction.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-10; no asserted specific camp/building."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-drying-workspace",
+      "claim_ref": "claim:population-drying-workspace",
+      "claim_digest": "ab576b83d87c8c812611b9a57cfc4f8403d4fdae8495c6d08d46fe42e99bc84c",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-drying-workspace",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-10 correction.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-10; no asserted building/heating/content."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-household-storage",
+      "claim_ref": "claim:population-household-storage",
+      "claim_digest": "28c6166b13273f26be6c38cb2f1a751c856b82dea1737ecfe07e5564cfef6e06",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-household-storage",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-19.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-19; inferred ordinary compatibility only; no stocks/layout."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-storage-vessels",
+      "claim_ref": "claim:population-storage-vessels",
+      "claim_digest": "ca1c349fe3188df07f65af3113baee0d5ed5ac1df0873f24a362e4e64ad045ba",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-storage-vessels",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-19.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-19; inferred ordinary compatibility only; no contents/capacity."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-storage-role",
+      "claim_ref": "claim:population-storage-role",
+      "claim_digest": "97612327520f775aaea74b81232af6f67ecd989fd2f4b36f8146e3995157b844",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-storage-role",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-19.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-19; no historical title/controller inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-leather-shoes",
+      "claim_ref": "claim:population-leather-shoes",
+      "claim_digest": "3ff10d19c81f75fc542053cbc8d55bd0cc012780ae758c801d21d904cea40d58",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-leather-shoes",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-14.",
+      "evidence_checked": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-14; broad footwear only, no mandatory outfit."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-shoe-input",
+      "claim_ref": "claim:population-shoe-input",
+      "claim_digest": "f1365210bec8bb0a400ab5ca831808131ae37ca4d80d0272a339540ce8ac1069",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-shoe-input",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
+      "evidence_checked": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-15; tanned hide only, not raw hide."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-shoe-form",
+      "claim_ref": "claim:population-shoe-form",
+      "claim_digest": "565ebf3055f8379eed57a52279f8ddd43c2821d03175064a18720a5a56733bef",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-shoe-form",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-15; no universal last/workshop requirement."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-shoe-output",
+      "claim_ref": "claim:population-shoe-output",
+      "claim_digest": "f6335dad989cbda7c21ba17dd7c4a9393060d5eecab3ab64753b1793b00b168f",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-shoe-output",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-15; attested craft traces only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-leather-case",
+      "claim_ref": "claim:population-leather-case",
+      "claim_digest": "3780529709d5ffe904338916135b0bb9117184718cef90677147db0784478112",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-leather-case",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-18.",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-18; contents/capacity remain separate."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-leather-straps",
+      "claim_ref": "claim:population-leather-straps",
+      "claim_digest": "0a6d372146f9b0cf610e1ead05091c2f04bce66ea3f8a4e03ed57c95c2dd46ad",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-leather-straps",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-18.",
+      "evidence_checked": [
+        "evidence:population-things-leather"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-18; contents/capacity remain separate."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-wool-lining",
+      "claim_ref": "claim:population-wool-lining",
+      "claim_digest": "aae529c36a2b559e0d57b48ac3591eace8490cd93b54e3d0bc053e8feb5784a8",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-wool-lining",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-17.",
+      "evidence_checked": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-17; documented footwear/accessory only, not universal outfit."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-felt-lining",
+      "claim_ref": "claim:population-felt-lining",
+      "claim_digest": "fdc041a9d7d54da08d0dbd2a05481f38c59d80710460e392868c3522266d24e9",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-felt-lining",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-17.",
+      "evidence_checked": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-17; documented footwear/accessory only, not universal outfit."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-weaving-practice",
+      "claim_ref": "claim:population-weaving-practice",
+      "claim_digest": "62ab3e36236ef8c565f6b866d89283526bc4d93a86baf7b538f60fce92ce6f6e",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-weaving-practice",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-16.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-16; craft category only."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-woodwork-practice",
+      "claim_ref": "claim:population-woodwork-practice",
+      "claim_digest": "cafc4fb938673e8bc5c862489774f69c20276930191c1a8046b51a552ea15044",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-woodwork-practice",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-23.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-23; craft category, not individual competence/schedule."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-woodwork-material",
+      "claim_ref": "claim:population-woodwork-material",
+      "claim_digest": "93ca948b8c1d0e18c34404d3d7692f7d51c7a60752612f3316364a6a8081bd6e",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-woodwork-material",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-23.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-23; craft category, not material presence."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-boat-context",
+      "claim_ref": "claim:population-boat-context",
+      "claim_digest": "64ca108122b95d8922f222348833558f48bba0b4c912a07ee466de23ea53673c",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-boat-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-22.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-22; documented context only, not present vessel."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-tack-context",
+      "claim_ref": "claim:population-tack-context",
+      "claim_digest": "9eb84b28bbe88fce35b6f46ee35af2a51cc6036e628471b0c7167a76585603f9",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-tack-context",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-22.",
+      "evidence_checked": [
+        "evidence:population-things-transport"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-22; no complete set or horse."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:production-population-hide-leather-distinction",
+      "claim_ref": "claim:population-hide-leather-distinction",
+      "claim_digest": "3d644381a42f9b005dc7fd14bd34d90768acb194817d547d27de1359740baa2e",
+      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-hide-leather-distinction",
+      "auditor_ref": "/root/ci_repair",
+      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
+      "evidence_checked": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
+      "verdict": "APPROVE",
+      "limits": "candidate PHC-15; tanned hide distinction only."
+    }
+  ]
+}

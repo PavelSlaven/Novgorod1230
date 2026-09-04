@@ -1,13 +1,41 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { createWorldKnowledgeCore } from '../../../packages/world-knowledge/src/world-knowledge.js';
 import { loadWorldKnowledgeAuthoringInput } from '../src/world-knowledge-authoring-loader.js';
 import { compileWorldKnowledgePack } from '../src/world-knowledge-pack.js';
+import { buildWorldKnowledgeEmbeddingEntries } from '../src/world-knowledge-embeddings.js';
 
 const input = fileURLToPath(new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/authoring.json', import.meta.url));
-const bundle = compileWorldKnowledgePack(await loadWorldKnowledgeAuthoringInput(input));
+const pack = await loadWorldKnowledgeAuthoringInput(input);
+const bundle = compileWorldKnowledgePack(pack);
 const core = createWorldKnowledgeCore(bundle);
+
+test('production bundle retains exact independent approvals for every claim', async () => {
+  const committed = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json', import.meta.url), 'utf8'));
+  assert.deepEqual(bundle, committed);
+  assert.equal(pack.verifications.length, pack.claims.length);
+  const verdicts = new Map(pack.verifications.map(record => [record.verification_ref, record]));
+  for (const claim of bundle.claims) {
+    const verdict = verdicts.get(claim.verification_ref);
+    assert.equal(verdict?.claim_ref, claim.claim_ref);
+    assert.equal(verdict.verdict, 'APPROVE');
+  }
+  for (const review of new Set(pack.verifications.map(record => record.review_ref.split('#')[0]))) {
+    const report = await readFile(new URL(`../../../data/world-catalogs/novgorod/world-knowledge/${review}`, import.meta.url), 'utf8');
+    assert.ok(report.trim(), review);
+  }
+  assert.equal(Object.hasOwn(bundle, 'verifications'), false);
+  const profile = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/embedding-profiles/giga-480m-0826-v1.json', import.meta.url), 'utf8'));
+  const index = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/vector-index.json', import.meta.url), 'utf8'));
+  assert.deepEqual(buildWorldKnowledgeEmbeddingEntries(bundle, profile), index.entries);
+  const unapproved = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/research/unapproved-foundation-v2.json', import.meta.url), 'utf8'));
+  for (const claim of unapproved.claims) {
+    assert.ok(!bundle.claims.some(record => record.claim_ref === claim.claim_ref));
+    assert.ok(!pack.verifications.some(record => record.claim_ref === claim.claim_ref));
+  }
+});
 
 function query(domains, focus_refs, overrides = {}) {
   return core.resolveWorldKnowledge({

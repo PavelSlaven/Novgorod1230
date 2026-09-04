@@ -7,7 +7,8 @@ import { loadWorldKnowledgeAuthoringInput } from '../src/world-knowledge-authori
 import {
   WorldKnowledgePackValidationError,
   compileWorldKnowledgePack,
-  validateWorldKnowledgeAuthoringPack
+  validateWorldKnowledgeAuthoringPack,
+  worldKnowledgeClaimDigest
 } from '../src/world-knowledge-pack.js';
 
 const PILOT_URL = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/authoring.json', import.meta.url);
@@ -15,6 +16,22 @@ const PILOT_RUNTIME_URL = new URL('../../../data/world-catalogs/novgorod/world-k
 
 async function pilotPack() {
   return JSON.parse(await readFile(PILOT_URL, 'utf8'));
+}
+
+function addFixtureVerifications(pack) {
+  pack.verifications = pack.claims.map(claim => ({
+    schema: 'world_knowledge_verification_v1',
+    verification_ref: `wk-verification:test-${claim.claim_ref}`,
+    claim_ref: claim.claim_ref,
+    claim_digest: worldKnowledgeClaimDigest(pack, claim),
+    candidate_ref: `test-candidate:${claim.claim_ref}`,
+    auditor_ref: 'test-agent:independent-reviewer',
+    independence_basis: 'Synthetic test review by a separate fixture reviewer.',
+    evidence_checked: [...claim.evidence_refs],
+    review_ref: 'test-fixture:review',
+    verdict: 'APPROVE',
+    limits: 'Test fixture only; does not constitute editorial approval.'
+  }));
 }
 
 async function invalidPack(mutator, expected) {
@@ -175,14 +192,16 @@ test('sharded World Knowledge authoring is order-independent and validates globa
   const directory = await mkdtemp(join(tmpdir(), 'wk-shards-'));
   try {
     const pack = await pilotPack();
+    addFixtureVerifications(pack);
     const first = { schema: 'world_knowledge_authoring_fragment_v1', manifest: pack.manifest, predicate_registry: pack.predicate_registry, sources: pack.sources, evidence: pack.evidence, concepts: pack.concepts };
-    const second = { schema: 'world_knowledge_authoring_fragment_v1', claims: pack.claims, coverage_profiles: pack.coverage_profiles, concept_localizations: pack.concept_localizations, claim_localizations: pack.claim_localizations };
+    const second = { schema: 'world_knowledge_authoring_fragment_v1', claims: pack.claims, coverage_profiles: pack.coverage_profiles, concept_localizations: pack.concept_localizations, claim_localizations: pack.claim_localizations, verifications: pack.verifications };
     await writeFile(join(directory, 'a.json'), JSON.stringify(first));
     await writeFile(join(directory, 'b.json'), JSON.stringify(second));
     await writeFile(join(directory, 'one.json'), JSON.stringify({ schema: 'world_knowledge_authoring_descriptor_v1', includes: ['a.json', 'b.json'] }));
     await writeFile(join(directory, 'two.json'), JSON.stringify({ schema: 'world_knowledge_authoring_descriptor_v1', includes: ['b.json', 'a.json'] }));
     const one = await loadWorldKnowledgeAuthoringInput(join(directory, 'one.json'));
     const two = await loadWorldKnowledgeAuthoringInput(join(directory, 'two.json'));
+    assert.deepEqual(one.verifications, pack.verifications);
     assert.deepEqual(compileWorldKnowledgePack(one), compileWorldKnowledgePack(two));
 
     second.concepts = [pack.concepts[0]];
@@ -207,4 +226,54 @@ test('sharded World Knowledge loader rejects traversal outside descriptor root',
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+test('production approval cannot be inferred from an approved flag or profile', async () => {
+  const pack = await pilotPack();
+  pack.manifest.status = 'production';
+  assert.throws(() => compileWorldKnowledgePack(pack), /verification.*required/u);
+  pack.manifest.status = 'reviewed';
+  pack.coverage_profiles[0].status = 'production';
+  assert.throws(() => compileWorldKnowledgePack(pack), /verification.*required/u);
+});
+
+test('production verification binds the reviewed payload and rejects stale or non-approving verdicts', async () => {
+  const pack = await pilotPack();
+  pack.manifest.status = 'production';
+  addFixtureVerifications(pack);
+  const compiled = compileWorldKnowledgePack(pack);
+  assert.ok(compiled.claims.every(claim => claim.verification_ref));
+  assert.equal('verifications' in compiled, false, 'editorial ledger stays outside gameplay');
+  for (const change of [
+    input => { input.claims[0].qualifiers.confidence = 'low'; },
+    input => { input.claim_localizations[0].runtime_text += ' Changed factual assertion.'; },
+    input => { input.concept_localizations[0].short_definition += ' Changed identity.'; },
+    input => { input.evidence[0].note += ' Changed evidence.'; },
+    input => { input.sources[0].citation += ' Different source.'; },
+    input => { input.predicate_registry[input.claims[0].domain][input.claims[0].predicate].consumer_meaning += ' Changed scope.'; }
+  ]) {
+    const altered = structuredClone(pack);
+    change(altered);
+    assert.throws(() => compileWorldKnowledgePack(altered), /stale verification/u);
+  }
+  for (const verdict of ['REJECT', 'NEEDS_REVIEW']) {
+    const altered = structuredClone(pack);
+    altered.verifications[0].verdict = verdict;
+    assert.throws(() => compileWorldKnowledgePack(altered), /must APPROVE/u);
+  }
+  const incomplete = structuredClone(pack);
+  incomplete.verifications[0].evidence_checked = [];
+  assert.throws(() => compileWorldKnowledgePack(incomplete), /evidence_checked must match/u);
+  const selfReview = structuredClone(pack);
+  selfReview.verifications[0].auditor_ref = selfReview.verifications[0].candidate_ref;
+  assert.throws(() => compileWorldKnowledgePack(selfReview), /independent auditor/u);
+  const duplicate = structuredClone(pack);
+  duplicate.verifications.push(duplicate.verifications[0]);
+  assert.throws(() => compileWorldKnowledgePack(duplicate), /duplicate/u);
+  const orphan = structuredClone(pack);
+  orphan.verifications[0].claim_ref = 'claim:unknown';
+  assert.throws(() => compileWorldKnowledgePack(orphan), /unknown verification claim_ref/u);
+  const reordered = structuredClone(pack);
+  for (const field of ['claims', 'sources', 'evidence', 'concepts', 'concept_localizations', 'claim_localizations', 'verifications']) reordered[field].reverse();
+  assert.deepEqual(compileWorldKnowledgePack(reordered), compiled);
 });

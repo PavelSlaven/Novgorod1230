@@ -1,5 +1,11 @@
 # PR92: повторный Contract + retrieval/latency audit
 
+> Historical scoped audits below are not current PR acceptance. In the
+> September 4 review, missing per-claim machine approval was raised from the
+> old traceability P2 to an acceptance blocker. The new authoring gate and
+> category cartography require independent acceptance; earlier PASS labels
+> do not cover them or supersede full CI on the exact merge HEAD.
+
 **Current PR92 contract verdict: PASS_WITH_LIMITS.** Current bindings preserve
 Knowledge Core as read-only factual context: it is neither state,
 materialization nor NPC-decision owner. Categories remain open factual

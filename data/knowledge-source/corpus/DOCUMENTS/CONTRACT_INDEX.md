@@ -101,6 +101,13 @@ hard constraints, exact focus и requested predicates; внутри этих у�
 query relevance предшествует context specificity и qualifiers. Это порядок
 bounded retrieval, не изменение applicability, actor access или authority.
 
+World Knowledge §35.1 закрепляет production authoring approval: независимый
+per-claim verdict связан с точными claim/localization/evidence inputs.
+Владелец проверки — internal compiler `@rus/world-catalog-workflow`;
+runtime World Knowledge получает только `verification_ref`, без ledger.
+§98.1 требует отдельной category cartography и независимого поиска missing
+families по location/materialization потребностям, не по числу claims/cells.
+
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |

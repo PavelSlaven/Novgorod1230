@@ -190,12 +190,19 @@
     },
     "psychology_behavior": {
       "supported_fact": {
-        "subject_domains": ["psychology_behavior"],
-        "object_kinds": ["literal"],
+        "subject_domains": [
+          "psychology_behavior"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
         "object_concept_domains": [],
         "unit_family": null,
         "allowed_units": [],
-        "polarities": ["support", "exclude"],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
         "cardinality": "multi_valued",
         "applicability": "universal",
         "consumer_meaning": "Qualified cognitive and behavioral premise for semantic reasoning; not actor state, knowledge, motive, diagnosis, decision or exact mechanics."
@@ -203,12 +210,19 @@
     },
     "social_behavior": {
       "supported_fact": {
-        "subject_domains": ["social_behavior"],
-        "object_kinds": ["literal"],
+        "subject_domains": [
+          "social_behavior"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
         "object_concept_domains": [],
         "unit_family": null,
         "allowed_units": [],
-        "polarities": ["support", "exclude"],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
         "cardinality": "multi_valued",
         "applicability": "universal",
         "consumer_meaning": "Qualified interpersonal or group premise for semantic reasoning; not a current relationship, norm, duty, consent, reputation, authority or social outcome."
@@ -339,9 +353,9 @@
       "source_ref": "source:fracture",
       "title": "Fractography of Ceramics and Glasses",
       "authors": [],
-      "publication": "NIST Special Publication 960-17",
+      "publication": "NIST Special Publication 960-16e3",
       "source_kind": "official_documentation",
-      "citation": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication960-17.pdf",
+      "citation": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.960-16e3.pdf",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -439,7 +453,7 @@
       "authors": [],
       "publication": "University of Cambridge DoITPoMS",
       "source_kind": "technical_reference",
-      "citation": "https://www.doitpoms.ac.uk/tlplib/properties-of-materials.php",
+      "citation": "https://eng.libretexts.org/Bookshelves/Materials_Science/TLP_Library_II/5%3A_Mechanical_Testing_of_Metals",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -593,7 +607,7 @@
       "authors": [],
       "publication": "ASTM International",
       "source_kind": "official_documentation",
-      "citation": "https://www.astm.org/d1776-20.html",
+      "citation": "https://store.astm.org/d1776_d1776m-20r24.html",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -607,7 +621,7 @@
       "authors": [],
       "publication": "USDA Forest Products Laboratory",
       "source_kind": "official_documentation",
-      "citation": "https://www.fpl.fs.usda.gov/documnts/fplgtr/fplgtr190/chapter_04.pdf",
+      "citation": "https://research.fs.usda.gov/treesearch/download/37440.pdf",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -705,9 +719,9 @@
       "evidence_ref": "evidence:fracture",
       "source_ref": "source:fracture",
       "anchor": {
-        "record_id": "NIST-SP-960-17"
+        "record_id": "NIST-SP-960-16e3"
       },
-      "note": "Independently reopened and scope-checked for PR92: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication960-17.pdf",
+      "note": "Independently reopened and scope-checked for PR92: https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.960-16e3.pdf",
       "review_status": "approved"
     },
     {
@@ -775,9 +789,9 @@
       "evidence_ref": "evidence:materials",
       "source_ref": "source:materials",
       "anchor": {
-        "record_id": "properties-of-materials"
+        "record_id": "doitpoms-tlp-ii:mechanical-testing;mechanisms-plasticity;microstructural-examination"
       },
-      "note": "Independently reopened and scope-checked for PR92: https://www.doitpoms.ac.uk/tlplib/properties-of-materials.php",
+      "note": "Independently reopened: https://eng.libretexts.org/Bookshelves/Materials_Science/TLP_Library_II/5%3A_Mechanical_Testing_of_Metals ; https://eng.libretexts.org/Bookshelves/Materials_Science/TLP_Library_II/7%3A_Mechanisms_of_Plasticity ; https://eng.libretexts.org/Bookshelves/Materials_Science/TLP_Library_II/8%3A_Microstructural_Examination .",
       "review_status": "approved"
     },
     {
@@ -887,7 +901,7 @@
       "anchor": {
         "record_id": "ASTM-D1776-20"
       },
-      "note": "Independently reopened and scope-checked for PR92: https://www.astm.org/d1776-20.html",
+      "note": "Independently reopened and scope-checked for PR92: https://store.astm.org/d1776_d1776m-20r24.html",
       "review_status": "approved"
     },
     {
@@ -895,9 +909,9 @@
       "evidence_ref": "evidence:wood",
       "source_ref": "source:wood",
       "anchor": {
-        "record_id": "FPL-GTR-190-chapter-04"
+        "record_id": "FPL-GTR-190"
       },
-      "note": "Independently reopened and scope-checked for PR92: https://www.fpl.fs.usda.gov/documnts/fplgtr/fplgtr190/chapter_04.pdf",
+      "note": "Independently reopened and scope-checked for PR92: https://research.fs.usda.gov/treesearch/download/37440.pdf",
       "review_status": "approved"
     },
     {
@@ -1435,7 +1449,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
+        "evidence:kolchin-settlement"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1595,47 +1609,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
-      "domain": "material_culture",
-      "subject_ref": "wk:material_culture:novgorod-wood-bone-horn-classes",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "supported"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 900,
-          "to": 1500,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "medium",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:novgorodContext"
+        "evidence:population-things-leather"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1715,7 +1689,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
+        "evidence:kolchin-settlement",
+        "evidence:population-things-overview"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1755,47 +1730,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:woodworked-objects-and-waste",
-      "domain": "craft_technology",
-      "subject_ref": "wk:craft_technology:woodworked-objects-and-waste",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "supported"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 900,
-          "to": 1500,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "medium",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:orton"
+        "evidence:kolchin-settlement"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1835,7 +1770,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
+        "evidence:population-things-leather"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1955,7 +1890,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:orton"
+        "evidence:population-things-leather",
+        "evidence:ha-desyatinny"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -2948,7 +2884,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:materials"
+        "evidence:materials",
+        "evidence:rscMetals"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -3380,33 +3317,72 @@
       "profile_ref": "wk-profile:psychology_behavior:production-v1",
       "domain": "psychology_behavior",
       "status": "production",
-      "scope": {"context_scope": "universal"},
-      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
-      "question_classes": ["attention_and_perception", "memory_and_learning", "attribution_and_individual_variation", "affect_and_decision_conditions"],
+      "scope": {
+        "context_scope": "universal"
+      },
+      "purposes": [
+        "semantic_resolution",
+        "materialization_support",
+        "source_grounded_qa"
+      ],
+      "question_classes": [
+        "attention_and_perception",
+        "memory_and_learning",
+        "attribution_and_individual_variation",
+        "affect_and_decision_conditions"
+      ],
       "runtime_requirement": "required_when_selected",
-      "guard": {"mode": "reference_required"}
+      "guard": {
+        "mode": "reference_required"
+      }
     },
     {
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:social_behavior:production-v1",
       "domain": "social_behavior",
       "status": "production",
-      "scope": {"context_scope": "universal"},
-      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
-      "question_classes": ["group_influence", "interpersonal_conflict_and_affiliation", "social_roles_and_norms_general", "cooperation_and_reciprocity_conditions"],
+      "scope": {
+        "context_scope": "universal"
+      },
+      "purposes": [
+        "semantic_resolution",
+        "materialization_support",
+        "source_grounded_qa"
+      ],
+      "question_classes": [
+        "group_influence",
+        "interpersonal_conflict_and_affiliation",
+        "social_roles_and_norms_general",
+        "cooperation_and_reciprocity_conditions"
+      ],
       "runtime_requirement": "required_when_selected",
-      "guard": {"mode": "reference_required"}
+      "guard": {
+        "mode": "reference_required"
+      }
     },
     {
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:environment:scientific-foundations-v1",
       "domain": "environment",
       "status": "production",
-      "scope": {"context_scope": "universal"},
-      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
-      "question_classes": ["soil_and_rock_processes", "water_cycle_and_groundwater", "atmospheric_condensation", "weather_and_water_cycle_conditions"],
+      "scope": {
+        "context_scope": "universal"
+      },
+      "purposes": [
+        "semantic_resolution",
+        "materialization_support",
+        "source_grounded_qa"
+      ],
+      "question_classes": [
+        "soil_and_rock_processes",
+        "water_cycle_and_groundwater",
+        "atmospheric_condensation",
+        "weather_and_water_cycle_conditions"
+      ],
       "runtime_requirement": "required_when_selected",
-      "guard": {"mode": "reference_required"}
+      "guard": {
+        "mode": "reference_required"
+      }
     },
     {
       "schema": "world_knowledge_profile_v1",
@@ -4827,20 +4803,6 @@
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
-      "locale": "ru",
-      "runtime_text": "Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора.",
-      "search_aliases": []
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
-      "locale": "en",
-      "runtime_text": "Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration.",
-      "search_aliases": []
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:novgorod-urban-metalworking",
       "locale": "ru",
       "runtime_text": "Академический свод документирует городскую металлообработку в широком средневековом Новгороде; это не доказывает кузницу, сплав или технологию в конкретном дворе.",
@@ -4879,20 +4841,6 @@
       "claim_ref": "claim:urban-wooden-coverings",
       "locale": "en",
       "runtime_text": "Wooden buildings and coverings are historically compatible with the broad medieval urban Novgorod context, without implying a concrete construction or place.",
-      "search_aliases": []
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:woodworked-objects-and-waste",
-      "locale": "ru",
-      "runtime_text": "Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала; назначение вещи не следует только из материала.",
-      "search_aliases": []
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:woodworked-objects-and-waste",
-      "locale": "en",
-      "runtime_text": "Worked wooden objects and woodworking waste are attested material classes; an object function does not follow from material alone.",
       "search_aliases": []
     },
     {

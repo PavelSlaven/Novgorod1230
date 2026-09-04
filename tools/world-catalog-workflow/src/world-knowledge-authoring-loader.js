@@ -4,7 +4,7 @@ import { dirname, isAbsolute, relative, resolve } from 'node:path';
 const PACK_SCHEMA = 'world_knowledge_authoring_pack_v1';
 const DESCRIPTOR_SCHEMA = 'world_knowledge_authoring_descriptor_v1';
 const FRAGMENT_SCHEMA = 'world_knowledge_authoring_fragment_v1';
-const RECORD_ARRAYS = ['sources', 'evidence', 'concepts', 'claims', 'coverage_profiles', 'concept_localizations', 'claim_localizations'];
+const RECORD_ARRAYS = ['sources', 'evidence', 'concepts', 'claims', 'coverage_profiles', 'concept_localizations', 'claim_localizations', 'verifications'];
 
 export class WorldKnowledgeAuthoringLoadError extends Error {
   constructor(message) {

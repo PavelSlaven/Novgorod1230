@@ -34,6 +34,17 @@
 
 ## Internal World Knowledge authoring contract
 
+Production pack либо production profile требует `verifications[]` с ровно
+одним `world_knowledge_verification_v1` / `APPROVE` для каждого claim.
+Canonical record/lifecycle: active WK contract §35.1. Внутренний helper
+`worldKnowledgeClaimDigest(pack, claim)` связывает claim, RU/EN, direct
+concepts, predicate, evidence и sources существующим deterministic SHA-256.
+Missing/duplicate/non-approving/stale verification блокирует compiler.
+Identity auditor — trusted editorial metadata, не authentication. Reviewed
+pilot без production profiles остаётся допустим без ledger. Loader собирает
+verification fragments через тот же shard path; bundle сохраняет только
+per-claim `verification_ref`. Public package exports не расширяются.
+
 `src/world-knowledge-pack.js` и CLI `compile-world-knowledge` — internal Stage 1 authoring surface, не public package API. CLI принимает один pack либо descriptor с explicit relative `includes`, собирает canonical records, затем pure compiler fail-closed проверяет полный record shape, global refs, predicate signatures, applicability, units, coverage и localization completeness. Результат — deterministic immutable runtime bundle с exact/structured/lexical indexes. Surface не делает LLM/network/DB calls и не активирует gameplay retrieval.
 
 `src/world-knowledge-embeddings.js` и `giga-embeddings.py` — internal build

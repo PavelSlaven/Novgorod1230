@@ -1,4 +1,4 @@
-import { stableStringify } from './digest.js';
+import { digestValue, stableStringify } from './digest.js';
 
 const AUTHORING_SCHEMA = 'world_knowledge_authoring_pack_v1';
 const MANIFEST_SCHEMA = 'world_knowledge_pack_manifest_v1';
@@ -60,7 +60,7 @@ export function validateWorldKnowledgeAuthoringPack(value) {
     errors.push(`schema must be ${AUTHORING_SCHEMA}`);
     return frozenValidation(errors);
   }
-  exactKeys(value, ['schema', 'manifest', 'predicate_registry', 'sources', 'evidence', 'concepts', 'claims', 'coverage_profiles', 'concept_localizations', 'claim_localizations'], 'authoring pack', errors);
+  exactKeys(value, ['schema', 'manifest', 'predicate_registry', 'sources', 'evidence', 'concepts', 'claims', 'coverage_profiles', 'concept_localizations', 'claim_localizations', 'verifications'], 'authoring pack', errors);
 
   const manifest = value.manifest;
   if (!isObject(manifest) || manifest.schema !== MANIFEST_SCHEMA) errors.push(`manifest.schema must be ${MANIFEST_SCHEMA}`);
@@ -238,7 +238,63 @@ export function validateWorldKnowledgeAuthoringPack(value) {
     }
   }
 
+  validateVerifications(value, errors);
   return frozenValidation(errors);
+}
+
+// Editorial approval binds the reviewed payload, not mutable status flags.
+// Reviewer identity remains a trusted editorial assertion, not authentication.
+export function worldKnowledgeClaimDigest(pack, claim) {
+  const evidence = sorted(array(pack.evidence).filter(record => array(claim.evidence_refs).includes(record.evidence_ref)), 'evidence_ref');
+  const sourceRefs = new Set(evidence.map(record => record.source_ref));
+  const conceptRefs = new Set([claim.subject_ref, ...(claim.object?.kind === 'concept_ref' ? [claim.object.value] : [])]);
+  return digestValue({
+    claim,
+    predicate: pack.predicate_registry?.[claim.domain]?.[claim.predicate],
+    localizations: sorted(array(pack.claim_localizations).filter(record => record.claim_ref === claim.claim_ref), 'locale'),
+    concepts: sorted(array(pack.concepts).filter(record => conceptRefs.has(record.concept_ref)), 'concept_ref'),
+    concept_localizations: array(pack.concept_localizations).filter(record => conceptRefs.has(record.concept_ref))
+      .sort((a, b) => a.concept_ref.localeCompare(b.concept_ref) || a.locale.localeCompare(b.locale)),
+    evidence,
+    sources: sorted(array(pack.sources).filter(record => sourceRefs.has(record.source_ref)), 'source_ref')
+  });
+}
+
+function validateVerifications(pack, errors) {
+  const production = pack.manifest?.status === 'production'
+    || array(pack.coverage_profiles).some(profile => profile?.status === 'production');
+  if (pack.verifications == null && !production) return;
+  const verifications = records(pack.verifications, 'verifications', errors);
+  indexed(verifications, 'verification_ref', 'verification', errors);
+  const byClaim = indexed(verifications, 'claim_ref', 'verification claim', errors);
+  const claims = new Map(array(pack.claims).filter(isObject).map(claim => [claim.claim_ref, claim]));
+  for (const record of verifications) {
+    if (!isObject(record)) { errors.push('verification record must be an object'); continue; }
+    const ref = record.verification_ref ?? '<verification>';
+    exactKeys(record, ['schema', 'verification_ref', 'claim_ref', 'claim_digest', 'candidate_ref', 'auditor_ref', 'independence_basis', 'evidence_checked', 'review_ref', 'verdict', 'limits'], ref, errors);
+    if (record.schema !== 'world_knowledge_verification_v1') errors.push(`${ref}: invalid verification schema`);
+    if (!prefixedText(record.verification_ref, 'wk-verification:')) errors.push(`${ref}: invalid verification_ref`);
+    for (const key of ['candidate_ref', 'auditor_ref', 'independence_basis', 'review_ref', 'limits']) {
+      if (!requiredText(record[key])) errors.push(`${ref}: ${key} is required`);
+    }
+    if (record.auditor_ref === record.candidate_ref) errors.push(`${ref}: independent auditor is required`);
+    if (!['APPROVE', 'REJECT', 'NEEDS_REVIEW'].includes(record.verdict)) errors.push(`${ref}: invalid verification verdict`);
+    const evidenceChecked = uniqueStrings(record.evidence_checked, `${ref}.evidence_checked`, errors);
+    const claim = claims.get(record.claim_ref);
+    if (!claim) { errors.push(`${ref}: unknown verification claim_ref`); continue; }
+    if (stableStringify([...evidenceChecked].sort()) !== stableStringify([...array(claim.evidence_refs)].sort())) errors.push(`${ref}: evidence_checked must match claim evidence_refs`);
+    if (!/^[a-f0-9]{64}$/u.test(record.claim_digest ?? '')) errors.push(`${ref}: invalid claim_digest`);
+    else {
+      try {
+        if (record.claim_digest !== worldKnowledgeClaimDigest(pack, claim)) errors.push(`${ref}: stale verification claim_digest`);
+      } catch { errors.push(`${ref}: verification payload is invalid`); }
+    }
+  }
+  if (production) for (const claim of claims.values()) {
+    const verdict = byClaim.get(claim.claim_ref);
+    if (!verdict) errors.push(`${claim.claim_ref}: production verification is required`);
+    else if (verdict.verdict !== 'APPROVE') errors.push(`${claim.claim_ref}: production verification must APPROVE`);
+  }
 }
 
 export function compileWorldKnowledgePack(value) {
@@ -250,6 +306,7 @@ export function compileWorldKnowledgePack(value) {
   const profiles = sorted(value.coverage_profiles, 'profile_ref');
   const conceptLocalizations = groupLocalizations(value.concept_localizations, 'concept_ref');
   const claimLocalizations = groupLocalizations(value.claim_localizations, 'claim_ref');
+  const verifications = new Map(array(value.verifications).map(record => [record.claim_ref, record.verification_ref]));
 
   const exactIndexes = {
     concept_by_ref: Object.fromEntries(concepts.map((concept) => [concept.concept_ref, structuredClone(concept)])),
@@ -291,7 +348,8 @@ export function compileWorldKnowledgePack(value) {
     sources: sorted(value.sources, 'source_ref'),
     evidence: sorted(value.evidence, 'evidence_ref'),
     concepts: concepts.map((concept) => ({ ...structuredClone(concept), localizations: conceptLocalizations.get(concept.concept_ref) })),
-    claims: claims.map((claim) => ({ ...structuredClone(claim), localizations: claimLocalizations.get(claim.claim_ref) })),
+    claims: claims.map((claim) => ({ ...structuredClone(claim), localizations: claimLocalizations.get(claim.claim_ref),
+      ...(verifications.has(claim.claim_ref) ? { verification_ref: verifications.get(claim.claim_ref) } : {}) })),
     coverage_profiles: profiles,
     exact_indexes: exactIndexes,
     structured_indexes: structuredIndexes,

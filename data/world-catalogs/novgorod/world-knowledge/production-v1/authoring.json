@@ -41,6 +41,9 @@
     "foundations-physical.json",
     "foundations-life.json",
     "foundations-mind-society.json",
-    "foundations-earth.json"
+    "foundations-earth.json",
+    "verification-ledger.json",
+    "verification-foundations.json",
+    "verification-base.json"
   ]
 }

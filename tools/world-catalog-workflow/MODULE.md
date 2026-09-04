@@ -17,6 +17,10 @@
 - Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
 - `buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set.
 - internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay;
+- production authoring approval: один независимый `APPROVE` на claim, exact
+  digest проверенного claim/localizations/concepts/predicate/evidence/sources,
+  evidence set и reviewer/candidate/limits metadata; runtime получает только
+  `verification_ref`, не editorial ledger;
 - internal `build-world-knowledge-vectors` и
   `benchmark-world-knowledge-vectors` CLI: строят pinned Giga-Embeddings flat
   index из compiled production pack и сравнивают lexical/hybrid retrieval на

@@ -1,5 +1,12 @@
 # PR92 Grounding / Open-world / Materialization / Persistence / NPC-mind audit
 
+> Historical runtime/prose audit. Its PASS labels apply only to the explicit
+> snapshots and probes below, not to current data completeness or PR merge
+> readiness. The September 4 review requires per-claim approval binding,
+> independent category cartography and green exact-HEAD CI. Existing
+> preflight/grounding integration is not proof that all location category
+> families are populated.
+
 **Current verdict: PASS_WITH_P2_LIMITS.** Full33/current516 (session 36262)
 passes its automated hybrid gate. Independent current prose review resolves
 the prior architecture/bort P1s and finds no current P1. Remaining uncited-use

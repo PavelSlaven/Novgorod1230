@@ -1,0 +1,115 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:novgorod-wood-bone-horn-classes",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:novgorodContext"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:woodworked-objects-and-waste",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:woodworked-objects-and-waste",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:orton"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
+      "locale": "ru",
+      "runtime_text": "Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
+      "locale": "en",
+      "runtime_text": "Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:woodworked-objects-and-waste",
+      "locale": "ru",
+      "runtime_text": "Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала; назначение вещи не следует только из материала.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:woodworked-objects-and-waste",
+      "locale": "en",
+      "runtime_text": "Worked wooden objects and woodworking waste are attested material classes; an object function does not follow from material alone.",
+      "search_aliases": []
+    }
+  ]
+}

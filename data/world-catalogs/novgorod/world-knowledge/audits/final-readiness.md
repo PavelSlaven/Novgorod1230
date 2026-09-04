@@ -1,5 +1,15 @@
 # PR92 World Knowledge readiness
 
+> Historical snapshot record, not current merge approval. The September 4
+> review supersedes every earlier acceptance label below: the 81-cell matrix
+> did not establish category cartography, per-claim machine approval was
+> missing, and full CI failed on `782a9b4162dbc2358ad947ea0b929beaa081ace6`.
+> That CI pin defect is corrected in `d8b264bc007b489c00d0f93a35d2a2e6a5197b60`;
+> the check for the actual merge HEAD still governs. This file preserves the
+> original research/benchmark observations, not a claim that later changes
+> were independently accepted. Current remediation is explicitly unaccepted
+> until exact per-claim review, category completeness and final CI pass.
+
 ## Scientific foundations — 873-claim local candidate (2026-09-04)
 
 The requested non-historical foundations layer adds **208 independently

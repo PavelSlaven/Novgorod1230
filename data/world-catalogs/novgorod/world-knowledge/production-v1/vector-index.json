@@ -8312,20 +8312,6 @@
       "retrieval_text": "Новгородский контекст низинной растительности Палинологическая реконструкция переувлажнённых низин у Рюрикова городища В палинологической реконструкции окрестностей Рюрикова городища для начала XIII века переувлажнение, особенно низин, выводится по постоянному присутствию сфагновых мхов и хвоща, а также Spirea (Filipendula) среди травянистых растений. Это косвенный региональный контекст для 1100–1300 годов, не доказательство тростника, осоки, живого заросшего участка, пригодности стеблей или доступного запаса в сцене. Растительность низин Ильменя Хвощ сфагновые мхи"
     },
     {
-      "entry_ref": "wk-retrieval:claim:novgorod-wood-bone-horn-classes:en",
-      "target_ref": "claim:novgorod-wood-bone-horn-classes",
-      "domain": "material_culture",
-      "locale": "en",
-      "retrieval_text": "Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration Wood, bone, and antler are broad material classes in the medieval Novgorod assemblage, not evidence for a specific form or decoration."
-    },
-    {
-      "entry_ref": "wk-retrieval:claim:novgorod-wood-bone-horn-classes:ru",
-      "target_ref": "claim:novgorod-wood-bone-horn-classes",
-      "domain": "material_culture",
-      "locale": "ru",
-      "retrieval_text": "Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора Дерево, кость и рог допустимы как широкие классы материалов средневекового новгородского вещевого комплекса, но не как доказательство конкретной формы или декора."
-    },
-    {
       "entry_ref": "wk-retrieval:claim:novgorod-wooden-urban-elements:en",
       "target_ref": "claim:novgorod-wooden-urban-elements",
       "domain": "material_culture",
@@ -12160,20 +12146,6 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Древесина Древесина: материальная или функциональная категория; наличие и параметры задаёт состояние мира. При контакте с жидкой водой влажность древесины может меняться быстрее, чем при обмене влагой с воздухом. Это не устанавливает наличие воды, длительность контакта, поглощённое количество или повреждение. Впитывание воды древесиной"
-    },
-    {
-      "entry_ref": "wk-retrieval:claim:woodworked-objects-and-waste:en",
-      "target_ref": "claim:woodworked-objects-and-waste",
-      "domain": "craft_technology",
-      "locale": "en",
-      "retrieval_text": "Worked wooden objects and woodworking waste are attested material classes Worked wooden objects and woodworking waste are attested material classes; an object function does not follow from material alone."
-    },
-    {
-      "entry_ref": "wk-retrieval:claim:woodworked-objects-and-waste:ru",
-      "target_ref": "claim:woodworked-objects-and-waste",
-      "domain": "craft_technology",
-      "locale": "ru",
-      "retrieval_text": "Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала Обработанные деревянные предметы и деревообрабатывающие отходы засвидетельствованы как классы материала; назначение вещи не следует только из материала."
     },
     {
       "entry_ref": "wk-retrieval:claim:work-intensity-duration:en",

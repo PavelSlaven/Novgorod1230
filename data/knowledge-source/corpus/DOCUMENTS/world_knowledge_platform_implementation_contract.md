@@ -804,6 +804,8 @@ COVERAGE PROFILES / REQUIREMENTS
       ↓
 LOCALIZATION RECORDS
       ↓
+INDEPENDENT PER-CLAIM VERIFICATIONS
+      ↓
 APPROVED PACK REVISION
       ↓
 COMPILED RUNTIME BUNDLE
@@ -1355,9 +1357,9 @@ SOURCE DISCOVERY
 → DUPLICATE / CONFLICT CHECK
 → COVERAGE MAPPING
 → STAGING
+→ LOCALIZATION BUILD
 → INDEPENDENT REVIEW
 → APPROVED REVISION
-→ LOCALIZATION BUILD
 → COMPILE
 → RUNTIME BUNDLE
 ```
@@ -1458,6 +1460,58 @@ EXTRACTION AGENT
 
 Для trusted deterministic import профиль может заменить ручную/LLM review только если mapping semantics заранее утверждены и воспроизводимы.
 
+## 35.1. Machine-readable per-claim approval
+
+Authoring pack/fragment поддерживает `verifications[]`. Для pack либо любого
+coverage profile со статусом `production` каждому claim соответствует ровно
+одна `world_knowledge_verification_v1` запись с вердиктом `APPROVE`:
+
+```json
+{
+  "schema": "world_knowledge_verification_v1",
+  "verification_ref": "wk-verification:...",
+  "claim_ref": "claim:...",
+  "claim_digest": "<64 lowercase hex SHA-256 characters>",
+  "candidate_ref": "git:<reviewed commit>:<authoring shard>#<claim_ref>",
+  "auditor_ref": "<independent review agent/session>",
+  "independence_basis": "<how this review is separate from extraction>",
+  "evidence_checked": ["evidence:..."],
+  "review_ref": "verification/<report>.md#<verdict-section>",
+  "verdict": "APPROVE",
+  "limits": "<actual scientific/historical/source-access limits>"
+}
+```
+
+Связь claim → verification задаётся уникальным `claim_ref` в ledger;
+compiler выдаёт прямой `verification_ref` в compiled claim. Ledger остаётся
+authoring data, не передаётся LLM и не создаёт runtime store/owner.
+
+`worldKnowledgeClaimDigest` использует существующий canonical SHA-256 helper
+workflow и связывает весь claim, его predicate signature, все claim
+localizations, непосредственно связанные subject/object concepts и их
+localizations, все referenced evidence и sources. Изменение любого из этих
+входов требует нового независимого review. Порядок shards/records не влияет
+на binding. `evidence_checked` должен в точности покрывать evidence claim.
+
+`REJECT` и `NEEDS_REVIEW`, пропущенный или duplicate verdict, неизвестный
+claim, неполный evidence set и stale digest блокируют production compile.
+Reviewed/experimental pack без production profiles может не иметь ledger;
+предоставленные verification records всё равно валидируются. Статус
+`review_status: approved` сам по себе production approval не доказывает.
+
+Auditor identity и independence basis — доверенные редакторские сведения,
+а не криптографическая аутентификация агента. Проверка не защищает от
+владельца репозитория, намеренно подделывающего записи. Digest введён по
+прямому требованию PR92 review для конкретного дефекта: после изменения
+проверенного claim старый approval не должен продолжать действовать.
+Новые signatures, runtime hashes и authentication infrastructure не нужны.
+
+Повторная сверка текущего claim с ранее выполненным source/domain review
+допустима при точной ссылке на кандидат, проверенное evidence и допустимый
+вердиктом текст. Она должна называться reconciliation, а не новым чтением
+источника. Наличие report-файла или прежнего approved flag не заменяет
+самостоятельной семантической проверки текущего claim и его RU/EN текста.
+
 ---
 
 # 36. Structured knowledge mode
@@ -1547,6 +1601,7 @@ Compile validation должна fail-closed проверять минимум:
 - duplicate refs across assembled shards;
 - source/evidence lineage;
 - source rights/review status;
+- exact per-claim independent verification binding before production (§35.1);
 - concept domain and relation refs;
 - predicate registration and full signature;
 - subject/object domain/type compatibility;
@@ -2921,6 +2976,32 @@ Gate проходит, когда:
 4. profile не объявлен `production`, если критические обязательные needs регулярно `unresolved`;
 5. количество claims само по себе не используется как proof completeness;
 6. canned Q&A не подменяет primitive/relationship coverage.
+
+## 98.1. Category cartography and independent completeness review
+
+`production-v1/category-cartography.json` — отдельная authoring-карта:
+domain → subdomain → category family → location applicability →
+resource/material/process/NPC applicability → linked claims and coverage.
+Иерархия отражает игровые потребности, а не названия файлов корпуса.
+Один shard может питать несколько families, одна family — несколько shards.
+
+Карта сопоставляет factual families с реальными WK profiles и
+location/materialization consumers. Approved scenario profile, unpublished
+authoring candidate и activated production binding различаются явно.
+Нельзя выдавать тестовый/неактивированный location profile за всё
+production materialization-space.
+
+Completeness Auditor независимо ищет отсутствующие семейства: природные
+среды и ресурсы, виды/экологические функции, material life cycles,
+производство/хранение/разрушение, бытовые функции места, занятия и социальные
+контексты NPC. Проверка не ограничивается уже перечисленными cells или
+claim refs. Missing/partial family получает отдельную запись с причиной,
+применимостью и потребителем; счётчик заполненных cells не закрывает gap.
+
+Карта не является runtime whitelist и не доказывает scene presence.
+Она не меняет цепочку category → template → profile → rule → instance и
+не создаёт второго materializer. Structural consistency проверки карты
+не равны содержательному completeness approval.
 
 ---
 

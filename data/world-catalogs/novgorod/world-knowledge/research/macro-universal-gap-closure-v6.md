@@ -1,14 +1,13 @@
 # Macro universal gap closure v6 — candidate research
 
-Status: candidate-only.  This file adds no historical availability assertion, no actor state, no diagnosis, and no medical instruction.  Each proposed claim is a narrow modern-science premise for the World Knowledge semantic layer; the independent verifier may reject any item whose cited page no longer supports its stated anchor.
+Status: candidate-only, pruned after independent review `7b5f51e`. This file adds no historical availability assertion, no actor state, no diagnosis, and no medical instruction.
 
 ## Candidate set
 
 | Area | Candidate claims | Intended cartography movement |
 | --- | ---: | --- |
 | Clinical observations, dehydration, burns and foodborne symptoms | 7 | `medicine-sickness-and-care` from P1 toward bounded P2; diagnostic and treatment limits remain outside WK facts |
-| Snowpack and winter loads/routes | 3 | `winter-cryosphere-and-route-hazards` from P1 toward bounded P2; local ice/route state remains code- and world-state-owned |
-| Darkness and Moon phases | 3 | `daylight-night-sky-and-qualitative-navigation` from P1 toward bounded P2; no ephemeris, direction, distance or detection result |
+| Moon phases | 1 | A bounded celestial-light premise; no ephemeris, direction, distance or detection result |
 | Raw-food separation and food-contact hygiene | 4 | `food-system-handling-and-preservation` from P1 toward bounded P2; historical preparation and local supplies remain separate questions |
 
 ## Sources and extraction limits
@@ -16,12 +15,13 @@ Status: candidate-only.  This file adds no historical availability assertion, no
 - [MedlinePlus — Dehydration](https://medlineplus.gov/dehydration.html), U.S. National Library of Medicine: fluid balance, possible observations and the distinction between observations and clinical assessment.
 - [MedlinePlus — Burns](https://medlineplus.gov/burns.html), U.S. National Library of Medicine: causes, barrier damage and the qualitative dependence of care needs on cause/depth/area.
 - [CDC — Signs and Symptoms of Food Poisoning](https://www.cdc.gov/food-safety/signs-symptoms/index.html): common nonspecific symptom classes only; symptoms do not identify a germ or diagnose an actor.
-- [NSIDC — Snow](https://nsidc.org/learn/parts-cryosphere/snow): snowpack change after snowfall; no local depth, crust or bearing capacity.
-- [National Weather Service — Winter Weather Safety](https://www.weather.gov/safety/winter): qualitative ice travel and heavy-snow load hazards only.
-- [National Park Service — Dark Adaptation](https://www.nps.gov/articles/dark-adaptation.htm): adaptation and bright-light disruption; no actor vision state.
 - [NASA — Moon Phases](https://science.nasa.gov/moon/moon-phases/): changing apparent illuminated portion; no date, position or ground illumination.
 - [FDA — Safe Food Handling](https://www.fda.gov/food/buy-store-serve-safe-food/safe-food-handling): separation and cleaning as controls, not proof of current hygiene.
-- [USDA FSIS — Meat and Catfish](https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/meat-catfish): raw/cooked separation and utensil separation; not a claim that a particular food is contaminated.
+- [USDA FSIS — Meat and Catfish](https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/meat-catfish): raw-meat/catfish handling context only; not a claim that a particular food is contaminated.
+
+## Independent-review pruning
+
+Verifier `7b5f51e` approved claims 1–7 and 13–16. It marked six claims `NEEDS_REVIEW`, so they are removed rather than retained on an inference: snowpack compaction/metamorphism, generic winter-ice travel hazard, heavy-snow structural load, dark-adaptation timing, low-light capability, and separate raw-food utensils. The remaining winter/route and low-light gaps therefore remain explicit cartography work, not claimed covered by this candidate.
 
 ## Explicit non-claims
 
@@ -32,4 +32,4 @@ Status: candidate-only.  This file adds no historical availability assertion, no
 
 ## Verification handoff
 
-The candidate fragment is `production-v1/macro-universal-gap-closure-v6.json` with 17 claims, 17 evidence records and 9 official sources.  Verification must check each literal and localization against its linked source, remove duplicate or weak claims, then create the normal independent per-claim verification fragment before production inclusion.
+The pruned candidate fragment is `production-v1/macro-universal-gap-closure-v6.json` with 11 claims, 11 evidence records and 6 official sources. The normal independent per-claim verification fragment remains the only route to production inclusion.

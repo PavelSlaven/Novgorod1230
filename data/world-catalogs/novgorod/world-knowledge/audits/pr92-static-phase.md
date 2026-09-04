@@ -61,7 +61,8 @@ use generic retrieval, no-hit returns `unresolved`, compiler records are facts
 rather than actions/recipes, benchmark probes are not loaded by production,
 and development gap classes do not branch on scenario nouns. Subsequent
 changes only correct documentation/cartography status and generated document
-indexes; WK code, claims, runtime bundle, vectors and benchmarks are unchanged.
+indexes, plus three offline benchmark cases; WK code, claims, runtime bundle
+and vectors are unchanged.
 After this status correction, 54 knowledge-source tests, cartography validation,
 `knowledge:check`, `knowledge:controls`, `docs:check` and `git diff --check` pass.
 Canonical document metadata and its existing generated graph/RAG were refreshed;
@@ -73,10 +74,31 @@ encoder rebuilt 3,354 × 1,024 float32 entries (13,737,984 bytes; encoding
 266,622 ms). A premature test run during vector rebuilding correctly rejected
 the old 939-claim vector metadata; all 163 tests passed after alignment.
 
+The final requirement-by-requirement check found that three of the nine named
+partial areas had facts but no direct relevance assertion in the offline
+benchmark. Added tree-phenology, net-upkeep and underfloor-function probes each
+retrieve their existing relevant claim at rank 1, without query tuning or new
+production facts. All nine named areas now have direct retrieval probes:
+
+| Original partial area | Existing bounded support exercised by probe |
+|---|---|
+| Tree ecology / seasonality | `static_tree_flower_leaf_sequence_ru` |
+| Aquatic / herb functional form | `pond_plant_positions_ru` |
+| Edible / toxic plant identification | `plant_unknown_lookalike_ru`, `plant_edible_part_en` and named food-part probes |
+| Wild fibre plants | `nettle_stem_fibre_en` |
+| Interior spatial functions | `static_novgorod_underfloor_function_ru` |
+| Storage ventilation / condensation | `grain_winter_condensation_en`, `grain_air_passage_ru`, `static_room_air_condensation_ru` |
+| Wet-use net / hull maintenance | `static_fishing_net_upkeep_en`, `static_boat_plank_caulking_ru` |
+| Riparian drift / debris | `flood_branch_retention_en` |
+| Applied water extinguishing | `water_fire_smoke_ru` |
+
+These probes prove retrieval of the stated premises, not full taxon coverage,
+local historical practice, scene presence or guaranteed gameplay outcomes.
+
 Both retrieval benchmarks pass unchanged gates on this same 945-claim bundle.
-The 69-query coverage set achieves hybrid Recall@10 0.99275, Recall@20 1.0,
-noise 0.70487, applicability precision 1.0 and hard-constraint recall 1.0;
-mean query encoding is 71.93 ms and vector scan 0.951 ms. The 133-query baseline
+The 72-query coverage set achieves hybrid Recall@10 0.99306, Recall@20 1.0,
+noise 0.70559, applicability precision 1.0 and hard-constraint recall 1.0;
+mean query encoding is 69.46 ms and vector scan 0.922 ms. The 133-query baseline
 achieves hybrid Recall@10/20 0.96992, noise 0.57632 and both applicability and
 hard-constraint recall 1.0. The mixed fire/water probe still places the smoke
 optical premise at rank 12 (rank 11 at the prior checkpoint): an explicit

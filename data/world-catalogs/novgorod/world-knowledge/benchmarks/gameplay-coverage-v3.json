@@ -13,6 +13,36 @@
   },
   "cases": [
     {
+      "case_id": "static_tree_flower_leaf_sequence_ru",
+      "locale": "ru",
+      "query_text": "Весной наблюдают разные листопадные деревья. Обязательно ли у них совпадает порядок распускания листьев и цветения?",
+      "relevant_claim_refs": ["claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_fishing_net_upkeep_en",
+      "locale": "en",
+      "query_text": "A fishing net has worn sections. Can repairing or replacing those sections extend its useful life without guaranteeing a successful repair?",
+      "relevant_claim_refs": ["claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_novgorod_underfloor_function_ru",
+      "locale": "ru",
+      "query_text": "Какую хозяйственную функцию могло иметь холодное пространство под жилым этажом новгородского дома, если ничего не известно о его нынешнем содержимом?",
+      "relevant_claim_refs": ["claim:settlement-underfloor-utility"],
+      "purpose": "semantic_resolution",
+      "domains": ["architecture_settlement"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
       "case_id": "static_co_sensory_limits_ru",
       "locale": "ru",
       "query_text": "Можно ли обнаружить угарный газ по собственному цвету или запаху, если его наличие и концентрация в комнате неизвестны?",

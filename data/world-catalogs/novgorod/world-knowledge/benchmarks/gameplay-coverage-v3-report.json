@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 69,
-    "lexical_recall_at_10": 0.8985507246376812,
-    "hybrid_recall_at_10": 0.9927536231884058,
-    "lexical_recall_at_20": 0.9202898550724637,
+    "case_count": 72,
+    "lexical_recall_at_10": 0.9027777777777778,
+    "hybrid_recall_at_10": 0.9930555555555556,
+    "lexical_recall_at_20": 0.9236111111111112,
     "hybrid_recall_at_20": 1,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.43251667816885203,
-    "hybrid_noise_at_10": 0.7048654244306416,
+    "lexical_noise_at_10": 0.4283840388007054,
+    "hybrid_noise_at_10": 0.7055886243386243,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 71.92820289855072,
-    "vector_scan_mean_ms": 0.9509463768117185,
+    "query_embedding_mean_ms": 69.46330555555556,
+    "vector_scan_mean_ms": 0.9219916666668015,
     "runtime_bundle_bytes": 5680903,
     "vector_bundle_bytes": 13737984,
-    "encoder_model_load_ms": 3662.257,
-    "peak_process_rss_bytes": 2404741120,
+    "encoder_model_load_ms": 3141.655,
+    "peak_process_rss_bytes": 2412670976,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -39,8 +39,79 @@
   },
   "cases": [
     {
+      "case_id": "static_tree_flower_leaf_sequence_ru",
+      "vector_scan_ms": 8.68539999999848,
+      "lexical_at_10": [
+        "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+        "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+        "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_fishing_net_upkeep_en",
+      "vector_scan_ms": 1.0771000000022468,
+      "lexical_at_10": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
+      ],
+      "hybrid_at_10": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:material-water-textile-liquid-contaminants"
+      ],
+      "lexical_at_20": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
+      ],
+      "hybrid_at_20": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:material-water-textile-liquid-contaminants"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_novgorod_underfloor_function_ru",
+      "vector_scan_ms": 0.6061999999983527,
+      "lexical_at_10": [
+        "claim:settlement-underfloor-utility",
+        "claim:contextual-evidence-classes"
+      ],
+      "hybrid_at_10": [
+        "claim:settlement-underfloor-utility",
+        "claim:population-household-storage",
+        "claim:settlement-underfloor-storage",
+        "claim:contextual-evidence-classes"
+      ],
+      "lexical_at_20": [
+        "claim:settlement-underfloor-utility",
+        "claim:contextual-evidence-classes"
+      ],
+      "hybrid_at_20": [
+        "claim:settlement-underfloor-utility",
+        "claim:population-household-storage",
+        "claim:settlement-underfloor-storage",
+        "claim:contextual-evidence-classes"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
       "case_id": "static_co_sensory_limits_ru",
-      "vector_scan_ms": 10.050400000000081,
+      "vector_scan_ms": 0.7731999999996333,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-is-colorless-and-odorless",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -77,7 +148,7 @@
     },
     {
       "case_id": "static_local_exhaust_capture_en",
-      "vector_scan_ms": 0.8455999999969208,
+      "vector_scan_ms": 0.9483000000000175,
       "lexical_at_10": [
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
@@ -98,7 +169,7 @@
     },
     {
       "case_id": "static_cold_immersion_muscle_control_ru",
-      "vector_scan_ms": 1.5794999999998254,
+      "vector_scan_ms": 1.4855999999999767,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:population-material-leather-mould",
@@ -133,7 +204,7 @@
     },
     {
       "case_id": "static_fire_plume_layer_transport_en",
-      "vector_scan_ms": 1.0754000000015367,
+      "vector_scan_ms": 1.0715999999993073,
       "lexical_at_10": [
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ],
@@ -154,7 +225,7 @@
     },
     {
       "case_id": "static_floating_small_heel_en",
-      "vector_scan_ms": 0.8751000000011118,
+      "vector_scan_ms": 0.8722000000016124,
       "lexical_at_10": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
@@ -175,7 +246,7 @@
     },
     {
       "case_id": "static_wind_driven_rain_opening_ru",
-      "vector_scan_ms": 0.7982999999985623,
+      "vector_scan_ms": 0.5845999999983178,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ],
@@ -196,7 +267,7 @@
     },
     {
       "case_id": "phys_airway_oxygen_awareness_en",
-      "vector_scan_ms": 1.0266000000010536,
+      "vector_scan_ms": 1.0146999999997206,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
@@ -225,7 +296,7 @@
     },
     {
       "case_id": "phys_immersion_not_necessarily_drowning_ru",
-      "vector_scan_ms": 0.8096000000005006,
+      "vector_scan_ms": 0.8810000000012224,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment"
       ],
@@ -246,7 +317,7 @@
     },
     {
       "case_id": "phys_irritated_nose_airway_ru",
-      "vector_scan_ms": 1.4431000000004133,
+      "vector_scan_ms": 1.139499999997497,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -283,7 +354,7 @@
     },
     {
       "case_id": "phys_pharynx_gag_swallow_en",
-      "vector_scan_ms": 0.9730999999992491,
+      "vector_scan_ms": 1.6279999999969732,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
       ],
@@ -304,7 +375,7 @@
     },
     {
       "case_id": "phys_emesis_without_nausea_ru",
-      "vector_scan_ms": 0.9896000000007916,
+      "vector_scan_ms": 0.7894000000014785,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-emesis-reflex-response"
       ],
@@ -325,7 +396,7 @@
     },
     {
       "case_id": "phys_corneal_touch_blink_en",
-      "vector_scan_ms": 1.6543999999994412,
+      "vector_scan_ms": 0.7770999999993364,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:care-waterproof-wound-cover"
@@ -350,7 +421,7 @@
     },
     {
       "case_id": "phys_painful_contact_withdrawal_ru",
-      "vector_scan_ms": 1.4553000000014435,
+      "vector_scan_ms": 0.7979000000013912,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
@@ -381,7 +452,7 @@
     },
     {
       "case_id": "phys_sudden_stimulus_startle_en",
-      "vector_scan_ms": 1.7393000000010943,
+      "vector_scan_ms": 0.8364000000001397,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
       ],
@@ -402,7 +473,7 @@
     },
     {
       "case_id": "phys_volume_loss_compensation_ru",
-      "vector_scan_ms": 1.199399999997695,
+      "vector_scan_ms": 1.4099000000023807,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:candidate-physiology-v3-dehydration-functional-risk"
@@ -425,7 +496,7 @@
     },
     {
       "case_id": "phys_water_loss_function_en",
-      "vector_scan_ms": 1.0727000000006228,
+      "vector_scan_ms": 1.3991000000023632,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-dehydration-functional-risk"
       ],
@@ -446,7 +517,7 @@
     },
     {
       "case_id": "phys_alcohol_coordination_awareness_ru",
-      "vector_scan_ms": 1.038700000000972,
+      "vector_scan_ms": 0.9984999999978754,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
@@ -467,7 +538,7 @@
     },
     {
       "case_id": "phys_sweating_heat_water_en",
-      "vector_scan_ms": 0.9972999999990861,
+      "vector_scan_ms": 0.794000000001688,
       "lexical_at_10": [
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:continued-sweating-can-cause-body-water-loss",
@@ -504,7 +575,7 @@
     },
     {
       "case_id": "static_sinking_load_buoyant_support_ru",
-      "vector_scan_ms": 0.7318000000013853,
+      "vector_scan_ms": 0.5898999999990338,
       "lexical_at_10": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -553,7 +624,7 @@
     },
     {
       "case_id": "static_wet_wooden_opening_en",
-      "vector_scan_ms": 0.882900000000518,
+      "vector_scan_ms": 0.612699999997858,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
@@ -592,7 +663,7 @@
     },
     {
       "case_id": "static_building_auxiliary_work_ru",
-      "vector_scan_ms": 0.582300000001851,
+      "vector_scan_ms": 0.7056000000011409,
       "lexical_at_10": [
         "claim:construction-auxiliary-construction-work"
       ],
@@ -613,7 +684,7 @@
     },
     {
       "case_id": "static_monthbook_day_commemoration_en",
-      "vector_scan_ms": 0.599900000001071,
+      "vector_scan_ms": 0.5568999999995867,
       "lexical_at_10": [
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
@@ -634,7 +705,7 @@
     },
     {
       "case_id": "static_conditional_child_care_ru",
-      "vector_scan_ms": 0.5665000000008149,
+      "vector_scan_ms": 0.34279999999853317,
       "lexical_at_10": [
         "claim:rp-mother-household-care-succession",
         "claim:rp-caretaker-principal-goods",
@@ -667,7 +738,7 @@
     },
     {
       "case_id": "static_raw_cooked_food_contact_ru",
-      "vector_scan_ms": 0.7183999999979278,
+      "vector_scan_ms": 1.7502000000022235,
       "lexical_at_10": [
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
@@ -688,7 +759,7 @@
     },
     {
       "case_id": "static_surface_runoff_waste_en",
-      "vector_scan_ms": 0.3496999999988475,
+      "vector_scan_ms": 0.7366000000001804,
       "lexical_at_10": [
         "claim:foundations-earth-26-runoff-contaminant-transport"
       ],
@@ -709,7 +780,7 @@
     },
     {
       "case_id": "static_boat_plank_caulking_ru",
-      "vector_scan_ms": 0.6372999999985041,
+      "vector_scan_ms": 0.8875999999982014,
       "lexical_at_10": [
         "claim:construction-iron-clamp-caulking",
         "claim:agriculture-fauna-tow-log-gaps",
@@ -740,7 +811,7 @@
     },
     {
       "case_id": "static_syncope_perfusion_ru",
-      "vector_scan_ms": 0.765400000000227,
+      "vector_scan_ms": 0.9543000000012398,
       "lexical_at_10": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness"
@@ -763,7 +834,7 @@
     },
     {
       "case_id": "static_circulatory_tissue_supply_en",
-      "vector_scan_ms": 1.5890999999974156,
+      "vector_scan_ms": 1.830999999998312,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
       ],
@@ -784,7 +855,7 @@
     },
     {
       "case_id": "static_retinal_light_pupil_ru",
-      "vector_scan_ms": 1.0155999999988126,
+      "vector_scan_ms": 1.6509000000005472,
       "lexical_at_10": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:candidate-physiology-v3-blink-corneal-protection"
@@ -807,7 +878,7 @@
     },
     {
       "case_id": "static_hot_work_heat_storage_en",
-      "vector_scan_ms": 0.7620999999999185,
+      "vector_scan_ms": 1.6218000000008033,
       "lexical_at_10": [
         "claim:research-extreme-heat-can-increase-body-heat-storage"
       ],
@@ -828,7 +899,7 @@
     },
     {
       "case_id": "static_cold_environment_heat_loss_ru",
-      "vector_scan_ms": 0.7969999999986612,
+      "vector_scan_ms": 1.5362000000022817,
       "lexical_at_10": [
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
@@ -855,7 +926,7 @@
     },
     {
       "case_id": "static_novelty_orienting_habituation_en",
-      "vector_scan_ms": 0.8274999999994179,
+      "vector_scan_ms": 1.537000000000262,
       "lexical_at_10": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
       ],
@@ -876,7 +947,7 @@
     },
     {
       "case_id": "static_witness_source_confusion_ru",
-      "vector_scan_ms": 0.2661000000007334,
+      "vector_scan_ms": 0.36189999999987776,
       "lexical_at_10": [
         "claim:foundations-ms-06-visual-selection",
         "claim:research-memory-postevent-misinformation",
@@ -919,7 +990,7 @@
     },
     {
       "case_id": "static_later_misleading_account_en",
-      "vector_scan_ms": 0.6756999999997788,
+      "vector_scan_ms": 0.33949999999822467,
       "lexical_at_10": [
         "claim:research-memory-postevent-misinformation",
         "claim:research-memory-source-misattribution"
@@ -942,7 +1013,7 @@
     },
     {
       "case_id": "static_shared_work_output_ru",
-      "vector_scan_ms": 0.356500000001688,
+      "vector_scan_ms": 0.3231999999989057,
       "lexical_at_10": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms2-03-distrust-cooperation",
@@ -996,7 +1067,7 @@
     },
     {
       "case_id": "static_smoke_wind_stability_en",
-      "vector_scan_ms": 0.444100000000617,
+      "vector_scan_ms": 0.4730999999992491,
       "lexical_at_10": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
@@ -1019,7 +1090,7 @@
     },
     {
       "case_id": "static_low_smoke_inversion_ru",
-      "vector_scan_ms": 0.8132000000005064,
+      "vector_scan_ms": 0.48880000000281143,
       "lexical_at_10": [
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
@@ -1042,7 +1113,7 @@
     },
     {
       "case_id": "weak_cloth_support_ru",
-      "vector_scan_ms": 0.47710000000006403,
+      "vector_scan_ms": 0.47119999999995343,
       "lexical_at_10": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
@@ -1063,7 +1134,7 @@
     },
     {
       "case_id": "leather_joint_failure_en",
-      "vector_scan_ms": 1.0806999999986147,
+      "vector_scan_ms": 0.8387000000002445,
       "lexical_at_10": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:oil-fat-vegetable-leather-flexibility"
@@ -1088,7 +1159,7 @@
     },
     {
       "case_id": "boiling_chemical_drinkability_ru",
-      "vector_scan_ms": 0.3028999999987718,
+      "vector_scan_ms": 0.3496000000013737,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1109,7 +1180,7 @@
     },
     {
       "case_id": "fuel_water_boiling_en",
-      "vector_scan_ms": 0.3176000000021304,
+      "vector_scan_ms": 0.2940999999991618,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1130,7 +1201,7 @@
     },
     {
       "case_id": "fuel_fumes_gas_ru",
-      "vector_scan_ms": 0.5771999999997206,
+      "vector_scan_ms": 0.5120999999999185,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1153,7 +1224,7 @@
     },
     {
       "case_id": "enclosed_fuel_fire_en",
-      "vector_scan_ms": 0.507499999999709,
+      "vector_scan_ms": 0.4981000000007043,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1176,7 +1247,7 @@
     },
     {
       "case_id": "enclosed_air_co_ru",
-      "vector_scan_ms": 0.5479000000013912,
+      "vector_scan_ms": 0.5100000000020373,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -1203,7 +1274,7 @@
     },
     {
       "case_id": "immersion_hypothermia_ru",
-      "vector_scan_ms": 0.7811000000001513,
+      "vector_scan_ms": 0.7770999999993364,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -1252,7 +1323,7 @@
     },
     {
       "case_id": "cold_water_body_en",
-      "vector_scan_ms": 0.9981000000007043,
+      "vector_scan_ms": 0.7276000000019849,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
@@ -1281,7 +1352,7 @@
     },
     {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 0.7754999999997381,
+      "vector_scan_ms": 0.80370000000039,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
@@ -1324,7 +1395,7 @@
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 0.7708000000020547,
+      "vector_scan_ms": 0.7498000000014144,
       "lexical_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:fauna-mallard-residency",
@@ -1397,7 +1468,7 @@
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.48800000000119326,
+      "vector_scan_ms": 0.5162000000018452,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:grain-processing-bread-ground-plant-base",
@@ -1470,7 +1541,7 @@
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.38290000000051805,
+      "vector_scan_ms": 0.379400000001624,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -1491,7 +1562,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 0.8845000000001164,
+      "vector_scan_ms": 0.8188000000009197,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1542,7 +1613,7 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.3721999999979744,
+      "vector_scan_ms": 0.37659999999959837,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -1585,7 +1656,7 @@
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 0.9960000000028231,
+      "vector_scan_ms": 0.9009000000005472,
       "lexical_at_10": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -1648,7 +1719,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 1.543600000000879,
+      "vector_scan_ms": 1.619300000002113,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
@@ -1702,7 +1773,7 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.5072000000000116,
+      "vector_scan_ms": 0.5213000000003376,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -1766,7 +1837,7 @@
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.5144000000000233,
+      "vector_scan_ms": 0.6660999999985506,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -1793,7 +1864,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.8817999999992026,
+      "vector_scan_ms": 0.9804000000003725,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -1814,7 +1885,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.39429999999993015,
+      "vector_scan_ms": 0.426499999997759,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
@@ -1837,7 +1908,7 @@
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
-      "vector_scan_ms": 0.40050000000337604,
+      "vector_scan_ms": 0.39259999999922,
       "lexical_at_10": [
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
@@ -1860,7 +1931,7 @@
     },
     {
       "case_id": "static_flood_deposited_traces_en",
-      "vector_scan_ms": 0.3780000000006112,
+      "vector_scan_ms": 0.4065000000009604,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -1899,7 +1970,7 @@
     },
     {
       "case_id": "static_porous_flood_stain_ru",
-      "vector_scan_ms": 0.43739999999888823,
+      "vector_scan_ms": 0.3823999999985972,
       "lexical_at_10": [
         "claim:research-porous-high-water-stain-can-require-corroboration"
       ],
@@ -1920,7 +1991,7 @@
     },
     {
       "case_id": "static_track_mud_sand_ru",
-      "vector_scan_ms": 0.6563999999998487,
+      "vector_scan_ms": 0.4444000000003143,
       "lexical_at_10": [
         "claim:foundations-earth-20-groundwater-recharge-discharge",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
@@ -1965,7 +2036,7 @@
     },
     {
       "case_id": "static_sick_animal_social_feeding_en",
-      "vector_scan_ms": 0.7181999999993423,
+      "vector_scan_ms": 0.9141000000017812,
       "lexical_at_10": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:care-waterproof-wound-cover",
@@ -1998,7 +2069,7 @@
     },
     {
       "case_id": "static_browsed_plant_growth_ru",
-      "vector_scan_ms": 0.784300000002986,
+      "vector_scan_ms": 0.760999999998603,
       "lexical_at_10": [
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -2031,7 +2102,7 @@
     },
     {
       "case_id": "static_stove_room_dampness_en",
-      "vector_scan_ms": 0.5164000000004307,
+      "vector_scan_ms": 0.4654000000009546,
       "lexical_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
       ],
@@ -2052,7 +2123,7 @@
     },
     {
       "case_id": "static_room_air_condensation_ru",
-      "vector_scan_ms": 0.48359999999956926,
+      "vector_scan_ms": 0.5482999999985623,
       "lexical_at_10": [
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -2106,7 +2177,7 @@
     },
     {
       "case_id": "static_nettle_food_contact_ru",
-      "vector_scan_ms": 1.1683999999986554,
+      "vector_scan_ms": 0.8461999999999534,
       "lexical_at_10": [
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
@@ -2129,7 +2200,7 @@
     },
     {
       "case_id": "static_raspberry_lingonberry_food_en",
-      "vector_scan_ms": 1.592899999999645,
+      "vector_scan_ms": 0.7934999999997672,
       "lexical_at_10": [
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -2156,7 +2227,7 @@
     },
     {
       "case_id": "static_hazel_apple_parts_ru",
-      "vector_scan_ms": 1.3734000000004016,
+      "vector_scan_ms": 0.8218000000015309,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ],

@@ -127,7 +127,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
       scores.get(claim.claim_ref) ?? 0));
     return { scores, strongest };
   });
-  const lexicalTailFraction = vectorScores.size ? 0.75 : 0.5;
+  // Vector recall supplements lexical candidates; it must not narrow admission.
+  const lexicalTailFraction = 0.5;
   // Apply relative admission within each independently requested hint: growth
   // in one topic must not suppress another topic with a lower corpus IDF.
   // Aggregate lexical relevance still ranks the admitted candidates.

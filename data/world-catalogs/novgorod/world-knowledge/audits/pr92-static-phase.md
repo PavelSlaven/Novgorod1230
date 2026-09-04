@@ -165,13 +165,29 @@ the expanded 35-query coverage benchmark passes with hybrid Recall@10 0.98571,
 lexical Recall@10 0.90000, applicability precision 1.0 and hard-constraint
 recall 1.0. Both retain their existing gates without threshold changes.
 
-Known retrieval limitation: in compound probe `water_fire_smoke_ru`, the new
-atmospheric smoke candidates displace the optical-visibility premise from the
-bounded hybrid result. The fire-cooling premise remains retrieved. This is a
-static retrieval residual, not a gameplay-owner bug or a missing factual claim;
-the passing aggregate gate does not mean perfect retrieval. No probe or source
-wording was changed to conceal this miss. Full exact-HEAD CI is still required
-before merge; these focused checks are not that CI gate.
+## Static retrieval correction after checkpoint 2663c4fa
+
+The compound probe `water_fire_smoke_ru` exposed a lexical-admission defect:
+enabling vector recall tightened the lexical tail threshold from 0.5 to 0.75,
+discarding the optical-visibility premise before ranking despite available
+candidate capacity. Hybrid recall now uses the same lexical admission threshold
+as lexical-only retrieval. Vector recall supplements rather than narrows it.
+Filters, ranking, budgets, corpus, aliases and the pinned model are unchanged.
+
+A generic regression test failed before the correction and passes afterward;
+it also checks that the candidate budget remains bounded. Both required fire/
+smoke premises now occur in the compound result. The unchanged 133-query
+benchmark passes with hybrid Recall@10 0.96992 and noise 0.57538. The unchanged
+35-query benchmark passes with hybrid Recall@10 1.0 and noise 0.72141 (gate
+0.75); applicability precision and hard-constraint recall remain 1.0. This
+trades some precision for recovered lexical candidates within existing gates.
+No query wording, relevance set or threshold was adjusted to hide the miss.
+
+The combined authoring/compiler, archive, approval, cartography, vector,
+runtime, knowledge-source, turn and server-grounding checks pass: 163 tests.
+These are static checks, not live gameplay or full CI. No vector rebuild is
+needed because the 926-claim corpus and embedding inputs did not change.
+Full exact-HEAD CI remains required before merge.
 
 ## Future-testing finding: unowned ordinary item → action production
 

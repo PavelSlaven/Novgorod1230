@@ -170,6 +170,31 @@ test('independent search hints retain their matches when another hint is rarer',
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), [rareRef]);
 });
 
+test('vector recall does not tighten lexical admission when candidate budget has room', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [strong, secondary, semantic] = ['claim:test:strong', 'claim:test:secondary', 'claim:test:semantic'];
+  bundle.claims.push(...[strong, secondary, semantic].map((claim_ref) => ({
+    ...structuredClone(source), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.alpha = [strong];
+  bundle.lexical_indexes.en.beta = [strong];
+  bundle.lexical_indexes.en.gamma = [secondary];
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    search_hints: ['alpha beta gamma'],
+    budget: { max_facts: 3, max_candidates: 3, max_context_chars: 7000 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const lexical = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
+  assert.deepEqual(new Set(lexical), new Set([strong, secondary]));
+  const vectorScores = new Map([[semantic, 0.8]]);
+  const hybrid = core.resolveWorldKnowledge(input, { vectorScores });
+  assert.deepEqual(new Set(hybrid.facts.map(({ claim_ref }) => claim_ref)),
+    new Set([strong, secondary, semantic]));
+  input.budget.max_candidates = 2;
+  assert.equal(core.resolveWorldKnowledge(input, { vectorScores }).facts.length, 2);
+});
+
 test('coverage, operational availability and actor knowledge are distinct', () => {
   assert.throws(() => createWorldKnowledgeCore(null), (error) => error instanceof WorldKnowledgeError && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
   const invalidBundle = structuredClone(baseBundle);

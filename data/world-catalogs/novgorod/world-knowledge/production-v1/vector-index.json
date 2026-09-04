@@ -1144,6 +1144,216 @@
       "retrieval_text": "Развитие человека Общие связи развития ребёнка и пубертата. В начале пубертата начинается заключительный скачок роста; это не устанавливает возраст, срок или развитие конкретного человека."
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian:en",
+      "target_ref": "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-letter language context A corpus fact about Old Russian and dialect, not scene speech. The overwhelming majority of surviving birch-bark letters are written in Old Russian, with small Church Slavonic and non-Slavic portions. This is a corpus fact, not a particular actor’s 1230 language, literacy, or intelligibility. Old Novgorod dialect Old Russian birch-bark letters"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian:ru",
+      "target_ref": "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Языковой контекст берестяных грамот Корпусный факт о древнерусском языке и диалекте, не реплика сцены. Подавляющее большинство дошедших берестяных грамот написано по-древнерусски; небольшая часть — по-церковнославянски или на неславянских языках. Это корпусный факт, не язык, грамотность или понятность реплики конкретного actor в 1230 году. древненовгородский диалект древнерусский язык берестяные грамоты"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-fever-is-higher-than-normal-body-temperature:en",
+      "target_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fever: sign and cause General medical relations without diagnosis. Fever is body temperature higher than normal. This establishes no actor’s temperature, illness, cause, severity, or treatment. fever infection temperature"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-fever-is-higher-than-normal-body-temperature:ru",
+      "target_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лихорадка: признак и причина Общие медицинские связи без диагноза. Лихорадка — температура тела выше обычной. Это не устанавливает температуру, болезнь, причину, тяжесть или лечение конкретного actor. лихорадка инфекция температура"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-fever-is-not-itself-a-disease:en",
+      "target_ref": "claim:candidate-v5-fever-is-not-itself-a-disease",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fever: sign and cause General medical relations without diagnosis. Fever is not itself a disease and is usually a sign of illness or infection. This is not a diagnosis or cause for a particular actor. fever infection temperature illness"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-fever-is-not-itself-a-disease:ru",
+      "target_ref": "claim:candidate-v5-fever-is-not-itself-a-disease",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лихорадка: признак и причина Общие медицинские связи без диагноза. Лихорадка сама по себе не болезнь и обычно является признаком болезни или инфекции. Это не диагноз и не причина состояния конкретного actor. лихорадка инфекция температура болезнь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-is-dated-private-letter:en",
+      "target_ref": "claim:candidate-v5-gramota109-is-dated-private-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated private correspondence Narrow document facts about private letters. Letter 109 is a private letter with a conditional date of 1100–1120. It does not prove speech, literacy, or correspondence in a 1230 scene. letter correspondence letter 109 private letter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-is-dated-private-letter:ru",
+      "target_ref": "claim:candidate-v5-gramota109-is-dated-private-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированная частная переписка Бережно ограниченные документные факты о частных письмах. Грамота №109 — частное письмо с условной датой 1100–1120. Это не доказательство речи, грамотности или переписки в сцене 1230 года. письмо переписка грамота 109 частное письмо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-names-zhiznomir-and-mikula:en",
+      "target_ref": "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Names in a letter address Names only in the given document address. Letter 109 is addressed from Zhiznomir to Mikula. This is one document address, not a system of names or forms of address. name address Zhiznomir Mikula"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-names-zhiznomir-and-mikula:ru",
+      "target_ref": "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Имена в адресе грамоты Имена только в данном документном адресе. Адрес грамоты №109 назван как «от Жизномира к Микуле». Это один документный адрес, не система имён или обращений. имя адрес Жизномир Микула"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman:en",
+      "target_ref": "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Status context of a disputed purchase One letter’s content, not a social system. The gramoty.ru database describes letter 109 as concerning purchase of a stolen enslaved woman. It is one disputed-record context, not a status, transaction, court, or sanction rule. enslaved woman purchase dispute"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman:ru",
+      "target_ref": "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Статусный контекст спорной покупки Содержание одной грамоты, не социальная система. База gramoty.ru описывает грамоту №109 как дело о покупке краденой рабыни. Это контекст одной спорной записи, не правило статуса, сделки, суда или санкции. рабыня покупка спор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota600-is-near-1230-private-letter:en",
+      "target_ref": "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated private correspondence Narrow document facts about private letters. Letter 600 is a private letter with a conditional date of 1220–1240 and a probable backward shift. It establishes no speech, literacy, messenger, travel, or lodging. letter correspondence letter 600 private letter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota600-is-near-1230-private-letter:ru",
+      "target_ref": "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированная частная переписка Бережно ограниченные документные факты о частных письмах. Грамота №600 — частное письмо с условной датой 1220–1240 и вероятным смещением назад. Она не устанавливает речь, грамотность, посыльного, поездку или ночлег. письмо переписка грамота 600 частное письмо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota600-reports-khotynians-context:en",
+      "target_ref": "claim:candidate-v5-gramota600-reports-khotynians-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Khotynians document context One letter’s report about named people. The gramoty.ru database describes letter 600 as a message about the situation among Khotynians. It is one document context, not a political relation, authority, or current report. Khotynians letter situation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota600-reports-khotynians-context:ru",
+      "target_ref": "claim:candidate-v5-gramota600-reports-khotynians-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документный контекст хотынян Сообщение одной грамоты о названных людях. База gramoty.ru описывает грамоту №600 как сообщение о положении дел у хотынян. Это один документный контекст, не политическое отношение, власть или текущий отчёт. хотыняне письмо положение дел"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form:en",
+      "target_ref": "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Charm-prayer against fever A dated text fact, not treatment. The surviving text of letter 715 includes the name form ‘Mikheya Trasaviche’. It is one text name, not a personal-name, patient, or social-status model. fever charm prayer Mikheya Trasaviche name"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form:ru",
+      "target_ref": "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Заговор-молитва против лихорадки Датированный текстовый факт, не лечение. В сохранившемся тексте грамоты №715 есть форма имени «Михея Трасавиче». Это имя в одном тексте, не модель личного имени, пациента или социального статуса. лихорадка заговор молитва Михея Трасавиче имя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-is-classified-as-charm-prayer:en",
+      "target_ref": "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Charm-prayer against fever A dated text fact, not treatment. The gramoty.ru database classifies letter 715 as a charm-prayer against fever. It does not prove treatment, diagnosis, a medical role, or a ritual in a scene. fever charm prayer"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-is-classified-as-charm-prayer:ru",
+      "target_ref": "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Заговор-молитва против лихорадки Датированный текстовый факт, не лечение. База gramoty.ru классифицирует грамоту №715 как заговор-молитву против лихорадки. Это не доказательство лечения, диагноза, медицинской роли или обряда в сцене. лихорадка заговор молитва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-is-dated-literary-folklore-text:en",
+      "target_ref": "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Charm-prayer against fever A dated text fact, not treatment. Letter 715 is a literary or folklore text with a conditional date of 1220–1240. It is not evidence of speech, belief, literacy, or a present text. fever charm prayer letter 715 folklore"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-gramota715-is-dated-literary-folklore-text:ru",
+      "target_ref": "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Заговор-молитва против лихорадки Датированный текстовый факт, не лечение. Грамота №715 — литературный или фольклорный текст с условной датой 1220–1240. Это не речь, вера, грамотность или текст в текущей сцене. лихорадка заговор молитва грамота 715 фольклор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech:en",
+      "target_ref": "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-letter language context A corpus fact about Old Russian and dialect, not scene speech. The absolute majority of surviving household birch-letter categories are written in dialect and stand closer to living Old Russian speech than other known written sources. This does not reconstruct a scene’s register, utterance, or intelligibility. Old Novgorod dialect Old Russian birch-bark letters dialect living speech"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech:ru",
+      "target_ref": "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Языковой контекст берестяных грамот Корпусный факт о древнерусском языке и диалекте, не реплика сцены. Абсолютное большинство бытовых категорий берестяных грамот написано на диалекте и в целом ближе к живой древнерусской речи, чем другие известные письменные источники. Это не реконструкция регистра, реплики или понятности речи в сцене. древненовгородский диалект древнерусский язык берестяные грамоты диалект живая речь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-infections-cause-most-fevers:en",
+      "target_ref": "claim:candidate-v5-infections-cause-most-fevers",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fever: sign and cause General medical relations without diagnosis. Infections cause most fevers. This establishes no infection, organism, exposure, or outcome in a scene. fever infection temperature"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-infections-cause-most-fevers:ru",
+      "target_ref": "claim:candidate-v5-infections-cause-most-fevers",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лихорадка: признак и причина Общие медицинские связи без диагноза. Инфекции вызывают большинство лихорадок. Это не устанавливает инфекцию, организм, заражение или исход в сцене. лихорадка инфекция температура"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction:en",
+      "target_ref": "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Sleep and functional capacity General relations of sleep, focus and reaction. Sleep deficiency can interfere with learning, focusing, and reacting. It establishes no actor sleep history, travel fitness, exact mechanic, or outcome. sleep fatigue focus reaction sleep deficiency"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction:ru",
+      "target_ref": "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Сон и функциональная способность Общие связи сна, внимания и реакции. Недостаток сна может мешать обучению, сосредоточению и реакции. Это не устанавливает сон actor, пригодность к пути, точную механику или исход. сон усталость внимание реакция недосып"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-sleep-is-basic-human-need:en",
+      "target_ref": "claim:candidate-v5-sleep-is-basic-human-need",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Sleep and functional capacity General relations of sleep, focus and reaction. Sleep is a basic human need. This is universal physiology, not a historical lodging or hospitality custom. sleep fatigue focus reaction lodging rest"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v5-sleep-is-basic-human-need:ru",
+      "target_ref": "claim:candidate-v5-sleep-is-basic-human-need",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Сон и функциональная способность Общие связи сна, внимания и реакции. Сон — базовая человеческая потребность. Это универсальная физиология, не исторический обычай ночлега или гостеприимства. сон усталость внимание реакция ночлег отдых"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
       "target_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
       "domain": "biology_physiology",
@@ -14626,6 +14836,34 @@
       "retrieval_text": "Здоровье зубов Начальный механизм кариеса."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v5-fever-sign-and-cause:en",
+      "target_ref": "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fever: sign and cause General medical relations without diagnosis. fever infection temperature"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v5-fever-sign-and-cause:ru",
+      "target_ref": "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лихорадка: признак и причина Общие медицинские связи без диагноза. лихорадка инфекция температура"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v5-sleep-function:en",
+      "target_ref": "wk:biology_physiology:candidate-v5-sleep-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Sleep and functional capacity General relations of sleep, focus and reaction. sleep fatigue focus reaction"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v5-sleep-function:ru",
+      "target_ref": "wk:biology_physiology:candidate-v5-sleep-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Сон и функциональная способность Общие связи сна, внимания и реакции. сон усталость внимание реакция"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:en",
       "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
       "domain": "biology_physiology",
@@ -23304,6 +23542,90 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Частное письмо с именованными корреспондентами Документный контекст, а не правило именования или грамотности. Мирослав Ратмир берестяная грамота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-birch-text-language-context:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-birch-text-language-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-letter language context A corpus fact about Old Russian and dialect, not scene speech. Old Novgorod dialect Old Russian birch-bark letters"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-birch-text-language-context:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-birch-text-language-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Языковой контекст берестяных грамот Корпусный факт о древнерусском языке и диалекте, не реплика сцены. древненовгородский диалект древнерусский язык берестяные грамоты"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-dated-private-correspondence:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-dated-private-correspondence",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated private correspondence Narrow document facts about private letters. letter correspondence"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-dated-private-correspondence:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-dated-private-correspondence",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированная частная переписка Бережно ограниченные документные факты о частных письмах. письмо переписка"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-fever-charm-text:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-fever-charm-text",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Charm-prayer against fever A dated text fact, not treatment. fever charm prayer"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-fever-charm-text:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-fever-charm-text",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Заговор-молитва против лихорадки Датированный текстовый факт, не лечение. лихорадка заговор молитва"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-khotynians-document-context:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-khotynians-document-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Khotynians document context One letter’s report about named people. Khotynians letter"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-khotynians-document-context:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-khotynians-document-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документный контекст хотынян Сообщение одной грамоты о названных людях. хотыняне письмо"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-named-document-address:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-named-document-address",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Names in a letter address Names only in the given document address. name address"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-named-document-address:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-named-document-address",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Имена в адресе грамоты Имена только в данном документном адресе. имя адрес"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-status-dispute-document-context:en",
+      "target_ref": "wk:social_law_economy:candidate-v5-status-dispute-document-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Status context of a disputed purchase One letter’s content, not a social system. enslaved woman purchase dispute"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v5-status-dispute-document-context:ru",
+      "target_ref": "wk:social_law_economy:candidate-v5-status-dispute-document-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Статусный контекст спорной покупки Содержание одной грамоты, не социальная система. рабыня покупка спор"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-wife-authored-cow-redemption-letter:en",

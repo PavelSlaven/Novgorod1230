@@ -1216,6 +1216,14 @@
       "location_applicability": "Universal health, lifecycle and injury relations; individual body state and outcomes remain caller supplied",
       "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no diagnosis, capacity or outcome"},
       "coverage": "eight independently approved universal premises"
+    },
+    {
+      "id": "macro-human-world-blindspots-v5",
+      "source_path": "macro-human-world-blindspots-v5.json",
+      "domains": ["social_law_economy", "biology_physiology"],
+      "location_applicability": "Record-specific Novgorod documentary context and universal fever/sleep relations; neither creates a 1230 scene, actor state, or historical custom.",
+      "applicability": {"resource":"none","material":"bounded birch-bark text context only","process":"document interpretation or qualitative universal relation","npc":"no current identity, competence, diagnosis, capacity, or outcome"},
+      "coverage": "fifteen independently approved bounded premises"
     }
   ],
   "families": [
@@ -4219,6 +4227,39 @@
       "coverage": "eight independently verified universal premises",
       "evidence_boundary": "No individual age, development, impairment, prognosis, pressure, fracture, dislocation, symptom, diagnosis, treatment, ability, access or outcome follows.",
       "claim_refs": ["claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel", "claim:candidate-v3-disability-reflects-health-and-context-interaction"]
+    },
+    {
+      "id": "social-v5-dated-document-context",
+      "domain": "social_law_economy",
+      "subdomain": "dated_documentary_comparators",
+      "family": "dated_private_letter_status_context_and_charm_prayer_records",
+      "location_applicability": "Novgorod document interpretation only within each record's explicit range or unknown precision; no record supplies a 1230 scene fact.",
+      "applicability": {"resource":"none","material":"birch-bark document context only","process":"bounded record interpretation","npc":"named people only within the source records"},
+      "coverage": "eight independently verified documentary premises",
+      "evidence_boundary": "No current correspondence, individual identity, naming or status system, legal procedure, political relation, medical diagnosis, treatment, ritual, literacy rate, or scene fact follows.",
+      "claim_refs": ["claim:candidate-v5-gramota109-is-dated-private-letter", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v5-gramota600-is-near-1230-private-letter", "claim:candidate-v5-gramota600-reports-khotynians-context", "claim:candidate-v5-gramota715-is-dated-literary-folklore-text", "claim:candidate-v5-gramota715-is-classified-as-charm-prayer", "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"]
+    },
+    {
+      "id": "social-v5-birch-language-corpus-context",
+      "domain": "social_law_economy",
+      "subdomain": "language_and_register",
+      "family": "old_russian_and_dialect_relation_in_surviving_birch_letter_corpus",
+      "location_applicability": "Corpus-level linguistic context; not a character, utterance, register, or intelligibility fact.",
+      "applicability": {"resource":"none","material":"surviving birch-bark text corpus","process":"bounded linguistic interpretation","npc":"no individual language competence"},
+      "coverage": "two independently verified corpus-level linguistic premises",
+      "evidence_boundary": "No reconstruction of 1230 speech, dialect form, speaker competence, mutual intelligibility, form of address, or generated phrase follows.",
+      "claim_refs": ["claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian", "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"]
+    },
+    {
+      "id": "biology-v5-fever-and-sleep-relations",
+      "domain": "biology_physiology",
+      "subdomain": "sickness_and_function",
+      "family": "general_fever_sign_and_sleep_function_relations",
+      "location_applicability": "Universal physiology only after body state is independently established.",
+      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health and function relation","npc":"no diagnosis, state, capacity, or outcome"},
+      "coverage": "five independently verified universal premises",
+      "evidence_boundary": "No actor temperature, infection, diagnosis, treatment, sleep history, travel fitness, hospitality custom, exact mechanic, or outcome follows.",
+      "claim_refs": ["claim:candidate-v5-fever-is-higher-than-normal-body-temperature", "claim:candidate-v5-fever-is-not-itself-a-disease", "claim:candidate-v5-infections-cause-most-fevers", "claim:candidate-v5-sleep-is-basic-human-need", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
     }
   ],
   "missing_families": [
@@ -5078,9 +5119,10 @@
       "location_applicability": "Conversation, overheard speech, oral instruction and public interaction in Novgorod-land contexts",
       "applicability": {"resource":"none","material":"none","process":"speech interpretation","npc":"speaker and listener language competence"},
       "consumer_refs": ["potential:dialogue", "potential:npc_interaction"],
-      "coverage": "missing",
-      "reason": "Document genres and speech-act semantics do not establish period-local spoken forms, dialect, register or mutual intelligibility. Dialogue generation needs bounded linguistic premises without turning them into a phrase whitelist.",
-      "supporting_family_ids": ["social-documentary-practice", "social-roles-norms-and-socialization"]
+      "coverage": "partial",
+      "reason": "The surviving birch-letter corpus is predominantly Old Russian, and its household categories are reported as dialectal and closer to living Old Russian speech than other known written sources. These are corpus-level facts only: they do not reconstruct 1230 speech, register, mutual intelligibility, or a generated phrase.",
+      "supporting_family_ids": ["social-documentary-practice", "social-roles-norms-and-socialization", "social-v5-birch-language-corpus-context"],
+      "supporting_claim_refs": ["claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian", "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"]
     },
     {
       "id": "personal-names-patronymics-address-and-titles",
@@ -5091,9 +5133,9 @@
       "applicability": {"resource":"none","material":"conditional written name","process":"identification and address","npc":"identity description and socially situated address"},
       "consumer_refs": ["potential:dialogue", "potential:ordinary_npc_materialization"],
       "coverage": "partial",
-      "reason": "Named correspondents in letter 334, name lists, kin letters and office-address fragments are grounded, but they do not establish a systematic period-local naming, patronymic or address model. Current identity, relation and office remain authoritative state.",
-      "supporting_family_ids": ["social-documentary-practice", "social-religious-context", "social-named-correspondence-and-learning-texts"],
-      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"]
+      "reason": "Named correspondents in letter 334, name lists, kin letters, office-address fragments, and the bounded v5 forms Zhiznomir/Mikula and Mikheya Trasaviche are grounded, but they do not establish a systematic period-local naming, patronymic or address model. Current identity, relation and office remain authoritative state.",
+      "supporting_family_ids": ["social-documentary-practice", "social-religious-context", "social-named-correspondence-and-learning-texts", "social-v5-dated-document-context"],
+      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"]
     },
     {
       "id": "everyday-literacy-writing-and-accounting",
@@ -5104,9 +5146,9 @@
       "applicability": {"resource":"writing surfaces and implements","material":"letters records and exercises","process":"reading writing counting and record keeping","npc":"bounded literacy and numeracy practices"},
       "consumer_refs": ["potential:documents", "potential:trade", "potential:education"],
       "coverage": "partial",
-      "reason": "Practical document genres, accounts, named correspondence and alphabet/syllable exercises are attested. The XI-century Novgorod Psalter is an early book comparator, while Onfim 199 is 1240–1260; neither is direct 1230 evidence of a school, reader or literacy rate. Skill distribution, production, delivery and ordinary use of writing/counting remain fragmented.",
-      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-psalter-comparator"],
-      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-novgorod-psalter-eleventh-century"]
+      "reason": "Practical document genres, accounts, named correspondence and alphabet/syllable exercises are attested; v5 adds bounded private-letter and literary/folklore record comparators. The XI-century Novgorod Psalter is an early book comparator, while Onfim 199 is 1240–1260; neither is direct 1230 evidence of a school, reader or literacy rate. Skill distribution, production, delivery and ordinary use of writing/counting remain fragmented.",
+      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-psalter-comparator", "social-v5-dated-document-context"],
+      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-novgorod-psalter-eleventh-century", "claim:candidate-v5-gramota600-is-near-1230-private-letter"]
     },
     {
       "id": "weapons-armour-use-and-maintenance",
@@ -5154,9 +5196,10 @@
       "location_applicability": "Households, work, market, public office, legal conflict, care and ritual",
       "applicability": {"resource":"conditional access and obligations","material":"status-linked material context only when evidenced","process":"role expectation and social response","npc":"socially situated role without deterministic behavior"},
       "consumer_refs": ["potential:npc_interaction", "potential:work", "potential:law"],
-      "coverage": "missing",
-      "reason": "Generic role/socialization premises cannot supply historically situated gender, age, rank or dependent-status expectations. Identity and status must still come from actor/world authority.",
-      "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines"]
+      "coverage": "partial",
+      "reason": "Gramota 109 supplies one early-twelfth-century disputed-purchase record summarized as involving an enslaved woman. It is bounded document context, not a gender, age, rank, dependency, freedom, or stratification system. Identity and status remain actor/world authority.",
+      "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines", "social-v5-dated-document-context"],
+      "supporting_claim_refs": ["claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman"]
     },
     {
       "id": "pregnancy-childbirth-and-postnatal-care",
@@ -5193,9 +5236,9 @@
       "applicability": {"resource":"water food warmth and care resources","material":"none","process":"qualitative illness and recovery relations","npc":"possible symptoms and limitations, not diagnosis"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_routine"],
       "coverage": "partial",
-      "reason": "Infection chains, immunity, dehydration risk, sickness behaviour, foodborne symptom variation and a general disability health/context relation are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
-      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation", "biology-human-lifecycle-injury-oral-and-disability-relations"],
-      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ", "claim:candidate-v3-disability-reflects-health-and-context-interaction"]
+      "reason": "Infection chains, immunity, dehydration risk, sickness behaviour, foodborne symptom variation, disability health/context relation, and bounded fever/sleep relations are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
+      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation", "biology-human-lifecycle-injury-oral-and-disability-relations", "biology-v5-fever-and-sleep-relations"],
+      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ", "claim:candidate-v3-disability-reflects-health-and-context-interaction", "claim:candidate-v5-fever-is-higher-than-normal-body-temperature", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
     },
     {
       "id": "injury-poisoning-parasites-and-oral-health",
@@ -5232,9 +5275,9 @@
       "applicability": {"resource":"gifts tribute and provisions only when established","material":"messages and diplomatic objects only when evidenced","process":"communication negotiation and external relation","npc":"envoys authorities traders and armed parties"},
       "consumer_refs": ["potential:politics", "potential:travel", "potential:warfare"],
       "coverage": "partial",
-      "reason": "A 1160–1180 document records a named Yugra tribute expedition/conflict context and later conflict episodes exist, but these comparators do not establish a 1230 external-relations system or current diplomatic state.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport", "social-office-address-and-external-expedition-texts"],
-      "supporting_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"]
+      "reason": "A 1160–1180 document records a named Yugra tribute expedition/conflict context, later conflict episodes exist, and v5 adds one bounded Khotynians document context with unknown temporal precision; these comparators do not establish a 1230 external-relations system or current diplomatic state.",
+      "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport", "social-office-address-and-external-expedition-texts", "social-v5-dated-document-context"],
+      "supporting_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition", "claim:candidate-v5-gramota600-reports-khotynians-context"]
     },
     {
       "id": "crime-responsibility-sanctions-and-public-safety",
@@ -5271,9 +5314,9 @@
       "applicability": {"resource":"time and objects only when present","material":"toys game pieces and instruments","process":"play performance and participation","npc":"players performers listeners and audiences"},
       "consumer_refs": ["potential:recreation", "potential:dialogue", "potential:npc_routine"],
       "coverage": "partial",
-      "reason": "XI–XIII-century archaeological context for lyriform gusli finds is grounded, but it does not establish a 1230 instrument, performer, music, game, toy, oral performance or ordinary recreation scene.",
-      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual", "material-dated-novgorod-gusli-comparator"],
-      "supporting_claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"]
+      "reason": "XI–XIII-century archaeological context for lyriform gusli finds and one 1220–1240 charm-prayer text are grounded, but neither establishes a 1230 instrument, performer, music, game, toy, oral performance or ordinary recreation scene.",
+      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual", "material-dated-novgorod-gusli-comparator", "social-v5-dated-document-context"],
+      "supporting_claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds", "claim:candidate-v5-gramota715-is-classified-as-charm-prayer"]
     },
     {
       "id": "snow-ice-and-winter-surface-processes",
@@ -5320,9 +5363,10 @@
       "location_applicability": "Households, inns or lodging contexts when evidenced, roads, landings, markets and journeys",
       "applicability": {"resource":"food lodging and transport only when offered and available","material":"travel kit and accommodation","process":"request reception stay guidance and departure","npc":"guest host guide carrier and companion roles"},
       "consumer_refs": ["potential:travel", "potential:dialogue", "potential:household"],
-      "coverage": "missing",
-      "reason": "Transport and household routines do not establish hospitality customs, lodging availability or traveller obligations. Current invitation, access, stock and route remain authoritative state.",
-      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "npc-household-routines", "material-transport"]
+      "coverage": "partial",
+      "reason": "Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route.",
+      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "npc-household-routines", "material-transport", "biology-v5-fever-and-sleep-relations"],
+      "supporting_claim_refs": ["claim:candidate-v5-sleep-is-basic-human-need", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
     }
   ],
   "world_knowledge_profile_mappings": [

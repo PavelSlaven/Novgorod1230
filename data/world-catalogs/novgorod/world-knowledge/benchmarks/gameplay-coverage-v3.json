@@ -13,6 +13,56 @@
   },
   "cases": [
     {
+      "case_id": "static_monthbook_day_commemoration_en",
+      "locale": "en",
+      "query_text": "What relationship between numbered days and commemorations is documented in a thirteenth-century church monthbook, without assuming its use in a particular Novgorod church?",
+      "relevant_claim_refs": ["claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_conditional_child_care_ru",
+      "locale": "ru",
+      "query_text": "Какой условный порядок заботы о малых детях при новом браке матери описан в Пространной Русской Правде, без объявления его действующим правом Новгорода?",
+      "relevant_claim_refs": ["claim:rp-minor-children-conditional-care"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_raw_cooked_food_contact_ru",
+      "locale": "ru",
+      "query_text": "Если одной утварью касались сырого мяса, а затем готовой еды, могут ли через неё перенестись возбудители, хотя заражение и болезнь ещё не установлены?",
+      "relevant_claim_refs": ["claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_surface_runoff_waste_en",
+      "locale": "en",
+      "query_text": "Can surface runoff carry sewage and sediment into a river or lake if those materials are present on its path?",
+      "relevant_claim_refs": ["claim:foundations-earth-26-runoff-contaminant-transport"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_boat_plank_caulking_ru",
+      "locale": "ru",
+      "query_text": "Как в описанной сравнительной реконструкции деревянного судна использовали просмолённую паклю и железные скобы у щелей между досками?",
+      "relevant_claim_refs": ["claim:construction-tarred-tow-caulking", "claim:construction-iron-clamp-caulking"],
+      "purpose": "semantic_resolution",
+      "domains": ["material_culture"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
       "case_id": "static_syncope_perfusion_ru",
       "locale": "ru",
       "query_text": "Может ли кратковременное общее снижение кровоснабжения мозга привести к обмороку?",

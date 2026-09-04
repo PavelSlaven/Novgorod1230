@@ -1115,6 +1115,22 @@
       "coverage": "bounded independently approved premises"
     },
     {
+      "id": "static-historical-household-practice-v1",
+      "source_path": "static-historical-household-practice-v1.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Historical religious calendar context; no Novgorod-local observance inferred",
+      "applicability": {"resource":"none","material":"textual calendar","process":"bounded historical premise","npc":"conditional"},
+      "coverage": "bounded independently approved premise"
+    },
+    {
+      "id": "static-food-contact-v1",
+      "source_path": "static-food-contact-v1.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "Food preparation and handling contexts",
+      "applicability": {"resource":"conditional","material":"conditional","process":"grounded conditional premise","npc":"conditional"},
+      "coverage": "bounded independently approved premise"
+    },
+    {
       "id": "static-plant-use-v1",
       "source_path": "static-plant-use-v1.json",
       "domains": [
@@ -1259,7 +1275,8 @@
         "claim:fermentation-depends-on-microbe-substrate-conditions",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
-        "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen"
+        "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ]
     },
     {
@@ -3681,6 +3698,7 @@
         "claim:religion-priest-child-baptism",
         "claim:social-christian-exegetical-text-relates-urban-context",
         "claim:social-church-calendar-text-relates-feast-list",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-church-instruction-reports-demand",
         "claim:social-priest-fragment-relates-office-address",
         "claim:social-written-prayer-relates-invocation"
@@ -4308,10 +4326,11 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing heating, preservation, pathogen-transport and exposure premises ground broad food processes. Residual under source review: raw-to-cooked/ready food cross-contact through hands or utensils. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating are not corpus facts.",
+      "reason": "Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics.",
       "supporting_claim_refs": [
         "claim:heating-reduces-microbial-viability",
         "claim:food-preservation-qualitative",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:foundations-life-44-pathogen-transport",
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:foundations-haz-03-exposure-routes"
@@ -4366,16 +4385,20 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Washing, exposure routes and infection-chain limits are supported. A waste-to-water/contact pathway remains a practical research direction; actual installation, contamination and illness are state/mechanics. Local sanitation customs need historical evidence.",
+      "reason": "Washing, exposure routes, infection-chain limits, food/contact transfer and surface runoff carrying sewage into rivers/lakes are supported. Remaining historical work concerns asserted local sanitation customs; actual installation, contamination and illness are state/mechanics.",
       "supporting_family_ids": [
         "built-bathing-sanitation",
         "chemistry-exposure-and-routes",
-        "biology-pathogen-immunity-and-infection"
+        "biology-pathogen-immunity-and-infection",
+        "environment-hydrology",
+        "biology-food-safety-storage-and-fermentation"
       ],
       "supporting_claim_refs": [
         "claim:bathing-house-heating-before-washing",
         "claim:foundations-haz-03-exposure-routes",
-        "claim:foundations-life-43-infection-chain"
+        "claim:foundations-life-43-infection-chain",
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ]
     },
     {
@@ -4502,15 +4525,19 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Kin protection/return requests and helping premises supply bounded support. Scoped care/dependency relations remain a research direction without universal gender/motive/duty rules. Actual household, age, need and responsibility are state; local customs require historical evidence.",
+      "reason": "Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support.",
       "supporting_family_ids": [
         "social-family-care",
-        "social-belonging-and-prosocial-relations"
+        "social-belonging-and-prosocial-relations",
+        "social-law-practice"
       ],
       "supporting_claim_refs": [
         "claim:social-kin-letter-reports-protection-request",
         "claim:social-kin-request-reports-contingent-return",
-        "claim:foundations-ms-29-helping-no-reward"
+        "claim:foundations-ms-29-helping-no-reward",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-mother-household-care-succession"
       ]
     },
     {
@@ -4529,7 +4556,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Baptism, feast-list text, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Buildings and objects do not establish attendance, belief or a universal custom.",
+      "reason": "Baptism, feast-list text, a thirteenth-century day-to-commemoration monthbook, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Texts, buildings and objects do not establish attendance, belief or a universal custom.",
       "supporting_family_ids": [
         "social-religious-context",
         "material-vessels-furniture-ritual"
@@ -4537,6 +4564,7 @@
       "supporting_claim_refs": [
         "claim:religion-priest-child-baptism",
         "claim:social-church-calendar-text-relates-feast-list",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-written-prayer-relates-invocation",
         "claim:probable-travel-chalice-communion"
       ]
@@ -4800,11 +4828,17 @@
         "A1"
       ],
       "coverage": "partial",
-      "reason": "Net mending/worn-part replacement serviceability is now grounded. A specific historical hull-care routine remains a separate historical claim, not a universal-physics gap.",
+      "reason": "Net mending/worn-part replacement and bounded comparative evidence for tarred-tow hull caulking and retaining clamps are grounded. This is not a universal medieval maintenance routine or a guarantee of watertightness. Other asserted local hull-care customs require historical support.",
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "material-fishing-hunting",
-        "material-transport"
+        "material-transport",
+        "material-fuel-resin-wax"
+      ],
+      "supporting_claim_refs": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:construction-iron-clamp-caulking",
+        "claim:construction-tarred-tow-caulking"
       ]
     }
   ],

@@ -248,6 +248,48 @@ debugging. Full CI succeeded for prior checkpoint `2663c4fa` (run
 PR checks for their exact commit. No final completeness or exact-final-HEAD CI
 verdict is claimed here.
 
+## Follow-up static reconciliation
+
+Two independently approved candidates add raw-animal-food contact transfer
+(FDA) and a thirteenth-century monthbook day/commemoration relation. Their
+candidate commits are `be39348f` and `11940d7b`; both use existing source/domain
+verification, with no new proof layer. Production now contains 939 claims,
+726 concepts, 321 sources and 613 evidence records. Both claims fit existing
+families: 128 supported families and 29 bounded missing/partial needs remain.
+Five added offline probes cover these facts and reused runoff, hull-caulking
+and conditional child-care premises. No prior query, relevance set or gate
+was weakened.
+
+The proposed waste-to-water gap already has direct support in
+`claim:foundations-earth-26-runoff-contaminant-transport`: surface runoff can
+carry sewage into rivers/lakes where contaminants are present. Cartography
+now links that existing premise and its hydrology family. It is not a new
+claim or a new source approval. Food/contact transfer is separately grounded
+by the independently approved FDA candidate; actual pollution and illness are
+not supplied by these premises. Asserted local sanitation customs remain scoped
+historical questions.
+
+Likewise, existing bounded comparative hull-caulking evidence and Extended
+Russkaya Pravda care/succession passages already support narrower aspects of
+boat maintenance and household dependency. Cartography now links them rather
+than demanding duplicate general claims. Neither a universal hull-care routine
+nor enacted Novgorod-1230 law follows from this reconciliation.
+
+The requested codebase-design check preserves the existing Interface:
+authoring/verification inputs enter the internal compiler, while gameplay
+callers and tests use `resolveWorldKnowledge`. Corpus additions do not add
+methods, a parallel resolver, a new Adapter or caller-owned evidence logic.
+Existing filtering, ranking, access limits and bounded results stay in the
+same Module; no architectural refactor is needed for static filling.
+
+Increment checks PASS: strict compilation, 163 focused tests, cartography and
+`git diff --check`. Pinned CPU vectors are rebuilt as 3,330 × 1,024 float32
+entries (13,639,680 bytes; encoding 256,692 ms). Both unchanged benchmark gates
+pass: 48-query coverage Recall@10 0.98958, Recall@20 1.0, noise 0.71311,
+applicability and hard-constraint recall 1.0; the 133-query baseline Recall@10
+is 0.96992. The smoke-visibility premise remains rank 11 in the mixed probe.
+This is a static checkpoint, not final completeness or exact-final-HEAD CI.
+
 ## Future-testing finding: unowned ordinary item → action production
 
 - Classification: `CODE_MECHANICS_GAP`, P1, open; outside static WK repair scope.

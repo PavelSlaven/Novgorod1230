@@ -4980,6 +4980,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-fda-separating-food-cross-contamination",
+      "title": "Separating Food (Food Safety for Moms-to-Be)",
+      "authors": [
+        "U.S. Food and Drug Administration"
+      ],
+      "publication": "U.S. Food and Drug Administration, content current as of 2018-09-27",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fda.gov/food/people-risk-foodborne-illness/separating-food-food-safety-moms-be",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:research-lopes-sickness-behaviour-2021",
       "title": "Sickness behaviors across vertebrate taxa: proximate and ultimate mechanisms",
       "authors": [
@@ -5240,6 +5256,20 @@
       "publication": "U.S. Geological Survey, undated",
       "source_kind": "official_documentation",
       "citation": "https://www.usgs.gov/mission-areas/water-resources/science/high-water-marks",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-xiii-century-church-monthbook",
+      "title": "Месяцеслов по церковному Обиходу XIII в.",
+      "authors": [],
+      "publication": "Церковно-научный центр «Православная энциклопедия»; воспроизведение по: Макарий (Булгаков), История Русской Церкви, кн. 2, с. 585",
+      "source_kind": "primary_text",
+      "citation": "https://sedmitza.ru/lib/text/443910/",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -11334,6 +11364,16 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-fda-raw-animal-food-cross-contact",
+      "source_ref": "source:research-fda-separating-food-cross-contamination",
+      "anchor": {
+        "section": "Separate, Don't Cross-Contaminate; Safely Separate; Clean Your Plate"
+      },
+      "note": "FDA defines cross-contamination as spread of pathogens from foods, hands, utensils or food-preparation surfaces to another food; it identifies raw animal foods as possible pathogen sources and describes raw-food bacteria contaminating cooked food on an unwashed plate. Conditional transfer mechanism only; no food, contamination, hygiene state, dose, illness, safety or scene outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:research-fuel-burning-stoves-can-add-indoor-water-vapour",
       "source_ref": "source:research-epa-mold-moisture-home",
       "anchor": {
@@ -11600,6 +11640,16 @@
         "section": "Edibility; Fruit Description"
       },
       "note": "NC State identifies Malus sylvestris, calls apples edible parts, and says seeds are poisonous. Part-specific relation only; no present tree or fruit, identification, amount, exposure, symptom, treatment or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-xiii-century-church-monthbook-day-commemoration",
+      "source_ref": "source:research-xiii-century-church-monthbook",
+      "anchor": {
+        "section": "Заглавие и месяц сентябрь, записи 1–14"
+      },
+      "note": "Публикация озаглавлена как месяцеслов по церковному Обиходу XIII века и в сентябрьском разделе сопоставляет нумерованные дни с памятями, страстями и праздниками, включая Рождество Богородицы 8 сентября и Воздвижение Креста 14 сентября. Это текстовая календарная связь XIII века, не доказательство её применения в конкретном новгородском храме, обязательного посещения, поста, веры, знания любого персонажа или даты текущей сцены.",
       "review_status": "approved"
     },
     {
@@ -18551,6 +18601,37 @@
             "Raspberry food part"
           ],
           "short_definition": "Narrow premise about fruit of Rubus idaeus.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+          "locale": "ru",
+          "labels": [
+            "Контакт сырой животной пищи с другой пищей"
+          ],
+          "short_definition": "Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+          "locale": "en",
+          "labels": [
+            "Raw animal food cross-contact"
+          ],
+          "short_definition": "Conditional relation between raw animal food, contact surfaces, and pathogen transfer to other food.",
           "search_aliases": []
         }
       }
@@ -35012,6 +35093,47 @@
           "short_definition": "A record reference to hired work",
           "search_aliases": [
             "hired worker"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+          "locale": "ru",
+          "labels": [
+            "Церковный месяцеслов с памятями по дням"
+          ],
+          "short_definition": "Текстовая связь календарного дня с памятью, страстью или праздником в месяцеслове XIII века.",
+          "search_aliases": [
+            "месяцеслов",
+            "церковный календарь",
+            "память святого",
+            "праздничный день"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+          "locale": "en",
+          "labels": [
+            "Church monthbook with day commemorations"
+          ],
+          "short_definition": "A textual link between a calendar day and a commemoration, martyrdom, or feast in a thirteenth-century monthbook.",
+          "search_aliases": [
+            "monthbook",
+            "church calendar",
+            "saint commemoration",
+            "feast day"
           ]
         }
       }
@@ -63666,6 +63788,65 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "xiii_century_church_monthbook_associates_numbered_calendar_days_with_commemorations_and_feasts"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        }
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-xiii-century-church-monthbook-day-commemoration"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+          "locale": "ru",
+          "runtime_text": "Месяцеслов по церковному Обиходу XIII века сопоставляет нумерованные календарные дни с памятями, страстями и праздниками. Это текстовая календарная связь, а не доказательство применения именно в Новгороде, посещения, поста, веры, знания персонажа или даты текущей сцены.",
+          "search_aliases": [
+            "календарный день",
+            "церковный праздник",
+            "память"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+          "locale": "en",
+          "runtime_text": "A thirteenth-century church monthbook associates numbered calendar days with commemorations, martyrdoms, and feasts. This is a textual calendar relation, not proof of use in Novgorod, attendance, fasting, belief, a character's knowledge, or the current scene's date.",
+          "search_aliases": [
+            "calendar day",
+            "church feast",
+            "commemoration"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:static-historical-household-practice-v1-church-monthbook-day-commemoration"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:household-apple-orchard",
       "domain": "architecture_settlement",
       "subject_ref": "wk:architecture_settlement:garden-orchard",
@@ -77372,6 +77553,53 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pathogens_from_raw_animal_food_can_transfer_to_other_food_including_cooked_or_ready_to_eat_food_via_hands_utensils_or_food_preparation_surfaces"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-fda-raw-animal-food-cross-contact"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+          "locale": "ru",
+          "runtime_text": "Возбудители с сырой животной пищи могут переноситься на другую пищу, в том числе приготовленную или готовую к употреблению, через руки, утварь или поверхности подготовки пищи. Это не устанавливает пищу, загрязнение, чистоту рук или утвари, дозу, болезнь, безопасность либо исход конкретной сцены.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+          "locale": "en",
+          "runtime_text": "Pathogens from raw animal food can transfer to other food, including cooked or ready-to-eat food, through hands, utensils, or food-preparation surfaces. This establishes no food, contamination, hand or utensil cleanliness, dose, illness, safety, or outcome in a concrete scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:static-food-contact-v1-raw-animal-food-cross-contact"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:research-raspberry-food-part",
@@ -87030,6 +87258,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:research-raw-animal-food-cross-contact": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:research-syncope-cerebral-perfusion": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:research-syncope-cerebral-perfusion",
@@ -91739,6 +91976,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:social_law_economy:historical-church-monthbook-day-commemoration": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:social_law_economy:judicial-accusation-record": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:social_law_economy:judicial-accusation-record",
@@ -92754,6 +93000,9 @@
       ],
       "wk:biology_physiology:research-raspberry-food-part": [
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked"
+      ],
+      "wk:biology_physiology:research-raw-animal-food-cross-contact": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "wk:biology_physiology:research-syncope-cerebral-perfusion": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope"
@@ -94495,6 +94744,9 @@
       "wk:social_law_economy:hired-work-reference": [
         "claim:social-hired-work-relates-business-record"
       ],
+      "wk:social_law_economy:historical-church-monthbook-day-commemoration": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "wk:social_law_economy:judicial-accusation-record": [
         "claim:judicial-accusation-record"
       ],
@@ -94921,6 +95173,7 @@
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -95500,6 +95753,7 @@
       "social_law_economy": [
         "claim:debt-needs-parties-and-basis",
         "claim:debt-record-practice",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:judicial-accusation-record",
         "claim:later-novgorod-judicial-charter",
         "claim:occupation-directed-grain-procurement",
@@ -96396,6 +96650,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:judicial-accusation-record",
         "claim:later-novgorod-judicial-charter",
@@ -96468,6 +96723,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -96817,6 +97073,7 @@
         "claim:food-practices-millet-cleaning-waste"
       ],
       "range::1200:1300": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:maslo-birchbark-718-account",
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
@@ -97460,6 +97717,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -98780,6 +99038,7 @@
         "claim:livestock-ruminant-membership",
         "claim:population-physics-evaporation-humidity",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
@@ -99076,6 +99335,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:religion-priest-child-baptism",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:biology_physiology:chemical-exposure-not-illness"
       ],
       "боли": [
@@ -99518,6 +99778,7 @@
         "claim:construction-wooden-peg-vessel-joint",
         "claim:fibre-flax-breaker-shive",
         "claim:gramota-73-debt-record",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-garden-shovel",
         "claim:household-rye-commodity",
         "claim:household-scythe-cutting",
@@ -99543,7 +99804,8 @@
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-hired-boatman",
         "claim:transport-horse-sledge-equipment",
-        "wk:material_culture:gramota-73-debt-record"
+        "wk:material_culture:gramota-73-debt-record",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "веке": [
         "claim:household-apple-orchard",
@@ -99712,7 +99974,8 @@
         "wk:material_culture:svita"
       ],
       "веры": [
-        "claim:burial-hollowed-log-container"
+        "claim:burial-hollowed-log-container",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "вес": [
         "claim:material-water-textile-water-load"
@@ -100874,6 +101137,12 @@
       ],
       "вожжи": [
         "claim:transport-horse-sledge-equipment"
+      ],
+      "возбудителей": [
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
+      ],
+      "возбудители": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "возбудителя": [
         "claim:foundations-life-44-pathogen-transport",
@@ -103020,7 +103289,8 @@
       "готовую": [
         "claim:clothing-linen-shirt",
         "claim:population-processes-bone-skate-input",
-        "claim:population-shoe-output"
+        "claim:population-shoe-output",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "готовый": [
         "claim:casting-firesteel-iron",
@@ -103415,6 +103685,9 @@
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:social-church-calendar-text-relates-feast-list"
       ],
+      "даты": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "дать": [
         "claim:population-processes-bone-skate-output"
       ],
@@ -103649,6 +103922,10 @@
       ],
       "денежной": [
         "claim:social-daily-fur-sale-accounting"
+      ],
+      "день": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "деньги": [
         "claim:social-grivna-accounting-unit"
@@ -104224,6 +104501,7 @@
       ],
       "дни": [
         "claim:fauna-frog-damp-foraging",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "wk:biology_physiology:fauna-common-frog"
       ],
       "днище": [
@@ -104237,7 +104515,11 @@
         "claim:fauna-dragonfly-emergence",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "wk:biology_physiology:fauna-bird-migration",
-        "wk:biology_physiology:plant-photoperiod-response"
+        "wk:biology_physiology:plant-photoperiod-response",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "дням": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "до": [
         "claim:clay-dried-replasticization",
@@ -104334,7 +104616,8 @@
         "wk:environment:cloud-droplet-growth-precipitation"
       ],
       "дозу": [
-        "claim:foundations-haz-01-exposure-modifiers"
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "доказана": [
         "claim:civic-defence-clay-gaps"
@@ -104353,6 +104636,7 @@
         "claim:burial-hollowed-log-container",
         "claim:construction-pine-resin-bast",
         "claim:construction-tarred-tow-caulking",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:material-water-textile-water-load",
         "claim:novgorod-wetland-pollen-context",
         "claim:occupation-smith-specialisation",
@@ -105093,6 +105377,7 @@
         "claim:fauna-mammals-european-otter-vibrissal-foraging",
         "claim:foundations-ms-31-conflict-misperception",
         "claim:foundations-phys-07-surface-tension-interface",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:social_behavior:foundations-ms-31-conflict-misperception",
         "wk:social_law_economy:third-party-goods-or-funds"
       ],
@@ -105105,7 +105390,9 @@
       ],
       "другую": [
         "claim:fauna-mammals-domestic-pig-competitive-displacement",
-        "claim:social-spousal-complaint-reports-marital-treatment"
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "дубильные": [
         "claim:vegetable-tanning-prepared-hide"
@@ -105697,7 +105984,9 @@
         "wk:npc_daily_life:animal-care-needs-presence"
       ],
       "животной": [
-        "claim:fauna-mammals-wolf-carnivorous-diet"
+        "claim:fauna-mammals-wolf-carnivorous-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "животному": [
         "claim:animal-energy-availability-depends-on-food-derived-nutrients"
@@ -106059,6 +106348,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:material-water-textile-liquid-contaminants",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions"
       ],
@@ -107219,6 +107509,7 @@
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "знания": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:research-memory-postevent-misinformation"
       ],
       "значение": [
@@ -107899,6 +108190,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -108010,6 +108302,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -108229,6 +108522,7 @@
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:debt-record-practice",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:loan-or-advance",
         "wk:social_law_economy:loan-request",
         "wk:social_law_economy:lost-stolen-property-recognition",
@@ -108273,6 +108567,7 @@
       ],
       "именно": [
         "claim:environment-p1-pig",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:pine-pitch-woven-basket-coating"
       ],
       "именованного": [
@@ -109017,6 +109312,7 @@
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -109214,11 +109510,13 @@
         "claim:foundations-phys-01-air-drag-fall"
       ],
       "календарная": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-church-calendar-text-relates-feast-list",
         "wk:social_law_economy:church-calendar-text"
       ],
       "календарного": [
-        "claim:social-church-calendar-text-relates-feast-list"
+        "claim:social-church-calendar-text-relates-feast-list",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "календарное": [
         "claim:social-religious-name-list-relates-disjunctive-context"
@@ -109229,7 +109527,11 @@
       "календарную": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"
       ],
+      "календарные": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "календарный": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "wk:social_law_economy:church-calendar-text"
       ],
       "календарь": [
@@ -109238,7 +109540,8 @@
         "claim:rural-agriculture-crop-context",
         "claim:social-church-calendar-text-relates-feast-list",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
-        "wk:environment:flax-hemp-cultivation"
+        "wk:environment:flax-hemp-cultivation",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "калорийность": [
         "claim:foundations-thm-06-moisture-vaporization-heat-demand"
@@ -110461,6 +110764,7 @@
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -110701,6 +111005,7 @@
         "claim:wood-liquid-directional-uptake",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:foundation-pathogen-transport",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:chemistry_process:environmental-exposure-routes"
       ],
       "контакта": [
@@ -110729,6 +111034,9 @@
       ],
       "контактные": [
         "wk:biology_physiology:research-nettle-food-contact-properties"
+      ],
+      "контактных": [
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "контейнер": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -112018,6 +112326,7 @@
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-memory-source-misattribution",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:social-daily-economic-activities",
@@ -113287,6 +113596,13 @@
         "claim:foundations-earth-23-hydrothermal-precipitation",
         "claim:terrain-background"
       ],
+      "месяцеслов": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "месяцеслове": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
       "метаболические": [
         "claim:foundations-earth-14-ecosystem-energy-flow"
       ],
@@ -113774,6 +114090,7 @@
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:rp-minor-children-conditional-care",
@@ -114452,6 +114769,7 @@
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
@@ -114495,6 +114813,7 @@
         "wk:biology_physiology:plant-light-development",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-pupil-light-reflex",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:stomatal-regulation",
         "wk:biology_physiology:tissue-injury-response",
         "wk:biology_physiology:wound-healing-time-dependent",
@@ -115697,6 +116016,7 @@
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
         "claim:heating-reduces-microbial-viability",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -115856,6 +116176,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -116750,6 +117071,7 @@
       "новгороде": [
         "claim:agriculture-fauna-ash-hunting-bow",
         "claim:construction-rjaz-bridge-support",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:metalworking-broad-context",
         "claim:novgorod-urban-metalworking",
         "claim:occupation-smith-specialisation",
@@ -117097,6 +117419,9 @@
       "нуля": [
         "claim:foundations-earth-31-freezing-fog-rime"
       ],
+      "нумерованные": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "нынешнего": [
         "claim:environment-p1-buried-soil",
         "claim:social-collector-instruction-relates-task-context"
@@ -117209,6 +117534,9 @@
       "обзоре": [
         "claim:environment-p1-horse-transport",
         "claim:population-felt-lining"
+      ],
+      "обиходу": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "обладает": [
         "claim:material-water-alum-skin-water"
@@ -120050,6 +120378,17 @@
         "wk:psychology_behavior:foundations-ms-09-memory-systems",
         "wk:psychology_behavior:foundations-ms3-experimental-cognition"
       ],
+      "память": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "памятью": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "памятями": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
       "пар": [
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
         "claim:population-physics-melting-vaporization-energy",
@@ -120420,6 +120759,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "wk:biology_physiology:foundation-pathogen-transport",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:physics_material_science:research-smoke-transport-dispersion"
       ],
       "переносимых": [
@@ -120444,6 +120784,9 @@
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific"
+      ],
+      "переноситься": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "переносные": [
         "claim:population-storage-vessels"
@@ -120596,6 +120939,7 @@
         "claim:care-waterproof-wound-cover",
         "claim:clothing-pointed-cap-xii-depiction",
         "claim:clothing-shirt-principal-garment",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
@@ -120873,7 +121217,8 @@
       "пищей": [
         "claim:fauna-mallard-wetland-diet",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
-        "wk:biology_physiology:fauna-mallard"
+        "wk:biology_physiology:fauna-mallard",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "пищи": [
         "claim:dietary-macronutrients-support-cellular-energy",
@@ -120884,6 +121229,7 @@
         "claim:food-energy-nutrients",
         "claim:foundations-earth-11-consumer-assimilation",
         "claim:fuel-iron-pan-lifter-use",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:rural-agriculture-crop-context",
         "claim:settlement-oven-cooking",
         "claim:wild-food-and-fur-evidence",
@@ -120894,6 +121240,7 @@
         "wk:biology_physiology:food-drying-microbial-conditions",
         "wk:biology_physiology:food-energy-nutrients",
         "wk:biology_physiology:food-heating",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:environment:medieval-novgorod-fishing-context",
         "wk:environment:wild-food-and-fur-evidence"
       ],
@@ -120901,8 +121248,10 @@
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:foundations-life-10-digestion",
         "claim:foundations-life-44-pathogen-transport",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:biology_physiology:foundation-digestion",
-        "wk:biology_physiology:foundation-pathogen-transport"
+        "wk:biology_physiology:foundation-pathogen-transport",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "плавания": [
         "claim:transport-private-boat-arrangement"
@@ -121159,6 +121508,7 @@
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:hard-stone-abrasive-shaping",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:livestock-swine-comparative-diet",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
@@ -121194,7 +121544,8 @@
         "wk:environment:slope-force-strength",
         "wk:physics_material_science:conductor-insulator-charge-mobility",
         "wk:physics_material_science:wood-grain-shear-vs-cut",
-        "wk:psychology_behavior:foundations-ms-21-attitude-definition"
+        "wk:psychology_behavior:foundations-ms-21-attitude-definition",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "побеги": [
         "claim:fauna-mammals-eurasian-beaver-herbivory",
@@ -121262,6 +121613,7 @@
       "поверхностей": [
         "claim:dry-friction",
         "claim:foundations-thm-01-convective-heat-transfer",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:physics_material_science:dry-friction",
         "wk:physics_material_science:surface-friction"
       ],
@@ -121279,6 +121631,7 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-static-friction",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:water-capillary-rise-depression",
         "claim:water-wetting-forces",
@@ -121593,6 +121946,7 @@
       ],
       "подготовки": [
         "claim:fibre-flax-breaker-shive",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:vegetable-tanning-prepared-hide",
         "wk:physics_material_science:fibre-twisting"
       ],
@@ -122548,6 +122902,9 @@
         "claim:social-church-calendar-text-relates-feast-list",
         "claim:social-written-prayer-relates-invocation"
       ],
+      "посещения": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "поскольку": [
         "claim:rp-entrusted-goods-claim-relates-reference"
       ],
@@ -122621,6 +122978,9 @@
       ],
       "пост": [
         "claim:social-church-calendar-text-relates-feast-list"
+      ],
+      "поста": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "поставленный": [
         "wk:architecture_settlement:riverbed-founded-log-crib"
@@ -123018,12 +123378,24 @@
         "claim:russkaya-pravda-comparative-only",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
+      "праздник": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "праздниками": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "праздники": [
         "claim:social-church-calendar-text-relates-feast-list",
         "wk:social_law_economy:church-calendar-text"
       ],
       "праздников": [
         "wk:social_law_economy:feast-list"
+      ],
+      "праздником": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "праздничный": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "практика": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
@@ -123755,6 +124127,9 @@
       "приготовления": [
         "claim:settlement-oven-cooking"
       ],
+      "приготовленную": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
       "придаёт": [
         "claim:oil-tanning-crosslinking-fibres"
       ],
@@ -123871,6 +124246,7 @@
       ],
       "применения": [
         "claim:burial-hollowed-log-container",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "wk:material_culture:historically-recorded-maslo"
       ],
       "применима": [
@@ -126944,6 +127320,12 @@
       "рудник": [
         "claim:occupation-smith-iron-input"
       ],
+      "рук": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
+      "руки": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
       "рукояти": [
         "claim:harvest-sickle-wooden-handle"
       ],
@@ -127770,6 +128152,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:grain-processing-bread-dough-before-baking",
         "claim:grain-processing-bread-ground-plant-base",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:leather-broad-context",
         "claim:material-water-linen-flax-origin",
         "claim:river-landing-market-approaches",
@@ -127786,6 +128169,7 @@
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:biology_physiology:research-pupil-light-reflex",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-syncope-cerebral-perfusion",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:craft_technology:leather-broad-context",
@@ -127798,12 +128182,16 @@
         "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:research-textile-stitch-support",
         "wk:social_behavior:foundations-ms-28-ostracism-conditional",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:priest-baptism-statutory-context"
       ],
       "связями": [
         "claim:buoyancy-pressure-phase-change",
         "wk:material_culture:water",
         "wk:physics_material_science:buoyancy-pressure-phase-change"
+      ],
+      "святого": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "священник": [
         "claim:social-priest-fragment-relates-office-address"
@@ -129548,6 +129936,9 @@
       "сопоставленных": [
         "claim:construction-compared-church-masonry"
       ],
+      "сопоставляет": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "сопоставлять": [
         "claim:foundations-ms-10-recognition-representation",
         "wk:psychology_behavior:foundations-ms-10-recognition-representation"
@@ -130842,6 +131233,12 @@
       "стоячую": [
         "claim:fauna-crayfish-habitat"
       ],
+      "страстью": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "страстями": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "стратегии": [
         "wk:psychology_behavior:emotion-regulation-experimental"
       ],
@@ -131322,8 +131719,10 @@
       "сцены": [
         "claim:domestic-animal-context",
         "claim:fuel-iron-splinter-holder-form",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:metalworking-broad-context",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:terrain-background",
@@ -131456,7 +131855,9 @@
         "claim:population-shoe-input"
       ],
       "сырой": [
-        "claim:textile-chrysin-analysis"
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:textile-chrysin-analysis",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "сырыми": [
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked"
@@ -131696,8 +132097,10 @@
         "wk:social_law_economy:urban-textual-context"
       ],
       "текстовая": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:religion-olenin-church-people",
-        "claim:rp-minor-children-conditional-care"
+        "claim:rp-minor-children-conditional-care",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "текстовое": [
         "wk:social_law_economy:ecclesiastical-adjudication"
@@ -131767,6 +132170,7 @@
         "claim:construction-quarry-procurement",
         "claim:construction-rjaz-bridge-support",
         "claim:grain-processing-bread-oven-baking",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:maslo-birchbark-718-account",
         "claim:occupation-smith-iron-input",
         "claim:social-daily-fur-sale-accounting"
@@ -132426,6 +132830,7 @@
         "claim:fauna-mammals-domestic-dog-flexible-sociality",
         "claim:material-water-leather-water-processing",
         "claim:practical-document-genres",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:rp-caretaker-principal-goods",
         "claim:social-daily-wax-commodity-context",
         "wk:biology_physiology:fauna-domestic-dog",
@@ -133566,6 +133971,9 @@
         "claim:foundations-ms-21-attitude-definition",
         "wk:psychology_behavior:foundations-ms-21-attitude-definition"
       ],
+      "употреблению": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
       "употребляет": [
         "claim:gramota-73-grivna-term",
         "wk:material_culture:gramota-73-grivna-term"
@@ -133772,6 +134180,7 @@
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:research-plant-herbivory-effects",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:physics_material_science:research-stitched-leather-component-join",
@@ -133903,6 +134312,7 @@
         "claim:research-memory-source-misattribution",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -134080,8 +134490,12 @@
       "усыхать": [
         "claim:material-water-vegetable-leather-water"
       ],
+      "утвари": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
       "утварь": [
         "claim:household-utensil-wood",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:settlement-underfloor-storage",
         "wk:material_culture:household-utensil"
       ],
@@ -135427,6 +135841,9 @@
       "церковном": [
         "wk:social_law_economy:religious-name-list"
       ],
+      "церковному": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "церковные": [
         "claim:social-church-calendar-text-relates-feast-list",
         "claim:social-religious-name-list-relates-disjunctive-context",
@@ -135434,7 +135851,9 @@
         "wk:social_law_economy:church-people-statutory-category"
       ],
       "церковный": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "wk:social_law_economy:church-calendar-text",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:religious-name-list"
       ],
       "церковных": [
@@ -135719,6 +136138,7 @@
         "claim:population-bark-bast",
         "claim:population-physics-conduction-gradient",
         "claim:population-stone-weight",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:technology-circuit-prerequisite",
         "claim:water-percolation-openings",
@@ -135781,6 +136201,7 @@
         "claim:fauna-mammals-domestic-dog-flexible-sociality",
         "claim:material-water-leather-water-processing",
         "claim:practical-document-genres",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:social-daily-wax-commodity-context",
         "wk:biology_physiology:fauna-domestic-dog",
         "wk:social_law_economy:practical-document-genres"
@@ -135828,6 +136249,9 @@
       ],
       "чистоте": [
         "claim:foundations-earth-19-aquifer-pore-flow"
+      ],
+      "чистоту": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "чистый": [
         "claim:foundations-thm-10-thermal-gradient-heat-flow"
@@ -136677,6 +137101,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-thermoregulation-depends-on-heat-exchange",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -136754,6 +137179,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -137750,6 +138176,7 @@
         "claim:food-practices-barley-porridge-soup",
         "claim:food-practices-millet-cleaning-waste",
         "claim:gramota-73-debt-record",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-rye-commodity",
         "claim:maslo-birchbark-718-account",
@@ -137771,7 +138198,8 @@
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:transport-boat-cargo-dispatch",
-        "wk:material_culture:gramota-73-debt-record"
+        "wk:material_culture:gramota-73-debt-record",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "xiv": [
         "claim:river-landing-named-list"
@@ -139602,6 +140030,7 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-garden-shovel",
         "claim:household-scythe-cutting",
@@ -139904,6 +140333,7 @@
         "wk:biology_physiology:research-nettle-food-contact-properties",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-pupil-light-reflex",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-syncope-cerebral-perfusion",
         "wk:biology_physiology:research-thermal-stress",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
@@ -140084,6 +140514,7 @@
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:debt-needs-parties-and-basis",
         "wk:social_law_economy:ecclesiastical-adjudication",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:practical-document-genres",
         "wk:social_law_economy:russkaya-pravda-comparative-only",
@@ -140125,6 +140556,7 @@
         "claim:population-processes-bone-skate-input",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:settlement-skate-bone",
         "claim:transport-horse-sledge-equipment",
         "claim:wild-food-and-fur-evidence",
@@ -140133,6 +140565,7 @@
         "wk:biology_physiology:fauna-animal-communication",
         "wk:biology_physiology:fauna-animal-learning",
         "wk:biology_physiology:fauna-animal-movement",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:environment:animal-pollination",
         "wk:environment:domestic-animal-context",
         "wk:environment:medieval-novgorod-wild-mammal-evidence",
@@ -140837,6 +141270,9 @@
         "wk:social_behavior:foundations-ms-27-belonging-relations",
         "wk:social_behavior:foundations-ms-32-social-role"
       ],
+      "associates": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "association": [
         "claim:foundations-earth-10-mutualistic-dependence",
         "claim:foundations-ms3-07-apology-mediation"
@@ -140994,6 +141430,7 @@
         "wk:social_behavior:foundations-ms-28-ostracism-conditional"
       ],
       "attendance": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-church-calendar-text-relates-feast-list",
         "claim:social-written-prayer-relates-invocation"
       ],
@@ -141661,6 +142098,7 @@
       ],
       "belief": [
         "claim:burial-hollowed-log-container",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-christian-exegetical-text-relates-urban-context",
         "claim:social-written-prayer-relates-invocation"
       ],
@@ -141758,6 +142196,7 @@
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-pupil-light-reflex",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-syncope-cerebral-perfusion",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
@@ -141773,7 +142212,8 @@
         "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:wet-granular-capillary-cohesion",
-        "wk:psychology_behavior:foundations-ms-04-attention-competition"
+        "wk:psychology_behavior:foundations-ms-04-attention-competition",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "beyond": [
         "claim:fauna-tawny-owl-territory"
@@ -142566,12 +143006,14 @@
         "claim:agriculture-fauna-flax-hemp-cultivation",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:environment-p1-wildfowl-season",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:rural-agriculture-crop-context",
         "claim:social-church-calendar-text-relates-feast-list",
         "claim:social-religious-name-list-relates-disjunctive-context",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:environment:flax-hemp-cultivation",
-        "wk:social_law_economy:church-calendar-text"
+        "wk:social_law_economy:church-calendar-text",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "calf": [
         "claim:fauna-mammals-moose-defensive-antlers-hooves"
@@ -142834,6 +143276,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -143460,6 +143903,7 @@
         "claim:food-practices-barley-porridge-soup",
         "claim:food-practices-millet-cleaning-waste",
         "claim:harvest-scythe-iron-steel-specimen",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-garden-shovel",
         "claim:household-rye-commodity",
@@ -143496,7 +143940,8 @@
         "claim:textile-lac-dye-analysis",
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-hired-boatman",
-        "claim:transport-horse-sledge-equipment"
+        "claim:transport-horse-sledge-equipment",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "ceramic": [
         "claim:clay-dried-replasticization",
@@ -143644,7 +144089,8 @@
       "character": [
         "claim:clothing-pointed-cap-xii-depiction",
         "claim:clothing-shirt-principal-garment",
-        "claim:construction-compared-church-masonry"
+        "claim:construction-compared-church-masonry",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "characters": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
@@ -143828,6 +144274,7 @@
       "church": [
         "claim:construction-plinth-patterns-1207",
         "claim:construction-quarry-procurement",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:probable-travel-chalice-communion",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
@@ -143841,7 +144288,8 @@
         "wk:social_law_economy:church-payment-demand",
         "wk:social_law_economy:church-payment-instruction",
         "wk:social_law_economy:church-people-statutory-category",
-        "wk:social_law_economy:ecclesiastical-adjudication"
+        "wk:social_law_economy:ecclesiastical-adjudication",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "churches": [
         "claim:construction-compared-church-masonry"
@@ -143971,6 +144419,9 @@
         "claim:food-practices-millet-cleaning-waste",
         "wk:craft_technology:millet-cleaning",
         "wk:craft_technology:spinning-fibre-cleaning"
+      ],
+      "cleanliness": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "cleansing": [
         "claim:flayed-skin-processing-purpose",
@@ -144326,12 +144777,16 @@
         "claim:posadnik-fedor-conflict-1224"
       ],
       "commemoration": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-religious-name-list-relates-disjunctive-context",
         "wk:social_law_economy:commemoration-or-icon-order",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:religious-name-list"
       ],
       "commemorations": [
-        "claim:social-religious-name-list-relates-disjunctive-context"
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "claim:social-religious-name-list-relates-disjunctive-context",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "commission": [
         "claim:occupation-smith-role"
@@ -144774,6 +145229,7 @@
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -144868,6 +145324,7 @@
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:research-plant-herbivory-effects",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:chemistry_process:temperature-solubility-conditional",
         "wk:environment:candidate-flood-woody-debris-transport-retention",
@@ -145143,6 +145600,7 @@
         "wk:biology_physiology:fauna-tick",
         "wk:biology_physiology:foundation-pathogen-transport",
         "wk:biology_physiology:research-nettle-food-contact-properties",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:physics_material_science:contact-pressure",
         "wk:physics_material_science:force-contact-geometry",
@@ -145216,6 +145674,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:material-water-textile-liquid-contaminants",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions",
         "wk:physics_material_science:textile-water-damage"
@@ -145446,6 +145905,7 @@
         "claim:transport-winter-sledge-1220"
       ],
       "cooked": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked"
       ],
       "cooking": [
@@ -145790,7 +146250,8 @@
         "claim:fauna-cross-spider-web",
         "claim:population-physics-section-response",
         "claim:probable-travel-chalice-communion",
-        "wk:biology_physiology:fauna-cross-spider"
+        "wk:biology_physiology:fauna-cross-spider",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "crossing": [
         "claim:population-material-clay-quartz",
@@ -145866,6 +146327,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:grain-processing-bread-open-fire-baking",
         "claim:grain-processing-bread-oven-baking",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
@@ -146010,6 +146472,7 @@
         "claim:civic-earth-rampart",
         "claim:excavated-urban-structures",
         "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:maslo-birchbark-718-account",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
@@ -146050,15 +146513,18 @@
       "day": [
         "claim:fauna-bird-migration-cues",
         "claim:fauna-dragonfly-emergence",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "wk:biology_physiology:fauna-bird-migration",
-        "wk:biology_physiology:plant-photoperiod-response"
+        "wk:biology_physiology:plant-photoperiod-response",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "daylight": [
         "claim:fauna-bee-diurnal"
       ],
       "days": [
         "claim:fauna-frog-damp-foraging",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "wk:biology_physiology:fauna-common-frog"
       ],
       "daytime": [
@@ -147312,7 +147778,8 @@
         "claim:environment-p1-cattle"
       ],
       "dose": [
-        "claim:foundations-haz-01-exposure-modifiers"
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "dough": [
         "claim:grain-processing-bread-dough-before-baking",
@@ -147707,6 +148174,7 @@
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:fauna-salmon-age-diet",
         "claim:fauna-toad-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:biology_physiology:fauna-mallard"
       ],
       "eaten": [
@@ -148460,6 +148928,7 @@
         "claim:research-memory-postevent-misinformation",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -149285,6 +149754,9 @@
       "fastest": [
         "claim:wood-liquid-directional-uptake"
       ],
+      "fasting": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "fat": [
         "claim:endotherm-insulation-reduces-heat-loss",
         "claim:fauna-bird-migration-energy",
@@ -149326,9 +149798,12 @@
         "claim:population-material-leather-mould"
       ],
       "feast": [
-        "wk:social_law_economy:feast-list"
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:feast-list",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "feasts": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-church-calendar-text-relates-feast-list",
         "wk:social_law_economy:church-calendar-text"
       ],
@@ -149980,6 +150455,7 @@
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
         "claim:population-fish-food",
         "claim:population-physics-evaporation-humidity",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:rural-agriculture-crop-context",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
@@ -149999,6 +150475,7 @@
         "wk:biology_physiology:research-lingonberry-fruit-food-part",
         "wk:biology_physiology:research-nettle-food-contact-properties",
         "wk:biology_physiology:research-raspberry-food-part",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:environment:medieval-novgorod-domestic-food-base",
         "wk:environment:medieval-novgorod-fishing-context",
         "wk:environment:wild-food-and-fur-evidence",
@@ -150665,6 +151142,7 @@
         "claim:pottery-handmade-temper",
         "claim:religion-olenin-adjudication",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:river-landing-market-approaches",
         "claim:rp-caretaker-principal-goods",
@@ -151647,6 +152125,7 @@
         "claim:occupation-smith-hammer",
         "claim:pottery-handmade-local-clay",
         "claim:pottery-handmade-temper",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:social-grivna-accounting-unit",
         "wk:material_culture:smith-hammer"
       ],
@@ -151661,6 +152140,9 @@
         "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
         "claim:population-storage-role",
         "wk:physics_material_science:porous-bone-fragility"
+      ],
+      "hands": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
       "hard": [
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
@@ -152651,6 +153133,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:religion-priest-child-baptism",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:biology_physiology:chemical-exposure-not-illness"
       ],
       "ilmen": [
@@ -153034,6 +153517,7 @@
         "claim:gramota-73-grivna-term",
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-sickle-crops-grasses",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-boat-repair-clamp",
         "claim:household-furniture-wood",
@@ -153111,6 +153595,7 @@
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -153274,6 +153759,7 @@
         "wk:social_law_economy:debt-needs-parties-and-basis",
         "wk:social_law_economy:ecclesiastical-adjudication",
         "wk:social_law_economy:grivna-accounting-unit",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:later-novgorod-judicial-charter",
         "wk:social_law_economy:lost-stolen-property-recognition",
@@ -153354,6 +153840,7 @@
         "claim:practical-document-genres",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:social-daily-wax-commodity-context",
         "wk:biology_physiology:fauna-domestic-dog",
         "wk:biology_physiology:fauna-red-fox",
@@ -154236,6 +154723,7 @@
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
         "claim:heating-reduces-microbial-viability",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-wooden-tableware",
         "claim:human-thermoregulation-depends-on-heat-exchange",
         "claim:intact-skin-reduces-pathogen-entry",
@@ -154851,6 +155339,7 @@
         "claim:rp-market-purchase-relates-proof-participant"
       ],
       "knowledge": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:research-memory-postevent-misinformation",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -155479,7 +155968,8 @@
       "link": [
         "claim:troitsky-cereal-millet-remains-probably-link-to-poozerie",
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
-        "wk:environment:poozerie-cereal-millet-source"
+        "wk:environment:poozerie-cereal-millet-source",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "linked": [
         "claim:fauna-mammals-mountain-hare-seasonal-pelage",
@@ -156157,6 +156647,12 @@
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "wk:environment:research-flood-high-water-mark-observation"
+      ],
+      "martyrdom": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
+      "martyrdoms": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "maslo": [
         "claim:maslo-birchbark-718-account",
@@ -157083,6 +157579,10 @@
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air"
       ],
+      "monthbook": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
+      ],
       "monumental": [
         "claim:construction-compared-church-masonry"
       ],
@@ -157807,6 +158307,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -158181,6 +158682,7 @@
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
         "claim:heating-reduces-microbial-viability",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -158605,6 +159107,7 @@
         "claim:gramota-73-debt-record",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sickle-crops-grasses",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-bark-tues",
         "claim:household-furniture-wood",
         "claim:household-ski-wood",
@@ -158798,6 +159301,9 @@
         "claim:foundations-life-06-growth-mitosis",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "wk:biology_physiology:foundation-growth-mitosis"
+      ],
+      "numbered": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "numeric": [
         "claim:metal-properties-depend-on-state",
@@ -159233,6 +159739,7 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-leather-offcut",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
@@ -160021,6 +160528,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -160141,6 +160649,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -160424,6 +160933,7 @@
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:debt-record-practice",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:loan-or-advance",
         "wk:social_law_economy:loan-request",
         "wk:social_law_economy:lost-stolen-property-recognition",
@@ -160580,10 +161090,12 @@
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:livestock-rumen-forage-digestion",
         "claim:population-tack-context",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "claim:water-capillary-height",
         "wk:biology_physiology:fauna-domestic-sheep",
         "wk:biology_physiology:foundation-phagocytes",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:environment:pressure-gradient-wind"
       ],
       "others": [
@@ -160665,6 +161177,7 @@
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -161307,9 +161820,11 @@
         "claim:intact-skin-reduces-pathogen-entry",
         "wk:biology_physiology:foundation-infection-chain",
         "wk:biology_physiology:foundation-infection-entry",
-        "wk:biology_physiology:foundation-pathogen-transport"
+        "wk:biology_physiology:foundation-pathogen-transport",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "pathogens": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:biology_physiology:skin-barrier"
       ],
       "pathway": [
@@ -162427,6 +162942,7 @@
         "claim:grain-processing-bread-dough-before-baking",
         "claim:grain-processing-bread-liquid",
         "claim:pottery-handmade-temper",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:textile-fibres-twist-yarn",
         "claim:vegetable-tanning-prepared-hide",
@@ -163041,6 +163557,7 @@
       ],
       "proof": [
         "claim:construction-plinth-patterns-1207",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:material-water-textile-water-load",
         "claim:novgorod-wetland-pollen-context",
         "claim:occupation-smith-specialisation",
@@ -163664,6 +164181,7 @@
         "claim:construction-compared-church-masonry",
         "claim:contextual-evidence-classes",
         "claim:population-shoe-input",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:terrain-parent-material-assemblage",
         "claim:textile-chrysin-analysis",
@@ -163671,7 +164189,8 @@
         "claim:textile-lac-dye-analysis",
         "wk:architecture_settlement:architectural-material-classes",
         "wk:architecture_settlement:construction-pottery-production",
-        "wk:architecture_settlement:contextual-evidence-classes"
+        "wk:architecture_settlement:contextual-evidence-classes",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact"
       ],
       "rawhide": [
         "claim:material-water-rawhide-wet-dry",
@@ -163748,6 +164267,7 @@
         "claim:construction-rjaz-riverbed-foundation",
         "claim:fuel-charcoal-pit-sealing",
         "claim:fuel-pit-charcoal-burning-form",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:water-permeability-connected-pores",
         "wk:architecture_settlement:composite-urban-quarter"
       ],
@@ -164206,6 +164726,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:grain-processing-bread-dough-before-baking",
         "claim:grain-processing-bread-ground-plant-base",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:material-water-linen-flax-origin",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
@@ -164223,6 +164744,7 @@
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:biology_physiology:research-pupil-light-reflex",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-syncope-cerebral-perfusion",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
@@ -165376,6 +165898,7 @@
         "claim:livestock-ruminant-membership",
         "claim:population-physics-evaporation-humidity",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
@@ -165386,6 +165909,9 @@
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:chemistry_process:food-preservation-qualitative",
         "wk:material_culture:honey"
+      ],
+      "saint": [
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "salar": [
         "wk:biology_physiology:fauna-atlantic-salmon"
@@ -165551,6 +166077,7 @@
         "claim:fuel-iron-candlestick-form",
         "claim:fuel-iron-splinter-holder-form",
         "claim:grain-processing-bread-oven-baking",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -165596,6 +166123,7 @@
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -168212,7 +168740,9 @@
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:population-joining-bond-contact",
         "claim:population-physics-sliding-friction",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:river-landing-market-approaches",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:physics_material_science:dry-friction"
       ],
       "surfacing": [
@@ -168774,11 +169304,13 @@
         "wk:social_law_economy:urban-textual-context"
       ],
       "textual": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:religion-olenin-church-people",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
         "claim:social-christian-exegetical-text-relates-urban-context",
         "wk:social_law_economy:ecclesiastical-adjudication",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:religious-name-list",
         "wk:social_law_economy:urban-textual-context"
       ],
@@ -169060,6 +169592,7 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-belt-fitting",
         "claim:household-boat-repair-clamp",
@@ -169429,6 +169962,7 @@
         "claim:civic-defence-log-courses",
         "claim:civic-defence-transverse-support",
         "claim:fodder-hay-account",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-rye-commodity",
         "claim:maslo-birchbark-718-account",
@@ -169441,7 +169975,8 @@
         "claim:social-daily-fur-sale-accounting",
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
-        "claim:transport-boat-cargo-dispatch"
+        "claim:transport-boat-cargo-dispatch",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "this": [
         "claim:agriculture-fauna-bort-climbing-hooks",
@@ -169617,6 +170152,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:leather-broad-context",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -169691,6 +170227,7 @@
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
@@ -169841,6 +170378,7 @@
         "claim:population-bark-bast",
         "claim:population-physics-conduction-gradient",
         "claim:population-stone-weight",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:technology-circuit-prerequisite",
@@ -170123,6 +170661,7 @@
         "claim:religion-olenin-adjudication",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:research-memory-postevent-misinformation",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -170178,6 +170717,7 @@
         "wk:biology_physiology:plant-light-development",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-plant-herbivory-effects",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:research-thermal-stress",
         "wk:biology_physiology:skin-barrier",
         "wk:biology_physiology:stomatal-regulation",
@@ -170438,9 +170978,11 @@
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:river-landing-market-approaches",
         "claim:rp-mother-household-care-succession",
         "claim:rural-agriculture-crop-context",
+        "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:environment:animal-pollination",
         "wk:physics_material_science:convective-heat-transfer",
         "wk:physics_material_science:material-thermal-insulation-porosity",
@@ -171196,6 +171738,7 @@
         "claim:fauna-tick-senses",
         "claim:foundations-life-40-photosynthesis",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-tar-pot",
         "claim:maslo-birchbark-718-account",
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
@@ -171289,10 +171832,12 @@
         "wk:chemistry_process:temperature-solubility-conditional"
       ],
       "utensil": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "wk:material_culture:household-utensil"
       ],
       "utensils": [
         "claim:household-utensil-wood",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:settlement-underfloor-storage"
       ],
       "utility": [
@@ -172467,6 +173012,7 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
         "claim:harvest-scythe-iron-steel-specimen",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-ploughshare-tillage",
         "claim:judicial-accusation-record",
         "claim:livestock-swine-comparative-diet",
@@ -172558,6 +173104,7 @@
         "wk:social_behavior:foundations-ms-27-belonging-relations",
         "wk:social_behavior:foundations-ms-32-social-role",
         "wk:social_law_economy:christian-invocation-text",
+        "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:judicial-accusation-record"
       ],
       "withdrawal": [

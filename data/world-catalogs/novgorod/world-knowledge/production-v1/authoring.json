@@ -72,6 +72,10 @@
     "static-indoor-moisture-v1.json",
     "verification-static-indoor-moisture-v1.json",
     "static-plant-use-v1.json",
-    "verification-static-plant-use-v1.json"
+    "verification-static-plant-use-v1.json",
+    "static-food-contact-v1.json",
+    "verification-static-food-contact-v1.json",
+    "static-historical-household-practice-v1.json",
+    "verification-static-historical-household-practice-v1.json"
   ]
 }

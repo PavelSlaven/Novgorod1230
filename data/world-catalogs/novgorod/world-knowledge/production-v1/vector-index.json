@@ -7794,6 +7794,20 @@
       "retrieval_text": "Нагрев пищи Нагрев как физический пищевой процесс. Нагрев может снижать жизнеспособность микроорганизмов; безопасность не гарантируется."
     },
     {
+      "entry_ref": "wk-retrieval:claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations:en",
+      "target_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Church monthbook with day commemorations A textual link between a calendar day and a commemoration, martyrdom, or feast in a thirteenth-century monthbook. A thirteenth-century church monthbook associates numbered calendar days with commemorations, martyrdoms, and feasts. This is a textual calendar relation, not proof of use in Novgorod, attendance, fasting, belief, a character's knowledge, or the current scene's date. monthbook church calendar saint commemoration feast day calendar day church feast commemoration"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations:ru",
+      "target_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Церковный месяцеслов с памятями по дням Текстовая связь календарного дня с памятью, страстью или праздником в месяцеслове XIII века. Месяцеслов по церковному Обиходу XIII века сопоставляет нумерованные календарные дни с памятями, страстями и праздниками. Это текстовая календарная связь, а не доказательство применения именно в Новгороде, посещения, поста, веры, знания персонажа или даты текущей сцены. месяцеслов церковный календарь память святого праздничный день календарный день церковный праздник память"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:household-apple-orchard:en",
       "target_ref": "claim:household-apple-orchard",
       "domain": "architecture_settlement",
@@ -11264,6 +11278,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Капиллярное впитывание может поместить отметку высокой воды на пористой поверхности выше фактического пика воды; близкие непористые отметки могут подтвердить её оценку. Это не устанавливает отметку, материал, высоту, степень уверенности, обследование, паводок или вывод в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces:en",
+      "target_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Raw animal food cross-contact Conditional relation between raw animal food, contact surfaces, and pathogen transfer to other food. Pathogens from raw animal food can transfer to other food, including cooked or ready-to-eat food, through hands, utensils, or food-preparation surfaces. This establishes no food, contamination, hand or utensil cleanliness, dose, illness, safety, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces:ru",
+      "target_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контакт сырой животной пищи с другой пищей Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу. Возбудители с сырой животной пищи могут переноситься на другую пищу, в том числе приготовленную или готовую к употреблению, через руки, утварь или поверхности подготовки пищи. Это не устанавливает пищу, загрязнение, чистоту рук или утвари, дозу, болезнь, безопасность либо исход конкретной сцены."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked:en",
@@ -15842,6 +15870,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть малины Узкая предпосылка о плоде Rubus idaeus."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-raw-animal-food-cross-contact:en",
+      "target_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Raw animal food cross-contact Conditional relation between raw animal food, contact surfaces, and pathogen transfer to other food."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-raw-animal-food-cross-contact:ru",
+      "target_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контакт сырой животной пищи с другой пищей Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-syncope-cerebral-perfusion:en",
@@ -22856,6 +22898,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Упоминание наёмной работы Упоминание наёмного работника в записи наёмный работник"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:historical-church-monthbook-day-commemoration:en",
+      "target_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Church monthbook with day commemorations A textual link between a calendar day and a commemoration, martyrdom, or feast in a thirteenth-century monthbook. monthbook church calendar saint commemoration feast day"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:historical-church-monthbook-day-commemoration:ru",
+      "target_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Церковный месяцеслов с памятями по дням Текстовая связь календарного дня с памятью, страстью или праздником в месяцеслове XIII века. месяцеслов церковный календарь память святого праздничный день"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:judicial-accusation-record:en",

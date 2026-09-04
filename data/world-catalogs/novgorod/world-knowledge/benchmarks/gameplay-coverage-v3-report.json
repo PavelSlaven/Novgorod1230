@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 43,
-    "lexical_recall_at_10": 0.9069767441860465,
-    "hybrid_recall_at_10": 0.9883720930232558,
-    "lexical_recall_at_20": 0.9302325581395349,
+    "case_count": 48,
+    "lexical_recall_at_10": 0.9166666666666666,
+    "hybrid_recall_at_10": 0.9895833333333334,
+    "lexical_recall_at_20": 0.9375,
     "hybrid_recall_at_20": 1,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.477953119232189,
-    "hybrid_noise_at_10": 0.7169619785898855,
+    "lexical_noise_at_10": 0.4552496693121693,
+    "hybrid_noise_at_10": 0.7131117724867724,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 73.11909302325581,
-    "vector_scan_mean_ms": 0.8603860465111719,
-    "runtime_bundle_bytes": 5580821,
-    "vector_bundle_bytes": 13606912,
-    "encoder_model_load_ms": 3274.369,
-    "peak_process_rss_bytes": 2406916096,
+    "query_embedding_mean_ms": 67.62712499999999,
+    "vector_scan_mean_ms": 0.5906895833333389,
+    "runtime_bundle_bytes": 5609588,
+    "vector_bundle_bytes": 13639680,
+    "encoder_model_load_ms": 2844.783,
+    "peak_process_rss_bytes": 2401685504,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -39,8 +39,135 @@
   },
   "cases": [
     {
+      "case_id": "static_monthbook_day_commemoration_en",
+      "vector_scan_ms": 1.6627000000007683,
+      "lexical_at_10": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "hybrid_at_10": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "claim:social-church-calendar-text-relates-feast-list",
+        "claim:social-religious-name-list-relates-disjunctive-context"
+      ],
+      "lexical_at_20": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "hybrid_at_20": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "claim:social-church-calendar-text-relates-feast-list",
+        "claim:social-religious-name-list-relates-disjunctive-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_conditional_child_care_ru",
+      "vector_scan_ms": 0.4315000000024156,
+      "lexical_at_10": [
+        "claim:rp-mother-household-care-succession",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-merchant-credit-relates-third-party-goods"
+      ],
+      "hybrid_at_10": [
+        "claim:rp-mother-household-care-succession",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-merchant-credit-relates-third-party-goods"
+      ],
+      "lexical_at_20": [
+        "claim:rp-mother-household-care-succession",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-merchant-credit-relates-third-party-goods"
+      ],
+      "hybrid_at_20": [
+        "claim:rp-mother-household-care-succession",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-merchant-credit-relates-third-party-goods"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_raw_cooked_food_contact_ru",
+      "vector_scan_ms": 0.9019000000007509,
+      "lexical_at_10": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
+      "hybrid_at_10": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-life-44-pathogen-transport"
+      ],
+      "lexical_at_20": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
+      "hybrid_at_20": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-life-44-pathogen-transport"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_surface_runoff_waste_en",
+      "vector_scan_ms": 0.5093999999990046,
+      "lexical_at_10": [
+        "claim:foundations-earth-26-runoff-contaminant-transport"
+      ],
+      "hybrid_at_10": [
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:environment-p1-waterlogged-layer"
+      ],
+      "lexical_at_20": [
+        "claim:foundations-earth-26-runoff-contaminant-transport"
+      ],
+      "hybrid_at_20": [
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:environment-p1-waterlogged-layer"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "static_boat_plank_caulking_ru",
+      "vector_scan_ms": 0.7142000000021653,
+      "lexical_at_10": [
+        "claim:construction-iron-clamp-caulking",
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:household-boat-repair-clamp",
+        "claim:construction-tarred-tow-caulking"
+      ],
+      "hybrid_at_10": [
+        "claim:construction-iron-clamp-caulking",
+        "claim:household-boat-repair-clamp",
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:construction-wooden-nail-planking",
+        "claim:construction-tarred-tow-caulking"
+      ],
+      "lexical_at_20": [
+        "claim:construction-iron-clamp-caulking",
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:household-boat-repair-clamp",
+        "claim:construction-tarred-tow-caulking"
+      ],
+      "hybrid_at_20": [
+        "claim:construction-iron-clamp-caulking",
+        "claim:household-boat-repair-clamp",
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:construction-wooden-nail-planking",
+        "claim:construction-tarred-tow-caulking"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
       "case_id": "static_syncope_perfusion_ru",
-      "vector_scan_ms": 9.022099999998318,
+      "vector_scan_ms": 0.8451999999997497,
       "lexical_at_10": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness"
@@ -63,7 +190,7 @@
     },
     {
       "case_id": "static_circulatory_tissue_supply_en",
-      "vector_scan_ms": 1.0534000000006927,
+      "vector_scan_ms": 0.8436000000001513,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
       ],
@@ -84,7 +211,7 @@
     },
     {
       "case_id": "static_retinal_light_pupil_ru",
-      "vector_scan_ms": 0.8479000000006636,
+      "vector_scan_ms": 0.8766999999970722,
       "lexical_at_10": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:candidate-physiology-v3-blink-corneal-protection"
@@ -107,7 +234,7 @@
     },
     {
       "case_id": "static_hot_work_heat_storage_en",
-      "vector_scan_ms": 0.8702999999986787,
+      "vector_scan_ms": 0.8474000000023807,
       "lexical_at_10": [
         "claim:research-extreme-heat-can-increase-body-heat-storage"
       ],
@@ -128,7 +255,7 @@
     },
     {
       "case_id": "static_cold_environment_heat_loss_ru",
-      "vector_scan_ms": 0.8369000000020606,
+      "vector_scan_ms": 0.9039000000011583,
       "lexical_at_10": [
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
@@ -155,7 +282,7 @@
     },
     {
       "case_id": "static_novelty_orienting_habituation_en",
-      "vector_scan_ms": 0.8944000000010419,
+      "vector_scan_ms": 0.9255000000011933,
       "lexical_at_10": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
       ],
@@ -176,7 +303,7 @@
     },
     {
       "case_id": "static_witness_source_confusion_ru",
-      "vector_scan_ms": 0.3688000000001921,
+      "vector_scan_ms": 0.29539999999906286,
       "lexical_at_10": [
         "claim:foundations-ms-06-visual-selection",
         "claim:research-memory-postevent-misinformation",
@@ -219,7 +346,7 @@
     },
     {
       "case_id": "static_later_misleading_account_en",
-      "vector_scan_ms": 0.3004000000000815,
+      "vector_scan_ms": 0.28290000000197324,
       "lexical_at_10": [
         "claim:research-memory-postevent-misinformation",
         "claim:research-memory-source-misattribution"
@@ -242,7 +369,7 @@
     },
     {
       "case_id": "static_shared_work_output_ru",
-      "vector_scan_ms": 0.3186999999998079,
+      "vector_scan_ms": 0.21550000000206637,
       "lexical_at_10": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms2-03-distrust-cooperation",
@@ -296,7 +423,7 @@
     },
     {
       "case_id": "static_smoke_wind_stability_en",
-      "vector_scan_ms": 0.5926999999974214,
+      "vector_scan_ms": 0.441899999997986,
       "lexical_at_10": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
       ],
@@ -317,7 +444,7 @@
     },
     {
       "case_id": "static_low_smoke_inversion_ru",
-      "vector_scan_ms": 0.7173000000002503,
+      "vector_scan_ms": 0.44549999999799184,
       "lexical_at_10": [
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
@@ -340,7 +467,7 @@
     },
     {
       "case_id": "weak_cloth_support_ru",
-      "vector_scan_ms": 0.6853999999984808,
+      "vector_scan_ms": 0.40359999999782303,
       "lexical_at_10": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
@@ -361,7 +488,7 @@
     },
     {
       "case_id": "leather_joint_failure_en",
-      "vector_scan_ms": 0.5724999999983993,
+      "vector_scan_ms": 0.3701999999975669,
       "lexical_at_10": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:oil-fat-vegetable-leather-flexibility"
@@ -386,7 +513,7 @@
     },
     {
       "case_id": "boiling_chemical_drinkability_ru",
-      "vector_scan_ms": 0.4091000000007625,
+      "vector_scan_ms": 0.21680000000196742,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -407,7 +534,7 @@
     },
     {
       "case_id": "fuel_water_boiling_en",
-      "vector_scan_ms": 0.7331999999987602,
+      "vector_scan_ms": 0.23430000000007567,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -428,7 +555,7 @@
     },
     {
       "case_id": "fuel_fumes_gas_ru",
-      "vector_scan_ms": 0.9184999999997672,
+      "vector_scan_ms": 0.4040999999997439,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -451,7 +578,7 @@
     },
     {
       "case_id": "enclosed_fuel_fire_en",
-      "vector_scan_ms": 0.5856999999996333,
+      "vector_scan_ms": 0.47109999999884167,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -474,7 +601,7 @@
     },
     {
       "case_id": "enclosed_air_co_ru",
-      "vector_scan_ms": 0.5312999999987369,
+      "vector_scan_ms": 0.39029999999911524,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide"
@@ -497,7 +624,7 @@
     },
     {
       "case_id": "immersion_hypothermia_ru",
-      "vector_scan_ms": 0.7697000000007392,
+      "vector_scan_ms": 0.6736999999993714,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -544,7 +671,7 @@
     },
     {
       "case_id": "cold_water_body_en",
-      "vector_scan_ms": 0.8093000000008033,
+      "vector_scan_ms": 0.675199999997858,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -571,7 +698,7 @@
     },
     {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 0.7766999999985273,
+      "vector_scan_ms": 0.7595000000001164,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
@@ -614,18 +741,18 @@
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 0.7880000000004657,
+      "vector_scan_ms": 0.6958999999988009,
       "lexical_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:fauna-mallard-residency",
         "claim:fauna-toad-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:foundations-haz-02-exposure-not-illness",
-        "claim:fauna-mallard-brood",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
-        "claim:bearberry-lingonberry-resemblance-not-identification",
-        "claim:fauna-mallard-wetland-diet"
+        "claim:fauna-mallard-brood",
+        "claim:bearberry-lingonberry-resemblance-not-identification"
       ],
       "hybrid_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -633,33 +760,33 @@
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:fauna-mallard-residency",
         "claim:fauna-toad-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:foundations-haz-02-exposure-not-illness",
-        "claim:fauna-mallard-brood",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients"
       ],
       "lexical_at_20": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:fauna-mallard-residency",
         "claim:fauna-toad-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:foundations-haz-02-exposure-not-illness",
-        "claim:fauna-mallard-brood",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mallard-brood",
         "claim:bearberry-lingonberry-resemblance-not-identification",
-        "claim:fauna-mallard-wetland-diet",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:fauna-mallard-wetland-diet",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:fauna-mammals-red-fox-seed-dispersal",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:foundations-life-33-acquired-immunity",
-        "claim:fauna-adder-defence",
         "claim:livestock-swine-membership",
-        "claim:fauna-salmon-age-diet"
+        "claim:fauna-adder-defence"
       ],
       "hybrid_at_20": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -667,27 +794,27 @@
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:fauna-mallard-residency",
         "claim:fauna-toad-diet",
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:foundations-haz-02-exposure-not-illness",
-        "claim:fauna-mallard-brood",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mallard-brood",
         "claim:bearberry-lingonberry-resemblance-not-identification",
-        "claim:fauna-mallard-wetland-diet",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:fauna-mallard-wetland-diet",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:fauna-mammals-red-fox-seed-dispersal",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:foundations-life-33-acquired-immunity",
-        "claim:fauna-adder-defence",
         "claim:livestock-swine-membership",
-        "claim:fauna-salmon-age-diet"
+        "claim:fauna-adder-defence"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.5158999999985099,
+      "vector_scan_ms": 0.564699999998993,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:grain-processing-bread-ground-plant-base",
@@ -760,7 +887,7 @@
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.44900000000052387,
+      "vector_scan_ms": 0.4099000000023807,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -781,7 +908,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 0.8868000000002212,
+      "vector_scan_ms": 0.9363999999986845,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -832,7 +959,7 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.6280000000006112,
+      "vector_scan_ms": 0.5260000000016589,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -875,7 +1002,7 @@
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 0.9592000000011467,
+      "vector_scan_ms": 0.7147000000004482,
       "lexical_at_10": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -936,7 +1063,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 0.9877000000014959,
+      "vector_scan_ms": 0.9927999999999884,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
@@ -990,7 +1117,7 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.511900000001333,
+      "vector_scan_ms": 0.4238000000004831,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -1050,7 +1177,7 @@
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.5529000000024098,
+      "vector_scan_ms": 0.3999000000003434,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -1077,7 +1204,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.5108999999974912,
+      "vector_scan_ms": 0.3845999999975902,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -1098,7 +1225,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.5860999999968044,
+      "vector_scan_ms": 0.3333999999995285,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
@@ -1121,7 +1248,7 @@
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
-      "vector_scan_ms": 0.39249999999810825,
+      "vector_scan_ms": 0.29140000000188593,
       "lexical_at_10": [
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
@@ -1144,7 +1271,7 @@
     },
     {
       "case_id": "static_flood_deposited_traces_en",
-      "vector_scan_ms": 0.5069000000003143,
+      "vector_scan_ms": 0.31970000000001164,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -1183,7 +1310,7 @@
     },
     {
       "case_id": "static_porous_flood_stain_ru",
-      "vector_scan_ms": 0.4313999999976659,
+      "vector_scan_ms": 0.3451999999997497,
       "lexical_at_10": [
         "claim:research-porous-high-water-stain-can-require-corroboration"
       ],
@@ -1204,7 +1331,7 @@
     },
     {
       "case_id": "static_track_mud_sand_ru",
-      "vector_scan_ms": 0.40020000000004075,
+      "vector_scan_ms": 0.3117000000020198,
       "lexical_at_10": [
         "claim:foundations-earth-20-groundwater-recharge-discharge",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
@@ -1249,7 +1376,7 @@
     },
     {
       "case_id": "static_sick_animal_social_feeding_en",
-      "vector_scan_ms": 0.7919999999976426,
+      "vector_scan_ms": 0.6635999999998603,
       "lexical_at_10": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:care-waterproof-wound-cover",
@@ -1282,7 +1409,7 @@
     },
     {
       "case_id": "static_browsed_plant_growth_ru",
-      "vector_scan_ms": 0.8737999999975727,
+      "vector_scan_ms": 0.7839999999996508,
       "lexical_at_10": [
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -1315,7 +1442,7 @@
     },
     {
       "case_id": "static_stove_room_dampness_en",
-      "vector_scan_ms": 0.49359999999796855,
+      "vector_scan_ms": 0.43360000000029686,
       "lexical_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
       ],
@@ -1336,7 +1463,7 @@
     },
     {
       "case_id": "static_room_air_condensation_ru",
-      "vector_scan_ms": 0.5099999999983993,
+      "vector_scan_ms": 0.41379999999844586,
       "lexical_at_10": [
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -1390,7 +1517,7 @@
     },
     {
       "case_id": "static_nettle_food_contact_ru",
-      "vector_scan_ms": 1.016299999999319,
+      "vector_scan_ms": 0.7299999999995634,
       "lexical_at_10": [
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
@@ -1413,7 +1540,7 @@
     },
     {
       "case_id": "static_raspberry_lingonberry_food_en",
-      "vector_scan_ms": 0.7773999999990338,
+      "vector_scan_ms": 1.0548999999991793,
       "lexical_at_10": [
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -1440,7 +1567,7 @@
     },
     {
       "case_id": "static_hazel_apple_parts_ru",
-      "vector_scan_ms": 0.8117999999994936,
+      "vector_scan_ms": 0.8811000000023341,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ],

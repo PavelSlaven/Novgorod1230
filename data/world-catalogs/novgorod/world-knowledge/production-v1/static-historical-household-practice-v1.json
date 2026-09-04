@@ -1,0 +1,135 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-xiii-century-church-monthbook",
+      "title": "Месяцеслов по церковному Обиходу XIII в.",
+      "authors": [],
+      "publication": "Церковно-научный центр «Православная энциклопедия»; воспроизведение по: Макарий (Булгаков), История Русской Церкви, кн. 2, с. 585",
+      "source_kind": "primary_text",
+      "citation": "https://sedmitza.ru/lib/text/443910/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-xiii-century-church-monthbook-day-commemoration",
+      "source_ref": "source:research-xiii-century-church-monthbook",
+      "anchor": {
+        "section": "Заглавие и месяц сентябрь, записи 1–14"
+      },
+      "note": "Публикация озаглавлена как месяцеслов по церковному Обиходу XIII века и в сентябрьском разделе сопоставляет нумерованные дни с памятями, страстями и праздниками, включая Рождество Богородицы 8 сентября и Воздвижение Креста 14 сентября. Это текстовая календарная связь XIII века, не доказательство её применения в конкретном новгородском храме, обязательного посещения, поста, веры, знания любого персонажа или даты текущей сцены.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "xiii_century_church_monthbook_associates_numbered_calendar_days_with_commemorations_and_feasts"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        }
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-xiii-century-church-monthbook-day-commemoration"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "locale": "ru",
+      "labels": [
+        "Церковный месяцеслов с памятями по дням"
+      ],
+      "short_definition": "Текстовая связь календарного дня с памятью, страстью или праздником в месяцеслове XIII века.",
+      "search_aliases": [
+        "месяцеслов",
+        "церковный календарь",
+        "память святого",
+        "праздничный день"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:historical-church-monthbook-day-commemoration",
+      "locale": "en",
+      "labels": [
+        "Church monthbook with day commemorations"
+      ],
+      "short_definition": "A textual link between a calendar day and a commemoration, martyrdom, or feast in a thirteenth-century monthbook.",
+      "search_aliases": [
+        "monthbook",
+        "church calendar",
+        "saint commemoration",
+        "feast day"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "locale": "ru",
+      "runtime_text": "Месяцеслов по церковному Обиходу XIII века сопоставляет нумерованные календарные дни с памятями, страстями и праздниками. Это текстовая календарная связь, а не доказательство применения именно в Новгороде, посещения, поста, веры, знания персонажа или даты текущей сцены.",
+      "search_aliases": [
+        "календарный день",
+        "церковный праздник",
+        "память"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "locale": "en",
+      "runtime_text": "A thirteenth-century church monthbook associates numbered calendar days with commemorations, martyrdoms, and feasts. This is a textual calendar relation, not proof of use in Novgorod, attendance, fasting, belief, a character's knowledge, or the current scene's date.",
+      "search_aliases": [
+        "calendar day",
+        "church feast",
+        "commemoration"
+      ]
+    }
+  ]
+}

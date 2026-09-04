@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 72,
-    "lexical_recall_at_10": 0.9027777777777778,
-    "hybrid_recall_at_10": 0.9930555555555556,
-    "lexical_recall_at_20": 0.9236111111111112,
+    "case_count": 82,
+    "lexical_recall_at_10": 0.9146341463414634,
+    "hybrid_recall_at_10": 0.9939024390243902,
+    "lexical_recall_at_20": 0.9329268292682927,
     "hybrid_recall_at_20": 1,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.4283840388007054,
-    "hybrid_noise_at_10": 0.7055886243386243,
+    "lexical_noise_at_10": 0.4021293070073557,
+    "hybrid_noise_at_10": 0.6861788617886178,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 69.46330555555556,
-    "vector_scan_mean_ms": 0.9219916666668015,
-    "runtime_bundle_bytes": 5680903,
-    "vector_bundle_bytes": 13737984,
-    "encoder_model_load_ms": 3141.655,
-    "peak_process_rss_bytes": 2412670976,
+    "query_embedding_mean_ms": 80.98581707317074,
+    "vector_scan_mean_ms": 1.1285085365852865,
+    "runtime_bundle_bytes": 5731770,
+    "vector_bundle_bytes": 13819904,
+    "encoder_model_load_ms": 4003.453,
+    "peak_process_rss_bytes": 2405126144,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -40,7 +40,7 @@
   "cases": [
     {
       "case_id": "static_tree_flower_leaf_sequence_ru",
-      "vector_scan_ms": 8.68539999999848,
+      "vector_scan_ms": 16.230799999997544,
       "lexical_at_10": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
@@ -65,7 +65,7 @@
     },
     {
       "case_id": "static_fishing_net_upkeep_en",
-      "vector_scan_ms": 1.0771000000022468,
+      "vector_scan_ms": 0.9228000000002794,
       "lexical_at_10": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
       ],
@@ -86,7 +86,7 @@
     },
     {
       "case_id": "static_novgorod_underfloor_function_ru",
-      "vector_scan_ms": 0.6061999999983527,
+      "vector_scan_ms": 0.5210999999981141,
       "lexical_at_10": [
         "claim:settlement-underfloor-utility",
         "claim:contextual-evidence-classes"
@@ -111,7 +111,7 @@
     },
     {
       "case_id": "static_co_sensory_limits_ru",
-      "vector_scan_ms": 0.7731999999996333,
+      "vector_scan_ms": 0.7358000000022002,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-is-colorless-and-odorless",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -148,7 +148,7 @@
     },
     {
       "case_id": "static_local_exhaust_capture_en",
-      "vector_scan_ms": 0.9483000000000175,
+      "vector_scan_ms": 0.8427000000010594,
       "lexical_at_10": [
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
@@ -169,7 +169,7 @@
     },
     {
       "case_id": "static_cold_immersion_muscle_control_ru",
-      "vector_scan_ms": 1.4855999999999767,
+      "vector_scan_ms": 1.376799999998184,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:population-material-leather-mould",
@@ -204,7 +204,7 @@
     },
     {
       "case_id": "static_fire_plume_layer_transport_en",
-      "vector_scan_ms": 1.0715999999993073,
+      "vector_scan_ms": 0.6863999999986845,
       "lexical_at_10": [
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ],
@@ -225,7 +225,7 @@
     },
     {
       "case_id": "static_floating_small_heel_en",
-      "vector_scan_ms": 0.8722000000016124,
+      "vector_scan_ms": 0.6889999999984866,
       "lexical_at_10": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
@@ -246,7 +246,7 @@
     },
     {
       "case_id": "static_wind_driven_rain_opening_ru",
-      "vector_scan_ms": 0.5845999999983178,
+      "vector_scan_ms": 0.6807999999946333,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ],
@@ -267,7 +267,7 @@
     },
     {
       "case_id": "phys_airway_oxygen_awareness_en",
-      "vector_scan_ms": 1.0146999999997206,
+      "vector_scan_ms": 1.264100000000326,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
@@ -296,7 +296,7 @@
     },
     {
       "case_id": "phys_immersion_not_necessarily_drowning_ru",
-      "vector_scan_ms": 0.8810000000012224,
+      "vector_scan_ms": 1.5135000000009313,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment"
       ],
@@ -317,7 +317,7 @@
     },
     {
       "case_id": "phys_irritated_nose_airway_ru",
-      "vector_scan_ms": 1.139499999997497,
+      "vector_scan_ms": 1.0085000000035507,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -354,7 +354,7 @@
     },
     {
       "case_id": "phys_pharynx_gag_swallow_en",
-      "vector_scan_ms": 1.6279999999969732,
+      "vector_scan_ms": 1.5593000000008033,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
       ],
@@ -375,7 +375,7 @@
     },
     {
       "case_id": "phys_emesis_without_nausea_ru",
-      "vector_scan_ms": 0.7894000000014785,
+      "vector_scan_ms": 1.034800000001269,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-emesis-reflex-response"
       ],
@@ -396,7 +396,7 @@
     },
     {
       "case_id": "phys_corneal_touch_blink_en",
-      "vector_scan_ms": 0.7770999999993364,
+      "vector_scan_ms": 1.4997000000003027,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:care-waterproof-wound-cover"
@@ -421,7 +421,7 @@
     },
     {
       "case_id": "phys_painful_contact_withdrawal_ru",
-      "vector_scan_ms": 0.7979000000013912,
+      "vector_scan_ms": 0.9999000000025262,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
@@ -452,7 +452,7 @@
     },
     {
       "case_id": "phys_sudden_stimulus_startle_en",
-      "vector_scan_ms": 0.8364000000001397,
+      "vector_scan_ms": 1.0679999999993015,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
       ],
@@ -473,7 +473,7 @@
     },
     {
       "case_id": "phys_volume_loss_compensation_ru",
-      "vector_scan_ms": 1.4099000000023807,
+      "vector_scan_ms": 1.0702000000019325,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:candidate-physiology-v3-dehydration-functional-risk"
@@ -496,7 +496,7 @@
     },
     {
       "case_id": "phys_water_loss_function_en",
-      "vector_scan_ms": 1.3991000000023632,
+      "vector_scan_ms": 1.180499999994936,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-dehydration-functional-risk"
       ],
@@ -517,7 +517,7 @@
     },
     {
       "case_id": "phys_alcohol_coordination_awareness_ru",
-      "vector_scan_ms": 0.9984999999978754,
+      "vector_scan_ms": 1.4612000000051921,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
@@ -538,14 +538,15 @@
     },
     {
       "case_id": "phys_sweating_heat_water_en",
-      "vector_scan_ms": 0.794000000001688,
+      "vector_scan_ms": 1.5274999999965075,
       "lexical_at_10": [
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:continued-sweating-can-cause-body-water-loss",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:care-waterproof-wound-cover",
-        "claim:research-extreme-cold-can-cause-cold-stress"
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:fauna-dragonfly-emergence"
       ],
       "hybrid_at_10": [
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -553,7 +554,8 @@
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:care-waterproof-wound-cover",
-        "claim:research-extreme-cold-can-cause-cold-stress"
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:fauna-dragonfly-emergence"
       ],
       "lexical_at_20": [
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -561,7 +563,8 @@
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:care-waterproof-wound-cover",
-        "claim:research-extreme-cold-can-cause-cold-stress"
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:fauna-dragonfly-emergence"
       ],
       "hybrid_at_20": [
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -569,13 +572,14 @@
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:care-waterproof-wound-cover",
-        "claim:research-extreme-cold-can-cause-cold-stress"
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:fauna-dragonfly-emergence"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "static_sinking_load_buoyant_support_ru",
-      "vector_scan_ms": 0.5898999999990338,
+      "vector_scan_ms": 1.0170999999972992,
       "lexical_at_10": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -624,7 +628,7 @@
     },
     {
       "case_id": "static_wet_wooden_opening_en",
-      "vector_scan_ms": 0.612699999997858,
+      "vector_scan_ms": 0.8977999999988242,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
@@ -663,7 +667,7 @@
     },
     {
       "case_id": "static_building_auxiliary_work_ru",
-      "vector_scan_ms": 0.7056000000011409,
+      "vector_scan_ms": 1.395700000000943,
       "lexical_at_10": [
         "claim:construction-auxiliary-construction-work"
       ],
@@ -684,7 +688,7 @@
     },
     {
       "case_id": "static_monthbook_day_commemoration_en",
-      "vector_scan_ms": 0.5568999999995867,
+      "vector_scan_ms": 1.0079999999943539,
       "lexical_at_10": [
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
@@ -705,7 +709,7 @@
     },
     {
       "case_id": "static_conditional_child_care_ru",
-      "vector_scan_ms": 0.34279999999853317,
+      "vector_scan_ms": 0.6523999999990338,
       "lexical_at_10": [
         "claim:rp-mother-household-care-succession",
         "claim:rp-caretaker-principal-goods",
@@ -738,7 +742,7 @@
     },
     {
       "case_id": "static_raw_cooked_food_contact_ru",
-      "vector_scan_ms": 1.7502000000022235,
+      "vector_scan_ms": 0.8461000000024796,
       "lexical_at_10": [
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
@@ -759,7 +763,7 @@
     },
     {
       "case_id": "static_surface_runoff_waste_en",
-      "vector_scan_ms": 0.7366000000001804,
+      "vector_scan_ms": 0.575699999993958,
       "lexical_at_10": [
         "claim:foundations-earth-26-runoff-contaminant-transport"
       ],
@@ -780,7 +784,7 @@
     },
     {
       "case_id": "static_boat_plank_caulking_ru",
-      "vector_scan_ms": 0.8875999999982014,
+      "vector_scan_ms": 0.7956000000049244,
       "lexical_at_10": [
         "claim:construction-iron-clamp-caulking",
         "claim:agriculture-fauna-tow-log-gaps",
@@ -811,7 +815,7 @@
     },
     {
       "case_id": "static_syncope_perfusion_ru",
-      "vector_scan_ms": 0.9543000000012398,
+      "vector_scan_ms": 1.5236999999979162,
       "lexical_at_10": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness"
@@ -834,7 +838,7 @@
     },
     {
       "case_id": "static_circulatory_tissue_supply_en",
-      "vector_scan_ms": 1.830999999998312,
+      "vector_scan_ms": 1.8282999999937601,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
       ],
@@ -855,7 +859,7 @@
     },
     {
       "case_id": "static_retinal_light_pupil_ru",
-      "vector_scan_ms": 1.6509000000005472,
+      "vector_scan_ms": 1.2489999999961583,
       "lexical_at_10": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:candidate-physiology-v3-blink-corneal-protection"
@@ -878,7 +882,7 @@
     },
     {
       "case_id": "static_hot_work_heat_storage_en",
-      "vector_scan_ms": 1.6218000000008033,
+      "vector_scan_ms": 1.6221999999979744,
       "lexical_at_10": [
         "claim:research-extreme-heat-can-increase-body-heat-storage"
       ],
@@ -899,7 +903,7 @@
     },
     {
       "case_id": "static_cold_environment_heat_loss_ru",
-      "vector_scan_ms": 1.5362000000022817,
+      "vector_scan_ms": 1.1932999999989988,
       "lexical_at_10": [
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
@@ -926,7 +930,7 @@
     },
     {
       "case_id": "static_novelty_orienting_habituation_en",
-      "vector_scan_ms": 1.537000000000262,
+      "vector_scan_ms": 0.862699999997858,
       "lexical_at_10": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
       ],
@@ -947,7 +951,7 @@
     },
     {
       "case_id": "static_witness_source_confusion_ru",
-      "vector_scan_ms": 0.36189999999987776,
+      "vector_scan_ms": 0.4698000000062166,
       "lexical_at_10": [
         "claim:foundations-ms-06-visual-selection",
         "claim:research-memory-postevent-misinformation",
@@ -990,7 +994,7 @@
     },
     {
       "case_id": "static_later_misleading_account_en",
-      "vector_scan_ms": 0.33949999999822467,
+      "vector_scan_ms": 0.44239999999990687,
       "lexical_at_10": [
         "claim:research-memory-postevent-misinformation",
         "claim:research-memory-source-misattribution"
@@ -1013,7 +1017,7 @@
     },
     {
       "case_id": "static_shared_work_output_ru",
-      "vector_scan_ms": 0.3231999999989057,
+      "vector_scan_ms": 0.6948999999949592,
       "lexical_at_10": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms2-03-distrust-cooperation",
@@ -1067,7 +1071,7 @@
     },
     {
       "case_id": "static_smoke_wind_stability_en",
-      "vector_scan_ms": 0.4730999999992491,
+      "vector_scan_ms": 0.781699999999546,
       "lexical_at_10": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
@@ -1090,7 +1094,7 @@
     },
     {
       "case_id": "static_low_smoke_inversion_ru",
-      "vector_scan_ms": 0.48880000000281143,
+      "vector_scan_ms": 0.8207000000038533,
       "lexical_at_10": [
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
@@ -1113,7 +1117,7 @@
     },
     {
       "case_id": "weak_cloth_support_ru",
-      "vector_scan_ms": 0.47119999999995343,
+      "vector_scan_ms": 0.6017999999967287,
       "lexical_at_10": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
@@ -1134,7 +1138,7 @@
     },
     {
       "case_id": "leather_joint_failure_en",
-      "vector_scan_ms": 0.8387000000002445,
+      "vector_scan_ms": 0.6664000000018859,
       "lexical_at_10": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:oil-fat-vegetable-leather-flexibility"
@@ -1159,7 +1163,7 @@
     },
     {
       "case_id": "boiling_chemical_drinkability_ru",
-      "vector_scan_ms": 0.3496000000013737,
+      "vector_scan_ms": 0.5256999999983236,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1180,7 +1184,7 @@
     },
     {
       "case_id": "fuel_water_boiling_en",
-      "vector_scan_ms": 0.2940999999991618,
+      "vector_scan_ms": 0.5315000000045984,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1201,7 +1205,7 @@
     },
     {
       "case_id": "fuel_fumes_gas_ru",
-      "vector_scan_ms": 0.5120999999999185,
+      "vector_scan_ms": 0.8392999999996391,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1224,7 +1228,7 @@
     },
     {
       "case_id": "enclosed_fuel_fire_en",
-      "vector_scan_ms": 0.4981000000007043,
+      "vector_scan_ms": 0.6172000000005937,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1247,7 +1251,7 @@
     },
     {
       "case_id": "enclosed_air_co_ru",
-      "vector_scan_ms": 0.5100000000020373,
+      "vector_scan_ms": 0.6828000000023167,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -1274,7 +1278,7 @@
     },
     {
       "case_id": "immersion_hypothermia_ru",
-      "vector_scan_ms": 0.7770999999993364,
+      "vector_scan_ms": 0.9381000000066706,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -1323,7 +1327,7 @@
     },
     {
       "case_id": "cold_water_body_en",
-      "vector_scan_ms": 0.7276000000019849,
+      "vector_scan_ms": 0.8958999999958905,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
@@ -1352,7 +1356,7 @@
     },
     {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 0.80370000000039,
+      "vector_scan_ms": 1.3143000000054599,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
@@ -1395,7 +1399,7 @@
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 0.7498000000014144,
+      "vector_scan_ms": 0.8773999999975786,
       "lexical_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:fauna-mallard-residency",
@@ -1439,8 +1443,8 @@
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:foundations-life-33-acquired-immunity",
-        "claim:fauna-adder-defence",
-        "claim:livestock-swine-membership"
+        "claim:livestock-swine-membership",
+        "claim:fauna-adder-defence"
       ],
       "hybrid_at_20": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -1461,14 +1465,14 @@
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:foundations-life-33-acquired-immunity",
-        "claim:fauna-adder-defence",
-        "claim:livestock-swine-membership"
+        "claim:livestock-swine-membership",
+        "claim:fauna-adder-defence"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.5162000000018452,
+      "vector_scan_ms": 1.1048000000009779,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:grain-processing-bread-ground-plant-base",
@@ -1541,7 +1545,7 @@
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.379400000001624,
+      "vector_scan_ms": 0.5058999999964726,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -1562,7 +1566,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 0.8188000000009197,
+      "vector_scan_ms": 1.2616000000052736,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1613,15 +1617,15 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.37659999999959837,
+      "vector_scan_ms": 0.5570999999981723,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
-        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
-        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
       ],
       "hybrid_at_10": [
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -1630,8 +1634,8 @@
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
-        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
-        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
       ],
       "lexical_at_20": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
@@ -1639,8 +1643,8 @@
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
-        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
-        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
       ],
       "hybrid_at_20": [
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -1649,14 +1653,14 @@
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
-        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
-        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 0.9009000000005472,
+      "vector_scan_ms": 1.3317999999999302,
       "lexical_at_10": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -1719,7 +1723,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 1.619300000002113,
+      "vector_scan_ms": 1.6480000000010477,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
@@ -1773,7 +1777,7 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.5213000000003376,
+      "vector_scan_ms": 0.690999999998894,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -1837,7 +1841,7 @@
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.6660999999985506,
+      "vector_scan_ms": 1.07220000000234,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -1864,7 +1868,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.9804000000003725,
+      "vector_scan_ms": 1.0092999999978929,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -1885,7 +1889,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.426499999997759,
+      "vector_scan_ms": 0.6934000000037486,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
@@ -1908,7 +1912,7 @@
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
-      "vector_scan_ms": 0.39259999999922,
+      "vector_scan_ms": 0.5202000000062981,
       "lexical_at_10": [
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
@@ -1931,7 +1935,7 @@
     },
     {
       "case_id": "static_flood_deposited_traces_en",
-      "vector_scan_ms": 0.4065000000009604,
+      "vector_scan_ms": 0.4250000000029104,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -1970,7 +1974,7 @@
     },
     {
       "case_id": "static_porous_flood_stain_ru",
-      "vector_scan_ms": 0.3823999999985972,
+      "vector_scan_ms": 0.6732999999949243,
       "lexical_at_10": [
         "claim:research-porous-high-water-stain-can-require-corroboration"
       ],
@@ -1991,7 +1995,7 @@
     },
     {
       "case_id": "static_track_mud_sand_ru",
-      "vector_scan_ms": 0.4444000000003143,
+      "vector_scan_ms": 0.9732000000003609,
       "lexical_at_10": [
         "claim:foundations-earth-20-groundwater-recharge-discharge",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
@@ -2036,7 +2040,7 @@
     },
     {
       "case_id": "static_sick_animal_social_feeding_en",
-      "vector_scan_ms": 0.9141000000017812,
+      "vector_scan_ms": 1.2815999999947962,
       "lexical_at_10": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:care-waterproof-wound-cover",
@@ -2069,7 +2073,7 @@
     },
     {
       "case_id": "static_browsed_plant_growth_ru",
-      "vector_scan_ms": 0.760999999998603,
+      "vector_scan_ms": 1.4323000000003958,
       "lexical_at_10": [
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -2102,7 +2106,7 @@
     },
     {
       "case_id": "static_stove_room_dampness_en",
-      "vector_scan_ms": 0.4654000000009546,
+      "vector_scan_ms": 0.8525000000008731,
       "lexical_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
       ],
@@ -2123,7 +2127,7 @@
     },
     {
       "case_id": "static_room_air_condensation_ru",
-      "vector_scan_ms": 0.5482999999985623,
+      "vector_scan_ms": 0.8009000000020023,
       "lexical_at_10": [
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -2177,7 +2181,7 @@
     },
     {
       "case_id": "static_nettle_food_contact_ru",
-      "vector_scan_ms": 0.8461999999999534,
+      "vector_scan_ms": 1.0712000000057742,
       "lexical_at_10": [
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
@@ -2200,7 +2204,7 @@
     },
     {
       "case_id": "static_raspberry_lingonberry_food_en",
-      "vector_scan_ms": 0.7934999999997672,
+      "vector_scan_ms": 1.7256000000052154,
       "lexical_at_10": [
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -2227,7 +2231,7 @@
     },
     {
       "case_id": "static_hazel_apple_parts_ru",
-      "vector_scan_ms": 0.8218000000015309,
+      "vector_scan_ms": 1.2441000000035274,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ],
@@ -2243,6 +2247,226 @@
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota334_correspondents_ru",
+      "vector_scan_ms": 0.39839999999821885,
+      "lexical_at_10": [
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "lexical_at_20": [
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota334_correspondents_en",
+      "vector_scan_ms": 0.4370000000053551,
+      "lexical_at_10": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:debt-record-practice",
+        "claim:social-daily-fur-sale-accounting"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:debt-record-practice",
+        "claim:social-daily-fur-sale-accounting"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_parasite_host_relation_ru",
+      "vector_scan_ms": 1.4170999999987544,
+      "lexical_at_10": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:population-material-wood-decay"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-life-43-infection-chain",
+        "claim:population-material-wood-decay"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:population-material-wood-decay"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-life-43-infection-chain",
+        "claim:population-material-wood-decay"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_parasite_host_relation_en",
+      "vector_scan_ms": 1.3324999999967986,
+      "lexical_at_10": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-tick-feeding"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-tick-feeding"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_onfim_instructional_text_ru",
+      "vector_scan_ms": 0.556799999998475,
+      "lexical_at_10": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:religion-olenin-church-people"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:religion-olenin-church-people",
+        "claim:social-alphabet-exercise-records-text"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:religion-olenin-church-people"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:religion-olenin-church-people",
+        "claim:social-alphabet-exercise-records-text"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_onfim_instructional_text_en",
+      "vector_scan_ms": 0.5538999999989755,
+      "lexical_at_10": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:occupation-directed-grain-procurement",
+        "claim:social-collector-instruction-relates-task-context"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:occupation-directed-grain-procurement",
+        "claim:social-collector-instruction-relates-task-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota222_posadnik_ru",
+      "vector_scan_ms": 0.5366999999969266,
+      "lexical_at_10": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:social-authority-letter-relates-theft-inquiry",
+        "claim:social-spousal-complaint-reports-marital-treatment"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:social-authority-letter-relates-theft-inquiry",
+        "claim:social-spousal-complaint-reports-marital-treatment"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota222_posadnik_en",
+      "vector_scan_ms": 0.4216999999989639,
+      "lexical_at_10": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:social-settlement-demand-reports-court-choice"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:social-settlement-demand-reports-court-choice"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota724_yugra_ru",
+      "vector_scan_ms": 0.5364999999947031,
+      "lexical_at_10": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "macro_gramota724_yugra_en",
+      "vector_scan_ms": 0.4311999999990803,
+      "lexical_at_10": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "inapplicable_at_20": []
     }

@@ -80,6 +80,12 @@
     "static-floating-weather-envelope-v1.json",
     "verification-static-floating-weather-envelope-v1.json",
     "static-exposure-mechanisms-v1.json",
-    "verification-static-exposure-mechanisms-v1.json"
+    "verification-static-exposure-mechanisms-v1.json",
+    "macro-social-history-v1.json",
+    "verification-macro-social-history-v1.json",
+    "macro-universal-life-environment-v1.json",
+    "verification-macro-universal-life-environment-v1.json",
+    "macro-social-history-v2.json",
+    "verification-macro-social-history-v2.json"
   ]
 }

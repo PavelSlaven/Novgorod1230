@@ -1160,6 +1160,30 @@
         "npc": "conditional"
       },
       "coverage": "bounded independently approved premises"
+    },
+    {
+      "id": "macro-social-history-v1",
+      "source_path": "macro-social-history-v1.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Document-specific Novgorod correspondence dated 1220–1240",
+      "applicability": {"resource":"none","material":"birch-bark document context","process":"bounded written communication","npc":"named correspondents only within the source record"},
+      "coverage": "one independently approved document premise"
+    },
+    {
+      "id": "macro-universal-life-environment-v1",
+      "source_path": "macro-universal-life-environment-v1.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "Host-parasite reasoning after organism and host context are independently established",
+      "applicability": {"resource":"none","material":"none","process":"bounded host-parasite relation","npc":"possible disease relevance, not diagnosis"},
+      "coverage": "one independently approved universal premise"
+    },
+    {
+      "id": "macro-social-history-v2",
+      "source_path": "macro-social-history-v2.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Document-specific Novgorod comparators dated 1160–1180, 1200–1220 and 1240–1260",
+      "applicability": {"resource":"none","material":"birch-bark document context","process":"bounded education, office-address and external-expedition evidence","npc":"named people and roles only within each record"},
+      "coverage": "three independently approved document premises with explicit date limits"
     }
   ],
   "families": [
@@ -4034,6 +4058,47 @@
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ]
+    },
+    {
+      "id": "social-named-correspondence-and-learning-texts",
+      "domain": "social_law_economy",
+      "subdomain": "literacy_names_and_everyday_records",
+      "family": "dated_named_private_correspondence_and_instructional_text_components",
+      "location_applicability": "Novgorod document interpretation within each record's explicit date; not a current message or general literacy rule.",
+      "applicability": {"resource":"none","material":"birch-bark text","process":"document-specific writing context","npc":"named correspondents or learner only in the source record"},
+      "coverage": "bounded independently verified document premises",
+      "evidence_boundary": "Letter 334 directly overlaps 1230; Onfim 199 is a 1240–1260 comparator and is excluded from 1230 applicability. Neither establishes a literacy rate, naming system, school, current actor knowledge, delivery or truth.",
+      "claim_refs": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ]
+    },
+    {
+      "id": "social-office-address-and-external-expedition-texts",
+      "domain": "social_law_economy",
+      "subdomain": "political_and_external_document_context",
+      "family": "dated_posadnik_address_and_yugra_tribute_expedition_records",
+      "location_applicability": "Historical document interpretation within 1200–1220 and 1160–1180 respectively; no 1230 institution or event inferred.",
+      "applicability": {"resource":"none","material":"birch-bark text","process":"document-specific office and expedition context","npc":"named roles only within each source record"},
+      "coverage": "bounded independently verified historical comparators",
+      "evidence_boundary": "No office competence, jurisdiction, campaign routine, route, tribute right, authority, force, external relation or present actor follows.",
+      "claim_refs": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ]
+    },
+    {
+      "id": "biology-parasite-host-disease-relation",
+      "domain": "biology_physiology",
+      "subdomain": "parasites_and_health",
+      "family": "parasite_host_relation_and_possible_disease",
+      "location_applicability": "Organism/host contexts only after presence and exposure are independently established.",
+      "applicability": {"resource":"none","material":"none","process":"conditional host-parasite relation","npc":"possible disease relevance, not diagnosis"},
+      "coverage": "bounded independently verified universal premise",
+      "evidence_boundary": "No parasite presence, exposure, infection, symptom, diagnosis, transmission, treatment or outcome.",
+      "claim_refs": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ]
     }
   ],
   "missing_families": [
@@ -4906,8 +4971,9 @@
       "applicability": {"resource":"none","material":"conditional written name","process":"identification and address","npc":"identity description and socially situated address"},
       "consumer_refs": ["potential:dialogue", "potential:ordinary_npc_materialization"],
       "coverage": "partial",
-      "reason": "A few name lists, kin letters and office-address fragments are grounded, but there is no systematic period-local naming and address family. Current identity, relation and office remain authoritative state.",
-      "supporting_family_ids": ["social-documentary-practice", "social-religious-context"]
+      "reason": "Named correspondents in letter 334, name lists, kin letters and office-address fragments are grounded, but they do not establish a systematic period-local naming, patronymic or address model. Current identity, relation and office remain authoritative state.",
+      "supporting_family_ids": ["social-documentary-practice", "social-religious-context", "social-named-correspondence-and-learning-texts"],
+      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"]
     },
     {
       "id": "everyday-literacy-writing-and-accounting",
@@ -4918,8 +4984,9 @@
       "applicability": {"resource":"writing surfaces and implements","material":"letters records and exercises","process":"reading writing counting and record keeping","npc":"bounded literacy and numeracy practices"},
       "consumer_refs": ["potential:documents", "potential:trade", "potential:education"],
       "coverage": "partial",
-      "reason": "Practical document genres, accounts, payment entries and an alphabet exercise are attested, but the skills, participants, production process, delivery and ordinary use of writing and counting remain fragmented.",
-      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market"]
+      "reason": "Practical document genres, accounts, named correspondence and alphabet/syllable exercises are attested. Onfim 199 is explicitly 1240–1260, not direct 1230 evidence; skill distribution, production, delivery and ordinary use of writing/counting remain fragmented.",
+      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts"],
+      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text"]
     },
     {
       "id": "weapons-armour-use-and-maintenance",
@@ -5014,8 +5081,9 @@
       "applicability": {"resource":"care resources only when present","material":"injuring or hazardous material only when established","process":"qualitative injury or exposure relation","npc":"possible impairment, not diagnosis or treatment outcome"},
       "consumer_refs": ["potential:body", "potential:combat", "potential:work", "potential:care"],
       "coverage": "partial",
-      "reason": "Barrier injury, bleeding and wound repair are supported, but major injury classes, poisoning, parasites and oral health remain unmapped. Severity and treatment are code/body-owned.",
-      "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes"]
+      "reason": "Barrier injury, bleeding, wound repair and the general parasite-host/possible-disease relation are supported, but major injury classes, poisoning, parasite-specific behaviour and oral health remain partial. Severity and treatment are code/body-owned.",
+      "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes", "biology-parasite-host-disease-relation"],
+      "supporting_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"]
     },
     {
       "id": "novgorod-government-institutions-and-competencies",
@@ -5026,8 +5094,9 @@
       "applicability": {"resource":"conditional public revenue and levies","material":"documents seals and civic spaces only when evidenced","process":"bounded institutional action","npc":"office roles and authority limits"},
       "consumer_refs": ["potential:politics", "potential:law", "potential:administration"],
       "coverage": "partial",
-      "reason": "Market/assembly space, two posadnik episodes and isolated administrative fragments do not form a period-specific authority map. Current office holder, jurisdiction and valid order remain authoritative state.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space"]
+      "reason": "Market/assembly space, two posadnik episodes, isolated administrative fragments and a 1200–1220 letter addressed to a named posadnik do not form a period-specific authority or competence map. Current office holder, jurisdiction and valid order remain authoritative state.",
+      "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space", "social-office-address-and-external-expedition-texts"],
+      "supporting_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik"]
     },
     {
       "id": "diplomacy-tribute-and-external-relations",
@@ -5037,9 +5106,10 @@
       "location_applicability": "Borders, routes, courts, assemblies, markets, campaigns and diplomatic encounters",
       "applicability": {"resource":"gifts tribute and provisions only when established","material":"messages and diplomatic objects only when evidenced","process":"communication negotiation and external relation","npc":"envoys authorities traders and armed parties"},
       "consumer_refs": ["potential:politics", "potential:travel", "potential:warfare"],
-      "coverage": "missing",
-      "reason": "Existing conflict episodes do not establish a systematic external-relations model or any current diplomatic state.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport"]
+      "coverage": "partial",
+      "reason": "A 1160–1180 document records a named Yugra tribute expedition/conflict context and later conflict episodes exist, but these comparators do not establish a 1230 external-relations system or current diplomatic state.",
+      "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport", "social-office-address-and-external-expedition-texts"],
+      "supporting_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"]
     },
     {
       "id": "crime-responsibility-sanctions-and-public-safety",
@@ -5062,8 +5132,9 @@
       "applicability": {"resource":"learning materials and tools only when present","material":"exercises and workpieces","process":"instruction practice and correction","npc":"learner teacher kin master and peer roles"},
       "consumer_refs": ["potential:education", "potential:craft", "potential:npc_development"],
       "coverage": "partial",
-      "reason": "Generic learning/socialization and one alphabet exercise do not establish historically situated schooling, apprenticeship or skill transmission. Actual knowledge and skill remain actor state.",
-      "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations"]
+      "reason": "Generic learning/socialization and Onfim 199's 1240–1260 alphabet/syllable record support a later-XIII instructional comparator, not a 1230 school, apprenticeship system or skill distribution. Actual knowledge and skill remain actor state.",
+      "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations", "social-named-correspondence-and-learning-texts"],
+      "supporting_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"]
     },
     {
       "id": "recreation-games-music-and-oral-culture",
@@ -5525,7 +5596,13 @@
     "Tree phenology premise is bounded; taxon, local calendar, current state and fruit/yield remain outside it.",
     "Named plant food/contact properties and diagnostic bounds are grounded; additional taxon/part and historical-availability claims remain separate factual needs, not inferred from resemblance.",
     "Nettle fibre relation is grounded; other wild-fibre taxa still require taxon-specific regional/historical evidence.",
-    "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one."
+    "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one.",
+    "Named letters and bounded instructional-text components are grounded, but spoken language, systematic naming/address, literacy distribution, school and apprenticeship remain partial or missing.",
+    "Military equipment, organization, logistics, siege and aftermath remain major source-backed gaps; combat mechanics are intentionally outside WK.",
+    "Marriage, kinship, gender, age, status and stratification remain major historical-context gaps; current relationships and statuses are state-owned.",
+    "Human reproduction, lifecycle, medicine, injury classes, disability and care remain partial; one parasite-host premise does not close health coverage.",
+    "Government and external relations have dated document comparators but no complete 1230 institution/competence map; crime and sanctions remain partial.",
+    "Recreation, music, games, oral culture and hospitality remain explicit missing families; cryosphere, natural illumination/navigation and the wider food system remain partial."
   ],
   "gameplay_need_cartography": {
     "status": "reviewed_static_with_bounded_limits",
@@ -5600,7 +5677,10 @@
       {"domain":"npc_daily_life","subdomain":"occupation_and_independent_routine_context","disposition":"active_plus_code_owned","family_refs":["npc-household-routines","npc-craft-occupations","npc-river-occupations"],"limit":"No current NPC roster, schedule, knowledge or decision follows."},
       {"domain":"psychology_behavior","subdomain":"attention_stress_and_variation","disposition":"active_bounded","family_refs":["psychology-attention-and-perception","psychology-affect-regulation-and-stress","psychology-attribution-attitude-and-individual-variation"],"limit":"No motive or deterministic decision."},
       {"domain":"social_behavior","subdomain":"interaction_and_group_context","disposition":"active_bounded","family_refs":["social-trust-conflict-and-repair","social-group-influence-and-coordination"],"limit":"No current relation or required action."},
-      {"domain":"social_law_economy","subdomain":"historical_institutions","disposition":"active_bounded","family_refs":["social-law-practice","social-property-and-market"],"limit":"No live legal outcome or current authority state."}
+      {"domain":"social_law_economy","subdomain":"historical_institutions","disposition":"active_bounded","family_refs":["social-law-practice","social-property-and-market"],"limit":"No live legal outcome or current authority state."},
+      {"domain":"social_law_economy","subdomain":"literacy_names_and_everyday_records","disposition":"active_bounded_with_macro_gaps","family_refs":["social-documentary-practice","material-written-objects","social-named-correspondence-and-learning-texts"],"limit":"Dated documents support their own correspondents, genre and contents; no universal literacy, naming, school, delivery, actor knowledge or truth follows."},
+      {"domain":"social_law_economy","subdomain":"political_and_external_document_context","disposition":"active_bounded_with_macro_gaps","family_refs":["social-administration","npc-political-roles","social-office-address-and-external-expedition-texts"],"limit":"Historical records do not create a current office, competence, jurisdiction, campaign, tribute right, diplomatic state or outcome."},
+      {"domain":"biology_physiology","subdomain":"parasites_and_health","disposition":"active_bounded_with_macro_gaps","family_refs":["biology-pathogen-immunity-and-infection","biology-parasite-host-disease-relation"],"limit":"The general parasite-host relation creates no organism presence, exposure, infection, diagnosis, treatment or outcome."}
     ],
     "reconciliation": {
       "active_claim_mapping":"All active claims are classified once in families and source_inventory; the listed fragments are active inputs, not a hypothetical overlay.",

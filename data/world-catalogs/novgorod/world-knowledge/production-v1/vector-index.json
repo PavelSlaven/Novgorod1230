@@ -444,6 +444,62 @@
       "retrieval_text": "Пригодность частей пищевого растения Граница между общим статусом растения и свойствами его конкретной части. Статус пищевого растения не устанавливает пригодность в пищу каждой его части. Это не устанавливает растение, часть, количество, сезон, безопасность, обработку или исход в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota199-onfim-instructional-text:en",
+      "target_ref": "claim:candidate-gramota199-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Onfim instructional text A later-thirteenth-century document context, not a 1230 school or literacy norm. Onfim’s letter 199 (1240–1260) contains an alphabet, syllables, a drawing inscription, and an address formula. It is a later-thirteenth-century comparator, not proof of a school, literacy, or child in Novgorod in 1230. Onfim alphabet syllables instructional text"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota199-onfim-instructional-text:ru",
+      "target_ref": "claim:candidate-gramota199-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Учебный текст Онфима Поздний XIII-вековый документный контекст, не школа или норма грамотности 1230 года. Грамота Онфима №199 (1240–1260) содержит азбуку, склады, подпись к рисунку и адресную формулу. Это поздний XIII-вековый comparator, не доказательство школы, грамотности или ребёнка в Новгороде 1230 года. Онфим азбука склады учебный текст"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota222-letter-to-posadnik:en",
+      "target_ref": "claim:candidate-gramota222-letter-to-posadnik",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Letter addressed to posadnik Gyurgiy An early-thirteenth-century address context, not a posadnik’s competence. Early letter 222 is a private letter to posadnik Gyurgiy Ivankovich about legal and financial matters. This is an address fact, not a posadnik’s competence, jurisdiction, or decision. posadnik Gyurgiy Matey legal matters"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota222-letter-to-posadnik:ru",
+      "target_ref": "claim:candidate-gramota222-letter-to-posadnik",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо к посаднику Гюргию Ранний XIII-вековый адресный контекст, не полномочие посадника. Ранняя грамота №222 — частное письмо к посаднику Гюргию Иванковичу о юридических и финансовых делах. Это адресный факт, не полномочие, юрисдикция или решение посадника. посадник Гюргий Матея юридические дела"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota334-named-private-letter-monetary-context:en",
+      "target_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Private letter with named correspondents A document context, not a naming or literacy rule. Letter 334 is a private letter from Miroslav to Ratmir about monetary matters, dated 1220–1240. This is a document fact, not a rule of literacy, naming, debt, or money transfer in the current scene. Miroslav Ratmir birch-bark letter monetary matters"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota334-named-private-letter-monetary-context:ru",
+      "target_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Частное письмо с именованными корреспондентами Документный контекст, а не правило именования или грамотности. Грамота №334 — частное письмо Мирослава к Ратмиру по денежным делам, датированное 1220–1240 гг. Это документный факт, не правило грамотности, имени, долга или передачи денег в текущей сцене. Мирослав Ратмир берестяная грамота денежные дела"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota724-yugra-tribute-expedition:en",
+      "target_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Letter on a Yugra tribute expedition A twelfth-century document comparator, not a 1230 campaign or foreign policy. Letter 724 (1160–1180) describes Savva’s Yugra tribute expedition and a named conflict context. It is a twelfth-century comparator, not a 1230 campaign, route, tribute right, or foreign policy. Yugra tribute Savva expedition"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota724-yugra-tribute-expedition:ru",
+      "target_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо об экспедиции в Югру за данью XII-вековый документный comparator, не кампания или внешняя политика 1230 года. Грамота №724 (1160–1180) описывает экспедицию Саввы в Югру за данью и именованный конфликтный контекст. Это XII-вековый comparator, не кампания, маршрут, право на дань или внешняя политика 1230 года. Югра дань Савва экспедиция"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-nettle-bast-fibre-retting-decortication:en",
       "target_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
       "domain": "environment",
@@ -456,6 +512,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Лубяное волокно крапивы и его отделение Современная связь строения стебля крапивы с извлечением волокна. Лубяное волокно крапивы двудомной можно отделять от древесной сердцевины стебля мочкой и декортикацией. Это не доказывает наличие крапивы, её запас, доступность, сезон, историческую практику, инструмент или готовое волокно."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection:en",
+      "target_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Parasite and host General relation between a parasite, its host and possible disease. A parasite can live on or in a host and may cause disease, but this establishes no presence, exposure, infection or diagnosis in a scene. parasite host parasitic disease"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection:ru",
+      "target_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Паразит и хозяин Общая связь паразита с хозяином и возможной болезнью. Паразит может жить на хозяине или в нём и вызывать болезнь, но это не устанавливает наличие, воздействие, инфекцию или диагноз в сцене. паразит хозяин паразитарная болезнь"
     },
     {
       "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment:en",
@@ -14038,6 +14108,20 @@
       "retrieval_text": "Доставка кислорода и функция мозга"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-parasite-host-relation:en",
+      "target_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Parasite and host General relation between a parasite, its host and possible disease. parasite host parasitic disease"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-parasite-host-relation:ru",
+      "target_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Паразит и хозяин Общая связь паразита с хозяином и возможной болезнью. паразит хозяин паразитарная болезнь"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-protective-withdrawal:en",
       "target_ref": "wk:biology_physiology:candidate-protective-withdrawal",
       "domain": "biology_physiology",
@@ -22674,6 +22758,62 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Деловая запись Категория деловой записи деловая запись"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-instructional-text:en",
+      "target_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Onfim instructional text A later-thirteenth-century document context, not a 1230 school or literacy norm. Onfim alphabet syllables"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-instructional-text:ru",
+      "target_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Учебный текст Онфима Поздний XIII-вековый документный контекст, не школа или норма грамотности 1230 года. Онфим азбука склады"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-posadnik-addressed-letter:en",
+      "target_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Letter addressed to posadnik Gyurgiy An early-thirteenth-century address context, not a posadnik’s competence. posadnik Gyurgiy Matey"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-posadnik-addressed-letter:ru",
+      "target_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо к посаднику Гюргию Ранний XIII-вековый адресный контекст, не полномочие посадника. посадник Гюргий Матея"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-private-letter-named-correspondents:en",
+      "target_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Private letter with named correspondents A document context, not a naming or literacy rule. Miroslav Ratmir birch-bark letter"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-private-letter-named-correspondents:ru",
+      "target_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Частное письмо с именованными корреспондентами Документный контекст, а не правило именования или грамотности. Мирослав Ратмир берестяная грамота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-yugra-tribute-expedition-letter:en",
+      "target_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Letter on a Yugra tribute expedition A twelfth-century document comparator, not a 1230 campaign or foreign policy. Yugra tribute Savva"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-yugra-tribute-expedition-letter:ru",
+      "target_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо об экспедиции в Югру за данью XII-вековый документный comparator, не кампания или внешняя политика 1230 года. Югра дань Савва"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:christian-exegetical-text:en",

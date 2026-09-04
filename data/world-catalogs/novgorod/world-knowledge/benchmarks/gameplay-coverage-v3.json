@@ -1219,6 +1219,106 @@
         ],
         "actor_facets": {}
       }
+    },
+    {
+      "case_id": "macro_gramota334_correspondents_ru",
+      "locale": "ru",
+      "query_text": "Что именно известно о грамоте №334, Мирославе, Ратмире и денежных делах?",
+      "relevant_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_gramota334_correspondents_en",
+      "locale": "en",
+      "query_text": "What does Novgorod birch-bark letter 334 establish about Miroslav, Ratmir, and monetary matters?",
+      "relevant_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_parasite_host_relation_ru",
+      "locale": "ru",
+      "query_text": "Что означает связь паразита с хозяином и почему она сама по себе не доказывает инфекцию конкретного человека?",
+      "relevant_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_parasite_host_relation_en",
+      "locale": "en",
+      "query_text": "How can a parasite relate to a host and possible disease without establishing an infection in a concrete person?",
+      "relevant_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_onfim_instructional_text_ru",
+      "locale": "ru",
+      "query_text": "Какие учебные элементы перечислены в грамоте Онфима №199 и к какому времени она относится?",
+      "relevant_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1250},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_onfim_instructional_text_en",
+      "locale": "en",
+      "query_text": "Which instructional components are listed in Onfim's letter 199, and what is its date range?",
+      "relevant_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1250},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_gramota222_posadnik_ru",
+      "locale": "ru",
+      "query_text": "Что сообщает грамота №222 о письме к посаднику Гюргию и теме юридических и денежных дел?",
+      "relevant_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1210},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_gramota222_posadnik_en",
+      "locale": "en",
+      "query_text": "What does letter 222 record about a private letter to posadnik Gyurgiy and legal-financial matters?",
+      "relevant_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1210},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_gramota724_yugra_ru",
+      "locale": "ru",
+      "query_text": "Какой документ описывает экспедицию Саввы в Югру за данью и к какому времени относится это свидетельство?",
+      "relevant_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1170},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "macro_gramota724_yugra_en",
+      "locale": "en",
+      "query_text": "Which document describes Savva's Yugra tribute expedition, and what is the evidence date range?",
+      "relevant_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"],
+      "purpose": "semantic_resolution",
+      "domains": ["social_law_economy"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1170},"place_refs":["region_novgorod_land"],"actor_facets":{}}
     }
   ]
 }

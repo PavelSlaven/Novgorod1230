@@ -1044,6 +1044,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-cdc-parasites-about",
+      "title": "About Parasites",
+      "authors": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "publication": "CDC Parasites",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/parasites/about/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:candidate-gougherty-2018-tree-phenology",
       "title": "Sequence of flower and leaf emergence in deciduous trees is linked to ecological traits, phylogenetics, and climate",
       "authors": [
@@ -1053,6 +1069,62 @@
       "publication": "New Phytologist 220(1):121–131, 2018; DOI 10.1111/nph.15270",
       "source_kind": "scholarship",
       "citation": "https://pubmed.ncbi.nlm.nih.gov/29900552/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-gramota199",
+      "title": "Новгородская берестяная грамота №199",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты; НИУ ВШЭ и Институт славяноведения РАН",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/199/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-gramota222",
+      "title": "Новгородская берестяная грамота №222",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты; НИУ ВШЭ и Институт славяноведения РАН",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/222/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-gramota334",
+      "title": "Новгородская берестяная грамота №334",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты; НИУ ВШЭ и Институт славяноведения РАН",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/334/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-gramota724",
+      "title": "Новгородская берестяная грамота №724",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты; НИУ ВШЭ и Институт славяноведения РАН",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/724/",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -6225,6 +6297,60 @@
         "section": "Abstract"
       },
       "note": "Pending independent verification; primary study reports interspecific sequence/timing differences in deciduous-tree flower and leaf emergence. Universal qualitative variability only: no Novgorod taxon, date, weather, current tree, phenological state, fruit, yield, or actor observation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-gramota199-learning-text",
+      "source_ref": "source:candidate-gramota199",
+      "anchor": {
+        "record_id": "novgorod/199",
+        "section": "Metadata: conditional date 1240–1260; genre ‘азбука // склады // частное письмо // подпись к рисунку’; content ‘Грамота мальчика Онфима’"
+      },
+      "note": "Direct catalogue record: complete instructional text dated 1240–1260, probably the second third of the XIII century, containing alphabet, syllables, drawing inscription and address formula. This is a later-XIII comparator, not direct 1230 evidence; it establishes neither a 1230 school, universal child literacy, a learner in scene, curriculum, skill acquisition, nor a present text.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-gramota222-posadnik",
+      "source_ref": "source:candidate-gramota222",
+      "anchor": {
+        "record_id": "novgorod/222",
+        "section": "Metadata: conditional date 1200–1220; content ‘Письмо к посаднику Гюргию Иванковичу — От Матея к Гюргию (о юридических и финансовых делах)’"
+      },
+      "note": "Direct catalogue record: a private letter to posadnik Gyurgiy Ivankovich about legal and financial matters. It is an early-XIII comparator ending in 1220, not a 1220–1240 constitutional rule; it creates no current office-holder, competence, hierarchy, authority, jurisdiction, procedure, tax, judgment or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-gramota334-private-letter",
+      "source_ref": "source:candidate-gramota334",
+      "anchor": {
+        "record_id": "novgorod/334",
+        "section": "Metadata: conditional date 1220–1240; private letter; content ‘От Мирослава к Ратмиру (денежные дела)’"
+      },
+      "note": "Direct catalogue record: complete private letter from Miroslav to Ratmir, dated 1220–1240. It attests this document’s named sender/addressee and monetary-business context only; not a literacy rate, general naming rule, amount, debt state, transfer, delivery, reading, or truth of a current message.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-gramota724-ugra-tribute",
+      "source_ref": "source:candidate-gramota724",
+      "anchor": {
+        "record_id": "novgorod/724",
+        "section": "Metadata: conditional date 1160–1180; content identifies Savva’s expedition to Yugra for tribute collection and conflict involving posadnik Zakhariya and Andrey Bogolyubsky’s people"
+      },
+      "note": "Direct catalogue record: a whole letter dated 1160–1180 with this named expedition/tribute/conflict content. It is an earlier-XII comparator only, not evidence of a 1230 campaign, route, foreign relation, tribute right, troop, authority, location, party knowledge or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-life-parasite",
+      "source_ref": "source:candidate-cdc-parasites-about",
+      "anchor": {
+        "section": "About Parasites"
+      },
+      "note": "Parasites are organisms that live on or in a host and may cause disease. No organism, exposure, infection, symptom, diagnosis or outcome is established.",
       "review_status": "approved"
     },
     {
@@ -14268,6 +14394,45 @@
           "short_definition": "Oxygen delivery and brain function",
           "search_aliases": [
             "Oxygen delivery and brain function"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+          "locale": "ru",
+          "labels": [
+            "Паразит и хозяин"
+          ],
+          "short_definition": "Общая связь паразита с хозяином и возможной болезнью.",
+          "search_aliases": [
+            "паразит",
+            "хозяин",
+            "паразитарная болезнь"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+          "locale": "en",
+          "labels": [
+            "Parasite and host"
+          ],
+          "short_definition": "General relation between a parasite, its host and possible disease.",
+          "search_aliases": [
+            "parasite",
+            "host",
+            "parasitic disease"
           ]
         }
       }
@@ -34471,6 +34636,162 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+          "locale": "ru",
+          "labels": [
+            "Учебный текст Онфима"
+          ],
+          "short_definition": "Поздний XIII-вековый документный контекст, не школа или норма грамотности 1230 года.",
+          "search_aliases": [
+            "Онфим",
+            "азбука",
+            "склады"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+          "locale": "en",
+          "labels": [
+            "Onfim instructional text"
+          ],
+          "short_definition": "A later-thirteenth-century document context, not a 1230 school or literacy norm.",
+          "search_aliases": [
+            "Onfim",
+            "alphabet",
+            "syllables"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+          "locale": "ru",
+          "labels": [
+            "Письмо к посаднику Гюргию"
+          ],
+          "short_definition": "Ранний XIII-вековый адресный контекст, не полномочие посадника.",
+          "search_aliases": [
+            "посадник",
+            "Гюргий",
+            "Матея"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+          "locale": "en",
+          "labels": [
+            "Letter addressed to posadnik Gyurgiy"
+          ],
+          "short_definition": "An early-thirteenth-century address context, not a posadnik’s competence.",
+          "search_aliases": [
+            "posadnik",
+            "Gyurgiy",
+            "Matey"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+          "locale": "ru",
+          "labels": [
+            "Частное письмо с именованными корреспондентами"
+          ],
+          "short_definition": "Документный контекст, а не правило именования или грамотности.",
+          "search_aliases": [
+            "Мирослав",
+            "Ратмир",
+            "берестяная грамота"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+          "locale": "en",
+          "labels": [
+            "Private letter with named correspondents"
+          ],
+          "short_definition": "A document context, not a naming or literacy rule.",
+          "search_aliases": [
+            "Miroslav",
+            "Ratmir",
+            "birch-bark letter"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+          "locale": "ru",
+          "labels": [
+            "Письмо об экспедиции в Югру за данью"
+          ],
+          "short_definition": "XII-вековый документный comparator, не кампания или внешняя политика 1230 года.",
+          "search_aliases": [
+            "Югра",
+            "дань",
+            "Савва"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+          "locale": "en",
+          "labels": [
+            "Letter on a Yugra tribute expedition"
+          ],
+          "short_definition": "A twelfth-century document comparator, not a 1230 campaign or foreign policy.",
+          "search_aliases": [
+            "Yugra",
+            "tribute",
+            "Savva"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:social_law_economy:christian-exegetical-text",
       "domain": "social_law_economy",
       "broader_refs": [],
@@ -38215,6 +38536,266 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-gramota199-onfim-instructional-text",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_gramota_199_1240_1260_contains_alphabet_syllables_drawing_inscription_and_address_formula"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1240,
+          "to": 1260,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-gramota199-learning-text"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota199-onfim-instructional-text",
+          "locale": "ru",
+          "runtime_text": "Грамота Онфима №199 (1240–1260) содержит азбуку, склады, подпись к рисунку и адресную формулу. Это поздний XIII-вековый comparator, не доказательство школы, грамотности или ребёнка в Новгороде 1230 года.",
+          "search_aliases": [
+            "Онфим",
+            "азбука",
+            "учебный текст"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota199-onfim-instructional-text",
+          "locale": "en",
+          "runtime_text": "Onfim’s letter 199 (1240–1260) contains an alphabet, syllables, a drawing inscription, and an address formula. It is a later-thirteenth-century comparator, not proof of a school, literacy, or child in Novgorod in 1230.",
+          "search_aliases": [
+            "Onfim",
+            "alphabet",
+            "instructional text"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota199-instructional-text"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-gramota222-letter-to-posadnik",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "early_thirteenth_century_novgorod_gramota_222_is_a_private_letter_to_posadnik_gyurgiy_ivankovich_about_legal_and_financial_matters"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1220,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-gramota222-posadnik"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota222-letter-to-posadnik",
+          "locale": "ru",
+          "runtime_text": "Ранняя грамота №222 — частное письмо к посаднику Гюргию Иванковичу о юридических и финансовых делах. Это адресный факт, не полномочие, юрисдикция или решение посадника.",
+          "search_aliases": [
+            "посадник",
+            "Гюргий",
+            "юридические дела"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota222-letter-to-posadnik",
+          "locale": "en",
+          "runtime_text": "Early letter 222 is a private letter to posadnik Gyurgiy Ivankovich about legal and financial matters. This is an address fact, not a posadnik’s competence, jurisdiction, or decision.",
+          "search_aliases": [
+            "posadnik",
+            "Gyurgiy",
+            "legal matters"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota222-letter-to-posadnik"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_gramota_334_is_a_private_letter_from_miroslav_to_ratmir_about_monetary_matters"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-gramota334-private-letter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+          "locale": "ru",
+          "runtime_text": "Грамота №334 — частное письмо Мирослава к Ратмиру по денежным делам, датированное 1220–1240 гг. Это документный факт, не правило грамотности, имени, долга или передачи денег в текущей сцене.",
+          "search_aliases": [
+            "Мирослав",
+            "Ратмир",
+            "денежные дела"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+          "locale": "en",
+          "runtime_text": "Letter 334 is a private letter from Miroslav to Ratmir about monetary matters, dated 1220–1240. This is a document fact, not a rule of literacy, naming, debt, or money transfer in the current scene.",
+          "search_aliases": [
+            "Miroslav",
+            "Ratmir",
+            "monetary matters"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-social-history-v1-gramota334-private-letter"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "twelfth_century_novgorod_gramota_724_describes_savvas_yugra_tribute_expedition_and_named_conflict_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1160,
+          "to": 1180,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-gramota724-ugra-tribute"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+          "locale": "ru",
+          "runtime_text": "Грамота №724 (1160–1180) описывает экспедицию Саввы в Югру за данью и именованный конфликтный контекст. Это XII-вековый comparator, не кампания, маршрут, право на дань или внешняя политика 1230 года.",
+          "search_aliases": [
+            "Югра",
+            "дань",
+            "экспедиция"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+          "locale": "en",
+          "runtime_text": "Letter 724 (1160–1180) describes Savva’s Yugra tribute expedition and a named conflict context. It is a twelfth-century comparator, not a 1230 campaign, route, tribute right, or foreign policy.",
+          "search_aliases": [
+            "Yugra",
+            "tribute",
+            "expedition"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota724-yugra-tribute-expedition"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
       "domain": "environment",
       "subject_ref": "wk:environment:candidate-nettle-bast-fibre-extraction",
@@ -38259,6 +38840,53 @@
         }
       },
       "verification_ref": "wk-verification:flora-v3-nettle-bast-fibre"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_parasite_can_live_on_or_in_a_host_and_may_cause_disease_without_establishing_presence_exposure_infection_or_diagnosis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-life-parasite"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+          "locale": "ru",
+          "runtime_text": "Паразит может жить на хозяине или в нём и вызывать болезнь, но это не устанавливает наличие, воздействие, инфекцию или диагноз в сцене.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+          "locale": "en",
+          "runtime_text": "A parasite can live on or in a host and may cause disease, but this establishes no presence, exposure, infection or diagnosis in a scene.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:macro-universal-life-environment-v1-parasite-host-disease"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -86683,6 +87311,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:candidate-parasite-host-relation": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:candidate-parasite-host-relation",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:candidate-protective-withdrawal": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:candidate-protective-withdrawal",
@@ -92410,6 +93047,42 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:social_law_economy:candidate-onfim-instructional-text": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:social_law_economy:candidate-posadnik-addressed-letter": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:social_law_economy:candidate-private-letter-named-correspondents": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:social_law_economy:candidate-yugra-tribute-expedition-letter": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:social_law_economy:christian-exegetical-text": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:social_law_economy:christian-exegetical-text",
@@ -93199,6 +93872,9 @@
       ],
       "wk:biology_physiology:candidate-oxygen-delivery-brain-function": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function"
+      ],
+      "wk:biology_physiology:candidate-parasite-host-relation": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
       ],
       "wk:biology_physiology:candidate-protective-withdrawal": [
         "claim:candidate-physiology-v3-protective-withdrawal"
@@ -95389,6 +96065,18 @@
         "claim:social-daily-fur-sale-accounting",
         "claim:social-hired-work-relates-business-record"
       ],
+      "wk:social_law_economy:candidate-onfim-instructional-text": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
+      "wk:social_law_economy:candidate-posadnik-addressed-letter": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "wk:social_law_economy:candidate-private-letter-named-correspondents": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "wk:social_law_economy:candidate-yugra-tribute-expedition-letter": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "wk:social_law_economy:christian-exegetical-text": [
         "claim:social-christian-exegetical-text-relates-urban-context"
       ],
@@ -95634,6 +96322,7 @@
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:bearberry-lingonberry-resemblance-not-identification",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -96489,6 +97178,10 @@
         "claim:research-pooled-work-social-loafing"
       ],
       "social_law_economy": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:debt-needs-parties-and-basis",
         "claim:debt-record-practice",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
@@ -96934,7 +97627,12 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -97810,8 +98508,14 @@
       "range::1150:1350": [
         "claim:population-fish-dried-form"
       ],
+      "range::1160:1180": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "range::1160:1300": [
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      ],
+      "range::1200:1220": [
+        "claim:candidate-gramota222-letter-to-posadnik"
       ],
       "range::1200:1250": [
         "claim:food-practices-millet-cleaning-waste"
@@ -97837,6 +98541,7 @@
         "claim:transport-private-boat-arrangement"
       ],
       "range::1220:1240": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:clothing-nerev-coloured-wool",
         "claim:debt-needs-parties-and-basis",
         "claim:debt-record-practice",
@@ -97865,6 +98570,9 @@
       ],
       "range::1225:1250": [
         "claim:agriculture-fauna-ash-hunting-bow"
+      ],
+      "range::1240:1260": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "range::800:1500": [
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
@@ -97930,6 +98638,7 @@
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -98539,6 +99248,10 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candle-rolled-plate",
         "claim:candle-thread-wick",
         "claim:candle-wax-material",
@@ -99098,6 +99811,12 @@
       "1116": [
         "claim:civic-wood-earth-wall"
       ],
+      "1160": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "1180": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "1200": [
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
@@ -99115,6 +99834,7 @@
         "claim:transport-private-boat-arrangement"
       ],
       "1220": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
         "claim:judicial-accusation-record",
         "claim:maslo-birchbark-718-account",
@@ -99138,6 +99858,8 @@
       ],
       "1230": [
         "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candle-wax-material",
         "claim:casting-brass",
         "claim:casting-bronze",
@@ -99170,10 +99892,14 @@
         "claim:transport-horse-sledge-equipment",
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:later-novgorod-judicial-charter",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
       "1240": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
         "claim:judicial-accusation-record",
         "claim:maslo-birchbark-718-account",
@@ -99187,6 +99913,9 @@
         "claim:transport-private-boat-arrangement",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record"
+      ],
+      "1260": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "1300": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -99336,6 +100065,13 @@
       "адресное": [
         "wk:social_law_economy:kin-directed-request"
       ],
+      "адресную": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
+      "адресный": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
+      ],
       "адресованное": [
         "wk:social_law_economy:authority-addressed-letter",
         "wk:social_law_economy:kin-directed-request"
@@ -99347,8 +100083,13 @@
         "claim:population-material-clay-plasticity"
       ],
       "азбука": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-alphabet-exercise-records-text",
-        "wk:social_law_economy:alphabet-exercise"
+        "wk:social_law_economy:alphabet-exercise",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
+      "азбуку": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "азбучное": [
         "claim:social-alphabet-exercise-records-text",
@@ -99886,6 +100627,7 @@
         "claim:maslo-birchbark-718-account",
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:gramota-73-grivna-term",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record"
       ],
@@ -100086,12 +100828,17 @@
         "wk:biology_physiology:chemical-exposure-not-illness"
       ],
       "болезнь": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:religion-priest-child-baptism",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:chemical-exposure-not-illness"
+      ],
+      "болезнью": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
       ],
       "боли": [
         "claim:pain-nociception-distinct",
@@ -100588,6 +101335,13 @@
         "claim:occupation-smith-specialisation",
         "claim:social-alphabet-exercise-records-text",
         "claim:textile-indigo-yellow-analysis"
+      ],
+      "вековый": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "веком": [
         "claim:fodder-hay-account"
@@ -101530,6 +102284,10 @@
         "claim:foundations-chm-08-equilibrium-condition-change",
         "claim:foundations-thm-07-thermal-expansion-state-change"
       ],
+      "внешняя": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "вниз": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:foundations-haz-04-slope-force-strength",
@@ -101983,6 +102741,7 @@
         "claim:fauna-salmon-homing"
       ],
       "воздействие": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-shivering-thermogenesis",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
         "claim:foundations-haz-01-exposure-modifiers",
@@ -102091,7 +102850,8 @@
         "wk:environment:slope-force-strength"
       ],
       "возможной": [
-        "claim:posadnik-volodislav-pursuit-1228"
+        "claim:posadnik-volodislav-pursuit-1228",
+        "wk:biology_physiology:candidate-parasite-host-relation"
       ],
       "возможности": [
         "claim:material-water-textile-water-load"
@@ -102985,6 +103745,7 @@
         "wk:environment:pressure-gradient-wind"
       ],
       "вызывать": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:fauna-animal-habituation",
         "claim:fauna-mammals-domestic-horse-separation-stress",
@@ -103402,6 +104163,7 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:early-rus-hunting-ground-terms",
         "claim:maslo-birchbark-718-account",
         "claim:posadnik-fedor-conflict-1224",
@@ -103788,6 +104550,8 @@
       ],
       "года": [
         "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:construction-plinth-patterns-1207",
         "claim:fodder-hay-account",
         "claim:later-novgorod-judicial-charter",
@@ -103807,6 +104571,8 @@
         "claim:transport-horse-sledge-equipment",
         "claim:transport-winter-sledge-1220",
         "wk:environment:novgorod-pre1300-cold-extremes",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:later-novgorod-judicial-charter",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
@@ -104138,6 +104904,10 @@
         "wk:environment:pressure-gradient-wind"
       ],
       "грамота": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:debt-record-practice",
         "claim:gramota-73-debt-record",
         "claim:gramota-73-grivna-term",
@@ -104155,6 +104925,7 @@
         "claim:transport-private-boat-arrangement",
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:gramota-73-grivna-term",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:later-novgorod-judicial-charter"
@@ -104166,7 +104937,11 @@
         "claim:transport-boat-cargo-dispatch"
       ],
       "грамотности": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:practical-document-genres",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:practical-document-genres"
       ],
       "грамотность": [
@@ -104390,6 +105165,14 @@
         "claim:fauna-mammals-eurasian-lynx-solitary-cover-activity",
         "wk:biology_physiology:fauna-eurasian-lynx"
       ],
+      "гюргий": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
+      ],
+      "гюргию": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
+      ],
       "давали": [
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:fuel-pit-charcoal-burning-charcoal-output"
@@ -104471,6 +105254,14 @@
         "wk:chemistry_process:solubility-saturation",
         "wk:craft_technology:work-waste-context"
       ],
+      "дань": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
+      "данью": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "дата": [
         "claim:excavated-urban-structures",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
@@ -104482,6 +105273,9 @@
       "датированная": [
         "claim:gramota-73-debt-record",
         "wk:material_culture:gramota-73-debt-record"
+      ],
+      "датированное": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "датировка": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -104693,6 +105487,10 @@
       "декортикацией": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
+      "дела": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "делает": [
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
@@ -104712,10 +105510,16 @@
       "делало": [
         "claim:pine-pitch-woven-basket-coating"
       ],
+      "делам": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "делать": [
         "claim:foundations-ms-33-role-predictability",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "wk:social_behavior:foundations-ms-33-role-predictability"
+      ],
+      "делах": [
+        "claim:candidate-gramota222-letter-to-posadnik"
       ],
       "делают": [
         "claim:fauna-toad-defence",
@@ -104746,8 +105550,17 @@
         "claim:brittle-fracture-defects",
         "wk:physics_material_science:brittle-fracture-defects"
       ],
+      "денег": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "денежной": [
         "claim:social-daily-fur-sale-accounting"
+      ],
+      "денежные": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "денежным": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "день": [
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
@@ -105014,6 +105827,7 @@
         "claim:care-direct-pressure-bleeding"
       ],
       "диагноз": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
@@ -105476,6 +106290,7 @@
       "доказательство": [
         "claim:agriculture-fauna-hemp-stem-fibre",
         "claim:burial-hollowed-log-container",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:construction-pine-resin-bast",
         "claim:construction-tarred-tow-caulking",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
@@ -105593,6 +106408,12 @@
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:social-church-instruction-reports-demand"
       ],
+      "документный": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "документы": [
         "claim:practical-document-genres",
         "wk:social_law_economy:practical-document-genres"
@@ -105608,6 +106429,7 @@
         "claim:social-debt-records-accounting-amount"
       ],
       "долга": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
       "долге": [
@@ -107009,6 +107831,7 @@
         "claim:agriculture-fauna-hunting-economic-context"
       ],
       "жить": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-mammals-wolf-pack-sociality",
         "claim:rp-mother-household-care-succession"
       ],
@@ -107017,6 +107840,7 @@
       ],
       "за": [
         "claim:agriculture-fauna-bort-climbing-hooks",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:fauna-adder-male-contest",
         "claim:fauna-bee-worker-tasks",
@@ -107033,6 +107857,7 @@
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization",
         "wk:physics_material_science:pressure-driven-liquid-outflow",
         "wk:physics_material_science:support-polygon-center-of-mass",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:conditional-maternal-care-succession"
       ],
       "заблуждение": [
@@ -108451,6 +109276,9 @@
         "claim:white-willow-depends-on-moist-lit-riparian-habitat",
         "wk:environment:white-willow-riparian-habitat"
       ],
+      "иванковичу": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "ивань": [
         "claim:river-landing-named-list"
       ],
@@ -108922,7 +109750,12 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
@@ -109398,6 +110231,9 @@
         "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
         "wk:social_behavior:foundations-ms-40-social-prescription",
         "wk:social_law_economy:accounting-or-commodity-entry",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:commemoration-or-icon-order",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
@@ -109446,10 +110282,16 @@
         "claim:social-religious-name-list-relates-disjunctive-context",
         "wk:social_law_economy:religious-name-list"
       ],
+      "имени": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "именно": [
         "claim:environment-p1-pig",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:pine-pitch-woven-basket-coating"
+      ],
+      "именования": [
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "именованного": [
         "claim:foundations-earth-10-mutualistic-dependence",
@@ -109460,6 +110302,12 @@
       "именованные": [
         "claim:river-landing-named-list",
         "wk:npc_daily_life:posadnik-role-context"
+      ],
+      "именованный": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "именованными": [
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "иметь": [
         "claim:architectural-material-classes",
@@ -109663,6 +110511,7 @@
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour"
       ],
       "инфекцию": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour"
       ],
@@ -110482,6 +111331,10 @@
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
         "wk:physics_material_science:stone-density-compressive-response"
+      ],
+      "кампания": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "канализацию": [
         "claim:localized-improvement-context",
@@ -111943,6 +112796,7 @@
       "контекст": [
         "claim:agriculture-fauna-hunting-economic-context",
         "claim:animal-care-needs-presence",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:care-direct-pressure-bleeding",
         "claim:composite-urban-quarter",
         "claim:harvest-sheep-shearing-scissors",
@@ -111973,6 +112827,9 @@
         "wk:npc_daily_life:animal-care-needs-presence",
         "wk:npc_daily_life:neutral-household-context",
         "wk:npc_daily_life:posadnik-role-context",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:collector-task-context",
         "wk:social_law_economy:regional-economic-activities",
         "wk:social_law_economy:transaction-obligation",
@@ -112079,6 +112936,9 @@
       "конфликта": [
         "claim:foundations-ms-31-conflict-misperception",
         "wk:social_behavior:foundations-ms-31-conflict-misperception"
+      ],
+      "конфликтный": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "конца": [
         "claim:fibre-flax-breaker-shive",
@@ -112334,6 +113194,9 @@
       "коррекция": [
         "wk:biology_physiology:candidate-vestibular-postural-correction",
         "wk:psychology_behavior:foundations-ms-12-practice-correction"
+      ],
+      "корреспондентами": [
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "коррозии": [
         "claim:population-material-iron-coating"
@@ -113854,6 +114717,7 @@
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
       "маршрут": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:environment-p1-horse-transport",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:river-landing-market-approaches",
@@ -114159,6 +115023,9 @@
       ],
       "матерью": [
         "wk:social_law_economy:conditional-maternal-care-succession"
+      ],
+      "матея": [
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "матка": [
         "claim:fauna-bee-swarming",
@@ -114857,6 +115724,13 @@
       "мире": [
         "wk:architecture_settlement:timber-dwelling"
       ],
+      "мирослав": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
+      ],
+      "мирослава": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "мирян": [
         "claim:religion-olenin-adjudication"
       ],
@@ -115088,6 +115962,7 @@
       "может": [
         "claim:acute-sleep-loss-performance",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
@@ -115634,6 +116509,8 @@
         "claim:agriculture-fauna-flax-hemp-cultivation",
         "claim:animal-homeostasis-responds-to-internal-external-change",
         "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:candle-thread-wick",
         "claim:care-direct-pressure-bleeding",
@@ -116144,6 +117021,7 @@
         "claim:agriculture-fauna-ash-hunting-bow",
         "claim:agriculture-fauna-bort-climbing-hooks",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
@@ -116731,7 +117609,12 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
@@ -117395,6 +118278,10 @@
         "wk:psychology_behavior:uncertainty-cognitive-control",
         "wk:social_behavior:foundations-ms3-experimental-interaction",
         "wk:social_behavior:research-pooled-work-social-loafing",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:debt-needs-parties-and-basis",
@@ -117566,6 +118453,7 @@
         "wk:environment:urban-bird-period-specific"
       ],
       "нём": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:research-memory-postevent-misinformation",
         "claim:social-collector-instruction-relates-task-context"
       ],
@@ -117928,6 +118816,7 @@
       "но": [
         "claim:acute-sleep-loss-performance",
         "claim:agriculture-fauna-hemp-processing-tow",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-swallowing-airway-protection",
         "claim:clay-dried-replasticization",
         "claim:environment-p1-sheep-goat",
@@ -118044,6 +118933,7 @@
       ],
       "новгороде": [
         "claim:agriculture-fauna-ash-hunting-bow",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:construction-rjaz-bridge-support",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:metalworking-broad-context",
@@ -118294,7 +119184,8 @@
         "claim:dietary-macronutrients-support-cellular-energy",
         "claim:environment-p1-horse-meat",
         "claim:religion-olenin-adjudication",
-        "wk:social_behavior:foundations-ms-39-social-norm"
+        "wk:social_behavior:foundations-ms-39-social-norm",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "нормальной": [
         "claim:dry-friction",
@@ -118426,7 +119317,8 @@
         "claim:transport-private-boat-arrangement",
         "wk:biology_physiology:research-hazelnut-food-part",
         "wk:material_culture:hollowed-log-burial-container",
-        "wk:material_culture:plank-burial-container"
+        "wk:material_culture:plank-burial-container",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "оба": [
         "claim:foundations-earth-23-hydrothermal-precipitation",
@@ -118960,6 +119852,7 @@
       ],
       "общая": [
         "claim:terrain-background",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:environment:regional-quaternary-deposits",
         "wk:physics_material_science:fibre-twisting"
       ],
@@ -119860,6 +120753,14 @@
         "claim:clothing-onuchi-wrap",
         "wk:material_culture:onuchi"
       ],
+      "онфим": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
+      "онфима": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
       "опасно": [
         "claim:lime-transformations",
         "wk:chemistry_process:lime-transformations"
@@ -119980,6 +120881,7 @@
         "claim:clothing-bronze-button"
       ],
       "описывает": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:civic-wood-earth-wall",
         "claim:fibre-flax-breaker-shive",
         "claim:fibre-hackle-removes-shive",
@@ -121402,6 +122304,16 @@
         "wk:biology_physiology:stomatal-opening-tradeoff",
         "wk:chemistry_process:galvanic-contact-corrosion"
       ],
+      "паразит": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
+      "паразита": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
+      "паразитарная": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
       "параметры": [
         "wk:architecture_settlement:drying-workspace",
         "wk:architecture_settlement:fishing-workspace",
@@ -121646,6 +122558,7 @@
         "claim:rp-mother-household-care-succession"
       ],
       "передачи": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:foundations-earth-14-ecosystem-energy-flow",
         "claim:foundations-life-43-infection-chain",
         "wk:biology_physiology:foundation-infection-chain"
@@ -122092,12 +123005,17 @@
         "claim:social-daily-wax-commodity-context"
       ],
       "письмо": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:social-dispute-message-reports-dispatch",
         "claim:social-kin-letter-reports-protection-request",
         "claim:social-loan-request-relates-loan",
         "claim:social-settlement-demand-reports-court-choice",
         "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:dispute-message",
         "wk:social_law_economy:kin-addressed-letter",
         "wk:social_law_economy:podvoisky-signed-letter",
@@ -122493,6 +123411,7 @@
         "claim:agriculture-fauna-flax-hemp-cultivation",
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:ceramic-novgorod-wheel",
@@ -123114,6 +124033,9 @@
       "подпирали": [
         "claim:civic-defence-stake-support"
       ],
+      "подпись": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "подпоясывать": [
         "claim:clothing-male-shirt-belt"
       ],
@@ -123312,6 +124234,10 @@
       "поздние": [
         "claim:environment-p1-pig"
       ],
+      "поздний": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
       "поздним": [
         "claim:fodder-hay-account"
       ],
@@ -123460,6 +124386,10 @@
       "поленья": [
         "claim:fuel-pit-charcoal-burning-wood-input"
       ],
+      "политика": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "политике": [
         "claim:foundations-earth-21-groundwater-withdrawal-balance"
       ],
@@ -123471,8 +124401,10 @@
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
       ],
       "полномочие": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:social-authority-letter-relates-theft-inquiry",
-        "claim:social-dispute-message-reports-dispatch"
+        "claim:social-dispute-message-reports-dispatch",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "полномочия": [
         "claim:civic-public-assembly",
@@ -123907,20 +124839,26 @@
         "claim:civic-public-assembly"
       ],
       "посадник": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:social-authority-letter-relates-theft-inquiry",
-        "wk:npc_daily_life:posadnik-role-context"
+        "wk:npc_daily_life:posadnik-role-context",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "посадника": [
-        "claim:posadnik-fedor-conflict-1224"
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:posadnik-fedor-conflict-1224",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "посадников": [
         "wk:npc_daily_life:posadnik-role-context"
       ],
       "посаднику": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:social-authority-letter-relates-theft-inquiry",
-        "wk:social_law_economy:authority-addressed-letter"
+        "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "поселение": [
         "claim:rural-household-economy-context"
@@ -124380,6 +125318,7 @@
         "claim:transport-hired-boatman"
       ],
       "правило": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:clothing-rank-material-not-cut",
         "claim:construction-aspen-cladding-joint",
         "claim:food-practices-processing-area-inference",
@@ -124391,7 +125330,8 @@
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-guarantor-relates-transaction-obligation",
         "claim:social-religious-name-list-relates-disjunctive-context",
-        "claim:social-spousal-complaint-reports-marital-treatment"
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "правильно": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
@@ -124399,6 +125339,7 @@
       "право": [
         "claim:agriculture-fauna-borts-wax",
         "claim:agriculture-fauna-hunting-economic-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:construction-quarry-procurement",
         "claim:early-rus-hunting-ground-terms",
         "claim:occupation-carpenter-role",
@@ -127100,7 +128041,8 @@
         "claim:construction-aspen-cladding-joint",
         "claim:construction-pine-resin-bast",
         "claim:fauna-doe-kid-care",
-        "claim:harvest-scythe-iron-steel-specimen"
+        "claim:harvest-scythe-iron-steel-specimen",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "ранним": [
         "claim:fodder-hay-account",
@@ -127109,6 +128051,7 @@
         "wk:social_law_economy:judicial-accusation-record"
       ],
       "ранняя": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:fauna-mussel-fish-host"
       ],
       "рану": [
@@ -127587,6 +128530,13 @@
       "рати": [
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
+      "ратмир": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
+      ],
+      "ратмиру": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "рацион": [
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:environment-p1-horse-meat",
@@ -127695,6 +128645,7 @@
         "claim:ha-firesteel-ignition"
       ],
       "ребёнка": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-kin-request-reports-contingent-return"
       ],
       "региона": [
@@ -128111,6 +129062,7 @@
         "claim:agriculture-fauna-rural-tree-borts"
       ],
       "решение": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:research-pooled-work-social-loafing",
@@ -128155,6 +129107,9 @@
       ],
       "риску": [
         "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "рисунку": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "ритм": [
         "claim:foundations-life-23-sleep-wake-cycle",
@@ -128640,6 +129595,12 @@
       ],
       "ряжи": [
         "wk:architecture_settlement:rjaz-supported-bridge"
+      ],
+      "савва": [
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
+      "саввы": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "садами": [
         "claim:household-garden-shovel",
@@ -129236,6 +130197,7 @@
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:research-cold-water-immersion-muscle-control",
@@ -129888,6 +130850,10 @@
       ],
       "складские": [
         "claim:household-riverside-storage"
+      ],
+      "склады": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "склеенные": [
         "claim:construction-animal-glue-pegged-planks"
@@ -130743,6 +131709,7 @@
         "claim:population-storage-vessels"
       ],
       "содержит": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:foundations-earth-03-soil-phases",
         "claim:foundations-life-29-virion-structure",
         "claim:social-payment-register-records-entry",
@@ -132734,6 +133701,8 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
@@ -133137,6 +134106,7 @@
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "текст": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -133146,6 +134116,7 @@
         "claim:social-written-prayer-relates-invocation",
         "wk:social_law_economy:alphabet-exercise",
         "wk:social_law_economy:alphabetic-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
         "wk:social_law_economy:christian-exegetical-text",
         "wk:social_law_economy:christian-invocation-text",
         "wk:social_law_economy:church-calendar-text",
@@ -133270,6 +134241,7 @@
         "claim:agriculture-fauna-rural-tree-borts",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:clothing-nerev-coloured-wool",
         "claim:construction-animal-glue-chalk",
         "claim:construction-quarry-procurement",
@@ -135388,6 +136360,7 @@
       "устанавливает": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -135861,8 +136834,10 @@
         "wk:architecture_settlement:garden-orchard"
       ],
       "учебный": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-alphabet-exercise-records-text",
-        "wk:social_law_economy:alphabet-exercise"
+        "wk:social_law_economy:alphabet-exercise",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "учреждения": [
         "claim:social-priest-fragment-relates-office-address"
@@ -135924,6 +136899,8 @@
         "wk:physics_material_science:research-fire-plume-upper-layer-transport"
       ],
       "факт": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:care-waterproof-wound-cover",
         "claim:ceramic-novgorod-wheel",
         "claim:population-processes-malt-context",
@@ -136138,6 +137115,9 @@
       "фильмами": [
         "claim:foundations-ms4-01-reappraisal-negative-experience"
       ],
+      "финансовых": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "фитили": [
         "claim:candle-thread-wick"
       ],
@@ -136237,6 +137217,9 @@
         "claim:religion-priest-child-baptism",
         "claim:rp-caretaker-principal-goods",
         "claim:social-kin-request-reports-contingent-return"
+      ],
+      "формулу": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "формы": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
@@ -136596,6 +137579,9 @@
         "claim:fauna-earthworm-feeding-burrows",
         "wk:biology_physiology:fauna-earthworm"
       ],
+      "хозяин": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
       "хозяина": [
         "claim:fauna-tick-feeding",
         "claim:fauna-tick-questing",
@@ -136607,6 +137593,12 @@
         "wk:biology_physiology:foundation-host-susceptibility",
         "wk:biology_physiology:foundation-infection-chain",
         "wk:biology_physiology:foundation-virus-replication"
+      ],
+      "хозяине": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ],
+      "хозяином": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
       ],
       "хозяйства": [
         "claim:environment-p1-horse-transport",
@@ -137123,6 +138115,11 @@
       "частичное": [
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
       ],
+      "частное": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
+      ],
       "частной": [
         "claim:social-priest-fragment-relates-office-address",
         "claim:transport-private-boat-arrangement"
@@ -137635,6 +138632,12 @@
         "claim:pain-nociception-distinct",
         "wk:biology_physiology:pain-nociception-distinct"
       ],
+      "школа": [
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
+      "школы": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "шкура": [
         "claim:material-water-rawhide-wet-dry",
         "claim:oil-rawhide-moisture-resistance",
@@ -137825,6 +138828,15 @@
       ],
       "экскременты": [
         "claim:fauna-mammals-moose-ecosystem-engineering"
+      ],
+      "экспедиции": [
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
+      "экспедицию": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "экспедиция": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "эксперимента": [
         "wk:psychology_behavior:emotion-regulation-experimental"
@@ -138115,7 +139127,12 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -138485,14 +139502,31 @@
       "юго": [
         "claim:pine-pitch-woven-basket-coating"
       ],
+      "югра": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
+      "югру": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "южный": [
         "wk:environment:southern-deciduous-gathered-plants"
       ],
       "южным": [
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
       ],
+      "юридические": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "юридических": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "юрисдикцию": [
         "claim:social-settlement-demand-reports-court-choice"
+      ],
+      "юрисдикция": [
+        "claim:candidate-gramota222-letter-to-posadnik"
       ],
       "юшковым": [
         "claim:early-rus-hunting-ground-terms"
@@ -138781,6 +139815,11 @@
       "common": [
         "wk:chemistry_process:common-ion-precipitation-shift"
       ],
+      "comparator": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "conditional": [
         "wk:chemistry_process:temperature-solubility-conditional"
       ],
@@ -139020,11 +140059,23 @@
       "No147": [
         "claim:social-podvoisky-letter-reports-pochestie-assurance"
       ],
+      "No199": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
+      "No222": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
+      "No334": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "No420": [
         "claim:social-daily-fur-sale-accounting"
       ],
       "No7": [
         "claim:social-collector-instruction-relates-task-context"
+      ],
+      "No724": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "No87": [
         "claim:social-priest-fragment-relates-office-address"
@@ -139299,6 +140350,7 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:casting-brass",
         "claim:casting-bronze",
         "claim:casting-casting-crucible",
@@ -139336,10 +140388,12 @@
         "claim:river-landing-named-list",
         "claim:social-loan-request-relates-loan",
         "claim:transport-hired-boatman",
-        "claim:transport-horse-sledge-equipment"
+        "claim:transport-horse-sledge-equipment",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "xiii": [
         "claim:agriculture-fauna-ash-hunting-bow",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:civic-defence-log-courses",
         "claim:civic-defence-transverse-support",
         "claim:construction-compared-church-masonry",
@@ -139370,6 +140424,8 @@
         "claim:textile-lac-dye-analysis",
         "claim:transport-boat-cargo-dispatch",
         "wk:material_culture:gramota-73-debt-record",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "xiv": [
@@ -139426,12 +140482,21 @@
       "147": [
         "claim:social-podvoisky-letter-reports-pochestie-assurance"
       ],
+      "199": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "221": [
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-ms3-07-apology-mediation"
       ],
+      "222": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "232": [
         "claim:agriculture-fauna-flax-hemp-cultivation"
+      ],
+      "334": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "420": [
         "claim:social-daily-fur-sale-accounting"
@@ -139445,6 +140510,9 @@
       ],
       "718": [
         "claim:maslo-birchbark-718-account"
+      ],
+      "724": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
       "943": [
         "claim:household-barley-commodity",
@@ -139482,6 +140550,12 @@
       "1116": [
         "claim:civic-wood-earth-wall"
       ],
+      "1160": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
+      "1180": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "1200": [
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
@@ -139492,6 +140566,7 @@
         "claim:construction-plinth-patterns-1207"
       ],
       "1220": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
         "claim:judicial-accusation-record",
         "claim:maslo-birchbark-718-account",
@@ -139515,6 +140590,8 @@
       ],
       "1230": [
         "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candle-wax-material",
         "claim:casting-brass",
         "claim:casting-bronze",
@@ -139547,10 +140624,14 @@
         "claim:transport-horse-sledge-equipment",
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:later-novgorod-judicial-charter",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
       "1240": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
         "claim:judicial-accusation-record",
         "claim:maslo-birchbark-718-account",
@@ -139563,6 +140644,9 @@
         "claim:social-written-prayer-relates-invocation",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record"
+      ],
+      "1260": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "1300": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -139665,6 +140749,8 @@
         "wk:biology_physiology:foundation-antibodies"
       ],
       "about": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:construction-plinth-patterns-1207",
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
         "claim:pine-pitch-severe-oxidation",
@@ -140106,12 +141192,16 @@
         "wk:biology_physiology:foundation-virion-structure"
       ],
       "address": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-priest-fragment-relates-office-address",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:religious-office-address"
       ],
       "addressed": [
         "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:kin-addressed-letter",
         "wk:social_law_economy:kin-directed-request",
         "wk:social_law_economy:priest-addressed-fragment"
@@ -140501,9 +141591,11 @@
         "claim:clothing-bone-button"
       ],
       "alphabet": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-alphabet-exercise-records-text",
         "wk:social_law_economy:alphabet-exercise",
-        "wk:social_law_economy:alphabetic-text"
+        "wk:social_law_economy:alphabetic-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "alphabetic": [
         "wk:social_law_economy:alphabetic-text"
@@ -140676,6 +141768,8 @@
         "claim:agriculture-fauna-hemp-processing-tow",
         "claim:agriculture-fauna-hemp-stem-fibre",
         "claim:agriculture-rural-role-context",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
@@ -140868,6 +141962,7 @@
         "wk:social_law_economy:alphabet-exercise",
         "wk:social_law_economy:alphabetic-text",
         "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:debt-entry",
         "wk:social_law_economy:debt-needs-parties-and-basis",
         "wk:social_law_economy:grivna-accounting-unit",
@@ -140923,7 +142018,11 @@
         "claim:buoyancy-pressure-phase-change",
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -141434,6 +142533,7 @@
         "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
         "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
         "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:dietary-macronutrient-energy",
         "wk:biology_physiology:domestic-chicken-behavior",
@@ -142978,6 +144078,7 @@
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:gramota-73-grivna-term",
         "wk:material_culture:pine-bark",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:practical-document-genres"
@@ -143382,6 +144483,7 @@
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:foundation-alveolar-exchange",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
@@ -143465,6 +144567,7 @@
         "wk:material_culture:birch-bark-tues",
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:gramota-73-grivna-term",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:practical-document-genres"
@@ -144059,6 +145162,7 @@
       ],
       "but": [
         "claim:acute-sleep-loss-performance",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-swallowing-airway-protection",
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
         "claim:food-energy-nutrients",
@@ -144236,10 +145340,15 @@
       "camp": [
         "claim:population-fishing-workspace"
       ],
+      "campaign": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "can": [
         "claim:acute-sleep-loss-performance",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -144933,6 +146042,7 @@
         "wk:npc_daily_life:neutral-household-context"
       ],
       "cause": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:candidate-physiology-v3-emesis-reflex-response",
@@ -145082,6 +146192,8 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candle-wax-material",
         "claim:casting-brass",
         "claim:casting-bronze",
@@ -145156,6 +146268,9 @@
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-hired-boatman",
         "claim:transport-horse-sledge-equipment",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "ceramic": [
@@ -145433,6 +146548,7 @@
       "child": [
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-kin-request-reports-contingent-return",
         "wk:social_law_economy:priest-baptism-statutory-context"
       ],
@@ -146102,6 +147218,11 @@
         "wk:biology_physiology:swine-digestion",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
+      "comparator": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "compare": [
         "claim:foundations-ms-10-recognition-representation",
         "wk:psychology_behavior:foundations-ms-10-recognition-representation"
@@ -146245,8 +147366,10 @@
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
       ],
       "competence": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:livestock-rumen-forage-digestion",
-        "claim:religion-priest-child-baptism"
+        "claim:religion-priest-child-baptism",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "competing": [
         "claim:foundations-earth-08-ecological-competition",
@@ -146677,6 +147800,7 @@
         "wk:physics_material_science:partially-saturated-granular-deformation"
       ],
       "conflict": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:foundations-earth-09-ecological-competition",
         "claim:foundations-ms-30-conflict-incompatibility",
         "claim:foundations-ms-31-conflict-misperception",
@@ -146875,6 +147999,7 @@
         "claim:vegetable-tanning-prepared-hide"
       ],
       "contains": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:foundations-earth-03-soil-phases",
         "claim:foundations-life-29-virion-structure",
         "claim:social-payment-register-records-entry",
@@ -146936,6 +148061,7 @@
       "context": [
         "claim:agriculture-fauna-hunting-economic-context",
         "claim:animal-care-needs-presence",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:care-direct-pressure-bleeding",
         "claim:casting-brass",
         "claim:casting-bronze",
@@ -147015,6 +148141,9 @@
         "wk:npc_daily_life:smith",
         "wk:social_behavior:foundations-ms-25-persuasion-context",
         "wk:social_behavior:foundations-ms-26-group-context",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:collector-task-context",
         "wk:social_law_economy:lost-stolen-property-recognition",
         "wk:social_law_economy:named-proof-participant",
@@ -147254,6 +148383,9 @@
       "correspondence": [
         "claim:population-fish-dried-form",
         "claim:social-priest-fragment-relates-office-address"
+      ],
+      "correspondents": [
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "corresponding": [
         "claim:population-joining-metal-melt"
@@ -147554,6 +148686,7 @@
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:civic-wood-earth-wall",
         "claim:construction-forged-iron-nail-vessel-joint",
         "claim:construction-rjaz-bridge-support",
@@ -147727,6 +148860,7 @@
       "dated": [
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:construction-plinth-patterns-1207",
         "claim:debt-record-practice",
         "claim:fibre-flax-breaker-shive",
@@ -147792,6 +148926,7 @@
         "wk:environment:candidate-flood-woody-debris-transport-retention"
       ],
       "debt": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-needs-parties-and-basis",
         "claim:debt-record-practice",
         "claim:gramota-73-debt-record",
@@ -147839,6 +148974,7 @@
         "wk:environment:southern-deciduous-gathered-plants"
       ],
       "decision": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:foundations-ms3-04-acute-stress",
@@ -148195,6 +149331,7 @@
       "describes": [
         "claim:agriculture-fauna-rural-tree-borts",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:civic-earth-rampart",
         "claim:civic-wood-earth-wall",
         "claim:clothing-silk-shirt",
@@ -148343,6 +149480,7 @@
         "claim:care-direct-pressure-bleeding"
       ],
       "diagnosis": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
         "claim:care-waterproof-wound-cover",
@@ -148591,6 +149729,10 @@
       "discussion": [
         "claim:food-practices-rye-flour-bread"
       ],
+      "disease": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
       "dispatch": [
         "claim:social-dispute-message-reports-dispatch",
         "claim:transport-boat-cargo-dispatch",
@@ -148812,6 +149954,10 @@
         "claim:social-christian-exegetical-text-relates-urban-context"
       ],
       "document": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:guarantor-reference"
       ],
       "documentary": [
@@ -149073,6 +150219,9 @@
       "draw": [
         "claim:foundations-ms-08-duration-rhythm",
         "wk:psychology_behavior:foundations-ms-08-duration-rhythm"
+      ],
+      "drawing": [
+        "claim:candidate-gramota199-onfim-instructional-text"
       ],
       "drawknife": [
         "claim:occupation-wood-drawknife",
@@ -149386,6 +150535,7 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:construction-animal-glue-chalk",
         "claim:construction-animal-glue-pegged-planks",
         "claim:construction-aspen-cladding-joint",
@@ -149407,7 +150557,8 @@
         "claim:social-kin-request-reports-contingent-return",
         "claim:textile-chrysin-analysis",
         "claim:textile-ellagic-acid-analysis",
-        "wk:craft_technology:early-rus-hunting-resource-grounds"
+        "wk:craft_technology:early-rus-hunting-resource-grounds",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "ears": [
         "claim:fauna-fish-vibration-senses",
@@ -150139,6 +151290,7 @@
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -150607,6 +151759,10 @@
         "wk:social_behavior:foundations-ms-29-helping-no-reward",
         "wk:social_behavior:foundations-ms-32-social-role"
       ],
+      "expedition": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "expelled": [
         "claim:social-spousal-complaint-reports-marital-treatment"
       ],
@@ -150695,6 +151851,7 @@
         "claim:river-landing-surfacing-allocation"
       ],
       "exposure": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-shivering-thermogenesis",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
@@ -150832,6 +151989,8 @@
         "claim:fauna-mammals-domestic-dog-multimodal-communication"
       ],
       "fact": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:care-waterproof-wound-cover",
         "claim:population-storage-role",
         "claim:social-daily-fur-sale-accounting",
@@ -151317,6 +152476,9 @@
       "final": [
         "claim:fauna-dragonfly-emergence",
         "claim:population-glass-cooling"
+      ],
+      "financial": [
+        "claim:candidate-gramota222-letter-to-posadnik"
       ],
       "find": [
         "claim:construction-forged-iron-nail-vessel-joint",
@@ -152053,6 +153215,10 @@
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
       ],
+      "foreign": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "forest": [
         "claim:fauna-mammals-mountain-hare-sheltered-winter-movement",
         "claim:fauna-mammals-red-fox-habitat-flexibility",
@@ -152181,6 +153347,7 @@
         "wk:biology_physiology:foundation-fertilization"
       ],
       "formula": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:rp-caretaker-principal-goods"
       ],
       "fortification": [
@@ -152353,6 +153520,7 @@
         "claim:agriculture-fauna-flax-hemp-cultivation",
         "claim:agriculture-fauna-hemp-processing-tow",
         "claim:agriculture-fauna-hemp-stem-fibre",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
@@ -152810,6 +153978,7 @@
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:transport-private-boat-arrangement",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:physics_material_science:bread-dough-formation-and-baking",
         "wk:physics_material_science:fibre-twisting"
       ],
@@ -153344,6 +154513,10 @@
       ],
       "gussets": [
         "claim:clothing-shirt-gussets"
+      ],
+      "gyurgiy": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "habit": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
@@ -154110,10 +155283,12 @@
         "wk:environment:novgorod-wetland-vegetation-context"
       ],
       "host": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-tick-feeding",
         "claim:foundations-life-28-virus-replication",
         "claim:foundations-life-43-infection-chain",
         "claim:foundations-life-47-host-susceptibility",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:foundation-host-susceptibility",
         "wk:biology_physiology:foundation-infection-chain",
         "wk:biology_physiology:foundation-virus-replication"
@@ -154638,6 +155813,9 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
@@ -155273,6 +156451,7 @@
         "claim:research-pooled-work-social-loafing"
       ],
       "infection": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:care-waterproof-wound-cover",
         "claim:foundations-life-45-infection-entry",
@@ -155463,6 +156642,9 @@
         "wk:social_law_economy:acquisition-chain-inquiry",
         "wk:social_law_economy:theft-inquiry-allegation"
       ],
+      "inscription": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "insect": [
         "claim:fauna-pike-juvenile-predation"
       ],
@@ -155533,8 +156715,10 @@
         "wk:social_law_economy:directed-grain-procurement"
       ],
       "instructional": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-alphabet-exercise-records-text",
-        "wk:social_law_economy:alphabet-exercise"
+        "wk:social_law_economy:alphabet-exercise",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "instructions": [
         "claim:social-collector-instruction-relates-task-context"
@@ -155890,6 +157074,10 @@
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:candidate-physiology-v3-swallowing-airway-protection",
@@ -156269,6 +157457,8 @@
       "it": [
         "claim:agriculture-fauna-ash-hunting-bow",
         "claim:bathing-house-heating-before-washing",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:ceramic-novgorod-wheel",
@@ -156449,6 +157639,7 @@
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:transport-private-boat-arrangement",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:foundation-acquired-immunity",
         "wk:biology_physiology:foundation-digestion",
         "wk:biology_physiology:foundation-respiration",
@@ -156473,6 +157664,9 @@
       ],
       "ivan": [
         "claim:river-landing-named-list"
+      ],
+      "ivankovich": [
+        "claim:candidate-gramota222-letter-to-posadnik"
       ],
       "ixodida": [
         "wk:biology_physiology:fauna-tick"
@@ -156554,6 +157748,7 @@
         "wk:biology_physiology:fauna-tick"
       ],
       "jurisdiction": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:social-settlement-demand-reports-court-choice"
       ],
       "juvenile": [
@@ -156850,6 +158045,7 @@
       ],
       "later": [
         "claim:acute-sleep-loss-performance",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:environment-p1-pig",
         "claim:fauna-salmon-homing",
         "claim:fibre-flax-breaker-shive",
@@ -156859,6 +158055,7 @@
         "claim:research-memory-postevent-misinformation",
         "claim:transport-boat-cargo-dispatch",
         "wk:biology_physiology:acute-sleep-loss-performance",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
         "wk:social_law_economy:later-novgorod-judicial-charter"
       ],
       "lateral": [
@@ -157050,6 +158247,7 @@
         "wk:material_culture:onuchi"
       ],
       "legal": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:russkaya-pravda-comparative-only",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
       ],
@@ -157089,6 +158287,10 @@
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure"
       ],
       "letter": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:clothing-svita-outer-garment",
         "claim:debt-record-practice",
         "claim:gramota-73-debt-record",
@@ -157115,6 +158317,9 @@
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:gramota-73-grivna-term",
         "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:debt-record-practice",
         "wk:social_law_economy:judicial-accusation-record",
         "wk:social_law_economy:kin-addressed-letter",
@@ -157378,9 +158583,13 @@
         "claim:white-willow-depends-on-moist-lit-riparian-habitat"
       ],
       "literacy": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:practical-document-genres",
         "claim:social-alphabet-exercise-records-text",
         "claim:social-christian-exegetical-text-relates-urban-context",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:practical-document-genres"
       ],
       "lithuanians": [
@@ -157397,6 +158606,7 @@
         "claim:material-water-alum-skin-water"
       ],
       "live": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-adder-viviparity",
         "claim:fauna-earthworm-feeding-burrows",
         "claim:fauna-mammals-domestic-horse-herd-sociality",
@@ -158202,6 +159412,9 @@
         "claim:fauna-mammals-european-otter-solitary-crepuscular",
         "wk:biology_physiology:fauna-european-otter"
       ],
+      "matey": [
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
+      ],
       "matfeev": [
         "claim:river-landing-named-list"
       ],
@@ -158235,6 +159448,8 @@
         "wk:physics_material_science:thermal-expansion-state-change"
       ],
       "matters": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:food-preservation-qualitative",
         "wk:chemistry_process:food-preservation-qualitative"
       ],
@@ -158246,6 +159461,7 @@
         "wk:biology_physiology:work-intensity-duration"
       ],
       "may": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:debt-needs-parties-and-basis",
         "claim:environment-p1-cattle",
         "claim:fauna-adder-male-contest",
@@ -158758,6 +159974,10 @@
       "minino": [
         "claim:food-practices-processing-area-inference"
       ],
+      "miroslav": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
+      ],
       "misattribution": [
         "wk:psychology_behavior:research-memory-source-misattribution"
       ],
@@ -158901,7 +160121,11 @@
         "wk:physics_material_science:momentum-closed-system"
       ],
       "monetary": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:social-daily-fur-sale-accounting"
+      ],
+      "money": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "mongol": [
         "claim:construction-auxiliary-construction-work",
@@ -159223,6 +160447,7 @@
         "wk:social_law_economy:religious-name-list"
       ],
       "named": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:civic-public-assembly",
         "claim:early-rus-hunting-ground-terms",
         "claim:foundations-earth-10-mutualistic-dependence",
@@ -159234,6 +160459,7 @@
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:material_culture:svita",
         "wk:npc_daily_life:posadnik-role-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:named-proof-participant"
       ],
       "names": [
@@ -159243,6 +160469,10 @@
         "claim:social-daily-economic-activities",
         "claim:transport-boat-cargo-dispatch",
         "wk:social_law_economy:feast-list"
+      ],
+      "naming": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "narrow": [
         "claim:clothing-male-shirt-belt",
@@ -159533,6 +160763,7 @@
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -159814,7 +161045,8 @@
         "claim:clothing-povoi-headcover",
         "claim:environment-p1-horse-meat",
         "claim:religion-olenin-adjudication",
-        "wk:social_behavior:foundations-ms-39-social-norm"
+        "wk:social_behavior:foundations-ms-39-social-norm",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "normal": [
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -159866,6 +161098,10 @@
         "claim:bathing-wooden-bathhouse-wood",
         "claim:bearberry-lingonberry-resemblance-not-identification",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
         "claim:candidate-physiology-v3-emesis-reflex-response",
@@ -160376,6 +161612,10 @@
         "wk:psychology_behavior:research-memory-source-misattribution",
         "wk:social_behavior:foundations-ms3-experimental-interaction",
         "wk:social_behavior:research-pooled-work-social-loafing",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:debt-needs-parties-and-basis",
@@ -160422,6 +161662,7 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candle-wax-material",
         "claim:casting-brass",
         "claim:casting-bronze",
@@ -160972,6 +162213,8 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
@@ -161433,6 +162676,7 @@
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:buoyancy-pressure-phase-change",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:care-direct-pressure-bleeding",
         "claim:clothing-button-shirt",
@@ -161570,7 +162814,8 @@
         "wk:psychology_behavior:foundations-ms-08-duration-rhythm",
         "wk:psychology_behavior:foundations-ms-11-practiced-action",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
-        "wk:social_behavior:foundations-ms-25-persuasion-context"
+        "wk:social_behavior:foundations-ms-25-persuasion-context",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "one": [
         "claim:agriculture-fauna-ash-hunting-bow",
@@ -161622,6 +162867,10 @@
       "ones": [
         "claim:clothing-bone-button",
         "claim:population-material-wet-wool"
+      ],
+      "onfim": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "ongoing": [
         "claim:foundations-ms-34-role-adjustment",
@@ -161735,7 +162984,12 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
@@ -162304,6 +163558,9 @@
         "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
         "wk:social_behavior:foundations-ms-40-social-prescription",
         "wk:social_law_economy:accounting-or-commodity-entry",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter",
         "wk:social_law_economy:commemoration-or-icon-order",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
@@ -162875,6 +164132,13 @@
         "wk:npc_daily_life:boat-worker",
         "wk:npc_daily_life:fisher",
         "wk:npc_daily_life:storage-worker"
+      ],
+      "parasite": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "wk:biology_physiology:candidate-parasite-host-relation"
+      ],
+      "parasitic": [
+        "wk:biology_physiology:candidate-parasite-host-relation"
       ],
       "parasympathetic": [
         "claim:research-bright-retinal-light-can-constrict-pupils"
@@ -163875,7 +165139,9 @@
         "wk:biology_physiology:wild-mushroom-identification"
       ],
       "policy": [
-        "claim:foundations-earth-21-groundwater-withdrawal-balance"
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "pollen": [
         "claim:fauna-bee-winter-cluster",
@@ -163984,10 +165250,12 @@
         "wk:material_culture:porty-trousers"
       ],
       "posadnik": [
+        "claim:candidate-gramota222-letter-to-posadnik",
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:social-authority-letter-relates-theft-inquiry",
-        "wk:npc_daily_life:posadnik-role-context"
+        "wk:npc_daily_life:posadnik-role-context",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter"
       ],
       "position": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
@@ -164027,6 +165295,7 @@
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:textile-indigo-yellow-analysis",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:biology_physiology:foundation-infection-entry",
         "wk:biology_physiology:foundation-pathogen-transport",
@@ -164367,6 +165636,7 @@
       ],
       "presence": [
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
@@ -164693,9 +165963,12 @@
         "wk:npc_daily_life:neutral-household-context"
       ],
       "private": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:social-priest-fragment-relates-office-address",
         "claim:transport-hired-boatman",
-        "claim:transport-private-boat-arrangement"
+        "claim:transport-private-boat-arrangement",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
       ],
       "privilege": [
         "claim:social-daily-wax-commodity-context"
@@ -164953,6 +166226,7 @@
         "claim:fur-skin-cooling-cleansing"
       ],
       "proof": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:construction-plinth-patterns-1207",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:material-water-textile-water-load",
@@ -165583,6 +166857,10 @@
         "claim:livestock-swine-comparative-diet",
         "wk:biology_physiology:horse-forage-feeding"
       ],
+      "ratmir": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents"
+      ],
       "raw": [
         "claim:architectural-material-classes",
         "claim:construction-compared-church-masonry",
@@ -166145,6 +167423,7 @@
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+        "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:horse-forage-feeding",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
@@ -166845,6 +168124,7 @@
       ],
       "right": [
         "claim:agriculture-fauna-hunting-economic-context",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:construction-quarry-procurement",
         "claim:early-rus-hunting-ground-terms",
         "claim:probable-travel-chalice-communion",
@@ -167090,6 +168370,7 @@
         "claim:foundations-ms3-07-apology-mediation"
       ],
       "route": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:environment-p1-horse-transport",
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:research-flood-can-leave-high-water-mark-types",
@@ -167125,6 +168406,7 @@
         "wk:biology_physiology:research-raspberry-food-part"
       ],
       "rule": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:clothing-rank-material-not-cut",
         "claim:construction-aspen-cladding-joint",
         "claim:food-practices-processing-area-inference",
@@ -167138,6 +168420,7 @@
         "claim:social-religious-name-list-relates-disjunctive-context",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:transport-hired-boatman",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession"
       ],
@@ -167438,6 +168721,10 @@
         "wk:chemistry_process:solubility-saturation",
         "wk:environment:rising-air-cooling-cloud-condensation"
       ],
+      "savva": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
       "saw": [
         "wk:material_culture:saw"
       ],
@@ -167479,6 +168766,8 @@
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
@@ -167620,6 +168909,10 @@
       ],
       "scent": [
         "claim:fauna-mammals-domestic-dog-multimodal-communication"
+      ],
+      "school": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
       ],
       "scientific": [
         "wk:physics_material_science:plant-cellulosic-fibres"
@@ -170295,6 +171588,10 @@
         "claim:livestock-swine-membership",
         "wk:biology_physiology:swine-digestion"
       ],
+      "syllables": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text"
+      ],
       "sylvestris": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "wk:biology_physiology:research-wild-apple-part-bound"
@@ -170697,6 +171994,7 @@
         "wk:physics_material_science:textile-conditioning-matters"
       ],
       "text": [
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:occupation-directed-grain-procurement",
         "claim:religion-olenin-adjudication",
@@ -170710,6 +172008,7 @@
         "claim:social-written-prayer-relates-invocation",
         "wk:social_law_economy:alphabet-exercise",
         "wk:social_law_economy:alphabetic-text",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
         "wk:social_law_economy:christian-exegetical-text",
         "wk:social_law_economy:christian-invocation-text",
         "wk:social_law_economy:church-calendar-text",
@@ -170878,6 +172177,7 @@
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
@@ -171412,6 +172712,7 @@
       ],
       "thirteenth": [
         "claim:agriculture-fauna-ash-hunting-bow",
+        "claim:candidate-gramota199-onfim-instructional-text",
         "claim:civic-defence-log-courses",
         "claim:civic-defence-transverse-support",
         "claim:fodder-hay-account",
@@ -171429,6 +172730,8 @@
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:transport-boat-cargo-dispatch",
+        "wk:social_law_economy:candidate-onfim-instructional-text",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
       "this": [
@@ -171447,7 +172750,10 @@
         "claim:burial-hollowed-log-container",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -172010,6 +173316,8 @@
         "claim:brittle-fracture-defects",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
@@ -172212,6 +173520,7 @@
         "wk:social_behavior:foundations-ms-28-ostracism-conditional",
         "wk:social_behavior:foundations-ms-34-role-adjustment",
         "wk:social_law_economy:authority-addressed-letter",
+        "wk:social_law_economy:candidate-posadnik-addressed-letter",
         "wk:social_law_economy:directed-grain-procurement",
         "wk:social_law_economy:ecclesiastical-adjudication",
         "wk:social_law_economy:entrusted-goods-reference",
@@ -172441,6 +173750,7 @@
         "wk:social_law_economy:transaction-obligation"
       ],
       "transfer": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
@@ -172637,7 +173947,9 @@
         "claim:clothing-shirt-gussets"
       ],
       "tribute": [
-        "claim:social-daily-honey-documentary-entry"
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "claim:social-daily-honey-documentary-entry",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "trichomes": [
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
@@ -172719,6 +174031,7 @@
         "claim:burial-coffin-lid-transverse-plank",
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
+        "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:casting-brass",
         "claim:casting-bronze",
         "claim:casting-casting-crucible",
@@ -172750,7 +174063,8 @@
         "claim:probable-travel-chalice-communion",
         "claim:river-landing-named-list",
         "claim:transport-hired-boatman",
-        "claim:transport-horse-sledge-equipment"
+        "claim:transport-horse-sledge-equipment",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "twigs": [
         "claim:fauna-mammals-moose-browse-aquatic-forage"
@@ -174594,6 +175908,7 @@
         "wk:social_behavior:foundations-ms-23-group-pressure",
         "wk:social_behavior:foundations-ms-27-belonging-relations",
         "wk:social_behavior:foundations-ms-32-social-role",
+        "wk:social_law_economy:candidate-private-letter-named-correspondents",
         "wk:social_law_economy:christian-invocation-text",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:judicial-accusation-record"
@@ -175140,6 +176455,10 @@
         "wk:biology_physiology:fauna-eurasian-perch",
         "wk:biology_physiology:fauna-european-otter",
         "wk:biology_physiology:research-nettle-food-contact-properties"
+      ],
+      "yugra": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
       ],
       "yushkov": [
         "claim:early-rus-hunting-ground-terms"

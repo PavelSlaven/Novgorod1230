@@ -70,6 +70,12 @@ export function validateCategoryCartography({ cartography, pack, locations,
         || !['resource', 'material', 'process', 'npc'].every((key) => text(family.applicability?.[key])))) errors.push('CARTOGRAPHY_MISSING_FAMILY_INVALID');
   for (const family of cartography.missing_families ?? []) {
     for (const id of family.supporting_family_ids ?? []) if (!semanticFamilies.has(id)) errors.push(`CARTOGRAPHY_EXPECTED_CATEGORY_UNMAPPED:${id}`);
+    if (family.supporting_claim_refs !== undefined) {
+      if (!Array.isArray(family.supporting_claim_refs)) errors.push('CARTOGRAPHY_MISSING_FAMILY_SUPPORTING_CLAIMS_INVALID');
+      else for (const ref of family.supporting_claim_refs) {
+        if (!categoryRefs.has(ref)) errors.push(`CARTOGRAPHY_MISSING_FAMILY_SUPPORTING_CLAIM_REF_UNMAPPED:${ref}`);
+      }
+    }
   }
   const dimensions = cartography.gameplay_need_cartography?.domain_subdomain_dimensions;
   if (!Array.isArray(dimensions)) errors.push('CARTOGRAPHY_GAMEPLAY_NEEDS_MISSING');

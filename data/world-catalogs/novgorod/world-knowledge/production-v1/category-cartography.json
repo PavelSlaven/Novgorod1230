@@ -3663,7 +3663,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not infer title from physical holding or create legal ownership; specific legal relations require date/place/status evidence.",
+      "reason": "Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
+      "supporting_claim_refs": ["claim:rp-property-claim-relates-acquisition-chain","claim:rp-market-purchase-relates-proof-participant","claim:rp-entrusted-goods-claim-relates-reference"],
       "supporting_family_ids": [
         "social-property-and-market",
         "social-law-practice"
@@ -3685,7 +3686,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Distinguish custody, access, obligation and title; no debt, interest, penalty or transfer is created.",
+      "reason": "Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics.",
+      "supporting_claim_refs": ["claim:debt-record-practice","claim:debt-needs-parties-and-basis","claim:social-loan-request-relates-loan","claim:social-guarantor-relates-transaction-obligation","claim:rp-merchant-credit-relates-third-party-goods"],
       "supporting_family_ids": [
         "social-property-and-market",
         "social-documentary-practice"
@@ -3707,7 +3709,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. An allegation is not proof; historical procedures require local and chronological evidence, not a universal legal rule.",
+      "reason": "Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state.",
+      "supporting_claim_refs": ["claim:rp-market-purchase-relates-proof-participant","claim:rp-entrusted-goods-claim-relates-reference","claim:judicial-accusation-record","claim:social-authority-letter-relates-theft-inquiry"],
       "supporting_family_ids": [
         "social-law-practice",
         "social-documentary-practice"
@@ -3729,7 +3732,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not flatten regional or later law into Novgorod 1230, assign status or decide a case.",
+      "reason": "Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
+      "supporting_claim_refs": ["claim:rp-property-claim-relates-acquisition-chain","claim:rp-market-purchase-relates-proof-participant","claim:religion-olenin-adjudication","claim:later-novgorod-judicial-charter"],
       "supporting_family_ids": [
         "social-law-practice",
         "social-administration"
@@ -3751,7 +3755,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. No fixed price, unit conversion, account balance or completed bargain without its authoritative basis.",
+      "reason": "Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
+      "supporting_claim_refs": ["claim:social-daily-fur-sale-accounting","claim:social-payment-register-records-entry","claim:social-grivna-accounting-unit","claim:occupation-directed-grain-procurement","claim:social-settlement-demand-reports-court-choice","claim:civic-public-market"],
       "supporting_family_ids": [
         "social-property-and-market",
         "material-written-objects"
@@ -3773,7 +3778,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Weather and transport support are not proof of a current route, schedule, shortage or stock.",
+      "reason": "Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners.",
+      "supporting_claim_refs": ["claim:transport-winter-sledge-1220","claim:transport-sledge-summer-cargo","claim:transport-boat-cargo-dispatch","claim:transport-private-boat-arrangement","claim:settlement-underfloor-storage","claim:food-preservation-qualitative","claim:stored-grain-condition-depends-on-temperature-moisture"],
       "supporting_family_ids": [
         "material-transport",
         "environment-weather",
@@ -3819,7 +3825,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not infer a recipe, tools, skill, regional practice or output from general fibre availability.",
+      "reason": "Existing fibre preparation, twisting, weaving and historical garment-form claims cover major lifecycle stages. Residual under source review: qualified stitching-to-support for weakened textiles, not another generic spinning/weaving claim. Actual cloth, tools, skill, dimensions, damage, duration and repair result are item/process state.",
+      "supporting_claim_refs": ["claim:textile-fibres-twist-yarn","claim:population-processes-weaving-thread","claim:population-processes-weaving-textile","claim:population-weaving-practice","claim:clothing-tunic-shirt-folded-panel","claim:clothing-shirt-gussets","claim:fibre-flax-breaker-shive","claim:fibre-hackle-removes-shive"],
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "materials-fibre-leather-water-response"
@@ -3841,7 +3848,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Preservation is not object fabrication; no exact recipe, material yield, tools or completed repair follows.",
+      "reason": "Existing claims cover hide/leather distinction, tanning, shoe components, historical shoemaking and repair. Residual under source review: conditional failure of a stitched component joint, not proof every leather object is stitched. Stock, dimensions, seam condition, load, durability and successful repair are state/mechanics.",
+      "supporting_claim_refs": ["claim:population-hide-leather-distinction","claim:vegetable-tanning-prepared-hide","claim:vegetable-tanning-collagen-stabilization","claim:population-shoe-input","claim:population-shoe-form","claim:population-shoe-output","claim:material-water-vegetable-leather-water"],
       "supporting_family_ids": [
         "biology-skin-fur-and-hide-preservation",
         "process-textile-dye-and-collagen-tanning",
@@ -3864,7 +3872,8 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Bread and preservation examples do not close all food handling; no current contamination, edibility or treatment success.",
+      "reason": "Existing heating, preservation, pathogen-transport and exposure premises ground broad food processes. Residual under source review: raw-to-cooked/ready food cross-contact through hands or utensils. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating are not corpus facts.",
+      "supporting_claim_refs": ["claim:heating-reduces-microbial-viability","claim:food-preservation-qualitative","claim:foundations-life-44-pathogen-transport","claim:foundations-haz-02-exposure-not-illness","claim:foundations-haz-03-exposure-routes"],
       "supporting_family_ids": [
         "process-bread-dough-and-baking",
         "process-food-preservation-and-fermentation",

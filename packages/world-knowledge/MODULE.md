@@ -27,8 +27,9 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 ## API
 
 - `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query) }`;
-- `createWorldKnowledgeFlatVectorIndex(metadata, bytes)` → frozen
-  `{ search(vector, options) }`;
+- `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
+  { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional
+  mapping is snapshotted and collapses concept hits to claim refs before limit.
 - `validateWorldKnowledgeQuery(query, bundle)`;
 - `validateWorldKnowledgeQueryPlannerRequest(request, bundle)`;
 - `validateWorldKnowledgeQueryPlan(plan, request, bundle)`;

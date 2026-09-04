@@ -55,6 +55,29 @@ outputs — metadata JSON и contiguous float32 data. Benchmark использу
 Recall@10/20, hard constraints, applicability precision, noise и latency.
 Runtime weights не являются repository artifact.
 
+`src/gameplay-gap-audit.js` — internal development-only validation, не runtime
+auditor. `buildGameplayGapBacklog` принимает реальные campaign traces и
+отдельный `world_knowledge_gameplay_gap_audit_v1`: независимые per-trace
+assessments требуемых и фактически использованных/подразумеваемых premises,
+а также gap records. Семантическое сравнение делает независимый auditor;
+код проверяет структуру, существование evidence refs и lifecycle, не заменяет
+аудит поиском ключевых слов. Нулевой backlog без assessments не доказывает
+полноту. `validateGameplayGapSaturation` требует три последовательные unseen
+post-fix кампании с разными trace IDs, полным audit, без новых/незакрытых
+P0/P1 и неподдержанных premises в accepted traces.
+Новые P2 допускаются в открытом backlog; для saturation каждый P2 должен
+быть replayed либо иметь независимо принятый `bounded_limit` с обоснованием.
+Replay должен ссылаться на реальный trace с ожидаемым `replay_outcome` (`committed` либо `rejected`)
+и независимым `replay_reason`; для corrective rejection обязательный
+`replay_error_code` должен совпасть с ошибкой trace без какого-либо commit.
+Успешный HTTP сам по себе не доказывает закрытие. Идентичности агентов — доверенные
+editorial metadata; это не authentication и не защита от владельца файлов.
+Модуль не выполняет I/O, research, claim approval или production promotion.
+CLI `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`
+читает сохранённую кампанию и отдельный audit, записывает результат validator-а
+и завершается ненулевым кодом при `blocked`. `ready` означает валидный backlog,
+а не закрытие его findings или saturation.
+
 ## Общие гарантии
 
 1. Validators не изменяют входные objects и не выполняют I/O.

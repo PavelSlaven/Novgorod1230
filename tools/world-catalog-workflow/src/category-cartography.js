@@ -71,6 +71,26 @@ export function validateCategoryCartography({ cartography, pack, locations,
   for (const family of cartography.missing_families ?? []) {
     for (const id of family.supporting_family_ids ?? []) if (!semanticFamilies.has(id)) errors.push(`CARTOGRAPHY_EXPECTED_CATEGORY_UNMAPPED:${id}`);
   }
+  const dimensions = cartography.gameplay_need_cartography?.domain_subdomain_dimensions;
+  if (!Array.isArray(dimensions)) errors.push('CARTOGRAPHY_GAMEPLAY_NEEDS_MISSING');
+  else {
+    const pairs = new Set(), domains = new Set();
+    for (const dimension of dimensions) {
+      const pair = `${dimension.domain}:${dimension.subdomain}`;
+      if (!pack.manifest.domains.includes(dimension.domain) || !text(dimension.subdomain)
+          || !text(dimension.disposition) || !text(dimension.limit)
+          || pairs.has(pair) || !Array.isArray(dimension.family_refs)
+          || dimension.family_refs.length === 0) errors.push(`CARTOGRAPHY_GAMEPLAY_NEED_INVALID:${pair}`);
+      pairs.add(pair);
+      domains.add(dimension.domain);
+      for (const id of dimension.family_refs ?? []) {
+        if (!semanticFamilies.has(id)) errors.push(`CARTOGRAPHY_EXPECTED_CATEGORY_UNMAPPED:${id}`);
+      }
+    }
+    for (const domain of pack.manifest.domains) {
+      if (!domains.has(domain)) errors.push(`CARTOGRAPHY_GAMEPLAY_DOMAIN_UNMAPPED:${domain}`);
+    }
+  }
   return Object.freeze(errors.sort());
 }
 

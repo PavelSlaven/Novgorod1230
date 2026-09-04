@@ -109,6 +109,10 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const purposeCache = cache.get(request) ?? new Map();
       purposeCache.set(cacheKey, grounded);
       cache.set(request, purposeCache);
+      telemetry?.onGameplayTrace?.({ event: 'world_knowledge_resolved', purpose,
+        request_identity: request.request_id ?? null,
+        planner_request: plannerRequest, planner_plan: planned.plan,
+        query, retrieved_slice: slice, consumer_request: grounded });
       telemetry?.onDetail?.(Object.freeze({
         schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
         request_identity: request.request_id ?? null,
@@ -190,7 +194,9 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       repair == null ? 'Plan the smallest useful factual lookup.'
         : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any ref named as unavailable.`
     ].join(' ') }, { role: 'user', content: JSON.stringify(repair == null
-      ? request : { request, original_output: repair.original_output }) }],
+      ? request : { request, original_output: repair.original_output,
+        structural_errors: repair.structural_errors,
+        repair_instruction: 'Return the corrected six-key plan, not original_output. Remove every unavailable focus_ref. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected ref.' }) }],
     overrides: { temperature: 0 }
   });
   return response;

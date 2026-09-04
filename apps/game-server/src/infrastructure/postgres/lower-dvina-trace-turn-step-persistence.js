@@ -35,7 +35,7 @@ export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
   phase3Contracts = null, preparedFactual = factual,
-  turnStepApprovedOwners = null
+  turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
     envelope: writePlan?.turn_step_commit, idemId });
@@ -96,7 +96,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   };
   // Every envelope and owner binding is checked before the first mutation.
   if (writePlan.turn_step_commit != null) {
-    validateBatchPlanBindings({ batch, factual: commit, state, actorRef });
+    validateBatchPlanBindings({ batch, factual: commit, state, actorRef,
+      turnStepAmbientPortionProfileRef });
   }
   for (const [index, fragment] of batch.operations.entries()) {
     prevalidateFragment({ fragment, index, batch, commit, state, context });
@@ -149,7 +150,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
         changeSetId,
         knowledgeInserts: context.knowledgeInserts,
         recordActorKnowledge: actorRef === state.actor_id,
-        actorId: actorRef
+        actorId: actorRef,
+        ambientPortionProfileRef: turnStepAmbientPortionProfileRef
       });
     }
   }
@@ -185,9 +187,11 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   };
 }
 
-function validateBatchPlanBindings({ batch, factual, state, actorRef }) {
+function validateBatchPlanBindings({ batch, factual, state, actorRef,
+  turnStepAmbientPortionProfileRef }) {
   if (actorRef === state.actor_id) {
-    validateTurnStepBatchPlanBindings({ batch, factual, state });
+    validateTurnStepBatchPlanBindings({ batch, factual, state,
+      ambientPortionProfileRef: turnStepAmbientPortionProfileRef });
     return;
   }
   const phase7 = factual.consequence?.phase7;
@@ -200,7 +204,8 @@ function validateBatchPlanBindings({ batch, factual, state, actorRef }) {
       reason: 'NPC owner batch is detached from the approved actor step'
     });
   }
-  validateTurnStepBatchPlanBindings({ batch, state, factual: {
+  validateTurnStepBatchPlanBindings({ batch, state,
+    ambientPortionProfileRef: turnStepAmbientPortionProfileRef, factual: {
     loop_trace: { step_traces: [{
       applied: true,
       step_index: plan.decision_index,

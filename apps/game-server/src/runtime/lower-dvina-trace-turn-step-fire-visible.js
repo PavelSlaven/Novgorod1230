@@ -96,6 +96,12 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     body
   });
   if (currentScene != null) return currentScene;
+  // An unfinished domain handoff with no visible effects confirms no part of
+  // the player's goal. Keep the committed scene, not a synthetic success.
+  if (consequence.status === 'partial' && directSeeds.length === 0
+      && consequence.visible_seed.clarification == null) {
+    return projectCurrentSceneForVisibleOverlay({ input, directSeedKeys: [], body });
+  }
   return deepFreeze({
     version: 1,
     schema: 'visible_context_package',

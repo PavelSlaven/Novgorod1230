@@ -79,7 +79,8 @@ export function createTraceTurnRuntime({
   const turnBudget = config.llmTurnBudget ?? config.llmDiagnostics?.turnBudget
     ?? createLlmTurnBudget();
   const llmDiagnostics = config.llmDiagnostics
-    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null, turnBudget });
+    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null, turnBudget,
+      developerMode: config.developerMode });
   const roleRunner = createProductionLlmRoleRunner({
     env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null, turnBudget
   });
@@ -203,6 +204,8 @@ export function createTraceTurnRuntime({
         profile: ordinaryMaterializationProfile, committedState
       }),
     requireTurnStepAmbientOrdinaryAdmission: false,
+    turnStepAmbientPortionProfileRef:
+      ordinaryMaterializationProfile?.o2a_ambient?.portion_profile?.profile_ref ?? null,
     createNpcOwnerCapabilities,
     ...npcRuntimePorts,
     runNpcConversationExchange: (input) => runLowerDvinaTraceNpcConversationExchange({

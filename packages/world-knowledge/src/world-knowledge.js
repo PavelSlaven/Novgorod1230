@@ -1,6 +1,6 @@
 import {
-  canAccess, coverageStatus, isApplicable, lexicalCandidates, packCandidates, packContext,
-  projectClaim, compareClaims, structuredPrefilter
+  canAccess, coverageStatus, isApplicable, lexicalCandidates, normalizeScores,
+  packCandidates, packContext, projectClaim, compareClaims, structuredPrefilter
 } from './resolution.js';
 
 const BUNDLE_SCHEMA = 'world_knowledge_runtime_bundle_v1';
@@ -94,6 +94,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     for (const claimRef of bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) exactRefs.add(claimRef);
   }
   const lexicalScores = lexicalCandidates(bundle, query);
+  const normalizedLexicalScores = normalizeScores(lexicalScores);
+  const normalizedVectorScores = normalizeScores(vectorScores);
   const candidateRefs = new Set([...exactRefs, ...lexicalScores.keys(),
     ...vectorScores.keys()]);
   if (query.requested_predicates.length) {
@@ -125,6 +127,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
       scores.get(claim.claim_ref) ?? 0));
     return { scores, strongest };
   });
+  const lexicalTailFraction = vectorScores.size ? 0.75 : 0.5;
   // Apply relative admission within each independently requested hint: growth
   // in one topic must not suppress another topic with a lower corpus IDF.
   // Aggregate lexical relevance still ranks the admitted candidates.
@@ -132,13 +135,15 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     || exactRefs.has(claim.claim_ref) || query.requested_predicates.length > 0
     || vectorScores.has(claim.claim_ref)
     || hintScores.some(({ scores, strongest }) => strongest > 0
-      && (scores.get(claim.claim_ref) ?? 0) >= strongest / 2));
+      && (scores.get(claim.claim_ref) ?? 0) >= strongest
+        * lexicalTailFraction));
   const relevantRefs = new Set(relevant.map(({ claim_ref }) => claim_ref));
   const relevantGroups = new Set(relevant.map(({ conflict_group_ref }) =>
     conflict_group_ref).filter(Boolean));
   const admitted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
     || relevantGroups.has(claim.conflict_group_ref))
-    .sort((a, b) => compareClaims(a, b, query, exactRefs, lexicalScores, vectorScores));
+    .sort((a, b) => compareClaims(a, b, query, exactRefs,
+      normalizedLexicalScores, normalizedVectorScores));
   const { selected: applicable, omittedConflictGroups } = packCandidates(admitted, query.budget.max_candidates);
 
   const coverage = query.domains.map((domain) => ({ domain, status: coverageStatus(domain, profiles, query) }));

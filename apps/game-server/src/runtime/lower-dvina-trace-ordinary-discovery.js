@@ -100,7 +100,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
           finite_source_initial_amount_estimate_policy: estimatePolicy
         } };
       return { ...enabled, party_id: partyId, scope_ref: scopeRef,
-        seed_semantic_context: seedSemanticContext(
+        semantic_context: sceneSemanticContext(
           request?.request?.player_safe_state?.current_visible_context),
         semantic_target_ref: request.operation.target_refs[0],
         expected_supporting_bases:
@@ -171,7 +171,7 @@ function currentG6(state, scopeBinding) {
       && text(scopeBinding?.g6_ref)
     ? { entity_kind: 'g6', entity_id: scopeBinding.g6_ref } : null;
 }
-function seedSemanticContext(value) {
+function sceneSemanticContext(value) {
   if (value == null || typeof value !== 'object' || Array.isArray(value)) {
     return null;
   }

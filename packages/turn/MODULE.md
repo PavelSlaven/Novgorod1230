@@ -24,6 +24,11 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
 - `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner. Gameplay call site не активирован, пока нет production coverage profile для текущего world runtime.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
+- Общий ordinary discovery owner передаёт одну player-safe scene projection
+  в seed и presence, включая structural repair; candidate query имеет нулевой
+  evidence weight и не подтверждает соседние объекты, отношения или историю.
+  Неисполненный prerequisite при исчерпании бюджета возвращает typed
+  `TURN_ORDINARY_DISCOVERY_UNRESOLVED` до commit, а не успешный пустой шаг.
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.

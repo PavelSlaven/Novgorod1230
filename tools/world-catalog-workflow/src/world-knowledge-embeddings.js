@@ -77,7 +77,8 @@ export async function benchmarkWorldKnowledgeVectors({ bundlePath,
       output: queryVectorsPath, mode: 'query', python, temporary });
     const queryBytes = Uint8Array.from(await readFile(queryVectorsPath));
     const queryVectors = new Float32Array(queryBytes.buffer);
-    const index = createWorldKnowledgeFlatVectorIndex(metadata, vectorBytes);
+    const index = createWorldKnowledgeFlatVectorIndex(metadata, vectorBytes,
+      { conceptToClaimRefs: bundle.exact_indexes.concept_to_claim_refs });
     const core = createWorldKnowledgeCore(bundle);
     const results = [];
     for (let indexOfCase = 0; indexOfCase < benchmark.cases.length;

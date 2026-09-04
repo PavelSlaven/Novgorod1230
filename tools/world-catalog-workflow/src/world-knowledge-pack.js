@@ -242,7 +242,7 @@ export function validateWorldKnowledgeAuthoringPack(value) {
   return frozenValidation(errors);
 }
 
-// Editorial approval binds the reviewed payload, not mutable status flags.
+// Editorial approval binds the full reviewed records, including lifecycle flags.
 // Reviewer identity remains a trusted editorial assertion, not authentication.
 export function worldKnowledgeClaimDigest(pack, claim) {
   const evidence = sorted(array(pack.evidence).filter(record => array(claim.evidence_refs).includes(record.evidence_ref)), 'evidence_ref');

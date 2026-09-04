@@ -32,7 +32,9 @@ test('the exact approved first-entry binding exposes only its authored ambient p
     source_ref: 'trace_ld_v1_o2a_wreck_shore_sand',
     portion_profile_ref: 'trace_ld_v1_o2a_wreck_shore_sand_portion',
     semantic_type: 'material_portion',
-    public_name: 'горсть мокрого песка'
+    public_name: 'горсть мокрого песка',
+    ambient_portion_bounds: { quantity_unit: 'handful', min_quantity: 1,
+      max_quantity: 1, min_mass_grams: 1, max_mass_grams: 1000 }
   }]);
   assert.equal(port.supports({ origin: { source_refs: [
     'trace_ld_v1_o2a_wreck_shore_sand_portion'
@@ -55,11 +57,18 @@ test('the exact approved first-entry binding exposes only its authored ambient p
       entity_id: 'trace_ld_v1_o2a_wreck_shore_sand_portion' },
     display_label: 'горсть мокрого песка',
     recognition: 'code_owned_source_capability',
-    visible_status: 'available' }]);
+    visible_status: 'available',
+    ambient_portion_bounds: { quantity_unit: 'handful', min_quantity: 1,
+      max_quantity: 1, min_mass_grams: 1, max_mass_grams: 1000 } }]);
   const removed = projectLowerDvinaTraceO2aCapabilities({ admission: null,
     projected });
   assert.deepEqual(removed.player_safe_state.visible_context.visible_objects,
     []);
+  const malformed = projectLowerDvinaTraceO2aCapabilities({
+    admission: { capabilities: [{ source_ref: 'source', portion_profile_ref: 'profile',
+      semantic_type: 'material_portion', public_name: 'неполная порция' }] },
+    projected: removed });
+  assert.deepEqual(malformed.player_safe_state.visible_context.visible_objects, []);
   const result = await port({ operation_identity: { root_turn_id: 'turn', step_index: 1,
     operation_ref: 'create_entity' }, request: { context_pin_ref: 'committed',
     source_ref: 'committed', portion_profile_ref: 'committed',
@@ -69,6 +78,30 @@ test('the exact approved first-entry binding exposes only its authored ambient p
     destination_ref: 'mikula' } });
   assert.equal(result.pass, true);
   assert.equal(result.proposal.semantic_descriptor.name, 'горсть мокрого песка');
+  const invalidSource = await port({ operation_identity: { root_turn_id: 'turn', step_index: 1,
+    operation_ref: 'create_entity' }, request: { context_pin_ref: 'committed',
+    source_ref: 'committed', portion_profile_ref: 'committed',
+    semantic_type: 'material_portion', semantic_name: 'горсть мокрого песка',
+    source_identity_refs: ['wrong:source'], quantity: { value: 1, unit: 'handful' },
+    mass_grams: 300, destination_ref: 'mikula' } });
+  assert.equal(invalidSource.pass, false);
+  assert.equal(invalidSource.errors[0].code,
+    'ITEM_AMBIENT_ORDINARY_CONTEXT_INVALID');
+});
+
+test('O2a projection preserves arbitrary approved portion bounds', async () => {
+  const profile = structuredClone(await loadLowerDvinaTraceOrdinaryMaterializationProfile({
+    rootDir: process.cwd() }));
+  Object.assign(profile.o2a_ambient.portion_profile, { quantity_unit: 'scoop',
+    min_quantity: 0.5, max_quantity: 1.5, min_mass_grams: 70, max_mass_grams: 900 });
+  const port = createLowerDvinaTraceO2aAmbientPort({ profile, committedState: {
+    actor_id: 'mikula', position: { g6_id: 'trace_ld_v1_g6_wreck_shore',
+      location_ref: 'trace_ld_v1_loc_wreck_shore' } } });
+  const projected = projectLowerDvinaTraceO2aCapabilities({ admission: port,
+    projected: { player_safe_state: { visible_context: { visible_objects: [] } } } });
+  assert.deepEqual(projected.player_safe_state.visible_context.visible_objects[0]
+    .ambient_portion_bounds, { quantity_unit: 'scoop', min_quantity: 0.5,
+      max_quantity: 1.5, min_mass_grams: 70, max_mass_grams: 900 });
 });
 
 test('O2a ambient admission is absent for a drifted binding', async () => {
@@ -82,6 +115,19 @@ test('O2a ambient admission is absent for a drifted binding', async () => {
     actor_id: 'mikula', position: { g6_id: 'other', location_ref: 'trace_ld_v1_loc_wreck_shore' }
   } }), null);
 });
+
+test('O2a binds the current wreck-shore location when spatial state omits G6',
+  async () => {
+    const profile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({
+      rootDir: process.cwd() });
+    const port = createLowerDvinaTraceO2aAmbientPort({ profile,
+      committedState: { actor_id: 'mikula', position: {
+        position_id: 'position:dynamic-wreck-shore',
+        location_ref: 'trace_ld_v1_loc_wreck_shore' } } });
+    assert.equal(typeof port, 'function');
+    assert.equal(port.capabilities[0].portion_profile_ref,
+      'trace_ld_v1_o2a_wreck_shore_sand_portion');
+  });
 
 test('player-safe discovery exposes committed source, not expected result capability', () => {
   const projected = projectLowerDvinaTraceO2aDiscoverySources({

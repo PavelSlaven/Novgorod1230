@@ -262,6 +262,20 @@
       "retrieval_text": "Опыление животными Перенос пыльцы животными. Опыление животными поддерживает размножение многих цветковых; цветы, насекомые и урожай рядом не подразумеваются."
     },
     {
+      "entry_ref": "wk-retrieval:claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position:en",
+      "target_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Aquatic macrophyte form and attachment Relation of aquatic macrophyte form to substrate attachment and water surface. Submerged, rooted floating-leaf, rooted emergent, and free-floating aquatic macrophyte forms differ in substrate attachment and leaf position; no species, local plant, or passability is implied. aquatic plant forms floating submerged emergent"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position:ru",
+      "target_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Форма и прикрепление водных макрофитов Связь формы водного макрофита с грунтом и поверхностью воды. Погружённые, укоренённо-плавающие, надводные укоренённые и свободноплавающие формы водных макрофитов различаются прикреплением к грунту и положением листьев; вид, местное растение и проходимость не подразумеваются. водные растения форма плавающие и погружённые растения плавающие растения"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:architectural-material-classes:en",
       "target_ref": "claim:architectural-material-classes",
       "domain": "architecture_settlement",
@@ -400,6 +414,370 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Дощатый погребальный контейнер Дощатые гробы в предварительном сообщении об Ильинском II В предварительном сообщении НовГУ об Ильинском II в Старой Руссе дощатые гробы описаны как сколоченные гвоздями. Комплекс предварительно датируется началом XII века; контексты повреждены, погребения преимущественно детские. Наблюдения относятся к отдельным находкам; совместимость с Новгородской землёй 1100–1300 гг. — вывод средней уверенности. Это не единая конструкция или обряд, не число гвоздей, порода дерева, размер, изготовитель, запас материала или гроб в текущей сцене. гроб доски гвозди Старая Русса"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species:en",
+      "target_ref": "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Deciduous-tree leaf and flower emergence sequence Qualitative interspecies phenology variation, not a local calendar. The sequence of flower and leaf emergence can differ between deciduous tree species. This establishes no species, calendar date, weather, current tree state, fruiting, or yield in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species:ru",
+      "target_ref": "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Последовательность появления листьев и цветков у листопадных деревьев Качественная вариативность фенологических сроков между видами, не календарь места. Последовательность появления цветков и листьев у разных листопадных древесных видов может различаться. Это не устанавливает вид, календарную дату, погоду, текущее состояние дерева, плодоношение или урожай в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-edible-plant-status-does-not-transfer-to-every-part:en",
+      "target_ref": "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food suitability of plant parts Boundary between a plant’s general food status and a particular part. A plant’s food-use status does not establish that every part is edible. This establishes no plant, part, amount, season, safety, processing effect, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-edible-plant-status-does-not-transfer-to-every-part:ru",
+      "target_ref": "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пригодность частей пищевого растения Граница между общим статусом растения и свойствами его конкретной части. Статус пищевого растения не устанавливает пригодность в пищу каждой его части. Это не устанавливает растение, часть, количество, сезон, безопасность, обработку или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-nettle-bast-fibre-retting-decortication:en",
+      "target_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Nettle bast fibre extraction Modern relation between nettle stem structure and fibre extraction. Urtica dioica bast fibre can be separated from the woody stem core by retting and decortication. This establishes no nettle presence, stock, access, season, historical practice, tool, or finished fibre."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-nettle-bast-fibre-retting-decortication:ru",
+      "target_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лубяное волокно крапивы и его отделение Современная связь строения стебля крапивы с извлечением волокна. Лубяное волокно крапивы двудомной можно отделять от древесной сердцевины стебля мочкой и декортикацией. Это не доказывает наличие крапивы, её запас, доступность, сезон, историческую практику, инструмент или готовое волокно."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment:en",
+      "target_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Airway obstruction and respiratory impairment Partial or complete airway obstruction can impair breathing and oxygen delivery. This establishes no choking diagnosis, obstruction severity, cause, outcome, or method of relief."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment:ru",
+      "target_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение проходимости дыхательных путей Частичное или полное нарушение проходимости дыхательных путей может ухудшать дыхание и доставку кислорода. Это не устанавливает удушье, тяжесть обструкции, её причину, исход или способ устранения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-alcohol-intoxication-impairment:en",
+      "target_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Alcohol intoxication impairment Alcohol consumption can impair motor coordination, decision-making, and consciousness; at high exposure the gag reflex can be impaired. Effects depend on amount, time, and individual factors."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-alcohol-intoxication-impairment:ru",
+      "target_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушения при алкогольной интоксикации Употребление алкоголя может нарушать двигательную координацию, способность принимать решения и сознание; при высоком воздействии может ослабляться глоточный рефлекс. Эффект зависит от количества, времени и индивидуальных факторов."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-blink-corneal-protection:en",
+      "target_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Corneal blink reflex Tactile stimulation of the cornea, and bright light in a related reflex, can elicit involuntary blinking. This establishes no vision, eye condition, duration, or protective outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-blink-corneal-protection:ru",
+      "target_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Корнеальный мигательный рефлекс Тактильное раздражение роговицы, а в связанном рефлексе яркий свет, могут вызвать непроизвольное мигание. Это не устанавливает зрение, состояние глаза, длительность или защитный исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-blood-volume-perfusion-compensation:en",
+      "target_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Blood volume perfusion compensation Significant blood or fluid loss can reduce blood volume, pressure, and perfusion; the body can initiate compensatory cardiovascular responses that do not guarantee adequate perfusion."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-blood-volume-perfusion-compensation:ru",
+      "target_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Компенсация объёма крови и перфузии Значимая потеря крови или жидкости может уменьшать объём крови, давление и перфузию; организм может включать компенсаторные сердечно-сосудистые ответы, которые не гарантируют достаточную перфузию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-cough-reflex-airway-irritation:en",
+      "target_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cough reflex airway irritation Airway irritation can elicit a cough reflex that helps clear secretions or particles from the airways. Cough can also be voluntary; neither form proves obstruction relief, its cause, or intact ventilation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-cough-reflex-airway-irritation:ru",
+      "target_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кашлевой рефлекс при раздражении дыхательных путей Раздражение дыхательных путей может вызвать кашлевой рефлекс, помогающий очищать дыхательные пути от секрета или частиц. Кашель может быть и произвольным; ни один вариант не доказывает устранение обструкции, её причину или сохранную вентиляцию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-dehydration-functional-risk:en",
+      "target_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Dehydration functional risk Continued water loss without adequate replacement can impair normal function and, in severe cases, consciousness. This establishes no volume, duration, thirst, concrete dehydration degree, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-dehydration-functional-risk:ru",
+      "target_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Функциональный риск обезвоживания Продолжительная потеря воды без достаточного восполнения может нарушать обычное функционирование и в тяжёлых случаях сознание. Это не устанавливает объём, срок, жажду, конкретную степень обезвоживания или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-drowning-respiratory-impairment:en",
+      "target_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Drowning respiratory impairment Drowning is the process of respiratory impairment from submersion/immersion in liquid. Not every submersion is drowning: respiratory impairment is required, and outcomes vary."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-drowning-respiratory-impairment:ru",
+      "target_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение дыхания при утоплении Утопление — процесс нарушения дыхания вследствие погружения в жидкость. Не всякое погружение является утоплением: требуется нарушение дыхания; исходы могут различаться."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-emesis-reflex-response:en",
+      "target_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Emesis reflex response Emesis is reflexive expulsion of gastric contents; it can follow different central or peripheral signals and does not always follow nausea. This establishes no toxin, illness, gastric contents, removal of a cause, or protected airway."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-emesis-reflex-response:ru",
+      "target_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рефлекторная рвота Рвота — рефлекторное изгнание желудочного содержимого; она может следовать за разными центральными или периферическими сигналами и не всегда следует за тошнотой. Это не доказывает токсин, болезнь, содержимое желудка, устранение причины или защищённость дыхательных путей."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation:en",
+      "target_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Gag reflex pharyngeal stimulation Stimulation of the back of the mouth or pharynx can elicit an involuntary gag reflex. It differs from a voluntary decision to swallow and by itself proves neither safe swallowing, aspiration, choking, nor vomiting."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation:ru",
+      "target_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рвотный рефлекс при раздражении глотки Стимуляция задней части рта или глотки может вызвать непроизвольный глоточный рефлекс. Он отличается от произвольного решения глотать и сам по себе не доказывает безопасное глотание, аспирацию, удушье или рвоту."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-low-brain-perfusion-awareness:en",
+      "target_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Low brain perfusion and awareness Reduced blood delivery to the brain can be accompanied by brief dizziness or loss of balance. This establishes no fall, loss of consciousness, or state of a particular person."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-low-brain-perfusion-awareness:ru",
+      "target_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Снижение перфузии мозга и осознания Снижение поступления крови к мозгу может сопровождаться кратковременным головокружением или потерей равновесия. Это не устанавливает падение, потерю сознания или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-oxygen-delivery-brain-function:en",
+      "target_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Oxygen delivery and brain function Low blood oxygen can cause drowsiness or loss of consciousness. This establishes no cause, duration, reversibility, or state of a particular person."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-oxygen-delivery-brain-function:ru",
+      "target_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Доставка кислорода и функция мозга Низкий уровень кислорода в крови может вызывать сонливость или потерю сознания. Это не устанавливает причину, длительность, обратимость или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-protective-withdrawal:en",
+      "target_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Protective withdrawal reflex A painful or potentially damaging stimulus can elicit involuntary protective withdrawal. This establishes no injury, body side, force, successful response, or loss of control by a concrete actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-protective-withdrawal:ru",
+      "target_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Защитный рефлекс отдёргивания Болезненный или потенциально повреждающий стимул может вызвать непроизвольное защитное отдёргивание. Это не доказывает травму, сторону, силу, успех реакции или потерю контроля конкретного персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-shivering-thermogenesis:en",
+      "target_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Shivering thermogenesis Involuntary contractions during shivering release heat and consume ATP. This establishes no cold exposure, body temperature, protection from hypothermia, or shivering duration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-shivering-thermogenesis:ru",
+      "target_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Термогенез при дрожи Непроизвольные сокращения при дрожи выделяют тепло и расходуют энергию. Это не доказывает холодовое воздействие, температуру тела, защиту от переохлаждения или продолжительность дрожи."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation:en",
+      "target_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Sneeze reflex nasal irritation Nasal-passage irritation can elicit an involuntary sneeze reflex. This establishes no irritant cause, infection, allergy, substance spread, or successful clearance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation:ru",
+      "target_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Чихательный рефлекс при раздражении носа Раздражение носовых ходов может вызвать непроизвольный чихательный рефлекс. Это не устанавливает причину раздражения, инфекцию, аллергию, распространение вещества или успех очищения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus:en",
+      "target_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Startle reflex An unexpected strong stimulus can elicit a complex involuntary startle reflex with brief muscular and autonomic changes. This establishes no threat, emotion, fall, concrete action, or impaired consciousness."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus:ru",
+      "target_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Startle-рефлекс Неожиданный сильный стимул может вызвать сложный непроизвольный рефлекс вздрагивания с краткими мышечными и автономными изменениями. Это не доказывает угрозу, эмоцию, падение, конкретное действие или нарушение сознания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-swallowing-airway-protection:en",
+      "target_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Swallowing airway protection Swallowing begins voluntarily, but its pharyngeal and esophageal phases are involuntary; during the pharyngeal phase the airway is briefly protected. This neither proves safe passage of a concrete bolus nor excludes aspiration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-swallowing-airway-protection:ru",
+      "target_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Защита дыхательных путей при глотании Глотание начинается произвольно, но глоточная и пищеводная фазы непроизвольны; во время глоточной фазы дыхательные пути кратко защищаются. Это не доказывает безопасное прохождение конкретного болюса и не исключает аспирацию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-threat-autonomic-arousal:en",
+      "target_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Threat autonomic arousal A perceived threat can activate sympathetic stress arousal with changes in attention, breathing, cardiac activity, sweating, and muscle tension; magnitude and behavior vary individually."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-threat-autonomic-arousal:ru",
+      "target_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Автономное возбуждение при воспринятой угрозе Воспринятая угроза может активировать симпатический стресс-ответ с изменениями внимания, дыхания, сердечной деятельности, потоотделения и мышечного напряжения; выраженность и поведение индивидуально варьируют."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-vestibular-postural-correction:en",
+      "target_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Vestibular postural correction Vestibular and proprioceptive signals contribute to position and balance; displacement of the head or body can evoke corrective eye or body movements. This establishes no fall, stability, diagnosis, or a concrete actor’s ability to remain upright."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-physiology-v3-vestibular-postural-correction:ru",
+      "target_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Вестибулярная постуральная коррекция Вестибулярные и проприоцептивные сигналы участвуют в ощущении положения и равновесия; смещение головы или тела может вызвать корректирующие движения глаз или тела. Это не устанавливает падение, устойчивость, диагноз или способность конкретного персонажа удержаться."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-plant-identity-can-require-multiple-diagnostic-characters:en",
+      "target_ref": "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Diagnostic characters of botanical identity Qualitative relation between plant identity and distinguishing part/habit characters. Distinguishing a plant’s taxonomic identity can use characters from multiple parts and its overall habit. This establishes no taxon from a name, one feature, text, image, or concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-plant-identity-can-require-multiple-diagnostic-characters:ru",
+      "target_ref": "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Диагностические признаки ботанической идентичности Качественная связь идентичности растения с различительными признаками частей и общим обликом. Для различения таксономической принадлежности растения могут использоваться различительные признаки нескольких частей и общий облик. Это не устанавливает таксон по названию, одному признаку, тексту, изображению или конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen:en",
+      "target_ref": "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Water circulation and dissolved oxygen Possible conditions contributing to low dissolved oxygen. Poor flushing or circulation can contribute to low dissolved oxygen. This establishes no waterbody state, oxygen value, fish presence, fish kill, or cause in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen:ru",
+      "target_ref": "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Циркуляция воды и растворённый кислород Возможные условия низкого растворённого кислорода. Слабое промывание или циркуляция воды может способствовать низкой концентрации растворённого кислорода. Это не устанавливает состояние водоёма, содержание кислорода, наличие рыбы, замор или причину в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen:en",
+      "target_ref": "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Water circulation and dissolved oxygen Possible conditions contributing to low dissolved oxygen. Sudden rain after a dry spell can contribute to low dissolved oxygen. This establishes no rainfall amount, runoff composition, waterbody, pollution, fish presence, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen:ru",
+      "target_ref": "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Циркуляция воды и растворённый кислород Возможные условия низкого растворённого кислорода. Внезапный дождь после сухого периода может способствовать низкой концентрации растворённого кислорода. Это не устанавливает количество осадков, состав стока, водоём, загрязнение, наличие рыбы или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-river-flood-woody-debris-transport-retention-conditional:en",
+      "target_ref": "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Flood woody-debris transport and retention Conditional river mechanism, not scene debris presence. A river flood can transport woody debris, and local hydrologic and channel features can affect retention. This creates no driftwood, log, raft, cargo, collectible resource, or safe outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-river-flood-woody-debris-transport-retention-conditional:ru",
+      "target_ref": "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Перенос и задержание древесного плавника при паводке Условный речной механизм, а не наличие плавника в сцене. Речной паводок может переносить древесные остатки, а местные гидрологические особенности и особенности русла могут влиять на их задержание. Это не создаёт плавник, бревно, плот, груз, доступный ресурс или безопасный исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
+      "target_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Differentiating visually similar plants Visual resemblance does not establish shared taxonomic or hazard-related properties. Visually similar plants can differ in taxonomic identity and hazard-related properties. This establishes no species, plant presence, hazard, exposure, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:ru",
+      "target_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Различение внешне похожих растений Внешнее сходство не устанавливает тождество таксона или свойств, связанных с опасностью. Внешне похожие растения могут различаться таксономической принадлежностью и свойствами, связанными с опасностью. Это не устанавливает вид, наличие растения, опасность, воздействие или исход в конкретной сцене."
     },
     {
       "entry_ref": "wk-retrieval:claim:candle-rolled-plate:en",
@@ -3886,6 +4264,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Очистка волокон прядильных растений Чесало могло удалять остатки кострики с волокон прядильных растений. Кудряшов описывает ручное и стационарное чесала из слоёв Луковца середины XII и XI веков; совместимость с Новгородской землёй 1100–1300 годов выводится. Это не отождествляет всякий гребень с чесалом и не устанавливает конкретное волокно, обязательную последовательность, готовность к прядению, наличный инструмент, доступ, умение или результат."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability:en",
+      "target_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fishing-net serviceability A net condition that can be maintained by mending or replacing worn parts. Mending a net or replacing its worn parts can prolong serviceability; no particular net, fibre, historical practice, or outcome is implied. net mending net wear replace worn net parts"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability:ru",
+      "target_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Пригодность рыболовной сети Состояние сети, которое может поддерживаться починкой или заменой изношенных частей. Починка сети или замена её изношенных частей может продлевать пригодность сети; конкретная сеть, волокно, историческая практика и результат не подразумеваются. починка сети износ сети замена частей сети"
     },
     {
       "entry_ref": "wk-retrieval:claim:flayed-skin-processing-purpose:en",
@@ -8228,6 +8620,20 @@
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Рост микроорганизмов зависит от температурного диапазона конкретного вида."
     },
     {
+      "entry_ref": "wk-retrieval:claim:modern-fibre-rope-condition-can-reduce-available-strength:en",
+      "target_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fibre-rope condition Fibre-rope condition relevant to available strength. Abrasion, bends, and knots can reduce the available strength of fibre rope; this establishes no strength, knot, load, break, exact historical hemp-line property, or scene rope. rope chafe rope abrasion knot strength"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:modern-fibre-rope-condition-can-reduce-available-strength:ru",
+      "target_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состояние волокнистой верёвки Состояние волокнистой верёвки, влияющее на доступную прочность. Истирание, изгибы и узлы могут уменьшать доступную прочность волокнистой верёвки; это не устанавливает прочность, узел, нагрузку, обрыв, точные свойства исторической пеньковой снасти или верёвку в сцене. истирание верёвки износ верёвки узел прочность"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:most-fungi-hyphae-substrate-nutrition:en",
       "target_ref": "claim:most-fungi-hyphae-substrate-nutrition",
       "domain": "biology_physiology",
@@ -8534,6 +8940,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Ноцицепция и боль различаются Ноцицепция и боль различаются; переживание боли нельзя свести к единой объективной шкале повреждения или вывести без состояния actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration:en",
+      "target_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Partially saturated granular deformation Change in grain, air and water configuration during deformation. Deformation of partially saturated granular material can change air–water interfaces and water-cluster configuration; this establishes no water discharge, connected path, amount, rate, local material, or action result. partially saturated granular compression granular compression water clusters partially saturated deformation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration:ru",
+      "target_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Деформация частично насыщенного зернистого материала Изменение конфигурации зёрен, воздуха и воды при деформации. Деформация частично насыщенного зернистого материала может менять конфигурацию границ воздух–вода и водных кластеров; это не устанавливает выход воды, связный путь, количество, скорость, местный материал или результат действия. сжатие влажного песка поры вода деформация"
     },
     {
       "entry_ref": "wk-retrieval:claim:pigment-blue-layer-order:en",
@@ -11014,6 +11434,20 @@
       "retrieval_text": "Энергия скелетной мышцы Сокращение скелетной мышцы требует АТФ. Сокращение скелетной мышцы зависит от АТФ; способность действия не следует из этого."
     },
     {
+      "entry_ref": "wk-retrieval:claim:smoke-particles-can-attenuate-light-and-reduce-visibility:en",
+      "target_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Smoke optical obscuration Light attenuation by smoke particles along a line of sight. Smoke particles can attenuate transmitted light and reduce visual discrimination; no smoke, visibility value, perception, or scene outcome is implied. smoke visibility smoke light attenuation light attenuation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:smoke-particles-can-attenuate-light-and-reduce-visibility:ru",
+      "target_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Оптическое задымление Ослабление света частицами дыма на пути зрения. Частицы дыма могут ослаблять проходящий свет и уменьшать зрительную различимость; дым, видимость, восприятие и результат в конкретной сцене не подразумеваются. дым видимость задымление"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:social-alphabet-exercise-records-text:en",
       "target_ref": "claim:social-alphabet-exercise-records-text",
       "domain": "social_law_economy",
@@ -11476,6 +11910,20 @@
       "retrieval_text": "Камень Камень: материальная или функциональная категория; наличие и параметры задаёт состояние мира. В описанном Колчиным домонгольском древнерусском археологическом контексте малый оселок мог служить для заточки затупившейся режущей кромки. Совместимость с Новгородской землёй 1100–1300 годов выведена косвенно; не установлены местная находка, пригодность любого камня, наличие инструмента или успешная заточка. Оселок заточка режущей кромки Каменный точильный брусок"
     },
     {
+      "entry_ref": "wk-retrieval:claim:stored-grain-airflow-can-reduce-temperature-differences:en",
+      "target_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stored-grain airflow temperature management Qualitative effect of airflow on temperature differences in stored grain. Airflow through stored grain can reduce temperature differences when it reaches the grain; no apparatus, flow, or outcome is implied. grain aeration stored grain airflow storage temperature"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:stored-grain-airflow-can-reduce-temperature-differences:ru",
+      "target_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Воздушный температурный режим хранимого зерна Качественное влияние прохождения воздуха на разницу температур в хранимом зерне. Прохождение воздуха через хранимое зерно может уменьшать разницу температур, если воздух достигает зерна; устройство, поток и результат не заданы. аэрация зерна воздух хранение зерна температура хранение"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:stored-grain-condition-depends-on-temperature-moisture:en",
       "target_ref": "claim:stored-grain-condition-depends-on-temperature-moisture",
       "domain": "biology_physiology",
@@ -11488,6 +11936,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Состояние хранимого зерна Температура и влажность ограничивают хранение зерна. Температура и влажность ограничивают хранение зерна; запас и срок не подразумеваются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:stored-grain-temperature-gradient-can-migrate-moisture:en",
+      "target_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stored-grain moisture migration Moisture transport and deposition caused by temperature differences in stored grain. A temperature difference in stored grain can move moisture toward a cooler zone where it can deposit; no grain, state, or outcome is implied. grain moisture migration stored grain condensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:stored-grain-temperature-gradient-can-migrate-moisture:ru",
+      "target_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влагоперенос в хранимом зерне Перенос и осаждение влаги при температурной неоднородности хранимого зерна. Разница температур в хранимом зерне может переносить влагу к более холодной зоне, где она может осаждаться; наличие зерна, его состояние и результат не заданы. зерно конденсат влагоперенос хранение конденсат зерно"
     },
     {
       "entry_ref": "wk-retrieval:claim:structural-and-object-wood:en",
@@ -11938,6 +12400,20 @@
       "retrieval_text": "Растительно-дублёная кожа Кожа с растительным дублением; способ выделки конкретного объекта требует отдельного основания. Растительное дубление обрабатывает предварительно подготовленную шкуру растительным материалом или раствором, содержащим дубильные вещества. Это условная связь процесса, не обязательный рецепт подготовки всякой шкуры. Она не устанавливает дубление в Новгороде, конкретное растение, сосуд, запас, доступ, умение, время или успешный результат; высушивание недублёной шкуры и квасцовая выделка остаются другими процессами. растительное дубление подготовленная шкура дубильные вещества"
     },
     {
+      "entry_ref": "wk-retrieval:claim:water-can-cool-class-a-fire-fuel-and-flame:en",
+      "target_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Water cooling of a Class A fire Fuel and flame cooling by water as a Class A fire-suppression mechanism. Water can contribute to Class A fire suppression by cooling fuel and flame; success, amount, safety, and other fire classes are not implied. water fire cooling Class A suppression water fire suppression fuel cooling"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:water-can-cool-class-a-fire-fuel-and-flame:ru",
+      "target_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Охлаждение водой пожара обычных твёрдых горючих материалов Охлаждение топлива и пламени водой как механизм подавления горения обычных горючих материалов, включая древесину и ткани. Вода может способствовать подавлению пожара обычных твёрдых горючих материалов, включая древесину и ткани, охлаждением топлива и пламени; успех, количество, безопасность и другие классы огня не подразумеваются. вода охлаждение огня тушение древесины вода тушение огня охлаждение топлива"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:water-capillary-height:en",
       "target_ref": "claim:water-capillary-height",
       "domain": "physics_material_science",
@@ -12020,6 +12496,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Смачивание поверхности жидкостью Поведение границы между жидкостью и поверхностью, не свойство сквозного течения. Растекание жидкости или образование капель на поверхности зависит от соотношения сил сцепления внутри жидкости и её сцепления с поверхностью; это соотношение выражается краевым углом. Смачиваемость не устанавливает пористость, проницаемость или результат трения. Смачивание Капли на поверхности"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion:en",
+      "target_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wet granular capillary cohesion Cohesion of grains through liquid–air interfaces between them. Liquid–air interfaces spanning grains in partially wet granular material can provide capillary cohesion; this establishes no material, moisture, grain size, strength, moulding, scene water, or compression result. wet granular capillary bridges wet granular cohesion capillary bridges"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion:ru",
+      "target_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Капиллярное сцепление влажного зернистого материала Сцепление зёрен через жидкостно-воздушные границы между ними. Жидкостно-воздушные границы, соединяющие зёрна частично влажного зернистого материала, могут давать капиллярное сцепление; это не устанавливает материал, влажность, размер зёрен, прочность, лепку, воду в сцене или результат сжатия. влажный песок сцепление капиллярные мостики"
     },
     {
       "entry_ref": "wk-retrieval:claim:wetland-hydric-soil-depends-on-saturation:en",
@@ -12806,6 +13296,20 @@
       "retrieval_text": "Гомеостаз животных Организм животного отвечает на внутренние и внешние изменения."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:aquatic-macrophyte-form-attachment:en",
+      "target_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Aquatic macrophyte form and attachment Relation of aquatic macrophyte form to substrate attachment and water surface. aquatic plant forms floating submerged emergent"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:aquatic-macrophyte-form-attachment:ru",
+      "target_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Форма и прикрепление водных макрофитов Связь формы водного макрофита с грунтом и поверхностью воды. водные растения форма плавающие и погружённые растения"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:bearberry-lingonberry-identification:en",
       "target_ref": "wk:biology_physiology:bearberry-lingonberry-identification",
       "domain": "biology_physiology",
@@ -12832,6 +13336,258 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Широкопалый рак Европейский речной рак Astacus astacus Широкопалый рак (Astacus astacus) живёт в текучей или стоячей воде с укрытиями; самки вынашивают икру. широкопалый рак речной рак рак"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment:en",
+      "target_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Airway obstruction and respiratory impairment"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment:ru",
+      "target_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение проходимости дыхательных путей"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-alcohol-intoxication-impairment:en",
+      "target_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Alcohol intoxication impairment"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-alcohol-intoxication-impairment:ru",
+      "target_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушения при алкогольной интоксикации"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-blink-corneal-protection:en",
+      "target_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Corneal blink reflex"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-blink-corneal-protection:ru",
+      "target_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Корнеальный мигательный рефлекс"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-blood-volume-perfusion-compensation:en",
+      "target_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Blood volume perfusion compensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-blood-volume-perfusion-compensation:ru",
+      "target_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Компенсация объёма крови и перфузии"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-cough-reflex-airway-irritation:en",
+      "target_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cough reflex airway irritation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-cough-reflex-airway-irritation:ru",
+      "target_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кашлевой рефлекс при раздражении дыхательных путей"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-dehydration-functional-risk:en",
+      "target_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Dehydration functional risk"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-dehydration-functional-risk:ru",
+      "target_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Функциональный риск обезвоживания"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-drowning-respiratory-impairment:en",
+      "target_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Drowning respiratory impairment"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-drowning-respiratory-impairment:ru",
+      "target_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение дыхания при утоплении"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-emesis-reflex-response:en",
+      "target_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Emesis reflex response"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-emesis-reflex-response:ru",
+      "target_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рефлекторная рвота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation:en",
+      "target_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Gag reflex pharyngeal stimulation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation:ru",
+      "target_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Рвотный рефлекс при раздражении глотки"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-low-brain-perfusion-awareness:en",
+      "target_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Low brain perfusion and awareness"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-low-brain-perfusion-awareness:ru",
+      "target_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Снижение перфузии мозга и осознания"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-oxygen-delivery-brain-function:en",
+      "target_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Oxygen delivery and brain function"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-oxygen-delivery-brain-function:ru",
+      "target_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Доставка кислорода и функция мозга"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-protective-withdrawal:en",
+      "target_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Protective withdrawal reflex"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-protective-withdrawal:ru",
+      "target_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Защитный рефлекс отдёргивания"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-shivering-thermogenesis:en",
+      "target_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Shivering thermogenesis"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-shivering-thermogenesis:ru",
+      "target_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Термогенез при дрожи"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation:en",
+      "target_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Sneeze reflex nasal irritation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation:ru",
+      "target_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Чихательный рефлекс при раздражении носа"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus:en",
+      "target_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Startle reflex"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus:ru",
+      "target_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Startle-рефлекс"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-swallowing-airway-protection:en",
+      "target_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Swallowing airway protection"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-swallowing-airway-protection:ru",
+      "target_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Защита дыхательных путей при глотании"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-threat-autonomic-arousal:en",
+      "target_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Threat autonomic arousal"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-threat-autonomic-arousal:ru",
+      "target_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Автономное возбуждение при воспринятой угрозе"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:en",
+      "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Vestibular postural correction"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:ru",
+      "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Вестибулярная постуральная коррекция"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:chemical-exposure-not-illness:en",
@@ -14738,6 +15494,48 @@
       "retrieval_text": "Дрожжевое брожение Брожение сахаров дрожжами."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-diagnostic-identity:en",
+      "target_ref": "wk:biology:candidate-plant-diagnostic-identity",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Diagnostic characters of botanical identity Qualitative relation between plant identity and distinguishing part/habit characters."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-diagnostic-identity:ru",
+      "target_ref": "wk:biology:candidate-plant-diagnostic-identity",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Диагностические признаки ботанической идентичности Качественная связь идентичности растения с различительными признаками частей и общим обликом."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-food-part-bound:en",
+      "target_ref": "wk:biology:candidate-plant-food-part-bound",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food suitability of plant parts Boundary between a plant’s general food status and a particular part."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-food-part-bound:ru",
+      "target_ref": "wk:biology:candidate-plant-food-part-bound",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пригодность частей пищевого растения Граница между общим статусом растения и свойствами его конкретной части."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-lookalike-differentiation:en",
+      "target_ref": "wk:biology:candidate-plant-lookalike-differentiation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Differentiating visually similar plants Visual resemblance does not establish shared taxonomic or hazard-related properties."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:candidate-plant-lookalike-differentiation:ru",
+      "target_ref": "wk:biology:candidate-plant-lookalike-differentiation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Различение внешне похожих растений Внешнее сходство не устанавливает тождество таксона или свойств, связанных с опасностью."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:acid-base-neutralization:en",
       "target_ref": "wk:chemistry_process:acid-base-neutralization",
       "domain": "chemistry_process",
@@ -15884,6 +16682,62 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Древняя погребённая почва Новгорода"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-deciduous-tree-leaf-flower-sequence:en",
+      "target_ref": "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Deciduous-tree leaf and flower emergence sequence Qualitative interspecies phenology variation, not a local calendar."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-deciduous-tree-leaf-flower-sequence:ru",
+      "target_ref": "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Последовательность появления листьев и цветков у листопадных деревьев Качественная вариативность фенологических сроков между видами, не календарь места."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-flood-woody-debris-transport-retention:en",
+      "target_ref": "wk:environment:candidate-flood-woody-debris-transport-retention",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Flood woody-debris transport and retention Conditional river mechanism, not scene debris presence."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-flood-woody-debris-transport-retention:ru",
+      "target_ref": "wk:environment:candidate-flood-woody-debris-transport-retention",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Перенос и задержание древесного плавника при паводке Условный речной механизм, а не наличие плавника в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-nettle-bast-fibre-extraction:en",
+      "target_ref": "wk:environment:candidate-nettle-bast-fibre-extraction",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Nettle bast fibre extraction Modern relation between nettle stem structure and fibre extraction."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-nettle-bast-fibre-extraction:ru",
+      "target_ref": "wk:environment:candidate-nettle-bast-fibre-extraction",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лубяное волокно крапивы и его отделение Современная связь строения стебля крапивы с извлечением волокна."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-water-circulation-oxygen:en",
+      "target_ref": "wk:environment:candidate-water-circulation-oxygen",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Water circulation and dissolved oxygen Possible conditions contributing to low dissolved oxygen."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-water-circulation-oxygen:ru",
+      "target_ref": "wk:environment:candidate-water-circulation-oxygen",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Циркуляция воды и растворённый кислород Возможные условия низкого растворённого кислорода."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:cloud-droplet-growth-precipitation:en",
@@ -19330,6 +20184,20 @@
       "retrieval_text": "Скручивание текстильных волокон Общая способность текстильных волокон скручиваться в пряжу; не рецепт подготовки и не гарантированный результат."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:fishing-net-serviceability:en",
+      "target_ref": "wk:physics_material_science:fishing-net-serviceability",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fishing-net serviceability A net condition that can be maintained by mending or replacing worn parts. net mending net wear"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:fishing-net-serviceability:ru",
+      "target_ref": "wk:physics_material_science:fishing-net-serviceability",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Пригодность рыболовной сети Состояние сети, которое может поддерживаться починкой или заменой изношенных частей. починка сети износ сети"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:flow-regime-speed:en",
       "target_ref": "wk:physics_material_science:flow-regime-speed",
       "domain": "physics_material_science",
@@ -19568,6 +20436,20 @@
       "retrieval_text": "Свойства металла зависят от состава, структуры, обработки и температуры Свойства металла зависят от состава, структуры, обработки и температуры; слово «металл» не задаёт одно число свойств."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:modern-fibre-rope-condition:en",
+      "target_ref": "wk:physics_material_science:modern-fibre-rope-condition",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Fibre-rope condition Fibre-rope condition relevant to available strength. rope chafe rope abrasion"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:modern-fibre-rope-condition:ru",
+      "target_ref": "wk:physics_material_science:modern-fibre-rope-condition",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состояние волокнистой верёвки Состояние волокнистой верёвки, влияющее на доступную прочность. истирание верёвки износ верёвки"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:moisture-vaporization-heat-demand:en",
       "target_ref": "wk:physics_material_science:moisture-vaporization-heat-demand",
       "domain": "physics_material_science",
@@ -19622,6 +20504,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Экспериментальные операции обработки кости и оленьего рога В эксперименте с репликой бронзового ножа обработка кости и оленьего рога включала разные операции."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:partially-saturated-granular-deformation:en",
+      "target_ref": "wk:physics_material_science:partially-saturated-granular-deformation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Partially saturated granular deformation Change in grain, air and water configuration during deformation. partially saturated granular compression"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:partially-saturated-granular-deformation:ru",
+      "target_ref": "wk:physics_material_science:partially-saturated-granular-deformation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Деформация частично насыщенного зернистого материала Изменение конфигурации зёрен, воздуха и воды при деформации. сжатие влажного песка поры вода деформация"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:phase-change:en",
@@ -19692,6 +20588,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Истечение жидкости из-за разности давления Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:smoke-optical-obscuration:en",
+      "target_ref": "wk:physics_material_science:smoke-optical-obscuration",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Smoke optical obscuration Light attenuation by smoke particles along a line of sight. smoke visibility smoke light attenuation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:smoke-optical-obscuration:ru",
+      "target_ref": "wk:physics_material_science:smoke-optical-obscuration",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Оптическое задымление Ослабление света частицами дыма на пути зрения. дым видимость задымление"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:solid-deformation:en",
@@ -19818,6 +20728,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Плотность и сжатие природного камня Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:stored-grain-airflow-temperature-management:en",
+      "target_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stored-grain airflow temperature management Qualitative effect of airflow on temperature differences in stored grain. grain aeration stored grain airflow"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:stored-grain-airflow-temperature-management:ru",
+      "target_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Воздушный температурный режим хранимого зерна Качественное влияние прохождения воздуха на разницу температур в хранимом зерне. аэрация зерна воздух хранение зерна"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:stored-grain-moisture-migration:en",
+      "target_ref": "wk:physics_material_science:stored-grain-moisture-migration",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stored-grain moisture migration Moisture transport and deposition caused by temperature differences in stored grain. grain moisture migration stored grain condensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:stored-grain-moisture-migration:ru",
+      "target_ref": "wk:physics_material_science:stored-grain-moisture-migration",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влагоперенос в хранимом зерне Перенос и осаждение влаги при температурной неоднородности хранимого зерна. зерно конденсат влагоперенос хранение"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:support-polygon-center-of-mass:en",
@@ -19958,6 +20896,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "thin horn water softening Тонкий рог при контакте с водой может быстро размягчаться и деформироваться."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:water-class-a-fire-cooling:en",
+      "target_ref": "wk:physics_material_science:water-class-a-fire-cooling",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Water cooling of a Class A fire Fuel and flame cooling by water as a Class A fire-suppression mechanism. water fire cooling Class A suppression"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:water-class-a-fire-cooling:ru",
+      "target_ref": "wk:physics_material_science:water-class-a-fire-cooling",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Охлаждение водой пожара обычных твёрдых горючих материалов Охлаждение топлива и пламени водой как механизм подавления горения обычных горючих материалов, включая древесину и ткани. вода охлаждение огня тушение древесины"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wet-granular-capillary-cohesion:en",
+      "target_ref": "wk:physics_material_science:wet-granular-capillary-cohesion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wet granular capillary cohesion Cohesion of grains through liquid–air interfaces between them. wet granular capillary bridges"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wet-granular-capillary-cohesion:ru",
+      "target_ref": "wk:physics_material_science:wet-granular-capillary-cohesion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Капиллярное сцепление влажного зернистого материала Сцепление зёрен через жидкостно-воздушные границы между ними. влажный песок сцепление капиллярные мостики"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:wood-anisotropy-moisture:en",

@@ -136,6 +136,13 @@ export function compareClaims(a, b, query, exactRefs, lexicalScores,
     || a.claim_ref.localeCompare(b.claim_ref);
 }
 
+export function normalizeScores(scores) {
+  const maximum = Math.max(0, ...scores.values());
+  if (maximum === 0) return new Map();
+  return new Map([...scores].map(([ref, score]) => [ref,
+    Math.max(0, score) / maximum]));
+}
+
 function specificity(value) { return value.context_scope === 'universal' ? 0 : ['time', 'places', 'actors', 'conditions'].filter((key) => value[key] != null).length; }
 function qualifierScore(value) { return ({ high: 30, medium: 20, low: 10, unknown: 0 }[value.confidence] ?? 0) + ({ direct: 3, inferred: 2, analogical: 1, editorial: 0, unknown: 0 }[value.directness] ?? 0); }
 

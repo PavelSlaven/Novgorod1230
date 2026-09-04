@@ -87,11 +87,7 @@ function historicalLocationProfile(locationProfiles, locationRef) {
   return { display_name: matches[0].display_name,
     player_visible_physical_facts: [] };
 }
-export function projectCurrentSceneForNoOperationDirect({
-  input,
-  directSeedKeys,
-  body
-}) {
+export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
   const traces = input?.mode_resolution?.decision_trace?.step_traces;
   const current = input?.retrieved_state?.current_visible_context;
@@ -108,18 +104,23 @@ export function projectCurrentSceneForNoOperationDirect({
     input, directSeedKeys, body
   });
 }
-export function projectCurrentSceneForVisibleOverlay({
-  input,
-  directSeedKeys,
-  body
-}) {
+export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body }) {
   const current = input?.retrieved_state?.current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
+  const outcomeConstraints = directOutcomeConstraints(input);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
       ...current.visible_changes,
-      ...projectDirectSeedChanges({ input, directSeedKeys })
+      ...projectDirectSeedChanges({ input, directSeedKeys }),
+      ...(outcomeConstraints.includes('unconfirmed_attempt_success')
+        ? input.mode_resolution.decision_trace.step_traces
+          .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
+            && plan.goal_result === 'not_achieved')
+          .map(({ approved_plan: plan }) =>
+            text(plan.interpretation?.player_goal)
+              ? `Не удалось достичь цели «${plan.interpretation.player_goal}».`
+              : 'Цель попытки не достигнута.') : [])
     ]),
     known_context: unique([
       ...current.known_context,
@@ -133,7 +134,7 @@ export function projectCurrentSceneForVisibleOverlay({
       'hidden_fact',
       'uncommitted_body_delta',
       'uncommitted_time',
-      ...directOutcomeConstraints(input)
+      ...outcomeConstraints
     ])
   });
 }

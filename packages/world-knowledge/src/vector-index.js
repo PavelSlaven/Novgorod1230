@@ -1,4 +1,5 @@
-export function createWorldKnowledgeFlatVectorIndex(metadata, bytes) {
+export function createWorldKnowledgeFlatVectorIndex(metadata, bytes,
+  { conceptToClaimRefs = null } = {}) {
   if (metadata?.schema !== 'world_knowledge_vector_index_v1'
       || !Number.isInteger(metadata.dimension) || metadata.dimension < 1
       || !Array.isArray(metadata.entries)
@@ -8,6 +9,15 @@ export function createWorldKnowledgeFlatVectorIndex(metadata, bytes) {
       || bytes.byteLength !== metadata.entries.length * metadata.dimension * 4) {
     throw new TypeError('World Knowledge vector index is invalid');
   }
+  if (conceptToClaimRefs != null && (typeof conceptToClaimRefs !== 'object'
+      || Array.isArray(conceptToClaimRefs)
+      || Object.values(conceptToClaimRefs).some((refs) => !Array.isArray(refs)
+        || refs.some((ref) => typeof ref !== 'string' || !ref)))) {
+    throw new TypeError('World Knowledge concept claim index is invalid');
+  }
+  const claimTargets = conceptToClaimRefs == null ? null : new Map(
+    Object.entries(conceptToClaimRefs).map(([ref, targets]) => [ref,
+      [...targets]]));
   const copied = Uint8Array.from(bytes);
   const vectors = new Float32Array(copied.buffer);
   return Object.freeze({
@@ -34,8 +44,11 @@ export function createWorldKnowledgeFlatVectorIndex(metadata, bytes) {
         for (let axis = 0; axis < metadata.dimension; axis += 1) {
           score += queryVector[axis] * vectors[offset + axis];
         }
-        if (score > (scores.get(entry.target_ref) ?? -Infinity)) {
-          scores.set(entry.target_ref, score);
+        const targets = claimTargets?.get(entry.target_ref)
+          ?? [entry.target_ref];
+        for (const target of targets) if (score > (scores.get(target)
+            ?? -Infinity)) {
+          scores.set(target, score);
         }
       }
       return new Map([...scores].sort((a, b) => b[1] - a[1]

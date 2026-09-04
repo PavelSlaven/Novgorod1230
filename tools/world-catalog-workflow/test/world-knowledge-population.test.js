@@ -68,6 +68,48 @@ function query(domains, focus_refs, overrides = {}) {
   });
 }
 
+test('gameplay gap premises compose without granting scene facts or actor expertise', () => {
+  const cases = [
+    ['claim:candidate-nettle-bast-fibre-retting-decortication',
+      'claim:modern-fibre-rope-condition-can-reduce-available-strength'],
+    ['claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position',
+      'claim:candidate-river-flood-woody-debris-transport-retention-conditional'],
+    ['claim:water-can-cool-class-a-fire-fuel-and-flame',
+      'claim:smoke-particles-can-attenuate-light-and-reduce-visibility'],
+    ['claim:candidate-plant-identity-can-require-multiple-diagnostic-characters',
+      'claim:candidate-edible-plant-status-does-not-transfer-to-every-part'],
+    ['claim:candidate-physiology-v3-shivering-thermogenesis',
+      'claim:candidate-physiology-v3-vestibular-postural-correction',
+      'claim:candidate-physiology-v3-protective-withdrawal'],
+    ['claim:food-drying-depends-on-humidity-airflow',
+      'claim:stored-grain-airflow-can-reduce-temperature-differences'],
+    ['claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion',
+      'claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration',
+      'claim:foundations-earth-07-soil-water-states']
+  ];
+  for (const refs of cases) {
+    const claims = refs.map(ref => {
+      const claim = bundle.claims.find(item => item.claim_ref === ref);
+      assert.ok(claim, ref);
+      assert.equal(claim.applicability.context_scope, 'universal', ref);
+      return claim;
+    });
+    const domains = [...new Set(claims.map(claim => claim.domain))];
+    const focus = claims.map(claim => claim.subject_ref);
+    for (const query_locale of ['ru', 'en']) {
+      const slice = query(domains, focus, { query_locale });
+      for (const ref of refs) assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);
+      assert.equal(slice.hard_constraints.length, 0);
+      for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+        const subjective = query(domains, focus, { query_locale, purpose });
+        for (const claim of claims.filter(item => item.knowledge_access.class === 'domain_internal_only')) {
+          assert.ok(!subjective.facts.some(fact => fact.claim_ref === claim.claim_ref), claim.claim_ref);
+        }
+      }
+    }
+  }
+});
+
 test('wild-flora science composes with historical gathering without granting food or actor knowledge', () => {
   const modernRefs = [
     'claim:wild-mushroom-resemblance-not-edibility',

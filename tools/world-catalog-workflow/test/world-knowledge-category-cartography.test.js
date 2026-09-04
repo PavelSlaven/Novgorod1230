@@ -35,6 +35,12 @@ test('production category cartography covers real profiles, locations, and claim
       `data/world-catalogs/novgorod/lower-dvina-trace-v1/${path}`).sort());
   assert.deepEqual(validateCategoryCartography({ cartography, pack, locations, materializationProfiles, sourceClaimsByPath }), []);
   assert.ok(cartography.absent_or_partial_families.length > 0);
+  const incompleteNeeds = structuredClone(cartography);
+  const domain = pack.manifest.domains[0];
+  incompleteNeeds.gameplay_need_cartography.domain_subdomain_dimensions =
+    incompleteNeeds.gameplay_need_cartography.domain_subdomain_dimensions.filter(item => item.domain !== domain);
+  assert.ok(validateCategoryCartography({ cartography: incompleteNeeds, pack, locations, materializationProfiles, sourceClaimsByPath })
+    .includes(`CARTOGRAPHY_GAMEPLAY_DOMAIN_UNMAPPED:${domain}`));
   const missingSemantics = structuredClone(cartography);
   for (const family of missingSemantics.families) {
     delete family.location_applicability;

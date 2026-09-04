@@ -44,6 +44,18 @@
     "foundations-earth.json",
     "verification-ledger.json",
     "verification-foundations.json",
-    "verification-base.json"
+    "verification-base.json",
+    "gameplay-physiology-v3.json",
+    "verification-gameplay-physiology-v3.json",
+    "gameplay-flora-ecology-v3.json",
+    "verification-gameplay-flora-ecology-v3.json",
+    "gameplay-material-process-v3.json",
+    "verification-gameplay-material-process-v3.json",
+    "gameplay-physical-environment-v3.json",
+    "verification-gameplay-physical-environment-v3.json",
+    "gameplay-plant-identification-v3.json",
+    "verification-gameplay-plant-identification-v3.json",
+    "gameplay-granular-materials-v3.json",
+    "verification-gameplay-granular-materials-v3.json"
   ]
 }

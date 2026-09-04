@@ -4,7 +4,8 @@ import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
 import { phase7OwnerOutputPlans } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-owner-output.js';
-import { requireTurnStepOwnerCarrierBinding } from
+import { requireTurnStepOwnerCarrierBinding,
+  validateTurnStepBatchPlanBindings } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-plan-binding.js';
 import { createTracePhase7BodyEffect } from
   '../src/runtime/lower-dvina-trace-phase-7-effects.js';
@@ -22,6 +23,43 @@ import { phase7Command, phase7CommittedState, phase7PlayerInput } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
 
 const digest = 'a'.repeat(64);
+
+test('ambient portion binding accepts owner-normalized provenance and mechanics only', () => {
+  const operation = { op: 'create_entity', temp_ref: 'portion',
+    semantic_type: 'planner-type', name: 'planner name', facts: [],
+    origin: { kind: 'ambient_ordinary', source_refs: ['profile:portion'] },
+    mechanics: { mass_grams: 500, external_hand_cost: 1, carry_form: 'compact',
+      packing_slot_cost: 0, quantity: { value: 1, unit: 'handful' }, container: null },
+    placement: { relation: 'held_by', target_ref: 'actor' } };
+  const fragment = { target: 'party_items', value: { step_index: 1,
+    operation_kind: 'create_entity', payload: { temp_ref: 'portion',
+      semantic_type: 'owner-type', name: 'owner name', facts: [],
+      origin: { kind: 'ambient_ordinary', source_refs: ['context', 'profile:portion'] },
+      runtime_instance_mechanics_snapshot: { mechanics: { mass_grams: 500,
+        external_hand_cost: 1, carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'handful' }, container: null },
+      provenance: { origin_kind: 'ambient_ordinary',
+        source_refs: ['context', 'profile:portion'] } },
+      placement: { holder_character_id: 'actor', physical_position: 'hands' } } } };
+  const input = { batch: { operations: [fragment] }, state: { actor_id: 'actor',
+    items: [], containers: [] }, factual: { loop_trace: { step_traces: [{
+      applied: true, step_index: 1, approved_plan: { resolution: 'direct',
+        operations: [operation], activity: { owner: 'domain' } }
+    }] } } };
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings({ ...input,
+    ambientPortionProfileRef: 'profile:portion' }));
+  fragment.value.payload.origin.source_refs = ['context'];
+  assert.throws(() => validateTurnStepBatchPlanBindings({ ...input,
+    ambientPortionProfileRef: 'profile:portion' }), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+  fragment.value.payload.origin.source_refs = ['context', 'profile:portion',
+    'llm-injected'];
+  assert.throws(() => validateTurnStepBatchPlanBindings({ ...input,
+    ambientPortionProfileRef: 'profile:portion' }), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+});
 
 test('Phase 7 rejects every owner output family injected on selected wait', () => {
   for (const patch of [

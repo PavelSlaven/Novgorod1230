@@ -4,6 +4,8 @@ import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
+import { TurnWorkflowError } from '@rus/turn';
+import { errorEnvelope } from '../src/http/contracts.js';
 import {
   createGameCompositionRoot,
   createGameHttpServer,
@@ -44,6 +46,20 @@ function stage26Fixture() {
     }
   };
 }
+
+test('unresolved ordinary discovery is a non-5xx conflict without private details', () => {
+  const error = new TurnWorkflowError('TURN_ORDINARY_DISCOVERY_UNRESOLVED',
+    'Ordinary discovery prerequisite could not be resolved.',
+    { reason: 'budget_or_cap_exhausted' });
+  const response = errorEnvelope(error, { developerMode: true });
+  assert.equal(response.status, 409);
+  assert.deepEqual(response.body.error, {
+    code: 'TEMPORARY_ACTION_UNAVAILABLE',
+    message: 'Действие временно недоступно. Попробуйте ещё раз.'
+  });
+  assert.equal(JSON.stringify(response).includes('budget_or_cap'), false);
+  assert.equal(error.details.reason, 'budget_or_cap_exhausted');
+});
 
 function turnResult() {
   return {

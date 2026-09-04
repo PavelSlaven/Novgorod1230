@@ -1,0 +1,508 @@
+{
+  "schema": "world_knowledge_retrieval_benchmark_report_v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "benchmark_ref": "wk-benchmark:gameplay-coverage-v3",
+  "gate": {
+    "min_recall_at_10": 0.85,
+    "min_recall_improvement_at_10": 0.05,
+    "max_noise_at_10": 0.75,
+    "min_hard_constraint_recall": 1,
+    "min_applicability_precision": 1,
+    "max_query_embedding_mean_ms": 750,
+    "max_vector_scan_mean_ms": 10
+  },
+  "metrics": {
+    "case_count": 12,
+    "lexical_recall_at_10": 0.7916666666666666,
+    "hybrid_recall_at_10": 1,
+    "lexical_recall_at_20": 0.8333333333333334,
+    "hybrid_recall_at_20": 1,
+    "lexical_hard_constraint_recall": 1,
+    "hybrid_hard_constraint_recall": 1,
+    "lexical_noise_at_10": 0.6625000000000001,
+    "hybrid_noise_at_10": 0.7180555555555556,
+    "applicability_precision": 1,
+    "query_embedding_mean_ms": 84.95108333333333,
+    "vector_scan_mean_ms": 1.2706000000001343,
+    "runtime_bundle_bytes": 5305998,
+    "vector_bundle_bytes": 13139968,
+    "encoder_model_load_ms": 2623.511,
+    "peak_process_rss_bytes": 2389475328,
+    "cuda_peak_allocated_bytes": 0
+  },
+  "decision": {
+    "activate_hybrid_runtime": true,
+    "status": "pass",
+    "failed_checks": []
+  },
+  "cases": [
+    {
+      "case_id": "plant_unknown_lookalike_ru",
+      "vector_scan_ms": 8.954900000000634,
+      "lexical_at_10": [
+        "claim:care-waterproof-wound-cover",
+        "claim:foundations-earth-02-ecological-tolerance",
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
+      ],
+      "hybrid_at_10": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:care-waterproof-wound-cover",
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "lexical_at_20": [
+        "claim:care-waterproof-wound-cover",
+        "claim:foundations-earth-02-ecological-tolerance",
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
+      ],
+      "hybrid_at_20": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:care-waterproof-wound-cover",
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "plant_edible_part_en",
+      "vector_scan_ms": 0.8813000000009197,
+      "lexical_at_10": [
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:fauna-mallard-residency",
+        "claim:fauna-toad-diet",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-mallard-brood",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:fauna-mallard-wetland-diet"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:foundations-earth-11-consumer-assimilation",
+        "claim:foundations-earth-12-consumer-energy-allocation",
+        "claim:fauna-mallard-residency",
+        "claim:fauna-toad-diet",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-mallard-brood",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:fauna-mallard-residency",
+        "claim:fauna-toad-diet",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-mallard-brood",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:fauna-mallard-wetland-diet",
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+        "claim:fauna-mammals-red-fox-seed-dispersal",
+        "claim:foundations-life-33-acquired-immunity",
+        "claim:fauna-adder-defence",
+        "claim:livestock-swine-membership",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:fauna-salmon-age-diet",
+        "claim:fauna-toad-breeding-return",
+        "claim:fauna-toad-defence"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:foundations-earth-11-consumer-assimilation",
+        "claim:foundations-earth-12-consumer-energy-allocation",
+        "claim:fauna-mallard-residency",
+        "claim:fauna-toad-diet",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:fauna-mallard-brood",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "rope_rough_mooring_ru",
+      "vector_scan_ms": 0.44879999999830034,
+      "lexical_at_10": [
+        "claim:material-water-textile-water-load",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:textile-fibres-twist-yarn",
+        "claim:population-material-wet-wool",
+        "claim:population-physics-sliding-friction",
+        "claim:material-water-linen-flax-origin",
+        "claim:material-water-plant-fibre-cellulose"
+      ],
+      "hybrid_at_10": [
+        "claim:population-material-wet-wool",
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+        "claim:material-water-textile-water-load",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:wood-anisotropy-moisture",
+        "claim:textile-fibres-twist-yarn"
+      ],
+      "lexical_at_20": [
+        "claim:material-water-textile-water-load",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:textile-fibres-twist-yarn",
+        "claim:population-material-wet-wool",
+        "claim:population-physics-sliding-friction",
+        "claim:material-water-linen-flax-origin",
+        "claim:material-water-plant-fibre-cellulose",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:population-physics-elastic-recovery",
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:foundations-phys-08-momentum-closed-system",
+        "claim:material-water-textile-liquid-contaminants",
+        "claim:grain-processing-bread-optional-leaven",
+        "claim:hard-stone-abrasive-sawing",
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:foundations-phys-06-pressure-driven-liquid-outflow"
+      ],
+      "hybrid_at_20": [
+        "claim:population-material-wet-wool",
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+        "claim:material-water-textile-water-load",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:wood-anisotropy-moisture",
+        "claim:textile-fibres-twist-yarn"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "nettle_stem_fibre_en",
+      "vector_scan_ms": 0.42039999999906286,
+      "lexical_at_10": [
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:wild-food-and-fur-evidence",
+        "claim:agriculture-fauna-hunting-economic-context"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:wild-food-and-fur-evidence",
+        "claim:agriculture-fauna-hunting-economic-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "pond_plant_positions_ru",
+      "vector_scan_ms": 0.6810999999979686,
+      "lexical_at_10": [
+        "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:fauna-mammals-european-otter-vibrissal-foraging",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mammals-eurasian-beaver-herbivory",
+        "claim:foundations-life-32-phagocytes",
+        "claim:fauna-pike-juvenile-predation"
+      ],
+      "hybrid_at_10": [
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:fauna-mammals-european-otter-vibrissal-foraging",
+        "claim:candidate-physiology-v3-blink-corneal-protection"
+      ],
+      "lexical_at_20": [
+        "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:fauna-mammals-european-otter-vibrissal-foraging",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mammals-eurasian-beaver-herbivory",
+        "claim:foundations-life-32-phagocytes",
+        "claim:fauna-pike-juvenile-predation"
+      ],
+      "hybrid_at_20": [
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:fauna-mammals-european-otter-vibrissal-foraging",
+        "claim:candidate-physiology-v3-blink-corneal-protection"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "flood_branch_retention_en",
+      "vector_scan_ms": 0.5511000000005879,
+      "lexical_at_10": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+        "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
+      ],
+      "lexical_at_20": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+        "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "cold_body_response_ru",
+      "vector_scan_ms": 0.7415000000000873,
+      "lexical_at_10": [
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
+        "claim:sweat-evaporation-reduces-surface-heat",
+        "claim:care-direct-pressure-bleeding",
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-blink-corneal-protection",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+        "claim:foundations-life-47-host-susceptibility",
+        "claim:candidate-physiology-v3-shivering-thermogenesis"
+      ],
+      "hybrid_at_10": [
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:sweat-evaporation-reduces-surface-heat",
+        "claim:care-direct-pressure-bleeding",
+        "claim:candidate-physiology-v3-protective-withdrawal"
+      ],
+      "lexical_at_20": [
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
+        "claim:sweat-evaporation-reduces-surface-heat",
+        "claim:care-direct-pressure-bleeding",
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-blink-corneal-protection",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+        "claim:foundations-life-47-host-susceptibility",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:fauna-tick-senses",
+        "claim:fauna-bee-winter-cluster",
+        "claim:exercise-heat-dissipation"
+      ],
+      "hybrid_at_20": [
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:sweat-evaporation-reduces-surface-heat",
+        "claim:care-direct-pressure-bleeding",
+        "claim:candidate-physiology-v3-protective-withdrawal"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "boat_turn_balance_en",
+      "vector_scan_ms": 0.8372000000017579,
+      "lexical_at_10": [
+        "claim:candidate-physiology-v3-vestibular-postural-correction",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-swallowing-airway-protection",
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:fluid-osmotic-balance-depends-on-water-solutes",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:foundations-life-34-lymphoid-system"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-physiology-v3-vestibular-postural-correction",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-physiology-v3-vestibular-postural-correction",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-swallowing-airway-protection",
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:fluid-osmotic-balance-depends-on-water-solutes",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:foundations-life-34-lymphoid-system"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-physiology-v3-vestibular-postural-correction",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "water_fire_smoke_ru",
+      "vector_scan_ms": 0.43219999999928405,
+      "lexical_at_10": [
+        "claim:clay-dried-replasticization",
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:clay-firing-structural-transformation",
+        "claim:wood-liquid-fibre-saturation",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
+      ],
+      "hybrid_at_10": [
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:wood-liquid-fibre-saturation",
+        "claim:clay-dried-replasticization",
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+      ],
+      "lexical_at_20": [
+        "claim:clay-dried-replasticization",
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:clay-firing-structural-transformation",
+        "claim:wood-liquid-fibre-saturation",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:population-material-leather-dry",
+        "claim:pine-pitch-severe-oxidation",
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:clay-fired-no-replasticization",
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:material-water-leather-water-processing",
+        "claim:material-water-textile-water-load",
+        "claim:material-water-vegetable-leather-water",
+        "claim:water-can-cool-class-a-fire-fuel-and-flame"
+      ],
+      "hybrid_at_20": [
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:wood-liquid-fibre-saturation",
+        "claim:clay-dried-replasticization",
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "grain_winter_condensation_en",
+      "vector_scan_ms": 0.40120000000024447,
+      "lexical_at_10": [
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:water-capillary-height"
+      ],
+      "hybrid_at_10": [
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:population-physics-conduction-gradient"
+      ],
+      "lexical_at_20": [
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:water-capillary-height"
+      ],
+      "hybrid_at_20": [
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:population-physics-conduction-gradient"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "grain_air_passage_ru",
+      "vector_scan_ms": 0.5231999999996333,
+      "lexical_at_10": [
+        "claim:stored-grain-airflow-can-reduce-temperature-differences"
+      ],
+      "hybrid_at_10": [
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
+      ],
+      "lexical_at_20": [
+        "claim:stored-grain-airflow-can-reduce-temperature-differences"
+      ],
+      "hybrid_at_20": [
+        "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "stagnant_water_oxygen_en",
+      "vector_scan_ms": 0.37430000000313157,
+      "lexical_at_10": [
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
+      ],
+      "hybrid_at_10": [
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
+      ],
+      "hybrid_at_20": [
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+      ],
+      "inapplicable_at_20": []
+    }
+  ]
+}

@@ -111,6 +111,34 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
       'committed_presentation_pending');
   });
 
+test('Phase2 direct root forwards trusted ambient profile and leaves legacy strict', async () => {
+  for (const profileRef of [null, 'other-profile', 'portion-profile']) {
+    const f = fixture({ direct: true });
+    const payload = f.batch.value.operations[0].value.payload;
+    payload.origin.source_refs = ['actor-1', 'context-pin', 'portion-profile'];
+    payload.runtime_instance_mechanics_snapshot = structuredClone(
+      payload.runtime_instance_mechanics_snapshot);
+    payload.runtime_instance_mechanics_snapshot.provenance.source_refs =
+      [...payload.origin.source_refs];
+    payload.name = 'owner-approved portion';
+    for (const trace of [f.envelope.loop_trace.step_traces[0],
+      f.envelope.mode_resolution.decision_trace.step_traces[0]]) {
+      trace.approved_plan.operations[0].origin.source_refs = ['portion-profile'];
+      trace.plan_request.player_safe_state.visible_entities.push({
+        entity_ref: 'portion-profile' });
+    }
+    const commit = () => f.commit({ turnStepAmbientPortionProfileRef: profileRef });
+    if (profileRef === 'portion-profile') {
+      assert.equal((await commit()).state_version, 4);
+      assert.equal(f.plans[0].inserts.filter(({ target_table }) =>
+        target_table === 'party_items').length, 1);
+    } else {
+      await assert.rejects(commit, { code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH' });
+      assert.equal(f.plans.length, 0);
+    }
+  }
+});
+
 test('semantic activity commits owner-mapped temporal writes in the same P16 root',
   async () => {
     const write = {

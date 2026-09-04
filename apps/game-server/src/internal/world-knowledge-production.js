@@ -54,7 +54,7 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   return freeze({ bundle, embedding_profile: embeddingProfile,
     core: createWorldKnowledgeCore(bundle),
     vector_index: createWorldKnowledgeFlatVectorIndex(vectorMetadata,
-      vectorBytes),
+      vectorBytes, { conceptToClaimRefs: bundle.exact_indexes.concept_to_claim_refs }),
     encoder: createGigaQueryEncoder({
       profilePath: resolve(rootDir, EMBEDDING_PROFILE_PATH), python }) });
 }

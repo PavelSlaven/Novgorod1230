@@ -26,6 +26,10 @@
   index из compiled production pack и сравнивают lexical/hybrid retrieval на
   committed unseen-query benchmark. Model weights остаются в локальном
   Hugging Face cache, не в Git.
+- internal `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`:
+  сохраняет structured backlog из реальных traces и независимого premise audit;
+  невалидный audit даёт blocked report и ненулевой exit code. Это development
+  authoring, без runtime auditor, research, fact approval или corpus mutation.
 
 ## Публичные интерфейсы
 

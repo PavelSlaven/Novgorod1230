@@ -1,0 +1,455 @@
+{
+  "schema": "world_knowledge_game_need_cartography_v3",
+  "status": "superseded_research_draft_not_active_cartography",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "basis_revision": "revision:production-v1",
+  "purpose": "Superseded historical gameplay-need-first working map. Production-v1/category-cartography.json is the active 904-claim authoring inventory; this draft is retained for provenance only and is not a profile closure, materialization catalogue, claim approval, or competing authoritative map.",
+  "assessment_values": ["covered", "partial", "missing", "disputed", "not_applicable"],
+  "method": {
+    "need_source": "PR92 plan sections 7-18 and 37, expanded by open-world causal gameplay needs rather than current claim families.",
+    "claim_check": "Existing claim refs were checked against production-v1 authoring inputs. A sample ref demonstrates relevant support; it does not make a family complete.",
+    "proposal_inputs": [
+      "research/gameplay-physiology-v3.md",
+      "research/gameplay-material-process-v3.md",
+      "research/gameplay-flora-ecology-v3.md",
+      "research/gameplay-physical-environment-v3.md",
+      "research/gameplay-plant-identification-v3.md"
+    ],
+    "authority_boundary": "Claims describe factual premises only. @rus/turn owns semantic planning; body/combat/time, inventory/container, spatial topology, materialization, access and persistence owners decide state, mechanics and commit."
+  },
+  "staged_candidate_reconciliation": {
+    "status": "pending_independent_verification_not_active_coverage",
+    "purpose": "Maps 33 staged factual claims to gameplay needs without treating them as approved, retrieved, materialized, or production coverage.",
+    "fragments": [
+      {"path":"production-v1/gameplay-physiology-v3.json","claim_count":18,"need_ids":["need-human-involuntary-response-and-consciousness","need-human-injury-repair-and-basic-needs"],"dimensions":["protective reflexes","airway/oxygen/perfusion","shivering","intoxication","autonomic arousal","vestibular posture"]},
+      {"path":"production-v1/gameplay-material-process-v3.json","claim_count":4,"need_ids":["need-thermal-fire-smoke-and-extinguishing","need-chemistry-food-preservation-and-hazards","need-craft-fibre-net-boat-and-wet-maintenance"],"dimensions":["water cooling of class-A fire","stored-grain moisture/airflow","net mending/serviceability"]},
+      {"path":"production-v1/gameplay-physical-environment-v3.json","claim_count":3,"need_ids":["need-mechanics-contact-support-and-failure","need-thermal-fire-smoke-and-extinguishing","need-flora-and-aquatic-ecology"],"dimensions":["rope condition","smoke optics","aquatic macrophyte form"]},
+      {"path":"production-v1/gameplay-flora-ecology-v3.json","claim_count":5,"need_ids":["need-flora-and-aquatic-ecology"],"dimensions":["tree phenology","nettle fibre","woody-debris transport/retention","dissolved-oxygen contributors"]},
+      {"path":"production-v1/gameplay-plant-identification-v3.json","claim_count":3,"need_ids":["need-flora-and-aquatic-ecology","need-chemistry-food-preservation-and-hazards"],"dimensions":["diagnostic identity","plant-part food boundary","look-alike differentiation"]}
+    ],
+    "still_missing_after_candidate_review": ["room function plus ventilation/condensation/spoilage","taxon-specific plant applicability and historical presence","exact rope load/current condition","scene presence/access/ownership","numeric mechanics and timers"],
+    "limits": "Promotion requires separate verification and descriptor inclusion. Even an approved candidate is a factual premise, not a scene fact, recipe, safe-use instruction, or exact mechanics."
+  },
+  "parent_needs": [
+    {
+      "id": "need-mechanics-contact-support-and-failure",
+      "domain": "physics_material_science",
+      "gameplay_needs": ["free physical attempts", "load bearing", "falling", "cutting and fracture"],
+      "location_applicability": "all locations; exact geometry, mass and state are scene supplied",
+      "consumer_applicability": {"resource": "not_applicable", "material": "grounded", "process": "grounded", "npc": "partial", "code_owner_refs": ["body/combat mechanics", "spatial topology", "@rus/turn"]},
+      "existing_claim_refs": ["claim:force-contact-geometry", "claim:population-physics-stress-failure", "claim:dry-friction"],
+      "assessment": "partial",
+      "concrete_dimensions": ["force/contact", "friction", "support", "stress failure"],
+      "reason": "Core qualitative contact and support relations exist; rope/knot systems, fatigue/wear, water/air drag and open composed failures remain uneven.",
+      "limits": "No numeric universal simulator, hit result, fall, break, or current load follows."
+    },
+    {
+      "id": "need-fluids-flow-buoyancy-and-submersion",
+      "domain": "physics_material_science",
+      "gameplay_needs": ["boats", "wading", "floating objects", "water flow"],
+      "location_applicability": "river, lake, shore, vessel and wet-work contexts",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["spatial topology", "materialization", "body mechanics"]},
+      "existing_claim_refs": ["claim:buoyancy-pressure-phase-change", "claim:foundations-phys-05-flow-regime-speed", "claim:wood-liquid-capillary-uptake"],
+      "assessment": "partial",
+      "concrete_dimensions": ["buoyancy", "flow", "porosity", "wetting"],
+      "reason": "General fluid premises exist; wave action, water resistance by body/object form and river-specific transport remain incomplete.",
+      "limits": "Does not establish depth, current, vessel safety or a present floating object."
+    },
+    {
+      "id": "need-thermal-fire-smoke-and-extinguishing",
+      "domain": "chemistry_process",
+      "gameplay_needs": ["heating", "fire tending", "wet fuel", "smoke", "water suppression"],
+      "location_applicability": "hearth, kiln, campfire and authored fire contexts",
+      "consumer_applicability": {"resource": "partial", "material": "grounded", "process": "grounded", "npc": "partial", "code_owner_refs": ["local fire profile", "time owner", "@rus/turn"]},
+      "existing_claim_refs": ["claim:population-material-wood-combustion", "claim:foundations-thm-06-moisture-vaporization-heat-demand", "claim:foundations-thm-09-combustion-oxygen-supply"],
+      "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-04"],
+      "assessment": "partial",
+      "concrete_dimensions": ["fuel/oxidizer", "heat transfer", "phase change", "smoke", "water cooling"],
+      "reason": "Combustion prerequisites and heat transfer are grounded; applied water extinguishing remains a sourced composition candidate, not an approved outcome family.",
+      "limits": "No fire, suppression success, smoke exposure, quantity or safety result is inferred."
+    },
+    {
+      "id": "need-material-response-and-transformation",
+      "domain": "physics_material_science",
+      "gameplay_needs": ["crafting", "repair", "wear", "wet/dry and heat response"],
+      "location_applicability": "all materialized objects and workspaces",
+      "consumer_applicability": {"resource": "partial", "material": "grounded", "process": "grounded", "npc": "partial", "code_owner_refs": ["inventory/container", "materialization", "craft process owners"]},
+      "existing_claim_refs": ["claim:wood-anisotropy-moisture", "claim:population-material-clay-plasticity", "claim:metal-properties-depend-on-state", "claim:material-water-natural-fibres-water-swelling"],
+      "assessment": "partial",
+      "concrete_dimensions": ["wood", "fibre", "hide/leather", "bone/horn", "clay/ceramic", "metals", "glass", "stone"],
+      "reason": "Major material classes have qualitative relations, but coverage is not an exhaustive material-property table and cross-material joins remain selective.",
+      "limits": "No item, quality grade, exact strength, source or output is created."
+    },
+    {
+      "id": "need-chemistry-food-preservation-and-hazards",
+      "domain": "chemistry_process",
+      "gameplay_needs": ["food storage", "drying", "fermentation", "corrosion", "ordinary exposures"],
+      "location_applicability": "household, storage, cooking and exposure contexts",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["body mechanics", "food process owner", "@rus/turn"]},
+      "existing_claim_refs": ["claim:microbial-growth-depends-on-available-moisture", "claim:iron-corrosion-moisture-oxygen", "claim:foundations-haz-03-exposure-routes"],
+      "assessment": "partial",
+      "concrete_dimensions": ["moisture", "temperature", "oxidation", "solutions", "fermentation", "exposure route"],
+      "reason": "Relevant qualitative relations exist; dose, diagnosis, exact reaction outputs and a universal reaction solver are intentionally absent.",
+      "limits": "No poison, illness, spoilage finding, treatment or current food state follows."
+    },
+    {
+      "id": "need-human-involuntary-response-and-consciousness",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["reflexes", "airway events", "hypoxia", "balance", "startle", "loss of control"],
+      "location_applicability": "all actor contexts",
+      "consumer_applicability": {"resource": "not_applicable", "material": "not_applicable", "process": "partial", "npc": "partial", "code_owner_refs": ["body mechanics", "combat mechanics", "@rus/turn"]},
+      "existing_claim_refs": ["claim:foundations-life-17-reflex", "claim:foundations-life-12-respiration", "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen"],
+      "proposal_refs": ["research/gameplay-physiology-v3.md#phys-reflex-protective-withdrawal", "research/gameplay-physiology-v3.md#phys-oxygen-delivery-brain-function"],
+      "assessment": "partial",
+      "concrete_dimensions": ["withdrawal", "blink", "cough/gag/emesis", "vestibular correction", "startle", "hypoxia"],
+      "reason": "Basic reflex/respiration facts exist; v3 proposals identify missing bounded causal premises without authorizing forced actions.",
+      "limits": "No actor state, unconsciousness, reflex success or autonomous action is decided by knowledge."
+    },
+    {
+      "id": "need-human-injury-repair-and-basic-needs",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["bleeding", "pain", "infection risk", "healing", "fatigue", "sleep", "hydration", "temperature"],
+      "location_applicability": "all actor contexts",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["body mechanics", "time owner", "combat mechanics"]},
+      "existing_claim_refs": ["claim:coagulation-reduces-blood-loss", "claim:wound-healing-time-dependent", "claim:activity-fluid-balance", "claim:human-thermoregulation-depends-on-heat-exchange"],
+      "proposal_refs": ["research/gameplay-physiology-v3.md#phys-blood-volume-perfusion-compensation", "research/gameplay-physiology-v3.md#phys-dehydration-functional-risk"],
+      "assessment": "partial",
+      "concrete_dimensions": ["injury", "repair", "blood/perfusion", "fatigue", "hydration", "thermoregulation"],
+      "reason": "Known body processes have support; severity, thresholds, duration and current condition correctly remain body-owned.",
+      "limits": "No diagnosis, prognosis, treatment or numeric effect."
+    },
+    {
+      "id": "need-fauna-perception-learning-and-response",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["animal senses", "learning", "novel stimulus", "restraint", "flight/freezing/defence"],
+      "location_applicability": "only after animal identity and perceptual basis are established",
+      "consumer_applicability": {"resource": "not_applicable", "material": "partial", "process": "partial", "npc": "grounded", "code_owner_refs": ["NPC decision boundary", "body mechanics", "@rus/turn"]},
+      "existing_claim_refs": ["claim:fauna-animal-learning", "claim:fauna-animal-habituation", "claim:fauna-mammals-domestic-cattle-flight-zone"],
+      "assessment": "partial",
+      "concrete_dimensions": ["senses", "learning", "habituation", "defensive response", "handling"],
+      "reason": "General learning and selected species responses exist; generic deterministic flight, freeze or aggression must not be inferred.",
+      "limits": "No current animal, perception, emotion or action."
+    },
+    {
+      "id": "need-fauna-season-migration-dormancy-and-parental-care",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["migration", "winter strategies", "reproduction", "offspring protection", "territory"],
+      "location_applicability": "taxon and life-stage specific; no calendar creates an animal event",
+      "consumer_applicability": {"resource": "partial", "material": "not_applicable", "process": "partial", "npc": "grounded", "code_owner_refs": ["NPC decision boundary", "time owner", "@rus/turn"]},
+      "existing_claim_refs": ["claim:fauna-bird-migration-cues", "claim:fauna-bird-navigation", "claim:fauna-common-frog-aquatic-overwintering", "claim:fauna-tawny-owl-territory"],
+      "proposal_refs": ["research/gameplay-flora-ecology-v3.md#faunaweather-coverage-map--second-pass"],
+      "assessment": "partial",
+      "concrete_dimensions": ["navigation", "migration", "denning/dormancy", "parental care", "defence"],
+      "reason": "Selected taxa cover incompatible strategies. The residual need is taxon-specific evidence, not a universal animal-season rule.",
+      "limits": "No migration route, hibernation, nest, offspring or defensive act is materialized."
+    },
+    {
+      "id": "need-aquatic-ecology-oxygen-and-temperature",
+      "domain": "environment",
+      "gameplay_needs": ["fish activity", "pond/river condition", "oxygen risk", "aquatic food webs"],
+      "location_applicability": "waterbody only when water state is separately established",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["environment state", "fauna/NPC decision boundary", "materialization"]},
+      "existing_claim_refs": ["claim:water-temperature-affects-aquatic-organism-range", "claim:fauna-fish-low-oxygen", "claim:fauna-fish-summer-night-oxygen"],
+      "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FWE-01", "research/gameplay-flora-ecology-v3.md#FWE-02"],
+      "assessment": "partial",
+      "concrete_dimensions": ["temperature", "dissolved oxygen", "circulation", "rain-after-dry-spell", "food web"],
+      "reason": "Temperature and low-oxygen consequences are covered; circulation and rain-linked candidates await review, while current water state remains external.",
+      "limits": "No oxygen measurement, fish kill, species presence or water-quality finding."
+    },
+    {
+      "id": "need-psychology-attention-learning-stress-and-variation",
+      "domain": "psychology_behavior",
+      "gameplay_needs": ["attention", "memory", "skill", "uncertainty", "stress", "individual variation"],
+      "location_applicability": "universal factual context; actor knowledge/perception is separately bounded",
+      "consumer_applicability": {"resource": "not_applicable", "material": "not_applicable", "process": "partial", "npc": "grounded", "code_owner_refs": ["NPC decision boundary", "perception projection", "@rus/turn"]},
+      "existing_claim_refs": ["claim:foundations-ms-01-attention-intensity", "claim:foundations-ms-09-memory-systems", "claim:foundations-ms3-04-acute-stress", "claim:foundations-ms-17-individual-variation"],
+      "assessment": "partial",
+      "concrete_dimensions": ["attention", "learning", "memory", "stress", "uncertainty", "variation"],
+      "reason": "General mechanisms are grounded; no premise authorizes mind-reading or deterministic choice.",
+      "limits": "No motive, belief, emotion or action of a concrete NPC."
+    },
+    {
+      "id": "need-social-interaction-and-historical-institutions",
+      "domain": "social_behavior",
+      "gameplay_needs": ["trust", "conflict", "cooperation", "roles", "persuasion", "repair"],
+      "location_applicability": "universal interaction context; historical/legal application needs separate regional authority",
+      "consumer_applicability": {"resource": "not_applicable", "material": "not_applicable", "process": "partial", "npc": "grounded", "code_owner_refs": ["NPC decision boundary", "social/legal policy owner", "@rus/turn"]},
+      "existing_claim_refs": ["claim:foundations-ms2-03-distrust-cooperation", "claim:foundations-ms-23-group-pressure", "claim:foundations-ms3-06-apology-reinvestment"],
+      "assessment": "partial",
+      "concrete_dimensions": ["trust", "reciprocity", "group influence", "conflict", "repair"],
+      "reason": "General social premises exist but are not medieval norms or individual outcomes.",
+      "limits": "No consent, status, obligation, reputation or NPC decision follows."
+    },
+    {
+      "id": "need-novgorod-law-economy-family-and-religion",
+      "domain": "social_law_economy",
+      "gameplay_needs": ["property", "trade", "debt", "court", "family", "religious practice"],
+      "location_applicability": "regional Novgorod 1220-1240 where historical source applicability permits",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["social/legal policy owner", "authoritative scenario bindings", "NPC decision boundary"]},
+      "existing_claim_refs": ["claim:debt-needs-parties-and-basis", "claim:rp-market-purchase-relates-proof-participant", "claim:rp-minor-children-conditional-care", "claim:social-church-calendar-text-relates-feast-list"],
+      "assessment": "partial",
+      "concrete_dimensions": ["property", "market", "debt", "procedure", "family care", "religion"],
+      "reason": "Historical fragments support qualified contexts; live law, authority and local custom require bindings and policy owners.",
+      "limits": "No current legal rule, official status, transaction or obligation."
+    },
+    {
+      "id": "need-environment-weather-water-and-terrain",
+      "domain": "environment",
+      "gameplay_needs": ["weather", "snow/ice", "runoff", "flood", "ground", "visibility"],
+      "location_applicability": "all landscapes; regional environment needs a historical/scene bridge",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["time/weather owner", "spatial topology", "materialization"]},
+      "existing_claim_refs": ["claim:foundations-earth2-06-precipitation-infiltration-runoff-limit", "claim:foundations-earth2-11-river-ice-jam-flow-obstruction", "claim:foundations-earth2-07-pressure-gradient-wind"],
+      "assessment": "partial",
+      "concrete_dimensions": ["precipitation", "wind", "snowmelt", "ice jam", "runoff", "terrain"],
+      "reason": "Causal environmental mechanisms exist; scene weather, flood, route safety and exact terrain are not facts supplied by WK.",
+      "limits": "No forecast, water level, ice thickness, visibility or local route condition."
+    },
+    {
+      "id": "need-flora-habitat-season-and-ordinary-resource",
+      "domain": "environment",
+      "gameplay_needs": ["forest", "meadow", "wetland", "plant season", "ordinary gathering"],
+      "location_applicability": "Novgorod regional/historical envelope plus modern universal ecology; no scene plant presence",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["ordinary materialization", "environment state", "@rus/turn"]},
+      "existing_claim_refs": ["claim:seasonal-plant-development-depends-on-photoperiod", "claim:common-reed-rhizome-produces-stems-in-wetland-habitat", "claim:novgorod-wetland-pollen-context"],
+      "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FLO-ECO-01", "research/gameplay-flora-ecology-v3.md#FLO-ECO-03"],
+      "assessment": "partial",
+      "concrete_dimensions": ["tree phenology", "wetland herbs", "plant part/state", "habitat compatibility"],
+      "reason": "Known reed/willow and qualified regional contexts do not provide a general tree/aquatic-herb functional envelope.",
+      "limits": "No plant stand, season state, quantity, access or collection result."
+    },
+    {
+      "id": "need-wild-food-toxicity-identification-and-fibre",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["non-fungal plant gathering", "identification", "toxic counterexamples", "wild fibre"],
+      "location_applicability": "only after specimen/source identity evidence; no generic edible-plant rule",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["ordinary materialization", "body mechanics", "@rus/turn"]},
+      "existing_claim_refs": ["claim:bearberry-lingonberry-resemblance-not-identification", "claim:mezereon-poisonous-sap-all-parts", "claim:material-water-linen-flax-origin"],
+      "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FLO-ECO-04", "research/gameplay-flora-ecology-v3.md#FLO-ECO-05"],
+      "assessment": "partial",
+      "concrete_dimensions": ["trait-based identity", "species-specific toxicity", "wild fibre taxa/process"],
+      "reason": "Only narrow look-alike/toxicity examples and flax/hemp material facts exist; wild fibre and edible identification remain open scoped evidence needs.",
+      "limits": "No edible result, dose, competence, present specimen or historical availability."
+    },
+    {
+      "id": "need-riparian-drift-and-resource-transition",
+      "domain": "environment",
+      "gameplay_needs": ["shore exploration", "drift/debris", "bank material", "flood aftermath"],
+      "location_applicability": "riverbank, landing and floodplain only after hydrology/state establishes conditions",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["environment state", "ordinary materialization", "inventory/container"]},
+      "existing_claim_refs": ["claim:river-flow-affects-sediment-transport-deposition", "claim:secondary-clay-forms-through-water-transport-deposition", "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"],
+      "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FLO-ECO-06"],
+      "assessment": "missing",
+      "concrete_dimensions": ["organic drift transport", "retention", "debris identity", "finite source transition"],
+      "reason": "Sediment and ice mechanisms do not establish large organic debris transport/stranding. Proposal correctly leaves a large-wood source gap.",
+      "limits": "No branch, log, raft, cargo or collectible resource is implied."
+    },
+    {
+      "id": "need-settlement-space-storage-and-ordinary-contents",
+      "domain": "architecture_settlement",
+      "gameplay_needs": ["home", "shed", "storehouse", "workshop", "landing", "interior functions"],
+      "location_applicability": "regional built-space context; concrete contents need materialization",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["spatial topology", "ordinary materialization", "scene projection"]},
+      "existing_claim_refs": ["claim:population-household-storage", "claim:population-drying-workspace", "claim:population-fishing-workspace", "claim:settlement-underfloor-storage"],
+      "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-06"],
+      "assessment": "partial",
+      "concrete_dimensions": ["room function", "storage/work envelope", "ventilation", "ordinary content categories"],
+      "reason": "Several built/work/storage relations exist; joined interior-function and ventilation/condensation coverage remains partial.",
+      "limits": "No room, capacity, item, occupant, access or current activity."
+    },
+    {
+      "id": "need-storage-moisture-spoilage-and-drying",
+      "domain": "biology_physiology",
+      "gameplay_needs": ["grain and food storage", "drying", "condensation", "mould/spoilage risk"],
+      "location_applicability": "storage and drying contexts after stored substance/state is established",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "partial", "code_owner_refs": ["food process owner", "time owner", "ordinary materialization"]},
+      "existing_claim_refs": ["claim:stored-grain-condition-depends-on-temperature-moisture", "claim:food-drying-depends-on-humidity-airflow", "claim:microbial-growth-depends-on-available-moisture"],
+      "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-01", "research/gameplay-material-process-v3.md#GMP-02", "research/gameplay-material-process-v3.md#GMP-03"],
+      "assessment": "partial",
+      "concrete_dimensions": ["temperature gradients", "moisture migration", "condensation", "local spoilage risk"],
+      "reason": "Inputs and broad storage condition are covered; v3 proposes bounded bulk-storage mechanisms without inferring a spoilage state.",
+      "limits": "No food stock, current wetness, mould, duration, loss or safety determination."
+    },
+    {
+      "id": "need-craft-fibre-net-boat-and-wet-maintenance",
+      "domain": "craft_technology",
+      "gameplay_needs": ["cordage", "nets", "fishing", "boats", "repair", "wet-use maintenance"],
+      "location_applicability": "landing, fishing camp and workshop after object/source presence",
+      "consumer_applicability": {"resource": "partial", "material": "grounded", "process": "partial", "npc": "grounded", "code_owner_refs": ["craft process owners", "inventory/container", "ordinary materialization"]},
+      "existing_claim_refs": ["claim:population-net-cord", "claim:population-net-work", "claim:population-boat-work", "claim:household-boat-repair-clamp"],
+      "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-05", "research/gameplay-material-process-v3.md#GMP-07"],
+      "assessment": "partial",
+      "concrete_dimensions": ["net wear/mending", "wet fibre response", "hull care", "historical applicability"],
+      "reason": "Net/boat context and individual repair are grounded; modern net upkeep is only a proposal and historic wet-hull care is explicitly blocked.",
+      "limits": "No net, boat, repair method, tool, skill, owner or completed maintenance."
+    },
+    {
+      "id": "need-craft-household-and-regional-technology",
+      "domain": "craft_technology",
+      "gameplay_needs": ["woodwork", "pottery", "leather/fur", "weaving", "metals", "transport and agriculture"],
+      "location_applicability": "regional Novgorod 1220-1240 compatibility plus universal process premises",
+      "consumer_applicability": {"resource": "partial", "material": "grounded", "process": "grounded", "npc": "partial", "code_owner_refs": ["craft process owners", "historical bindings", "ordinary materialization"]},
+      "existing_claim_refs": ["claim:population-woodwork-practice", "claim:population-processes-weaving-textile", "claim:occupation-smith-heat-treatment", "claim:technology-newcomen-boundary"],
+      "assessment": "partial",
+      "concrete_dimensions": ["attested practice", "inputs", "tools", "technology limits", "failure conditions"],
+      "reason": "Many technology paths are represented, but corpus does not close all household/craft transformations or grant recipe admission.",
+      "limits": "No tool, workshop, recipe, product or actor skill."
+    },
+    {
+      "id": "need-historical-material-culture-and-ordinary-objects",
+      "domain": "material_culture",
+      "gameplay_needs": ["clothing", "tools", "weapons", "vessels", "transport", "household objects"],
+      "location_applicability": "regional historical compatibility; object presence requires authoritative or ordinary materialization basis",
+      "consumer_applicability": {"resource": "partial", "material": "grounded", "process": "partial", "npc": "partial", "code_owner_refs": ["ordinary materialization", "inventory/container", "historical bindings"]},
+      "existing_claim_refs": ["claim:clothing-linen", "claim:population-leather-shoes", "claim:population-wood-boat", "claim:construction-wooden-peg-vessel-joint"],
+      "assessment": "partial",
+      "concrete_dimensions": ["object classes", "materials", "historical availability", "personal kit"],
+      "reason": "Corpus has extensive selected objects/materials; it is not an exhaustive inventory and does not establish party possession.",
+      "limits": "No current item, authenticity, value, controller or location."
+    },
+    {
+      "id": "need-npc-routines-occupations-and-independent-world",
+      "domain": "npc_daily_life",
+      "gameplay_needs": ["occupations", "household work", "river work", "independent NPC activity"],
+      "location_applicability": "regional work/household contexts; current NPC is separately materialized",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "grounded", "npc": "grounded", "code_owner_refs": ["NPC decision boundary", "time owner", "@rus/turn"]},
+      "existing_claim_refs": ["claim:occupation-carpenter-role", "claim:population-storage-role", "claim:population-boat-work", "claim:transport-hired-boatman"],
+      "assessment": "partial",
+      "concrete_dimensions": ["role context", "routine", "work prerequisites", "independent decision"],
+      "reason": "Occupation/routine premises exist; decision choice, knowledge and action execution remain NPC/runtime owners.",
+      "limits": "No NPC roster, schedule, intent, skill level or action."
+    },
+    {
+      "id": "need-location-applicability-and-authoritative-boundaries",
+      "domain": "environment",
+      "gameplay_needs": ["open-world discovery", "ordinary detail", "historical/region constraints", "location-aware reasoning"],
+      "location_applicability": "all locations, with authoritative geography and profile bindings required for canonical/significant facts",
+      "consumer_applicability": {"resource": "partial", "material": "partial", "process": "partial", "npc": "partial", "code_owner_refs": ["authoritative geography", "ordinary materialization", "player/NPC-safe projections"]},
+      "existing_claim_refs": ["claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context", "claim:wetland-hydric-soil-depends-on-saturation", "claim:troitsky-nonwood-plant-remains-probably-local"],
+      "assessment": "partial",
+      "concrete_dimensions": ["universal mechanism", "historical/regional applicability", "scene presence", "actor knowledge", "exact mechanics"],
+      "reason": "Source facts distinguish regional compatibility from scene state, but no template/profile closure has been validated by this research draft.",
+      "limits": "No canonical location, hidden fact, local stock, route, profile binding or scene presence."
+    }
+  ],
+  "domain_subdomain_category_map": [
+    {
+      "domain": "physics_material_science",
+      "subdomains": [
+        {"id": "mechanics", "category_families": [
+          {"id": "contact-support-friction", "assessment": "covered", "dimensions": [{"dimension": "contact_geometry_and_support", "disposition": "supported", "supporting_claim_refs": ["claim:force-contact-geometry", "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"], "reason": "Qualitative relation present."}, {"dimension": "numeric_load_and_fall_outcome", "disposition": "code_owned", "code_owner_refs": ["body/combat mechanics", "spatial topology"], "reason": "Not a factual-corpus omission."}]},
+          {"id": "rope-knot-and-flexible-line-systems", "assessment": "missing", "dimensions": [{"dimension": "fibre_as_material", "disposition": "supported", "supporting_claim_refs": ["claim:textile-fibres-twist-yarn", "claim:material-water-plant-fibre-cellulose"], "reason": "Material class only."}, {"dimension": "knot_load_slip_and_wear", "disposition": "missing", "reason": "No checked qualitative rope/knot-system relation; research before authoring."}]},
+          {"id": "flow-buoyancy-and-submersion", "assessment": "partial", "dimensions": [{"dimension": "buoyancy_and_flow", "disposition": "supported", "supporting_claim_refs": ["claim:buoyancy-pressure-phase-change", "claim:foundations-phys-05-flow-regime-speed"], "reason": "Qualitative primitives present."}, {"dimension": "object_shape_drag_and_wave_interaction", "disposition": "missing", "reason": "No general bounded relation found."}]},
+          {"id": "light-sound-smoke-visibility", "assessment": "partial", "dimensions": [{"dimension": "light_and_sound_propagation", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary", "claim:foundations-physical-b2-snd-01-sound-source-vibration"], "reason": "Basic physics present."}, {"dimension": "smoke_aerosol_visibility", "disposition": "missing", "reason": "Relevant open-world premise remains unreviewed."}]}]}
+      ]
+    },
+    {
+      "domain": "chemistry_process",
+      "subdomains": [
+        {"id": "thermal_fire", "category_families": [
+          {"id": "combustion-and-oxygen", "assessment": "covered", "dimensions": [{"dimension": "fuel_oxidizer_and_sustained_combustion", "disposition": "supported", "supporting_claim_refs": ["claim:population-material-wood-combustion", "claim:foundations-thm-09-combustion-oxygen-supply"], "reason": "Existing owner is clear."}, {"dimension": "fire_spread_rate", "disposition": "code_owned", "code_owner_refs": ["local fire profile", "time owner"], "reason": "Exact spread belongs to runtime mechanics."}]},
+          {"id": "water-cooling-of-solid-fuel-fire", "assessment": "partial", "dimensions": [{"dimension": "vaporization_heat_demand", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-thm-06-moisture-vaporization-heat-demand"], "reason": "Physical component present."}, {"dimension": "applied_qualitative_suppression", "disposition": "proposal", "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-04"], "reason": "Needs independent direct-source review; no canned outcome."}]}]},
+        {"id": "storage_and_food", "category_families": [
+          {"id": "microbial-food-degradation", "assessment": "covered", "dimensions": [{"dimension": "moisture_temperature_and_drying", "disposition": "supported", "supporting_claim_refs": ["claim:microbial-growth-depends-on-available-moisture", "claim:food-drying-depends-on-humidity-airflow"], "reason": "Qualitative conditions exist."}, {"dimension": "specific_safety_or_duration", "disposition": "code_owned", "code_owner_refs": ["food process owner", "time owner"], "reason": "No threshold is required in WK."}]},
+          {"id": "bulk-storage-condensation", "assessment": "partial", "dimensions": [{"dimension": "grain_condition", "disposition": "supported", "supporting_claim_refs": ["claim:stored-grain-condition-depends-on-temperature-moisture"], "reason": "Broad storage relation."}, {"dimension": "thermal_gradient_moisture_migration", "disposition": "proposal", "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-01"], "reason": "Source-backed candidate awaiting verification."}]}]},
+        {"id": "substances_and_reactions", "category_families": [
+          {"id": "corrosion-and-surface-protection", "assessment": "covered", "dimensions": [{"dimension": "iron_moisture_oxygen", "disposition": "supported", "supporting_claim_refs": ["claim:iron-corrosion-moisture-oxygen", "claim:population-material-iron-coating"], "reason": "Relation and countermeasure context exist."}]},
+          {"id": "solutions-acids-salts-and-precipitation", "assessment": "partial", "dimensions": [{"dimension": "solubility_and_acid_base", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-physical-b2-chm-01-acid-base-neutralization", "claim:foundations-physical-b2-chm-05-solubility-saturation"], "reason": "Core qualitative relations present."}, {"dimension": "ordinary_medieval_process_application", "disposition": "missing", "reason": "Needs a real gameplay consumer and historical source; no generic chemistry engine."}]}]}
+      ]
+    },
+    {
+      "domain": "biology_physiology",
+      "subdomains": [
+        {"id": "human_neuro_respiration_and_consciousness", "category_families": [
+          {"id": "protective-and-autonomic-reflexes", "assessment": "partial", "dimensions": [{"dimension": "generic_reflex", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-life-17-reflex"], "reason": "Base premise exists."}, {"dimension": "withdrawal_blink_cough_gag_startle", "disposition": "proposal", "proposal_refs": ["research/gameplay-physiology-v3.md#phys-reflex-protective-withdrawal", "research/gameplay-physiology-v3.md#phys-cough-reflex-airway-irritation"], "reason": "Bounded candidates awaiting verification."}, {"dimension": "forced_actor_action", "disposition": "code_owned", "code_owner_refs": ["body mechanics", "@rus/turn"], "reason": "Knowledge must not force a turn."}]},
+          {"id": "oxygen-airway-and-submersion", "assessment": "partial", "dimensions": [{"dimension": "respiration_and_gas_exchange", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-life-12-respiration", "claim:foundations-life-13-alveolar-exchange"], "reason": "Mechanism exists."}, {"dimension": "hypoxia_airway_obstruction_drowning", "disposition": "proposal", "proposal_refs": ["research/gameplay-physiology-v3.md#phys-oxygen-delivery-brain-function", "research/gameplay-physiology-v3.md#phys-drowning-respiratory-impairment"], "reason": "Causal bridges proposed, not approved."}]}]},
+        {"id": "human_injury_and_needs", "category_families": [
+          {"id": "injury-bleeding-infection-and-repair", "assessment": "covered", "dimensions": [{"dimension": "coagulation_repair_and_barrier", "disposition": "supported", "supporting_claim_refs": ["claim:coagulation-reduces-blood-loss", "claim:wound-healing-time-dependent", "claim:intact-skin-reduces-pathogen-entry"], "reason": "Qualitative premises exist."}, {"dimension": "injury_severity_and_timeline", "disposition": "code_owned", "code_owner_refs": ["body mechanics", "time owner", "combat mechanics"], "reason": "Not a missing factual relation."}]},
+          {"id": "fatigue-sleep-hydration-and-thermoregulation", "assessment": "partial", "dimensions": [{"dimension": "exertion_sleep_fluid_and_heat", "disposition": "supported", "supporting_claim_refs": ["claim:work-intensity-duration", "claim:acute-sleep-loss-performance", "claim:human-thermoregulation-depends-on-heat-exchange"], "reason": "Core relations exist."}, {"dimension": "severe_dehydration_and_perfusion_effects", "disposition": "proposal", "proposal_refs": ["research/gameplay-physiology-v3.md#phys-dehydration-functional-risk", "research/gameplay-physiology-v3.md#phys-blood-volume-perfusion-compensation"], "reason": "Needs independent review."}]}]},
+        {"id": "plant_and_ecosystem_biology", "category_families": [
+          {"id": "plant-growth-and-phenology", "assessment": "partial", "dimensions": [{"dimension": "light_water_nutrients_and_photoperiod", "disposition": "supported", "supporting_claim_refs": ["claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals", "claim:seasonal-plant-development-depends-on-photoperiod"], "reason": "General physiology exists."}, {"dimension": "tree_leaf_flower_sequence", "disposition": "proposal", "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FLO-ECO-01"], "reason": "Variation relation awaits review."}]},
+          {"id": "decomposition-and-ecological-cycling", "assessment": "covered", "dimensions": [{"dimension": "decomposition_energy_and_trophic_relations", "disposition": "supported", "supporting_claim_refs": ["claim:fungal-decomposition-affects-nutrient-recycling", "claim:foundations-earth-14-ecosystem-energy-flow"], "reason": "General ecology present."}]}]}
+      ]
+    },
+    {
+      "domain": "environment",
+      "subdomains": [
+        {"id": "weather_hydrology_and_terrain", "category_families": [
+          {"id": "precipitation-wind-runoff-and-ice", "assessment": "covered", "dimensions": [{"dimension": "runoff_wind_and_ice_jam", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-earth2-06-precipitation-infiltration-runoff-limit", "claim:foundations-earth2-07-pressure-gradient-wind", "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"], "reason": "Causal mechanisms exist."}, {"dimension": "local_forecast_and_route_safety", "disposition": "code_owned", "code_owner_refs": ["time/weather owner", "spatial topology"], "reason": "State/forecast not WK coverage."}]},
+          {"id": "soil-groundwater-and-sediment", "assessment": "partial", "dimensions": [{"dimension": "hydric_soil_groundwater_and_sediment", "disposition": "supported", "supporting_claim_refs": ["claim:wetland-hydric-soil-depends-on-saturation", "claim:foundations-earth-20-groundwater-recharge-discharge", "claim:river-flow-affects-sediment-transport-deposition"], "reason": "Core relations exist."}, {"dimension": "scene_bank_bearing_and_extractable_material", "disposition": "code_owned", "code_owner_refs": ["spatial topology", "ordinary materialization"], "reason": "Requires current site/source state, not more generic facts."}]}]},
+        {"id": "flora_and_aquatic_ecology", "category_families": [
+          {"id": "wetland-herb-and-riparian-habitat", "assessment": "partial", "dimensions": [{"dimension": "reed_willow_and_hydric_context", "disposition": "supported", "supporting_claim_refs": ["claim:common-reed-rhizome-produces-stems-in-wetland-habitat", "claim:white-willow-depends-on-moist-lit-riparian-habitat"], "reason": "Named taxa only."}, {"dimension": "aquatic_plant_form_and_function", "disposition": "missing", "reason": "Rooted/floating/submerged classes still need bounded sources."}]},
+          {"id": "wild-plant-identification-and-fibre", "assessment": "partial", "dimensions": [{"dimension": "species_specific_lookalike_and_toxicity", "disposition": "supported", "supporting_claim_refs": ["claim:bearberry-lingonberry-resemblance-not-identification", "claim:mezereon-poisonous-sap-all-parts"], "reason": "Counterexamples, not generic edibility."}, {"dimension": "wild_fibre_taxa", "disposition": "missing", "reason": "Flax/hemp do not establish nettle/lime/cattail fibre."}, {"dimension": "flax_fibre_process", "disposition": "proposal", "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FLO-ECO-05"], "reason": "Cultivated flax candidate, not wild-fibre closure."}]},
+          {"id": "aquatic-oxygen-and-temperature", "assessment": "partial", "dimensions": [{"dimension": "temperature_and_low_oxygen", "disposition": "supported", "supporting_claim_refs": ["claim:water-temperature-affects-aquatic-organism-range", "claim:fauna-fish-low-oxygen", "claim:fauna-fish-summer-night-oxygen"], "reason": "Core water-quality premise exists."}, {"dimension": "poor_circulation_and_rain_after_dry_spell", "disposition": "proposal", "proposal_refs": ["research/gameplay-flora-ecology-v3.md#FWE-01", "research/gameplay-flora-ecology-v3.md#FWE-02"], "reason": "Source-backed candidates awaiting review."}]},
+          {"id": "riparian-drift-and-debris", "assessment": "missing", "dimensions": [{"dimension": "sediment_transport", "disposition": "supported", "supporting_claim_refs": ["claim:river-flow-affects-sediment-transport-deposition"], "reason": "Does not transfer to wood."}, {"dimension": "organic_drift_retention", "disposition": "missing", "reason": "No reviewed large-wood/debris relation."}]}]},
+        {"id": "regional_historical_environment", "category_families": [
+          {"id": "novgorod-landscape-and-resource-envelope", "assessment": "partial", "dimensions": [{"dimension": "regional_woodland_meadow_water_context", "disposition": "supported", "supporting_claim_refs": ["claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context", "claim:troitsky-nonwood-plant-remains-probably-local"], "reason": "Qualified region/history support."}, {"dimension": "scene_presence_and_stock", "disposition": "code_owned", "code_owner_refs": ["authoritative bindings", "ordinary materialization"], "reason": "Never corpus completeness."}]}]}
+      ]
+    },
+    {
+      "domain": "psychology_behavior",
+      "subdomains": [
+        {"id": "perception_and_cognition", "category_families": [
+          {"id": "attention-memory-and-skill", "assessment": "covered", "dimensions": [{"dimension": "attention_memory_practice", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-ms-01-attention-intensity", "claim:foundations-ms-09-memory-systems", "claim:foundations-ms-12-practice-correction"], "reason": "Qualitative premises present."}]},
+          {"id": "stress-uncertainty-and-individual-variation", "assessment": "covered", "dimensions": [{"dimension": "acute_stress_uncertainty_variation", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-ms3-04-acute-stress", "claim:foundations-ms4-03-uncertainty-cognitive-control", "claim:foundations-ms-17-individual-variation"], "reason": "No deterministic choice inference."}]}]}
+      ]
+    },
+    {
+      "domain": "social_behavior",
+      "subdomains": [
+        {"id": "interaction", "category_families": [
+          {"id": "trust-cooperation-conflict-and-repair", "assessment": "covered", "dimensions": [{"dimension": "conditional_social_relations", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-ms2-03-distrust-cooperation", "claim:foundations-ms3-06-apology-reinvestment", "claim:foundations-ms3-08-mutual-cooperation"], "reason": "General premises available."}, {"dimension": "concrete_npc_decision", "disposition": "code_owned", "code_owner_refs": ["NPC decision boundary", "@rus/turn"], "reason": "No factual gap."}]},
+          {"id": "roles-norms-and-group-influence", "assessment": "covered", "dimensions": [{"dimension": "role_group_and_norm_context", "disposition": "supported", "supporting_claim_refs": ["claim:foundations-ms-23-group-pressure", "claim:foundations-ms-32-social-role", "claim:foundations-ms-39-social-norm"], "reason": "General social science only."}]}]}
+      ]
+    },
+    {
+      "domain": "social_law_economy",
+      "subdomains": [
+        {"id": "historical_institutions", "category_families": [
+          {"id": "property-trade-debt-and-procedure", "assessment": "partial", "dimensions": [{"dimension": "documented_market_debt_and_claim_context", "disposition": "supported", "supporting_claim_refs": ["claim:debt-needs-parties-and-basis", "claim:rp-market-purchase-relates-proof-participant", "claim:judicial-accusation-record"], "reason": "Historical evidence qualified by source/time."}, {"dimension": "live_local_legal_outcome", "disposition": "code_owned", "code_owner_refs": ["social/legal policy owner", "authoritative scenario bindings"], "reason": "No fact can decide a current judgement."}]},
+          {"id": "family-religion-and-administration", "assessment": "partial", "dimensions": [{"dimension": "family_religious_and_administrative_context", "disposition": "supported", "supporting_claim_refs": ["claim:rp-minor-children-conditional-care", "claim:social-church-calendar-text-relates-feast-list", "claim:social-collector-instruction-relates-task-context"], "reason": "Context, not universal behaviour."}, {"dimension": "regional_temporal_applicability", "disposition": "disputed", "reason": "Each future historical claim must retain its own date/place/source boundary; no broad closure."}]}]}
+      ]
+    },
+    {
+      "domain": "architecture_settlement",
+      "subdomains": [
+        {"id": "ordinary_space", "category_families": [
+          {"id": "household-storage-and-interior-function", "assessment": "partial", "dimensions": [{"dimension": "storage_and_underfloor_context", "disposition": "supported", "supporting_claim_refs": ["claim:population-household-storage", "claim:settlement-underfloor-storage"], "reason": "Existing functions are narrow."}, {"dimension": "room_function_ventilation_and_expected_categories", "disposition": "proposal", "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-06"], "reason": "Needs review; must not populate rooms."}]},
+          {"id": "landing-workshop-and-river-workspace", "assessment": "partial", "dimensions": [{"dimension": "work_and_landing_context", "disposition": "supported", "supporting_claim_refs": ["claim:population-river-work", "claim:population-fishing-workspace", "claim:river-landing-category"], "reason": "Context exists."}, {"dimension": "ordinary_contents_and_activity", "disposition": "code_owned", "code_owner_refs": ["ordinary materialization", "scene projection"], "reason": "Specific contents/activity require causal state."}]}]}
+      ]
+    },
+    {
+      "domain": "craft_technology",
+      "subdomains": [
+        {"id": "craft_and_maintenance", "category_families": [
+          {"id": "wood-ceramic-metal-and-textile-transformation", "assessment": "partial", "dimensions": [{"dimension": "attested_or_general_processes", "disposition": "supported", "supporting_claim_refs": ["claim:population-woodwork-practice", "claim:population-processes-weaving-textile", "claim:occupation-smith-heat-treatment"], "reason": "Selected transformations grounded."}, {"dimension": "open_unseen_transformation", "disposition": "code_owned", "code_owner_refs": ["@rus/turn", "existing craft process owners"], "reason": "Open semantics must compose primitives, not require a recipe whitelist."}]},
+          {"id": "net-boat-and-wet-use-maintenance", "assessment": "partial", "dimensions": [{"dimension": "net_and_boat_work_context", "disposition": "supported", "supporting_claim_refs": ["claim:population-net-work", "claim:population-boat-work", "claim:household-boat-repair-clamp"], "reason": "Context and an individual repair fact."}, {"dimension": "net_wear_mending", "disposition": "proposal", "proposal_refs": ["research/gameplay-material-process-v3.md#GMP-05"], "reason": "Modern source candidate."}, {"dimension": "historic_wet_hull_care", "disposition": "missing", "reason": "Explicit historical blocker; do not infer from nets."}]}]}
+      ]
+    },
+    {
+      "domain": "material_culture",
+      "subdomains": [
+        {"id": "objects_and_historical_applicability", "category_families": [
+          {"id": "clothing-tools-vessels-and-transport", "assessment": "partial", "dimensions": [{"dimension": "selected_historical_object_classes", "disposition": "supported", "supporting_claim_refs": ["claim:clothing-linen", "claim:population-leather-shoes", "claim:population-wood-boat", "claim:construction-wooden-peg-vessel-joint"], "reason": "Selected material culture, not inventory."}, {"dimension": "current_object_identity_ownership_and_placement", "disposition": "code_owned", "code_owner_refs": ["entity identity", "inventory/container", "ordinary materialization"], "reason": "Correctly not factual-corpus work."}]}]}
+      ]
+    },
+    {
+      "domain": "npc_daily_life",
+      "subdomains": [
+        {"id": "occupation_and_independent_activity", "category_families": [
+          {"id": "household-craft-and-river-routines", "assessment": "partial", "dimensions": [{"dimension": "occupation_and_work_context", "disposition": "supported", "supporting_claim_refs": ["claim:occupation-carpenter-role", "claim:population-storage-role", "claim:transport-hired-boatman"], "reason": "Context for existing roles."}, {"dimension": "specific_npc_schedule_and_choice", "disposition": "code_owned", "code_owner_refs": ["NPC decision boundary", "time owner"], "reason": "State and semantic decision, not missing factual coverage."}]}]}
+      ]
+    }
+  ],
+  "additional_discovery_needs": [
+    {"domain": "environment", "family": "plant_dispersal_litter_and_deadwood_ecology", "assessment": "missing", "reason": "No gameplay need currently identifies a consuming owner; investigate only when materialization/NPC ecology needs it."},
+    {"domain": "physics_material_science", "family": "rope_knot_dynamic_load_and_wear", "assessment": "missing", "reason": "Open actions can need it; existing force/fibre facts do not yet supply a bounded rope-system relation."},
+    {"domain": "biology_physiology", "family": "taxon_specific_restraint_injury_and_disease_response", "assessment": "partial", "reason": "Selected animal facts cannot be generalized across fauna; add only a scenario-relevant taxon/class source."},
+    {"domain": "architecture_settlement", "family": "ordinary_cleaning_lighting_heating_and_contents", "assessment": "partial", "reason": "Built-space context exists; broad ordinary categories need source and consumer-specific review, not a room-item whitelist."}
+  ],
+  "review_requirements": [
+    "Do not promote a proposal reference without independent source/domain verification.",
+    "Do not convert any partial/covered family into profile/template closure without validating active authoritative bindings and real consumers.",
+    "Keep universal mechanism, historical applicability, scene presence, actor knowledge and exact mechanics separate.",
+    "A missing family is a research priority, not an action prohibition or a cataloguing requirement."
+  ]
+}

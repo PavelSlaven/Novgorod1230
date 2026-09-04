@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -115,7 +116,8 @@ test('committed RNG version mismatch fails before resolver, roll or commit', asy
 });
 
 test('exact fast path commits one canonical inspection, check, elapsed, body effect and clue', async () => {
-  const f = fixture();
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ llmDiagnostics: diagnostics });
   const result = await f.runtime.submitTurn({
     partyId: f.partyId,
     input: {
@@ -126,6 +128,13 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     }
   });
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
+  const trace = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
+  assert.deepEqual(trace.map(({ event }) => event),
+    ['turn_context', 'owner_commit_requested', 'owner_commit_completed']);
+  assert.equal(trace[0].authoritative_context.party_state.state_version, 1);
+  assert.ok(trace[1].write_plan);
+  assert.ok(trace[2].result);
+  assert.equal(JSON.stringify(diagnostics.report({ party_id: f.partyId })).includes('authoritative_context'), false);
   assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
   assert.equal(result.check.modifiers.attribute, 1);

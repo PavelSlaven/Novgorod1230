@@ -1,5 +1,13 @@
 # @rus/game-server
 
+Development-only gameplay gap tracing использует существующий private party
+log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
+контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля
+не входят в публичный diagnostic report, player/NPC prompt или authoritative
+state. При выключенном developer mode capture callback отсутствует. Ошибка
+snapshot помечает trace неполной (`capture_failed`), не изменяя игровой исход.
+Gap Auditor работает отдельно в authoring workflow; в runtime не вызывается.
+
 ## Назначение
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
@@ -29,6 +37,8 @@ and adds no second transaction owner.
 - Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.
 - Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов, включая repair, получает полный transport timeout 120 с и `maxTokens = 20_000`; длина ответа ограничивается prompt/schema. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+
+При завершённом direct `not_achieved` current-scene projection передаёт недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи.
 
 ## Не владеет
 
@@ -115,8 +125,8 @@ response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. Active O2a includes the authored wreck-shore abundant sand and one
 first-entry context-bound finite prepared-clay stock. Player-safe state exposes
-that committed stock as an ordinary source only when its separate approved
-disclosure state is visible; concealed capabilities remain server-only. The
+approved ambient capability bounds for schema-valid direct extraction, while
+concealed capabilities remain server-only. The
 discovery marker is boolean and exposes no unresolved result, permission or
 capacity. Stage B may choose an
 unlisted ordinary semantic type/name inside the approved class, while the owner

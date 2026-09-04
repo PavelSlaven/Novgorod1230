@@ -1,0 +1,136 @@
+{
+  "schema": "world_knowledge_retrieval_benchmark_v1",
+  "benchmark_ref": "wk-benchmark:gameplay-coverage-v3",
+  "vector_candidate_limit": 3,
+  "gate": {
+    "min_recall_at_10": 0.85,
+    "min_recall_improvement_at_10": 0.05,
+    "max_noise_at_10": 0.75,
+    "min_hard_constraint_recall": 1,
+    "min_applicability_precision": 1,
+    "max_query_embedding_mean_ms": 750,
+    "max_vector_scan_mean_ms": 10
+  },
+  "cases": [
+    {
+      "case_id": "plant_unknown_lookalike_ru",
+      "locale": "ru",
+      "query_text": "У тропы растёт зонтичное растение, похожее на знакомое. Достаточно ли названия и одного листа, или что ещё сравнить, прежде чем считать его тем же растением?",
+      "relevant_claim_refs": ["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters", "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "plant_edible_part_en",
+      "locale": "en",
+      "query_text": "People call this a food plant. Does that alone make its root, leaf, flower, and seed equally fit to eat?",
+      "relevant_claim_refs": ["claim:candidate-edible-plant-status-does-not-transfer-to-every-part"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "rope_rough_mooring_ru",
+      "locale": "ru",
+      "query_text": "Верёвка из растительного волокна несколько раз тёрлась о грубый кол, была перегнута и завязана узлом. Что это меняет для её оставшейся прочности без числа нагрузки?",
+      "relevant_claim_refs": ["claim:modern-fibre-rope-condition-can-reduce-available-strength"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "nettle_stem_fibre_en",
+      "locale": "en",
+      "query_text": "What kind of processing could separate usable bast from the woody core of a nettle stem, without assuming a ready-made thread is already present?",
+      "relevant_claim_refs": ["claim:candidate-nettle-bast-fibre-retting-decortication"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "pond_plant_positions_ru",
+      "locale": "ru",
+      "query_text": "Почему одни водные растения держатся корнями в грунте под водой, другие выносят листья к поверхности, а третьи плавают свободно?",
+      "relevant_claim_refs": ["claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "flood_branch_retention_en",
+      "locale": "en",
+      "query_text": "After a river rises, can branches and woody fragments be carried downstream, and why might some remain caught in one reach rather than another?",
+      "relevant_claim_refs": ["claim:candidate-river-flood-woody-debris-transport-retention-conditional"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "cold_body_response_ru",
+      "locale": "ru",
+      "query_text": "Человека внезапно пробирает холодом. Какое непроизвольное телесное действие может помогать вырабатывать тепло, не обещая согревания?",
+      "relevant_claim_refs": ["claim:candidate-physiology-v3-shivering-thermogenesis"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "boat_turn_balance_en",
+      "locale": "en",
+      "query_text": "A boat lurches sideways and a standing person begins to lose balance. What involuntary body system can help correct posture, without deciding whether they fall?",
+      "relevant_claim_refs": ["claim:candidate-physiology-v3-vestibular-postural-correction"],
+      "purpose": "semantic_resolution",
+      "domains": ["biology_physiology"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "water_fire_smoke_ru",
+      "locale": "ru",
+      "query_text": "У горящих досок пламя и топливо охлаждают водой, но воздух уже полон дыма. Какие качественные пределы видимости и тушения здесь важны без обещания безопасного успеха?",
+      "relevant_claim_refs": ["claim:water-can-cool-class-a-fire-fuel-and-flame", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "grain_winter_condensation_en",
+      "locale": "en",
+      "query_text": "A stored grain mass is warm in its middle but cold near the outer wall. How could that difference change where dampness gathers, without proving spoilage?",
+      "relevant_claim_refs": ["claim:stored-grain-temperature-gradient-can-migrate-moisture"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "grain_air_passage_ru",
+      "locale": "ru",
+      "query_text": "Если воздух проходит через запас зерна не до конца, может ли он выровнять его температуру и что остаётся неопределённым?",
+      "relevant_claim_refs": ["claim:stored-grain-airflow-can-reduce-temperature-differences"],
+      "purpose": "semantic_resolution",
+      "domains": ["physics_material_science"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "stagnant_water_oxygen_en",
+      "locale": "en",
+      "query_text": "In a poorly flushed backwater after a sudden rain following dry weather, what can be said about dissolved oxygen without asserting a fish kill?",
+      "relevant_claim_refs": ["claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen", "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    }
+  ]
+}

@@ -955,6 +955,54 @@
         "npc": "partial"
       },
       "coverage": "partial"
+    },
+    {
+      "id": "gameplay-physiology-v3",
+      "source_path": "gameplay-physiology-v3.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "universal physiology; current actor condition remains body-owned",
+      "applicability": {"resource":"none","material":"none","process":"partial","npc":"partial"},
+      "coverage": "bounded approved reflex, airway, perfusion, thermoregulation and intoxication premises"
+    },
+    {
+      "id": "gameplay-flora-ecology-v3",
+      "source_path": "gameplay-flora-ecology-v3.json",
+      "domains": ["environment"],
+      "location_applicability": "universal ecology; historical/local presence remains separately grounded",
+      "applicability": {"resource":"partial","material":"partial","process":"partial","npc":"partial"},
+      "coverage": "bounded phenology, fibre, river-debris and water-quality premises"
+    },
+    {
+      "id": "gameplay-material-process-v3",
+      "source_path": "gameplay-material-process-v3.json",
+      "domains": ["physics_material_science"],
+      "location_applicability": "fire, storage and wet-work contexts only when state supplies objects/processes",
+      "applicability": {"resource":"partial","material":"grounded","process":"grounded","npc":"partial"},
+      "coverage": "bounded grain, water-cooling and net-serviceability premises"
+    },
+    {
+      "id": "gameplay-physical-environment-v3",
+      "source_path": "gameplay-physical-environment-v3.json",
+      "domains": ["biology_physiology","physics_material_science"],
+      "location_applicability": "smoke, rope and aquatic-plant contexts; no present condition inferred",
+      "applicability": {"resource":"partial","material":"partial","process":"partial","npc":"partial"},
+      "coverage": "bounded smoke optics, rope condition and aquatic-form premises"
+    },
+    {
+      "id": "gameplay-plant-identification-v3",
+      "source_path": "gameplay-plant-identification-v3.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "plant-recognition and proposed-use contexts; no taxon/presence/food result inferred",
+      "applicability": {"resource":"partial","material":"none","process":"partial","npc":"partial"},
+      "coverage": "bounded diagnostic identity, plant-part and look-alike premises"
+    },
+    {
+      "id": "gameplay-granular-materials-v3",
+      "source_path": "gameplay-granular-materials-v3.json",
+      "domains": ["physics_material_science"],
+      "location_applicability": "Wet granular material and deformation contexts only when state supplies material and phase conditions",
+      "applicability": {"resource":"none","material":"conditional","process":"conditional","npc":"none"},
+      "coverage": "bounded capillary-cohesion and pore-phase configuration premises"
     }
   ],
   "families": [
@@ -2780,6 +2828,25 @@
       ]
     },
     {
+      "id": "materials-wet-granular-cohesion-and-deformation",
+      "domain": "physics_material_science",
+      "subdomain": "material_response",
+      "family": "materials_wet_granular_cohesion_and_deformation",
+      "location_applicability": "Actual partially wet granular material in shore, ground, handling or deformation context; no sand, water, state, or action result implied.",
+      "applicability": {
+        "resource": "none",
+        "material": "conditional",
+        "process": "conditional",
+        "npc": "none"
+      },
+      "coverage": "partial: two bounded mechanism claims; not material-state, local-presence, drainage, moulding, or outcome closure",
+      "evidence_boundary": "Source claims support conditional material mechanisms. They do not establish local material or water presence, saturation, grain size, strength, connected path, quantity/rate, access, or action outcome.",
+      "claim_refs": [
+        "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
+      ]
+    },
+    {
       "id": "mechanics-impact-friction-fracture",
       "domain": "physics_material_science",
       "subdomain": "mechanics",
@@ -3563,7 +3630,21 @@
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
         "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ]
-    }
+    },
+    {"id":"physiology-protective-reflexes","domain":"biology_physiology","subdomain":"protective_reflexes","family":"withdrawal_ocular_airway_and_startle_reflexes","location_applicability":"all actor contexts; body mechanics decide whether any response occurs","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved premises, not forced-action mechanics","claim_refs":["claim:candidate-physiology-v3-protective-withdrawal","claim:candidate-physiology-v3-blink-corneal-protection","claim:candidate-physiology-v3-swallowing-airway-protection","claim:candidate-physiology-v3-cough-reflex-airway-irritation","claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation","claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation","claim:candidate-physiology-v3-emesis-reflex-response","claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus","claim:candidate-physiology-v3-vestibular-postural-correction"]},
+    {"id":"physiology-oxygen-and-perfusion","domain":"biology_physiology","subdomain":"oxygen_delivery_airway_and_perfusion","family":"respiratory_impairment_oxygen_delivery_and_awareness","location_applicability":"all actor contexts; current consciousness and injury state remain body-owned","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved causal premises, not diagnosis or thresholds","claim_refs":["claim:candidate-physiology-v3-oxygen-delivery-brain-function","claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment","claim:candidate-physiology-v3-drowning-respiratory-impairment","claim:candidate-physiology-v3-low-brain-perfusion-awareness","claim:candidate-physiology-v3-blood-volume-perfusion-compensation"]},
+    {"id":"physiology-autonomic-and-functional-response","domain":"biology_physiology","subdomain":"thermoregulation_hydration_intoxication_and_arousal","family":"shivering_dehydration_intoxication_and_threat_arousal","location_applicability":"all actor contexts; current heat, fluid, substance and threat state remain owner-supplied","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved functional-response premises","claim_refs":["claim:candidate-physiology-v3-shivering-thermogenesis","claim:candidate-physiology-v3-dehydration-functional-risk","claim:candidate-physiology-v3-alcohol-intoxication-impairment","claim:candidate-physiology-v3-threat-autonomic-arousal"]},
+    {"id":"flora-tree-phenology","domain":"environment","subdomain":"plant_phenology","family":"deciduous_tree_flower_leaf_sequence","location_applicability":"tree contexts; no local taxon/calendar/state inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved phenology premise","claim_refs":["claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"]},
+    {"id":"flora-nettle-fibre","domain":"environment","subdomain":"plant_fibre","family":"nettle_bast_fibre_separation","location_applicability":"plant-fibre process contexts; no historical/local stock inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved fibre premise","claim_refs":["claim:candidate-nettle-bast-fibre-retting-decortication"]},
+    {"id":"riparian-woody-debris","domain":"environment","subdomain":"riparian_process","family":"flood_woody_debris_transport_and_retention","location_applicability":"river-flood contexts; no debris presence/access inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved conditional mechanism","claim_refs":["claim:candidate-river-flood-woody-debris-transport-retention-conditional"]},
+    {"id":"water-dissolved-oxygen-contributors","domain":"environment","subdomain":"water_conditions","family":"circulation_and_post_dry_rain_dissolved_oxygen_relations","location_applicability":"waterbody contexts; no oxygen value/current condition inferred","applicability":{"resource":"partial","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved possible contributors","claim_refs":["claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen","claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen"]},
+    {"id":"storage-grain-airflow-and-moisture","domain":"physics_material_science","subdomain":"storage_conditions","family":"temperature_gradient_airflow_and_grain_moisture","location_applicability":"stored-grain contexts only after storage state exists","applicability":{"resource":"partial","material":"partial","process":"grounded","npc":"partial"},"coverage":"bounded approved storage premises","claim_refs":["claim:stored-grain-temperature-gradient-can-migrate-moisture","claim:stored-grain-airflow-can-reduce-temperature-differences"]},
+    {"id":"fire-water-cooling","domain":"physics_material_science","subdomain":"fire_heat_transfer","family":"water_cooling_of_class_a_fuel_and_flame","location_applicability":"class-A fire contexts only after fire profile/state establishes them","applicability":{"resource":"partial","material":"partial","process":"grounded","npc":"partial"},"coverage":"bounded approved cooling premise, not suppression outcome","claim_refs":["claim:water-can-cool-class-a-fire-fuel-and-flame"]},
+    {"id":"net-serviceability-maintenance","domain":"physics_material_science","subdomain":"fibre_net_maintenance","family":"mending_or_worn_part_replacement_and_serviceability","location_applicability":"net contexts only after net/condition/access are established","applicability":{"resource":"partial","material":"partial","process":"grounded","npc":"partial"},"coverage":"bounded approved maintenance premise","claim_refs":["claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"]},
+    {"id":"smoke-optical-visibility","domain":"physics_material_science","subdomain":"smoke_optics","family":"smoke_particle_light_attenuation_and_visibility","location_applicability":"smoke contexts only after smoke state exists","applicability":{"resource":"none","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved optical premise","claim_refs":["claim:smoke-particles-can-attenuate-light-and-reduce-visibility"]},
+    {"id":"fibre-rope-condition","domain":"physics_material_science","subdomain":"fibre_rope_condition","family":"condition_dependent_available_rope_strength","location_applicability":"modern fibre-rope contexts only after condition/load are established","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved condition premise, not safe-load mechanics","claim_refs":["claim:modern-fibre-rope-condition-can-reduce-available-strength"]},
+    {"id":"aquatic-macrophyte-growth-forms","domain":"biology_physiology","subdomain":"aquatic_plant_form","family":"attachment_and_leaf_position_by_growth_form","location_applicability":"aquatic-plant contexts; no species/density/passability inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved form premise","claim_refs":["claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"]},
+    {"id":"plant-diagnostic-and-part-bounds","domain":"biology_physiology","subdomain":"plant_identity_and_food_part_boundary","family":"diagnostic_identity_lookalikes_and_part_specific_food_status","location_applicability":"plant-recognition/proposed-use contexts; no taxon/presence/food outcome inferred","applicability":{"resource":"partial","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved botanical premises, not foraging guidance","claim_refs":["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters","claim:candidate-edible-plant-status-does-not-transfer-to-every-part","claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"]}
   ],
   "missing_families": [
     {
@@ -3583,7 +3664,7 @@
         "fishing_camp"
       ],
       "coverage": "partial",
-      "reason": "Grounded tree examples/material contexts; missing factual dimension is ecological/seasonal functional coverage beyond willow and selected worked trees.",
+      "reason": "Tree flower/leaf sequence is now grounded. Remaining bounded need: taxon-specific local calendar, fruiting/yield and scene state are not supplied by that universal premise.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "environment-plant-resources",
@@ -3607,7 +3688,7 @@
         "wreck_shore"
       ],
       "coverage": "partial",
-      "reason": "Grounded reed, willow and named shrub safety evidence; missing factual dimension is broader aquatic/herb functional coverage for gathering or habitat interpretation.",
+      "reason": "Aquatic macrophyte attachment/leaf-position form is now grounded. Remaining bounded need: taxon, density, passability, harvestability and local habitat state are not transferred from form.",
       "supporting_family_ids": [
         "biology-fungi-decomposition-and-wild-food-safety",
         "environment-plant-resources"
@@ -3629,7 +3710,7 @@
         "semantic_resolution"
       ],
       "coverage": "partial",
-      "reason": "Grounded named poison and look-alike cautions; missing factual dimension is non-fungal edible-versus-toxic plant identification rules.",
+      "reason": "Diagnostic-character, look-alike and plant-part boundaries are now grounded. Remaining bounded need: species-specific food/hazard claim, processing effect and local presence require separate evidence/state.",
       "supporting_family_ids": [
         "biology-fungi-decomposition-and-wild-food-safety"
       ]
@@ -3651,7 +3732,7 @@
         "fishing_camp"
       ],
       "coverage": "partial",
-      "reason": "Grounded flax/hemp and plant-fibre processing; missing factual dimension is which additional wild local plant families yield usable fibre.",
+      "reason": "Nettle bast-fibre separation is now grounded. Remaining bounded need: additional taxon-specific fibre applicability and Novgorod presence/practice are separate evidence questions.",
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "environment-plant-resources",
@@ -3674,7 +3755,7 @@
         "S1"
       ],
       "coverage": "partial",
-      "reason": "Grounded house envelope, vestibule, oven, underfloor storage and furniture; missing factual dimension is interior spatial-function relationships beyond those elements.",
+      "reason": "Closed compositionally by independently reviewed interior-conditions research. It supplies no room contents, cleanliness, light source, occupancy or current ventilation state.",
       "supporting_family_ids": [
         "built-bathing-sanitation",
         "built-storage-and-household",
@@ -3698,7 +3779,7 @@
         "drying_shed"
       ],
       "coverage": "partial",
-      "reason": "Grounded drying/storage condition evidence; missing factual dimension is storage ventilation/condensation and food-spoilage practice as a joined family.",
+      "reason": "Closed compositionally by independently reviewed interior-conditions research plus approved grain airflow/moisture premises. Current storage condition, duration and spoilage result remain state/time owned.",
       "supporting_family_ids": [
         "biology-food-safety-storage-and-fermentation",
         "built-river-workspace",
@@ -3723,7 +3804,7 @@
         "A1"
       ],
       "coverage": "partial",
-      "reason": "Grounded net components, net work, boat context and repair clamp; missing factual dimension is wet-use wear, drying and recurring net/hull maintenance.",
+      "reason": "Net mending/worn-part replacement serviceability is now grounded. A specific historical hull-care routine remains a separate historical claim, not a universal-physics gap.",
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "material-fishing-hunting",
@@ -3747,7 +3828,7 @@
         "S1"
       ],
       "coverage": "partial",
-      "reason": "Grounded sediment, clay transport and saturation; missing factual dimension is debris/drift material formation and seasonal retention at shore.",
+      "reason": "Conditional flood woody-debris transport/retention is now grounded. Present debris, seasonal local stock, access and ownership remain scene state.",
       "supporting_family_ids": [
         "environment-geology",
         "environment-wetland-river-soil"
@@ -3769,7 +3850,7 @@
         "F1"
       ],
       "coverage": "partial",
-      "reason": "Heat transfer, vaporization and combustion prerequisites ground qualitative water cooling/suppression; missing factual dimension is a dedicated applied extinguishing outcome family for this game context.",
+      "reason": "Water cooling of class-A fuel/flame is now grounded. Suppression success, spread, quantity and timing remain exact fire/time mechanics.",
       "supporting_family_ids": [
         "fluids-buoyancy-flow-porosity",
         "process-combustion-and-pyrolysis",
@@ -3820,7 +3901,12 @@
         "fauna-mammal-foraging-movement-and-predation",
         "fauna-mammal-reproduction-and-care",
         "fauna-mammal-shelter-defense-and-ecosystem-effects",
-        "fauna-mammal-sociality-territory-and-communication"
+        "fauna-mammal-sociality-territory-and-communication",
+        "physiology-protective-reflexes",
+        "physiology-oxygen-and-perfusion",
+        "physiology-autonomic-and-functional-response",
+        "aquatic-macrophyte-growth-forms",
+        "plant-diagnostic-and-part-bounds"
       ]
     },
     {
@@ -3859,7 +3945,11 @@
         "environment-plant-resources",
         "environment-terrain",
         "environment-weather",
-        "environment-wetland-river-soil"
+        "environment-wetland-river-soil",
+        "flora-tree-phenology",
+        "flora-nettle-fibre",
+        "riparian-woody-debris",
+        "water-dissolved-oxygen-contributors"
       ]
     },
     {
@@ -3873,7 +3963,11 @@
         "environment-plant-resources",
         "environment-terrain",
         "environment-weather",
-        "environment-wetland-river-soil"
+        "environment-wetland-river-soil",
+        "flora-tree-phenology",
+        "flora-nettle-fibre",
+        "riparian-woody-debris",
+        "water-dissolved-oxygen-contributors"
       ]
     },
     {
@@ -3919,7 +4013,13 @@
         "physics-optics-and-light",
         "physics-sound-and-vibration",
         "process-bread-dough-and-baking",
-        "thermal-phase-heat-transfer"
+        "thermal-phase-heat-transfer",
+        "storage-grain-airflow-and-moisture",
+        "fire-water-cooling",
+        "net-serviceability-maintenance",
+        "smoke-optical-visibility",
+        "fibre-rope-condition",
+        "materials-wet-granular-cohesion-and-deformation"
       ]
     },
     {
@@ -3963,7 +4063,8 @@
         "environment-plant-resources",
         "fluids-buoyancy-flow-porosity",
         "materials-wood-moisture-and-coatings",
-        "material-transport"
+        "material-transport",
+        "materials-wet-granular-cohesion-and-deformation"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -4027,7 +4128,8 @@
         "environment-geology",
         "materials-clay-ceramic-glass-response",
         "material-ceramics",
-        "fluids-buoyancy-flow-porosity"
+        "fluids-buoyancy-flow-porosity",
+        "materials-wet-granular-cohesion-and-deformation"
       ],
       "coverage": "partial: ordinary sand and prepared-clay context; presence and mechanics remain materialization owners"
     },
@@ -4059,7 +4161,8 @@
         "materials-fibre-leather-water-response",
         "mechanics-impact-friction-fracture",
         "mechanics-statics-support",
-        "craft-technology-boundaries"
+        "craft-technology-boundaries",
+        "materials-wet-granular-cohesion-and-deformation"
       ],
       "coverage": "partial: qualitative transformation context; no recipe or output whitelist"
     },
@@ -4119,11 +4222,46 @@
     }
   ],
   "absent_or_partial_families": [
-    "Tree ecological/seasonal functional coverage beyond the named/used species.",
-    "Aquatic/herb functional coverage and non-fungal edible-versus-toxic plant identification.",
-    "Wild fibre-plant family applicability beyond flax/hemp.",
-    "Interior spatial-function relationships; storage ventilation/condensation/spoilage; wet-use net/hull maintenance.",
-    "Riparian debris/drift formation and retention.",
-    "Applied water-extinguishing outcome semantics beyond general cooling, phase-change and combustion-prerequisite claims."
-  ]
+    "Tree phenology premise is bounded; taxon, local calendar, current state and fruit/yield remain outside it.",
+    "Aquatic form and plant diagnostic/part bounds are grounded; local taxon, density, passability, edible part and historical applicability remain separate needs.",
+    "Nettle fibre relation is grounded; other wild-fibre taxa still require taxon-specific regional/historical evidence.",
+    "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one.",
+    "Riparian woody-debris transport/retention is grounded; present debris, access, ownership and quantity remain scene state.",
+    "Water cooling of class-A fuel/flame is grounded; exact suppression success, spread and timing remain fire/time mechanics."
+  ],
+  "gameplay_need_cartography": {
+    "status": "active_approved_premise_map_not_global_completeness",
+    "purpose": "Need-first reconciliation of approved gameplay fragments within the active production pack. It maps factual premises to families, locations and consumers; it neither creates scene facts nor defines an action, item, recipe or room-content whitelist.",
+    "fragments": [
+      {"source_path":"gameplay-physiology-v3.json","claim_count":18,"family_refs":["physiology-protective-reflexes","physiology-oxygen-and-perfusion","physiology-autonomic-and-functional-response"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"Factual causal premises only; body/combat/time own actor state, severity, duration and forced action."},
+      {"source_path":"gameplay-material-process-v3.json","claim_count":4,"family_refs":["storage-grain-airflow-and-moisture","fire-water-cooling","net-serviceability-maintenance"],"location_refs":["trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_f1_local_exact_fire_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"No fire, grain, net, repair, quantity, maintenance result or timer is created."},
+      {"source_path":"gameplay-physical-environment-v3.json","claim_count":3,"family_refs":["smoke-optical-visibility","fibre-rope-condition","aquatic-macrophyte-growth-forms"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_f1_local_exact_fire_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"Rope condition, smoke optics and plant form are qualitative; no safe load, smoke state, plant presence or route result."},
+      {"source_path":"gameplay-flora-ecology-v3.json","claim_count":5,"family_refs":["flora-tree-phenology","flora-nettle-fibre","riparian-woody-debris","water-dissolved-oxygen-contributors"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_s1_spatial_semantic_profile_v3","lower_dvina_trace_scene_presentation_v2"],"limits":"No local taxon, debris, water quality, fibre stock, access or outcome."},
+      {"source_path":"gameplay-plant-identification-v3.json","claim_count":3,"family_refs":["plant-diagnostic-and-part-bounds"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"No taxon, edible part, processing effect, hazard, present plant or consumption outcome."},
+      {"source_path":"gameplay-granular-materials-v3.json","claim_count":2,"family_refs":["materials-wet-granular-cohesion-and-deformation"],"location_refs":["trace_ld_v1_loc_wreck_shore"],"consumer_refs":["lower_dvina_trace_o2a_first_entry_profile_v1","lower_dvina_trace_a1_open_physical_action_profile_v1"],"limits":"Partial wetting and phase conditions must come from actual state; no local water discharge, force, quantity, cohesion strength or formed result follows."}
+    ],
+    "domain_subdomain_dimensions": [
+      {"domain":"physics_material_science","subdomain":"contact_support_and_failure","disposition":"active_plus_code_owned","family_refs":["mechanics-impact-friction-fracture","mechanics-statics-support","fibre-rope-condition"],"limit":"Exact load, geometry and break result are mechanics."},
+      {"domain":"physics_material_science","subdomain":"thermal_fire_smoke","disposition":"active_plus_code_owned","family_refs":["thermal-phase-heat-transfer","fire-water-cooling","smoke-optical-visibility"],"limit":"No fire state, smoke dose/range or suppression outcome."},
+      {"domain":"physics_material_science","subdomain":"storage_and_wet_work","disposition":"active_bounded","family_refs":["storage-grain-airflow-and-moisture","net-serviceability-maintenance","materials-wet-granular-cohesion-and-deformation"],"limit":"No timer, current condition, phase quantity or repair/deformation result."},
+      {"domain":"biology_physiology","subdomain":"involuntary_response_consciousness_and_function","disposition":"active_plus_code_owned","family_refs":["physiology-protective-reflexes","physiology-oxygen-and-perfusion","physiology-autonomic-and-functional-response"],"limit":"No diagnosis, actor state, threshold or forced action."},
+      {"domain":"biology_physiology","subdomain":"plant_identity_and_aquatic_form","disposition":"active_bounded","family_refs":["aquatic-macrophyte-growth-forms","plant-diagnostic-and-part-bounds"],"limit":"No taxon, food result, local plant or passability."},
+      {"domain":"environment","subdomain":"flora_riparian_and_water_conditions","disposition":"active_bounded","family_refs":["flora-tree-phenology","flora-nettle-fibre","riparian-woody-debris","water-dissolved-oxygen-contributors"],"limit":"No local ecology, stock, water state or historical practice."},
+      {"domain":"architecture_settlement","subdomain":"interior_function_and_storage_conditions","disposition":"composition_closed","family_refs":["built-storage-and-household","built-river-workspace"],"limit":"No room contents or current ventilation/cleanliness/light state."},
+      {"domain":"craft_technology","subdomain":"open_transformation","disposition":"active_plus_code_owned","family_refs":["craft-material-classes","process-wood-and-ceramic","craft-fibre-fishing-processing"],"limit":"No recipe whitelist or output guarantee."},
+      {"domain":"chemistry_process","subdomain":"exposure_preservation_and_material_change","disposition":"active_plus_code_owned","family_refs":["chemistry-exposure-and-routes","process-food-preservation-and-fermentation","materials-moisture-corrosion"],"limit":"No current contamination, dose, diagnosis, spoilage state or reaction calculation."},
+      {"domain":"material_culture","subdomain":"ordinary_objects_transport_and_food_context","disposition":"active_bounded","family_refs":["material-food-resources","material-tools","material-transport","material-vessels-furniture-ritual"],"limit":"Historical compatibility is not current object identity, placement, stock, ownership or access."},
+      {"domain":"npc_daily_life","subdomain":"occupation_and_independent_routine_context","disposition":"active_plus_code_owned","family_refs":["npc-household-routines","npc-craft-occupations","npc-river-occupations"],"limit":"No current NPC roster, schedule, knowledge or decision follows."},
+      {"domain":"psychology_behavior","subdomain":"attention_stress_and_variation","disposition":"active_bounded","family_refs":["psychology-attention-and-perception","psychology-affect-regulation-and-stress","psychology-attribution-attitude-and-individual-variation"],"limit":"No motive or deterministic decision."},
+      {"domain":"social_behavior","subdomain":"interaction_and_group_context","disposition":"active_bounded","family_refs":["social-trust-conflict-and-repair","social-group-influence-and-coordination"],"limit":"No current relation or required action."},
+      {"domain":"social_law_economy","subdomain":"historical_institutions","disposition":"active_bounded","family_refs":["social-law-practice","social-property-and-market"],"limit":"No live legal outcome or current authority state."}
+    ],
+    "reconciliation": {
+      "active_claim_mapping":"All active claims are classified once in families and source_inventory; the listed fragments are active inputs, not a hypothetical overlay.",
+      "source_inventory":"Each approved fragment is present in source_inventory and is linked above to applicable existing family, location and consumer references.",
+      "dispositions":{"approved_factual_premise":"May constrain qualitative semantic reasoning within its stated limits.","code_owned":"Current scene state, numeric mechanics, timers, body state, inventory, access and commit remain their existing owners.","bounded_remaining_need":"Taxon-specific historical applicability and any new asserted historical practice require separate evidence."},
+      "interior_closure":"Interior function, ventilation/condensation and spoilage are compositionally closed by independently reviewed gameplay-interior-conditions-v3 research; no room contents, cleanliness, light source or actual condition follows.",
+      "not_a_completeness_verdict":"Independent completeness review and real gameplay/retrieval campaigns remain required before any saturation claim."
+    }
+  }
 }

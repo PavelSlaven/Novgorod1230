@@ -13,6 +13,7 @@ import { loadLowerDvinaTraceMaterializationBundle } from
 test('production grounding plans once and injects only an applicable bounded slice', async () => {
   const calls = [];
   const diagnostics = [];
+  const gameplayTraces = [];
   const loaded = await loadProductionWorldKnowledge({
     rootDir: fileURLToPath(new URL('../../..', import.meta.url))
   });
@@ -23,7 +24,8 @@ test('production grounding plans once and injects only an applicable bounded sli
     ]) } };
   const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
     year: 1230, placeRefs: ['region_novgorod_land'],
-    telemetry: { onDetail: (entry) => diagnostics.push(entry) },
+    telemetry: { onDetail: (entry) => diagnostics.push(entry),
+      onGameplayTrace: (entry) => gameplayTraces.push(entry) },
     roleRunner: { async run(call) {
       calls.push(call);
       return { output: {
@@ -83,6 +85,14 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(diagnostics[0].claim_refs.includes(
     'claim:regional-fish-exploitation'), true);
   assert.ok(diagnostics[0].claim_refs.length <= 12);
+  assert.equal(gameplayTraces.length, 1);
+  const trace = gameplayTraces[0];
+  assert.equal(trace.event, 'world_knowledge_resolved');
+  assert.deepEqual(trace.planner_request, plannerRequest);
+  assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
+  assert.deepEqual(trace.consumer_request, first);
+  assert.deepEqual(trace.retrieved_slice.facts, first.world_knowledge.facts);
+  assert.equal(Object.hasOwn(first, 'gameplay_traces'), false);
 });
 
 test('production repair explicitly removes unavailable refs without changing caller authority', async () => {
@@ -101,6 +111,8 @@ test('production repair explicitly removes unavailable refs without changing cal
         assert.match(call.messages[0].content, /Remove unavailable focus_refs/u);
         assert.match(call.messages[0].content, /verbatim refs from request.available_knowledge_refs/u);
         assert.match(call.messages[0].content, /wk:unavailable-ref/u);
+        assert.ok(input.structural_errors.some(error => error.includes('wk:unavailable-ref')));
+        assert.match(input.repair_instruction, /Never copy a rejected ref/u);
       }
       return { output: { schema: 'world_knowledge_query_plan_v1',
         query_locale: 'ru', domains: ['environment'],

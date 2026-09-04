@@ -7,12 +7,14 @@ import {
   runtimeItemRecordIsConcealed as recordIsClosed,
   runtimeItemStateValues as stateValues
 } from '@rus/items-property';
+import { safeVisualProfile } from './lower-dvina-trace-player-safe-npc-details.js';
 const INVENTORY_KEYS = new Set([
   'items', 'total_weight', 'load_category', 'occupied_hands'
 ]);
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
   'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'visual_profile_snapshot',
   'physical_facts', 'physical_fact_records', 'physical_inscriptions',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
@@ -168,6 +170,8 @@ function projectItem(item, strict) {
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
     name: text(item.name ?? item.state?.display_name),
+    visual_profile_snapshot: safeVisualProfile(item.state?.visual_profile_snapshot
+      ?? item.visual_profile_snapshot) ?? undefined,
     semantic_type: text(item.semantic_type),
     physical_facts: projectPhysicalFacts(item, strict),
     physical_fact_records: physicalFactRecords(item.physical_fact_records
@@ -245,6 +249,7 @@ function projectItemState(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
     'semantic_category', 'display_name', 'evidence_ref', 'condition', 'condition_state',
+    'visual_profile_snapshot',
     'property_state', 'accessibility', 'access_state', 'visibility_state',
     'use_state'
   ]);

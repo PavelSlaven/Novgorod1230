@@ -1,0 +1,96 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:scheel-2008-liquid-distribution-wet-granular",
+      "title": "Liquid distribution and cohesion in wet granular assemblies beyond the capillary bridge regime",
+      "authors": ["Scheel, M.", "Seemann, R.", "Brinkmann, M.", "Di Michiel, M.", "Sheppard, A.", "Herminghaus, S."],
+      "publication": "Journal of Physics: Condensed Matter 20 (2008), 494236",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1088/0953-8984/20/49/494236; abstract.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:milatz-2021-partially-saturated-granular-compression",
+      "title": "Quantitative 3D imaging of partially saturated granular materials under uniaxial compression",
+      "authors": ["Milatz, M.", "Hüsener, N.", "Andò, E.", "Viggiani, G.", "Grabe, J."],
+      "publication": "Acta Geotechnica 16 (2021), 3573–3600",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1007/s11440-021-01315-5; abstract and §1.1–1.1.2.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "pending"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:granular-v3-capillary-bridges",
+      "source_ref": "source:scheel-2008-liquid-distribution-wet-granular",
+      "anchor": {"section": "Abstract"},
+      "note": "Experiments on water-mixed bead packings attribute capillary cohesion to liquid–air interfaces spanning grains; behaviour varies with liquid content and high pore filling weakens it. It does not establish a scene material, saturation, grain size, hand force, mouldability, water release, or a rolled result.",
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:granular-v3-compression-phase-evolution",
+      "source_ref": "source:milatz-2021-partially-saturated-granular-compression",
+      "anchor": {"section": "Abstract; §1.1–1.1.2"},
+      "note": "In-situ uniaxial-compression experiments on Hamburg Sand and glass beads measured air–water interfaces, water clusters and local strain fields through deformation. The paper treats their evolution as dependent on saturation and grain-scale structure; it does not establish outward drainage, a connected path, amount/rate of water movement, or a particular action result.",
+      "review_status": "pending"
+    }
+  ],
+  "concepts": [
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:wet-granular-capillary-cohesion", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "pending"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:partially-saturated-granular-deformation", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "pending"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wet-granular-capillary-cohesion",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "liquid_air_interfaces_spanning_grains_can_provide_capillary_cohesion_in_partially_wet_granular_material"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "attested", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:granular-v3-capillary-bridges"],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:partially-saturated-granular-deformation",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "deformation_can_change_air_water_interfaces_and_water_cluster_configuration_in_partially_saturated_granular_material"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "attested", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:granular-v3-compression-phase-evolution"],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:wet-granular-capillary-cohesion", "locale": "ru", "labels": ["Капиллярное сцепление влажного зернистого материала"], "short_definition": "Сцепление зёрен через жидкостно-воздушные границы между ними.", "search_aliases": ["влажный песок сцепление", "капиллярные мостики"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:wet-granular-capillary-cohesion", "locale": "en", "labels": ["Wet granular capillary cohesion"], "short_definition": "Cohesion of grains through liquid–air interfaces between them.", "search_aliases": ["wet granular capillary bridges"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:partially-saturated-granular-deformation", "locale": "ru", "labels": ["Деформация частично насыщенного зернистого материала"], "short_definition": "Изменение конфигурации зёрен, воздуха и воды при деформации.", "search_aliases": ["сжатие влажного песка", "поры вода деформация"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:partially-saturated-granular-deformation", "locale": "en", "labels": ["Partially saturated granular deformation"], "short_definition": "Change in grain, air and water configuration during deformation.", "search_aliases": ["partially saturated granular compression"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion", "locale": "ru", "runtime_text": "Жидкостно-воздушные границы, соединяющие зёрна частично влажного зернистого материала, могут давать капиллярное сцепление; это не устанавливает материал, влажность, размер зёрен, прочность, лепку, воду в сцене или результат сжатия.", "search_aliases": ["влажный песок сцепление", "капиллярные мостики"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion", "locale": "en", "runtime_text": "Liquid–air interfaces spanning grains in partially wet granular material can provide capillary cohesion; this establishes no material, moisture, grain size, strength, moulding, scene water, or compression result.", "search_aliases": ["wet granular cohesion", "capillary bridges"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration", "locale": "ru", "runtime_text": "Деформация частично насыщенного зернистого материала может менять конфигурацию границ воздух–вода и водных кластеров; это не устанавливает выход воды, связный путь, количество, скорость, местный материал или результат действия.", "search_aliases": ["сжатие влажного песка", "поры вода деформация"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration", "locale": "en", "runtime_text": "Deformation of partially saturated granular material can change air–water interfaces and water-cluster configuration; this establishes no water discharge, connected path, amount, rate, local material, or action result.", "search_aliases": ["granular compression water clusters", "partially saturated deformation"]}
+  ]
+}

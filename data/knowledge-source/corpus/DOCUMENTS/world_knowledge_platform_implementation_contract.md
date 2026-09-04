@@ -644,6 +644,16 @@ conditions
 knowledge_access
 ```
 
+`knowledge_access` имеет strict shape: `class`, `required_facets` и
+опциональный `required_values`. `required_values` — map только от уже
+объявленного `required_facets` к непустой string или непустому массиву strings.
+Для bound class единственный соответствующий facet обязателен
+(`occupation_bound` → `occupation_ref`, `role_bound` → `role_ref`,
+`specialist_bound` → `specialist_domain`); general/common/domain-internal
+classes facet values не задают. Runtime применяет value-match только к actor-facing
+`npc_decision`/`conversation`/`narration`; historical applicability и
+materialization-support от него не зависят.
+
 Temporal precision:
 
 ```text
@@ -1792,6 +1802,13 @@ Planner не может:
 
 Если code уже знает exact need, planner не вызывается.
 
+В текущем production grounding смешаны typed predicates и общий
+`supported_fact`. Semantic planner не получает карту predicates каждого
+concept, поэтому server строит его retrieval query с
+`requested_predicates: []`: выбранный моделью predicate не должен отбрасывать
+дополняющие factual premises. Шесть полей planner DTO сохраняются; exact
+code-owned queries продолжают использовать registered predicate filters.
+
 ---
 
 # 52. Query planner request/response
@@ -1960,13 +1977,20 @@ Deterministic priority:
 1. applicable hard constraints
 2. exact focus-ref facts
 3. direct requested predicates
-4. higher context specificity
-5. confidence/typicality/directness
-6. lexical/vector relevance
+4. lexical/vector relevance
+5. higher context specificity
+6. confidence/typicality/directness
 7. stable claim_ref
 ```
 
 Vector score никогда не поднимает inapplicable claim выше applicable.
+
+Приоритеты сравниваются лексикографически, а не суммой весов разных
+уровней. Exact focus включает как явно указанный claim, так и claims
+указанного concept. Внутри одинаковых hard/exact/predicate уровней
+релевантность запросу предшествует specificity: исторически точная, но
+посторонняя справка не должна вытеснять нужную универсальную causal premise.
+Applicability и actor access остаются обязательными фильтрами до ranking.
 
 ---
 
@@ -2016,8 +2040,8 @@ Packing:
 hard constraints
 → exact focus facts
 → direct requested relations
-→ high-specificity facts
-→ useful soft context
+→ query-relevant facts within equal priority tiers
+→ context specificity and qualifiers as relevance tie-breakers
 → disputes/gaps
 ```
 

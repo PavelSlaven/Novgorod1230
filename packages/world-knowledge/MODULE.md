@@ -11,7 +11,12 @@ Pure read-only gameplay factual owner. Загружает caller-provided immuta
 - optional caller-provided vector scores и pure flat-vector scan; vector
   similarity only adds recall candidates and never bypasses applicability;
 - pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
+- lexicographic ranking: hard constraints, exact focus, requested predicates,
+  query relevance, context specificity, qualifiers, stable claim reference;
 - actor-safe filtering только по уже переданным caller facets.
+  `knowledge_access.required_values` опционально ограничивает значение
+  разрешённого facet только для actor-facing purposes; materialization и другие
+  не actor-facing запросы не получают из него availability restriction.
 
 ## Не владеет
 

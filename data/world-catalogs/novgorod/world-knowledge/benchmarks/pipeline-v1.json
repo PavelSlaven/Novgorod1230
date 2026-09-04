@@ -1,15 +1,259 @@
 {
   "schema": "world_knowledge_pipeline_benchmark_v1",
   "benchmark_ref": "wk-pipeline:novgorod-production-v1",
-  "cases": [
+  "production_gate_evidence_semantics": "For production_acceptance cases, each expected_factual_premise_ref_groups group requires one cited ref; refs within a group are alternatives. No forbidden_factual_premise_refs may be cited.",
+    "cases": [
+      {
+        "case_id": "qualified_winter_sledge_context_en",
+        "locale": "en",
+        "query_text": "What winter conveyance is recorded for Tverdislav in the Novgorod chronicle entry for 1220, and does it establish an annual routine or the availability of a vehicle here?",
+        "accepted_answer_classes": [
+          "explain"
+        ],
+        "relevant_claim_refs": [
+          "claim:transport-winter-sledge-1220"
+        ],
+        "production_acceptance": true,
+        "expected_factual_premise_ref_groups": [
+          [
+            "claim:transport-winter-sledge-1220"
+          ]
+        ],
+        "forbidden_factual_premise_refs": []
+      },
+      {
+        "case_id": "probable_communion_bowl_function_ru",
+        "locale": "ru",
+        "query_text": "Как музей определяет вероятную функцию домонгольской чаши XII–XIII веков с крестом на днище? Можно ли по этому описанию установить материал, средневековое новгородское происхождение или нынешний обряд?",
+        "accepted_answer_classes": [
+          "explain"
+        ],
+        "relevant_claim_refs": [
+          "claim:probable-travel-chalice-communion"
+        ],
+        "production_acceptance": true,
+        "expected_factual_premise_ref_groups": [
+          [
+            "claim:probable-travel-chalice-communion"
+          ]
+        ],
+        "forbidden_factual_premise_refs": []
+      },
+      {
+        "case_id": "ordinary_restraint_grounded_geometry_en",
+        "locale": "en",
+        "query_text": "An actor has real materials and a separately established animal context and attempts an improvised restraint. Do the early-Rus lovishcha and perevesishcha references specify its mechanism or guarantee capture? What general force, contact, support and geometry factors can constrain the attempt?",
+        "accepted_answer_classes": [
+          "explain"
+        ],
+        "relevant_claim_refs": [
+          "claim:early-rus-hunting-ground-terms",
+          "claim:force-contact-geometry"
+        ],
+        "production_acceptance": true,
+        "expected_factual_premise_ref_groups": [
+          [
+            "claim:early-rus-hunting-ground-terms"
+          ],
+          [
+            "claim:force-contact-geometry"
+          ]
+        ],
+        "forbidden_factual_premise_refs": []
+      },
+    {
+      "case_id": "spinning_fibre_capability_en",
+      "locale": "en",
+      "query_text": "An actor twists an already present bundle of textile fibres. What fibre-to-yarn transformation is physically supported, and does that guarantee usable yarn from every fibre?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:textile-fibres-twist-yarn"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:textile-fibres-twist-yarn"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "novgorod_thirteenth_century_colourants_en",
+      "locale": "en",
+      "query_text": "What indigo/yellow and lac-dye identifications does Nahlik report for thirteenth-century Novgorod textiles, and what limits local production inference?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:textile-indigo-yellow-analysis",
+        "claim:textile-lac-dye-analysis"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:textile-indigo-yellow-analysis"
+        ],
+        [
+          "claim:textile-lac-dye-analysis"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "oil_treatments_distinct_skin_states_en",
+      "locale": "en",
+      "query_text": "Compare the moisture and water resistance of oiled rawhide with the flexibility treatment at the end of vegetable tanning: what distinct material states and conditional effects are supported?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:oil-rawhide-moisture-resistance",
+        "claim:oil-fat-vegetable-leather-flexibility"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:oil-rawhide-moisture-resistance"
+        ],
+        [
+          "claim:oil-fat-vegetable-leather-flexibility"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "textile_dye_application_en",
+      "locale": "en",
+      "query_text": "At what textile stages can dye be applied, and what can a mordant do? Does that make immersion and a mordant necessary for every dye?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:textile-dye-application",
+        "claim:textile-dye-mordant-fixation"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:textile-dye-application"
+        ],
+        [
+          "claim:textile-dye-mordant-fixation"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "fur_skin_preservation_ru",
+      "locale": "ru",
+      "query_text": "Для чего обрабатывают снятую шкуру и как быстрое охлаждение с тщательной очисткой меховой шкуры связано с бактериальным ростом и удержанием волоса?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:flayed-skin-processing-purpose",
+        "claim:fur-skin-cooling-cleansing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:flayed-skin-processing-purpose"
+        ],
+        [
+          "claim:fur-skin-cooling-cleansing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "prepared_hide_tanning_en",
+      "locale": "en",
+      "query_text": "What distinguishes vegetable tanning of an already prepared hide from merely drying it, and what role do plant tannins play in resistance to putrefaction?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:vegetable-tanning-prepared-hide",
+        "claim:vegetable-tanning-collagen-stabilization"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:vegetable-tanning-prepared-hide"
+        ],
+        [
+          "claim:vegetable-tanning-collagen-stabilization"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "care_cloth_waterproofing_ru",
+      "locale": "ru",
+      "query_text": "Чистая ткань прижата к уже кровоточащей ране. Что из этого можно утверждать о контроле наружного кровотечения, но не о гарантированной остановке? Достаточна ли та же обычная ткань для защиты чистой открытой раны при контакте с загрязнённой водой?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:care-direct-pressure-bleeding",
+        "claim:care-waterproof-wound-cover"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:care-direct-pressure-bleeding"
+        ],
+        [
+          "claim:care-waterproof-wound-cover"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "conditional_household_care_en",
+      "locale": "en",
+      "query_text": "What conditional arrangements do §§93 and 96 of the Extended Russkaya Pravda describe respectively for small children unable to care for themselves when their mother remarries, and for a mother's portion when she dies without a disposition? Do these textual descriptions establish a current person's duty in Novgorod in 1230?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:rp-minor-children-conditional-care"
+        ],
+        [
+          "claim:rp-mother-household-care-succession"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    { "case_id": "hard_stone_abrasive_limits_en", "locale": "en", "query_text": "What conditional sawing and smoothing methods are supported for a suitable hard-stone blank, and do they guarantee that any knife or grit will work on every rock?", "accepted_answer_classes": ["explain"], "relevant_claim_refs": ["claim:hard-stone-abrasive-sawing", "claim:hard-stone-abrasive-shaping"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:hard-stone-abrasive-sawing"], ["claim:hard-stone-abrasive-shaping"]], "forbidden_factual_premise_refs": [] },
+    { "case_id": "church_statute_current_court_ru", "locale": "ru", "query_text": "Оленинская редакция Устава Владимира перечисляет церковных людей и относит разбор их вины к митрополиту и епископам. Доказывает ли это, что в нашем поселении сейчас действует такой суд и конкретный человек ему подсуден?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:religion-olenin-church-people", "claim:religion-olenin-adjudication"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:religion-olenin-church-people"], ["claim:religion-olenin-adjudication"]], "forbidden_factual_premise_refs": [] },
+    { "case_id": "goat_hay_digestion_en", "locale": "en", "query_text": "What biological facts connect a goat with digestion of hay or grass, and do they establish that the particular feed in front of it is safe and sufficient?", "accepted_answer_classes": ["explain"], "relevant_claim_refs": ["claim:livestock-ruminant-membership", "claim:livestock-rumen-forage-digestion"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:livestock-ruminant-membership"], ["claim:livestock-rumen-forage-digestion"]], "forbidden_factual_premise_refs": ["claim:fodder-healthy-horse-forage"] },
+    { "case_id": "swine_ruminant_feeding_ru", "locale": "ru", "query_text": "Чем биологически различается питание свиньи и жвачных по пищеварению, энергии и волокну? Задаёт ли это точный рацион конкретной свиньи?", "accepted_answer_classes": ["explain"], "relevant_claim_refs": ["claim:livestock-swine-membership", "claim:livestock-swine-comparative-diet"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:livestock-swine-membership"], ["claim:livestock-swine-comparative-diet"]], "forbidden_factual_premise_refs": [] },
+    { "case_id": "grain_processing_waste_ru", "locale": "ru", "query_text": "Какие отходы описаны для обмолота зерна и очистки пшена, и насколько уверенно их связывают с этими процессами?", "accepted_answer_classes": ["explain", "uncertain"], "relevant_claim_refs": ["claim:food-practices-threshing-chaff", "claim:food-practices-millet-cleaning-waste"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:food-practices-threshing-chaff"], ["claim:food-practices-millet-cleaning-waste"]], "forbidden_factual_premise_refs": [] },
+    { "case_id": "hemp_processing_materials_ru", "locale": "ru", "query_text": "Какие материалы даёт обработка конопляных стеблей, и где в деревянном строительстве применяли её отход?", "accepted_answer_classes": ["explain"], "relevant_claim_refs": ["claim:agriculture-fauna-hemp-stem-fibre", "claim:agriculture-fauna-hemp-processing-tow", "claim:agriculture-fauna-tow-log-gaps"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:agriculture-fauna-hemp-stem-fibre"], ["claim:agriculture-fauna-hemp-processing-tow"], ["claim:agriculture-fauna-tow-log-gaps"]], "forbidden_factual_premise_refs": [] },
+    { "case_id": "bort_hook_household_inference_en", "locale": "en", "query_text": "Does a tree-climbing hook found in town prove that this household keeps bees in a domestic hive?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:agriculture-fauna-bort-climbing-hooks", "claim:agriculture-fauna-rural-tree-borts"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:agriculture-fauna-bort-climbing-hooks"]], "forbidden_factual_premise_refs": [] },
+    {"case_id":"bort_regional_use_context_en","locale":"en","query_text":"What activity is associated with the excavated tree-climbing hooks, and in what settlement setting does the synthesis mainly place tree-based wild-bee keeping in Novgorod Land? Does this establish a domestic hive at a current household?","accepted_answer_classes":["explain"],"relevant_claim_refs":["claim:agriculture-fauna-bort-climbing-hooks","claim:agriculture-fauna-rural-tree-borts"],"production_acceptance":true,"expected_factual_premise_ref_groups":[["claim:agriculture-fauna-bort-climbing-hooks"],["claim:agriculture-fauna-rural-tree-borts"]],"forbidden_factual_premise_refs":[]},
+    { "case_id": "wet_hemp_cord_ru", "locale": "ru", "query_text": "Пеньковая верёвка намокла. Как её волокна могут отреагировать на воду, и следует ли из этого необратимая порча верёвки?", "accepted_answer_classes": ["explain"], "relevant_claim_refs": ["claim:material-water-hemp-cellulosic-fibre", "claim:material-water-natural-fibres-water-swelling"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:material-water-hemp-cellulosic-fibre"], ["claim:material-water-natural-fibres-water-swelling"]], "forbidden_factual_premise_refs": ["claim:material-water-new-linen-water"] },
+    { "case_id": "wet_unknown_hide_ru", "locale": "ru", "query_text": "Кожаный ремень промок; способ выделки неизвестен. Можно ли уверенно предсказать его изменение размеров при высыхании по свойствам недублёной высушенной шкуры?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:material-water-leather-water-processing", "claim:material-water-rawhide-wet-dry"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:material-water-rawhide-wet-dry"]], "forbidden_factual_premise_refs": [] },
     { "case_id": "architecture_single_find_function_ru", "locale": "ru", "query_text": "У стены лежит обломок кладки. Этого достаточно, чтобы решить, что здесь была церковь?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:contextual-evidence-classes"] },
-    { "case_id": "biology_one_meal_ru", "locale": "ru", "query_text": "После нескольких часов работы человек устал. Можно ли считать причиной только отсутствие завтрака?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:food-energy-nutrients"] },
+    { "case_id": "biology_one_meal_ru", "locale": "ru", "query_text": "После нескольких часов работы человек устал. Можно ли считать причиной только отсутствие завтрака?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:food-energy-nutrients", "claim:reduced-atp-reserves-can-cause-muscle-fatigue", "claim:work-intensity-duration"] },
     { "case_id": "chemistry_damp_iron_ru", "locale": "ru", "query_text": "Почему забытый под дождём железный нож покрывается ржавчиной?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:iron-corrosion-moisture-oxygen"] },
-    { "case_id": "craft_smithy_assumption_en", "locale": "en", "query_text": "A hammer and an iron fragment are visible. Does that establish a working smithy here?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:metalworking-broad-context"] },
+    { "case_id": "craft_smithy_assumption_en", "locale": "en", "query_text": "A hammer and an iron fragment are visible. Does that establish a working smithy here?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:metalworking-broad-context", "claim:occupation-smith-iron-input", "claim:occupation-smith-hammer", "claim:occupation-smith-role", "claim:occupation-smith-anvil"] },
     { "case_id": "environment_fishing_presence_ru", "locale": "ru", "query_text": "Если в регионе ловят рыбу, обязана ли она попасться в этой заводи сегодня?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:regional-fish-exploitation"] },
-    { "case_id": "material_leather_personal_item_ru", "locale": "ru", "query_text": "Правдоподобен ли кожаный кошель у новгородца, если его ещё не нашли в сцене?", "accepted_answer_classes": ["yes", "uncertain"], "relevant_claim_refs": ["claim:novgorod-leather-items"] },
+    { "case_id": "material_leather_personal_item_ru", "locale": "ru", "query_text": "Правдоподобен ли кожаный кошель у новгородца, если его ещё не нашли в сцене?", "accepted_answer_classes": ["yes", "uncertain"], "relevant_claim_refs": ["claim:novgorod-leather-items", "claim:population-leather-case"] },
     { "case_id": "npc_combined_resource_skills_ru", "locale": "ru", "query_text": "Нужно ли автоматически делать встреченного рыбака ещё и охотником?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:resource-occupation-needs-setting"] },
-    { "case_id": "physics_wet_grain_ru", "locale": "ru", "query_text": "Почему намокший деревянный кол может разбухать и коробиться по-разному вдоль и поперёк волокон?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:wood-anisotropy-moisture"] },
-    { "case_id": "social_debt_seizure_ru", "locale": "ru", "query_text": "У меня чужая долговая грамота: могу ли я без суда отнять товар у названного человека?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:debt-needs-parties-and-basis"] }
+    { "case_id": "physics_wet_grain_ru", "locale": "ru", "query_text": "Почему намокший деревянный кол может разбухать и коробиться по-разному вдоль и поперёк волокон?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:wood-anisotropy-moisture", "claim:population-material-wood-shrinkage"] },
+    { "case_id": "social_debt_seizure_ru", "locale": "ru", "query_text": "У меня чужая долговая грамота: могу ли я без суда отнять товар у названного человека?", "accepted_answer_classes": ["no", "uncertain"], "relevant_claim_refs": ["claim:debt-needs-parties-and-basis", "claim:social-debt-records-accounting-amount"] },
+    { "case_id": "ship_joint_caulking_en", "locale": "en", "query_text": "How could a Novgorod vessel maker join wooden hull parts and seal a gap between planks?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:construction-wooden-peg-vessel-joint", "claim:construction-forged-iron-nail-vessel-joint", "claim:construction-tarred-tow-caulking", "claim:construction-iron-clamp-caulking"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:construction-wooden-peg-vessel-joint", "claim:construction-forged-iron-nail-vessel-joint"], ["claim:construction-tarred-tow-caulking", "claim:construction-iron-clamp-caulking"]], "forbidden_factual_premise_refs": ["claim:clothing-button-shirt"] },
+    { "case_id": "shirt_materials_buttons_ru", "locale": "ru", "query_text": "Какая ткань подходила для рубахи, чем расширяли её под мышками и застёгивали ворот?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:clothing-linen-shirt", "claim:clothing-wool-shirt", "claim:clothing-shirt-gussets", "claim:clothing-button-shirt"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:clothing-linen-shirt", "claim:clothing-wool-shirt"], ["claim:clothing-shirt-gussets"], ["claim:clothing-button-shirt"]], "forbidden_factual_premise_refs": ["claim:occupation-smith-anvil"] },
+    { "case_id": "smith_tools_en", "locale": "en", "query_text": "What material and tools supported a smith working metal: anvil, hammer and tongs?", "accepted_answer_classes": ["explain", "yes"], "relevant_claim_refs": ["claim:occupation-smith-iron-input", "claim:occupation-smith-anvil", "claim:occupation-smith-hammer", "claim:occupation-smith-tongs"], "production_acceptance": true, "expected_factual_premise_ref_groups": [["claim:occupation-smith-iron-input"], ["claim:occupation-smith-anvil"], ["claim:occupation-smith-hammer"], ["claim:occupation-smith-tongs"]], "forbidden_factual_premise_refs": ["claim:clothing-button-shirt"] }
   ]
 }

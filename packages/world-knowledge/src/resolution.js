@@ -2,9 +2,15 @@ const ACTOR_FACING_PURPOSES = new Set(['npc_decision', 'conversation', 'narratio
 
 export function lexicalCandidates(bundle, query) {
   const scores = new Map();
-  for (const token of tokenize(query.search_hints.join(' '))) for (const ref of bundle.lexical_indexes[query.query_locale]?.[token] ?? []) {
-    const targets = ref.startsWith('claim:') ? [ref] : bundle.exact_indexes.concept_to_claim_refs[ref] ?? [];
-    for (const target of targets) scores.set(target, (scores.get(target) ?? 0) + 1);
+  for (const token of new Set(tokenize(query.search_hints.join(' ')))) {
+    const targets = new Set();
+    for (const ref of bundle.lexical_indexes[query.query_locale]?.[token] ?? []) {
+      for (const target of ref.startsWith('claim:') ? [ref]
+        : bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) targets.add(target);
+    }
+    const weight = Math.log(1 + (bundle.claims.length - targets.size + 0.5)
+      / (targets.size + 0.5));
+    for (const target of targets) scores.set(target, (scores.get(target) ?? 0) + weight);
   }
   return scores;
 }
@@ -93,7 +99,13 @@ function matchesFacet(actual, expected) {
 export function canAccess(access, actorFacets, purpose) {
   if (!ACTOR_FACING_PURPOSES.has(purpose)) return true;
   if (access.class === 'domain_internal_only') return false;
-  return access.required_facets.every((facet) => actorFacets[facet] != null);
+  return access.required_facets.every((facet) => actorFacets[facet] != null)
+    && Object.entries(access.required_values ?? {}).every(([facet, expected]) => {
+      const actual = Array.isArray(actorFacets[facet])
+        ? actorFacets[facet] : [actorFacets[facet]];
+      const allowed = Array.isArray(expected) ? expected : [expected];
+      return actual.some((value) => allowed.includes(value));
+    });
 }
 
 export function coverageStatus(domain, profiles, query) {
@@ -111,15 +123,17 @@ function scopeMatches(scope, context) {
   return true;
 }
 
-export function rank(claim, query, exactRefs, lexicalScores,
+export function compareClaims(a, b, query, exactRefs, lexicalScores,
   vectorScores = new Map()) {
-  return (claim.hard_exclusion?.eligible ? 1_000_000 : 0)
-    + (exactRefs.has(claim.claim_ref) ? 100_000 : 0)
-    + (query.requested_predicates.includes(claim.predicate) ? 10_000 : 0)
-    + specificity(claim.applicability) * 100
-    + qualifierScore(claim.qualifiers)
-    + (lexicalScores.get(claim.claim_ref) ?? 0)
+  const relevance = (claim) => (lexicalScores.get(claim.claim_ref) ?? 0)
     + (vectorScores.get(claim.claim_ref) ?? 0);
+  return Number(Boolean(b.hard_exclusion?.eligible)) - Number(Boolean(a.hard_exclusion?.eligible))
+    || Number(exactRefs.has(b.claim_ref)) - Number(exactRefs.has(a.claim_ref))
+    || Number(query.requested_predicates.includes(b.predicate)) - Number(query.requested_predicates.includes(a.predicate))
+    || relevance(b) - relevance(a)
+    || specificity(b.applicability) - specificity(a.applicability)
+    || qualifierScore(b.qualifiers) - qualifierScore(a.qualifiers)
+    || a.claim_ref.localeCompare(b.claim_ref);
 }
 
 function specificity(value) { return value.context_scope === 'universal' ? 0 : ['time', 'places', 'actors', 'conditions'].filter((key) => value[key] != null).length; }

@@ -528,6 +528,7 @@
         "exact, structured и localized lexical retrieval",
         "optional caller-provided vector scores и pure flat-vector scan; vector",
         "pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing",
+        "lexicographic ranking: hard constraints, exact focus, requested predicates,",
         "actor-safe filtering только по уже переданным caller facets"
       ],
       "path": "packages/world-knowledge",

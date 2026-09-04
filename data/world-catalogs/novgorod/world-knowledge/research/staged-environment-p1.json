@@ -1,0 +1,15 @@
+{
+  "schema":"world_knowledge_authoring_fragment_v1",
+  "predicate_registry":{},
+  "sources":[
+    {"schema":"world_knowledge_source_v1","source_ref":"source:maltby-2017-nw-russia","title":"From bovid to beaver: mammal exploitation in Medieval northwest Russia","authors":["Maltby, Mark"],"publication":"Oxford Handbook of Zooarchaeology (2017)","source_kind":"scholarship","citation":"https://academic.oup.com/edited-volume/34661/chapter-abstract/295340039","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:hamilton-dyer-2002-birds","title":"The Bird Resources of Medieval Novgorod, Russia","authors":["Hamilton-Dyer, Sheila"],"publication":"Acta Zoologica Cracoviensia 45 (2002)","source_kind":"scholarship","citation":"https://www.researchgate.net/publication/242121278_The_Bird_Resources_of_Medieval_Novgorod_Russia","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:dolgikh-alexandrovskiy-2010-soils","title":"Soils and Cultural Layers in Velikii Novgorod","authors":["Dolgikh, Andrey","Alexandrovskiy, Alexander"],"publication":"Eurasian Soil Science 43 (2010), 477–487","source_kind":"scholarship","citation":"https://www.researchgate.net/publication/225440532_Soils_and_Cultural_Layers_in_Velikii_Novgorod","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence":[
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:p1-domestic","source_ref":"source:maltby-2017-nw-russia","anchor":{"section":"Abstract"},"note":"Regional zooarchaeological synthesis; no 1230 census or present stock.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:p1-birds","source_ref":"source:hamilton-dyer-2002-birds","anchor":{"section":"Abstract; recovery methods; seasonal wild-bird discussion"},"note":"Bird-bone record carries recovery bias; no current birds/catch.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:p1-soils","source_ref":"source:dolgikh-alexandrovskiy-2010-soils","anchor":{"section":"Abstract"},"note":"Excavated urban/buried soil context, not general terrain prediction.","review_status":"approved"}
+  ],
+  "concepts":[],"claims":[],"concept_localizations":[],"claim_localizations":[]
+}

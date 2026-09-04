@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { buildArchiveDispositions } from '../src/archive-dispositions.js';
+import { loadWorldKnowledgeAuthoringInput } from '../src/world-knowledge-authoring-loader.js';
+import { fileURLToPath } from 'node:url';
 
 const inventoryUrl = new URL('../../../data/world-catalogs/novgorod/world-knowledge/archive-v1/staging/archive-inventory.json', import.meta.url);
 const dispositionsUrl = new URL('../../../data/world-catalogs/novgorod/world-knowledge/archive-v1/archive-dispositions.json', import.meta.url);
@@ -22,7 +24,7 @@ test('every archive file has exactly one final disposition', async () => {
 
 test('coverage cartography has every required axis and only final statuses', async () => {
   const matrix = JSON.parse(await readFile(coverageUrl));
-  const authoring = JSON.parse(await readFile(productionAuthoringUrl));
+  const authoring = await loadWorldKnowledgeAuthoringInput(fileURLToPath(productionAuthoringUrl));
   const claimRefs = new Set(authoring.claims.map((claim) => claim.claim_ref));
   const statuses = new Set(matrix.allowed_statuses);
   const required = ['domain', 'subdomain', 'family', 'time', 'region',

@@ -96,6 +96,11 @@ Active status applies only to the scope stated by each header and active profile
 
 ## 6. Compatibility navigation and superseded audit rules
 
+World Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет
+hard constraints, exact focus и requested predicates; внутри этих уровней
+query relevance предшествует context specificity и qualifiers. Это порядок
+bounded retrieval, не изменение applicability, actor access или authority.
+
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |

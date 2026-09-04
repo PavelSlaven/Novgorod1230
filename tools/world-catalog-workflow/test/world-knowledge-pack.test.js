@@ -87,6 +87,8 @@ test('World Knowledge validation rejects malformed typed claims and factual poli
   await invalidPack((pack) => { pack.claims[0].qualifiers.confidence = 'certain'; }, /confidence is invalid/u);
   await invalidPack((pack) => { pack.claims[0].knowledge_access.class = 'omniscient'; }, /class is invalid/u);
   await invalidPack((pack) => { pack.claims[0].knowledge_access.required_facets = [{ unsafe: true }]; }, /non-empty strings/u);
+  await invalidPack((pack) => { pack.claims[0].knowledge_access.required_values = {}; }, /required_values must be a non-empty object/u);
+  await invalidPack((pack) => { pack.claims[0].knowledge_access.required_values = { role_ref: [] }; }, /requires a declared facet/u);
   await invalidPack((pack) => { pack.sources[0].authors = [7]; }, /non-empty strings/u);
   await invalidPack((pack) => { pack.sources[0].rights.redistribution = 7; }, /rights metadata/u);
   await invalidPack((pack) => { pack.evidence[0].anchor.record_id = 7; }, /anchor values must be strings/u);
@@ -109,6 +111,19 @@ test('World Knowledge validation rejects malformed typed claims and factual poli
       pack.claim_localizations.push(localization);
     }
   }, /require one explicit conflict group/u);
+});
+
+test('World Knowledge compiler accepts optional value-bound actor access', async () => {
+  const pack = await pilotPack();
+  pack.claims[0].knowledge_access = {
+    class: 'occupation_bound', required_facets: ['occupation_ref'],
+    required_values: { occupation_ref: ['occupation:merchant'] }
+  };
+  assert.deepEqual(validateWorldKnowledgeAuthoringPack(pack), {
+    ok: true, errors: []
+  });
+  assert.equal(compileWorldKnowledgePack(pack).claims[0]
+    .knowledge_access.required_values.occupation_ref[0], 'occupation:merchant');
 });
 
 test('World Knowledge conflict groups are explicit and deterministic', async () => {

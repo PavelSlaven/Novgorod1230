@@ -32,7 +32,9 @@ test('planner contracts accept only bounded selections from caller authority', (
   assert.equal(validateWorldKnowledgeQueryPlannerRequest(input, bundle).ok, true);
   assert.equal(validateWorldKnowledgeQueryPlan(plan, input, bundle).ok, true);
   assert.equal(validateWorldKnowledgeQueryPlan({ ...plan, facts: ['invented'] }, input, bundle).ok, false);
-  assert.equal(validateWorldKnowledgeQueryPlan({ ...plan, focus_refs: ['wk:invented'] }, input, bundle).ok, false);
+  assert.deepEqual(validateWorldKnowledgeQueryPlan({ ...plan, focus_refs: ['wk:invented'] }, input, bundle), {
+    ok: false, errors: ['plan focus_refs are unavailable: ["wk:invented"]']
+  });
   assert.equal(validateWorldKnowledgeQueryPlan({ ...plan, requested_predicates: ['invented'] }, input, bundle).ok, false);
   assert.equal(validateWorldKnowledgeQueryPlannerRequest({ ...input, purpose: 'invented' }, bundle).ok, false);
 });

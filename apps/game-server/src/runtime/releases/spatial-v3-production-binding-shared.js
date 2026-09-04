@@ -159,6 +159,7 @@ export async function createSpatialV3ProductionBindings(
             worldPool: ports.worldPool,
             release,
             runtimeCatalogPin,
+            worldKnowledge,
             ...(initialOrdinaryProvisioner == null ? {} : {
               initialOrdinaryProvisioner,
               initialOrdinaryScopeBinding:

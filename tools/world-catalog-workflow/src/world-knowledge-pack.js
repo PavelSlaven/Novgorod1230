@@ -432,12 +432,25 @@ function validateQualifiers(value, ref, errors) {
 
 function validateKnowledgeAccess(value, ref, errors) {
   if (!isObject(value)) { errors.push(`${ref}: knowledge_access is required`); return; }
-  exactKeys(value, ['class', 'required_facets'], `${ref}.knowledge_access`, errors);
+  exactKeys(value, ['class', 'required_facets', 'required_values'], `${ref}.knowledge_access`, errors);
   if (!KNOWLEDGE_ACCESS_CLASSES.has(value.class)) errors.push(`${ref}.knowledge_access.class is invalid`);
   const facets = uniqueStrings(value.required_facets, `${ref}.knowledge_access.required_facets`, errors, { allowEmpty: true });
   const allowed = ACCESS_FACETS_BY_CLASS[value.class];
   if (allowed && facets.some((facet) => !allowed.has(facet))) errors.push(`${ref}.knowledge_access.required_facets are incompatible with class`);
   if (allowed && allowed.size > 0 && facets.length === 0) errors.push(`${ref}.knowledge_access.required_facets are required for class`);
+  if (value.required_values == null) return;
+  if (!isObject(value.required_values)
+      || Object.keys(value.required_values).length === 0) {
+    errors.push(`${ref}.knowledge_access.required_values must be a non-empty object`);
+    return;
+  }
+  for (const [facet, expected] of Object.entries(value.required_values)) {
+    if (!facets.includes(facet)) errors.push(`${ref}.knowledge_access.required_values.${facet} requires a declared facet`);
+    const values = Array.isArray(expected) ? expected : [expected];
+    if (values.length === 0 || values.some((item) => !requiredText(item))) {
+      errors.push(`${ref}.knowledge_access.required_values.${facet} must be a non-empty string or string array`);
+    }
+  }
 }
 
 function validateProfileScope(value, ref, errors) {

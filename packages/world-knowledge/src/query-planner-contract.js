@@ -32,7 +32,8 @@ export function validateWorldKnowledgeQueryPlan(value, request, bundle) {
   if (domains.some((domain) => !request.allowed_domains.includes(domain))) errors.push('plan domains are not allowed');
   const refs = strings(value.focus_refs, 'plan.focus_refs', errors, true);
   if (refs.length > request.planner_limits.max_focus_refs) errors.push('plan focus_refs exceed max_focus_refs');
-  if (refs.some((ref) => !request.available_knowledge_refs.includes(ref))) errors.push('plan focus_refs are unavailable');
+  const unavailableRefs = refs.filter((ref) => !request.available_knowledge_refs.includes(ref));
+  if (unavailableRefs.length) errors.push(`plan focus_refs are unavailable: ${JSON.stringify(unavailableRefs)}`);
   const predicates = strings(value.requested_predicates, 'plan.requested_predicates', errors, true);
   const registered = new Set(domains.flatMap((domain) => Object.keys(bundle.predicate_registry[domain] ?? {})));
   if (predicates.some((predicate) => !registered.has(predicate))) errors.push('plan requested_predicates are not registered for selected domains');

@@ -59,6 +59,28 @@ test('exact and NONE needs bypass planner', async () => {
   assert.equal(result.planner_called, false);
 });
 
+test('structural repair identifies unavailable focus refs without replacing caller authority', async () => {
+  const invalid = { ...plan, focus_refs: ['wk:law:debt_record'] };
+  let calls = 0;
+  const result = await requestWorldKnowledgeQueryPlan({
+    request: plannerRequest, bundle,
+    plannerModel(request, repair) {
+      calls += 1;
+      if (repair == null) return invalid;
+      assert.deepEqual(repair.original_output, invalid);
+      assert.deepEqual(request.available_knowledge_refs, ['wk:economy:debt_record']);
+      assert.match(repair.structural_errors.join(' '), /wk:law:debt_record/u);
+      return plan;
+    }
+  });
+  assert.equal(calls, 2);
+  assert.equal(result.repaired, true);
+  assert.deepEqual(result.plan.focus_refs, plannerRequest.available_knowledge_refs);
+  await assert.rejects(requestWorldKnowledgeQueryPlan({
+    request: plannerRequest, bundle, plannerModel: () => invalid
+  }), error => error.code === 'TURN_WORLD_KNOWLEDGE_QUERY_PLAN_INVALID');
+});
+
 test('RETRIEVE merges only authoritative context after planning', async () => {
   const result = await resolveTurnStepWorldKnowledge({
     mode: 'RETRIEVE', core: createWorldKnowledgeCore(bundle), bundle,

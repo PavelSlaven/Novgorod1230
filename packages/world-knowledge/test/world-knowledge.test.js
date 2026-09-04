@@ -52,6 +52,28 @@ test('exact focus outranks a lexical match and locale does not change canonical 
   assert.notEqual(en.facts[0].runtime_text, ru.facts[0].runtime_text);
 });
 
+test('query relevance precedes specificity within a shared focus, with deterministic ties', () => {
+  const bundle = structuredClone(baseBundle);
+  const historical = bundle.claims[0];
+  const refs = ['claim:test:relevant-a', 'claim:test:relevant-b'];
+  bundle.claims.push(...refs.map((claim_ref) => ({ ...structuredClone(historical),
+    claim_ref, applicability: { context_scope: 'universal' },
+    qualifiers: { typicality: 'common', confidence: 'medium', directness: 'inferred' }
+  })));
+  bundle.exact_indexes.concept_to_claim_refs[historical.subject_ref].push(...refs);
+  bundle.lexical_indexes.en.inscription = refs;
+  const input = query({ domains: ['economy_trade'], query_locale: 'en',
+    focus_refs: [historical.subject_ref], search_hints: ['inscription'],
+    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+  const core = createWorldKnowledgeCore(bundle);
+  assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), refs);
+  input.search_hints = [];
+  assert.equal(core.resolveWorldKnowledge(input).facts[0].claim_ref, historical.claim_ref);
+  input.search_hints = ['inscription'];
+  input.focus_refs = [historical.claim_ref];
+  assert.equal(core.resolveWorldKnowledge(input).facts[0].claim_ref, historical.claim_ref);
+});
+
 test('inapplicable and no-hit queries stay unresolved rather than becoming exclusions', () => {
   const core = createWorldKnowledgeCore(baseBundle);
   const inapplicable = core.resolveWorldKnowledge(query({ context: { time: { year: 1400 }, place_refs: ['region_novgorod_land'], actor_facets: {} } }));
@@ -108,6 +130,23 @@ test('a conflict group is never truncated to one side', () => {
   });
 });
 
+test('lexical admission retains an applicable conflict partner without matching words', () => {
+  const bundle = structuredClone(baseBundle);
+  const support = bundle.claims[0];
+  const refs = ['claim:test:lexical-conflict-a', 'claim:test:lexical-conflict-b'];
+  bundle.claims.push(...refs.map((claim_ref) => ({ ...structuredClone(support),
+    claim_ref, conflict_group_ref: 'conflict:lexical' })));
+  bundle.structured_indexes.time_to_claim_refs['range::1220:1240'].push(...refs);
+  bundle.structured_indexes.place_to_claim_refs.region_novgorod_land.push(...refs);
+  bundle.structured_indexes.conflict_group_to_claim_refs['conflict:lexical'] = refs;
+  bundle.lexical_indexes.en.coppersmith = [refs[0]];
+  const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
+    domains: ['economy_trade'], query_locale: 'en', search_hints: ['coppersmith']
+  }));
+  assert.equal(slice.verdict, 'disputed');
+  assert.deepEqual(slice.disputes[0].claims.map(({ claim_ref }) => claim_ref), refs);
+});
+
 test('coverage, operational availability and actor knowledge are distinct', () => {
   assert.throws(() => createWorldKnowledgeCore(null), (error) => error instanceof WorldKnowledgeError && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
   const invalidBundle = structuredClone(baseBundle);
@@ -136,6 +175,40 @@ test('coverage, operational availability and actor knowledge are distinct', () =
   assert.equal(actorCore.resolveWorldKnowledge(actorQuery).verdict, 'unresolved');
   actorQuery.context.actor_facets.occupation_ref = 'wk:occupation:merchant';
   assert.equal(actorCore.resolveWorldKnowledge(actorQuery).verdict, 'supported');
+});
+
+test('occupation-bound access matches declared values only for actor-facing purposes', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.claims[0].knowledge_access = {
+    class: 'occupation_bound', required_facets: ['occupation_ref'],
+    required_values: { occupation_ref: 'wk:occupation:merchant' }
+  };
+  const core = createWorldKnowledgeCore(bundle);
+  const actorQuery = query({ purpose: 'conversation', domains: ['economy_trade'],
+    focus_refs: ['wk:economy:debt_record'] });
+  assert.equal(core.resolveWorldKnowledge(actorQuery).verdict, 'unresolved');
+  actorQuery.context.actor_facets.occupation_ref = 'wk:occupation:fisher';
+  assert.equal(core.resolveWorldKnowledge(actorQuery).verdict, 'unresolved');
+  actorQuery.context.actor_facets.occupation_ref = 'wk:occupation:merchant';
+  assert.equal(core.resolveWorldKnowledge(actorQuery).verdict, 'supported');
+  actorQuery.purpose = 'materialization_support';
+  actorQuery.context.actor_facets = {};
+  assert.equal(core.resolveWorldKnowledge(actorQuery).verdict, 'supported');
+
+  for (const mutate of [
+    (access) => { access.required_values = { role_ref: 'wk:role:merchant' }; },
+    (access) => { access.required_values = {}; },
+    (access) => { access.required_values = { occupation_ref: [] }; },
+    (access) => { access.required_values = { occupation_ref: ' ' }; },
+    (access) => { access.unrecognized = true; },
+    (access) => { access.required_facets = []; }
+  ]) {
+    const invalid = structuredClone(bundle);
+    mutate(invalid.claims[0].knowledge_access);
+    assert.throws(() => createWorldKnowledgeCore(invalid),
+      (error) => error instanceof WorldKnowledgeError
+        && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
+  }
 });
 
 test('coverage uses the declared temporal precision', () => {

@@ -1,6 +1,6 @@
 import {
   canAccess, coverageStatus, isApplicable, lexicalCandidates, packCandidates, packContext,
-  projectClaim, rank, structuredPrefilter
+  projectClaim, compareClaims, structuredPrefilter
 } from './resolution.js';
 
 const BUNDLE_SCHEMA = 'world_knowledge_runtime_bundle_v1';
@@ -11,6 +11,11 @@ const ACTOR_FACETS = new Set(['occupation_ref', 'role_ref', 'specialist_domain',
 const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref']);
 const HARD_EXCLUSION_BASES = new Set(['introduced_after_context', 'ceased_before_context', 'not_available_in_region', 'institution_not_existing', 'explicit_domain_incompatibility']);
 const ACCESS_CLASSES = new Set(['general_physical', 'common_cultural', 'occupation_bound', 'role_bound', 'specialist_bound', 'domain_internal_only']);
+const ACCESS_FACETS = Object.freeze({
+  general_physical: [], common_cultural: [], domain_internal_only: [],
+  occupation_bound: ['occupation_ref'], role_bound: ['role_ref'],
+  specialist_bound: ['specialist_domain']
+});
 const TYPICALITIES = new Set(['common', 'attested', 'uncommon', 'exceptional', 'unknown']);
 const CONFIDENCES = new Set(['high', 'medium', 'low', 'unknown']);
 const DIRECTNESSES = new Set(['direct', 'inferred', 'analogical', 'editorial', 'unknown']);
@@ -99,6 +104,12 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   } else if (query.focus_refs.length === 0 && query.search_hints.length === 0) {
     for (const domain of query.domains) for (const ref of bundle.exact_indexes.domain_to_claim_refs[domain] ?? []) candidateRefs.add(ref);
   }
+  for (const ref of [...candidateRefs]) {
+    const group = claimMap.get(ref)?.conflict_group_ref;
+    for (const partner of bundle.structured_indexes.conflict_group_to_claim_refs[group] ?? []) {
+      candidateRefs.add(partner);
+    }
+  }
 
   const structuredRefs = structuredPrefilter(bundle, claimMap, candidateRefs, query.context);
   const allApplicable = [...structuredRefs]
@@ -107,11 +118,22 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     .filter((claim) => query.domains.includes(claim.domain))
     .filter((claim) => query.requested_predicates.length === 0 || query.requested_predicates.includes(claim.predicate))
     .filter((claim) => isApplicable(claim.applicability, query.context))
-    .filter((claim) => canAccess(claim.knowledge_access, query.context.actor_facets, query.purpose))
-    .sort((a, b) => rank(b, query, exactRefs, lexicalScores, vectorScores)
-      - rank(a, query, exactRefs, lexicalScores, vectorScores)
-      || a.claim_ref.localeCompare(b.claim_ref));
-  const { selected: applicable, omittedConflictGroups } = packCandidates(allApplicable, query.budget.max_candidates);
+    .filter((claim) => canAccess(claim.knowledge_access, query.context.actor_facets, query.purpose));
+  const strongestLexical = Math.max(0, ...allApplicable.map((claim) =>
+    lexicalScores.get(claim.claim_ref) ?? 0));
+  // Relative lexical admission removes incidental common-word hits before
+  // authority ranking. Exact, requested-predicate and vector recall stay intact.
+  const relevant = allApplicable.filter((claim) => query.search_hints.length === 0
+    || exactRefs.has(claim.claim_ref) || query.requested_predicates.length > 0
+    || vectorScores.has(claim.claim_ref)
+    || (lexicalScores.get(claim.claim_ref) ?? 0) >= strongestLexical / 2);
+  const relevantRefs = new Set(relevant.map(({ claim_ref }) => claim_ref));
+  const relevantGroups = new Set(relevant.map(({ conflict_group_ref }) =>
+    conflict_group_ref).filter(Boolean));
+  const admitted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
+    || relevantGroups.has(claim.conflict_group_ref))
+    .sort((a, b) => compareClaims(a, b, query, exactRefs, lexicalScores, vectorScores));
+  const { selected: applicable, omittedConflictGroups } = packCandidates(admitted, query.budget.max_candidates);
 
   const coverage = query.domains.map((domain) => ({ domain, status: coverageStatus(domain, profiles, query) }));
   const disputeGroups = new Map();
@@ -225,8 +247,24 @@ function validQualifiers(value) {
 }
 
 function validAccess(value) {
-  return plainObject(value) && ACCESS_CLASSES.has(value.class) && Array.isArray(value.required_facets)
-    && value.required_facets.every((facet) => typeof facet === 'string');
+  if (!plainObject(value) || !ACCESS_CLASSES.has(value.class)
+      || !onlyKeys(value, ['class', 'required_facets', 'required_values'])
+      || !Array.isArray(value.required_facets)
+      || value.required_facets.length !== ACCESS_FACETS[value.class].length
+      || new Set(value.required_facets).size !== value.required_facets.length
+      || value.required_facets.some((facet) =>
+        !ACCESS_FACETS[value.class].includes(facet))) return false;
+  if (value.required_values == null) return true;
+  if (!plainObject(value.required_values)
+      || Object.keys(value.required_values).length === 0) return false;
+  return Object.entries(value.required_values).every(([facet, expected]) =>
+    value.required_facets.includes(facet) && validAccessValue(expected));
+}
+
+function validAccessValue(value) {
+  const values = Array.isArray(value) ? value : [value];
+  return values.length > 0 && values.every((entry) =>
+    typeof entry === 'string' && entry.trim() === entry && entry.length > 0);
 }
 
 function validProfile(value, domains) {

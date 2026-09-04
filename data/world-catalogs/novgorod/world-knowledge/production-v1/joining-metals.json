@@ -1,0 +1,956 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-joining-adhesives",
+      "title": "Wood Adhesives: Bond Formation and Performance",
+      "authors": [],
+      "publication": "USFS Wood Handbook (2021), chapter 10",
+      "citation": "https://research.fs.usda.gov/download/treesearch/62250.pdf",
+      "source_kind": "official_documentation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-joining-adhesives-verification",
+      "title": "Adhesives with Wood Materials: Bond Formation and Performance",
+      "authors": [],
+      "publication": "USFS Wood Handbook (2010), chapter 10",
+      "citation": "https://research.fs.usda.gov/treesearch/download/37422.pdf",
+      "source_kind": "official_documentation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-joining-metals",
+      "title": "Scientific Principles: Metals",
+      "authors": [],
+      "publication": "University of Illinois Materials Science and Technology",
+      "citation": "https://matse1.matse.illinois.edu/metals/prin.html",
+      "source_kind": "official_documentation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-joining-temperature",
+      "title": "Incorrect temperature",
+      "authors": [],
+      "publication": "Canadian Conservation Institute",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/agents-deterioration/temperature.html",
+      "source_kind": "official_documentation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-joining-adhesives",
+      "source_ref": "source:population-joining-adhesives",
+      "anchor": {
+        "section": "Bond Formation; Wetting; Solidification; Surface and Physical Properties; Assembly and Pressing"
+      },
+      "note": "Independent verification: research/verification-population-joining-metals.md; qualitative premises only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-joining-adhesives-verification",
+      "source_ref": "source:population-joining-adhesives-verification",
+      "anchor": {
+        "section": "Bond Formation; Wetting; Solidification; Surface and Physical Properties; Assembly and Pressing"
+      },
+      "note": "Independent verification: research/verification-population-joining-metals.md; qualitative premises only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-joining-metals",
+      "source_ref": "source:population-joining-metals",
+      "anchor": {
+        "section": "Bonding; Mechanical Properties; Quenching and Hardening; Cold Working"
+      },
+      "note": "Independent verification: research/verification-population-joining-metals.md; qualitative premises only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-joining-temperature",
+      "source_ref": "source:population-joining-temperature",
+      "anchor": {
+        "section": "Table 2; Direct physical effect of temperature fluctuations"
+      },
+      "note": "Independent verification: research/verification-population-joining-metals.md; qualitative premises only.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:wood-bond",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:metal",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:steel",
+      "domain": "material_culture",
+      "broader_refs": [
+        "wk:material_culture:metal"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wax",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:thermal-assembly",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-contact",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "compatible_adhesive_surface_contact"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-contamination",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "oil_dirt_loose_fibres"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-cure",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "adhesive_solidification"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-weak-link",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "wood_adhesive_interface_strength"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-pressure",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_pressure_during_bonding"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-bond-moisture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-bond",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "wood_moisture_and_dimensional_change"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-adhesives",
+        "evidence:population-joining-adhesives-verification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-metal-melt",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:metal",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "melting_and_cooling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-metal-fatigue",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:metal",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "repeated_loading"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-metal-cold-work",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:metal",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "cold_plastic_deformation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-metal-anneal",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:metal",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_annealing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-steel-quench",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:steel",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_heating_and_quenching"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-steel-temper",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:steel",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_tempering"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-metals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-wax-soften",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wax",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "sufficient_heating"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-temperature"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-joining-assembly-expansion",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:thermal-assembly",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "unequal_or_uneven_thermal_expansion"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-joining-temperature"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:wood-bond",
+      "locale": "ru",
+      "labels": [
+        "Клеевое соединение древесины"
+      ],
+      "short_definition": "Клеевое соединение древесины",
+      "search_aliases": [
+        "Клеевое соединение древесины"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:wood-bond",
+      "locale": "en",
+      "labels": [
+        "Adhesive wood joint"
+      ],
+      "short_definition": "Adhesive wood joint",
+      "search_aliases": [
+        "Adhesive wood joint"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:metal",
+      "locale": "ru",
+      "labels": [
+        "Металл"
+      ],
+      "short_definition": "Металл",
+      "search_aliases": [
+        "Металл"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:metal",
+      "locale": "en",
+      "labels": [
+        "Metal"
+      ],
+      "short_definition": "Metal",
+      "search_aliases": [
+        "Metal"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:steel",
+      "locale": "ru",
+      "labels": [
+        "Сталь"
+      ],
+      "short_definition": "Сталь",
+      "search_aliases": [
+        "Сталь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:steel",
+      "locale": "en",
+      "labels": [
+        "Steel"
+      ],
+      "short_definition": "Steel",
+      "search_aliases": [
+        "Steel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wax",
+      "locale": "ru",
+      "labels": [
+        "Воск"
+      ],
+      "short_definition": "Воск",
+      "search_aliases": [
+        "Воск"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wax",
+      "locale": "en",
+      "labels": [
+        "Wax"
+      ],
+      "short_definition": "Wax",
+      "search_aliases": [
+        "Wax"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:thermal-assembly",
+      "locale": "ru",
+      "labels": [
+        "Тепловое расширение соединения"
+      ],
+      "short_definition": "Тепловое расширение соединения",
+      "search_aliases": [
+        "Тепловое расширение соединения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:thermal-assembly",
+      "locale": "en",
+      "labels": [
+        "Thermal expansion of an assembly"
+      ],
+      "short_definition": "Thermal expansion of an assembly",
+      "search_aliases": [
+        "Thermal expansion of an assembly"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-contact",
+      "locale": "ru",
+      "runtime_text": "Склейке нужен контакт совместимого клея с поверхностями.",
+      "search_aliases": [
+        "Склейке нужен контакт совместимого клея с поверхностями."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-contact",
+      "locale": "en",
+      "runtime_text": "Bonding needs compatible adhesive in contact with surfaces.",
+      "search_aliases": [
+        "Bonding needs compatible adhesive in contact with surfaces."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-contamination",
+      "locale": "ru",
+      "runtime_text": "Масло, грязь и рыхлые волокна могут ослабить склейку древесины.",
+      "search_aliases": [
+        "Масло, грязь и рыхлые волокна могут ослабить склейку древесины."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-contamination",
+      "locale": "en",
+      "runtime_text": "Oil, dirt and loose fibres can weaken a wood bond.",
+      "search_aliases": [
+        "Oil, dirt and loose fibres can weaken a wood bond."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-cure",
+      "locale": "ru",
+      "runtime_text": "Соединение формируется после затвердевания клея; прочность не мгновенна.",
+      "search_aliases": [
+        "Соединение формируется после затвердевания клея; прочность не мгновенна."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-cure",
+      "locale": "en",
+      "runtime_text": "The joint forms after adhesive solidifies; strength is not instantaneous.",
+      "search_aliases": [
+        "The joint forms after adhesive solidifies; strength is not instantaneous."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-weak-link",
+      "locale": "ru",
+      "runtime_text": "Соединение может разрушиться по клею, границе или самой древесине.",
+      "search_aliases": [
+        "Соединение может разрушиться по клею, границе или самой древесине."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-weak-link",
+      "locale": "en",
+      "runtime_text": "Failure can occur in adhesive, interface or wood itself.",
+      "search_aliases": [
+        "Failure can occur in adhesive, interface or wood itself."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-pressure",
+      "locale": "ru",
+      "runtime_text": "Подходящее давление помогает клею растекаться; чрезмерное может ослабить шов.",
+      "search_aliases": [
+        "Подходящее давление помогает клею растекаться; чрезмерное может ослабить шов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-pressure",
+      "locale": "en",
+      "runtime_text": "Suitable pressure helps adhesive spread; excessive pressure can weaken the joint.",
+      "search_aliases": [
+        "Suitable pressure helps adhesive spread; excessive pressure can weaken the joint."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-moisture",
+      "locale": "ru",
+      "runtime_text": "Влажность и изменение размеров дерева влияют на качество соединения.",
+      "search_aliases": [
+        "Влажность и изменение размеров дерева влияют на качество соединения."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-bond-moisture",
+      "locale": "en",
+      "runtime_text": "Wood moisture and dimensional changes affect bond quality.",
+      "search_aliases": [
+        "Wood moisture and dimensional changes affect bond quality."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-melt",
+      "locale": "ru",
+      "runtime_text": "После плавления металл жидкий; охлаждение ниже соответствующего перехода возвращает твёрдое состояние.",
+      "search_aliases": [
+        "После плавления металл жидкий; охлаждение ниже соответствующего перехода возвращает твёрдое состояние."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-melt",
+      "locale": "en",
+      "runtime_text": "Melted metal is liquid; cooling below its corresponding transition restores a solid state.",
+      "search_aliases": [
+        "Melted metal is liquid; cooling below its corresponding transition restores a solid state."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-fatigue",
+      "locale": "ru",
+      "runtime_text": "Повторная нагрузка может выращивать трещины и привести к усталостному разрушению.",
+      "search_aliases": [
+        "Повторная нагрузка может выращивать трещины и привести к усталостному разрушению."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-fatigue",
+      "locale": "en",
+      "runtime_text": "Repeated loading can grow cracks and cause fatigue failure.",
+      "search_aliases": [
+        "Repeated loading can grow cracks and cause fatigue failure."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-cold-work",
+      "locale": "ru",
+      "runtime_text": "Холодная пластическая обработка может упрочнять металл; чрезмерная деформация ведёт к разрушению.",
+      "search_aliases": [
+        "Холодная пластическая обработка может упрочнять металл; чрезмерная деформация ведёт к разрушению."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-cold-work",
+      "locale": "en",
+      "runtime_text": "Cold plastic working can strengthen metal; excessive deformation leads to fracture.",
+      "search_aliases": [
+        "Cold plastic working can strengthen metal; excessive deformation leads to fracture."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-anneal",
+      "locale": "ru",
+      "runtime_text": "Подходящий отжиг может размягчать наклёпанный металл; режим зависит от материала.",
+      "search_aliases": [
+        "Подходящий отжиг может размягчать наклёпанный металл; режим зависит от материала."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-metal-anneal",
+      "locale": "en",
+      "runtime_text": "Suitable annealing can soften cold-worked metal; treatment depends on material.",
+      "search_aliases": [
+        "Suitable annealing can soften cold-worked metal; treatment depends on material."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-steel-quench",
+      "locale": "ru",
+      "runtime_text": "Подходящая закалка стали повышает твёрдость, но может повысить хрупкость.",
+      "search_aliases": [
+        "Подходящая закалка стали повышает твёрдость, но может повысить хрупкость."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-steel-quench",
+      "locale": "en",
+      "runtime_text": "Suitable steel quenching increases hardness but can increase brittleness.",
+      "search_aliases": [
+        "Suitable steel quenching increases hardness but can increase brittleness."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-steel-temper",
+      "locale": "ru",
+      "runtime_text": "Отпуск закалённой стали может уменьшить хрупкость с сохранением части твёрдости.",
+      "search_aliases": [
+        "Отпуск закалённой стали может уменьшить хрупкость с сохранением части твёрдости."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-steel-temper",
+      "locale": "en",
+      "runtime_text": "Tempering hardened steel can reduce brittleness while retaining some hardness.",
+      "search_aliases": [
+        "Tempering hardened steel can reduce brittleness while retaining some hardness."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-wax-soften",
+      "locale": "ru",
+      "runtime_text": "Воск размягчается или плавится при нагреве; состав определяет температурное поведение.",
+      "search_aliases": [
+        "Воск размягчается или плавится при нагреве; состав определяет температурное поведение."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-wax-soften",
+      "locale": "en",
+      "runtime_text": "Wax softens or melts when heated; composition determines its temperature response.",
+      "search_aliases": [
+        "Wax softens or melts when heated; composition determines its temperature response."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-assembly-expansion",
+      "locale": "ru",
+      "runtime_text": "Разное тепловое расширение соединённых материалов или неравномерный нагрев могут вызвать напряжения и повреждение.",
+      "search_aliases": [
+        "Разное тепловое расширение соединённых материалов или неравномерный нагрев могут вызвать напряжения и повреждение."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-joining-assembly-expansion",
+      "locale": "en",
+      "runtime_text": "Unequal expansion of joined materials or uneven heating can cause stress and damage.",
+      "search_aliases": [
+        "Unequal expansion of joined materials or uneven heating can cause stress and damage."
+      ]
+    }
+  ]
+}

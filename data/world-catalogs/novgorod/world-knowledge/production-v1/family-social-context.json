@@ -1,0 +1,948 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota9",
+      "title": "Берестяная грамота №9",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/9/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota7",
+      "title": "Берестяная грамота №7",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/7/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota87",
+      "title": "Берестяная грамота №87",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/87/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota112",
+      "title": "Берестяная грамота №112",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/112/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota147",
+      "title": "Берестяная грамота №147",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/147/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:rp-household-art93",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "§93, Troitsky-copy text in Tikhomirov's MSU edition"
+      },
+      "note": "Independent verification/verification-household-obligations.md HHO-01–03; conditional normative-text relation only. Dating is comparative inferred/medium under evidence:rp-dating, not enacted Novgorod-1230 law.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:rp-household-art96",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "§96, Troitsky-copy text in Tikhomirov's MSU edition"
+      },
+      "note": "Independent verification/verification-household-obligations.md HHO-01–03; conditional normative-text relation only. Dating is comparative inferred/medium under evidence:rp-dating, not enacted Novgorod-1230 law.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota9",
+      "source_ref": "source:gramota9",
+      "anchor": {
+        "record_id": "novgorod/9"
+      },
+      "note": "Whole private letter: Gostyata reports property given by father and kin and being driven away after another wife was taken.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota7",
+      "source_ref": "source:gramota7",
+      "anchor": {
+        "record_id": "novgorod/7"
+      },
+      "note": "Catalogue identifies a fragment of instructions to tax collectors.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota87",
+      "source_ref": "source:gramota87",
+      "anchor": {
+        "record_id": "novgorod/87"
+      },
+      "note": "Fragmentary address identifies priest Drochka and named addressees; no request body survives.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota112",
+      "source_ref": "source:gramota112",
+      "anchor": {
+        "record_id": "novgorod/112"
+      },
+      "note": "Translations disagree on transaction detail but agree on a settle-or-go-to-court alternative.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota147",
+      "source_ref": "source:gramota147",
+      "anchor": {
+        "record_id": "novgorod/147"
+      },
+      "note": "Whole letter from a podvoisky to Filipp conditionally assures that pochestie will be good.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:conditional-dependant-care",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:conditional-maternal-care-succession",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:spousal-complaint-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:asserted-marital-treatment"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:asserted-marital-treatment",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:collector-instruction-fragment",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:collector-task-context"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:collector-task-context",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:priest-addressed-fragment",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:religious-office-address"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:religious-office-address",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:settlement-demand-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:settlement-or-court-choice"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:settlement-or-court-choice",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:podvoisky-signed-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:conditional-pochestie-assurance"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:conditional-pochestie-assurance",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:rp-minor-children-conditional-care",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:conditional-dependant-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "extended_pravda_93_minor_children_mother_remarriage_nearest_relative_care_house_goods"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:rp-household-art93",
+        "evidence:rp-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:rp-caretaker-principal-goods",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:conditional-dependant-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "extended_pravda_93_return_childrens_principal_goods_gain_linked_to_feeding_and_care"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:rp-household-art93",
+        "evidence:rp-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:rp-mother-household-care-succession",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:conditional-maternal-care-succession",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "extended_pravda_96_no_disposition_maternal_portion_to_household_carer"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:rp-household-art96",
+        "evidence:rp-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-spousal-complaint-reports-marital-treatment",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:spousal-complaint-letter",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:asserted-marital-treatment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota9"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-collector-instruction-relates-task-context",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:collector-instruction-fragment",
+      "predicate": "relates_to",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:collector-task-context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota7"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-priest-fragment-relates-office-address",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:priest-addressed-fragment",
+      "predicate": "relates_to",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:religious-office-address"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota87"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-settlement-demand-reports-court-choice",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:settlement-demand-letter",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:settlement-or-court-choice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota112"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-podvoisky-letter-reports-pochestie-assurance",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:podvoisky-signed-letter",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:conditional-pochestie-assurance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota147"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-dependant-care",
+      "locale": "ru",
+      "labels": [
+        "Опека и имущество малолетних в условной норме Пространной Правды"
+      ],
+      "short_definition": "Условный нормативный текст, не наличие семьи, обязанность или действующее право в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-dependant-care",
+      "locale": "en",
+      "labels": [
+        "Dependant care and goods in a conditional Extended-Pravda rule"
+      ],
+      "short_definition": "Conditional normative text, not a present family, duty or enacted scene law.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-maternal-care-succession",
+      "locale": "ru",
+      "labels": [
+        "Уход за матерью в условной наследственной норме Пространной Правды"
+      ],
+      "short_definition": "Условный нормативный текст, не наличие семьи, обязанность или действующее право в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-maternal-care-succession",
+      "locale": "en",
+      "labels": [
+        "Maternal care in a conditional Extended-Pravda succession rule"
+      ],
+      "short_definition": "Conditional normative text, not a present family, duty or enacted scene law.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:spousal-complaint-letter",
+      "locale": "ru",
+      "labels": [
+        "Письмо-жалоба супруга"
+      ],
+      "short_definition": "Письмо-жалоба супруга",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:spousal-complaint-letter",
+      "locale": "en",
+      "labels": [
+        "Spousal complaint letter"
+      ],
+      "short_definition": "Spousal complaint letter",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:asserted-marital-treatment",
+      "locale": "ru",
+      "labels": [
+        "Заявленное супружеское обращение"
+      ],
+      "short_definition": "Заявленное супружеское обращение",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:asserted-marital-treatment",
+      "locale": "en",
+      "labels": [
+        "Asserted marital treatment"
+      ],
+      "short_definition": "Asserted marital treatment",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:collector-instruction-fragment",
+      "locale": "ru",
+      "labels": [
+        "Фрагмент поручения сборщикам"
+      ],
+      "short_definition": "Фрагмент поручения сборщикам",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:collector-instruction-fragment",
+      "locale": "en",
+      "labels": [
+        "Collector instruction fragment"
+      ],
+      "short_definition": "Collector instruction fragment",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:collector-task-context",
+      "locale": "ru",
+      "labels": [
+        "Контекст задачи сборщика"
+      ],
+      "short_definition": "Контекст задачи сборщика",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:collector-task-context",
+      "locale": "en",
+      "labels": [
+        "Collector task context"
+      ],
+      "short_definition": "Collector task context",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:priest-addressed-fragment",
+      "locale": "ru",
+      "labels": [
+        "Фрагмент с адресом священника"
+      ],
+      "short_definition": "Фрагмент с адресом священника",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:priest-addressed-fragment",
+      "locale": "en",
+      "labels": [
+        "Priest-addressed fragment"
+      ],
+      "short_definition": "Priest-addressed fragment",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:religious-office-address",
+      "locale": "ru",
+      "labels": [
+        "Адрес с религиозной должностью"
+      ],
+      "short_definition": "Адрес с религиозной должностью",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:religious-office-address",
+      "locale": "en",
+      "labels": [
+        "Religious-office address"
+      ],
+      "short_definition": "Religious-office address",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:settlement-demand-letter",
+      "locale": "ru",
+      "labels": [
+        "Письмо с требованием урегулирования"
+      ],
+      "short_definition": "Письмо с требованием урегулирования",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:settlement-demand-letter",
+      "locale": "en",
+      "labels": [
+        "Settlement-demand letter"
+      ],
+      "short_definition": "Settlement-demand letter",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:settlement-or-court-choice",
+      "locale": "ru",
+      "labels": [
+        "Выбор урегулирования или суда"
+      ],
+      "short_definition": "Выбор урегулирования или суда",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:settlement-or-court-choice",
+      "locale": "en",
+      "labels": [
+        "Settlement-or-court choice"
+      ],
+      "short_definition": "Settlement-or-court choice",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:podvoisky-signed-letter",
+      "locale": "ru",
+      "labels": [
+        "Письмо от подвойского"
+      ],
+      "short_definition": "Письмо от подвойского",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:podvoisky-signed-letter",
+      "locale": "en",
+      "labels": [
+        "Podvoisky-signed letter"
+      ],
+      "short_definition": "Podvoisky-signed letter",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-pochestie-assurance",
+      "locale": "ru",
+      "labels": [
+        "Условное заверение о почестье"
+      ],
+      "short_definition": "Условное заверение о почестье",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:conditional-pochestie-assurance",
+      "locale": "en",
+      "labels": [
+        "Conditional pochestie assurance"
+      ],
+      "short_definition": "Conditional pochestie assurance",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-minor-children-conditional-care",
+      "locale": "ru",
+      "runtime_text": "§93 Пространной Русской Правды описывает условный случай: если малые дети не могут сами о себе заботиться, а мать выходит замуж, ближайшему родственнику передаются дети, дом и имущество до их самостоятельности. Это условная текстовая модель опеки, не всеобщая обязанность: она не создаёт детей, родства, опекуна, имущество, срок или процедуру. Совместимость с новгородским контекстом XIII века является сравнительным выводом по спорной гипотезе происхождения редакции; это не установленное действующее право Новгорода 1230 года, не знание персонажа и не текущая семейная связь или обязанность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-minor-children-conditional-care",
+      "locale": "en",
+      "runtime_text": "§93 of the Extended Russkaya Pravda describes a conditional case: when small children cannot care for themselves and their mother remarries, the nearest relative receives the children, house and goods until they can manage themselves. This is a conditional textual guardianship model, not a universal duty: it creates no children, kinship, guardian, assets, duration or procedure. Compatibility with a thirteenth-century Novgorod context is a comparative inference from a disputed recension-origin hypothesis; it is not established enacted Novgorod-1230 law, actor knowledge or a current family relation or duty.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-caretaker-principal-goods",
+      "locale": "ru",
+      "runtime_text": "В том же условном случае §93 Пространной Русской Правды основной товар детей подлежит возврату, тогда как приращение оставлено держателю, потому что он кормил детей и заботился о них. Это различение ухода и имущества в тексте, не формула оплаты, прибыли, убытка, права собственности или готовое решение спора. Совместимость с новгородским контекстом XIII века является сравнительным выводом по спорной гипотезе происхождения редакции; это не установленное действующее право Новгорода 1230 года, не знание персонажа и не текущая семейная связь или обязанность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-caretaker-principal-goods",
+      "locale": "en",
+      "runtime_text": "In the same conditional case in §93 of the Extended Russkaya Pravda, the children's principal goods are to be returned, while gain is left to the holder because that person fed and cared for the children. This distinguishes care and goods in the text; it is not a payment, profit or loss formula, property title or a resolved dispute. Compatibility with a thirteenth-century Novgorod context is a comparative inference from a disputed recension-origin hypothesis; it is not established enacted Novgorod-1230 law, actor knowledge or a current family relation or duty.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-mother-household-care-succession",
+      "locale": "ru",
+      "runtime_text": "§96 Пространной Русской Правды в случае смерти матери без «язык» (распоряжения) называет получателем её доли того, у кого она жила во дворе и кто её кормил. Это узкое условие наследственного текста, не всеобщая обязанность содержать мать, совместно жить с ней или передать наследство. Совместимость с новгородским контекстом XIII века является сравнительным выводом по спорной гипотезе происхождения редакции; это не установленное действующее право Новгорода 1230 года, не знание персонажа и не текущая семейная связь или обязанность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rp-mother-household-care-succession",
+      "locale": "en",
+      "runtime_text": "In §96 of the Extended Russkaya Pravda, if a mother dies without a 'язык' (disposition), the text names as recipient of her portion the person in whose household she lived and who fed her. This is a narrow textual succession condition, not a universal duty to maintain or live with a mother or a completed inheritance transfer. Compatibility with a thirteenth-century Novgorod context is a comparative inference from a disputed recension-origin hypothesis; it is not established enacted Novgorod-1230 law, actor knowledge or a current family relation or duty.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-spousal-complaint-reports-marital-treatment",
+      "locale": "ru",
+      "runtime_text": "В грамоте №9 Гостята жалуется, что муж удерживает имущество, данное ей отцом и родичами, прогнал её и взял другую жену; она просит адресата приехать. Это сообщение заявительницы, не установленный факт конкретной сцены и не общее правило развода или раздела имущества.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-spousal-complaint-reports-marital-treatment",
+      "locale": "en",
+      "runtime_text": "In letter 9, Gostyata complains that her husband retained property given to her by her father and kin, expelled her and took another wife; she asks the addressee to come. These are the writer's allegations, not a proved scene fact or a general divorce/property-division rule.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-collector-instruction-relates-task-context",
+      "locale": "ru",
+      "runtime_text": "Фрагмент грамоты №7 отнесён издателями к распоряжениям сборщикам податей; в нём упомянуты сбор, гривны, лисьи и бобровые меха. Полные условия утрачены: текст не задаёт налоговую ставку, округ или полномочия нынешнего NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-collector-instruction-relates-task-context",
+      "locale": "en",
+      "runtime_text": "The editors classify fragmentary letter 7 as instructions to revenue collectors; collection, grivnas, fox and beaver pelts are mentioned. The complete terms are lost: it defines no tax rate, district or current NPC's authority.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-priest-fragment-relates-office-address",
+      "locale": "ru",
+      "runtime_text": "В сохранившемся обращении грамоты №87 священник Дрочка передаёт поклон нескольким адресатам и начинает просьбу, продолжение которой утрачено. Это свидетельство частной переписки духовного лица и формы приветствия, не наличие священника или приходского учреждения в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-priest-fragment-relates-office-address",
+      "locale": "en",
+      "runtime_text": "In the surviving address of letter 87, priest Drochka greets several recipients and begins a request whose continuation is lost. This attests clerical private correspondence and a greeting form, not a priest or parish institution present in a scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-settlement-demand-reports-court-choice",
+      "locale": "ru",
+      "runtime_text": "Грамота №112 содержит требование урегулировать спор либо ехать судиться в город. Переводы расходятся в деталях исходной сделки; эта неопределённость сохраняется. Письмо не устанавливает доступность суда, юрисдикцию или исход конкретного спора.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-settlement-demand-reports-court-choice",
+      "locale": "en",
+      "runtime_text": "Letter 112 demands settlement or travel to the city for litigation. Translations differ on the underlying transaction, so that detail remains uncertain. The letter establishes neither court availability, jurisdiction nor the outcome of a particular dispute.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-podvoisky-letter-reports-pochestie-assurance",
+      "locale": "ru",
+      "runtime_text": "В грамоте №147 подвойский сообщает Филиппу, что сигов ещё нет, и обещает хорошее «почестье», обращаясь к нему «господине». Это условное обещание и засвидетельствованное обращение; термин «почестье» не превращается в определённый налог или выплату, а обещание — в наличный запас рыбы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-podvoisky-letter-reports-pochestie-assurance",
+      "locale": "en",
+      "runtime_text": "In letter 147, a podvoisky tells Filipp that whitefish are not yet available and promises good pochestie, addressing him as gospodine. This records a contingent promise and form of address: pochestie is not defined as a particular tax/payment, nor does the promise create a fish stock.",
+      "search_aliases": []
+    }
+  ]
+}

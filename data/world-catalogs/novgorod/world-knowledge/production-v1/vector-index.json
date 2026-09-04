@@ -1354,6 +1354,454 @@
       "retrieval_text": "Сон и функциональная способность Общие связи сна, внимания и реакции. Сон — базовая человеческая потребность. Это универсальная физиология, не исторический обычай ночлега или гостеприимства. сон усталость внимание реакция ночлег отдых"
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area:en",
+      "target_ref": "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Burns General causal relations of burn injury. Burn consequences and care needs depend on cause, depth and affected area; this establishes no particular severity or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area:ru",
+      "target_ref": "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ожоги Общие причинные связи ожогового повреждения. Последствия ожога и потребности в уходе зависят от причины, глубины и затронутой площади; это не устанавливает тяжесть или исход конкретного ожога."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes:en",
+      "target_ref": "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Burns General causal relations of burn injury. A burn is tissue damage that can be caused by heat, chemicals, electricity, sunlight or radiation; this establishes no particular injury."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes:ru",
+      "target_ref": "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ожоги Общие причинные связи ожогового повреждения. Ожог — повреждение тканей, которое могут вызвать тепло, химикаты, электричество, солнечный свет или излучение; это не устанавливает конкретное повреждение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk:en",
+      "target_ref": "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Burns General causal relations of burn injury. Burn damage to the skin barrier can increase infection risk; this establishes no infection or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk:ru",
+      "target_ref": "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ожоги Общие причинные связи ожогового повреждения. Повреждение ожогом защитного барьера кожи может повысить риск инфекции; это не устанавливает инфекцию или её исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control:en",
+      "target_ref": "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Food cross-contamination Handling separation of raw and ready food. Cleaning hands and food-contact surfaces is a food-handling control; this establishes no current cleanliness or microbiological state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control:ru",
+      "target_ref": "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Перекрёстное загрязнение пищи Разделение сырой и готовой пищи в обращении. Очистка рук и поверхностей контакта с пищей — мера безопасного обращения; это не устанавливает их текущую чистоту или микробиологическое состояние."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests:en",
+      "target_ref": "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Clinical observations Observations and assessment without diagnosing an individual. Clinical dehydration assessment can combine examination, vital signs, symptom history and, when available, tests; it is not a diagnosis from one game utterance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests:ru",
+      "target_ref": "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Клинические наблюдения Наблюдения и оценка без диагноза конкретного человека. Клиническая оценка обезвоживания может сочетать осмотр, жизненные показатели, историю симптомов и при наличии тесты; это не является диагнозом из одной игровой реплики."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-dehydration-can-have-nonspecific-observations:en",
+      "target_ref": "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Clinical observations Observations and assessment without diagnosing an individual. Thirst, dry mouth, reduced urination, tiredness and dizziness can accompany dehydration, but establish neither cause nor diagnosis for an individual."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-dehydration-can-have-nonspecific-observations:ru",
+      "target_ref": "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Клинические наблюдения Наблюдения и оценка без диагноза конкретного человека. Жажда, сухость во рту, редкое мочеиспускание, усталость и головокружение могут сопутствовать обезвоживанию, но не устанавливают его причину или диагноз конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake:en",
+      "target_ref": "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Clinical observations Observations and assessment without diagnosing an individual. Dehydration occurs when fluid loss exceeds intake; this establishes no individual's fluid balance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake:ru",
+      "target_ref": "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Клинические наблюдения Наблюдения и оценка без диагноза конкретного человека. Обезвоживание возникает, когда потеря жидкости превышает её поступление; это не устанавливает баланс жидкости конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations:en",
+      "target_ref": "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Foodborne illness observations Nonspecific observable signs of foodborne illness. Foodborne illness can involve upset stomach, cramps, nausea, vomiting, diarrhea or fever; these signs do not identify a specific germ or diagnosis."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations:ru",
+      "target_ref": "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдения при пищевой болезни Неспецифические наблюдаемые признаки пищевой болезни. При пищевой болезни возможны расстройство желудка, спазмы, тошнота, рвота, диарея или лихорадка; эти признаки не определяют конкретный возбудитель или диагноз."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-moon-phases-change-apparent-illuminated-portion:en",
+      "target_ref": "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Moon phases Changing apparent illuminated portion of the Moon. Lunar phases change the apparent illuminated portion of the Moon, but establish no date, position, weather or ground illumination."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-moon-phases-change-apparent-illuminated-portion:ru",
+      "target_ref": "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Фазы Луны Изменение видимой освещённой части Луны. Фазы Луны меняют видимую освещённую часть Луны, но не устанавливают дату, положение, погоду или освещённость местности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination:en",
+      "target_ref": "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Food cross-contamination Handling separation of raw and ready food. Separating raw meat, poultry, seafood or eggs from other food limits cross-contamination risk; this establishes no contamination event."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination:ru",
+      "target_ref": "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Перекрёстное загрязнение пищи Разделение сырой и готовой пищи в обращении. Разделение сырого мяса, птицы, морепродуктов и яиц с другой пищей ограничивает риск перекрёстного загрязнения; это не устанавливает факт загрязнения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts:en",
+      "target_ref": "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Food cross-contamination Handling separation of raw and ready food. Raw meat and catfish are food-safety handling contexts; this establishes no contamination or illness."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts:ru",
+      "target_ref": "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Перекрёстное загрязнение пищи Разделение сырой и готовой пищи в обращении. Сырое мясо и сом — контексты обращения с пищей, где важна пищевая безопасность; это не устанавливает загрязнение или болезнь."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection:en",
+      "target_ref": "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Document records of household and kin Private or named records, not rules of marriage, status, or inheritance. Letter 531 has a conditional date of 1200–1220 with a probable forward shift; it is Anna’s private request to her brother Klimyata for protection against an alleged accusation. It is one kin-directed request, not a system of status, law, or household. wife children kin Anna Klimyata protection accusation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection:ru",
+      "target_ref": "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные записи семьи и родства Частные или именованные записи, не норма брака, статуса или наследования. Грамота №531 имеет условную дату 1200–1220 с вероятным смещением вперёд; это частная просьба Анны к брату Климате о защите от предполагаемого обвинения. Это единичная родственная просьба, не система статуса, права или хозяйства. жена дети родня Анна Климатя защита обвинение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise:en",
+      "target_ref": "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Writing exercise and theft-inquiry records Separate catalogue records, not a school or court procedure. Letter 778 has a conditional date of 1200–1220 with a probable backward shift and alternative datings; the catalogue classifies it as an alphabet exercise. It is not a school, curriculum, literacy rate, or learner in a scene. alphabet posadnik theft letter 778 exercise"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise:ru",
+      "target_ref": "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письменное упражнение и запрос о краже Отдельные каталоговые записи, не школа или судебный порядок. Грамота №778 имеет условную дату 1200–1220 с вероятным смещением назад и альтернативными датировками; каталог классифицирует её как азбучное упражнение. Это не школа, программа, грамотность или ученик в сцене. азбука посадник кража грамота 778 упражнение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin:en",
+      "target_ref": "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Document records of household and kin Private or named records, not rules of marriage, status, or inheritance. Letter 9 has a conditional date of 1160–1180 and reports Gostyata saying that her father and kin gave her property. It is an assertion in one letter, not a rule of property, inheritance, or gender. wife children kin Anna Klimyata Gostyata property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin:ru",
+      "target_ref": "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные записи семьи и родства Частные или именованные записи, не норма брака, статуса или наследования. Грамота №9 имеет условную дату 1160–1180 и передаёт слова Гостяты о том, что отец и родня дали ей имущество. Это утверждение в одном письме, не правило имущества, наследования или гендера. жена дети родня Анна Климатя Гостята имущество"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota9-reports-another-wife:en",
+      "target_ref": "claim:candidate-v7-gramota9-reports-another-wife",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Document records of household and kin Private or named records, not rules of marriage, status, or inheritance. Letter 9 has a conditional date of 1160–1180 and reports Gostyata’s complaint that she was driven away after another wife was taken. It is one complaint’s content, not a rule of marriage, divorce, or sanction. wife children kin Anna Klimyata Gostyata another wife complaint"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota9-reports-another-wife:ru",
+      "target_ref": "claim:candidate-v7-gramota9-reports-another-wife",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные записи семьи и родства Частные или именованные записи, не норма брака, статуса или наследования. Грамота №9 имеет условную дату 1160–1180 и передаёт жалобу Гостяты, что её выгнали после того, как была взята другая жена. Это содержание одной жалобы, не норма брака, развода или санкции. жена дети родня Анна Климатя Гостята другая жена жалоба"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry:en",
+      "target_ref": "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Writing exercise and theft-inquiry records Separate catalogue records, not a school or court procedure. Letter 907 has a conditional date of 1100–1120 with a probable backward shift; the catalogue identifies it as a letter to a posadnik about a theft inquiry. It is not court procedure, jurisdiction, sanction, or a current accusation. alphabet posadnik theft inquiry"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry:ru",
+      "target_ref": "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письменное упражнение и запрос о краже Отдельные каталоговые записи, не школа или судебный порядок. Грамота №907 имеет условную дату 1100–1120 с вероятным смещением назад; каталог описывает её как письмо к посаднику по поводу розыска кражи. Это не судебный порядок, юрисдикция, санкция или текущее обвинение. азбука посадник кража розыск"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-bone-skates-xii-xiii:en",
+      "target_ref": "claim:candidate-v7-museum-bone-skates-xii-xiii",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. The Novgorod Museum reports genuine XII–XIII-century bone skates from the Rogatitsky excavation in Veliky Novgorod. This does not establish ice condition, skater, skill, current recreation, or safety. toy ball spinning top skates toy vessel bone skates Rogatitsky excavation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-bone-skates-xii-xiii:ru",
+      "target_ref": "claim:candidate-v7-museum-bone-skates-xii-xiii",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. Новгородский музей сообщает о подлинных костяных коньках XII–XIII веков из Рогатицкого раскопа Великого Новгорода. Это не состояние льда, конькобежец, навык, текущий досуг или безопасность. игрушка мяч волчок коньки кораблик кость Рогатицкий раскоп"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-individual-toy-types:en",
+      "target_ref": "claim:candidate-v7-museum-individual-toy-types",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. The Novgorod Museum describes individual toys as weapon and transport imitations and as figurative, sound, and mechanical toys. It is archaeological context, not a weapon, toy, child, or skill in a scene. toy ball spinning top skates toy vessel bow toy boat whistle"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-individual-toy-types:ru",
+      "target_ref": "claim:candidate-v7-museum-individual-toy-types",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. Новгородский музей описывает индивидуальные игрушки-имитации оружия и транспорта, а также изобразительные, звуковые и механические игрушки. Это археологический контекст, не оружие, игрушка, ребёнок или навык в сцене. игрушка мяч волчок коньки кораблик лук лодочка свистулька"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops:en",
+      "target_ref": "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. The Novgorod Museum identifies leather balls and wooden spinning tops as toys for collective games. It establishes no game rule, player, prevalence, or current play. toy ball spinning top skates toy vessel game"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops:ru",
+      "target_ref": "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. Новгородский музей называет кожаные мячики и деревянные волчки-кубари игрушками для коллективных игр. Это не правила игры, игрок, распространённость или текущая игра. игрушка мяч волчок коньки кораблик игра"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-onfim-learning-writing-reading-counting:en",
+      "target_ref": "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Museum learning context for Onfim Exhibition fact, not a 1230 school or curriculum. A Novgorod Museum exhibition text describes Onfim’s birch-bark letters as ones in which he learned writing, reading, and counting. It is museum context, not a dated school, curriculum, or child in a scene. Onfim reading writing counting"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-onfim-learning-writing-reading-counting:ru",
+      "target_ref": "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Музейный контекст обучения Онфима Экспозиционный факт, не школа или программа 1230 года. Экспозиционный текст Новгородского музея описывает берестяные грамоты Онфима как записи, на которых он учился письму, чтению и счёту. Это музейный контекст, не датированная школа, программа или ребёнок в сцене. Онфим чтение письмо счёт"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-toy-vessel-sail-xi-xii:en",
+      "target_ref": "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. The Novgorod Museum reports an XI–XII-century toy vessel sail from the Duboshin-II excavation. It is find context, not a vessel, sailing, skill, or toy in a scene. toy ball spinning top skates toy vessel toy sail Duboshin vessel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-toy-vessel-sail-xi-xii:ru",
+      "target_ref": "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. Новгородский музей сообщает об игрушечном парусе судна XI–XII веков из раскопа Дубошин-II. Это контекст находки, не судно, плавание, навык или игрушка в сцене. игрушка мяч волчок коньки кораблик игрушечный парус Дубошин судно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection:en",
+      "target_ref": "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. The Novgorod Museum describes about 100 archaeological objects from X–XVII-century Veliky Novgorod excavations, including toys, writing tablets, and styli. It is broad museum context, not object presence in 1230 or a scene. toy ball spinning top skates toy vessel archaeology writing tablet stylus toys"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection:ru",
+      "target_ref": "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. Новгородский музей описывает около 100 археологических предметов X–XVII веков из раскопок Великого Новгорода, включая игрушки, церы и писала. Это широкий музейный контекст, не присутствие предмета в 1230 году или сцене. игрушка мяч волчок коньки кораблик археология цера писало игрушки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation:en",
+      "target_ref": "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. For 1220 the chronicle recounts Archbishop Mitrofan reconciling Prince Vsevolod and Tverdislav. It is one episode, not a general competence or procedure. posadnik delegation regiment Kesi Kolivan Mitrofan reconciliation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation:ru",
+      "target_ref": "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Под 1220 годом летопись рассказывает, что архиепископ Митрофан примирил князя Всеволода и Твердислава. Это один эпизод, не общее полномочие или процедура. посадник делегация полк Кесь Колывань Митрофан примирение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo:en",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. The 1220 chronicle says Tverdislav relinquished the posadnichestvo and Ivanko Dmitrovich received it. It is not a rule of election, tenure, or competence. posadnik delegation regiment Kesi Kolivan posadnichestvo Ivanko Tverdislav"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo:ru",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Летопись под 1220 годом сообщает, что Твердислав оставил посадничество, а Иванко Дмитрович его получил. Это не правило избрания, срока или полномочий. посадник делегация полк Кесь Колывань посадничество Иванко Твердислав"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments:en",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. The 1220 chronicle says Tverdislav’s supporters stood in five regiments. It is one crisis arrangement, not a standing military organization. posadnik delegation regiment Kesi Kolivan Tverdislav five regiments"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments:ru",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Летопись под 1220 годом сообщает, что сторонники Твердислава стояли пятью полками. Это одна кризисная расстановка, не постоянная военная организация. посадник делегация полк Кесь Колывань Твердислав пять полков"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event:en",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Document records of household and kin Private or named records, not rules of marriage, status, or inheritance. For 1220 the chronicle says Tverdislav left wife and children for a monastery, and his wife then entered another monastery. It is one household event, not a marital, gender, or monastic norm. wife children kin Anna Klimyata Tverdislav monastery"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event:ru",
+      "target_ref": "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные записи семьи и родства Частные или именованные записи, не норма брака, статуса или наследования. Под 1220 годом летопись сообщает, что Твердислав ушёл в монастырь, скрывшись от жены и детей, а его жена затем поступила в другой монастырь. Это один семейный эпизод, не норма брака, гендера или монашества. жена дети родня Анна Климатя Твердислав монастырь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour:en",
+      "target_ref": "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Armed princely court in the 1220 record One chronicle conflict context, not a weapon catalogue. The chronicle for 1220 says Prince Vsevolod came with his whole court armed in armour. It is one conflict episode, not a character inventory, skill, or protection value. armour princely court 1220 Vsevolod"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour:ru",
+      "target_ref": "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Вооружённый двор князя в записи 1220 года Один летописный конфликтный контекст, не каталог оружия. Летопись под 1220 годом сообщает, что князь Всеволод пришёл со всем двором, вооружённым в броне. Это один конфликтный эпизод, не инвентарь, навык или защита персонажа. броня двор князя 1220 Всеволод"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-kesi-campaign:en",
+      "target_ref": "claim:candidate-v7-npl-1222-kesi-campaign",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. The 1222 chronicle records Novgorodians with Svyatoslav going to Kesi, Lithuanian help, and the town not being taken. It is one campaign, not a standing alliance or siege capability. posadnik delegation regiment Kesi Kolivan Svyatoslav Lithuania"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-kesi-campaign:ru",
+      "target_ref": "claim:candidate-v7-npl-1222-kesi-campaign",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Под 1222 годом летопись сообщает о походе новгородцев со Святославом к Кеси, литовской помощи и невзятии города. Это один поход, не постоянный союз или осадная возможность. посадник делегация полк Кесь Колывань Святослав Литва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir:en",
+      "target_ref": "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. For 1222 the chronicle records Novgorod sending Mitrofan, Posadnik Ivanko, and senior men to Yuri in Vladimir. It is a named delegation, not a general diplomatic institution. posadnik delegation regiment Kesi Kolivan Vladimir Mitrofan Ivanko"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir:ru",
+      "target_ref": "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Под 1222 годом летопись сообщает об отправке Митрофана, посадника Иванка и старейших мужей из Новгорода к Юрию во Владимир. Это именованная делегация, не общий институт дипломатии. посадник делегация полк Кесь Колывань Владимир Митрофан Иванко"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-yuri-gives-vsevolod:en",
+      "target_ref": "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. The 1222 chronicle says Yuri gave his son Vsevolod ‘on all the will of Novgorod’. It is wording for one event, not a constitutional rule or current authority. posadnik delegation regiment Kesi Kolivan Yuri Vsevolod will of Novgorod"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1222-yuri-gives-vsevolod:ru",
+      "target_ref": "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Летопись под 1222 годом говорит, что Юрий дал сына Всеволода «на всей воле новгородской». Это формулировка одного события, не конституционное правило или текущая власть. посадник делегация полк Кесь Колывань Юрий Всеволод воля новгородская"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1223-colyvan-captives-and-gold:en",
+      "target_ref": "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. In its 1223 Kolivan campaign account, the chronicle says captives and much gold were brought back. It is that campaign’s narrated aftermath, not an entitlement or ordinary result. posadnik delegation regiment Kesi Kolivan captives gold"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1223-colyvan-captives-and-gold:ru",
+      "target_ref": "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. В записи о походе к Колывани под 1223 годом летопись говорит о приведённых пленниках и большом количестве золота. Это описанный итог именно этого похода, не право или обычный результат. посадник делегация полк Кесь Колывань плен золото"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign:en",
+      "target_ref": "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. The 1223 chronicle records Yaroslav going to Kolivan with his whole oblast, ravaging Chud land, and not taking the town. It is one episode, not policy or a current expedition. posadnik delegation regiment Kesi Kolivan Yaroslav campaign"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign:ru",
+      "target_ref": "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. Под 1223 годом летопись сообщает о походе Ярослава к Колываню со всей областью, разорении Чудской земли и невзятии города. Это один эпизод, не политика или текущая экспедиция. посадник делегация полк Кесь Колывань Ярослав поход"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
       "target_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
       "domain": "biology_physiology",
@@ -14864,6 +15312,48 @@
       "retrieval_text": "Сон и функциональная способность Общие связи сна, внимания и реакции. сон усталость внимание реакция"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-burns:en",
+      "target_ref": "wk:biology_physiology:candidate-v6-burns",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Burns General causal relations of burn injury."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-burns:ru",
+      "target_ref": "wk:biology_physiology:candidate-v6-burns",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ожоги Общие причинные связи ожогового повреждения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-clinical-observations:en",
+      "target_ref": "wk:biology_physiology:candidate-v6-clinical-observations",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Clinical observations Observations and assessment without diagnosing an individual."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-clinical-observations:ru",
+      "target_ref": "wk:biology_physiology:candidate-v6-clinical-observations",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Клинические наблюдения Наблюдения и оценка без диагноза конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-foodborne-observations:en",
+      "target_ref": "wk:biology_physiology:candidate-v6-foodborne-observations",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Foodborne illness observations Nonspecific observable signs of foodborne illness."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v6-foodborne-observations:ru",
+      "target_ref": "wk:biology_physiology:candidate-v6-foodborne-observations",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдения при пищевой болезни Неспецифические наблюдаемые признаки пищевой болезни."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:en",
       "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
       "domain": "biology_physiology",
@@ -17048,6 +17538,20 @@
       "retrieval_text": "acid base neutralization При реакции кислоты и основания могут образовываться соль и вода."
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:candidate-v6-food-cross-contamination:en",
+      "target_ref": "wk:chemistry_process:candidate-v6-food-cross-contamination",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Food cross-contamination Handling separation of raw and ready food."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:candidate-v6-food-cross-contamination:ru",
+      "target_ref": "wk:chemistry_process:candidate-v6-food-cross-contamination",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Перекрёстное загрязнение пищи Разделение сырой и готовой пищи в обращении."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:catalyst-rate-not-equilibrium:en",
       "target_ref": "wk:chemistry_process:catalyst-rate-not-equilibrium",
       "domain": "chemistry_process",
@@ -18250,6 +18754,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Лёд и снег Качественные связи льда и снега с опасностью поверхности и прочностью льда."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-v6-moonlight:en",
+      "target_ref": "wk:environment:candidate-v6-moonlight",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Moon phases Changing apparent illuminated portion of the Moon."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-v6-moonlight:ru",
+      "target_ref": "wk:environment:candidate-v6-moonlight",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Фазы Луны Изменение видимой освещённой части Луны."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:candidate-water-circulation-oxygen:en",
@@ -19496,6 +20014,34 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Новгородские лирообразные гусли Археологические находки XI–XIII веков, не инструмент или музыка в текущей сцене. гусли лирообразные гусли музыка"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-v7-armed-court:en",
+      "target_ref": "wk:material_culture:candidate-v7-armed-court",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Armed princely court in the 1220 record One chronicle conflict context, not a weapon catalogue. armour princely court 1220"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-v7-armed-court:ru",
+      "target_ref": "wk:material_culture:candidate-v7-armed-court",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Вооружённый двор князя в записи 1220 года Один летописный конфликтный контекст, не каталог оружия. броня двор князя 1220"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-v7-novgorod-play-artefacts:en",
+      "target_ref": "wk:material_culture:candidate-v7-novgorod-play-artefacts",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod archaeological play artefacts Museum archaeological context, not objects in the current scene. toy ball spinning top skates toy vessel"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-v7-novgorod-play-artefacts:ru",
+      "target_ref": "wk:material_culture:candidate-v7-novgorod-play-artefacts",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские археологические игровые артефакты Музейный археологический контекст, не предметы в текущей сцене. игрушка мяч волчок коньки кораблик"
     },
     {
       "entry_ref": "wk-retrieval:wk:material_culture:carbon-black-pigment:en",
@@ -23626,6 +24172,62 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Статусный контекст спорной покупки Содержание одной грамоты, не социальная система. рабыня покупка спор"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-conflict-and-office-records:en",
+      "target_ref": "wk:social_law_economy:candidate-v7-conflict-and-office-records",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Chronicle records of conflict and office Named 1220–1223 episodes, not an institutional model. posadnik delegation regiment Kesi Kolivan"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-conflict-and-office-records:ru",
+      "target_ref": "wk:social_law_economy:candidate-v7-conflict-and-office-records",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Летописные записи конфликта и должности Именованные эпизоды 1220–1223 годов, не модель институтов. посадник делегация полк Кесь Колывань"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-household-and-kin-records:en",
+      "target_ref": "wk:social_law_economy:candidate-v7-household-and-kin-records",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Document records of household and kin Private or named records, not rules of marriage, status, or inheritance. wife children kin Anna Klimyata"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-household-and-kin-records:ru",
+      "target_ref": "wk:social_law_economy:candidate-v7-household-and-kin-records",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные записи семьи и родства Частные или именованные записи, не норма брака, статуса или наследования. жена дети родня Анна Климатя"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-museum-learning-context:en",
+      "target_ref": "wk:social_law_economy:candidate-v7-museum-learning-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Museum learning context for Onfim Exhibition fact, not a 1230 school or curriculum. Onfim reading writing counting"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-museum-learning-context:ru",
+      "target_ref": "wk:social_law_economy:candidate-v7-museum-learning-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Музейный контекст обучения Онфима Экспозиционный факт, не школа или программа 1230 года. Онфим чтение письмо счёт"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-writing-and-inquiry-records:en",
+      "target_ref": "wk:social_law_economy:candidate-v7-writing-and-inquiry-records",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Writing exercise and theft-inquiry records Separate catalogue records, not a school or court procedure. alphabet posadnik theft"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-v7-writing-and-inquiry-records:ru",
+      "target_ref": "wk:social_law_economy:candidate-v7-writing-and-inquiry-records",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письменное упражнение и запрос о краже Отдельные каталоговые записи, не школа или судебный порядок. азбука посадник кража"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-wife-authored-cow-redemption-letter:en",

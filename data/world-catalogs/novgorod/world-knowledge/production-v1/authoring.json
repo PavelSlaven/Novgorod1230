@@ -96,6 +96,10 @@
     "macro-universal-health-lifecycle-v3.json",
     "verification-macro-universal-health-lifecycle-v3.json",
     "macro-human-world-blindspots-v5.json",
-    "verification-macro-human-world-blindspots-v5.json"
+    "verification-macro-human-world-blindspots-v5.json",
+    "macro-universal-gap-closure-v6.json",
+    "verification-macro-universal-gap-closure-v6.json",
+    "macro-historical-p1-closure-v7.json",
+    "verification-macro-historical-p1-closure-v7.json"
   ]
 }

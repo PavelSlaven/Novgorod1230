@@ -1,0 +1,1209 @@
+{
+  "schema": "world_knowledge_cartography_context_families_v2",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "revision_id": "revision:production-v1",
+  "purpose": "Semantic category-family inventory for the six reviewed domains. It maps existing claims to gameplay-relevant factual families; it neither authorizes presence nor defines a runtime/materialization whitelist.",
+  "scope": {
+    "domains": [
+      "architecture_settlement",
+      "craft_technology",
+      "environment",
+      "material_culture",
+      "npc_daily_life",
+      "social_law_economy"
+    ],
+    "claim_count": 390
+  },
+  "families": [
+    {
+      "id": "built-bathing-sanitation",
+      "domain": "architecture_settlement",
+      "subdomain": "thermal_and_sanitation",
+      "family": "oven_baking_bathhouse_and_washing",
+      "location_applicability": "household oven or bathhouse; baking and washing are distinct uses of heated space",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:bathing-house-heating-before-washing",
+        "claim:bathing-wooden-bathhouse-wood",
+        "claim:population-processes-oven-baking",
+        "claim:settlement-oven-cooking",
+        "claim:settlement-oven-heating"
+      ]
+    },
+    {
+      "id": "built-charcoal-pit",
+      "domain": "architecture_settlement",
+      "subdomain": "production_site",
+      "family": "sealed_charcoal_pit",
+      "location_applicability": "sealed charcoal-burning pit at a woodland fuel-working site",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:fuel-charcoal-pit-sealing"
+      ]
+    },
+    {
+      "id": "built-civic-defence",
+      "domain": "architecture_settlement",
+      "subdomain": "defence",
+      "family": "wood_earth_wall_rampart_and_log_defence",
+      "location_applicability": "town defensive perimeter and earthwork",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:civic-defence-clay-gaps",
+        "claim:civic-defence-log-courses",
+        "claim:civic-defence-log-length-joint",
+        "claim:civic-defence-stake-support",
+        "claim:civic-defence-transverse-support",
+        "claim:civic-earth-rampart",
+        "claim:civic-wood-earth-wall"
+      ]
+    },
+    {
+      "id": "built-landing-and-shore",
+      "domain": "architecture_settlement",
+      "subdomain": "waterfront",
+      "family": "landing_bridge_and_shore_support",
+      "location_applicability": "Rjaz-type river bridge, riverbed foundation and stone fill; no church-building implication",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:construction-rjaz-bridge-support",
+        "claim:construction-rjaz-polygonal-form",
+        "claim:construction-rjaz-riverbed-foundation",
+        "claim:construction-rjaz-stone-fill"
+      ]
+    },
+    {
+      "id": "built-monumental-church-construction",
+      "domain": "architecture_settlement",
+      "subdomain": "monumental_construction",
+      "family": "church_masonry_quarry_labour_pottery_and_plinth",
+      "location_applicability": "medieval monumental church construction site; not an ordinary house, riverside camp, stock or access assertion",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:construction-compared-church-masonry",
+        "claim:construction-construction-pottery-products",
+        "claim:construction-plinth-patterns-1207",
+        "claim:construction-quarry-procurement",
+        "claim:construction-auxiliary-construction-work"
+      ]
+    },
+    {
+      "id": "built-public-civic-space",
+      "domain": "architecture_settlement",
+      "subdomain": "public_civic_space",
+      "family": "market_and_assembly",
+      "location_applicability": "attested public market or assembly space",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:civic-public-assembly",
+        "claim:civic-public-market"
+      ]
+    },
+    {
+      "id": "built-river-landing-access",
+      "domain": "architecture_settlement",
+      "subdomain": "waterfront",
+      "family": "landing_categories_approaches_and_surfacing",
+      "location_applicability": "river landing, its named category, market approach and allocated surfacing",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:river-landing-category",
+        "claim:river-landing-market-approaches",
+        "claim:river-landing-named-list",
+        "claim:river-landing-surfacing-allocation"
+      ]
+    },
+    {
+      "id": "built-river-workspace",
+      "domain": "architecture_settlement",
+      "subdomain": "waterfront_household",
+      "family": "river_work_fishing_and_drying_space",
+      "location_applicability": "riverbank fishing and drying workspace",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:population-drying-workspace",
+        "claim:population-fishing-workspace",
+        "claim:population-river-work"
+      ]
+    },
+    {
+      "id": "built-storage-and-household",
+      "domain": "architecture_settlement",
+      "subdomain": "household_space",
+      "family": "log_house_roof_underfloor_storage_and_orchard",
+      "location_applicability": "log-built household, vestibule, roof, underfloor store or orchard",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:household-apple-orchard",
+        "claim:population-household-storage",
+        "claim:population-storage-vessels",
+        "claim:settlement-log-building-form",
+        "claim:settlement-oak-shingle-roof",
+        "claim:settlement-pine-spruce-log",
+        "claim:settlement-underfloor-storage",
+        "claim:settlement-underfloor-utility",
+        "claim:settlement-vestibule-log",
+        "claim:settlement-wood-building"
+      ]
+    },
+    {
+      "id": "built-street-yard-workshop",
+      "domain": "architecture_settlement",
+      "subdomain": "settlement_access",
+      "family": "paving_yard_workshop_cart_and_processing_area",
+      "location_applicability": "yard, workshop street, paved access or food-processing area",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:food-practices-processing-area-inference",
+        "claim:settlement-cart-transport",
+        "claim:settlement-post-fence-yard",
+        "claim:settlement-wooden-paving",
+        "claim:settlement-workshop-street",
+        "claim:urban-pavements"
+      ]
+    },
+    {
+      "id": "built-urban-form",
+      "domain": "architecture_settlement",
+      "subdomain": "urban_form",
+      "family": "excavated_structures_quarters_and_improvement",
+      "location_applicability": "excavated urban quarter, rural household context or riverside store as individually linked",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:architectural-material-classes",
+        "claim:composite-urban-quarter",
+        "claim:contextual-evidence-classes",
+        "claim:excavated-urban-structures",
+        "claim:household-riverside-storage",
+        "claim:localized-improvement-context",
+        "claim:rural-agriculture-crop-context",
+        "claim:rural-household-economy-context"
+      ]
+    },
+    {
+      "id": "craft-fibre-fishing-processing",
+      "domain": "craft_technology",
+      "subdomain": "fibre_and_fishing",
+      "family": "fibre_preparation_weaving_fishing_gear_and_fish_drying",
+      "location_applicability": "fibre-working household or workshop and riverside fishing workspace",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-fauna-hemp-processing-tow",
+        "claim:agriculture-fauna-hemp-stem-fibre",
+        "claim:fibre-flax-breaker-shive",
+        "claim:fibre-hackle-removes-shive",
+        "claim:population-bark-bast",
+        "claim:population-bark-cut",
+        "claim:population-bark-input",
+        "claim:population-bark-pierce",
+        "claim:population-fish-dried-form",
+        "claim:population-net-cord",
+        "claim:population-net-floats",
+        "claim:population-net-weights",
+        "claim:population-processes-weaving-device",
+        "claim:population-processes-weaving-textile",
+        "claim:population-processes-weaving-thread",
+        "claim:population-rod-cord",
+        "claim:population-rod-input",
+        "claim:population-weaving-practice"
+      ]
+    },
+    {
+      "id": "craft-material-classes",
+      "domain": "craft_technology",
+      "subdomain": "material_classes",
+      "family": "wood_leather_metal_ceramic_and_work_waste",
+      "location_applicability": "workshop or household material and waste context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:ceramic-material-category",
+        "claim:leather-broad-context",
+        "claim:metalworking-broad-context",
+        "claim:population-shoe-input",
+        "claim:population-shoe-output",
+        "claim:population-weight-stone",
+        "claim:structural-and-object-wood",
+        "claim:urban-wooden-coverings",
+        "claim:work-waste-context"
+      ]
+    },
+    {
+      "id": "craft-rural-processing",
+      "domain": "craft_technology",
+      "subdomain": "rural_processing",
+      "family": "grain_cleaning_hunting_terminology_and_tree_beekeeping",
+      "location_applicability": "field, woodland hunting ground or tree-bort setting",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-fauna-borts-honey",
+        "claim:agriculture-fauna-borts-wax",
+        "claim:agriculture-fauna-rural-tree-borts",
+        "claim:early-rus-hunting-ground-terms",
+        "claim:food-practices-millet-cleaning-waste",
+        "claim:food-practices-threshing-chaff"
+      ]
+    },
+    {
+      "id": "craft-surface-and-wax",
+      "domain": "craft_technology",
+      "subdomain": "surface_and_waxwork",
+      "family": "pigment_application_and_candle_rolling",
+      "location_applicability": "painted surface or candle-making context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:candle-rolled-plate",
+        "claim:pigment-blue-layer-order",
+        "claim:pigment-blue-lime-basis",
+        "claim:pigment-wet-dry-techniques"
+      ]
+    },
+    {
+      "id": "craft-technology-boundaries",
+      "domain": "craft_technology",
+      "subdomain": "historical_constraints",
+      "family": "postmedieval_engine_and_motor_exclusions",
+      "location_applicability": "historical technology boundary, not a location",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:technology-motor-boundary",
+        "claim:technology-newcomen-boundary"
+      ]
+    },
+    {
+      "id": "environment-animal-ecology",
+      "domain": "environment",
+      "subdomain": "animal_ecology",
+      "family": "aquatic_range_bird_seasonality_and_pollination",
+      "location_applicability": "river/wetland, meadow or settlement-edge ecological context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:animal-pollination-affects-flowering-plant-reproduction",
+        "claim:environment-p1-bird-taxa",
+        "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+        "claim:urban-bird-period-specific",
+        "claim:water-temperature-affects-aquatic-organism-range"
+      ]
+    },
+    {
+      "id": "environment-fauna-subsistence",
+      "domain": "environment",
+      "subdomain": "fauna_and_subsistence",
+      "family": "domestic_animals_wild_food_fur_and_horse_use",
+      "location_applicability": "household yard, pasture, transport route, woodland or food context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:domestic-animal-context",
+        "claim:environment-p1-cattle",
+        "claim:environment-p1-horse-meat",
+        "claim:environment-p1-horse-transport",
+        "claim:environment-p1-pig",
+        "claim:environment-p1-sheep-goat",
+        "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+        "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
+        "claim:wild-food-and-fur-evidence"
+      ]
+    },
+    {
+      "id": "environment-geology",
+      "domain": "environment",
+      "subdomain": "geology",
+      "family": "rock_formation_weathering_hardness_and_sediment",
+      "location_applicability": "rock, ground, sediment or mineral-source context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:foundations-earth-15-igneous-rock-formation",
+        "claim:foundations-earth-16-igneous-cooling-texture",
+        "claim:foundations-earth-17-sedimentary-rock-formation",
+        "claim:foundations-earth-18-metamorphic-rock-formation",
+        "claim:foundations-earth2-01-rock-weathering-physical-chemical",
+        "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+        "claim:river-flow-affects-sediment-transport-deposition",
+        "claim:secondary-clay-forms-through-water-transport-deposition"
+      ]
+    },
+    {
+      "id": "environment-historical-landscape",
+      "domain": "environment",
+      "subdomain": "historical_ecology",
+      "family": "landscape_food_base_fishing_and_agriculture",
+      "location_applicability": "Volkhov-Ilmen landscape, field, woodland and fishing context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:environment-p1-buried-soil",
+        "claim:environment-p1-waterlogged-layer",
+        "claim:environment-p1-wildfowl-season",
+        "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+        "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+        "claim:regional-agriculture-practice",
+        "claim:regional-fish-exploitation"
+      ]
+    },
+    {
+      "id": "environment-hydrology",
+      "domain": "environment",
+      "subdomain": "hydrology",
+      "family": "groundwater_water_cycle_runoff_and_ice_jam",
+      "location_applicability": "aquifer, ground surface, stream or river channel",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:foundations-earth-19-aquifer-pore-flow",
+        "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:foundations-earth-22-hydrothermal-metal-transport",
+        "claim:foundations-earth-23-hydrothermal-precipitation",
+        "claim:foundations-earth-24-water-cycle-fluxes",
+        "claim:foundations-earth-25-snowmelt-runoff",
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"
+      ]
+    },
+    {
+      "id": "environment-plant-resources",
+      "domain": "environment",
+      "subdomain": "plant_resources",
+      "family": "wetland_riparian_archaeobotanical_and_cultivated_plant_context",
+      "location_applicability": "wetland/riparian vegetation, field, woodland and archaeobotanical context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:agriculture-fauna-hunting-economic-context",
+        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+        "claim:novgorod-wetland-pollen-context",
+        "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
+        "claim:troitsky-cereal-millet-remains-probably-link-to-poozerie",
+        "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+        "claim:troitsky-nonwood-plant-remains-probably-local",
+        "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+      ]
+    },
+    {
+      "id": "environment-terrain",
+      "domain": "environment",
+      "subdomain": "terrain",
+      "family": "regional_terrain_and_parent_material",
+      "location_applicability": "regional terrain and parent-material context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:terrain-background",
+        "claim:terrain-parent-material-assemblage"
+      ]
+    },
+    {
+      "id": "environment-weather",
+      "domain": "environment",
+      "subdomain": "weather",
+      "family": "fog_wind_cloud_precipitation_and_cold_extremes",
+      "location_applicability": "regional weather exposure, river/wetland fog or open terrain",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-earth-28-radiation-fog",
+        "claim:foundations-earth-29-advection-fog",
+        "claim:foundations-earth-30-upslope-fog",
+        "claim:foundations-earth-31-freezing-fog-rime",
+        "claim:foundations-earth2-07-pressure-gradient-wind",
+        "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+        "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
+        "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      ]
+    },
+    {
+      "id": "environment-wetland-river-soil",
+      "domain": "environment",
+      "subdomain": "soil_hydrology",
+      "family": "slope_soil_saturation_texture_and_infiltration",
+      "location_applicability": "wetland, slope, soil and surface-water context",
+      "applicability": {
+        "resource": "grounded",
+        "material": "partial",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:foundations-earth-03-soil-phases",
+        "claim:foundations-earth-04-soil-thermal-buffer",
+        "claim:foundations-earth-05-soil-horizons",
+        "claim:foundations-earth-06-soil-aggregation",
+        "claim:foundations-earth-07-soil-water-states",
+        "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:soil-texture-affects-infiltration-rate",
+        "claim:wetland-hydric-soil-depends-on-saturation"
+      ]
+    },
+    {
+      "id": "material-ceramics",
+      "domain": "material_culture",
+      "subdomain": "ceramics",
+      "family": "local_clay_temper_and_wheelmade_ceramics",
+      "location_applicability": "pottery workshop and household vessel context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:ceramic-novgorod-wheel",
+        "claim:pottery-handmade-local-clay",
+        "claim:pottery-handmade-temper"
+      ]
+    },
+    {
+      "id": "material-fishing-hunting",
+      "domain": "material_culture",
+      "subdomain": "fishing_and_hunting",
+      "family": "fishing_gear_hunting_bow_bort_hook_and_fur_exchange",
+      "location_applicability": "river fishing workspace, woodland hunting or fur-exchange context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-fauna-ash-hunting-bow",
+        "claim:agriculture-fauna-bort-climbing-hooks",
+        "claim:population-bark-float",
+        "claim:population-iron-hook",
+        "claim:population-pine-float",
+        "claim:population-processes-fur-exchange",
+        "claim:population-processes-hemp-net",
+        "claim:population-stone-weight",
+        "claim:population-weight-bark",
+        "claim:population-weight-cord",
+        "claim:population-weight-strap",
+        "claim:population-wood-float"
+      ]
+    },
+    {
+      "id": "material-food-resources",
+      "domain": "material_culture",
+      "subdomain": "food_and_byproducts",
+      "family": "cereals_fish_malt_hay_and_workshop_byproducts",
+      "location_applicability": "household food store, hearth, field or workshop byproduct context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:fodder-hay-account",
+        "claim:food-practices-barley-porridge-soup",
+        "claim:food-practices-rye-flour-bread",
+        "claim:household-barley-commodity",
+        "claim:household-leather-offcut",
+        "claim:household-rye-commodity",
+        "claim:population-fish-food",
+        "claim:population-processes-malt-context"
+      ]
+    },
+    {
+      "id": "material-fuel-resin-wax",
+      "domain": "material_culture",
+      "subdomain": "fuel_and_adhesives",
+      "family": "charcoal_wax_resin_glue_and_joining",
+      "location_applicability": "hearth, smithy, boat/carpentry repair or candle context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:candle-thread-wick",
+        "claim:candle-wax-material",
+        "claim:construction-animal-glue-chalk",
+        "claim:construction-animal-glue-pegged-planks",
+        "claim:construction-iron-clamp-caulking",
+        "claim:construction-pine-resin-bast",
+        "claim:construction-pine-resin-surfaces",
+        "claim:construction-tarred-tow-caulking",
+        "claim:fuel-charcoal-metallurgy-fuel",
+        "claim:fuel-iron-candlestick-form",
+        "claim:fuel-iron-pan-lifter-form",
+        "claim:fuel-iron-pan-lifter-use",
+        "claim:fuel-iron-splinter-holder-form"
+      ]
+    },
+    {
+      "id": "material-metals",
+      "domain": "material_culture",
+      "subdomain": "metalwork",
+      "family": "nonferrous_metals_casting_and_urban_metalwork",
+      "location_applicability": "urban metalworking or casting workshop",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:casting-brass",
+        "claim:casting-bronze",
+        "claim:casting-casting-crucible",
+        "claim:casting-casting-mould",
+        "claim:casting-copper",
+        "claim:casting-gold",
+        "claim:casting-lead",
+        "claim:casting-pouring-ladle",
+        "claim:casting-tin",
+        "claim:novgorod-urban-metalworking"
+      ]
+    },
+    {
+      "id": "material-misc-household",
+      "domain": "material_culture",
+      "subdomain": "household_objects",
+      "family": "ordinary_household_material_culture",
+      "location_applicability": "ordinary household object context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:bathing-washing-water",
+        "claim:burial-hollowed-log-container",
+        "claim:construction-aspen-cladding-joint",
+        "claim:construction-bast-vessel-fastening",
+        "claim:construction-forged-iron-nail-vessel-joint",
+        "claim:construction-wooden-nail-planking",
+        "claim:construction-wooden-peg-vessel-joint",
+        "claim:novgorod-leather-items",
+        "claim:population-processes-hemp-cordage"
+      ]
+    },
+    {
+      "id": "material-organic-materials",
+      "domain": "material_culture",
+      "subdomain": "organic_materials",
+      "family": "wood_bone_hide_leather_and_waterlogged_organic_material",
+      "location_applicability": "wood, bone, hide/leather or waterlogged archaeological context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:novgorod-waterlogged-organic-preservation",
+        "claim:novgorod-wooden-urban-elements",
+        "claim:population-hide-leather-distinction"
+      ]
+    },
+    {
+      "id": "material-pigments",
+      "domain": "material_culture",
+      "subdomain": "surface_finish",
+      "family": "plaster_and_mineral_pigments",
+      "location_applicability": "plastered or painted surface and pigment workshop context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:pigment-carbon-black-pigment",
+        "claim:pigment-celadonite",
+        "claim:pigment-lazurite",
+        "claim:pigment-lime-plaster",
+        "claim:pigment-red-lead-pigment",
+        "claim:pigment-red-ochre",
+        "claim:pigment-yellow-ochre"
+      ]
+    },
+    {
+      "id": "material-tools",
+      "domain": "material_culture",
+      "subdomain": "tools",
+      "family": "woodworking_smithing_stone_agricultural_and_ignition_tools",
+      "location_applicability": "woodworking, smithing, field, garden or household-tool context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:casting-firesteel-iron",
+        "claim:casting-firesteel-steel",
+        "claim:ha-firesteel-ignition",
+        "claim:harvest-scythe-iron-steel-specimen",
+        "claim:harvest-sheep-shearing-scissors",
+        "claim:harvest-sickle-crops-grasses",
+        "claim:harvest-sickle-wooden-handle",
+        "claim:household-garden-shovel",
+        "claim:household-ploughshare-tillage",
+        "claim:household-scythe-cutting",
+        "claim:household-spindle-whorl",
+        "claim:occupation-smith-anvil",
+        "claim:occupation-smith-hammer",
+        "claim:occupation-smith-tongs",
+        "claim:occupation-wood-drawknife",
+        "claim:occupation-wood-plane",
+        "claim:population-woodwork-adze",
+        "claim:population-woodwork-axe",
+        "claim:population-woodwork-chisel",
+        "claim:population-woodwork-drill",
+        "claim:population-woodwork-saw",
+        "claim:stone-grinding-metal-use",
+        "claim:stone-whetstone-edge-maintenance"
+      ]
+    },
+    {
+      "id": "material-transport",
+      "domain": "material_culture",
+      "subdomain": "transport_and_winter",
+      "family": "boats_sledges_carts_tack_skis_and_winter_traction",
+      "location_applicability": "river landing, road, winter route or horse context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:household-boat-repair-clamp",
+        "claim:household-ski-wood",
+        "claim:household-spur",
+        "claim:population-boat-context",
+        "claim:population-tack-context",
+        "claim:population-wood-boat",
+        "claim:population-wood-cart",
+        "claim:population-wood-sledge",
+        "claim:settlement-ice-grip-footwear",
+        "claim:settlement-ice-grip-iron",
+        "claim:settlement-skate-bone",
+        "claim:settlement-skate-footwear",
+        "claim:transport-boat-cargo-dispatch",
+        "claim:transport-horse-sledge-equipment",
+        "claim:transport-private-boat-arrangement",
+        "claim:transport-sledge-summer-cargo",
+        "claim:transport-winter-sledge-1220"
+      ]
+    },
+    {
+      "id": "material-vessels-furniture-ritual",
+      "domain": "material_culture",
+      "subdomain": "household_and_ritual_objects",
+      "family": "containers_tableware_furniture_leather_cases_and_burial_objects",
+      "location_applicability": "household interior/storage or church/burial context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:burial-coffin-lid-transverse-plank",
+        "claim:burial-plank-coffin-nails",
+        "claim:household-bark-tues",
+        "claim:household-ceramic-vessel",
+        "claim:household-furniture-wood",
+        "claim:household-tar-pot",
+        "claim:household-utensil-wood",
+        "claim:household-wooden-tableware",
+        "claim:population-leather-case",
+        "claim:population-leather-straps",
+        "claim:probable-travel-chalice-communion"
+      ]
+    },
+    {
+      "id": "material-written-objects",
+      "domain": "material_culture",
+      "subdomain": "documentary_objects",
+      "family": "birchbark_records_and_accounting_terms",
+      "location_applicability": "household, market or written-account context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:gramota-73-debt-record",
+        "claim:gramota-73-grivna-term",
+        "claim:maslo-birchbark-718-account"
+      ]
+    },
+    {
+      "id": "npc-clothing-and-personal-kit",
+      "domain": "material_culture",
+      "subdomain": "clothing_and_accessories",
+      "family": "garments_fibres_dyes_footwear_and_fasteners",
+      "location_applicability": "household, street, travel or personal attire context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:clothing-bone-button",
+        "claim:clothing-bronze-button",
+        "claim:clothing-button-shirt",
+        "claim:clothing-hemp",
+        "claim:clothing-linen",
+        "claim:clothing-linen-plain-or-twill",
+        "claim:clothing-linen-shirt",
+        "claim:clothing-male-shirt-belt",
+        "claim:clothing-nerev-coloured-wool",
+        "claim:clothing-onuchi-wrap",
+        "claim:clothing-pointed-cap-xii-depiction",
+        "claim:clothing-porty-cut",
+        "claim:clothing-povoi-headcover",
+        "claim:clothing-rank-material-not-cut",
+        "claim:clothing-sheepskin-kozhukh",
+        "claim:clothing-shirt-gussets",
+        "claim:clothing-shirt-principal-garment",
+        "claim:clothing-silk-shirt",
+        "claim:clothing-svita-outer-garment",
+        "claim:clothing-tunic-shirt-folded-panel",
+        "claim:clothing-votola-cloak",
+        "claim:clothing-wool",
+        "claim:clothing-wool-shirt",
+        "claim:household-belt-fitting",
+        "claim:household-overshoe",
+        "claim:population-felt-lining",
+        "claim:population-leather-shoes",
+        "claim:population-shoe-form",
+        "claim:population-wool-lining",
+        "claim:textile-chrysin-analysis",
+        "claim:textile-ellagic-acid-analysis",
+        "claim:textile-indigo-yellow-analysis",
+        "claim:textile-lac-dye-analysis"
+      ]
+    },
+    {
+      "id": "npc-craft-occupations",
+      "domain": "npc_daily_life",
+      "subdomain": "occupations",
+      "family": "smith_and_carpenter_roles",
+      "location_applicability": "smithy or carpentry work context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:occupation-carpenter-role",
+        "claim:occupation-smith-role",
+        "claim:occupation-smith-specialisation"
+      ]
+    },
+    {
+      "id": "npc-household-routines",
+      "domain": "npc_daily_life",
+      "subdomain": "household_roles",
+      "family": "agriculture_animal_care_resource_and_storage_routines",
+      "location_applicability": "rural household, animal-care or storage role context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:agriculture-rural-role-context",
+        "claim:animal-care-needs-presence",
+        "claim:neutral-household-context",
+        "claim:population-storage-role",
+        "claim:resource-occupation-needs-setting"
+      ]
+    },
+    {
+      "id": "npc-political-roles",
+      "domain": "npc_daily_life",
+      "subdomain": "political_roles",
+      "family": "posadnik_conflict_and_pursuit",
+      "location_applicability": "specific urban political conflict context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:posadnik-fedor-conflict-1224",
+        "claim:posadnik-volodislav-pursuit-1228"
+      ]
+    },
+    {
+      "id": "npc-river-occupations",
+      "domain": "npc_daily_life",
+      "subdomain": "occupations",
+      "family": "fishing_boating_and_hired_transport",
+      "location_applicability": "river fishing, boating or hired transport context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:population-boat-work",
+        "claim:population-net-work",
+        "claim:transport-hired-boatman"
+      ]
+    },
+    {
+      "id": "process-metal-joining",
+      "domain": "craft_technology",
+      "subdomain": "metalwork_and_thermal",
+      "family": "casting_smithing_charcoal_and_heat_treatment",
+      "location_applicability": "smithy, casting or charcoal-burning work context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:casting-defective-casting",
+        "claim:casting-sprue",
+        "claim:fuel-pit-charcoal-burning-air-control",
+        "claim:fuel-pit-charcoal-burning-air-sequence",
+        "claim:fuel-pit-charcoal-burning-charcoal-output",
+        "claim:fuel-pit-charcoal-burning-form",
+        "claim:fuel-pit-charcoal-burning-wood-input",
+        "claim:occupation-smith-heat-treatment",
+        "claim:occupation-smith-iron-input"
+      ]
+    },
+    {
+      "id": "process-wood-and-ceramic",
+      "domain": "craft_technology",
+      "subdomain": "wood_and_osseous_work",
+      "family": "woodwork_and_bone_transformation",
+      "location_applicability": "woodworking or osseous-work context",
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:population-processes-bone-skate-input",
+        "claim:population-processes-bone-skate-output",
+        "claim:population-woodwork-material",
+        "claim:population-woodwork-practice"
+      ]
+    },
+    {
+      "id": "social-administration",
+      "domain": "social_law_economy",
+      "subdomain": "administration",
+      "family": "collector_settlement_and_provisioning_instructions",
+      "location_applicability": "administrative provisioning or settlement instruction context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:occupation-directed-grain-procurement",
+        "claim:social-collector-instruction-relates-task-context"
+      ]
+    },
+    {
+      "id": "social-documentary-practice",
+      "domain": "social_law_economy",
+      "subdomain": "documentary_practice",
+      "family": "records_letters_alphabet_and_practical_documents",
+      "location_applicability": "household, market or letter-writing context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:practical-document-genres",
+        "claim:russkaya-pravda-comparative-only",
+        "claim:social-alphabet-exercise-records-text",
+        "claim:social-daily-economic-activities",
+        "claim:social-dispute-message-reports-dispatch",
+        "claim:social-religious-name-list-relates-disjunctive-context"
+      ]
+    },
+    {
+      "id": "social-family-care",
+      "domain": "social_law_economy",
+      "subdomain": "household_relations",
+      "family": "kin_protection_care_succession_and_marital_treatment",
+      "location_applicability": "household and family-care context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:social-kin-letter-reports-protection-request",
+        "claim:social-kin-request-reports-contingent-return"
+      ]
+    },
+    {
+      "id": "social-law-practice",
+      "domain": "social_law_economy",
+      "subdomain": "law_practice",
+      "family": "property_claims_disputes_inquiries_and_court_choice",
+      "location_applicability": "court, property dispute and formal inquiry context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:judicial-accusation-record",
+        "claim:later-novgorod-judicial-charter",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-mother-household-care-succession",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:social-authority-letter-relates-theft-inquiry",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-settlement-demand-reports-court-choice",
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:social-written-complaint-may-assert-compensation"
+      ]
+    },
+    {
+      "id": "social-property-and-market",
+      "domain": "social_law_economy",
+      "subdomain": "transactions",
+      "family": "exchange_accounting_credit_and_market_proof",
+      "location_applicability": "market, credit, payment and exchange context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:debt-record-practice",
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:rp-merchant-credit-relates-third-party-goods",
+        "claim:social-daily-fur-sale-accounting",
+        "claim:social-daily-honey-documentary-entry",
+        "claim:social-daily-wax-commodity-context",
+        "claim:social-debt-record-may-contain-entry",
+        "claim:social-debt-records-accounting-amount",
+        "claim:social-grivna-accounting-unit",
+        "claim:social-guarantor-relates-transaction-obligation",
+        "claim:social-hired-work-relates-business-record",
+        "claim:social-loan-request-relates-loan",
+        "claim:social-payment-register-records-entry"
+      ]
+    },
+    {
+      "id": "social-religious-context",
+      "domain": "social_law_economy",
+      "subdomain": "religious_institutions",
+      "family": "church_literacy_calendar_prayer_and_baptism",
+      "location_applicability": "church, religious literacy and baptism context",
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "grounded"
+      },
+      "coverage": "grounded",
+      "claim_refs": [
+        "claim:religion-olenin-adjudication",
+        "claim:religion-olenin-church-people",
+        "claim:religion-priest-child-baptism",
+        "claim:social-christian-exegetical-text-relates-urban-context",
+        "claim:social-church-calendar-text-relates-feast-list",
+        "claim:social-church-instruction-reports-demand",
+        "claim:social-priest-fragment-relates-office-address",
+        "claim:social-written-prayer-relates-invocation"
+      ]
+    }
+  ]
+}

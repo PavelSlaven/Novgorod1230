@@ -1,0 +1,1418 @@
+[
+  {
+    "id": "biology-animal-body-condition-and-insulation",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_animal_body_condition_and_insulation",
+    "location_applicability": "Living animal plus weather/exposure context; not a source of animal presence or individual condition.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:endotherm-insulation-reduces-heat-loss",
+      "claim:animal-homeostasis-responds-to-internal-external-change"
+    ]
+  },
+  {
+    "id": "biology-cell-metabolism-growth-and-specialization",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_cell_metabolism_growth_and_specialization",
+    "location_applicability": "General organism/body explanation; no individual state, lineage or diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-life-01-cell",
+      "claim:foundations-life-02-cell-substances",
+      "claim:foundations-life-03-cell-macromolecules",
+      "claim:foundations-life-05-metabolism",
+      "claim:foundations-life-06-growth-mitosis",
+      "claim:foundations-life-07-mitosis",
+      "claim:foundations-life-08-cell-specialization",
+      "claim:foundations-life-09-organ-systems"
+    ]
+  },
+  {
+    "id": "biology-domestic-animal-digestion-and-forage",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_domestic_animal_digestion_and_forage",
+    "location_applicability": "Actual domestic animal and available feed context.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:livestock-ruminant-membership",
+      "claim:livestock-rumen-forage-digestion",
+      "claim:livestock-swine-membership",
+      "claim:livestock-swine-comparative-diet",
+      "claim:fodder-healthy-horse-forage",
+      "claim:fauna-mammals-domestic-horse-forage-behavior",
+      "claim:fauna-mammals-ruminant-grazing-selectivity"
+    ]
+  },
+  {
+    "id": "biology-ecological-systems-and-interactions",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_ecological_systems_and_interactions",
+    "location_applicability": "Environmental-process explanation; no local ecosystem, organism or stock materialization.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mammals-moose-ecosystem-engineering",
+      "claim:foundations-life-37-ecological-factors",
+      "claim:foundations-life-38-ecosystem-cycling",
+      "claim:foundations-life-39-ecosystem-change",
+      "claim:foundations-earth-01-ecological-tolerance",
+      "claim:foundations-earth-02-ecological-tolerance",
+      "claim:foundations-earth-08-ecological-competition",
+      "claim:foundations-earth-09-ecological-competition",
+      "claim:foundations-earth-10-mutualistic-dependence",
+      "claim:foundations-earth-11-consumer-assimilation",
+      "claim:foundations-earth-12-consumer-energy-allocation",
+      "claim:foundations-earth-13-trophic-levels",
+      "claim:foundations-earth-14-ecosystem-energy-flow"
+    ]
+  },
+  {
+    "id": "biology-food-safety-storage-and-fermentation",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_food_safety_storage_and_fermentation",
+    "location_applicability": "Actual food preparation, storage, drying, heating or fermentation context.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:food-drying-reduces-microbial-growth-conditions",
+      "claim:food-drying-depends-on-humidity-airflow",
+      "claim:stored-grain-condition-depends-on-temperature-moisture",
+      "claim:livestock-rumen-fermentation",
+      "claim:livestock-rumen-fermentation-nutrients",
+      "claim:heating-reduces-microbial-viability",
+      "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+      "claim:drying-reduces-microbial-growth-conditions",
+      "claim:microbial-growth-depends-on-species-temperature-range",
+      "claim:microbial-growth-depends-on-available-moisture",
+      "claim:solute-concentration-reduces-available-water-for-many-microbes",
+      "claim:fermentation-depends-on-microbe-substrate-conditions",
+      "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+      "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+      "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen"
+    ]
+  },
+  {
+    "id": "biology-fungi-decomposition-and-wild-food-safety",
+    "domain": "biology_physiology",
+    "subdomain": "fungi_and_wild_food",
+    "family": "biology_fungi_decomposition_and_wild_food_safety",
+    "location_applicability": "Damp organic material, fungal process or wild-gathering safety context.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:population-material-wood-decay",
+      "claim:population-material-leather-mould",
+      "claim:fungal-decomposition-affects-nutrient-recycling",
+      "claim:wild-mushroom-resemblance-not-edibility",
+      "claim:most-fungi-hyphae-substrate-nutrition",
+      "claim:bearberry-lingonberry-resemblance-not-identification",
+      "claim:mezereon-poisonous-sap-all-parts"
+    ]
+  },
+  {
+    "id": "biology-general-organism-and-ecology",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_general_organism_and_ecology",
+    "location_applicability": "Actual source-backed mechanism or category context.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-brown-bear-winter-denning",
+      "claim:fauna-sheep-flocking",
+      "claim:fauna-ewe-lambing-seclusion",
+      "claim:fauna-ewe-lamb-recognition",
+      "claim:fauna-goat-sociality",
+      "claim:fauna-doe-kid-care"
+    ]
+  },
+  {
+    "id": "biology-organ-systems-movement-and-sensation",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_organ_systems_movement_and_sensation",
+    "location_applicability": "General organism/body explanation; no individual state, lineage or diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-life-10-digestion",
+      "claim:foundations-life-11-absorption",
+      "claim:foundations-life-12-respiration",
+      "claim:foundations-life-13-alveolar-exchange",
+      "claim:foundations-life-14-circulation",
+      "claim:foundations-life-15-blood",
+      "claim:foundations-life-16-regulation",
+      "claim:foundations-life-17-reflex",
+      "claim:foundations-life-19-sensory-receptor",
+      "claim:foundations-life-20-kidneys",
+      "claim:foundations-life-23-sleep-wake-cycle",
+      "claim:foundations-life-24-skin-sensation",
+      "claim:foundations-life-42-thermoreceptors"
+    ]
+  },
+  {
+    "id": "biology-pathogen-immunity-and-infection",
+    "domain": "biology_physiology",
+    "subdomain": "health_microbiology",
+    "family": "biology_pathogen_immunity_and_infection",
+    "location_applicability": "Health-risk, exposure or infection-control context; no diagnosis or epidemic inference.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-haz-02-exposure-not-illness",
+      "claim:foundations-life-28-virus-replication",
+      "claim:foundations-life-29-virion-structure",
+      "claim:foundations-life-31-phagocytosis",
+      "claim:foundations-life-32-phagocytes",
+      "claim:foundations-life-33-acquired-immunity",
+      "claim:foundations-life-34-lymphoid-system",
+      "claim:foundations-life-35-antibodies",
+      "claim:foundations-life-36-immune-memory",
+      "claim:foundations-life-41-immune-components",
+      "claim:foundations-life-43-infection-chain",
+      "claim:foundations-life-44-pathogen-transport",
+      "claim:foundations-life-46-airborne-tuberculosis-exposure",
+      "claim:foundations-life-47-host-susceptibility"
+    ]
+  },
+  {
+    "id": "biology-plant-growth-and-physiology",
+    "domain": "biology_physiology",
+    "subdomain": "plant_physiology",
+    "family": "biology_plant_growth_and_physiology",
+    "location_applicability": "Actual plant, field or wild-vegetation context; not plant presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+      "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+      "claim:plant-development-responds-to-light",
+      "claim:seasonal-plant-development-depends-on-photoperiod",
+      "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+      "claim:stomatal-opening-affects-gas-water-exchange",
+      "claim:foundations-life-40-photosynthesis"
+    ]
+  },
+  {
+    "id": "biology-reproduction-and-development",
+    "domain": "biology_physiology",
+    "subdomain": "organism_and_ecology",
+    "family": "biology_reproduction_and_development",
+    "location_applicability": "General organism/body explanation; no individual state, lineage or diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-life-25-reproduction",
+      "claim:foundations-life-26-fertilization",
+      "claim:foundations-life-27-ontogeny"
+    ]
+  },
+  {
+    "id": "biology-skin-fur-and-hide-preservation",
+    "domain": "biology_physiology",
+    "subdomain": "organic_material_biology",
+    "family": "flayed_skin_fur_and_hide_preservation",
+    "location_applicability": "Actual source-backed mechanism or category context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "grounded",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims describe processing purpose and cooling/cleansing constraints. They do not establish a carcass, hide, animal, owner, access, stock, or processing event.",
+    "claim_refs": [
+      "claim:flayed-skin-processing-purpose",
+      "claim:fur-skin-cooling-cleansing"
+    ]
+  },
+  {
+    "id": "body-exertion-hydration-and-sleep",
+    "domain": "biology_physiology",
+    "subdomain": "human_physiology",
+    "family": "body_exertion_hydration_and_sleep",
+    "location_applicability": "Actor bodily exertion, injury, food, sleep, heat/cold or care context; not diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:exercise-heat-dissipation",
+      "claim:activity-fluid-balance",
+      "claim:work-intensity-duration",
+      "claim:acute-sleep-loss-performance"
+    ]
+  },
+  {
+    "id": "body-injury-repair-and-barrier",
+    "domain": "biology_physiology",
+    "subdomain": "human_physiology",
+    "family": "body_injury_repair_and_barrier",
+    "location_applicability": "Actor bodily exertion, injury, food, sleep, heat/cold or care context; not diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:wound-healing-time-dependent",
+      "claim:pain-nociception-distinct",
+      "claim:tissue-injury-can-cause-inflammatory-repair-response",
+      "claim:coagulation-reduces-blood-loss",
+      "claim:intact-skin-reduces-pathogen-entry",
+      "claim:care-direct-pressure-bleeding",
+      "claim:care-waterproof-wound-cover",
+      "claim:foundations-life-45-infection-entry"
+    ]
+  },
+  {
+    "id": "body-thermoregulation-energy-and-fatigue",
+    "domain": "biology_physiology",
+    "subdomain": "human_physiology",
+    "family": "body_thermoregulation_energy_and_fatigue",
+    "location_applicability": "Actor bodily exertion, injury, food, sleep, heat/cold or care context; not diagnosis.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:food-energy-nutrients",
+      "claim:fluid-osmotic-balance-depends-on-water-solutes",
+      "claim:continued-sweating-can-cause-body-water-loss",
+      "claim:human-thermoregulation-depends-on-heat-exchange",
+      "claim:sweat-evaporation-reduces-surface-heat",
+      "claim:cellular-atp-production-can-cause-metabolic-heat",
+      "claim:skeletal-muscle-contraction-depends-on-atp",
+      "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen",
+      "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+      "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+      "claim:dietary-macronutrients-support-cellular-energy",
+      "claim:foundations-life-04-cellular-atp",
+      "claim:foundations-life-18-muscle-movement"
+    ]
+  },
+  {
+    "id": "chemistry-exposure-and-routes",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_foundations",
+    "family": "chemistry_exposure_and_routes",
+    "location_applicability": "Actual contaminated material, chemical or body-contact context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-haz-01-exposure-modifiers",
+      "claim:foundations-haz-03-exposure-routes"
+    ]
+  },
+  {
+    "id": "chemistry-reaction-rate-interface-and-mixing",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_foundations",
+    "family": "chemistry_reaction_rate_interface_and_mixing",
+    "location_applicability": "Actual chemical process where reactants, mixing and conditions exist.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-thm-05-surface-area-heterogeneous-rate",
+      "claim:foundations-thm-08-temperature-reaction-rate",
+      "claim:foundations-chm-01-exothermic-endothermic-reaction",
+      "claim:foundations-chm-02-reaction-rate-reactant-concentration",
+      "claim:foundations-chm-03-heterogeneous-reaction-interface",
+      "claim:foundations-chm-04-diffusion-limited-heterogeneous-process",
+      "claim:foundations-chm-05-mixing-diffusion-control"
+    ]
+  },
+  {
+    "id": "chemistry-solution-equilibrium-and-solubility",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_foundations",
+    "family": "chemistry_solution_equilibrium_and_solubility",
+    "location_applicability": "Actual liquid/solution process with identified dissolved substances.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-chm-06-catalyst-rate-not-equilibrium",
+      "claim:foundations-chm-07-dynamic-chemical-equilibrium",
+      "claim:foundations-chm-08-equilibrium-condition-change",
+      "claim:foundations-chm-09-electrolyte-ions-in-water",
+      "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+      "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat",
+      "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
+      "claim:foundations-physical-b2-chm-04-solute-solvation",
+      "claim:foundations-physical-b2-chm-05-solubility-saturation",
+      "claim:foundations-physical-b2-chm-06-temperature-solubility-conditional",
+      "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
+      "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift"
+    ]
+  },
+  {
+    "id": "fauna-amphibian-reptile-moisture-and-life-cycle",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_amphibian_reptile_moisture_and_life_cycle",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-frog-damp-foraging",
+      "claim:fauna-frog-metamorphosis",
+      "claim:fauna-frog-calls-parental",
+      "claim:fauna-frog-invertebrate-diet",
+      "claim:fauna-adder-cover-basking",
+      "claim:fauna-adder-viviparity",
+      "claim:fauna-adder-chemical-sensing",
+      "claim:fauna-adder-winter-refuge",
+      "claim:fauna-toad-defence",
+      "claim:fauna-toad-diet",
+      "claim:fauna-adder-defence",
+      "claim:fauna-adder-male-contest",
+      "claim:fauna-amphibian-moist-skin",
+      "claim:fauna-toad-breeding-return",
+      "claim:fauna-tadpole-temperature",
+      "claim:fauna-common-frog-aquatic-overwintering"
+    ]
+  },
+  {
+    "id": "fauna-birds-migration-reproduction-and-behavior",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_birds_migration_reproduction_and_behavior",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mallard-wetland-diet",
+      "claim:fauna-mallard-brood",
+      "claim:fauna-mallard-residency",
+      "claim:fauna-bird-migration-cues",
+      "claim:fauna-bird-navigation",
+      "claim:fauna-bird-migration-energy",
+      "claim:fauna-bird-irruption-nomadism",
+      "claim:fauna-tawny-owl-activity",
+      "claim:fauna-tawny-owl-territory",
+      "claim:fauna-tawny-owl-hearing",
+      "claim:fauna-tawny-owl-pellets",
+      "claim:fauna-great-tit-summer-diet",
+      "claim:fauna-great-tit-winter-flocks",
+      "claim:fauna-great-tit-incubation",
+      "claim:fauna-chicken-allopreening",
+      "claim:fauna-chicken-dust-bathing",
+      "claim:fauna-chicken-foraging",
+      "claim:fauna-chicken-flock-hierarchy",
+      "claim:fauna-chicken-brooding"
+    ]
+  },
+  {
+    "id": "fauna-fish-migration-spawning-and-water-conditions",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_fish_migration_spawning_and_water_conditions",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-pike-ambush",
+      "claim:fauna-pike-spawning",
+      "claim:fauna-pike-juvenile-predation",
+      "claim:fauna-salmon-anadromy",
+      "claim:fauna-salmon-repeat-spawning",
+      "claim:fauna-salmon-homing",
+      "claim:fauna-salmon-age-diet",
+      "claim:fauna-eel-feeding",
+      "claim:fauna-eel-migration",
+      "claim:fauna-fish-low-oxygen",
+      "claim:fauna-fish-summer-night-oxygen"
+    ]
+  },
+  {
+    "id": "fauna-general-learning-senses-and-risk",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_general_learning_senses_and_risk",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-animal-learning",
+      "claim:fauna-animal-habituation",
+      "claim:fauna-animal-signals",
+      "claim:fauna-animal-partial-migration",
+      "claim:fauna-fish-vibration-senses",
+      "claim:fauna-fish-hearing-variability",
+      "claim:fauna-perch-experience",
+      "claim:fauna-perch-group-behavior"
+    ]
+  },
+  {
+    "id": "fauna-invertebrate-lifecycle-and-host-contact",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_invertebrate_lifecycle_and_host_contact",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-bee-worker-tasks",
+      "claim:fauna-bee-winter-cluster",
+      "claim:fauna-bee-swarming",
+      "claim:fauna-bee-waggle",
+      "claim:fauna-bee-diurnal",
+      "claim:fauna-dragonfly-lifecycle",
+      "claim:fauna-dragonfly-foodweb",
+      "claim:fauna-dragonfly-emergence",
+      "claim:fauna-dragonfly-adult-foraging",
+      "claim:fauna-culex-life-cycle",
+      "claim:fauna-culex-dusk-rest",
+      "claim:fauna-culex-female-blood",
+      "claim:fauna-mussel-filtration",
+      "claim:fauna-mussel-fish-host",
+      "claim:fauna-earthworm-feeding-burrows",
+      "claim:fauna-earthworm-weather",
+      "claim:fauna-earthworm-soil-effects",
+      "claim:fauna-tick-questing",
+      "claim:fauna-tick-senses",
+      "claim:fauna-tick-feeding",
+      "claim:fauna-cross-spider-web",
+      "claim:fauna-cross-spider-ballooning",
+      "claim:fauna-cross-spider-egg-sac",
+      "claim:fauna-dragonfly-male-territory",
+      "claim:fauna-crayfish-habitat",
+      "claim:fauna-crayfish-diet",
+      "claim:fauna-crayfish-egg-carrying",
+      "claim:fauna-crayfish-juvenile-activity"
+    ]
+  },
+  {
+    "id": "fauna-mammal-foraging-movement-and-predation",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_mammal_foraging_movement_and_predation",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mammals-wolf-carnivorous-diet",
+      "claim:fauna-mammals-brown-bear-seasonal-omnivory",
+      "claim:fauna-mammals-brown-bear-food-driven-movement",
+      "claim:fauna-mammals-moose-crepuscular-seasonal-movement",
+      "claim:fauna-mammals-moose-browse-aquatic-forage",
+      "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
+      "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance",
+      "claim:fauna-mammals-eurasian-beaver-herbivory",
+      "claim:fauna-mammals-red-fox-habitat-flexibility",
+      "claim:fauna-mammals-red-fox-omnivory-food-caching",
+      "claim:fauna-mammals-red-fox-prey-population-effect",
+      "claim:fauna-mammals-red-fox-seed-dispersal",
+      "claim:fauna-mammals-eurasian-lynx-sensory-prey-location",
+      "claim:fauna-mammals-eurasian-lynx-gland-urine-range-marking",
+      "claim:fauna-mammals-eurasian-lynx-ambush-hunting",
+      "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+      "claim:fauna-mammals-european-otter-solitary-crepuscular",
+      "claim:fauna-mammals-european-otter-vibrissal-foraging",
+      "claim:fauna-mammals-european-otter-aquatic-prey-diet",
+      "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+      "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+      "claim:fauna-mammals-mountain-hare-seasonal-pelage",
+      "claim:fauna-mammals-domestic-pig-competitive-displacement"
+    ]
+  },
+  {
+    "id": "fauna-mammal-reproduction-and-care",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_mammal_reproduction_and_care",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mammals-wolf-pack-pup-care",
+      "claim:fauna-mammals-brown-bear-maternal-care",
+      "claim:fauna-mammals-moose-solitary-calf-seclusion",
+      "claim:fauna-mammals-wild-boar-group-offspring-protection",
+      "claim:fauna-mammals-red-fox-cooperative-pup-care",
+      "claim:fauna-mammals-red-squirrel-nesting-escape-sites"
+    ]
+  },
+  {
+    "id": "fauna-mammal-shelter-defense-and-ecosystem-effects",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_mammal_shelter_defense_and_ecosystem_effects",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mammals-brown-bear-cover-rest",
+      "claim:fauna-mammals-brown-bear-conditional-aggregation",
+      "claim:fauna-mammals-moose-defensive-antlers-hooves",
+      "claim:fauna-mammals-eurasian-beaver-dam-hydrology",
+      "claim:fauna-mammals-eurasian-beaver-seasonal-food-cache",
+      "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm",
+      "claim:fauna-mammals-eurasian-lynx-solitary-cover-activity",
+      "claim:fauna-mammals-red-squirrel-seed-cache",
+      "claim:fauna-mammals-red-squirrel-forgotten-cache-germination",
+      "claim:fauna-mammals-mountain-hare-sheltered-winter-movement"
+    ]
+  },
+  {
+    "id": "fauna-mammal-sociality-territory-and-communication",
+    "domain": "biology_physiology",
+    "subdomain": "fauna_ecology",
+    "family": "fauna_mammal_sociality_territory_and_communication",
+    "location_applicability": "Forest, pasture, wetland, river, shore or animal-interaction context; no local animal presence.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:fauna-mammals-wolf-pack-sociality",
+      "claim:fauna-mammals-wolf-territorial-defense",
+      "claim:fauna-mammals-wolf-howling-communication",
+      "claim:fauna-mammals-wild-boar-sexual-social-structure",
+      "claim:fauna-mammals-eurasian-beaver-family-colony",
+      "claim:fauna-mammals-eurasian-beaver-castoreum-territory",
+      "claim:fauna-mammals-red-fox-nonpack-territoriality",
+      "claim:fauna-mammals-roe-deer-seasonal-grouping",
+      "claim:fauna-mammals-domestic-cattle-flight-zone",
+      "claim:fauna-mammals-domestic-cattle-startle-response",
+      "claim:fauna-mammals-domestic-horse-herd-sociality",
+      "claim:fauna-mammals-domestic-horse-separation-stress",
+      "claim:fauna-mammals-domestic-pig-mixing-social-rank",
+      "claim:fauna-mammals-domestic-dog-flexible-sociality",
+      "claim:fauna-mammals-domestic-dog-multimodal-communication"
+    ]
+  },
+  {
+    "id": "fluids-buoyancy-flow-porosity",
+    "domain": "physics_material_science",
+    "subdomain": "fluid_and_water_physics",
+    "family": "fluids_buoyancy_flow_porosity",
+    "location_applicability": "River, vessel, wet ground, pore, water-handling or water-material-interface context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:buoyancy-pressure-phase-change",
+      "claim:population-physics-immersion-buoyancy",
+      "claim:population-physics-floating-shape",
+      "claim:wood-liquid-capillary-uptake",
+      "claim:water-wetting-forces",
+      "claim:water-capillary-rise-depression",
+      "claim:water-capillary-height",
+      "claim:water-percolation-openings",
+      "claim:water-permeability-connected-pores",
+      "claim:foundations-phys-04-fluid-viscous-resistance",
+      "claim:foundations-phys-05-flow-regime-speed",
+      "claim:foundations-phys-06-pressure-driven-liquid-outflow",
+      "claim:foundations-phys-07-surface-tension-interface"
+    ]
+  },
+  {
+    "id": "materials-bone-horn-antler",
+    "domain": "physics_material_science",
+    "subdomain": "material_response",
+    "family": "materials_bone_horn_antler",
+    "location_applicability": "Actual bone, horn or antler object and lawful processing context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
+      "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
+      "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+      "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+      "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+      "claim:foundations-physical-material3-03-antler-water-workability",
+      "claim:foundations-physical-material3-04-osseous-shaping-operations"
+    ]
+  },
+  {
+    "id": "materials-clay-ceramic-glass-response",
+    "domain": "physics_material_science",
+    "subdomain": "material_response",
+    "family": "materials_clay_ceramic_glass_response",
+    "location_applicability": "Actual clay, ceramic or glass object/material and firing or damage context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:population-material-clay-plasticity",
+      "claim:population-material-clay-drying",
+      "claim:population-material-clay-quartz",
+      "claim:clay-fired-no-replasticization",
+      "claim:clay-firing-structural-transformation",
+      "claim:clay-dried-replasticization",
+      "claim:population-ceramic-fracture",
+      "claim:population-glass-fracture",
+      "claim:population-ceramic-water",
+      "claim:population-ceramic-porosity",
+      "claim:population-ceramic-joint",
+      "claim:population-glass-cooling",
+      "claim:population-ceramic-colour"
+    ]
+  },
+  {
+    "id": "materials-fibre-leather-water-response",
+    "domain": "physics_material_science",
+    "subdomain": "material_response",
+    "family": "materials_fibre_leather_water_response",
+    "location_applicability": "Actual textile, cordage, hide, leather or wet-work material context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:textile-conditioning-matters",
+      "claim:population-material-leather-dry",
+      "claim:population-material-wet-wool",
+      "claim:population-material-wet-silk",
+      "claim:textile-fibres-twist-yarn",
+      "claim:oil-rawhide-moisture-resistance",
+      "claim:oil-fat-vegetable-leather-flexibility",
+      "claim:material-water-leather-water-processing",
+      "claim:material-water-vegetable-leather-water",
+      "claim:material-water-rawhide-wet-dry",
+      "claim:material-water-plant-fibre-cellulose",
+      "claim:material-water-new-linen-water",
+      "claim:material-water-natural-fibres-water-swelling",
+      "claim:material-water-textile-water-load",
+      "claim:material-water-textile-liquid-contaminants",
+      "claim:material-water-hemp-cellulosic-fibre",
+      "claim:material-water-linen-flax-origin"
+    ]
+  },
+  {
+    "id": "materials-metal-state-thermal-treatment",
+    "domain": "physics_material_science",
+    "subdomain": "material_response",
+    "family": "materials_metal_state_thermal_treatment",
+    "location_applicability": "Actual metal/steel object, fitting, casting, heat-treatment or repair context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:metal-properties-depend-on-state",
+      "claim:population-joining-metal-melt",
+      "claim:population-joining-metal-fatigue",
+      "claim:population-joining-metal-cold-work",
+      "claim:population-joining-metal-anneal",
+      "claim:population-joining-steel-quench",
+      "claim:population-joining-steel-temper"
+    ]
+  },
+  {
+    "id": "materials-moisture-corrosion",
+    "domain": "chemistry_process",
+    "subdomain": "material_response",
+    "family": "materials_moisture_corrosion",
+    "location_applicability": "Actual metal object, coating, electrolyte or wet-storage context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:iron-corrosion-moisture-oxygen",
+      "claim:population-material-iron-coating",
+      "claim:population-material-iron-rust",
+      "claim:population-material-copper-iron-contact",
+      "claim:foundations-chm-10-metal-environment-corrosion",
+      "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+      "claim:foundations-chm-12-galvanic-contact-corrosion"
+    ]
+  },
+  {
+    "id": "materials-wood-moisture-and-coatings",
+    "domain": "physics_material_science",
+    "subdomain": "material_response",
+    "family": "materials_wood_moisture_and_coatings",
+    "location_applicability": "Actual wooden structure, tool, vessel, timber, pitch coating or repair context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:wood-anisotropy-moisture",
+      "claim:pine-pitch-woven-basket-coating",
+      "claim:pine-pitch-severe-oxidation",
+      "claim:population-material-wood-moisture",
+      "claim:population-material-wood-shrinkage",
+      "claim:population-material-wood-loading",
+      "claim:wood-liquid-moisture-change",
+      "claim:wood-liquid-fibre-saturation",
+      "claim:wood-liquid-directional-uptake",
+      "claim:population-joining-bond-contact",
+      "claim:population-joining-bond-contamination",
+      "claim:population-joining-bond-cure",
+      "claim:population-joining-bond-weak-link",
+      "claim:population-joining-bond-pressure",
+      "claim:population-joining-bond-moisture",
+      "claim:foundations-mat-01-wood-knot-strength-bonding",
+      "claim:foundations-mat-02-wood-drying-crack-strength",
+      "claim:foundations-mat-04-wood-transverse-tension-weakness",
+      "claim:foundations-mat-05-wood-grain-shear-vs-cut",
+      "claim:foundations-mat-06-wood-drying-property-change",
+      "claim:foundations-mat-07-wood-storage-biological-damage"
+    ]
+  },
+  {
+    "id": "mechanics-impact-friction-fracture",
+    "domain": "physics_material_science",
+    "subdomain": "mechanics",
+    "family": "mechanics_impact_friction_fracture",
+    "location_applicability": "Built structure, carried load, tool contact, movement, repair, quarry or obstacle context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:dry-friction",
+      "claim:brittle-fracture-defects",
+      "claim:population-physics-point-pressure",
+      "claim:population-physics-static-friction",
+      "claim:population-physics-sliding-friction",
+      "claim:hard-stone-abrasive-sawing",
+      "claim:hard-stone-abrasive-shaping",
+      "claim:foundations-mat-08-abrasive-hardness-material-removal"
+    ]
+  },
+  {
+    "id": "mechanics-statics-support",
+    "domain": "physics_material_science",
+    "subdomain": "mechanics",
+    "family": "mechanics_statics_support",
+    "location_applicability": "Built structure, carried load, tool contact, movement, repair, quarry or obstacle context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:force-contact-geometry",
+      "claim:population-physics-load-deformation",
+      "claim:population-physics-elastic-recovery",
+      "claim:population-physics-stress-failure",
+      "claim:population-physics-section-response",
+      "claim:foundations-phys-02-impulse-momentum-change",
+      "claim:foundations-phys-03-action-reaction-separate-bodies",
+      "claim:foundations-phys-08-momentum-closed-system",
+      "claim:foundations-phys-09-mechanical-energy-dissipation",
+      "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+      "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff"
+    ]
+  },
+  {
+    "id": "physics-electricity-and-magnetism",
+    "domain": "physics_material_science",
+    "subdomain": "physical_foundations",
+    "family": "physics_electricity_and_magnetism",
+    "location_applicability": "Physical plausibility, light, sound, electrical or material-interaction context; not equipment presence.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:technology-circuit-prerequisite",
+      "claim:technology-rotation-prerequisite",
+      "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
+      "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
+      "claim:foundations-physical-b2-elc-03-current-magnetic-field"
+    ]
+  },
+  {
+    "id": "physics-general-material-mechanics",
+    "domain": "physics_material_science",
+    "subdomain": "physical_foundations",
+    "family": "physics_general_material_mechanics",
+    "location_applicability": "Physical plausibility, light, sound, electrical or material-interaction context; not equipment presence.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:population-joining-wax-soften",
+      "claim:material-water-alum-skin-water",
+      "claim:foundations-phys-01-air-drag-fall",
+      "claim:foundations-mat-11-stone-density-compressive-response",
+      "claim:foundations-physical-b2-sta-01-static-force-equilibrium"
+    ]
+  },
+  {
+    "id": "physics-optics-and-light",
+    "domain": "physics_material_science",
+    "subdomain": "physical_foundations",
+    "family": "physics_optics_and_light",
+    "location_applicability": "Physical plausibility, light, sound, electrical or material-interaction context; not equipment presence.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
+      "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
+      "claim:foundations-physical-b2-lgt-03-glass-absorption-transmission"
+    ]
+  },
+  {
+    "id": "physics-sound-and-vibration",
+    "domain": "physics_material_science",
+    "subdomain": "physical_foundations",
+    "family": "physics_sound_and_vibration",
+    "location_applicability": "Physical plausibility, light, sound, electrical or material-interaction context; not equipment presence.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+      "claim:foundations-physical-b2-snd-02-sound-material-medium",
+      "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
+      "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+      "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material"
+    ]
+  },
+  {
+    "id": "process-bread-dough-and-baking",
+    "domain": "physics_material_science",
+    "subdomain": "chemical_or_material_process",
+    "family": "process_bread_dough_and_baking",
+    "location_applicability": "Household hearth, bakery or actual dough-preparation context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:grain-processing-bread-ground-plant-base",
+      "claim:grain-processing-bread-liquid",
+      "claim:grain-processing-bread-optional-leaven",
+      "claim:grain-processing-bread-dough-before-baking",
+      "claim:grain-processing-bread-oven-baking",
+      "claim:grain-processing-bread-open-fire-baking"
+    ]
+  },
+  {
+    "id": "process-combustion-and-pyrolysis",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_or_material_process",
+    "family": "process_combustion_and_pyrolysis",
+    "location_applicability": "F1/hearth, fuel, fire-tending or thermal-conversion context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:population-material-wood-combustion",
+      "claim:population-material-wood-pyrolysis",
+      "claim:foundations-thm-02-combustion-fuel-oxidizer",
+      "claim:foundations-thm-03-combustion-mixture-conditions",
+      "claim:foundations-thm-09-combustion-oxygen-supply"
+    ]
+  },
+  {
+    "id": "process-food-preservation-and-fermentation",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_or_material_process",
+    "family": "process_food_preservation_and_fermentation",
+    "location_applicability": "Actual food preparation, fermentation, preservation or storage context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:food-preservation-qualitative",
+      "claim:fermentation-conditions"
+    ]
+  },
+  {
+    "id": "process-mineral-and-lime-transformation",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_or_material_process",
+    "family": "process_mineral_and_lime_transformation",
+    "location_applicability": "Actual masonry, lime, pigment, metal or heated mineral-material context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:lime-transformations",
+      "claim:metal-classes-composition",
+      "claim:population-material-clay-steam"
+    ]
+  },
+  {
+    "id": "process-textile-dye-and-collagen-tanning",
+    "domain": "chemistry_process",
+    "subdomain": "chemical_or_material_process",
+    "family": "process_textile_dye_and_collagen_tanning",
+    "location_applicability": "Actual textile dyeing or hide/leather processing context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "grounded",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:textile-dye-application",
+      "claim:textile-dye-mordant-fixation",
+      "claim:oil-tanning-crosslinking-fibres",
+      "claim:vegetable-tanning-prepared-hide",
+      "claim:vegetable-tanning-collagen-stabilization"
+    ]
+  },
+  {
+    "id": "psychology-affect-regulation-and-stress",
+    "domain": "psychology_behavior",
+    "subdomain": "cognition_and_affect",
+    "family": "psychology_affect_regulation_and_stress",
+    "location_applicability": "Actor perception, memory, deliberation, learning or affect context; not an NPC motive fact.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms4-01-reappraisal-negative-experience",
+      "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+      "claim:foundations-ms4-03-uncertainty-cognitive-control",
+      "claim:foundations-ms3-03-goal-frustration",
+      "claim:foundations-ms3-04-acute-stress"
+    ]
+  },
+  {
+    "id": "psychology-attention-and-perception",
+    "domain": "psychology_behavior",
+    "subdomain": "cognition_and_affect",
+    "family": "psychology_attention_and_perception",
+    "location_applicability": "Actor perception, memory, deliberation, learning or affect context; not an NPC motive fact.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-01-attention-intensity",
+      "claim:foundations-ms-02-attention-novelty",
+      "claim:foundations-ms-03-attention-expectation",
+      "claim:foundations-ms-04-attention-competition",
+      "claim:foundations-ms-06-visual-selection",
+      "claim:foundations-ms-07-auditory-sequence",
+      "claim:foundations-ms-08-duration-rhythm",
+      "claim:foundations-ms3-01-initial-attention"
+    ]
+  },
+  {
+    "id": "psychology-attribution-attitude-and-individual-variation",
+    "domain": "psychology_behavior",
+    "subdomain": "cognition_and_affect",
+    "family": "psychology_attribution_attitude_and_individual_variation",
+    "location_applicability": "Actor perception, memory, deliberation, learning or affect context; not an NPC motive fact.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-05-tactile-components",
+      "claim:foundations-ms-17-individual-variation",
+      "claim:foundations-ms-19-attribution-explanation",
+      "claim:foundations-ms-20-attribution-alternatives",
+      "claim:foundations-ms-21-attitude-definition"
+    ]
+  },
+  {
+    "id": "psychology-learning-and-skilled-action",
+    "domain": "psychology_behavior",
+    "subdomain": "cognition_and_affect",
+    "family": "psychology_learning_and_skilled_action",
+    "location_applicability": "Actor perception, memory, deliberation, learning or affect context; not an NPC motive fact.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-11-practiced-action",
+      "claim:foundations-ms-12-practice-correction",
+      "claim:foundations-ms-13-movement-demonstration"
+    ]
+  },
+  {
+    "id": "psychology-memory-and-recognition",
+    "domain": "psychology_behavior",
+    "subdomain": "cognition_and_affect",
+    "family": "psychology_memory_and_recognition",
+    "location_applicability": "Actor perception, memory, deliberation, learning or affect context; not an NPC motive fact.",
+    "applicability": {
+      "resource": "none",
+      "material": "none",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-09-memory-systems",
+      "claim:foundations-ms-10-recognition-representation",
+      "claim:foundations-ms3-02-working-memory"
+    ]
+  },
+  {
+    "id": "social-belonging-and-prosocial-relations",
+    "domain": "social_behavior",
+    "subdomain": "interpersonal_behavior",
+    "family": "social_belonging_and_prosocial_relations",
+    "location_applicability": "Player/NPC interpersonal or group interaction; not evidence of a specific historical institution.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-18-social-experience",
+      "claim:foundations-ms-27-belonging-relations",
+      "claim:foundations-ms-28-ostracism-conditional",
+      "claim:foundations-ms-29-helping-no-reward"
+    ]
+  },
+  {
+    "id": "social-group-influence-and-coordination",
+    "domain": "social_behavior",
+    "subdomain": "interpersonal_behavior",
+    "family": "social_group_influence_and_coordination",
+    "location_applicability": "Player/NPC interpersonal or group interaction; not evidence of a specific historical institution.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-23-group-pressure",
+      "claim:foundations-ms-25-persuasion-context",
+      "claim:foundations-ms-26-group-context",
+      "claim:foundations-ms-38-reference-group"
+    ]
+  },
+  {
+    "id": "social-roles-norms-and-socialization",
+    "domain": "social_behavior",
+    "subdomain": "interpersonal_behavior",
+    "family": "social_roles_norms_and_socialization",
+    "location_applicability": "Player/NPC interpersonal or group interaction; not evidence of a specific historical institution.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-32-social-role",
+      "claim:foundations-ms-33-role-predictability",
+      "claim:foundations-ms-34-role-adjustment",
+      "claim:foundations-ms-36-socialization",
+      "claim:foundations-ms-39-social-norm",
+      "claim:foundations-ms-40-social-prescription"
+    ]
+  },
+  {
+    "id": "social-trust-conflict-and-repair",
+    "domain": "social_behavior",
+    "subdomain": "interpersonal_behavior",
+    "family": "social_trust_conflict_and_repair",
+    "location_applicability": "Player/NPC interpersonal or group interaction; not evidence of a specific historical institution.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:foundations-ms-30-conflict-incompatibility",
+      "claim:foundations-ms-31-conflict-misperception",
+      "claim:foundations-ms2-03-distrust-cooperation",
+      "claim:foundations-ms3-06-apology-reinvestment",
+      "claim:foundations-ms3-07-apology-mediation",
+      "claim:foundations-ms3-08-mutual-cooperation",
+      "claim:foundations-ms3-09-mutual-defection",
+      "claim:foundations-ms3-10-ultimatum-expectations"
+    ]
+  },
+  {
+    "id": "thermal-phase-heat-transfer",
+    "domain": "physics_material_science",
+    "subdomain": "thermal_physics",
+    "family": "thermal_phase_heat_transfer",
+    "location_applicability": "Hearth, weather, drying, cooling, heating or phase-change context.",
+    "applicability": {
+      "resource": "conditional",
+      "material": "conditional",
+      "process": "conditional",
+      "npc": "conditional"
+    },
+    "coverage": "grounded",
+    "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
+    "claim_refs": [
+      "claim:population-physics-melting-vaporization-energy",
+      "claim:population-physics-freezing-condensation-energy",
+      "claim:population-physics-conduction-gradient",
+      "claim:population-physics-evaporation-below-boiling",
+      "claim:population-physics-evaporation-humidity",
+      "claim:population-joining-assembly-expansion",
+      "claim:foundations-phys-10-gas-temperature-pressure-volume",
+      "claim:foundations-thm-01-convective-heat-transfer",
+      "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+      "claim:foundations-thm-07-thermal-expansion-state-change",
+      "claim:foundations-thm-10-thermal-gradient-heat-flow",
+      "claim:foundations-mat-09-glass-brittle-thermal-stress",
+      "claim:foundations-mat-12-material-thermal-insulation-porosity"
+    ]
+  }
+]

@@ -35,6 +35,23 @@ test('production category cartography covers real profiles, locations, and claim
       `data/world-catalogs/novgorod/lower-dvina-trace-v1/${path}`).sort());
   assert.deepEqual(validateCategoryCartography({ cartography, pack, locations, materializationProfiles, sourceClaimsByPath }), []);
   assert.ok(cartography.absent_or_partial_families.length > 0);
+  const missingSemantics = structuredClone(cartography);
+  for (const family of missingSemantics.families) {
+    delete family.location_applicability;
+    delete family.applicability;
+    delete family.coverage;
+  }
+  assert.ok(validateCategoryCartography({ cartography: missingSemantics, pack, locations, materializationProfiles, sourceClaimsByPath })
+    .some(error => error.startsWith('CARTOGRAPHY_CATEGORY_FAMILY_INVALID:')));
+  const duplicateFamily = structuredClone(cartography);
+  duplicateFamily.families.push(duplicateFamily.families[0]);
+  assert.ok(validateCategoryCartography({ cartography: duplicateFamily, pack, locations, materializationProfiles, sourceClaimsByPath })
+    .includes('CARTOGRAPHY_CATEGORY_FAMILY_DUPLICATE'));
+  const incompleteFamilies = structuredClone(cartography);
+  const removedRef = pack.claims[0].claim_ref;
+  for (const family of incompleteFamilies.families) family.claim_refs = family.claim_refs.filter(ref => ref !== removedRef);
+  assert.ok(validateCategoryCartography({ cartography: incompleteFamilies, pack, locations, materializationProfiles, sourceClaimsByPath })
+    .includes('CARTOGRAPHY_CATEGORY_CLAIM_COVERAGE_MISMATCH'));
   const broken = structuredClone(cartography);
   broken.world_knowledge_profile_mappings.pop();
   broken.families[0].claim_refs = ['claim:missing'];

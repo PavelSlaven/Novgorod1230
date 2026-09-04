@@ -1486,6 +1486,14 @@ coverage profile со статусом `production` каждому claim соо�
 compiler выдаёт прямой `verification_ref` в compiled claim. Ledger остаётся
 authoring data, не передаётся LLM и не создаёт runtime store/owner.
 
+`candidate_ref` имеет формат `git:<40 lowercase hex commit>:<repo-relative
+authoring JSON path>#<same claim_ref>`. Это ссылка на зафиксированный кандидат,
+не произвольная метка. `review_ref` — относительный к World Knowledge root путь
+к Markdown report с необязательным `#section`; существующие отчёты могут
+находиться как в `verification/`, так и в `research/`. Абсолютные пути и
+traversal запрещены. Compiler проверяет формат и claim binding; production
+проверки репозитория дополнительно проверяют существование связанных файлов.
+
 `worldKnowledgeClaimDigest` использует существующий canonical SHA-256 helper
 workflow и связывает весь claim, его predicate signature, все claim
 localizations, непосредственно связанные subject/object concepts и их

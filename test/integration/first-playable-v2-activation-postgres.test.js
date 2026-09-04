@@ -384,10 +384,10 @@ function startPostgres({ name, user, database }) {
 async function waitForPostgres(name, user, database) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 250));
-    if (docker(['exec', name, 'pg_isready', '-U', user, '-d', database]).status
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', user, '-d', database]).status
         === 0) {
       await new Promise((resolve) => setTimeout(resolve, 750));
-      if (docker(['exec', name, 'pg_isready', '-U', user, '-d', database]).status
+      if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', user, '-d', database]).status
           === 0) return;
     }
   }

@@ -277,6 +277,15 @@ function validateVerifications(pack, errors) {
     for (const key of ['candidate_ref', 'auditor_ref', 'independence_basis', 'review_ref', 'limits']) {
       if (!requiredText(record[key])) errors.push(`${ref}: ${key} is required`);
     }
+    const candidate = typeof record.candidate_ref === 'string'
+      ? /^git:([a-f0-9]{40}):([^#]+)#(.+)$/u.exec(record.candidate_ref) : null;
+    if (!candidate || !editorialArtifactPath(candidate[2], '.json') || candidate[3] !== record.claim_ref) {
+      errors.push(`${ref}: candidate_ref must bind a committed relative authoring path to the same claim_ref`);
+    }
+    const review = typeof record.review_ref === 'string' ? record.review_ref.split('#') : [];
+    if (!editorialArtifactPath(review[0], '.md') || review.length > 2 || review.length === 2 && !requiredText(review[1])) {
+      errors.push(`${ref}: review_ref must name a relative Markdown report with an optional section`);
+    }
     if (record.auditor_ref === record.candidate_ref) errors.push(`${ref}: independent auditor is required`);
     if (!['APPROVE', 'REJECT', 'NEEDS_REVIEW'].includes(record.verdict)) errors.push(`${ref}: invalid verification verdict`);
     const evidenceChecked = uniqueStrings(record.evidence_checked, `${ref}.evidence_checked`, errors);
@@ -295,6 +304,11 @@ function validateVerifications(pack, errors) {
     if (!verdict) errors.push(`${claim.claim_ref}: production verification is required`);
     else if (verdict.verdict !== 'APPROVE') errors.push(`${claim.claim_ref}: production verification must APPROVE`);
   }
+}
+
+function editorialArtifactPath(value, extension) {
+  return typeof value === 'string' && value.endsWith(extension) && !/[\\:#\r\n]/u.test(value)
+    && value.split('/').every(part => requiredText(part) && part !== '.' && part !== '..');
 }
 
 export function compileWorldKnowledgePack(value) {

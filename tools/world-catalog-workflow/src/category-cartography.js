@@ -6,24 +6,31 @@ export function validateCategoryCartography({ cartography, pack, locations,
   if (cartography.pack_ref !== pack?.manifest?.pack_ref || cartography.revision_id !== pack?.manifest?.revision_id) errors.push('CARTOGRAPHY_PACK_PIN_MISMATCH');
   const rollups = new Map((cartography.domain_rollups ?? []).map((family) => [family.id, family]));
   if (rollups.size !== cartography.domain_rollups?.length) errors.push('CARTOGRAPHY_DOMAIN_ROLLUP_DUPLICATE');
-  const covered = [];
   for (const family of rollups.values()) {
     if (!pack?.manifest?.domains?.includes(family.domain) || family.claim_selector?.domain !== family.domain) errors.push(`CARTOGRAPHY_FAMILY_DOMAIN_INVALID:${family.id}`);
     if (family.coverage === 'complete') errors.push(`CARTOGRAPHY_FALSE_COMPLETENESS:${family.id}`);
     const refs = new Set((pack?.claims ?? []).filter((claim) => claim.domain === family.domain).map((claim) => claim.claim_ref));
     if (refs.size === 0) errors.push(`CARTOGRAPHY_CLAIMS_UNMAPPED:${family.id}`);
     for (const ref of family.claim_ref_samples ?? []) if (!refs.has(ref)) errors.push(`CARTOGRAPHY_CLAIM_REF_UNMAPPED:${ref}`);
-    covered.push(...refs);
   }
   const allClaimRefs = (pack?.claims ?? []).map((claim) => claim.claim_ref).sort();
-  if (new Set(covered).size !== allClaimRefs.length || covered.length !== allClaimRefs.length
-      || [...new Set(covered)].sort().join('\n') !== allClaimRefs.join('\n')) errors.push('CARTOGRAPHY_CLAIM_COVERAGE_MISMATCH');
   const categoryRefs = new Set((pack?.claims ?? []).map((claim) => claim.claim_ref));
+  const classified = new Set();
+  const familyIds = new Set();
   for (const family of cartography.families ?? []) {
-    if (!text(family.domain) || !text(family.subdomain) || !text(family.family)
+    if (familyIds.has(family.id)) errors.push('CARTOGRAPHY_CATEGORY_FAMILY_DUPLICATE');
+    familyIds.add(family.id);
+    if (!text(family.id) || !pack?.manifest?.domains?.includes(family.domain)
+        || !text(family.subdomain) || !text(family.family)
+        || !text(family.location_applicability) || !text(family.coverage)
+        || !['resource', 'material', 'process', 'npc'].every(key => text(family.applicability?.[key]))
         || !Array.isArray(family.claim_refs) || family.claim_refs.length === 0) errors.push(`CARTOGRAPHY_CATEGORY_FAMILY_INVALID:${family.id}`);
-    for (const ref of family.claim_refs ?? []) if (!categoryRefs.has(ref)) errors.push(`CARTOGRAPHY_CATEGORY_CLAIM_REF_UNMAPPED:${ref}`);
+    for (const ref of family.claim_refs ?? []) {
+      if (!categoryRefs.has(ref)) errors.push(`CARTOGRAPHY_CATEGORY_CLAIM_REF_UNMAPPED:${ref}`);
+      classified.add(ref);
+    }
   }
+  if ([...classified].sort().join('\n') !== allClaimRefs.join('\n')) errors.push('CARTOGRAPHY_CATEGORY_CLAIM_COVERAGE_MISMATCH');
   const evidence = new Map((cartography.source_inventory ?? []).map((family) => [family.source_path, family]));
   if (evidence.size !== cartography.source_inventory?.length) errors.push('CARTOGRAPHY_SOURCE_INVENTORY_DUPLICATE');
   const evidenceRefs = [];
@@ -55,12 +62,15 @@ export function validateCategoryCartography({ cartography, pack, locations,
     else validateFamilies(entry, semanticFamilies, null, errors);
   }
   if (materializations.size !== (materializationProfiles ?? []).length) errors.push('CARTOGRAPHY_MATERIALIZATION_PROFILE_EXTRA_OR_DUPLICATE');
-  if (!Array.isArray(cartography.missing_families) || cartography.missing_families.length === 0
-      || cartography.missing_families.some((family) => family.coverage !== 'missing'
+  if (!Array.isArray(cartography.missing_families)
+      || cartography.missing_families.some((family) => !['missing', 'partial'].includes(family.coverage)
         || !text(family.domain) || !text(family.subdomain) || !text(family.family)
         || !text(family.location_applicability) || !text(family.reason)
         || !Array.isArray(family.consumer_refs) || family.consumer_refs.length === 0
         || !['resource', 'material', 'process', 'npc'].every((key) => text(family.applicability?.[key])))) errors.push('CARTOGRAPHY_MISSING_FAMILY_INVALID');
+  for (const family of cartography.missing_families ?? []) {
+    for (const id of family.supporting_family_ids ?? []) if (!semanticFamilies.has(id)) errors.push(`CARTOGRAPHY_EXPECTED_CATEGORY_UNMAPPED:${id}`);
+  }
   return Object.freeze(errors.sort());
 }
 

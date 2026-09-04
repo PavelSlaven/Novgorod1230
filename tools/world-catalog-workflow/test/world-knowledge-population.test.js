@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
@@ -17,10 +18,26 @@ test('production bundle retains exact independent approvals for every claim', as
   assert.deepEqual(bundle, committed);
   assert.equal(pack.verifications.length, pack.claims.length);
   const verdicts = new Map(pack.verifications.map(record => [record.verification_ref, record]));
+  const descriptor = JSON.parse(await readFile(input, 'utf8'));
+  const authoringPaths = new Set(descriptor.includes.map(path => `data/world-catalogs/novgorod/world-knowledge/production-v1/${path}`));
+  const candidateShards = new Map();
   for (const claim of bundle.claims) {
     const verdict = verdicts.get(claim.verification_ref);
     assert.equal(verdict?.claim_ref, claim.claim_ref);
     assert.equal(verdict.verdict, 'APPROVE');
+    const [, candidateCommit, candidatePath, candidateClaim] = /^git:([a-f0-9]{40}):(.+)#(.+)$/u.exec(verdict.candidate_ref);
+    assert.ok(authoringPaths.has(candidatePath), verdict.candidate_ref);
+    const candidateObject = `${candidateCommit}:${candidatePath}`;
+    if (!candidateShards.has(candidateObject)) {
+      candidateShards.set(candidateObject, JSON.parse(execFileSync('git', ['show', candidateObject], {
+        cwd: fileURLToPath(new URL('../../../', import.meta.url)), encoding: 'utf8'
+      })));
+    }
+    assert.equal(candidateClaim, claim.claim_ref);
+    const shard = candidateShards.get(candidateObject);
+    assert.ok(['world_knowledge_authoring_pack_v1', 'world_knowledge_authoring_fragment_v1'].includes(shard.schema));
+    assert.deepEqual(shard.claims.find(record => record.claim_ref === candidateClaim), pack.claims.find(record => record.claim_ref === candidateClaim));
+    assert.deepEqual(shard.claim_localizations.filter(record => record.claim_ref === candidateClaim), pack.claim_localizations.filter(record => record.claim_ref === candidateClaim));
   }
   for (const review of new Set(pack.verifications.map(record => record.review_ref.split('#')[0]))) {
     const report = await readFile(new URL(`../../../data/world-catalogs/novgorod/world-knowledge/${review}`, import.meta.url), 'utf8');

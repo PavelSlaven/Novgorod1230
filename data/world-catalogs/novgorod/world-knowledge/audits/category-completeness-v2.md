@@ -3,6 +3,9 @@
 This initial BLOCK is retained as the pre-correction finding. Any subsequent
 verdict must identify the changed cartography/validator snapshot explicitly.
 
+**Historical audit trail.** The last section, "105-family correction", supersedes
+the earlier structural PASS and twelve absent-family assertions below.
+
 ## CONTRACT AUDIT FINDING
 
 scope: `production-v1/category-cartography.json`, its validator/test, active
@@ -232,3 +235,30 @@ topology, recipes, or exact mechanics.
 No further cartography-structure change is required for this audit. Filling a
 listed gap requires separately approved factual sources and remains outside
 this PR's structural acceptance.
+
+---
+
+## 105-family correction
+
+The earlier structural PASS missed that only 51/871 claims had concrete family
+classification. Domain rollups were not a substitute. The corrected validator
+requires the semantic-family union itself to equal the production claim set,
+unique family IDs, all applicability axes and concrete consumer mappings.
+The new map contains 105 semantic families covering all 871 approved claims.
+The active 12 WK profiles, four locations and six materialization/presentation
+consumers are mapped to these families; mappings do not authorize instances.
+
+Independent `/root/final_standards` postfix review: PASS; focused category and
+production tests 48/48. Its review also checked actual historical Git candidate
+objects, the pure compiler boundary and TCP PostgreSQL readiness correction.
+
+Independent `/root/cartography_context` gap re-audit:
+`verification/cartography-gap-review-v2.json` and `.md`, PASS_WITH_LIMITS.
+The two fauna absence findings were false; a current NPC access matrix is
+code-owned. Nine factual families have partial support with explicit remaining
+dimensions. Qualitative water cooling is factual knowledge, not waived as
+code-owned merely because exact fire execution belongs to code.
+
+This is bounded gameplay cartography acceptance, not full factual completeness
+or merge approval. The exact-commit PR acceptance comment records final HEAD,
+full CI and these scoped independent verdicts together after commit.

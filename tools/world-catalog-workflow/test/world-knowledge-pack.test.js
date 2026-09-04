@@ -24,11 +24,11 @@ function addFixtureVerifications(pack) {
     verification_ref: `wk-verification:test-${claim.claim_ref}`,
     claim_ref: claim.claim_ref,
     claim_digest: worldKnowledgeClaimDigest(pack, claim),
-    candidate_ref: `test-candidate:${claim.claim_ref}`,
+    candidate_ref: `git:${'1'.repeat(40)}:test-fixture.json#${claim.claim_ref}`,
     auditor_ref: 'test-agent:independent-reviewer',
     independence_basis: 'Synthetic test review by a separate fixture reviewer.',
     evidence_checked: [...claim.evidence_refs],
-    review_ref: 'test-fixture:review',
+    review_ref: 'verification/test-fixture.md#review',
     verdict: 'APPROVE',
     limits: 'Test fixture only; does not constitute editorial approval.'
   }));
@@ -264,6 +264,15 @@ test('production verification binds the reviewed payload and rejects stale or no
   const incomplete = structuredClone(pack);
   incomplete.verifications[0].evidence_checked = [];
   assert.throws(() => compileWorldKnowledgePack(incomplete), /evidence_checked must match/u);
+  for (const candidate of ['unrelated', `git:${'1'.repeat(40)}:test-fixture.json#claim:other`,
+    `git:${'1'.repeat(40)}:../outside.json#${pack.claims[0].claim_ref}`]) {
+    const altered = structuredClone(pack);
+    altered.verifications[0].candidate_ref = candidate;
+    assert.throws(() => compileWorldKnowledgePack(altered), /candidate_ref/u);
+  }
+  const brokenReview = structuredClone(pack);
+  brokenReview.verifications[0].review_ref = '../outside.md';
+  assert.throws(() => compileWorldKnowledgePack(brokenReview), /review_ref/u);
   const selfReview = structuredClone(pack);
   selfReview.verifications[0].auditor_ref = selfReview.verifications[0].candidate_ref;
   assert.throws(() => compileWorldKnowledgePack(selfReview), /independent auditor/u);

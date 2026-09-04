@@ -458,6 +458,34 @@
       "retrieval_text": "Учебный текст Онфима Поздний XIII-вековый документный контекст, не школа или норма грамотности 1230 года. Грамота Онфима №199 (1240–1260) содержит азбуку, склады, подпись к рисунку и адресную формулу. Это поздний XIII-вековый comparator, не доказательство школы, грамотности или ребёнка в Новгороде 1230 года. Онфим азбука склады учебный текст"
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota202-onfim-business-record-drawing:en",
+      "target_ref": "claim:candidate-gramota202-onfim-business-record-drawing",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Onfim business record and drawing A later-thirteenth-century comparator, not a 1230 school or literacy norm. Letter 202 (1240–1260) is a boy Onfim’s business record or list with a drawing. It is a later-thirteenth-century comparator, not proof of a school, literacy, or child in a 1230 scene. Onfim business record drawing letter 202"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota202-onfim-business-record-drawing:ru",
+      "target_ref": "claim:candidate-gramota202-onfim-business-record-drawing",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Деловая запись и рисунок Онфима Поздний XIII-вековый comparator, не школа или норма грамотности 1230 года. Грамота №202 (1240–1260) — деловая запись или список мальчика Онфима с рисунком. Это поздний XIII-вековый comparator, не доказательство школы, грамотности или ребёнка в сцене 1230 года. Онфим деловая запись рисунок грамота №202"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota213-official-obligations-document:en",
+      "target_ref": "claim:candidate-gramota213-official-obligations-document",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Official obligations document A conditionally dated document fact, not a 1230 procedure or authority. Letter 213 has a conditional date of 1240–1260 with a probable forward shift; it is an official document recording Radoslav’s obligations regarding Mestyatka. It is one document fact, not a 1230 court, sanction, procedure, or office-holder. obligations official document Radoslav Mestyatka letter 213"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota213-official-obligations-document:ru",
+      "target_ref": "claim:candidate-gramota213-official-obligations-document",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Официальная запись обязательств Условно датированный документный факт, не процедура или власть 1230 года. Грамота №213 имеет условную дату 1240–1260 с вероятным смещением вперёд; это официальный документ об обязательствах Радослава по поводу Местятки. Это единичный документный факт, не суд, санкция, процедура или должностное лицо 1230 года. обязательства официальный документ Радослав Местятка грамота №213"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-gramota222-letter-to-posadnik:en",
       "target_ref": "claim:candidate-gramota222-letter-to-posadnik",
       "domain": "social_law_economy",
@@ -500,6 +528,20 @@
       "retrieval_text": "Письмо об экспедиции в Югру за данью XII-вековый документный comparator, не кампания или внешняя политика 1230 года. Грамота №724 (1160–1180) описывает экспедицию Саввы в Югру за данью и именованный конфликтный контекст. Это XII-вековый comparator, не кампания, маршрут, право на дань или внешняя политика 1230 года. Югра дань Савва экспедиция"
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota8-wife-cow-redemption-letter:en",
+      "target_ref": "claim:candidate-gramota8-wife-cow-redemption-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Wife-authored cow-redemption letter A turn-of-the-thirteenth-century document fact, not a rule of marriage or property. Letter 8 has a conditional date of 1180–1200 with a probable forward shift; it is a private letter from Semyun’s wife to Iguchok about cow redemption. It is one document fact, not a rule of marriage, property, or a 1230 transaction. wife cow redemption letter 8"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-gramota8-wife-cow-redemption-letter:ru",
+      "target_ref": "claim:candidate-gramota8-wife-cow-redemption-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо жены о выкупе коровы Документный факт рубежа XII–XIII веков, не правило о браке или собственности. Грамота №8 имеет условную дату 1180–1200 с вероятным смещением вперёд; это частное письмо от жены Семьюна к Игучку о выкупе коровы. Это единичный документный факт, не правило о браке, собственности или сделка 1230 года. жена корова выкуп грамота №8"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-nettle-bast-fibre-retting-decortication:en",
       "target_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
       "domain": "environment",
@@ -526,6 +568,20 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Полумаска боевого шлема Троицкого раскопа Поздний XIII–ранний XIV век: находка, не текущий предмет или снаряжение. Новгородский музей сообщает о почти целой полумаске боевого шлема, найденной на Троицком раскопе XVII-И. Это археологическая находка, не шлем, владелец, защита или бой в текущей сцене. шлем полумаска Троицкий раскоп"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds:en",
+      "target_ref": "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod lyriform gusli finds Eleventh-to-thirteenth-century archaeological finds, not an instrument or music in the current scene. The Novgorod Museum reports lyriform gusli finds dated to the eleventh through thirteenth centuries, most excavated in Veliky Novgorod. This is archaeological context, not a gusli, performer, or music in a 1230 scene. gusli lyriform gusli music excavations"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds:ru",
+      "target_ref": "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские лирообразные гусли Археологические находки XI–XIII веков, не инструмент или музыка в текущей сцене. Новгородский музей сообщает о находках лирообразных гуслей XI–XIII веков, большая часть которых найдена при раскопках в Великом Новгороде. Это археологический контекст, не гусли, исполнитель или музыка в сцене 1230 года. гусли лирообразные гусли музыка раскопки"
     },
     {
       "entry_ref": "wk-retrieval:claim:candidate-novgorod-psalter-eleventh-century:en",
@@ -974,6 +1030,118 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Беременность и роды Общие физиологические отношения беременности и родов. Беременность связана с физиологическими изменениями организма матери; это не устанавливает состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-aging-changes-cell-function:en",
+      "target_ref": "claim:candidate-v3-aging-changes-cell-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Aging and function General functional changes with aging. Aging changes cells and can reduce their functional capacity; this establishes no individual's age, impairment or condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-aging-changes-cell-function:ru",
+      "target_ref": "claim:candidate-v3-aging-changes-cell-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Старение и функции Общие функциональные изменения при старении. Старение изменяет клетки и может уменьшать их функциональную способность; это не устанавливает возраст, нарушение или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-aging-organs-gradually-lose-function:en",
+      "target_ref": "claim:candidate-v3-aging-organs-gradually-lose-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Aging and function General functional changes with aging. Aging organs gradually lose function, with variation between people and organs; this establishes no individual's capacity or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-aging-organs-gradually-lose-function:ru",
+      "target_ref": "claim:candidate-v3-aging-organs-gradually-lose-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Старение и функции Общие функциональные изменения при старении. При старении органы постепенно теряют функцию, причём изменения различаются между людьми и органами; это не устанавливает способность или исход конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-child-development-has-recognizable-periods:en",
+      "target_ref": "claim:candidate-v3-child-development-has-recognizable-periods",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Human development General relations of child development and puberty. Child development can be described across infancy, preschool, middle childhood and adolescence; this establishes no particular child's age or development."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-child-development-has-recognizable-periods:ru",
+      "target_ref": "claim:candidate-v3-child-development-has-recognizable-periods",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Развитие человека Общие связи развития ребёнка и пубертата. Развитие ребёнка можно описывать через младенчество, дошкольный возраст, среднее детство и подростковый возраст; это не устанавливает возраст или развитие конкретного ребёнка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-disability-reflects-health-and-context-interaction:en",
+      "target_ref": "claim:candidate-v3-disability-reflects-health-and-context-interaction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Disability and context General health-and-context interaction in disability. Disability can result from interaction between health conditions and environmental and personal factors; this establishes no person's condition, ability, access or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-disability-reflects-health-and-context-interaction:ru",
+      "target_ref": "claim:candidate-v3-disability-reflects-health-and-context-interaction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Инвалидность и контекст Общее взаимодействие состояния здоровья и среды в инвалидности. Инвалидность может возникать из взаимодействия состояния здоровья с факторами среды и личными факторами; это не устанавливает состояние, способность, доступ или исход конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-dislocation-disrupts-normal-joint-position:en",
+      "target_ref": "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fracture and dislocation General relations of bone fracture and joint dislocation. A dislocation disrupts the normal position of bones meeting at a joint; this establishes no injury, body part, severity or treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-dislocation-disrupts-normal-joint-position:ru",
+      "target_ref": "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Перелом и вывих Общие отношения перелома кости и вывиха сустава. Вывих нарушает нормальное положение костей, соединяющихся в суставе; это не устанавливает травму, часть тела, тяжесть или лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-oral-bacteria-acid-can-damage-enamel:en",
+      "target_ref": "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Oral health The initial mechanism of tooth decay. Oral bacteria can make acids that attack tooth enamel and begin tooth decay; this establishes no person, food, symptom, diagnosis or treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-oral-bacteria-acid-can-damage-enamel:ru",
+      "target_ref": "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Здоровье зубов Начальный механизм кариеса. Бактерии во рту могут производить кислоты, атакующие зубную эмаль и запускающие кариес; это не устанавливает человека, пищу, симптом, диагноз или лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it:en",
+      "target_ref": "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fracture and dislocation General relations of bone fracture and joint dislocation. Pressure beyond a bone's capacity can split or break it; this establishes no pressure, injury or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it:ru",
+      "target_ref": "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Перелом и вывих Общие отношения перелома кости и вывиха сустава. Давление, превышающее способность кости выдержать его, может расколоть или сломать кость; это не устанавливает давление, травму или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt:en",
+      "target_ref": "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Human development General relations of child development and puberty. A final growth spurt begins at the start of puberty; this establishes no individual's age, timing or development."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt:ru",
+      "target_ref": "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Развитие человека Общие связи развития ребёнка и пубертата. В начале пубертата начинается заключительный скачок роста; это не устанавливает возраст, срок или развитие конкретного человека."
     },
     {
       "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
@@ -14388,6 +14556,76 @@
       "retrieval_text": "Беременность и роды Общие физиологические отношения беременности и родов."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-aging-function:en",
+      "target_ref": "wk:biology_physiology:candidate-v3-aging-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Aging and function General functional changes with aging."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-aging-function:ru",
+      "target_ref": "wk:biology_physiology:candidate-v3-aging-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Старение и функции Общие функциональные изменения при старении."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-disability-context:en",
+      "target_ref": "wk:biology_physiology:candidate-v3-disability-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Disability and context General health-and-context interaction in disability."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-disability-context:ru",
+      "target_ref": "wk:biology_physiology:candidate-v3-disability-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Инвалидность и контекст Общее взаимодействие состояния здоровья и среды в инвалидности."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-human-development:en",
+      "target_ref": "wk:biology_physiology:candidate-v3-human-development",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Human development General relations of child development and puberty."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-human-development:ru",
+      "target_ref": "wk:biology_physiology:candidate-v3-human-development",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Развитие человека Общие связи развития ребёнка и пубертата."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-musculoskeletal-injury:en",
+      "target_ref": "wk:biology_physiology:candidate-v3-musculoskeletal-injury",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fracture and dislocation General relations of bone fracture and joint dislocation."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-musculoskeletal-injury:ru",
+      "target_ref": "wk:biology_physiology:candidate-v3-musculoskeletal-injury",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Перелом и вывих Общие отношения перелома кости и вывиха сустава."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-oral-health:en",
+      "target_ref": "wk:biology_physiology:candidate-v3-oral-health",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Oral health The initial mechanism of tooth decay."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v3-oral-health:ru",
+      "target_ref": "wk:biology_physiology:candidate-v3-oral-health",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Здоровье зубов Начальный механизм кариеса."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:en",
       "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
       "domain": "biology_physiology",
@@ -19008,6 +19246,20 @@
       "retrieval_text": "Полумаска боевого шлема Троицкого раскопа Поздний XIII–ранний XIV век: находка, не текущий предмет или снаряжение. шлем полумаска Троицкий раскоп"
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-novgorod-lyriform-gusli-finds:en",
+      "target_ref": "wk:material_culture:candidate-novgorod-lyriform-gusli-finds",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Novgorod lyriform gusli finds Eleventh-to-thirteenth-century archaeological finds, not an instrument or music in the current scene. gusli lyriform gusli music"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-novgorod-lyriform-gusli-finds:ru",
+      "target_ref": "wk:material_culture:candidate-novgorod-lyriform-gusli-finds",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Новгородские лирообразные гусли Археологические находки XI–XIII веков, не инструмент или музыка в текущей сцене. гусли лирообразные гусли музыка"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:carbon-black-pigment:en",
       "target_ref": "wk:material_culture:carbon-black-pigment",
       "domain": "material_culture",
@@ -22984,6 +23236,34 @@
       "retrieval_text": "Новгородская Псалтырь XI-вековый рукописный памятник, не книга в текущей сцене. Псалтырь XI век"
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-official-obligations-document:en",
+      "target_ref": "wk:social_law_economy:candidate-official-obligations-document",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Official obligations document A conditionally dated document fact, not a 1230 procedure or authority. obligations official document Radoslav Mestyatka letter 213"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-official-obligations-document:ru",
+      "target_ref": "wk:social_law_economy:candidate-official-obligations-document",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Официальная запись обязательств Условно датированный документный факт, не процедура или власть 1230 года. обязательства официальный документ Радослав Местятка грамота №213"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-business-record-drawing:en",
+      "target_ref": "wk:social_law_economy:candidate-onfim-business-record-drawing",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Onfim business record and drawing A later-thirteenth-century comparator, not a 1230 school or literacy norm. Onfim business record drawing letter 202"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-business-record-drawing:ru",
+      "target_ref": "wk:social_law_economy:candidate-onfim-business-record-drawing",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Деловая запись и рисунок Онфима Поздний XIII-вековый comparator, не школа или норма грамотности 1230 года. Онфим деловая запись рисунок грамота №202"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-instructional-text:en",
       "target_ref": "wk:social_law_economy:candidate-onfim-instructional-text",
       "domain": "social_law_economy",
@@ -23024,6 +23304,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Частное письмо с именованными корреспондентами Документный контекст, а не правило именования или грамотности. Мирослав Ратмир берестяная грамота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-wife-authored-cow-redemption-letter:en",
+      "target_ref": "wk:social_law_economy:candidate-wife-authored-cow-redemption-letter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Wife-authored cow-redemption letter A turn-of-the-thirteenth-century document fact, not a rule of marriage or property. wife cow redemption letter 8"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-wife-authored-cow-redemption-letter:ru",
+      "target_ref": "wk:social_law_economy:candidate-wife-authored-cow-redemption-letter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Письмо жены о выкупе коровы Документный факт рубежа XII–XIII веков, не правило о браке или собственности. жена корова выкуп грамота №8"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-yugra-tribute-expedition-letter:en",

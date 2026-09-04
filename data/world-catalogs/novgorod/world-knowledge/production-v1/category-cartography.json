@@ -1200,6 +1200,22 @@
       "location_applicability": "Novgorod comparators explicitly dated 1000–1100 and 1250–1325; neither applies as 1230 scene evidence",
       "applicability": {"resource":"none","material":"bounded manuscript and archaeological-find context","process":"document/find interpretation only","npc":"none"},
       "coverage": "two independently approved historical comparator premises with explicit date limits"
+    },
+    {
+      "id": "macro-novgorod-human-society-v4",
+      "source_path": "macro-novgorod-human-society-v4.json",
+      "domains": ["social_law_economy", "material_culture"],
+      "location_applicability": "Record-specific Novgorod document and archaeological contexts; dated comparators and unknown temporal applicability do not establish 1230 scene facts",
+      "applicability": {"resource":"none","material":"bounded birch-bark, manuscript and archaeological-find context","process":"record interpretation only","npc":"no current person, role, skill or event"},
+      "coverage": "four independently approved historical record premises"
+    },
+    {
+      "id": "macro-universal-health-lifecycle-v3",
+      "source_path": "macro-universal-health-lifecycle-v3.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "Universal health, lifecycle and injury relations; individual body state and outcomes remain caller supplied",
+      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no diagnosis, capacity or outcome"},
+      "coverage": "eight independently approved universal premises"
     }
   ],
   "families": [
@@ -4170,6 +4186,39 @@
       "coverage": "one independently verified early historical comparator premise",
       "evidence_boundary": "No school, reader, literacy rate, current book or text follows for 1230.",
       "claim_refs": ["claim:candidate-novgorod-psalter-eleventh-century"]
+    },
+    {
+      "id": "social-dated-novgorod-human-record-comparators",
+      "domain": "social_law_economy",
+      "subdomain": "dated_documentary_comparators",
+      "family": "dated_novgorod_wife_business_record_and_official_obligation_documents",
+      "location_applicability": "Novgorod only within each record's explicit range or unknown temporal precision; no record supplies a 1230 scene fact.",
+      "applicability": {"resource":"none","material":"birch-bark document context only","process":"bounded record interpretation","npc":"named people only in their source record"},
+      "coverage": "three independently verified document premises",
+      "evidence_boundary": "No marriage, property right, cow, debt, school, literacy rate, institution, court, sanction, procedure, jurisdiction, office-holder or outcome follows.",
+      "claim_refs": ["claim:candidate-gramota8-wife-cow-redemption-letter", "claim:candidate-gramota202-onfim-business-record-drawing", "claim:candidate-gramota213-official-obligations-document"]
+    },
+    {
+      "id": "material-dated-novgorod-gusli-comparator",
+      "domain": "material_culture",
+      "subdomain": "dated_historical_comparators",
+      "family": "dated_novgorod_lyriform_gusli_archaeological_context",
+      "location_applicability": "Novgorod archaeological context in the explicit XI–XIII-century interval; not a present instrument or performance.",
+      "applicability": {"resource":"none","material":"archaeological-find context only","process":"bounded historical interpretation","npc":"none"},
+      "coverage": "one independently verified archaeological-context premise",
+      "evidence_boundary": "No 1230 gusli, performer, music, owner, skill, event or inventory follows.",
+      "claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"]
+    },
+    {
+      "id": "biology-human-lifecycle-injury-oral-and-disability-relations",
+      "domain": "biology_physiology",
+      "subdomain": "human_lifecycle_injury_oral_health_and_disability",
+      "family": "general_child_development_aging_injury_oral_health_and_disability_relations",
+      "location_applicability": "Universal physiology and health context only; no individual body, age, injury, condition, access or outcome is implied.",
+      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no individual diagnosis or capacity"},
+      "coverage": "eight independently verified universal premises",
+      "evidence_boundary": "No individual age, development, impairment, prognosis, pressure, fracture, dislocation, symptom, diagnosis, treatment, ability, access or outcome follows.",
+      "claim_refs": ["claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel", "claim:candidate-v3-disability-reflects-health-and-context-interaction"]
     }
   ],
   "missing_families": [
@@ -5093,8 +5142,9 @@
       "applicability": {"resource":"household goods and transfers","material":"conditional records and ceremonial objects","process":"relationship formation care and succession","npc":"spouses kin dependants and authorities"},
       "consumer_refs": ["potential:household", "potential:social_relations", "potential:legal_context"],
       "coverage": "partial",
-      "reason": "Minor-child care and a few kin-letter or household premises do not establish marriage, affinity, household formation or inheritance as a system. Current relationships and transfers remain authoritative state.",
-      "supporting_family_ids": ["social-family-care", "npc-household-routines", "social-law-practice"]
+      "reason": "One conditionally dated letter from Semyun's wife about cow redemption adds a document comparator only; it is not a marriage or property rule. Minor-child care and a few kin-letter or household premises still do not establish marriage, affinity, household formation or inheritance as a system. Current relationships and transfers remain authoritative state.",
+      "supporting_family_ids": ["social-family-care", "npc-household-routines", "social-law-practice", "social-dated-novgorod-human-record-comparators"],
+      "supporting_claim_refs": ["claim:candidate-gramota8-wife-cow-redemption-letter"]
     },
     {
       "id": "gender-age-status-and-stratification",
@@ -5130,9 +5180,9 @@
       "applicability": {"resource":"age-dependent care resources","material":"none","process":"qualitative development and aging","npc":"age-related capacity context, not stereotype"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_behavior"],
       "coverage": "partial",
-      "reason": "Newborn adjustment at birth is grounded as one narrow lifecycle slice. Childhood, puberty, adult aging, frailty and changing capacity remain uncovered; exact age, capacity, health and action success remain authoritative state and mechanics.",
-      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action", "biology-reproductive-and-newborn-physiology"],
-      "supporting_claim_refs": ["claim:candidate-v2-newborn-undergoes-adjustments-at-birth"]
+      "reason": "Newborn adjustment, child-development periods, puberty growth, and general aging relations are grounded. They do not establish a person's age, capacity or state; frailty and changing functional capacity remain only partially covered, while exact age, health and action success remain authoritative state and mechanics.",
+      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action", "biology-reproductive-and-newborn-physiology", "biology-human-lifecycle-injury-oral-and-disability-relations"],
+      "supporting_claim_refs": ["claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function"]
     },
     {
       "id": "sickness-symptoms-care-and-disability",
@@ -5143,9 +5193,9 @@
       "applicability": {"resource":"water food warmth and care resources","material":"none","process":"qualitative illness and recovery relations","npc":"possible symptoms and limitations, not diagnosis"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_routine"],
       "coverage": "partial",
-      "reason": "Infection chains, immunity, dehydration risk, sickness behaviour and foodborne symptom variation by germ are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
-      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation"],
-      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ"]
+      "reason": "Infection chains, immunity, dehydration risk, sickness behaviour, foodborne symptom variation and a general disability health/context relation are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
+      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation", "biology-human-lifecycle-injury-oral-and-disability-relations"],
+      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ", "claim:candidate-v3-disability-reflects-health-and-context-interaction"]
     },
     {
       "id": "injury-poisoning-parasites-and-oral-health",
@@ -5156,9 +5206,9 @@
       "applicability": {"resource":"care resources only when present","material":"injuring or hazardous material only when established","process":"qualitative injury or exposure relation","npc":"possible impairment, not diagnosis or treatment outcome"},
       "consumer_refs": ["potential:body", "potential:combat", "potential:work", "potential:care"],
       "coverage": "partial",
-      "reason": "Barrier injury, bleeding, wound repair and the general parasite-host/possible-disease relation are supported, but major injury classes, poisoning, parasite-specific behaviour and oral health remain partial. Severity and treatment are code/body-owned.",
-      "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes", "biology-parasite-host-disease-relation"],
-      "supporting_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"]
+      "reason": "Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation premises and an initial oral-decay mechanism are supported. Poisoning, parasite-specific behaviour, injury severity and treatment remain partial or uncovered; severity and treatment are code/body-owned.",
+      "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes", "biology-parasite-host-disease-relation", "biology-human-lifecycle-injury-oral-and-disability-relations"],
+      "supporting_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel"]
     },
     {
       "id": "novgorod-government-institutions-and-competencies",
@@ -5195,8 +5245,9 @@
       "applicability": {"resource":"disputed goods and compensation","material":"evidence and records only when present","process":"classification inquiry responsibility and sanction context","npc":"parties witnesses officials and community"},
       "consumer_refs": ["potential:law", "potential:crime", "potential:public_safety"],
       "coverage": "partial",
-      "reason": "Theft inquiry, accusation, compensation demand and court-choice fragments do not map offence classes, responsibility or locally applicable sanctions. No guilt or outcome follows from WK.",
-      "supporting_family_ids": ["social-law-practice", "social-property-and-market", "social-administration"]
+      "reason": "A conditionally dated official obligations document is one comparator, not an institution or sanction. Theft inquiry, accusation, compensation demand and court-choice fragments still do not map offence classes, responsibility or locally applicable sanctions. No guilt or outcome follows from WK.",
+      "supporting_family_ids": ["social-law-practice", "social-property-and-market", "social-administration", "social-dated-novgorod-human-record-comparators"],
+      "supporting_claim_refs": ["claim:candidate-gramota213-official-obligations-document"]
     },
     {
       "id": "education-apprenticeship-and-skill-transmission",
@@ -5207,9 +5258,9 @@
       "applicability": {"resource":"learning materials and tools only when present","material":"exercises and workpieces","process":"instruction practice and correction","npc":"learner teacher kin master and peer roles"},
       "consumer_refs": ["potential:education", "potential:craft", "potential:npc_development"],
       "coverage": "partial",
-      "reason": "Generic learning/socialization and Onfim 199's 1240–1260 alphabet/syllable record support a later-XIII instructional comparator, not a 1230 school, apprenticeship system or skill distribution. Actual knowledge and skill remain actor state.",
-      "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations", "social-named-correspondence-and-learning-texts"],
-      "supporting_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"]
+      "reason": "Generic learning/socialization and the 1240–1260 Onfim 199 and 202 records provide later-XIII educational/documentary comparators, not a 1230 school, apprenticeship system or skill distribution. Actual knowledge and skill remain actor state.",
+      "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-human-record-comparators"],
+      "supporting_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-gramota202-onfim-business-record-drawing"]
     },
     {
       "id": "recreation-games-music-and-oral-culture",
@@ -5219,9 +5270,10 @@
       "location_applicability": "Households, streets, feasts, work breaks, gatherings and travel",
       "applicability": {"resource":"time and objects only when present","material":"toys game pieces and instruments","process":"play performance and participation","npc":"players performers listeners and audiences"},
       "consumer_refs": ["potential:recreation", "potential:dialogue", "potential:npc_routine"],
-      "coverage": "missing",
-      "reason": "The production map has no verified recreation or expressive-culture family, leaving ordinary NPC life culturally thin.",
-      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual"]
+      "coverage": "partial",
+      "reason": "XI–XIII-century archaeological context for lyriform gusli finds is grounded, but it does not establish a 1230 instrument, performer, music, game, toy, oral performance or ordinary recreation scene.",
+      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual", "material-dated-novgorod-gusli-comparator"],
+      "supporting_claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"]
     },
     {
       "id": "snow-ice-and-winter-surface-processes",

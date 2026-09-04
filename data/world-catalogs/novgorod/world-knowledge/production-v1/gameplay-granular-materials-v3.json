@@ -11,7 +11,7 @@
       "source_kind": "scholarship",
       "citation": "https://doi.org/10.1088/0953-8984/20/49/494236; abstract.",
       "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
-      "review_status": "pending"
+      "review_status": "approved"
     },
     {
       "schema": "world_knowledge_source_v1",
@@ -22,7 +22,7 @@
       "source_kind": "scholarship",
       "citation": "https://doi.org/10.1007/s11440-021-01315-5; abstract and §1.1–1.1.2.",
       "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
-      "review_status": "pending"
+      "review_status": "approved"
     }
   ],
   "evidence": [
@@ -32,7 +32,7 @@
       "source_ref": "source:scheel-2008-liquid-distribution-wet-granular",
       "anchor": {"section": "Abstract"},
       "note": "Experiments on water-mixed bead packings attribute capillary cohesion to liquid–air interfaces spanning grains; behaviour varies with liquid content and high pore filling weakens it. It does not establish a scene material, saturation, grain size, hand force, mouldability, water release, or a rolled result.",
-      "review_status": "pending"
+      "review_status": "approved"
     },
     {
       "schema": "world_knowledge_evidence_v1",
@@ -40,12 +40,12 @@
       "source_ref": "source:milatz-2021-partially-saturated-granular-compression",
       "anchor": {"section": "Abstract; §1.1–1.1.2"},
       "note": "In-situ uniaxial-compression experiments on Hamburg Sand and glass beads measured air–water interfaces, water clusters and local strain fields through deformation. The paper treats their evolution as dependent on saturation and grain-scale structure; it does not establish outward drainage, a connected path, amount/rate of water movement, or a particular action result.",
-      "review_status": "pending"
+      "review_status": "approved"
     }
   ],
   "concepts": [
-    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:wet-granular-capillary-cohesion", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "pending"},
-    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:partially-saturated-granular-deformation", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "pending"}
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:wet-granular-capillary-cohesion", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:partially-saturated-granular-deformation", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
   ],
   "claims": [
     {
@@ -61,7 +61,7 @@
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
       "evidence_refs": ["evidence:granular-v3-capillary-bridges"],
-      "review_status": "pending",
+      "review_status": "approved",
       "conflict_group_ref": null
     },
     {
@@ -77,7 +77,7 @@
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
       "evidence_refs": ["evidence:granular-v3-compression-phase-evolution"],
-      "review_status": "pending",
+      "review_status": "approved",
       "conflict_group_ref": null
     }
   ],

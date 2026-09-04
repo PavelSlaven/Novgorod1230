@@ -12,7 +12,9 @@
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
 
 `gameplay-gap-campaign.mjs` — development-only driver реальных production
-HTTP turns. Injected explorer получает только актуальный public screen и
+HTTP turns для отдельно назначаемой gameplay-testing фазы (World Knowledge
+contract §§0.1, 112.12). В текущей статической фазе PR92 систематические
+campaigns/replays/saturation не запускаются. Injected explorer получает только актуальный public screen и
 предыдущие намерения; не получает WK inventory, hidden state или ответы.
 Private party JSONL связывает input, WK planner request/plan/query, фактический
 consumer slice, structured model output и owner commit/rejection. Driver

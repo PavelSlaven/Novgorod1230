@@ -56,7 +56,9 @@ Recall@10/20, hard constraints, applicability precision, noise и latency.
 Runtime weights не являются repository artifact.
 
 `src/gameplay-gap-audit.js` — internal development-only validation, не runtime
-auditor. `buildGameplayGapBacklog` принимает реальные campaign traces и
+auditor. Его применение относится к будущей gameplay-testing фазе по
+World Knowledge contract §§0.1, 112.12; saturation не является gate текущего
+статического наполнения. `buildGameplayGapBacklog` принимает реальные campaign traces и
 отдельный `world_knowledge_gameplay_gap_audit_v1`: независимые per-trace
 assessments требуемых и фактически использованных/подразумеваемых premises,
 а также gap records. Семантическое сравнение делает независимый auditor;

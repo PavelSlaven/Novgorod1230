@@ -32,6 +32,35 @@
 
 Если конкретное имя package/export/file в этом target расходится с текущим репозиторием, нормативны ответственность и поведение. Агент должен встроиться в фактическую текущую архитектуру самым маленьким корректным способом.
 
+## 0.1. Статическое наполнение и будущая gameplay-testing фаза
+
+Статическая фаза World Knowledge включает архитектурный контракт, максимально
+широкую game-need cartography, source-backed corpus, независимую per-claim
+source/domain verification, согласованные indexes/vectors и retrieval benchmarks.
+Карту проектируют от потенциальных потребностей открытой RPG, включая ещё не
+реализованные consumers, а не от наличного corpus или текущего сценария.
+Для таких consumers явно сохраняется target status: карта не активирует runtime.
+
+Gameplay Gap Auditor (§112.12) — целевая development/testing архитектура
+отдельной последующей фазы, не критерий завершения статического наполнения.
+Систематические live campaigns, blind/adversarial explorers, replay и gameplay
+saturation запускаются только в явно назначенной gameplay-testing фазе после
+статического наполнения и отдельных тестовых проходов основного gameplay.
+Наличие development driver/validator само по себе не активирует эту фазу.
+
+Обнаруженный gameplay defect передаётся отдельным finding правильному owner;
+статическое наполнение WK не разрешает ремонт inventory, ownership,
+materialization, persistence, body, combat, NPC, narration или spatial ради
+продолжения живого прогона. Такие findings не превращаются в corpus claims.
+Существующие WK runtime integration и обязательные проверки затронутого кода
+сохраняются; это разделение фаз не отменяет exact-HEAD CI merge gate.
+
+Статическая готовность не равна полноте мира или gameplay saturation. Она
+требует независимо проверенной карты потребностей, явного учёта отсутствующих
+и частичных factual families, максимально полного source-backed наполнения
+этих потребностей и честных границ применимости. Счётчик claims, заполнение
+собственной матрицы или отсутствие live findings не доказывают такую готовность.
+
 ---
 
 # 1. Назначение платформы
@@ -3372,9 +3401,77 @@ BLOCK если:
 
 Запускается при реальном committed-state integration. Проверяет save/load/retry/restart и отсутствие retroactive pack rewrite.
 
+## 112.12. GAMEPLAY GAP AUDITOR — target последующей testing-фазы
+
+Независимый development-time auditor сравнивает фактические потребности
+реальной игры с доставленными premises и результатом. Он не является runtime
+ролью, вторым planner/materializer, автоматическим исследователем или
+источником production approval. Его реальное применение отложено по §0.1.
+Существующие internal driver и backlog validator — подготовленные инструменты,
+не доказательство достижения gameplay readiness или saturation.
+
+### Trace requirements
+
+Трасса связывает exact code/pack/profile/model revisions, campaign/turn IDs,
+свободное намерение, public/actor-safe вход, WK need/query plan, фактический
+retrieval query и consumer slice с claim refs, structured semantic plan,
+repair attempts, owner admission/rejection, commit либо отсутствие commit,
+player-safe presentation и continuation. Секреты и private model reasoning
+не сохраняются. Hidden diagnostic state не передаётся blind explorer.
+Успешный HTTP или правдоподобная narration не заменяют owner commit evidence.
+Auditor отдельно перечисляет required, used и implied factual premises,
+их evidence и unsupported accepted premises; пустой backlog без такого
+per-trace assessment не является положительным аудитом.
+
+### Gap classes и правильный owner
+
+- `COVERED_BY_WORLD_KNOWLEDGE`: существующий approved factual support.
+- `COVERED_BY_CODE_MECHANICS`: известная exact mechanics/state ответственность.
+- `CORPUS_GAP`: отсутствует factual premise; research и отдельная verification.
+- `RETRIEVAL_GAP`: premise есть, но не доставлена; WK retrieval/query owner.
+- `SCHEMA_GAP`: нужная связь не выражается текущим factual contract; schema owner.
+- `HISTORICAL_APPLICABILITY_GAP`: не установлена дата/место/доступность знания.
+- `ACTOR_KNOWLEDGE_OR_PERCEPTION_GAP`: actor access/perception owner, не новые facts.
+- `MATERIALIZATION_OR_PRESENCE_GAP`: causal presence/materialization owner.
+- `CODE_MECHANICS_GAP`: отдельный gameplay owner, не authoring corpus.
+- `AMBIGUOUS_OR_DISPUTED_REAL_WORLD_KNOWLEDGE`: сохранить спор и limits.
+- `NO_FACTUAL_KNOWLEDGE_REQUIRED`: семантическая задача без factual research.
+
+### Lifecycle
+
+Finding содержит stable gap ID, trace/campaign refs, scenario summary,
+required premise, class/domain/proposed family/consumer, severity, причину
+недостаточности WK, universal/historical scope, research и resolution status.
+Research проходит `new → researching → candidate_ready → verified` либо
+`rejected/not_required`; только отдельный verifier разрешает promotion по §35.1.
+Resolution проходит `open → resolved → replayed`; `bounded_limit` требует
+независимого обоснования, а не переименования нерешённого critical gap.
+Gameplay bug получает отдельную задачу соответствующего owner.
+Replay ссылается на реальную новую трассу и независимый verdict: корректный
+commit либо ожидаемый typed rejection с совпадающим error code и без commit.
+Простая смена status, HTTP 200 или unit fixture не заменяет replay.
+
+### Будущий saturation gate
+
+После последнего P0/P1 исправления нужны три последовательные независимые
+unseen кампании на одном неизменном acceptance candidate с различающимися
+ситуациями/стилями explorers и непересекающимися trace IDs. Во всех кампанийных
+traces обязателен независимый premise audit; новых и незакрытых P0/P1 — ноль,
+unsupported premises в accepted traces — ноль. P2 должен быть replayed либо
+иметь независимо принятый bounded limit. Regression replay не считается unseen.
+Новый critical finding сбрасывает последовательность. Это ограниченное
+эмпирическое насыщение проверенного пространства, не математическая полнота
+мира. В статической фазе gate имеет статус «не применяется / будущая фаза»,
+а не PASS или blocker статического authoring.
+
 ---
 
 # 113. Full Definition of Done
+
+Ниже — совокупный target полной платформы. Для отдельной статической фазы
+применяется §0.1: обязательны corpus/verification/cartography/retrieval и
+проверки уже затронутой интеграции, но не новые live campaigns, gameplay
+saturation или ремонт других gameplay owners.
 
 Полная implementation-ready platform revision завершена, когда одновременно:
 

@@ -108,6 +108,12 @@ runtime World Knowledge получает только `verification_ref`, без
 §98.1 требует отдельной category cartography и независимого поиска missing
 families по location/materialization потребностям, не по числу claims/cells.
 
+World Knowledge §0.1 разделяет статическое наполнение и последующую
+gameplay-testing фазу. §112.12 задаёт target Gameplay Gap Auditor, trace
+requirements, классификацию, lifecycle и saturation; наличие internal
+development tooling не активирует testing и не делает saturation gate
+критерием статической готовности.
+
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |

@@ -3648,6 +3648,492 @@
   ],
   "missing_families": [
     {
+      "id": "possession-title-and-acquisition",
+      "domain": "social_law_economy",
+      "subdomain": "property",
+      "family": "Possession, custody, finding, abandonment, acquisition and competing title claims",
+      "location_applicability": "households, workshops, roads, markets and found-object contexts",
+      "applicability": {
+        "resource": "items and custody",
+        "material": "physical possession and legal status",
+        "process": "acquisition return and dispute",
+        "npc": "claimants keepers and authorities"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not infer title from physical holding or create legal ownership; specific legal relations require date/place/status evidence.",
+      "supporting_family_ids": [
+        "social-property-and-market",
+        "social-law-practice"
+      ]
+    },
+    {
+      "id": "borrowing-pledge-and-debt",
+      "domain": "social_law_economy",
+      "subdomain": "obligations",
+      "family": "Loans, pledges, debt, repayment and default",
+      "location_applicability": "household, market, merchant and interpersonal credit contexts",
+      "applicability": {
+        "resource": "money and loaned goods",
+        "material": "pledged objects",
+        "process": "borrowing repayment and enforcement",
+        "npc": "debtors creditors and witnesses"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Distinguish custody, access, obligation and title; no debt, interest, penalty or transfer is created.",
+      "supporting_family_ids": [
+        "social-property-and-market",
+        "social-documentary-practice"
+      ]
+    },
+    {
+      "id": "legal-testimony-oath-and-proof",
+      "domain": "social_law_economy",
+      "subdomain": "procedure",
+      "family": "Accusation, testimony, oath, evidence and procedural limits",
+      "location_applicability": "disputes, courts, assemblies and household mediation",
+      "applicability": {
+        "resource": "disputed goods",
+        "material": "documents and traces",
+        "process": "inquiry testimony and procedure",
+        "npc": "parties witnesses and officials"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. An allegation is not proof; historical procedures require local and chronological evidence, not a universal legal rule.",
+      "supporting_family_ids": [
+        "social-law-practice",
+        "social-documentary-practice"
+      ]
+    },
+    {
+      "id": "legal-locality-period-and-status",
+      "domain": "social_law_economy",
+      "subdomain": "historical_applicability",
+      "family": "Jurisdiction, participant status, period and case-specific legal applicability",
+      "location_applicability": "Novgorod and other separately researched Rus contexts",
+      "applicability": {
+        "resource": "property and obligations",
+        "material": "records",
+        "process": "jurisdiction and administrative action",
+        "npc": "status-specific rights and duties"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not flatten regional or later law into Novgorod 1230, assign status or decide a case.",
+      "supporting_family_ids": [
+        "social-law-practice",
+        "social-administration"
+      ]
+    },
+    {
+      "id": "exchange-measures-quality-and-settlement",
+      "domain": "social_law_economy",
+      "subdomain": "exchange",
+      "family": "Units, quality, valuation and deferred settlement",
+      "location_applicability": "markets, household exchange and craft sales",
+      "applicability": {
+        "resource": "goods and payment",
+        "material": "qualities and measures",
+        "process": "measuring bargaining and settlement",
+        "npc": "traders buyers and intermediaries"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. No fixed price, unit conversion, account balance or completed bargain without its authoritative basis.",
+      "supporting_family_ids": [
+        "social-property-and-market",
+        "material-written-objects"
+      ]
+    },
+    {
+      "id": "seasonal-logistics-and-provisioning",
+      "domain": "social_law_economy",
+      "subdomain": "logistics",
+      "family": "Seasonal transport, work and provisioning dependencies",
+      "location_applicability": "rivers, roads, settlements, hinterlands and winter routes",
+      "applicability": {
+        "resource": "food fodder and cargo",
+        "material": "transport equipment",
+        "process": "seasonal work transport and storage",
+        "npc": "carriers producers and households"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Weather and transport support are not proof of a current route, schedule, shortage or stock.",
+      "supporting_family_ids": [
+        "material-transport",
+        "environment-weather",
+        "npc-household-routines"
+      ]
+    },
+    {
+      "id": "watercraft-operation-and-shore-transfer",
+      "domain": "craft_technology",
+      "subdomain": "water_transport",
+      "family": "Launching, mooring, loading, shore transfer and portage",
+      "location_applicability": "landings, banks, vessels and inland transfers",
+      "applicability": {
+        "resource": "cargo and transport resources",
+        "material": "vessels ropes supports",
+        "process": "handling loading and transfer",
+        "npc": "boat workers and passengers"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Historical operation and physical constraints need separate evidence; capacity, stability, access and current are mechanics/state.",
+      "supporting_family_ids": [
+        "material-transport",
+        "built-river-landing-access",
+        "npc-river-occupations"
+      ]
+    },
+    {
+      "id": "household-textile-transformation-lifecycle",
+      "domain": "craft_technology",
+      "subdomain": "textiles",
+      "family": "Fibre preparation, spinning, twisting, weaving, sewing and repair",
+      "location_applicability": "household and specialist textile workspaces",
+      "applicability": {
+        "resource": "fibres thread and cloth",
+        "material": "textile structure",
+        "process": "distinct transformations and maintenance",
+        "npc": "household and craft roles"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Do not infer a recipe, tools, skill, regional practice or output from general fibre availability.",
+      "supporting_family_ids": [
+        "craft-fibre-fishing-processing",
+        "materials-fibre-leather-water-response"
+      ]
+    },
+    {
+      "id": "leather-object-making-and-repair",
+      "domain": "craft_technology",
+      "subdomain": "leatherwork",
+      "family": "Prepared hide, cutting, stitching, shaping and object repair",
+      "location_applicability": "footwear, clothing, harness, container and craft contexts",
+      "applicability": {
+        "resource": "hide leather and thread",
+        "material": "skin and prepared leather",
+        "process": "object production and repair",
+        "npc": "leather workers and ordinary users"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Preservation is not object fabrication; no exact recipe, material yield, tools or completed repair follows.",
+      "supporting_family_ids": [
+        "biology-skin-fur-and-hide-preservation",
+        "process-textile-dye-and-collagen-tanning",
+        "material-organic-materials"
+      ]
+    },
+    {
+      "id": "ordinary-cooking-handling-and-cross-contact",
+      "domain": "craft_technology",
+      "subdomain": "food_preparation",
+      "family": "Washing, separation, cooking, vessel and fuel use",
+      "location_applicability": "household, camp, travel and communal cooking",
+      "applicability": {
+        "resource": "food water and fuel",
+        "material": "vessels and food-contact surfaces",
+        "process": "preparation heating and handling",
+        "npc": "cooks household members and eaters"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Bread and preservation examples do not close all food handling; no current contamination, edibility or treatment success.",
+      "supporting_family_ids": [
+        "process-bread-dough-and-baking",
+        "process-food-preservation-and-fermentation",
+        "biology-food-safety-storage-and-fermentation"
+      ]
+    },
+    {
+      "id": "shelter-weatherproofing-and-repair",
+      "domain": "architecture_settlement",
+      "subdomain": "building_maintenance",
+      "family": "Roof, wall, opening, covering and drainage maintenance",
+      "location_applicability": "ordinary shelters, workshops, outbuildings and dwelling envelopes",
+      "applicability": {
+        "resource": "repair material",
+        "material": "coverings walls and openings",
+        "process": "weatherproofing drainage and repair",
+        "npc": "occupants and builders"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Room function is not proof of a defect or its repair; historical techniques, current weather and structure require separate support.",
+      "supporting_family_ids": [
+        "built-storage-and-household",
+        "materials-wood-moisture-and-coatings"
+      ]
+    },
+    {
+      "id": "household-water-sanitation-and-waste",
+      "domain": "architecture_settlement",
+      "subdomain": "sanitation",
+      "family": "Drinking, washing, waste and contamination pathways",
+      "location_applicability": "households, camps, settlements and shared water sources",
+      "applicability": {
+        "resource": "water and waste",
+        "material": "contact surfaces and organic matter",
+        "process": "collection washing waste handling",
+        "npc": "household and communal practices"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Keep historical practice separate from universal exposure; no local contamination, sanitation installation or disease is inferred.",
+      "supporting_family_ids": [
+        "built-bathing-sanitation",
+        "chemistry-exposure-and-routes",
+        "biology-pathogen-immunity-and-infection"
+      ]
+    },
+    {
+      "id": "speech-acts-and-social-commitments",
+      "domain": "social_behavior",
+      "subdomain": "pragmatics",
+      "family": "Requests, refusals, promises, threats, apologies and instructions",
+      "location_applicability": "all interpersonal communication contexts",
+      "applicability": {
+        "resource": "exchanged or promised resources",
+        "material": "spoken or written carriers",
+        "process": "communication and interpretation",
+        "npc": "speakers listeners and bystanders"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Semantic interpretation alone is not missing factual knowledge; research empirical/cultural premises only, without compliance rules or hidden intent.",
+      "supporting_family_ids": [
+        "social-roles-norms-and-socialization",
+        "social-trust-conflict-and-repair"
+      ]
+    },
+    {
+      "id": "testimony-rumour-memory-and-provenance",
+      "domain": "psychology_behavior",
+      "subdomain": "information_reliability",
+      "family": "Observation, recollection, hearsay and communication reliability",
+      "location_applicability": "conversation, investigation, news and testimony",
+      "applicability": {
+        "resource": "information, not authoritative world truth",
+        "material": "records and messages",
+        "process": "remembering retelling and corroboration",
+        "npc": "observers narrators and recipients"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Actor knowledge access is code-owned; research only bounded memory/transmission relations, never infer truth from a report.",
+      "supporting_family_ids": [
+        "psychology-memory-and-recognition",
+        "social-documentary-practice"
+      ]
+    },
+    {
+      "id": "reputation-honour-shame-and-repair",
+      "domain": "social_behavior",
+      "subdomain": "reputation",
+      "family": "Public evaluation, status, affiliation and social repair",
+      "location_applicability": "household, market, craft, communal and authority contexts",
+      "applicability": {
+        "resource": "social cooperation",
+        "material": "messages and public acts",
+        "process": "evaluation conflict and repair",
+        "npc": "individuals and groups"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Universal tendencies and historical norms need different scope; no deterministic emotion, reputation score, motive or response.",
+      "supporting_family_ids": [
+        "social-trust-conflict-and-repair",
+        "psychology-affect-regulation-and-stress"
+      ]
+    },
+    {
+      "id": "collective-work-and-labour-dependencies",
+      "domain": "npc_daily_life",
+      "subdomain": "cooperative_work",
+      "family": "Role complementarity, coordination and shared task dependencies",
+      "location_applicability": "household, construction, harvest, craft, fishing and transport",
+      "applicability": {
+        "resource": "shared inputs",
+        "material": "tools and workpieces",
+        "process": "coordinated production and transfer",
+        "npc": "workers helpers and organizers"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Qualitative context only; no roster, labour number, exact duration, schedule or forced NPC decision.",
+      "supporting_family_ids": [
+        "social-group-influence-and-coordination",
+        "npc-craft-occupations",
+        "npc-household-routines"
+      ]
+    },
+    {
+      "id": "care-dependency-and-household-negotiation",
+      "domain": "npc_daily_life",
+      "subdomain": "household_relations",
+      "family": "Caregiving, dependency, age/status and household duties",
+      "location_applicability": "households and care networks",
+      "applicability": {
+        "resource": "food shelter and care resources",
+        "material": "household objects",
+        "process": "care provisioning and negotiation",
+        "npc": "dependents caregivers and kin"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Existing family-care facts require need-level reconciliation; no family entity, universal gender rule, motive or assigned duty.",
+      "supporting_family_ids": [
+        "social-family-care",
+        "social-belonging-and-prosocial-relations"
+      ]
+    },
+    {
+      "id": "religious-practice-calendar-and-institutions",
+      "domain": "social_law_economy",
+      "subdomain": "religious_history",
+      "family": "Observance, calendar, burial and institutional practice",
+      "location_applicability": "households, communities, burial and religious places",
+      "applicability": {
+        "resource": "offerings and provisions",
+        "material": "ritual and written objects",
+        "process": "observance burial and institution-specific practice",
+        "npc": "participants and institutional roles"
+      },
+      "consumer_refs": [
+        "potential:open_RPG_semantic_context"
+      ],
+      "coverage": "partial",
+      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Buildings and objects do not prove a practice or belief; every asserted custom needs period/place/status evidence.",
+      "supporting_family_ids": [
+        "social-religious-context",
+        "material-vessels-furniture-ritual"
+      ]
+    },
+    {
+      "id": "combustion-carbon-monoxide-and-ventilation",
+      "domain": "chemistry_process",
+      "subdomain": "combustion_products",
+      "family": "fuel_combustion_carbon_monoxide_and_ventilation_limits",
+      "location_applicability": "enclosed or poorly ventilated shelters, workshops, bathhouses and sleeping spaces; potential contexts, not activated locations",
+      "applicability": {"resource":"fuel and air","material":"combustion products","process":"burning and ventilation","npc":"exposure context, never diagnosis or action"},
+      "consumer_refs": ["potential:semantic_resolution", "potential:fire_process", "potential:body_exposure"],
+      "coverage": "missing",
+      "reason": "Need-first research identifies combustion-product and perceptibility relations not entailed by fuel/oxidizer or smoke-visibility claims. Source direction: research/gameplay-natural-science-gap-map-v1.md. Candidate source/domain verification remains required; no current concentration, ventilation or harm follows.",
+      "supporting_family_ids": ["process-combustion-and-pyrolysis", "chemistry-exposure-and-routes"]
+    },
+    {
+      "id": "cold-water-immersion-heat-loss",
+      "domain": "biology_physiology",
+      "subdomain": "environmental_exposure",
+      "family": "immersion_heat_exchange_and_functional_limits",
+      "location_applicability": "river, lake, flooded or wet-work contexts; any season where actual conditions warrant",
+      "applicability": {"resource":"water","material":"wet clothing and body interfaces","process":"immersion and heat exchange","npc":"conditional physiological context"},
+      "consumer_refs": ["potential:semantic_resolution", "potential:body_exposure", "potential:travel"],
+      "coverage": "missing",
+      "reason": "Ordinary wetness and general thermoregulation do not alone establish the source-specific immersion relation. Research and independent verification required. Actual temperature, duration, impairment, treatment and survival remain outside the factual premise.",
+      "supporting_family_ids": ["body-thermoregulation-energy-and-fatigue", "thermal-phase-heat-transfer"]
+    },
+    {
+      "id": "water-heating-pathogens-versus-chemicals",
+      "domain": "chemistry_process",
+      "subdomain": "water_treatment",
+      "family": "thermal_microbe_inactivation_and_chemical_contaminant_limits",
+      "location_applicability": "household, camp, cooking, vessel and water-source contexts; no local water quality presumed",
+      "applicability": {"resource":"water and fuel","material":"dissolved and suspended substances","process":"water heating and storage","npc":"food and water context"},
+      "consumer_refs": ["potential:semantic_resolution", "potential:food_process", "potential:ordinary_household"],
+      "coverage": "missing",
+      "reason": "Need to distinguish microbial treatment from chemical removal rather than infer drinkability from boiling. Source direction recorded in natural-science gap map; exact source/claim verification pending. No numeric treatment recipe, contamination or safe-water result is authorized.",
+      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "chemistry-solution-equilibrium-and-solubility"]
+    },
+    {
+      "id": "freeze-thaw-soil-bank-integrity",
+      "domain": "environment",
+      "subdomain": "soil_and_bank_processes",
+      "family": "freeze_thaw_unconsolidated_sediment_and_erosion",
+      "location_applicability": "seasonally freezing banks, cuttings, paths and excavations; not a canonical terrain assertion",
+      "applicability": {"resource":"soil and sediment","material":"moist granular substrate","process":"freezing thawing erosion","npc":"travel and excavation context"},
+      "consumer_refs": ["potential:semantic_resolution", "potential:excavation", "potential:spatial_hazards"],
+      "coverage": "partial",
+      "reason": "Existing rock weathering and soil-water families are adjacent support, not verification of thawed-bank stability. Separate sediment relation needs source review; slope geometry, bearing capacity, actual bank failure and route safety remain code/state owned.",
+      "supporting_family_ids": ["environment-geology", "environment-wetland-river-soil"]
+    },
+    {
+      "id": "flood-marks-observation-and-corroboration",
+      "domain": "environment",
+      "subdomain": "environmental_observation",
+      "family": "deposited_marks_and_conditional_high_water_interpretation",
+      "location_applicability": "floodplains, banks, structures and riparian vegetation; observed marks require separate perception basis",
+      "applicability": {"resource":"deposits and debris","material":"mud seeds wood staining","process":"deposition wicking and observation","npc":"environmental interpretation"},
+      "consumer_refs": ["potential:semantic_resolution", "potential:environmental_investigation"],
+      "coverage": "missing",
+      "reason": "Debris transport does not establish mark reliability or corroboration requirements. Static research needed for conditional evidential relations; no hidden clue, date, flood event, exact level or authoritative conclusion may be manufactured.",
+      "supporting_family_ids": ["riparian-woody-debris", "environment-hydrology"]
+    },
+    {
+      "id": "water-temperature-oxygen-habitat-relations",
+      "domain": "environment",
+      "subdomain": "aquatic_habitat",
+      "family": "temperature_dissolved_oxygen_and_taxon_constraints",
+      "location_applicability": "rivers, lakes, ponds and enclosed waters; local measurements and taxa not supplied",
+      "applicability": {"resource":"water","material":"dissolved gases","process":"gas exchange metabolism and circulation","npc":"fauna habitat context"},
+      "consumer_refs": ["potential:fauna_context", "potential:fishing", "potential:semantic_resolution"],
+      "coverage": "partial",
+      "reason": "Existing oxygen contributors and selected fish risks do not close temperature/oxygen interactions for all taxa. Research bounded physical and taxon relations separately; fish absence, concentration, illness and mortality are not inferred outcomes.",
+      "supporting_family_ids": ["water-dissolved-oxygen-contributors", "fauna-fish-migration-spawning-and-water-conditions"]
+    },
+    {
+      "id": "smoke-transport-and-dispersion",
+      "domain": "physics_material_science",
+      "subdomain": "airflow_and_transport",
+      "family": "buoyancy_airflow_stratification_and_smoke_dispersion",
+      "location_applicability": "outdoor fires and enclosed working/sleeping spaces; indoor and atmospheric regimes require distinct applicability",
+      "applicability": {"resource":"air","material":"smoke aerosol","process":"transport mixing and stratification","npc":"visibility and exposure context"},
+      "consumer_refs": ["potential:fire_context", "potential:shelter_context", "potential:semantic_resolution"],
+      "coverage": "partial",
+      "reason": "Optical attenuation is not transport or exposure. Source-backed conditional air-motion relations need separate review; no plume direction, room state, dose or safe location follows.",
+      "supporting_family_ids": ["smoke-optical-visibility", "thermal-phase-heat-transfer", "environment-weather"]
+    },
+    {
       "id": "flora-trees",
       "domain": "environment",
       "subdomain": "flora",
@@ -4230,8 +4716,10 @@
     "Water cooling of class-A fuel/flame is grounded; exact suppression success, spread and timing remain fire/time mechanics."
   ],
   "gameplay_need_cartography": {
-    "status": "active_approved_premise_map_not_global_completeness",
-    "purpose": "Need-first reconciliation of approved gameplay fragments within the active production pack. It maps factual premises to families, locations and consumers; it neither creates scene facts nor defines an action, item, recipe or room-content whitelist.",
+    "status": "static_need_expansion_in_progress_not_completeness_approval",
+    "purpose": "Open-RPG need-first map: approved families classify current support; missing_families records independently identified unmet or partial needs, including potential consumers beyond current scenes. Fragment reconciliation below is inventory only, not the origin or boundary of needs. No action, item, recipe or room-content whitelist.",
+    "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
+    "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
       {"source_path":"gameplay-physiology-v3.json","claim_count":18,"family_refs":["physiology-protective-reflexes","physiology-oxygen-and-perfusion","physiology-autonomic-and-functional-response"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"Factual causal premises only; body/combat/time own actor state, severity, duration and forced action."},
       {"source_path":"gameplay-material-process-v3.json","claim_count":4,"family_refs":["storage-grain-airflow-and-moisture","fire-water-cooling","net-serviceability-maintenance"],"location_refs":["trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_f1_local_exact_fire_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"No fire, grain, net, repair, quantity, maintenance result or timer is created."},

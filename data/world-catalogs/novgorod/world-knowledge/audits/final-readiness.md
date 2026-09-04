@@ -45,6 +45,25 @@ on the exact pushed HEAD are still required; no earlier CI run substitutes
 for that final check. The chronological records below preserve previous
 failures and scoped verdicts and do not override this current snapshot.
 
+### First pushed CI and documentation-policy correction
+
+Commit `1644248dc55d4a43e4fb1e57ddd685aa8ecc852b` was pushed to the existing
+PR92 branch. CI run `33838263080` passed its database, generated-reproducibility
+and repository-graph gates, then failed full `npm test` in nine
+`@rus/knowledge-source` tests with `RETRIEVAL_POLICY_STALE`. Local reproduction
+gave the same nine failures. The canonical corpus manifest and generated RAG
+already shared the current digest; only the manually maintained retrieval
+policy baseline still referenced the pre-document-update manifest.
+
+The correction changes that existing baseline field only. Document statuses,
+semantic coverage dispositions, query controls and fail-closed validation are
+unchanged. All **40/40 knowledge-source tests**, `knowledge:check`,
+`docs:check` and `git diff --check` now pass. Existing negative tests still
+reject mismatched policy/manifest/RAG. No new source assertion, gameplay code,
+embedding or semantic prompt changed; the 516-claim and live-pipeline audits
+remain applicable. Full CI must pass on the follow-up pushed HEAD before
+completion is claimed.
+
 ## Historical 391-claim delta audit — PARTIAL
 
 ## Scope and method

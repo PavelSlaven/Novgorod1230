@@ -61,8 +61,8 @@ Duplicate check: production-pack text search finds the existing combustion premi
 ### NS-03 — boiling: germs versus dissolved chemicals
 
 - **Potential domains/consumer:** `chemistry_process` / `biology_physiology`; potential water/food handling and A1 process grounding.
-- **Candidate mechanism:** `boiling or heating water can kill disease-causing germs, but it does not make water containing harmful chemicals drinkable.`
-- **RU:** «Кипячение или нагрев воды может уничтожать болезнетворные микроорганизмы, но не делает пригодной для питья воду с вредными химическими примесями.»
-- **EN:** “Boiling or heating water can kill disease-causing germs, but it does not make water containing harmful chemicals drinkable.”
+- **Candidate mechanism:** `boiling or heating water can kill disease-causing germs; boiling alone does not establish drinkability where fuel or toxic-chemical contamination is present.`
+- **RU:** «Кипячение или нагрев воды может уничтожать болезнетворные микроорганизмы; одно кипячение само по себе не устанавливает пригодность для питья воды при загрязнении топливом или токсичными химическими примесями.»
+- **EN:** “Boiling or heating water can kill disease-causing germs; boiling alone does not establish drinkability where fuel or toxic-chemical contamination is present.”
 - **Evidence:** CDC, *Household Water Treatment*, lines 46–59: boiling/heating kills viruses, bacteria and parasites; fuel, toxic chemicals or radioactive material are not made drinkable by treatment. URL: <https://www.cdc.gov/global-water-sanitation-hygiene/about/about-household-water-treatment.html>.
-- **Limits:** No local water quality, germs, chemicals, pot, fuel, boil event, treatment success, drinking permission, dose, illness, or medical advice. This does not turn unclear water into contaminated or potable water.
+- **Limits:** No local water quality, germs, chemicals, pot, fuel, boil event, treatment success, drinking permission, dose, illness, or medical advice. This is not a universal claim that every substance can never be removed; it does not turn unclear water into contaminated or potable water.

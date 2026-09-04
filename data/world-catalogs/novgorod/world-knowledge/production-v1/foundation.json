@@ -19,6 +19,8 @@
       "material_culture",
       "npc_daily_life",
       "physics_material_science",
+      "psychology_behavior",
+      "social_behavior",
       "social_law_economy"
     ],
     "context_schema_ref": "wk-context:novgorod:v1",
@@ -121,7 +123,7 @@
           "exclude"
         ],
         "cardinality": "multi_valued",
-        "applicability": "contextual",
+        "applicability": "either",
         "consumer_meaning": "Independently verified compositional factual premise within its explicit applicability and qualifiers."
       }
     },
@@ -184,6 +186,32 @@
         "cardinality": "multi_valued",
         "applicability": "universal",
         "consumer_meaning": "Independently verified compositional factual premise within its explicit applicability and qualifiers."
+      }
+    },
+    "psychology_behavior": {
+      "supported_fact": {
+        "subject_domains": ["psychology_behavior"],
+        "object_kinds": ["literal"],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Qualified cognitive and behavioral premise for semantic reasoning; not actor state, knowledge, motive, diagnosis, decision or exact mechanics."
+      }
+    },
+    "social_behavior": {
+      "supported_fact": {
+        "subject_domains": ["social_behavior"],
+        "object_kinds": ["literal"],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Qualified interpersonal or group premise for semantic reasoning; not a current relationship, norm, duty, consent, reputation, authority or social outcome."
       }
     },
     "social_law_economy": {
@@ -3349,6 +3377,39 @@
   "coverage_profiles": [
     {
       "schema": "world_knowledge_profile_v1",
+      "profile_ref": "wk-profile:psychology_behavior:production-v1",
+      "domain": "psychology_behavior",
+      "status": "production",
+      "scope": {"context_scope": "universal"},
+      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
+      "question_classes": ["attention_and_perception", "memory_and_learning", "attribution_and_individual_variation", "affect_and_decision_conditions"],
+      "runtime_requirement": "required_when_selected",
+      "guard": {"mode": "reference_required"}
+    },
+    {
+      "schema": "world_knowledge_profile_v1",
+      "profile_ref": "wk-profile:social_behavior:production-v1",
+      "domain": "social_behavior",
+      "status": "production",
+      "scope": {"context_scope": "universal"},
+      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
+      "question_classes": ["group_influence", "interpersonal_conflict_and_affiliation", "social_roles_and_norms_general", "cooperation_and_reciprocity_conditions"],
+      "runtime_requirement": "required_when_selected",
+      "guard": {"mode": "reference_required"}
+    },
+    {
+      "schema": "world_knowledge_profile_v1",
+      "profile_ref": "wk-profile:environment:scientific-foundations-v1",
+      "domain": "environment",
+      "status": "production",
+      "scope": {"context_scope": "universal"},
+      "purposes": ["semantic_resolution", "materialization_support", "source_grounded_qa"],
+      "question_classes": ["soil_and_rock_processes", "water_cycle_and_groundwater", "atmospheric_condensation", "weather_and_water_cycle_conditions"],
+      "runtime_requirement": "required_when_selected",
+      "guard": {"mode": "reference_required"}
+    },
+    {
+      "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:architecture_settlement:production-v1",
       "domain": "architecture_settlement",
       "status": "production",
@@ -3386,12 +3447,17 @@
       },
       "purposes": [
         "semantic_resolution",
+        "materialization_support",
+        "source_grounded_qa",
         "npc_decision",
         "narration"
       ],
       "question_classes": [
         "medical_context",
-        "animal_plant_context"
+        "animal_plant_context",
+        "body_function_and_development",
+        "infection_transport_and_susceptibility",
+        "ecological_resource_and_energy_relations"
       ],
       "runtime_requirement": "required_when_selected",
       "guard": {
@@ -3409,6 +3475,7 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
+        "source_grounded_qa",
         "npc_decision"
       ],
       "question_classes": [
@@ -3558,12 +3625,14 @@
       },
       "purposes": [
         "semantic_resolution",
-        "materialization_support"
+        "materialization_support",
+        "source_grounded_qa"
       ],
       "question_classes": [
         "physics_chemistry_general",
         "material_interaction",
-        "known_failure_conditions"
+        "known_failure_conditions",
+        "sound_optics_and_electricity_general"
       ],
       "runtime_requirement": "required_when_selected",
       "guard": {

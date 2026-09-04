@@ -31,11 +31,11 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const cacheKey = `${purpose}:${JSON.stringify(authoritative)}`;
       const prior = cache.get(request)?.get(cacheKey);
       if (prior) return prior;
-      const domains = bundle.coverage_profiles
+      const domains = [...new Set(bundle.coverage_profiles
         .filter((profile) => profile.status === 'production'
           && profile.runtime_requirement !== 'not_active'
           && profile.purposes.includes(purpose))
-        .map(({ domain }) => domain).sort();
+        .map(({ domain }) => domain))].sort();
       if (domains.length === 0) return request;
       const plannerRequest = {
         schema: 'world_knowledge_query_planner_request_v1',

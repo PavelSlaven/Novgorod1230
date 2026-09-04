@@ -1,0 +1,812 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:wild-flora-modern-v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "backend": "configured production DeepSeek backend",
+  "correctness_measurement": "Automatic gate checks answer class and cited evidence refs. Answer prose is retained for independent grounding review; these metrics alone do not prove factual correctness of every sentence.",
+  "cost_measurement": {
+    "unit": "provider_reported_tokens",
+    "monetary_estimate_usd": null,
+    "reason": "The configured deepseek-v4-flash alias has no project-owned immutable price schedule; token usage is retained without inventing a rate."
+  },
+  "modes": {
+    "without_wk": {
+      "case_count": 4,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 0,
+      "retrieval_mean_ms": 0,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 1609.5638499999998,
+      "total_pipeline_mean_ms": 1609.5638499999998,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "semantic_usage": {
+        "prompt_tokens": 1483,
+        "completion_tokens": 405,
+        "total_tokens": 1888
+      }
+    },
+    "structured_lexical": {
+      "case_count": 4,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1735.9497999999999,
+      "retrieval_mean_ms": 2.1528499999994892,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 1347.3888500000003,
+      "total_pipeline_mean_ms": 3086.3964000000014,
+      "planner_usage": {
+        "prompt_tokens": 55831,
+        "completion_tokens": 472,
+        "total_tokens": 56303
+      },
+      "semantic_usage": {
+        "prompt_tokens": 5774,
+        "completion_tokens": 383,
+        "total_tokens": 6157
+      }
+    },
+    "hybrid": {
+      "case_count": 4,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1449.459100000001,
+      "retrieval_mean_ms": 1.1006500000003143,
+      "query_embedding_cold_ms": 12283.001,
+      "query_embedding_warm_mean_ms": 111.82966666666714,
+      "semantic_mean_ms": 1937.5684999999994,
+      "total_pipeline_mean_ms": 6543.670950000001,
+      "planner_usage": {
+        "prompt_tokens": 55831,
+        "completion_tokens": 476,
+        "total_tokens": 56307
+      },
+      "semantic_usage": {
+        "prompt_tokens": 6450,
+        "completion_tokens": 473,
+        "total_tokens": 6923
+      }
+    }
+  },
+  "decision": {
+    "status": "pass",
+    "failures": [],
+    "production_mode": "hybrid",
+    "basis": "Only hybrid gates production: every hybrid answer must be accepted, cite relevant evidence, use no unsupported claim refs, and satisfy every expected evidence group on designated acceptance cases. Baselines remain measurements."
+  },
+  "runs": [
+    {
+      "mode": "without_wk",
+      "case_id": "mushroom_resemblance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Внешнее сходство неизвестного шляпочного гриба со знакомым съедобным даёт лишь вероятностное, но не гарантированное основание для вывода о съедобности, поскольку многие ядовитые грибы имитируют съедобные виды. Такое сходство не доказывает, что персонаж знает вид гриба, так как знание вида требует учёта дополнительных признаков (споры, запах, место произрастания и т.п.), а не только внешности.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:wild-mushroom-resemblance-not-edibility"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 2565.877,
+      "semantic_usage": {
+        "prompt_tokens": 381,
+        "completion_tokens": 140,
+        "total_tokens": 521,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 125
+      },
+      "total_pipeline_ms": 2565.877
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "fungal_substrate_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Most fungi obtain nutrients by secreting enzymes into their growing substrate and absorbing dissolved organic compounds (osmotrophy). This process does not establish a fruiting body, edible food, or usable stock in the current scene, as the question provides no evidence of such outcomes.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:most-fungi-hyphae-substrate-nutrition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1289.8848999999996,
+      "semantic_usage": {
+        "prompt_tokens": 364,
+        "completion_tokens": 74,
+        "total_tokens": 438,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 108
+      },
+      "total_pipeline_ms": 1289.8848999999996
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "similar_berries_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Сходство листьев и ягод толокнянки с брусникой затрудняет визуальное определение растения, так как эти виды могут быть перепутаны без детального анализа. Однако это сходство не устанавливает наличие этих растений здесь в 1230 году, поскольку оно не является доказательством их присутствия в конкретном месте и времени.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:bearberry-lingonberry-resemblance-not-identification"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1225.8958999999995,
+      "semantic_usage": {
+        "prompt_tokens": 375,
+        "completion_tokens": 100,
+        "total_tokens": 475,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 119
+      },
+      "total_pipeline_ms": 1225.8958999999995
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "mezereon_sap_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Mezereon (Daphne mezereum) contains poisonous sap in its bark, leaves, flowers, and berries (especially the seeds). This fact does not establish a current plant, an actor's identification skill, or a poisoning dose, as it is a general botanical property and not evidence of any specific instance, person, or quantity.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:mezereon-poisonous-sap-all-parts"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1356.5976,
+      "semantic_usage": {
+        "prompt_tokens": 363,
+        "completion_tokens": 91,
+        "total_tokens": 454,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 107
+      },
+      "total_pipeline_ms": 1356.5976
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "mushroom_resemblance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Внешнее сходство с известным съедобным грибом само по себе не подтверждает съедобность неизвестного шляпочного гриба. Это знание не доказывает, что персонаж знает вид гриба.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:wild-mushroom-resemblance-not-edibility"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "factual_premise_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:wild-mushroom-identification"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "ограничения на определение съедобности по внешнему сходству",
+          "доказывает ли внешнее сходство знание вида",
+          "риск спутать съедобный и ядовитый гриб"
+        ]
+      },
+      "planner_ms": 2212.7780000000002,
+      "planner_usage": {
+        "prompt_tokens": 13968,
+        "completion_tokens": 128,
+        "total_tokens": 14096
+      },
+      "retrieval_ms": 4.390599999998813,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1404.6499999999996,
+      "semantic_usage": {
+        "prompt_tokens": 1012,
+        "completion_tokens": 96,
+        "total_tokens": 1108,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 372
+      },
+      "total_pipeline_ms": 3624.1665000000003
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "fungal_substrate_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Most fungi obtain nutrients through a network of hyphae that penetrates their growing substrate and absorbs nutrients from it. The supplied facts do not establish the presence of a fruiting body, edible food, or usable stock in the current scene.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:most-fungi-hyphae-substrate-nutrition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition",
+        "claim:animal-energy-availability-depends-on-food-derived-nutrients"
+      ],
+      "factual_premise_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fungal-mycelium-nutrition"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "how fungi obtain nutrients from substrate",
+          "fungal nutrition mode",
+          "does fungal nutrition imply fruiting body",
+          "does fungal nutrition imply edible food",
+          "does fungal nutrition imply usable stock"
+        ]
+      },
+      "planner_ms": 1908.3791999999994,
+      "planner_usage": {
+        "prompt_tokens": 13951,
+        "completion_tokens": 121,
+        "total_tokens": 14072
+      },
+      "retrieval_ms": 1.5375000000003638,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1119.2798999999995,
+      "semantic_usage": {
+        "prompt_tokens": 1111,
+        "completion_tokens": 84,
+        "total_tokens": 1195,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 471
+      },
+      "total_pipeline_ms": 3030.0478999999996
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "similar_berries_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Сходство листьев и ягод толокнянки с брусникой ограничивает определение растения тем, что одного такого сходства недостаточно для идентификации вида. Оно не устанавливает наличие этих растений здесь в 1230 году, поскольку сходство не подтверждает присутствие конкретных растений в данном месте и времени.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:bearberry-lingonberry-resemblance-not-identification"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+        "claim:plant-development-responds-to-light",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "factual_premise_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:bearberry-lingonberry-identification",
+          "wk:environment:medieval-novgorod-landscape"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как сходство листьев и ягод толокнянки с брусникой ограничивает определение растения?",
+          "Устанавливает ли сходство наличие этих растений здесь в 1230 году?"
+        ]
+      },
+      "planner_ms": 1476.9372000000003,
+      "planner_usage": {
+        "prompt_tokens": 13962,
+        "completion_tokens": 123,
+        "total_tokens": 14085
+      },
+      "retrieval_ms": 1.0913999999993393,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1612.9557999999997,
+      "semantic_usage": {
+        "prompt_tokens": 2035,
+        "completion_tokens": 109,
+        "total_tokens": 2144,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1395
+      },
+      "total_pipeline_ms": 3091.168600000001
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "mezereon_sap_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The supplied fact states that poisonous sap is present throughout the mezereon plant, so all parts contain it. However, this fact does not establish the current presence of a mezereon plant, an actor's identification skill, or a poisoning dose; those are not addressed by the supplied claims.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:mezereon-poisonous-sap-all-parts"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts",
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:care-waterproof-wound-cover",
+        "claim:care-direct-pressure-bleeding"
+      ],
+      "factual_premise_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:mezereon-toxicity"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Which parts of mezereon contain poisonous sap?",
+          "Does the fact that mezereon parts contain poisonous sap establish a current plant, an actor's identification skill, or a poisoning dose?"
+        ]
+      },
+      "planner_ms": 1345.7047999999995,
+      "planner_usage": {
+        "prompt_tokens": 13950,
+        "completion_tokens": 100,
+        "total_tokens": 14050
+      },
+      "retrieval_ms": 1.5918999999994412,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1252.6697000000022,
+      "semantic_usage": {
+        "prompt_tokens": 1616,
+        "completion_tokens": 94,
+        "total_tokens": 1710,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 976
+      },
+      "total_pipeline_ms": 2600.202600000004
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "mushroom_resemblance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Внешнее сходство неизвестного шляпочного гриба со знакомым съедобным не подтверждает его съедобность. Это знание не доказывает, что персонаж знает вид гриба, поскольку сходство недостаточно для определения вида.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:wild-mushroom-resemblance-not-edibility"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "factual_premise_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:wild-mushroom-identification"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "ограничения на определение съедобности по внешнему сходству",
+          "внешнее сходство неизвестного гриба со съедобным",
+          "доказывает ли внешнее сходство съедобность",
+          "знание вида по внешнему виду"
+        ]
+      },
+      "planner_ms": 1391.0571000000018,
+      "planner_usage": {
+        "prompt_tokens": 13968,
+        "completion_tokens": 139,
+        "total_tokens": 14107
+      },
+      "retrieval_ms": 1.2649000000019441,
+      "query_embedding_ms": 12283.001,
+      "vector_scan_ms": 1.5564999999987776,
+      "vector_status": "ok",
+      "semantic_ms": 1367.6618999999992,
+      "semantic_usage": {
+        "prompt_tokens": 1207,
+        "completion_tokens": 109,
+        "total_tokens": 1316,
+        "prompt_tokens_details": {
+          "cached_tokens": 896
+        },
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 311
+      },
+      "total_pipeline_ms": 15044.684799999999
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "fungal_substrate_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Most fungi obtain nutrients through a network of hyphae that penetrates their growing substrate and absorbs nutrients from it. The supplied facts do not establish that this process produces a fruiting body, edible food, or usable stock in the current scene; those outcomes are not addressed by the cited claims.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:most-fungi-hyphae-substrate-nutrition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition",
+        "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+        "claim:fermentation-depends-on-microbe-substrate-conditions"
+      ],
+      "factual_premise_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fungal-mycelium-nutrition"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "how fungi obtain nutrients from substrate",
+          "fungal nutrition mode",
+          "does fungal nutrition imply fruiting body",
+          "does fungal nutrition imply edible food",
+          "does fungal nutrition imply usable stock"
+        ]
+      },
+      "planner_ms": 1419.9242000000013,
+      "planner_usage": {
+        "prompt_tokens": 13951,
+        "completion_tokens": 121,
+        "total_tokens": 14072
+      },
+      "retrieval_ms": 0.9187999999994645,
+      "query_embedding_ms": 115.55580000000191,
+      "vector_scan_ms": 0.49750000000494765,
+      "vector_status": "ok",
+      "semantic_ms": 1377.8361000000004,
+      "semantic_usage": {
+        "prompt_tokens": 1281,
+        "completion_tokens": 95,
+        "total_tokens": 1376,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 641
+      },
+      "total_pipeline_ms": 2914.8565000000017
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "similar_berries_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Сходство листьев и ягод толокнянки с брусникой само по себе недостаточно для определения растения, то есть оно не позволяет установить, что конкретное растение является толокнянкой или брусникой. Это сходство не устанавливает наличие этих растений здесь в 1230 году; исторические источники описывают лишь региональный контекст Волхова, Ильменя, лесов и пойменных лугов, но не подтверждают присутствие конкретных растений в данном месте и времени.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:bearberry-lingonberry-resemblance-not-identification"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+        "claim:plant-development-responds-to-light",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:urban-bird-period-specific"
+      ],
+      "factual_premise_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:bearberry-lingonberry-identification",
+          "wk:environment:medieval-novgorod-landscape"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как сходство листьев и ягод толокнянки с брусникой ограничивает определение растения?",
+          "Устанавливает ли сходство наличие этих растений здесь в 1230 году?"
+        ]
+      },
+      "planner_ms": 1660.3174,
+      "planner_usage": {
+        "prompt_tokens": 13962,
+        "completion_tokens": 123,
+        "total_tokens": 14085
+      },
+      "retrieval_ms": 0.7745999999970081,
+      "query_embedding_ms": 122.57760000000417,
+      "vector_scan_ms": 0.5807999999960884,
+      "vector_status": "ok",
+      "semantic_ms": 2513.744200000001,
+      "semantic_usage": {
+        "prompt_tokens": 2209,
+        "completion_tokens": 178,
+        "total_tokens": 2387,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1569
+      },
+      "total_pipeline_ms": 4298.104400000004
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "mezereon_sap_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The supplied fact states that poisonous sap is present throughout the mezereon plant, so all parts contain it. However, this fact does not establish the existence of a current plant, an actor's identification skill, or a poisoning dose; those are not addressed by the supplied information.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:mezereon-poisonous-sap-all-parts"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts",
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:care-direct-pressure-bleeding",
+        "claim:fur-skin-cooling-cleansing",
+        "claim:flayed-skin-processing-purpose"
+      ],
+      "factual_premise_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:mezereon-toxicity"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "which parts of mezereon contain poisonous sap",
+          "does mezereon toxicity establish a current plant, an actor's identification skill, or a poisoning dose"
+        ]
+      },
+      "planner_ms": 1326.5377000000008,
+      "planner_usage": {
+        "prompt_tokens": 13950,
+        "completion_tokens": 93,
+        "total_tokens": 14043
+      },
+      "retrieval_ms": 1.4443000000028405,
+      "query_embedding_ms": 97.35559999999532,
+      "vector_scan_ms": 0.5458999999973457,
+      "vector_status": "ok",
+      "semantic_ms": 2491.031799999997,
+      "semantic_usage": {
+        "prompt_tokens": 1753,
+        "completion_tokens": 91,
+        "total_tokens": 1844,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1113
+      },
+      "total_pipeline_ms": 3917.038099999998
+    }
+  ]
+}

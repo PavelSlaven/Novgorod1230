@@ -147,6 +147,29 @@ test('lexical admission retains an applicable conflict partner without matching 
   assert.deepEqual(slice.disputes[0].claims.map(({ claim_ref }) => claim_ref), refs);
 });
 
+test('independent search hints retain their matches when another hint is rarer', () => {
+  const bundle = structuredClone(baseBundle);
+  const support = bundle.claims[0];
+  const commonRefs = Array.from({ length: 20 }, (_, index) => `claim:test:common-${index}`);
+  const rareRef = 'claim:test:rare';
+  bundle.claims.push(...[...commonRefs, rareRef].map((claim_ref) => ({
+    ...structuredClone(support), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.coppersmith = commonRefs;
+  bundle.lexical_indexes.en.grain = [rareRef];
+  bundle.lexical_indexes.en.storage = [rareRef];
+  const core = createWorldKnowledgeCore(bundle);
+  const input = query({ domains: [support.domain], query_locale: 'en',
+    search_hints: ['coppersmith', 'grain storage'],
+    budget: { max_facts: 30, max_candidates: 30, max_context_chars: 10000 } });
+  const refs = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
+  assert.ok(refs.includes(rareRef));
+  assert.ok(commonRefs.every((ref) => refs.includes(ref)));
+  // Incidental words within one phrase still face the relative admission gate.
+  input.search_hints = ['grain storage coppersmith'];
+  assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), [rareRef]);
+});
+
 test('coverage, operational availability and actor knowledge are distinct', () => {
   assert.throws(() => createWorldKnowledgeCore(null), (error) => error instanceof WorldKnowledgeError && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
   const invalidBundle = structuredClone(baseBundle);

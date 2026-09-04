@@ -1,0 +1,42 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_v1",
+  "benchmark_ref": "wk-pipeline:scientific-foundations-physics-correction-v1",
+  "cases": [
+    {
+      "case_id": "foundations_air_resistance_ru",
+      "locale": "ru",
+      "query_text": "Почему лёгкий широкий лист и компактный груз падают в воздухе по-разному?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-01-air-drag-fall"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_impact_duration_en",
+      "locale": "en",
+      "query_text": "How can spreading the same change in momentum over a longer contact time affect the force?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-02-impulse-momentum-change"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    }
+  ]
+}

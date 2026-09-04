@@ -1,6 +1,246 @@
-# PR92 World Knowledge readiness — current 516-claim candidate
+# PR92 World Knowledge readiness
 
-## Current final candidate — PASS with recorded P2 limits
+## Scientific foundations — 873-claim local candidate (2026-09-04)
+
+The requested non-historical foundations layer adds **208 independently
+reviewed scientific premises** to the 665-claim fauna/flora candidate. The
+current pack has **873 claims, 664 concepts, 259 sources, 543 evidence records
+and 12 coverage profiles**. Four authoring fragments own 72 physical/chemical,
+45 life-science, 45 earth/ecology and 46 psychology/social premises. The
+foundation research contributes 46 source records, using the read-only FB2
+library preferentially and official/scientific web sources for missing needs.
+No library files, update scripts, credentials or production server state were
+changed; only metadata and original factual summaries enter the pack.
+
+The twelve reviewed basic envelopes cover mechanics, heat, chemistry and
+exposure, materials, sound/light/electricity, physiology, infection, ecology,
+geology/hydrology, weather, psychology and social behavior. Modern functional
+bone/horn/antler and lime/glass premises also close the three legacy P2 cells.
+The matrix is **81/81 covered**, with no outstanding P0/P1/P2 factual needs
+inside these declared basic envelopes. This does not claim an exhaustive
+encyclopedia, historical glass production/local mineral procurement, scene
+presence, clinical judgment, numerical simulation or individual behavior.
+
+All new claims remain universal, source-linked, bilingual and
+`domain_internal_only`. Psychology/social behavior have actual production
+corpora, supported-fact signatures and semantic-resolution/materialization/QA
+profiles, not NPC-decision/conversation/narration access. A separate universal
+environment profile coexists with unchanged historical claim applicability.
+The existing WK owner supplies premises; no new physics, psychology or NPC
+engine, persistence path, recipe whitelist or automatic actor knowledge was
+introduced. Canonical contract §15 and its generated corpus artifacts are
+synchronized. Independent scope and contract review is in
+`foundations-readiness.md`.
+
+Integration exposed one real request-construction defect: two environment
+profiles produced duplicate `allowed_domains`. The existing server grounder
+now constructs the same allowed set with `Set` and sorting. The duplicate
+request was observed RED, then GREEN; an existing server test now asserts the
+exact unique active-domain set. Planner validation, the one-repair limit,
+claim applicability, bounded slices and authority are unchanged.
+
+Final deterministic compilation and exact embedding-entry comparison pass.
+The unchanged pinned Giga model produces **3,074 × 1,024 vectors /
+12,591,104 bytes**. The **133-case retrieval gate passes** its unchanged
+thresholds: hybrid Recall@10 **0.941729**, Recall@20 **0.960526**, versus lexical
+**0.809524 / 0.813283**; hard-constraint recall and applicability precision
+are **1**, noise **0.518260**. Mean query embedding **66.45 ms**, vector scan
+**0.53 ms** on this run.
+
+Final focused Core, planner, compiler, archive, fauna/foundations, evaluator,
+server-grounder and materialization-bridge checks pass **115/115**.
+`architecture:check`, `docs:check`, `knowledge:check` and
+`git diff --check` pass. Full `npm test` was not run locally: it remains the
+required exact-HEAD merge gate; prior CI does not certify these uncommitted
+changes. No commit, push, merge or deployment is claimed.
+
+The first 23-case/69-run live measurement passed its automatic citation gate,
+but independent prose review found one unsupported directional drag inference.
+Two existing physics premises were then refined from independently read
+OpenStax sections: projected-area drag under explicit model/equal-condition
+limits, and impulse versus **average** net external force rather than peak
+force. No benchmark question, expected evidence or production gate was relaxed.
+The first report remains `foundations-pipeline-v1-report.json`, with its
+separate P1 prose verdict; it is not the final semantic acceptance.
+
+Two subsequent full-run attempts ended on provider errors before WK modes:
+`foundations-pipeline-v1-final-report.json` after 11 baseline runs
+(`invalid_response`), and `foundations-pipeline-v1-final-rerun-report.json`
+before any completed run (`transport_error`). Both remain explicitly
+incomplete failures. The normal provider probe then succeeded; provider/model
+configuration and application retry policy were not changed.
+
+A third full attempt, `foundations-pipeline-v1-validated-report.json`,
+completed **46 baseline/lexical runs** but failed on the first hybrid answer
+with `transport_error`. A two-case correction regression using the unchanged
+air-drag and impulse questions/gates also failed before completing a run:
+`foundations-physics-correction-pipeline-v1-report.json`.
+A read-only transport probe exposed **ECONNRESET** (not a data/schema failure).
+No provider endpoint, model, validator or application retry policy was changed.
+
+After the connection recovered, the unchanged full benchmark completed:
+`foundations-pipeline-v1-complete-report.json` contains **23 cases / 69 runs**,
+exit 0, with **23/23 hybrid automatic PASS**, every expected evidence group
+present and no unavailable citation refs. This is a fresh complete run on the
+final candidate, not a combination of partial reports or a two-case substitute.
+Hybrid mean pipeline latency is **5,725.63 ms**, including **12,371.87 ms**
+cold encoder startup; warm encoding mean is **110.96 ms**. Hybrid planner
+input totals **509,645 tokens / 23 cases**. These are measured samples,
+not a latency guarantee.
+
+Independent fresh review of all 23 final hybrid answer texts against their
+available claims is **PASS_WITH_LIMITS: P0 0, P1 0**, recorded in
+`../verification/verification-foundations-life-library.md`, section
+“Scoped final pipeline audit — complete rerun”. The corrected drag answer
+preserves equal-condition/projected-area limits and does not assert fall order;
+the impulse answer explicitly distinguishes average force from peak force.
+Some answers include additional separately cited conditional premises; the
+review does not equate relevance or prose elegance with factual correctness.
+
+**Current acceptance: DATA, CONTRACT, RETRIEVAL AND SCOPED LIVE GROUNDING
+PASS.** The requested basic scientific knowledge layer is implemented and
+verified through the existing WK path. Final checks also prove deterministic
+authoring/runtime equality, exact vector-entry alignment, mapping of all 208
+new claims to reviewed science cells, and complete case coverage in all three
+benchmark modes. No required work remains for this local scientific-foundations
+task. Exhaustive scientific coverage, a new numerical simulator, production
+deployment and final exact-HEAD merge CI are not claimed.
+
+The fauna/flora and older candidate reports below are historical snapshots,
+not substitutes for the final-candidate results above.
+
+## Scientific-fauna follow-up — 665-claim local candidate (2026-09-04)
+
+This follow-up adds **145 independently verified fauna premises from 47
+sources** through the existing World Knowledge authoring/compiler/retrieval
+path. The corpus now contains **665 claims, 468 concepts, 213 sources,
+370 evidence records and nine coverage profiles**. The three fauna fragments
+contain 57 mammal, 79 cross-taxon ecology and nine poultry/crayfish premises.
+Research and exact source/normalization decisions are recorded in the
+`population-fauna-*` research and `verification-fauna-*` verification files.
+
+Seven new functional coverage cells cover wild and domestic mammals, birds,
+fish, amphibians/reptiles, invertebrates and general animal behavior. They
+include habitat and feeding, sociality and communication, senses, defense,
+reproduction and parental care, daily/seasonal activity, migration and
+navigation, dispersal, winter strategies, learning and ecological effects.
+Modern scientific biology does not need medieval attestation. Conditions,
+experimental age/context and species differences remain explicit in RU/EN.
+This is broad gameplay knowledge, not an exhaustive species/behavior atlas,
+a closed animal whitelist or a newly implemented autonomous fauna simulator.
+The facts neither create scene animals/resources nor grant actor knowledge,
+exact mechanics, a contemporary census or fixed local migration schedules.
+
+The matrix has **66/69 covered cells**, no P0/P1 gaps and three pre-existing
+P2 cells: bone/horn material, bone/horn processing and lime/glass material.
+The previously added wild-flora facts remain intact. Independent review
+closed the crayfish tautology and the sheep/goat social/parental gaps before
+the final corpus was compiled.
+
+Corpus growth exposed a real lexical regression: for independent hints
+`storage`, `fish`, `grain`, the global relative score cutoff suppressed the
+fish-food premise despite remaining capacity. The existing Core now applies
+the same relative admission threshold within each hint and retains aggregate
+relevance ranking. No animal-specific branch, new owner or authority bypass
+was introduced. A generic common/rare-topic regression was observed red then
+green; the original real-location substrate test is green again.
+
+Executed validation: **107/107** focused Core, compiler, archive, fauna,
+vector, grounder and materialization-bridge tests; deterministic production
+recompilation; `npm run docs:check` after regenerating the changed module
+index; and `git diff --check` PASS. The first bridge run was 18/19 before
+the lexical fix. Full `npm test` was not run locally; the older CI below
+does not certify these local code/data changes.
+
+Pinned vectors are **2,266 x 1,024 / 9,281,536 bytes**. The **110-case**
+retrieval benchmark passes unchanged thresholds: hybrid Recall@10 **0.95379**
+and Recall@20 **0.95833**, versus lexical **0.82121 / 0.82576**; hard-constraint
+recall and applicability precision are **1**. Mean query encoding is
+**63.54 ms**, vector scan **0.40 ms** on this run.
+
+The final scoped live-provider benchmark `../benchmarks/fauna-pipeline-v1.json`
+completed **14 cases / 42 runs** (without WK, lexical, hybrid), exit 0.
+The hybrid automatic gate is **14/14 PASS**, including every required
+evidence group, with no unavailable citation refs. Lexical-only answer-class
+acceptance is **12/14**; it is a measured fallback, not the production gate.
+The actual answers are retained in `fauna-pipeline-v1-report.json`.
+Hybrid mean pipeline latency is **3,899.32 ms**, including an **11,264.31 ms**
+cold encoder start; warm encoding mean is **96.30 ms**. Hybrid planner input
+is **216,823 tokens / 14 cases**. These are scoped measurements, not a new
+full 33-case live regression or an end-to-end game playtest.
+
+The first live run's hybrid gate was 13/14: the goat answer was factually
+correct and cited its premise, but an ambiguous either/or question elicited
+the class `yes` instead of `explain`. The question was rewritten as an open
+question; neither evidence requirements nor accepted answer classes were
+relaxed. The final run also uses the corrected per-hint Core.
+
+Independent final source/domain, normalization, Core-delta and hybrid-prose
+review is **PASS_WITH_LIMITS** in
+`../verification/verification-fauna-ecology-modern.md`. All 14 final hybrid
+answers are grounded in their available facts and cite the stated premises;
+no factual overclaim remains. The crayfish answer explicitly preserves the
+unfilled attachment-method detail instead of inventing it: the supplied
+premise establishes that females carry eggs, not the anatomical method.
+
+No new commit, push, merge or deployment is part of this follow-up. The
+previous flora and 516-claim candidate results below are historical snapshots,
+not validation of the current candidate.
+
+## Wild-flora follow-up — 520-claim local candidate (2026-09-04)
+
+This scoped follow-up adds four independently verified general biological
+and identification premises from two official Valdai National Park pages.
+The corpus now has **520 claims, 424 concepts, 166 sources and 225 evidence
+records**. Source reading and exact RU/EN normalization are recorded in
+`../verification/verification-wild-flora-modern.md`; research dispositions
+are in `../research/population-wild-flora-modern.md`.
+
+The matrix has **59/62 covered cells, three P2 gaps and no P0/P1**.
+`wk:env:wild-flora` is covered at the gameplay compatibility/safety-envelope
+level: historical gathering context composes with existing plant growth,
+seasonal response and fungal decomposition, plus fungal substrate nutrition,
+mushroom/berry identification limits and mezereon toxicity. This is not a
+flora atlas, harvesting/preparation recipe or guarantee of edible material.
+Modern park inventories and phenology are research-only, not 1230 presence.
+The new facts grant neither scene objects/resources nor actor knowledge.
+Fauna cells remain unchanged and covered at their declared category level.
+The remaining P2 cells are bone/horn material, bone/horn processing, and
+lime/glass material.
+
+Executed validation: **101/101** focused compiler, archive, Core, vector,
+grounder and materialization-bridge tests; deterministic production-bundle
+recompilation; `npm run docs:check`; and `git diff --check` PASS. An earlier
+run had 99/101 because it preceded the vector rebuild; after rebuilding,
+both stale-index failures disappeared without a code change.
+
+Pinned vectors are **1,888 x 1,024 / 7,733,248 bytes**. The **96-case**
+retrieval benchmark passes its unchanged thresholds: hybrid Recall@10/20
+**0.95226** versus lexical **0.82118**, hard-constraint recall and
+applicability precision **1**. Each of the four new flora queries retrieves
+its target premise. Mean query encoding is **75.64 ms**, vector scan
+**0.44 ms** on this run.
+
+The scoped live-provider benchmark `../benchmarks/wild-flora-pipeline-v1.json`
+completed **four cases / 12 runs** (without WK, lexical, hybrid), exit 0,
+hybrid automatic gate PASS, no unavailable citation refs. The corresponding
+`wild-flora-pipeline-v1-report.json` retains the actual answers for review;
+automatic checks alone do not prove sentence-level grounding. Hybrid mean
+pipeline latency is **6,543.67 ms**, including a **12,283.00 ms** cold query
+encoder; warm query encoding mean **111.83 ms**. These are scoped delta
+measurements, not a new full 33-case regression run or an end-to-end game
+playtest. The historical 516-claim pipeline and CI results below are not a
+test result for this changed corpus. Full `npm test` was not rerun for this
+data-only delta.
+
+Independent final review by `pipeline_gate_fix` is **PASS** for the exact
+four hybrid answers and authoring/matrix delta, with no factual overclaims.
+The mushroom answer includes an extra available bearberry citation; it does
+not assert a berry fact about mushrooms. This scoped pass does not establish
+perfect citation minimality or replace the older full-corpus review.
+No new commit, push, merge or deployment is part of this follow-up.
+
+## Previous 516-claim candidate — PASS with recorded P2 limits
 
 The current production corpus contains **516 independently approved claims,
 420 concepts and 164 sources**. All **1,497 archive entries** have final

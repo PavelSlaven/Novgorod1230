@@ -33,6 +33,14 @@
     "terrain.json",
     "porous-water.json",
     "leather-plant-fibre-water.json",
-    "agriculture-fauna.json"
+    "agriculture-fauna.json",
+    "wild-flora.json",
+    "fauna-mammals.json",
+    "fauna-ecology.json",
+    "fauna-supplement.json",
+    "foundations-physical.json",
+    "foundations-life.json",
+    "foundations-mind-society.json",
+    "foundations-earth.json"
   ]
 }

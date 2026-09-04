@@ -23,6 +23,60 @@ function query(domains, focus_refs, overrides = {}) {
   });
 }
 
+test('wild-flora science composes with historical gathering without granting food or actor knowledge', () => {
+  const modernRefs = [
+    'claim:wild-mushroom-resemblance-not-edibility',
+    'claim:most-fungi-hyphae-substrate-nutrition',
+    'claim:bearberry-lingonberry-resemblance-not-identification',
+    'claim:mezereon-poisonous-sap-all-parts'
+  ];
+  const focus = modernRefs.map(ref => {
+    const claim = bundle.claims.find(value => value.claim_ref === ref);
+    assert.ok(claim, ref);
+    assert.deepEqual(claim.applicability, { context_scope: 'universal' });
+    assert.equal(claim.knowledge_access.class, 'domain_internal_only');
+    return claim.subject_ref;
+  });
+  const historicalRef = 'claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland';
+  const historicalFocus = 'wk:environment:southern-deciduous-gathered-plants';
+  for (const query_locale of ['ru', 'en']) {
+    const slice = query(['biology_physiology', 'environment'],
+      [...focus, historicalFocus], { query_locale, purpose: 'materialization_support' });
+    for (const ref of [...modernRefs, historicalRef]) {
+      assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);
+    }
+    assert.equal(slice.hard_constraints.length, 0);
+    const fungi = slice.facts.find(fact => fact.claim_ref === modernRefs[1]);
+    assert.match(fungi.runtime_text, query_locale === 'ru' ? /большинств/u : /Most fungi/u);
+    const historical = slice.facts.find(fact => fact.claim_ref === historicalRef);
+    assert.equal(historical.qualifiers.directness, 'inferred');
+    assert.equal(historical.qualifiers.confidence, 'medium');
+  }
+  const elsewhere = query(['biology_physiology', 'environment'],
+    [...focus, historicalFocus], {
+      context: { time: { year: 1800 }, place_refs: ['outside_novgorod'], actor_facets: {} }
+    });
+  assert.ok(!elsewhere.facts.some(fact => fact.claim_ref === historicalRef));
+  for (const ref of modernRefs) assert.ok(elsewhere.facts.some(fact => fact.claim_ref === ref), ref);
+  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    assert.equal(query(['biology_physiology'], focus, { purpose }).facts.length, 0);
+  }
+});
+
+test('an unfamiliar mushroom on stored wood composes substrate biology without a foraging recipe', () => {
+  const slice = query(['biology_physiology'], [
+    'wk:biology_physiology:fungal-mycelium-nutrition',
+    'wk:biology_physiology:fungal-decomposition',
+    'wk:biology_physiology:wild-mushroom-identification'
+  ]);
+  for (const ref of ['claim:most-fungi-hyphae-substrate-nutrition',
+    'claim:fungal-decomposition-affects-nutrient-recycling',
+    'claim:wild-mushroom-resemblance-not-edibility']) {
+    assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);
+  }
+  assert.equal(slice.hard_constraints.length, 0);
+});
+
 test('seasonal conveyance and probable communion function preserve source scope and unknown material', () => {
   for (const [focus, ref] of [
     ['wk:material_culture:sledge', 'claim:transport-winter-sledge-1220'],

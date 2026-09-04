@@ -725,9 +725,23 @@ botany
 zoology
 ecology_seasonality
 weather_climate_context
+psychology_behavior
+social_behavior
 ```
 
 Это registry knowledge domains, а не список новых gameplay engines.
+
+В production-v1 `psychology_behavior` содержит проверенные общие premises
+восприятия, внимания, памяти, обучения и индивидуального поведения;
+`social_behavior` — условные межличностные и групповые закономерности.
+Это универсальные `supported_fact` для semantic resolution, materialization
+support и source-grounded QA. Они не подменяют исторически контекстный
+`social_law_economy` и не устанавливают состояние, мотив, знание, согласие,
+отношение, репутацию или обязанность конкретного actor. Claims этого слоя
+остаются `domain_internal_only`; решения NPC и exact mechanics сохраняют
+прежних владельцев. Общие геологические, гидрологические и атмосферные
+premises используют отдельный universal profile существующего `environment`,
+не расширяя историческую применимость его contextual claims.
 
 ---
 

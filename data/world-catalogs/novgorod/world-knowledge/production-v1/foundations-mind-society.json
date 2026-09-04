@@ -1,0 +1,2892 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms4-goldin-2007","title":"The Neural Bases of Emotion Regulation: Reappraisal and Suppression of Negative Emotion","authors":["Philippe R. Goldin","Kateri McRae","Wiveka Ramel","James J. Gross"],"publication":"Biological Psychiatry 63(6), 2007","source_kind":"scholarship","citation":"https://pmc.ncbi.nlm.nih.gov/articles/PMC2483789/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms4-mushtaq-2011","title":"Uncertainty and Cognitive Control","authors":["Faisal Mushtaq","Amy R. Bland","Alexandre Schaefer"],"publication":"Frontiers in Psychology 2:249, 2011","source_kind":"scholarship","citation":"https://pmc.ncbi.nlm.nih.gov/articles/PMC3184613/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-gippenreiter",
+      "title": "Введение в общую психологию: курс лекций",
+      "authors": [
+        "Ю. Б. Гиппенрейтер"
+      ],
+      "publication": "АСТ, Астрель, Москва, 2008; ISBN 978-5-17-049383-8, 978-5-271-19214-2",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-173909-177717.zip!/175037.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-luria",
+      "title": "Лекции по общей психологии",
+      "authors": [
+        "А. Р. Лурия"
+      ],
+      "publication": "Питер, Санкт-Петербург, 2007; ISBN 5-94723-559-3",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-193389-195730.zip!/194855.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-myers",
+      "title": "Социальная психология",
+      "authors": [
+        "Д. Г. Майерс"
+      ],
+      "publication": "Local FB2 edition; publication metadata absent in file",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-190928-193388.zip!/191935.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "title": "Социология: учебник для вузов",
+      "authors": [
+        "А. И. Кравченко",
+        "В. Ф. Анурин"
+      ],
+      "publication": "Питер, Санкт-Петербург, 2003; ISBN 5-88782-167-1",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-238404-242733.zip!/238631.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-berdica-2018","title":"Threat vs. Threat: Attention to Fear-Related Animals and Threatening Faces","authors":["Berdica et al."],"publication":"Frontiers in Psychology, 2018","source_kind":"scholarship","citation":"https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.01154/full","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-miendlarzewska-2013","title":"Working Memory Load Attenuates Emotional Enhancement in Recognition Memory","authors":["Miendlarzewska et al."],"publication":"Frontiers in Psychology, 2013","source_kind":"scholarship","citation":"https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00112/full","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-mazur-2024","title":"Using Wordle to assess the effects of goal gradients and near-misses","authors":["Mazur et al."],"publication":"2024","source_kind":"scholarship","citation":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11487082/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-vanherk-2024","title":"Heightened SAM- and HPA-axis activity during acute stress impairs decision-making","authors":["van Herk et al."],"publication":"2024 systematic review","source_kind":"scholarship","citation":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11277380/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-ma-2019","title":"Apologies Repair Trust via Perceived Trustworthiness and Negative Emotions","authors":["Ma et al."],"publication":"2019","source_kind":"scholarship","citation":"https://pmc.ncbi.nlm.nih.gov/articles/PMC6457316/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-horita-2020","title":"Greater effects of mutual cooperation and defection on subsequent cooperation in direct reciprocity games than generalized reciprocity games","authors":["Y. Horita"],"publication":"PLOS ONE, 2020","source_kind":"scholarship","citation":"https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0242607&type=printable","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-ms3-vavra-2018","title":"Expectations in the Ultimatum Game: Distinct Effects of Mean and Variance of Expected Offers","authors":["Vavra","Chang","Sanfey"],"publication":"Frontiers in Psychology, 2018","source_kind":"scholarship","citation":"https://www.frontiersin.org/articles/10.3389/fpsyg.2018.00992/full","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms4-01","source_ref":"source:foundations-ms4-goldin-2007","anchor":{"section":"Abstract, methods and results","record_id":"instructed reappraisal negative-film task"},"note":"Independent verification MS4-01; instructed laboratory result only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms4-02","source_ref":"source:foundations-ms4-goldin-2007","anchor":{"section":"Introduction and experimental framing","record_id":"expressive suppression targets behavior"},"note":"Independent verification MS4-02; expression alone does not establish experience.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms4-03","source_ref":"source:foundations-ms4-mushtaq-2011","anchor":{"section":"Abstract and decision-making-under-uncertainty review","record_id":"uncertainty and cognitive control"},"note":"Independent verification MS4-03; review/decision context only.","review_status":"approved"},
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-01-attention-intensity",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Внимание → Факторы, определяющие внимание."
+      },
+      "note": "MS01; independent verification: verification/verification-foundations-mind-society-library.md. Competing perceived stimuli; no guarantee of noticing or action.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-02-attention-novelty",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Внимание → Факторы, определяющие внимание"
+      },
+      "note": "MS02; independent verification: verification/verification-foundations-mind-society-library.md. Perceived contrast only; not salience of every event.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-03-attention-expectation",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Установка и внимание."
+      },
+      "note": "MS03; independent verification: verification/verification-foundations-mind-society-library.md. Existing expectation/task; does not create knowledge or correct anticipation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-04-attention-competition",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Факторы, определяющие внимание."
+      },
+      "note": "MS04; independent verification: verification/verification-foundations-mind-society-library.md. Specific balanced-stimulus condition; no diagnosis.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-05-tactile-components",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Восприятие → Осязательное восприятие."
+      },
+      "note": "MS05; independent verification: verification/verification-foundations-mind-society-library.md. Sensory composition, not a pain or injury conclusion.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-06-visual-selection",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Восприятие → Зрительное восприятие."
+      },
+      "note": "MS06; independent verification: verification/verification-foundations-mind-society-library.md. Existing visual input and task; no reliable identification claim.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-07-auditory-sequence",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Восприятие → Слуховое восприятие."
+      },
+      "note": "MS07; independent verification: verification/verification-foundations-mind-society-library.md. Heard stimuli; not comprehension of speech.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-08-duration-rhythm",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Восприятие → Восприятие времени."
+      },
+      "note": "MS08; independent verification: verification/verification-foundations-mind-society-library.md. Qualitative estimate only; no exact clock/time authority.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-09-memory-systems",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Память → Мозговые системы, обеспечивающие память."
+      },
+      "note": "MS09; independent verification: verification/verification-foundations-mind-society-library.md. General neuropsychology; not a claim about a particular memory.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-10-recognition-representation",
+      "source_ref": "source:foundations-luria",
+      "anchor": {
+        "section": "Память → Мозговые системы, обеспечивающие память."
+      },
+      "note": "MS10; independent verification: verification/verification-foundations-mind-society-library.md. Existing retained trace; not proof that an actor remembers correctly.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-11-practiced-action",
+      "source_ref": "source:foundations-gippenreiter",
+      "anchor": {
+        "section": "lecture 5, Неосознаваемые механизмы сознательных действий."
+      },
+      "note": "MS11; independent verification: verification/verification-foundations-mind-society-library.md. Does not infer hidden motive, intent, or loss of responsibility.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-12-practice-correction",
+      "source_ref": "source:foundations-gippenreiter",
+      "anchor": {
+        "section": "lecture 10, Процесс формирования двигательного навыка."
+      },
+      "note": "MS12; independent verification: verification/verification-foundations-mind-society-library.md. Learning over repeated practice; no instant mastery or proficiency level.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-13-movement-demonstration",
+      "source_ref": "source:foundations-gippenreiter",
+      "anchor": {
+        "section": "Лекция 10 → Процесс формирования двигательного навыка"
+      },
+      "note": "MS13; independent verification: verification/verification-foundations-mind-society-library.md. Initial familiarization only; does not establish ability to perform it.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-17-individual-variation",
+      "source_ref": "source:foundations-gippenreiter",
+      "anchor": {
+        "section": "lecture 15, Характер."
+      },
+      "note": "MS17; independent verification: verification/verification-foundations-mind-society-library.md. Individual variation, not a personality label or prediction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-18-social-experience",
+      "source_ref": "source:foundations-gippenreiter",
+      "anchor": {
+        "section": "lectures 14 and 16."
+      },
+      "note": "MS18; independent verification: verification/verification-foundations-mind-society-library.md. Developmental, non-deterministic; no claim about a particular person’s character.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-19-attribution-explanation",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 3, Социальные убеждения и суждения → теория атрибуции."
+      },
+      "note": "MS19; independent verification: verification/verification-foundations-mind-society-library.md. Observer interpretation; does not establish the true cause.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-20-attribution-alternatives",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "Глава 3 → Социальные убеждения и суждения → теория атрибуции"
+      },
+      "note": "MS20; independent verification: verification/verification-foundations-mind-society-library.md. Competing interpretations remain fallible; no automatic motive-reading.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-21-attitude-definition",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 4, Поведение и установки."
+      },
+      "note": "MS21; independent verification: verification/verification-foundations-mind-society-library.md. Conceptual relation; attitude alone does not guarantee conduct.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-23-group-pressure",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 6, Конформизм."
+      },
+      "note": "MS23; independent verification: verification/verification-foundations-mind-society-library.md. Contextual influence, not universal compliance or a moral verdict.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-25-persuasion-context",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 7, Убеждение."
+      },
+      "note": "MS25; independent verification: verification/verification-foundations-mind-society-library.md. Probabilistic, multi-factor; no manipulation guarantee.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-26-group-context",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 8, Влияние группы."
+      },
+      "note": "MS26; independent verification: verification/verification-foundations-mind-society-library.md. Group/context dependent; no fixed group outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-27-belonging-relations",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 11, Влечение и близость."
+      },
+      "note": "MS27; independent verification: verification/verification-foundations-mind-society-library.md. General tendency; no entitlement, bond, or romantic inference.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-28-ostracism-conditional",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "Глава 11 → Влечение и близость → остракизм"
+      },
+      "note": "MS28; independent verification: verification/verification-foundations-mind-society-library.md. Alternative possible responses; not a diagnosis or guaranteed reaction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-29-helping-no-reward",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 12, Альтруизм."
+      },
+      "note": "MS29; independent verification: verification/verification-foundations-mind-society-library.md. Possibility, not a predicted act or a duty to help.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-30-conflict-incompatibility",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "ch. 13, Конфликт и примирение."
+      },
+      "note": "MS30; independent verification: verification/verification-foundations-mind-society-library.md. Perceived incompatibility; no violence, legal dispute, or inevitable escalation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-31-conflict-misperception",
+      "source_ref": "source:foundations-myers",
+      "anchor": {
+        "section": "Глава 13 → Конфликт и примирение → зеркальное восприятие и несовместимость целей"
+      },
+      "note": "MS31; independent verification: verification/verification-foundations-mind-society-library.md. Interpretive possibility; not a claim about actual resource allocation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-32-social-role",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "ch. 3 §2, Социальная роль как динамический аспект статуса."
+      },
+      "note": "MS32; independent verification: verification/verification-foundations-mind-society-library.md. General analytical relation; no named status, duty or enacted norm.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-33-role-predictability",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "Глава 3 §2 → Социальная роль как динамический аспект статуса"
+      },
+      "note": "MS33; independent verification: verification/verification-foundations-mind-society-library.md. Can, not certainty; no behavioral scripting.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-34-role-adjustment",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "Глава 3 §2 → Социальная роль как динамический аспект статуса"
+      },
+      "note": "MS34; independent verification: verification/verification-foundations-mind-society-library.md. Ongoing interaction; no obligation to conform.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-36-socialization",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "ch. 7 §2, Фазы и содержание процесса социализации."
+      },
+      "note": "MS36; independent verification: verification/verification-foundations-mind-society-library.md. Long-term process; no assumption of a person’s knowledge or allegiance.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-38-reference-group",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "Глава 7 §4 → Малые группы → референтная группа"
+      },
+      "note": "MS38; independent verification: verification/verification-foundations-mind-society-library.md. Can; no claim of current membership, surveillance, or conformity.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-39-social-norm",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "ch. 9 §1, Функции и содержание социального контроля."
+      },
+      "note": "MS39; independent verification: verification/verification-foundations-mind-society-library.md. Descriptive social mechanism; not an actual law or sanction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-ms-40-social-prescription",
+      "source_ref": "source:foundations-kravchenko-anurin",
+      "anchor": {
+        "section": "Глава 9 §1 → Функции и содержание социального контроля"
+      },
+      "note": "MS40; independent verification: verification/verification-foundations-mind-society-library.md. Form classification only; no valid rule, authority, or obligation is created.",
+      "review_status": "approved"
+    },
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms2-03","source_ref":"source:foundations-myers","anchor":{"section":"Chapter 13, conflict and reconciliation","record_id":"social-dilemma discussion"},"note":"MS2-03 exact verifier rewrite; no actual threat, belief or escalation.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-01","source_ref":"source:foundations-ms3-berdica-2018","anchor":{"section":"Abstract and results","record_id":"initial attentional capture"},"note":"MS3-01 experiment only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-02","source_ref":"source:foundations-ms3-miendlarzewska-2013","anchor":{"section":"Abstract","record_id":"high-load immediate recognition result"},"note":"MS3-02 laboratory condition only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-03","source_ref":"source:foundations-ms3-mazur-2024","anchor":{"section":"Abstract","record_id":"Wordle goal-feedback result"},"note":"MS3-03 task and group self-report only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-04","source_ref":"source:foundations-ms3-vanherk-2024","anchor":{"section":"Abstract and methods","record_id":"44-study decision-process review"},"note":"MS3-04 conditional synthesis only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-06","source_ref":"source:foundations-ms3-ma-2019","anchor":{"section":"Abstract and methods","record_id":"two-round trust-game re-investment"},"note":"MS3-06 sample/task only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-07","source_ref":"source:foundations-ms3-ma-2019","anchor":{"section":"Abstract and results","record_id":"mediation and moderation analysis"},"note":"MS3-07 sample/task only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-08","source_ref":"source:foundations-ms3-horita-2020","anchor":{"section":"Results","record_id":"direct-reciprocity mutual-cooperation result"},"note":"MS3-08 corrected Horita source; experiment only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-09","source_ref":"source:foundations-ms3-horita-2020","anchor":{"section":"Results","record_id":"direct-reciprocity mutual-defection result"},"note":"MS3-09 corrected Horita source; experiment only.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-ms3-10","source_ref":"source:foundations-ms3-vavra-2018","anchor":{"section":"Abstract and methods","record_id":"supplied offer-distribution expectations"},"note":"MS3-10 ultimatum-game condition only.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:psychology_behavior:emotion-regulation-experimental","domain":"psychology_behavior","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:psychology_behavior:uncertainty-cognitive-control","domain":"psychology_behavior","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-01-attention-intensity",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-02-attention-novelty",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-03-attention-expectation",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-04-attention-competition",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-05-tactile-components",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-06-visual-selection",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-07-auditory-sequence",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-08-duration-rhythm",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-09-memory-systems",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-10-recognition-representation",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-11-practiced-action",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-12-practice-correction",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-17-individual-variation",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-18-social-experience",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-20-attribution-alternatives",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-21-attitude-definition",
+      "domain": "psychology_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-23-group-pressure",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-25-persuasion-context",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-26-group-context",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-27-belonging-relations",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-28-ostracism-conditional",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-29-helping-no-reward",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-31-conflict-misperception",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-32-social-role",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-33-role-predictability",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-34-role-adjustment",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-36-socialization",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-38-reference-group",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-39-social-norm",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-40-social-prescription",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","domain":"psychology_behavior","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","domain":"social_behavior","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms4-01-reappraisal-negative-experience","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:emotion-regulation-experimental","predicate":"supported_fact","object":{"kind":"literal","value":"reappraisal_negative_experience"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms4-01"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms4-02-suppression-expression-subjective-gap","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:emotion-regulation-experimental","predicate":"supported_fact","object":{"kind":"literal","value":"suppression_expression_subjective_gap"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms4-02"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms4-03-uncertainty-cognitive-control","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:uncertainty-cognitive-control","predicate":"supported_fact","object":{"kind":"literal","value":"uncertainty_cognitive_control"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms4-03"],"review_status":"approved","conflict_group_ref":null},
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-01-attention-intensity",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-01-attention-intensity",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Human attention can be selectively drawn by a more intense external stimulus."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-01-attention-intensity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-02-attention-novelty",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-02-attention-novelty",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Novelty or difference among familiar stimuli can direct attention."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-02-attention-novelty"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-03-attention-expectation",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-03-attention-expectation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Expectation of a signal or action can selectively prepare attention."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-03-attention-expectation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-04-attention-competition",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-04-attention-competition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "With two comparably strong competing stimuli, attention can alternate between them."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-04-attention-competition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-05-tactile-components",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-05-tactile-components",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Tactile, cutaneous and kinesthetic perception includes touch and pressure and can include thermal, pain and proprioceptive components."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-05-tactile-components"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-06-visual-selection",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-06-visual-selection",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Visual perception can select some image elements and disregard others depending on the task."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-06-visual-selection"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-07-auditory-sequence",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-07-auditory-sequence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Auditory perception organizes successive stimuli into temporal sequences."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-07-auditory-sequence"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-08-duration-rhythm",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-08-duration-rhythm",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Duration estimates can draw on rhythmic bodily and external processes."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-08-duration-rhythm"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-09-memory-systems",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-09-memory-systems",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Memory-related encoding, retention and recognition involve interacting functional systems."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-09-memory-systems"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-10-recognition-representation",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-10-recognition-representation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Recognition can compare perceived features with retained representations."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-10-recognition-representation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-11-practiced-action",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-11-practiced-action",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Execution of a practiced conscious action can rely partly on nonconscious mechanisms."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-11-practiced-action"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-12-practice-correction",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-12-practice-correction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A skill can form through repetition that refines sensory representation of movement and its corrections."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-12-practice-correction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-13-movement-demonstration",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Observation, explanation, and demonstration can acquaint a person with the external structure of a movement."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-13-movement-demonstration"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-17-individual-variation",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-17-individual-variation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Stable patterns of behavior and emotional response differ among individuals."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-17-individual-variation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-18-social-experience",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-18-social-experience",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Social experience can contribute to personal development over time."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-18-social-experience"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-19-attribution-explanation",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Explanation of another person’s behavior depends on the causes an observer attributes to it."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-19-attribution-explanation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-20-attribution-alternatives",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-20-attribution-alternatives",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "The same act can receive dispositional or situational explanation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-20-attribution-alternatives"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-21-attitude-definition",
+      "domain": "psychology_behavior",
+      "subject_ref": "wk:psychology_behavior:foundations-ms-21-attitude-definition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In this social-psychology usage, attitude links object-related beliefs, feelings and action readiness."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-21-attitude-definition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-23-group-pressure",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-23-group-pressure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Group social pressure can influence public behavior, including agreement with others."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-23-group-pressure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-25-persuasion-context",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-25-persuasion-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Persuasion can change social judgments, but its effect depends on source, message, audience, and situation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-25-persuasion-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-26-group-context",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-26-group-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Groups can influence their members’ decisions and judgments."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-26-group-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-27-belonging-relations",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-27-belonging-relations",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Need to belong is associated with seeking enduring close relationships."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-27-belonging-relations"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-28-ostracism-conditional",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-28-ostracism-conditional",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Ostracism or being ignored can accompany worse mood, anxiety, or attempts to restore connection."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-28-ostracism-conditional"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-29-helping-no-reward",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-29-helping-no-reward",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Helping another person can occur without expected external reward."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-29-helping-no-reward"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-30-conflict-incompatibility",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Perceived incompatibility of goals or actions can constitute conflict."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-30-conflict-incompatibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-31-conflict-misperception",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-31-conflict-misperception",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Conflict parties can mistakenly perceive another side’s gain as their own loss."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-31-conflict-misperception"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-32-social-role",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-32-social-role",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Social status is associated with expected behavior called a social role."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-32-social-role"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-33-role-predictability",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-33-role-predictability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Role expectations can make social behavior more predictable."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-33-role-predictability"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-34-role-adjustment",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-34-role-adjustment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In ongoing interaction, people can adjust role-related conduct in response to others’ reactions and expectations."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-34-role-adjustment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-36-socialization",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-36-socialization",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In the sociological framework, socialization can include learning cultural norms and social roles throughout life."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-36-socialization"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-38-reference-group",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-38-reference-group",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A reference group can supply norms and values against which a person compares intentions and actions."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-38-reference-group"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-39-social-norm",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-39-social-norm",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Social norms set typical expectations for socially approved behavior in situations."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-39-social-norm"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-ms-40-social-prescription",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:foundations-ms-40-social-prescription",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Social prescriptions can be expressed orally or in writing, formally or informally, explicitly or implicitly."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-ms-40-social-prescription"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms2-03-distrust-cooperation","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms2_03_distrust_cooperation"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms2-03"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-01-initial-attention","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_01_initial_attention"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-01"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-02-working-memory","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_02_working_memory"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-02"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-03-goal-frustration","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_03_goal_frustration"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-03"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-04-acute-stress","domain":"psychology_behavior","subject_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_04_acute_stress"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-04"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-06-apology-reinvestment","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_06_apology_reinvestment"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-06"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-07-apology-mediation","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_07_apology_mediation"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-07"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-08-mutual-cooperation","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_08_mutual_cooperation"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-08"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-09-mutual-defection","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_09_mutual_defection"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-09"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-ms3-10-ultimatum-expectations","domain":"social_behavior","subject_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","predicate":"supported_fact","object":{"kind":"literal","value":"ms3_10_ultimatum_expectations"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-ms3-10"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:emotion-regulation-experimental","locale":"ru","labels":["Экспериментальная регуляция эмоций"],"short_definition":"Лабораторные стратегии переоценки и подавления относятся к условиям эксперимента и не задают состояние человека.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:emotion-regulation-experimental","locale":"en","labels":["Experimental emotion regulation"],"short_definition":"Laboratory reappraisal and suppression strategies are experimental conditions, not a person's state.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:uncertainty-cognitive-control","locale":"ru","labels":["Неопределённость и когнитивный контроль"],"short_definition":"В исследованиях решений неопределённость может менять процессы контроля; фиксированный исход не следует.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:uncertainty-cognitive-control","locale":"en","labels":["Uncertainty and cognitive control"],"short_definition":"In decision research, uncertainty can alter control processes; no fixed outcome follows.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-01-attention-intensity",
+      "locale": "ru",
+      "labels": [
+        "Интенсивность раздражителя и внимание"
+      ],
+      "short_definition": "Внимание человека может избирательно привлекаться более интенсивным внешним раздражителем.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-01-attention-intensity",
+      "locale": "en",
+      "labels": [
+        "attention intensity"
+      ],
+      "short_definition": "Human attention can be selectively drawn by a more intense external stimulus.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-02-attention-novelty",
+      "locale": "ru",
+      "labels": [
+        "Новизна и внимание"
+      ],
+      "short_definition": "Новизна или отличие стимула среди знакомых стимулов может направлять внимание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-02-attention-novelty",
+      "locale": "en",
+      "labels": [
+        "attention novelty"
+      ],
+      "short_definition": "Novelty or difference among familiar stimuli can direct attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-03-attention-expectation",
+      "locale": "ru",
+      "labels": [
+        "Ожидание сигнала"
+      ],
+      "short_definition": "Ожидание определённого сигнала или действия может избирательно подготавливать внимание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-03-attention-expectation",
+      "locale": "en",
+      "labels": [
+        "attention expectation"
+      ],
+      "short_definition": "Expectation of a signal or action can selectively prepare attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-04-attention-competition",
+      "locale": "ru",
+      "labels": [
+        "Конкуренция раздражителей"
+      ],
+      "short_definition": "При двух сопоставимо сильных конкурирующих стимулах внимание может колебаться между ними.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-04-attention-competition",
+      "locale": "en",
+      "labels": [
+        "attention competition"
+      ],
+      "short_definition": "With two comparably strong competing stimuli, attention can alternate between them.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-05-tactile-components",
+      "locale": "ru",
+      "labels": [
+        "Компоненты осязания"
+      ],
+      "short_definition": "Осязательное, кожное и кинестетическое восприятие включает прикосновение и давление и может включать температурные, болевые и проприоцептивные компоненты.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-05-tactile-components",
+      "locale": "en",
+      "labels": [
+        "tactile components"
+      ],
+      "short_definition": "Tactile, cutaneous and kinesthetic perception includes touch and pressure and can include thermal, pain and proprioceptive components.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-06-visual-selection",
+      "locale": "ru",
+      "labels": [
+        "Избирательное зрительное восприятие"
+      ],
+      "short_definition": "Зрительное восприятие может выделять одни элементы образа и отвлекаться от других в зависимости от задачи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-06-visual-selection",
+      "locale": "en",
+      "labels": [
+        "visual selection"
+      ],
+      "short_definition": "Visual perception can select some image elements and disregard others depending on the task.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-07-auditory-sequence",
+      "locale": "ru",
+      "labels": [
+        "Слуховая последовательность"
+      ],
+      "short_definition": "Слуховое восприятие организует последовательные раздражения во временные ряды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-07-auditory-sequence",
+      "locale": "en",
+      "labels": [
+        "auditory sequence"
+      ],
+      "short_definition": "Auditory perception organizes successive stimuli into temporal sequences.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-08-duration-rhythm",
+      "locale": "ru",
+      "labels": [
+        "Ритм и оценка времени"
+      ],
+      "short_definition": "Оценка длительности может опираться на ритмические телесные и внешние процессы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-08-duration-rhythm",
+      "locale": "en",
+      "labels": [
+        "duration rhythm"
+      ],
+      "short_definition": "Duration estimates can draw on rhythmic bodily and external processes.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-09-memory-systems",
+      "locale": "ru",
+      "labels": [
+        "Функциональные системы памяти"
+      ],
+      "short_definition": "Запоминание, сохранение информации и узнавание связаны с взаимодействующими функциональными системами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-09-memory-systems",
+      "locale": "en",
+      "labels": [
+        "memory systems"
+      ],
+      "short_definition": "Memory-related encoding, retention and recognition involve interacting functional systems.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-10-recognition-representation",
+      "locale": "ru",
+      "labels": [
+        "Представления и узнавание"
+      ],
+      "short_definition": "Узнавание может сопоставлять воспринимаемые признаки с сохранёнными представлениями.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-10-recognition-representation",
+      "locale": "en",
+      "labels": [
+        "recognition representation"
+      ],
+      "short_definition": "Recognition can compare perceived features with retained representations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-11-practiced-action",
+      "locale": "ru",
+      "labels": [
+        "Автоматизация отработанного действия"
+      ],
+      "short_definition": "Выполнение отработанного сознательного действия может частично опираться на неосознаваемые механизмы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-11-practiced-action",
+      "locale": "en",
+      "labels": [
+        "practiced action"
+      ],
+      "short_definition": "Execution of a practiced conscious action can rely partly on nonconscious mechanisms.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-12-practice-correction",
+      "locale": "ru",
+      "labels": [
+        "Практика и коррекция движения"
+      ],
+      "short_definition": "Навык может формироваться через повторение, уточняющее сенсорную картину движения и его корректировки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-12-practice-correction",
+      "locale": "en",
+      "labels": [
+        "practice correction"
+      ],
+      "short_definition": "A skill can form through repetition that refines sensory representation of movement and its corrections.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
+      "locale": "ru",
+      "labels": [
+        "Наблюдение и показ движения"
+      ],
+      "short_definition": "Наблюдение, объяснение и показ могут знакомить человека с внешней структурой движения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
+      "locale": "en",
+      "labels": [
+        "movement demonstration"
+      ],
+      "short_definition": "Observation, explanation, and demonstration can acquaint a person with the external structure of a movement.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-17-individual-variation",
+      "locale": "ru",
+      "labels": [
+        "Индивидуальные различия поведения"
+      ],
+      "short_definition": "Устойчивые способы поведения и эмоционального реагирования различаются между индивидами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-17-individual-variation",
+      "locale": "en",
+      "labels": [
+        "individual variation"
+      ],
+      "short_definition": "Stable patterns of behavior and emotional response differ among individuals.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-18-social-experience",
+      "locale": "ru",
+      "labels": [
+        "Социальный опыт и развитие"
+      ],
+      "short_definition": "Социальный опыт может влиять на развитие личности на протяжении жизни.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-18-social-experience",
+      "locale": "en",
+      "labels": [
+        "social experience"
+      ],
+      "short_definition": "Social experience can contribute to personal development over time.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
+      "locale": "ru",
+      "labels": [
+        "Приписывание причин поведения"
+      ],
+      "short_definition": "Объяснение поведения другого человека зависит от того, какие причины наблюдатель ему приписывает.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
+      "locale": "en",
+      "labels": [
+        "attribution explanation"
+      ],
+      "short_definition": "Explanation of another person’s behavior depends on the causes an observer attributes to it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-20-attribution-alternatives",
+      "locale": "ru",
+      "labels": [
+        "Личностное и ситуационное объяснение"
+      ],
+      "short_definition": "Один и тот же поступок может получать личностное или ситуационное объяснение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-20-attribution-alternatives",
+      "locale": "en",
+      "labels": [
+        "attribution alternatives"
+      ],
+      "short_definition": "The same act can receive dispositional or situational explanation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-21-attitude-definition",
+      "locale": "ru",
+      "labels": [
+        "Психологическая установка"
+      ],
+      "short_definition": "В данном социально-психологическом употреблении установка связывает убеждения, чувства и готовность действовать по отношению к объекту.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:psychology_behavior:foundations-ms-21-attitude-definition",
+      "locale": "en",
+      "labels": [
+        "attitude definition"
+      ],
+      "short_definition": "In this social-psychology usage, attitude links object-related beliefs, feelings and action readiness.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-23-group-pressure",
+      "locale": "ru",
+      "labels": [
+        "Групповое давление"
+      ],
+      "short_definition": "Социальное давление группы может влиять на публичное поведение, включая согласие с окружающими.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-23-group-pressure",
+      "locale": "en",
+      "labels": [
+        "group pressure"
+      ],
+      "short_definition": "Group social pressure can influence public behavior, including agreement with others.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-25-persuasion-context",
+      "locale": "ru",
+      "labels": [
+        "Условия убеждения"
+      ],
+      "short_definition": "Убеждение может менять социальные суждения, но его эффект зависит от источника, сообщения, аудитории и ситуации.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-25-persuasion-context",
+      "locale": "en",
+      "labels": [
+        "persuasion context"
+      ],
+      "short_definition": "Persuasion can change social judgments, but its effect depends on source, message, audience, and situation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-26-group-context",
+      "locale": "ru",
+      "labels": [
+        "Групповое влияние"
+      ],
+      "short_definition": "Группы могут влиять на решения и оценки их участников.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-26-group-context",
+      "locale": "en",
+      "labels": [
+        "group context"
+      ],
+      "short_definition": "Groups can influence their members’ decisions and judgments.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-27-belonging-relations",
+      "locale": "ru",
+      "labels": [
+        "Потребность в принадлежности"
+      ],
+      "short_definition": "Потребность в принадлежности связана со стремлением к устойчивым близким отношениям.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-27-belonging-relations",
+      "locale": "en",
+      "labels": [
+        "belonging relations"
+      ],
+      "short_definition": "Need to belong is associated with seeking enduring close relationships.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-28-ostracism-conditional",
+      "locale": "ru",
+      "labels": [
+        "Условные реакции на отвержение"
+      ],
+      "short_definition": "Остракизм или игнорирование может сопровождаться ухудшением настроения, тревогой либо попытками восстановить связь.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-28-ostracism-conditional",
+      "locale": "en",
+      "labels": [
+        "ostracism conditional"
+      ],
+      "short_definition": "Ostracism or being ignored can accompany worse mood, anxiety, or attempts to restore connection.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-29-helping-no-reward",
+      "locale": "ru",
+      "labels": [
+        "Помощь без внешней награды"
+      ],
+      "short_definition": "Помощь другому человеку может происходить без ожидаемого внешнего вознаграждения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-29-helping-no-reward",
+      "locale": "en",
+      "labels": [
+        "helping no reward"
+      ],
+      "short_definition": "Helping another person can occur without expected external reward.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
+      "locale": "ru",
+      "labels": [
+        "Воспринимаемая несовместимость целей"
+      ],
+      "short_definition": "Восприятие несовместимости целей или действий может образовывать конфликт.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
+      "locale": "en",
+      "labels": [
+        "conflict incompatibility"
+      ],
+      "short_definition": "Perceived incompatibility of goals or actions can constitute conflict.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-31-conflict-misperception",
+      "locale": "ru",
+      "labels": [
+        "Ошибочное восприятие выигрыша"
+      ],
+      "short_definition": "Стороны конфликта могут ошибочно воспринимать выигрыш другой стороны как собственный проигрыш.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-31-conflict-misperception",
+      "locale": "en",
+      "labels": [
+        "conflict misperception"
+      ],
+      "short_definition": "Conflict parties can mistakenly perceive another side’s gain as their own loss.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-32-social-role",
+      "locale": "ru",
+      "labels": [
+        "Социальная роль"
+      ],
+      "short_definition": "Социальный статус связан с ожидаемым поведением, называемым социальной ролью.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-32-social-role",
+      "locale": "en",
+      "labels": [
+        "social role"
+      ],
+      "short_definition": "Social status is associated with expected behavior called a social role.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-33-role-predictability",
+      "locale": "ru",
+      "labels": [
+        "Ролевые ожидания"
+      ],
+      "short_definition": "Ролевые ожидания могут делать социальное поведение более предсказуемым.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-33-role-predictability",
+      "locale": "en",
+      "labels": [
+        "role predictability"
+      ],
+      "short_definition": "Role expectations can make social behavior more predictable.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-34-role-adjustment",
+      "locale": "ru",
+      "labels": [
+        "Изменение ролевого поведения"
+      ],
+      "short_definition": "В ходе взаимодействия люди могут менять ролевое поведение в ответ на реакции и ожидания окружающих.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-34-role-adjustment",
+      "locale": "en",
+      "labels": [
+        "role adjustment"
+      ],
+      "short_definition": "In ongoing interaction, people can adjust role-related conduct in response to others’ reactions and expectations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-36-socialization",
+      "locale": "ru",
+      "labels": [
+        "Социализация"
+      ],
+      "short_definition": "В социологической модели социализация может включать усвоение культурных норм и освоение социальных ролей на протяжении жизни.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-36-socialization",
+      "locale": "en",
+      "labels": [
+        "socialization"
+      ],
+      "short_definition": "In the sociological framework, socialization can include learning cultural norms and social roles throughout life.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-38-reference-group",
+      "locale": "ru",
+      "labels": [
+        "Референтная группа"
+      ],
+      "short_definition": "Референтная группа может задавать человеку эталон норм и ценностей, с которым он соотносит намерения и поступки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-38-reference-group",
+      "locale": "en",
+      "labels": [
+        "reference group"
+      ],
+      "short_definition": "A reference group can supply norms and values against which a person compares intentions and actions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-39-social-norm",
+      "locale": "ru",
+      "labels": [
+        "Социальная норма"
+      ],
+      "short_definition": "Социальные нормы задают типовые ожидания одобряемого поведения в ситуациях.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-39-social-norm",
+      "locale": "en",
+      "labels": [
+        "social norm"
+      ],
+      "short_definition": "Social norms set typical expectations for socially approved behavior in situations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-40-social-prescription",
+      "locale": "ru",
+      "labels": [
+        "Формы социальных предписаний"
+      ],
+      "short_definition": "Социальные предписания могут выражаться устно или письменно, формально или неформально, явно или неявно.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:foundations-ms-40-social-prescription",
+      "locale": "en",
+      "labels": [
+        "social prescription"
+      ],
+      "short_definition": "Social prescriptions can be expressed orally or in writing, formally or informally, explicitly or implicitly.",
+      "search_aliases": []
+    },
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","locale":"ru","labels":["Экспериментальные механизмы внимания, памяти и стресса"],"short_definition":"Экспериментальные результаты о внимании, памяти, фрустрации и остром стрессе действуют только в описанных условиях.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:psychology_behavior:foundations-ms3-experimental-cognition","locale":"en","labels":["Experimental mechanisms of attention, memory and stress"],"short_definition":"Experimental results about attention, memory, frustration and acute stress apply only under their stated conditions.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","locale":"ru","labels":["Экспериментальные механизмы социального взаимодействия"],"short_definition":"Экспериментальные результаты о кооперации, доверии и торге не задают исход конкретного взаимодействия.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_behavior:foundations-ms3-experimental-interaction","locale":"en","labels":["Experimental mechanisms of social interaction"],"short_definition":"Experimental results about cooperation, trust and bargaining do not determine an individual interaction's outcome.","search_aliases":[]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-01-reappraisal-negative-experience","locale":"ru","runtime_text":"В лабораторной задаче с негативными фильмами предписанная когнитивная переоценка уменьшала сообщаемое отрицательное эмоциональное переживание. Это не означает, что человек сможет или станет применять её в любой ситуации.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-01-reappraisal-negative-experience","locale":"en","runtime_text":"In a laboratory negative-film task, instructed cognitive reappraisal decreased reported negative emotional experience. This does not mean that a person can or will use it in any situation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-02-suppression-expression-subjective-gap","locale":"ru","runtime_text":"Экспрессивное подавление направлено на внешнее поведение, связанное с эмоциональной реакцией; подавленное выражение само по себе не устанавливает субъективное переживание человека.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-02-suppression-expression-subjective-gap","locale":"en","runtime_text":"Expressive suppression targets outward behavior associated with an emotional response; suppressed expression alone does not establish a person's subjective experience.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-03-uncertainty-cognitive-control","locale":"ru","runtime_text":"В исследованиях принятия решений при неопределённости сама неопределённость и её представление могут менять процессы когнитивного контроля и решений. Направление, склонность к риску и суждение конкретного человека не устанавливаются.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms4-03-uncertainty-cognitive-control","locale":"en","runtime_text":"In research on decision-making under uncertainty, uncertainty and its representation can alter cognitive-control and decision-related processes. No fixed direction, risk preference, or individual judgment follows.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-01-attention-intensity",
+      "locale": "ru",
+      "runtime_text": "Внимание человека может избирательно привлекаться более интенсивным внешним раздражителем.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-01-attention-intensity",
+      "locale": "en",
+      "runtime_text": "Human attention can be selectively drawn by a more intense external stimulus.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-02-attention-novelty",
+      "locale": "ru",
+      "runtime_text": "Новизна или отличие стимула среди знакомых стимулов может направлять внимание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-02-attention-novelty",
+      "locale": "en",
+      "runtime_text": "Novelty or difference among familiar stimuli can direct attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-03-attention-expectation",
+      "locale": "ru",
+      "runtime_text": "Ожидание определённого сигнала или действия может избирательно подготавливать внимание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-03-attention-expectation",
+      "locale": "en",
+      "runtime_text": "Expectation of a signal or action can selectively prepare attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-04-attention-competition",
+      "locale": "ru",
+      "runtime_text": "При двух сопоставимо сильных конкурирующих стимулах внимание может колебаться между ними.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-04-attention-competition",
+      "locale": "en",
+      "runtime_text": "With two comparably strong competing stimuli, attention can alternate between them.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-05-tactile-components",
+      "locale": "ru",
+      "runtime_text": "Осязательное, кожное и кинестетическое восприятие включает прикосновение и давление и может включать температурные, болевые и проприоцептивные компоненты.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-05-tactile-components",
+      "locale": "en",
+      "runtime_text": "Tactile, cutaneous and kinesthetic perception includes touch and pressure and can include thermal, pain and proprioceptive components.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-06-visual-selection",
+      "locale": "ru",
+      "runtime_text": "Зрительное восприятие может выделять одни элементы образа и отвлекаться от других в зависимости от задачи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-06-visual-selection",
+      "locale": "en",
+      "runtime_text": "Visual perception can select some image elements and disregard others depending on the task.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-07-auditory-sequence",
+      "locale": "ru",
+      "runtime_text": "Слуховое восприятие организует последовательные раздражения во временные ряды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-07-auditory-sequence",
+      "locale": "en",
+      "runtime_text": "Auditory perception organizes successive stimuli into temporal sequences.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-08-duration-rhythm",
+      "locale": "ru",
+      "runtime_text": "Оценка длительности может опираться на ритмические телесные и внешние процессы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-08-duration-rhythm",
+      "locale": "en",
+      "runtime_text": "Duration estimates can draw on rhythmic bodily and external processes.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-09-memory-systems",
+      "locale": "ru",
+      "runtime_text": "Запоминание, сохранение информации и узнавание связаны с взаимодействующими функциональными системами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-09-memory-systems",
+      "locale": "en",
+      "runtime_text": "Memory-related encoding, retention and recognition involve interacting functional systems.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-10-recognition-representation",
+      "locale": "ru",
+      "runtime_text": "Узнавание может сопоставлять воспринимаемые признаки с сохранёнными представлениями.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-10-recognition-representation",
+      "locale": "en",
+      "runtime_text": "Recognition can compare perceived features with retained representations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-11-practiced-action",
+      "locale": "ru",
+      "runtime_text": "Выполнение отработанного сознательного действия может частично опираться на неосознаваемые механизмы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-11-practiced-action",
+      "locale": "en",
+      "runtime_text": "Execution of a practiced conscious action can rely partly on nonconscious mechanisms.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-12-practice-correction",
+      "locale": "ru",
+      "runtime_text": "Навык может формироваться через повторение, уточняющее сенсорную картину движения и его корректировки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-12-practice-correction",
+      "locale": "en",
+      "runtime_text": "A skill can form through repetition that refines sensory representation of movement and its corrections.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-13-movement-demonstration",
+      "locale": "ru",
+      "runtime_text": "Наблюдение, объяснение и показ могут знакомить человека с внешней структурой движения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-13-movement-demonstration",
+      "locale": "en",
+      "runtime_text": "Observation, explanation, and demonstration can acquaint a person with the external structure of a movement.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-17-individual-variation",
+      "locale": "ru",
+      "runtime_text": "Устойчивые способы поведения и эмоционального реагирования различаются между индивидами.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-17-individual-variation",
+      "locale": "en",
+      "runtime_text": "Stable patterns of behavior and emotional response differ among individuals.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-18-social-experience",
+      "locale": "ru",
+      "runtime_text": "Социальный опыт может влиять на развитие личности на протяжении жизни.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-18-social-experience",
+      "locale": "en",
+      "runtime_text": "Social experience can contribute to personal development over time.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-19-attribution-explanation",
+      "locale": "ru",
+      "runtime_text": "Объяснение поведения другого человека зависит от того, какие причины наблюдатель ему приписывает.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-19-attribution-explanation",
+      "locale": "en",
+      "runtime_text": "Explanation of another person’s behavior depends on the causes an observer attributes to it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-20-attribution-alternatives",
+      "locale": "ru",
+      "runtime_text": "Один и тот же поступок может получать личностное или ситуационное объяснение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-20-attribution-alternatives",
+      "locale": "en",
+      "runtime_text": "The same act can receive dispositional or situational explanation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-21-attitude-definition",
+      "locale": "ru",
+      "runtime_text": "В данном социально-психологическом употреблении установка связывает убеждения, чувства и готовность действовать по отношению к объекту.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-21-attitude-definition",
+      "locale": "en",
+      "runtime_text": "In this social-psychology usage, attitude links object-related beliefs, feelings and action readiness.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-23-group-pressure",
+      "locale": "ru",
+      "runtime_text": "Социальное давление группы может влиять на публичное поведение, включая согласие с окружающими.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-23-group-pressure",
+      "locale": "en",
+      "runtime_text": "Group social pressure can influence public behavior, including agreement with others.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-25-persuasion-context",
+      "locale": "ru",
+      "runtime_text": "Убеждение может менять социальные суждения, но его эффект зависит от источника, сообщения, аудитории и ситуации.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-25-persuasion-context",
+      "locale": "en",
+      "runtime_text": "Persuasion can change social judgments, but its effect depends on source, message, audience, and situation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-26-group-context",
+      "locale": "ru",
+      "runtime_text": "Группы могут влиять на решения и оценки их участников.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-26-group-context",
+      "locale": "en",
+      "runtime_text": "Groups can influence their members’ decisions and judgments.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-27-belonging-relations",
+      "locale": "ru",
+      "runtime_text": "Потребность в принадлежности связана со стремлением к устойчивым близким отношениям.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-27-belonging-relations",
+      "locale": "en",
+      "runtime_text": "Need to belong is associated with seeking enduring close relationships.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-28-ostracism-conditional",
+      "locale": "ru",
+      "runtime_text": "Остракизм или игнорирование может сопровождаться ухудшением настроения, тревогой либо попытками восстановить связь.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-28-ostracism-conditional",
+      "locale": "en",
+      "runtime_text": "Ostracism or being ignored can accompany worse mood, anxiety, or attempts to restore connection.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-29-helping-no-reward",
+      "locale": "ru",
+      "runtime_text": "Помощь другому человеку может происходить без ожидаемого внешнего вознаграждения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-29-helping-no-reward",
+      "locale": "en",
+      "runtime_text": "Helping another person can occur without expected external reward.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-30-conflict-incompatibility",
+      "locale": "ru",
+      "runtime_text": "Восприятие несовместимости целей или действий может образовывать конфликт.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-30-conflict-incompatibility",
+      "locale": "en",
+      "runtime_text": "Perceived incompatibility of goals or actions can constitute conflict.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-31-conflict-misperception",
+      "locale": "ru",
+      "runtime_text": "Стороны конфликта могут ошибочно воспринимать выигрыш другой стороны как собственный проигрыш.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-31-conflict-misperception",
+      "locale": "en",
+      "runtime_text": "Conflict parties can mistakenly perceive another side’s gain as their own loss.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-32-social-role",
+      "locale": "ru",
+      "runtime_text": "Социальный статус связан с ожидаемым поведением, называемым социальной ролью.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-32-social-role",
+      "locale": "en",
+      "runtime_text": "Social status is associated with expected behavior called a social role.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-33-role-predictability",
+      "locale": "ru",
+      "runtime_text": "Ролевые ожидания могут делать социальное поведение более предсказуемым.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-33-role-predictability",
+      "locale": "en",
+      "runtime_text": "Role expectations can make social behavior more predictable.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-34-role-adjustment",
+      "locale": "ru",
+      "runtime_text": "В ходе взаимодействия люди могут менять ролевое поведение в ответ на реакции и ожидания окружающих.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-34-role-adjustment",
+      "locale": "en",
+      "runtime_text": "In ongoing interaction, people can adjust role-related conduct in response to others’ reactions and expectations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-36-socialization",
+      "locale": "ru",
+      "runtime_text": "В социологической модели социализация может включать усвоение культурных норм и освоение социальных ролей на протяжении жизни.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-36-socialization",
+      "locale": "en",
+      "runtime_text": "In the sociological framework, socialization can include learning cultural norms and social roles throughout life.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-38-reference-group",
+      "locale": "ru",
+      "runtime_text": "Референтная группа может задавать человеку эталон норм и ценностей, с которым он соотносит намерения и поступки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-38-reference-group",
+      "locale": "en",
+      "runtime_text": "A reference group can supply norms and values against which a person compares intentions and actions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-39-social-norm",
+      "locale": "ru",
+      "runtime_text": "Социальные нормы задают типовые ожидания одобряемого поведения в ситуациях.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-39-social-norm",
+      "locale": "en",
+      "runtime_text": "Social norms set typical expectations for socially approved behavior in situations.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-40-social-prescription",
+      "locale": "ru",
+      "runtime_text": "Социальные предписания могут выражаться устно или письменно, формально или неформально, явно или неявно.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-ms-40-social-prescription",
+      "locale": "en",
+      "runtime_text": "Social prescriptions can be expressed orally or in writing, formally or informally, explicitly or implicitly.",
+      "search_aliases": []
+    },
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms2-03-distrust-cooperation","locale":"ru","runtime_text":"В социальной дилемме взаимное недоверие может поддерживать отказ от кооперации как защиту от воспринимаемой эксплуатации.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms2-03-distrust-cooperation","locale":"en","runtime_text":"In a social dilemma, mutual distrust can sustain refusal to cooperate as self-protection against perceived exploitation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-01-initial-attention","locale":"ru","runtime_text":"В эксперименте свободного просмотра неприятные изображения животных/лиц в среднем сильнее захватывали начальное внимание, чем нейтральные; это не доказывает опасность или внимание каждого наблюдателя.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-01-initial-attention","locale":"en","runtime_text":"In a free-viewing experiment, unpleasant animal/face pictures on average captured initial attention more effectively than matched neutral pictures; this establishes neither danger nor every observer's attention.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-02-working-memory","locale":"ru","runtime_text":"В лабораторном N-back эксперименте высокая нагрузка рабочей памяти при предъявлении ослабляла преимущество немедленного распознавания отрицательных отвлекающих изображений.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-02-working-memory","locale":"en","runtime_text":"In the laboratory N-back experiment, high working-memory load at exposure attenuated immediate recognition enhancement for negative distractor images.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-03-goal-frustration","locale":"ru","runtime_text":"Среди участников Wordle обратная связь о препятствии достижению цели связывалась с большей фрустрацией, чем обратная связь о приближении к цели.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-03-goal-frustration","locale":"en","runtime_text":"Among Wordle participants, feedback classified as thwarting goal approach was associated with more frustration than approach feedback.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-04-acute-stress","locale":"ru","runtime_text":"Систематический обзор 44 исследований сообщает, что механизмы острого стресса могут ухудшать процессы принятия решений в когнитивной, мотивационной, аффективной областях и области предсказуемости.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-04-acute-stress","locale":"en","runtime_text":"A 44-study systematic review reports that acute-stress mechanisms can impair decision-related processes across cognitive, motivational, affective and predictability domains.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-06-apology-reinvestment","locale":"ru","runtime_text":"В двухраундовой игре доверия с 221 китайским студентом участники, получившие извинение после смоделированного нарушения с нулевым возвратом, повторно вкладывали больше, чем группа без извинения.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-06-apology-reinvestment","locale":"en","runtime_text":"In a two-round trust game with 221 Chinese undergraduates, participants receiving an apology after a modeled zero-return violation re-invested more than the violation-without-apology group.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-07-apology-mediation","locale":"ru","runtime_text":"В двухраундовой игре доверия с 221 китайским студентом воспринимаемая надёжность нарушителя статистически опосредовала связь извинения с повторным вложением, а отрицательные эмоции модерировали путь от извинения к воспринимаемой надёжности.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-07-apology-mediation","locale":"en","runtime_text":"In a two-round trust game with 221 Chinese undergraduates, perceived transgressor trustworthiness statistically mediated the apology/re-investment association, and negative emotions moderated the apology-to-perceived-trustworthiness path.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-08-mutual-cooperation","locale":"ru","runtime_text":"В эксперименте Хориты с повторяющейся дилеммой заключённого и прямой взаимностью предшествующая взаимная кооперация связывалась с повышением последующей кооперации.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-08-mutual-cooperation","locale":"en","runtime_text":"In Horita's direct-reciprocity iterated-prisoner's-dilemma experiment, prior mutual cooperation was associated with increased subsequent cooperation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-09-mutual-defection","locale":"ru","runtime_text":"В эксперименте Хориты с повторяющейся дилеммой заключённого и прямой взаимностью предшествующий взаимный отказ от кооперации связывался со снижением последующей кооперации.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-09-mutual-defection","locale":"en","runtime_text":"In Horita's direct-reciprocity iterated-prisoner's-dilemma experiment, prior mutual defection was associated with decreased subsequent cooperation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-10-ultimatum-expectations","locale":"ru","runtime_text":"В ультимативной игре с явно заданным распределением предложений его ожидаемые среднее и разброс влияли на решения некоторых участников принять или отвергнуть предложение.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-ms3-10-ultimatum-expectations","locale":"en","runtime_text":"In an ultimatum-game experiment with explicitly supplied offer-distribution expectations, expected mean and variance affected some participants' acceptance/rejection decisions.","search_aliases":[]}
+  ]
+}

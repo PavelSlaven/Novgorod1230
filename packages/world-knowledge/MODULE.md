@@ -13,6 +13,8 @@ Pure read-only gameplay factual owner. Загружает caller-provided immuta
 - pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,
   query relevance, context specificity, qualifiers, stable claim reference;
+- relative lexical admission per independent search hint; aggregate lexical
+  relevance ranks the admitted candidates without suppressing common topics;
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes; materialization и другие

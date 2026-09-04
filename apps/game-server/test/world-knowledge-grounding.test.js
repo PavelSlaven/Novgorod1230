@@ -40,6 +40,13 @@ test('production grounding plans once and injects only an applicable bounded sli
   const second = await grounder.ground(request, 'semantic_resolution');
 
   assert.equal(calls.length, 1);
+  const plannerRequest = JSON.parse(calls[0].messages[1].content);
+  const applicableDomains = worldKnowledge.bundle.coverage_profiles
+    .filter(profile => profile.status === 'production'
+      && profile.runtime_requirement !== 'not_active'
+      && profile.purposes.includes('semantic_resolution'))
+    .map(profile => profile.domain);
+  assert.deepEqual(plannerRequest.allowed_domains, [...new Set(applicableDomains)].sort());
   assert.match(calls[0].messages[0].content,
     /exactly these six keys: schema, query_locale, domains, focus_refs, requested_predicates, search_hints/u);
   assert.match(calls[0].messages[0].content,

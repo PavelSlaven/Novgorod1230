@@ -119,14 +119,20 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     .filter((claim) => query.requested_predicates.length === 0 || query.requested_predicates.includes(claim.predicate))
     .filter((claim) => isApplicable(claim.applicability, query.context))
     .filter((claim) => canAccess(claim.knowledge_access, query.context.actor_facets, query.purpose));
-  const strongestLexical = Math.max(0, ...allApplicable.map((claim) =>
-    lexicalScores.get(claim.claim_ref) ?? 0));
-  // Relative lexical admission removes incidental common-word hits before
-  // authority ranking. Exact, requested-predicate and vector recall stay intact.
+  const hintScores = query.search_hints.map((hint) => {
+    const scores = lexicalCandidates(bundle, { ...query, search_hints: [hint] });
+    const strongest = Math.max(0, ...allApplicable.map((claim) =>
+      scores.get(claim.claim_ref) ?? 0));
+    return { scores, strongest };
+  });
+  // Apply relative admission within each independently requested hint: growth
+  // in one topic must not suppress another topic with a lower corpus IDF.
+  // Aggregate lexical relevance still ranks the admitted candidates.
   const relevant = allApplicable.filter((claim) => query.search_hints.length === 0
     || exactRefs.has(claim.claim_ref) || query.requested_predicates.length > 0
     || vectorScores.has(claim.claim_ref)
-    || (lexicalScores.get(claim.claim_ref) ?? 0) >= strongestLexical / 2);
+    || hintScores.some(({ scores, strongest }) => strongest > 0
+      && (scores.get(claim.claim_ref) ?? 0) >= strongest / 2));
   const relevantRefs = new Set(relevant.map(({ claim_ref }) => claim_ref));
   const relevantGroups = new Set(relevant.map(({ conflict_group_ref }) =>
     conflict_group_ref).filter(Boolean));

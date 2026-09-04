@@ -4,7 +4,7 @@
   "scope": {
     "time": "1220-1240",
     "region": "Novgorod Land",
-    "rule": "A cell is a gameplay-family factual envelope, not an item, recipe, NPC or scene-presence assertion. covered means the required family premises have verified production support and independent readiness review; a merely related claim or incoming research does not suffice."
+    "rule": "A cell is a gameplay-family factual envelope, not an item, recipe, NPC or scene-presence assertion. covered means the required family premises have verified production support and independent readiness review; a merely related claim or incoming research does not suffice. Universal scientific cells and functional material-response premises are not confined to that historical time/region; contextual claims retain their own applicability."
   },
   "allowed_statuses": [
     "covered",
@@ -14,6 +14,503 @@
     "disputed"
   ],
   "cells": [
+    {
+      "cell_ref": "wk:science:mechanics",
+      "domain": "physics_material_science",
+      "subdomain": "mechanics",
+      "family": "force_momentum_flow_and_static_support",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "move_push_drop_balance",
+      "player_interaction": "move_push_drop_balance",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-phys-03-action-reaction-separate-bodies",
+        "claim:foundations-phys-04-fluid-viscous-resistance",
+        "claim:foundations-phys-05-flow-regime-speed",
+        "claim:foundations-phys-06-pressure-driven-liquid-outflow",
+        "claim:foundations-phys-07-surface-tension-interface",
+        "claim:foundations-phys-08-momentum-closed-system",
+        "claim:foundations-phys-09-mechanical-energy-dissipation",
+        "claim:foundations-phys-10-gas-temperature-pressure-volume",
+        "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared force_momentum_flow_and_static_support basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:heat",
+      "domain": "physics_material_science",
+      "subdomain": "heat",
+      "family": "heat_transfer_phase_change_and_combustion",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "heat_cool_dry_burn",
+      "player_interaction": "heat_cool_dry_burn",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:foundations-thm-03-combustion-mixture-conditions",
+        "claim:foundations-thm-05-surface-area-heterogeneous-rate",
+        "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:foundations-thm-07-thermal-expansion-state-change",
+        "claim:foundations-thm-08-temperature-reaction-rate",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:foundations-thm-10-thermal-gradient-heat-flow"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared heat_transfer_phase_change_and_combustion basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:chemistry",
+      "domain": "chemistry_process",
+      "subdomain": "chemistry",
+      "family": "reactions_solutions_equilibrium_and_corrosion",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "mix_dissolve_clean_react",
+      "player_interaction": "mix_dissolve_clean_react",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:foundations-thm-03-combustion-mixture-conditions",
+        "claim:foundations-thm-05-surface-area-heterogeneous-rate",
+        "claim:foundations-thm-08-temperature-reaction-rate",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:foundations-chm-01-exothermic-endothermic-reaction",
+        "claim:foundations-chm-02-reaction-rate-reactant-concentration",
+        "claim:foundations-chm-03-heterogeneous-reaction-interface",
+        "claim:foundations-chm-04-diffusion-limited-heterogeneous-process",
+        "claim:foundations-chm-05-mixing-diffusion-control",
+        "claim:foundations-chm-06-catalyst-rate-not-equilibrium",
+        "claim:foundations-chm-07-dynamic-chemical-equilibrium",
+        "claim:foundations-chm-08-equilibrium-condition-change",
+        "claim:foundations-chm-09-electrolyte-ions-in-water",
+        "claim:foundations-chm-10-metal-environment-corrosion",
+        "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+        "claim:foundations-chm-12-galvanic-contact-corrosion",
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat",
+        "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
+        "claim:foundations-physical-b2-chm-04-solute-solvation",
+        "claim:foundations-physical-b2-chm-05-solubility-saturation",
+        "claim:foundations-physical-b2-chm-06-temperature-solubility-conditional",
+        "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
+        "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared reactions_solutions_equilibrium_and_corrosion basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:materials",
+      "domain": "physics_material_science",
+      "subdomain": "materials",
+      "family": "material_structure_damage_and_working",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "shape_load_wet_join",
+      "player_interaction": "shape_load_wet_join",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-05-wood-grain-shear-vs-cut",
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:foundations-mat-07-wood-storage-biological-damage",
+        "claim:foundations-mat-08-abrasive-hardness-material-removal",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
+        "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability",
+        "claim:foundations-physical-material3-04-osseous-shaping-operations"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared material_structure_damage_and_working basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:waves",
+      "domain": "physics_material_science",
+      "subdomain": "waves",
+      "family": "sound_light_and_electrical_relations",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "listen_look_reflect_observe_charge",
+      "player_interaction": "listen_look_reflect_observe_charge",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+        "claim:foundations-physical-b2-snd-02-sound-material-medium",
+        "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
+        "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+        "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material",
+        "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
+        "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
+        "claim:foundations-physical-b2-elc-03-current-magnetic-field",
+        "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
+        "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
+        "claim:foundations-physical-b2-lgt-03-glass-absorption-transmission"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared sound_light_and_electrical_relations basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:physiology",
+      "domain": "biology_physiology",
+      "subdomain": "physiology",
+      "family": "cell_body_systems_metabolism_and_development",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "breathe_eat_work_rest_reproduce",
+      "player_interaction": "breathe_eat_work_rest_reproduce",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-life-01-cell",
+        "claim:foundations-life-02-cell-substances",
+        "claim:foundations-life-03-cell-macromolecules",
+        "claim:foundations-life-04-cellular-atp",
+        "claim:foundations-life-05-metabolism",
+        "claim:foundations-life-06-growth-mitosis",
+        "claim:foundations-life-07-mitosis",
+        "claim:foundations-life-08-cell-specialization",
+        "claim:foundations-life-09-organ-systems",
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption",
+        "claim:foundations-life-12-respiration",
+        "claim:foundations-life-13-alveolar-exchange",
+        "claim:foundations-life-14-circulation",
+        "claim:foundations-life-15-blood",
+        "claim:foundations-life-16-regulation",
+        "claim:foundations-life-17-reflex",
+        "claim:foundations-life-18-muscle-movement",
+        "claim:foundations-life-19-sensory-receptor",
+        "claim:foundations-life-20-kidneys",
+        "claim:foundations-life-23-sleep-wake-cycle",
+        "claim:foundations-life-24-skin-sensation",
+        "claim:foundations-life-25-reproduction",
+        "claim:foundations-life-26-fertilization",
+        "claim:foundations-life-27-ontogeny",
+        "claim:foundations-life-28-virus-replication",
+        "claim:foundations-life-29-virion-structure",
+        "claim:foundations-life-31-phagocytosis",
+        "claim:foundations-life-32-phagocytes",
+        "claim:foundations-life-33-acquired-immunity",
+        "claim:foundations-life-34-lymphoid-system",
+        "claim:foundations-life-35-antibodies",
+        "claim:foundations-life-36-immune-memory",
+        "claim:foundations-life-41-immune-components",
+        "claim:foundations-life-42-thermoreceptors"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared cell_body_systems_metabolism_and_development basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:infection",
+      "domain": "biology_physiology",
+      "subdomain": "infection",
+      "family": "immune_response_and_infection_conditions",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "contact_share_food_water_care",
+      "player_interaction": "contact_share_food_water_care",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-life-28-virus-replication",
+        "claim:foundations-life-31-phagocytosis",
+        "claim:foundations-life-32-phagocytes",
+        "claim:foundations-life-33-acquired-immunity",
+        "claim:foundations-life-34-lymphoid-system",
+        "claim:foundations-life-35-antibodies",
+        "claim:foundations-life-36-immune-memory",
+        "claim:foundations-life-41-immune-components",
+        "claim:foundations-life-43-infection-chain",
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry",
+        "claim:foundations-life-46-airborne-tuberculosis-exposure",
+        "claim:foundations-life-47-host-susceptibility"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared immune_response_and_infection_conditions basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:ecology",
+      "domain": "biology_physiology",
+      "subdomain": "ecology",
+      "family": "resource_competition_food_webs_and_environment",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "gather_cultivate_observe_animals",
+      "player_interaction": "gather_cultivate_observe_animals",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-earth-01-ecological-tolerance",
+        "claim:foundations-earth-02-ecological-tolerance",
+        "claim:foundations-earth-08-ecological-competition",
+        "claim:foundations-earth-09-ecological-competition",
+        "claim:foundations-earth-10-mutualistic-dependence",
+        "claim:foundations-earth-11-consumer-assimilation",
+        "claim:foundations-earth-12-consumer-energy-allocation",
+        "claim:foundations-earth-13-trophic-levels",
+        "claim:foundations-earth-14-ecosystem-energy-flow",
+        "claim:foundations-life-37-ecological-factors",
+        "claim:foundations-life-38-ecosystem-cycling",
+        "claim:foundations-life-39-ecosystem-change",
+        "claim:foundations-life-40-photosynthesis"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared resource_competition_food_webs_and_environment basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:geology",
+      "domain": "environment",
+      "subdomain": "geology",
+      "family": "soil_rock_groundwater_and_weathering",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "dig_build_draw_water_cross_ground",
+      "player_interaction": "dig_build_draw_water_cross_ground",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:foundations-earth-03-soil-phases",
+        "claim:foundations-earth-04-soil-thermal-buffer",
+        "claim:foundations-earth-05-soil-horizons",
+        "claim:foundations-earth-06-soil-aggregation",
+        "claim:foundations-earth-07-soil-water-states",
+        "claim:foundations-earth-15-igneous-rock-formation",
+        "claim:foundations-earth-16-igneous-cooling-texture",
+        "claim:foundations-earth-17-sedimentary-rock-formation",
+        "claim:foundations-earth-18-metamorphic-rock-formation",
+        "claim:foundations-earth-19-aquifer-pore-flow",
+        "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:foundations-earth-22-hydrothermal-metal-transport",
+        "claim:foundations-earth-23-hydrothermal-precipitation",
+        "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:foundations-earth2-01-rock-weathering-physical-chemical",
+        "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared soil_rock_groundwater_and_weathering basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:weather",
+      "domain": "environment",
+      "subdomain": "weather",
+      "family": "water_cycle_wind_clouds_fog_and_ice",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "travel_observe_shelter",
+      "player_interaction": "travel_observe_shelter",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-earth-24-water-cycle-fluxes",
+        "claim:foundations-earth-25-snowmelt-runoff",
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-earth-28-radiation-fog",
+        "claim:foundations-earth-29-advection-fog",
+        "claim:foundations-earth-30-upslope-fog",
+        "claim:foundations-earth-31-freezing-fog-rime",
+        "claim:foundations-earth2-07-pressure-gradient-wind",
+        "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:foundations-earth2-12-solar-surface-heating-local-pressure"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared water_cycle_wind_clouds_fog_and_ice basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:psychology",
+      "domain": "psychology_behavior",
+      "subdomain": "psychology",
+      "family": "attention_memory_learning_affect_and_judgment",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "notice_remember_learn_evaluate",
+      "player_interaction": "notice_remember_learn_evaluate",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:foundations-ms4-03-uncertainty-cognitive-control",
+        "claim:foundations-ms-01-attention-intensity",
+        "claim:foundations-ms-02-attention-novelty",
+        "claim:foundations-ms-03-attention-expectation",
+        "claim:foundations-ms-04-attention-competition",
+        "claim:foundations-ms-05-tactile-components",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:foundations-ms-07-auditory-sequence",
+        "claim:foundations-ms-08-duration-rhythm",
+        "claim:foundations-ms-09-memory-systems",
+        "claim:foundations-ms-10-recognition-representation",
+        "claim:foundations-ms-11-practiced-action",
+        "claim:foundations-ms-12-practice-correction",
+        "claim:foundations-ms-13-movement-demonstration",
+        "claim:foundations-ms-17-individual-variation",
+        "claim:foundations-ms-19-attribution-explanation",
+        "claim:foundations-ms-20-attribution-alternatives",
+        "claim:foundations-ms-21-attitude-definition",
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:foundations-ms3-02-working-memory",
+        "claim:foundations-ms3-03-goal-frustration",
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared attention_memory_learning_affect_and_judgment basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
+    {
+      "cell_ref": "wk:science:social",
+      "domain": "social_behavior",
+      "subdomain": "social",
+      "family": "influence_affiliation_cooperation_and_conflict",
+      "time": "universal conditional science",
+      "region": "not region-bound; no historical presence inference",
+      "location": "already established physical or social context",
+      "npc_role": "any actor; no automatic scientific knowledge",
+      "material_resource": "existing matter, organism or interaction only",
+      "process": "speak_cooperate_negotiate_reconcile",
+      "player_interaction": "speak_cooperate_negotiate_reconcile",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "independently_verified_qualified_scientific_relations",
+      "claim_refs": [
+        "claim:foundations-ms-18-social-experience",
+        "claim:foundations-ms-23-group-pressure",
+        "claim:foundations-ms-25-persuasion-context",
+        "claim:foundations-ms-26-group-context",
+        "claim:foundations-ms-27-belonging-relations",
+        "claim:foundations-ms-28-ostracism-conditional",
+        "claim:foundations-ms-29-helping-no-reward",
+        "claim:foundations-ms-30-conflict-incompatibility",
+        "claim:foundations-ms-31-conflict-misperception",
+        "claim:foundations-ms-32-social-role",
+        "claim:foundations-ms-33-role-predictability",
+        "claim:foundations-ms-34-role-adjustment",
+        "claim:foundations-ms-36-socialization",
+        "claim:foundations-ms-38-reference-group",
+        "claim:foundations-ms-39-social-norm",
+        "claim:foundations-ms-40-social-prescription",
+        "claim:foundations-ms2-03-distrust-cooperation",
+        "claim:foundations-ms3-06-apology-reinvestment",
+        "claim:foundations-ms3-07-apology-mediation",
+        "claim:foundations-ms3-08-mutual-cooperation",
+        "claim:foundations-ms3-09-mutual-defection",
+        "claim:foundations-ms3-10-ultimatum-expectations"
+      ],
+      "coverage_basis": "Verified universal premises cover the declared influence_affiliation_cooperation_and_conflict basic causal envelope. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
+    },
     {
       "cell_ref": "wk:env:terrain",
       "domain": "environment",
@@ -183,15 +680,22 @@
       "knowledge_purpose": [
         "materialization_support"
       ],
-      "coverage_status": "partial",
+      "coverage_status": "covered",
       "criticality": "P2",
       "evidence_quality": "production_verified_qualified_relations",
       "claim_refs": [
         "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
-        "claim:troitsky-nonwood-plant-remains-probably-local"
+        "claim:troitsky-nonwood-plant-remains-probably-local",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:seasonal-plant-development-depends-on-photoperiod",
+        "claim:fungal-decomposition-affects-nutrient-recycling",
+        "claim:most-fungi-hyphae-substrate-nutrition",
+        "claim:wild-mushroom-resemblance-not-edibility",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:mezereon-poisonous-sap-all-parts"
       ],
-      "coverage_basis": "Hazelnut, berries, apple and wild-hop remains have qualified local woodland/heath source interpretations; no mushroom edibility or safe plant identification follows."
+      "coverage_basis": "Qualified historical woodland/heath gathering evidence composes with general plant growth, photoperiod, fungal substrate nutrition and decomposition, plus independently verified modern identification and species-toxicity premises. Covered at the gameplay compatibility/safety-envelope level, not a flora atlas or a preparation recipe: resemblance does not establish identity or edibility; modern park inventories and flowering observations do not establish 1230 presence. Actual specimens, season, access, stock, identification skill, preparation and consumption outcomes remain grounded scene and owner state. See verification-wild-flora-modern.md."
     },
     {
       "cell_ref": "wk:env:animals",
@@ -232,9 +736,13 @@
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-swine-membership",
-        "claim:livestock-swine-comparative-diet"
+        "claim:livestock-swine-comparative-diet",
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:fauna-mammals-domestic-cattle-startle-response"
       ],
-      "coverage_basis": "Independent livestock-readiness-470.md: domestic/wild assemblage, hunting, shearing and historical hay compose with healthy-horse forage, cattle/sheep/goat ruminant digestion and separate swine dietary constraints. Unseen cow, sheep/goat and pig queries confirm distinct premises, not horse analogy. No animal, flock, stock, pasture, health, feed safety, NPC skill or successful care follows."
+      "coverage_basis": "Independent livestock-readiness-470.md: domestic/wild assemblage, hunting, shearing and historical hay compose with healthy-horse forage, cattle/sheep/goat ruminant digestion and separate swine dietary constraints. Unseen cow, sheep/goat and pig queries confirm distinct premises, not horse analogy. No animal, flock, stock, pasture, health, feed safety, NPC skill or successful care follows. Scientific follow-up: detailed ecology/behavior now resides in the linked wk:biology:fauna-* cells; this original cell continues to distinguish historical category compatibility from actual presence. Scientific properties do not need a historical source."
     },
     {
       "cell_ref": "wk:env:birds-fish-insects",
@@ -266,9 +774,17 @@
         "claim:agriculture-fauna-rural-tree-borts",
         "claim:agriculture-fauna-bort-climbing-hooks",
         "claim:agriculture-fauna-borts-honey",
-        "claim:agriculture-fauna-borts-wax"
+        "claim:agriculture-fauna-borts-wax",
+        "claim:fauna-mallard-wetland-diet",
+        "claim:fauna-mallard-brood",
+        "claim:fauna-pike-ambush",
+        "claim:fauna-pike-spawning",
+        "claim:fauna-frog-damp-foraging",
+        "claim:fauna-frog-metamorphosis",
+        "claim:fauna-bee-worker-tasks",
+        "claim:fauna-bee-winter-cluster"
       ],
-      "coverage_basis": "Independent practices-readiness-442.md review: fishing/net context, bird taxa/seasonality and a bounded practical insect practice (mainly rural tree borts, climbing hooks, honey/wax) supply the declared family envelope. This does not assert a domestic hive, current swarm, catch, species, stock or pest severity; those remain state/assessment."
+      "coverage_basis": "Independent practices-readiness-442.md review: fishing/net context, bird taxa/seasonality and a bounded practical insect practice (mainly rural tree borts, climbing hooks, honey/wax) supply the declared family envelope. This does not assert a domestic hive, current swarm, catch, species, stock or pest severity; those remain state/assessment. Scientific follow-up: detailed ecology/behavior now resides in the linked wk:biology:fauna-* cells; this original cell continues to distinguish historical category compatibility from actual presence. Scientific properties do not need a historical source."
     },
     {
       "cell_ref": "wk:env:weather",
@@ -709,17 +1225,24 @@
       "knowledge_purpose": [
         "materialization_support"
       ],
-      "coverage_status": "partial",
+      "coverage_status": "covered",
       "criticality": "P2",
-      "evidence_quality": "production_verified_qualified_relations",
+      "evidence_quality": "production_verified_historical_and_scientific_relations",
       "claim_refs": [
         "claim:clothing-bone-button",
+        "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
+        "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability",
+        "claim:foundations-physical-material3-04-osseous-shaping-operations",
         "claim:novgorod-wood-bone-horn-classes",
         "claim:population-processes-bone-skate-input",
         "claim:population-processes-bone-skate-output",
         "claim:settlement-skate-bone"
       ],
-      "coverage_basis": "Bone skate and collar-button forms are grounded; broader bone/antler/horn working still needs coverage."
+      "coverage_basis": "Historical bone/horn material classes compose with bone structure/porosity, keratin horn structure and conditional water softening, antler's osseous identity, and qualified naturally shed red-deer-antler soaking/workability results. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
     },
     {
       "cell_ref": "wk:material:clay-ceramic",
@@ -805,14 +1328,17 @@
       "knowledge_purpose": [
         "materialization_support"
       ],
-      "coverage_status": "partial",
+      "coverage_status": "covered",
       "criticality": "P2",
-      "evidence_quality": "production_verified_qualified_relations",
+      "evidence_quality": "production_verified_historical_and_scientific_relations",
       "claim_refs": [
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
+        "claim:foundations-physical-b2-lgt-03-glass-absorption-transmission",
         "claim:lime-transformations",
         "claim:pigment-lime-plaster"
       ],
-      "coverage_basis": "Universal lime/glass response and sampled XII-century Novgorod lime wall plaster are grounded. Historical glass production and mineral procurement remain incomplete."
+      "coverage_basis": "Existing lime transformation and dated lime-plaster evidence compose with verified glass thermal-fracture, scattering and transmission premises. Covered for the requested functional scientific layer; local mineral procurement and medieval glass production are not established. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
     },
     {
       "cell_ref": "wk:material:iron-steel",
@@ -1320,15 +1846,23 @@
       "knowledge_purpose": [
         "materialization_support"
       ],
-      "coverage_status": "partial",
+      "coverage_status": "covered",
       "criticality": "P2",
-      "evidence_quality": "production_verified_qualified_relations",
+      "evidence_quality": "production_verified_historical_and_scientific_relations",
       "claim_refs": [
+        "claim:foundations-mat-08-abrasive-hardness-material-removal",
+        "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
+        "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability",
+        "claim:foundations-physical-material3-04-osseous-shaping-operations",
         "claim:novgorod-wood-bone-horn-classes",
         "claim:population-processes-bone-skate-input",
         "claim:population-processes-bone-skate-output"
       ],
-      "coverage_basis": "Bone-to-skate transformation gives one historical process relation, not a whitelist. General working prerequisites and antler/horn processes remain incomplete."
+      "coverage_basis": "Historical bone-to-skate transformation composes with material response and experimental shaping/removal operations on bone and red-deer antler using a replica bronze knife. This supports conditional open-class working, not a recipe, medieval tool availability or universal workability guarantee. Qualified factual support only: no scene presence, actor knowledge, exact mechanics, individual outcome or historical/local availability follows. Independent scope review: audits/foundations-readiness.md."
     },
     {
       "cell_ref": "wk:process:food",
@@ -1382,7 +1916,7 @@
       "coverage_basis": "Independent household-readiness-481.md: cereal/bread, fish drying/workspace and malt contexts compose with dough/baking, fermentation and preservation causal relations. A novel ordinary preparation attempt needs real inputs, not a dated local recipe or a guaranteed food-safety outcome. No current brew, vessel or finished product is created."
     },
     {
-        "cell_ref": "wk:process:subsistence",
+      "cell_ref": "wk:process:subsistence",
       "domain": "technology_processes",
       "subdomain": "subsistence",
       "family": "agriculture_husbandry_fishing_hunting_trapping",
@@ -1397,7 +1931,7 @@
         "materialization_support",
         "npc_decision"
       ],
-        "coverage_status": "covered",
+      "coverage_status": "covered",
       "criticality": "P1",
       "evidence_quality": "production_broad_context",
       "claim_refs": [
@@ -1422,13 +1956,13 @@
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-swine-membership",
-          "claim:livestock-swine-comparative-diet",
-          "claim:early-rus-hunting-ground-terms",
-          "claim:force-contact-geometry",
-          "claim:dry-friction",
-          "claim:population-physics-static-friction"
-        ],
-        "coverage_basis": "Independent revised-readiness-493.md current516: the source-qualified early-Rus hunting/trapping-ground class composes with existing force/contact/geometry, friction and material failure facts for an ordinary constructed restraint. It identifies no historical trap mechanism and does not relocate Dnieper/Desna grounds to Novgorod. No separate trap recipe or tautological restraint rule is needed. Actual materials, target animal, geometry, movement, access and capture remain committed state and mechanics."
+        "claim:livestock-swine-comparative-diet",
+        "claim:early-rus-hunting-ground-terms",
+        "claim:force-contact-geometry",
+        "claim:dry-friction",
+        "claim:population-physics-static-friction"
+      ],
+      "coverage_basis": "Independent revised-readiness-493.md current516: the source-qualified early-Rus hunting/trapping-ground class composes with existing force/contact/geometry, friction and material failure facts for an ordinary constructed restraint. It identifies no historical trap mechanism and does not relocate Dnieper/Desna grounds to Novgorod. No separate trap recipe or tautological restraint rule is needed. Actual materials, target animal, geometry, movement, access and capture remain committed state and mechanics."
     },
     {
       "cell_ref": "wk:process:transport",
@@ -1706,7 +2240,7 @@
       "coverage_basis": "Independent 414-claim readiness review confirms wooden boat/cart/sledge, boat-work and cart-transport contexts, building/roof forms and repair/join premises. Vehicle presence, controller, routes, access, capacities and movement remain existing state/domain owners."
     },
     {
-        "cell_ref": "wk:items:institutional",
+      "cell_ref": "wk:items:institutional",
       "domain": "material_culture_items",
       "subdomain": "institutional_items",
       "family": "trade_religious_military_functional_classes",
@@ -1721,16 +2255,16 @@
         "materialization_support",
         "conversation"
       ],
-        "coverage_status": "covered",
-        "criticality": "P1",
-        "evidence_quality": "qualified_item_form_function_and_documentary_context",
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "qualified_item_form_function_and_documentary_context",
       "claim_refs": [
         "claim:social-grivna-accounting-unit",
         "claim:social-church-calendar-text-relates-feast-list",
-          "claim:practical-document-genres",
-          "claim:probable-travel-chalice-communion"
-        ],
-        "coverage_basis": "Independent revised-readiness-493.md current516: a pre-Mongol XII–XIII bowl's explicitly probable communion function supplies a source-qualified religious item form/function alongside existing documentary/accounting contexts. Unnamed material and absent provenance remain unknown; no local medieval presence, authenticity, institution, current vessel, rite or access is inferred."
+        "claim:practical-document-genres",
+        "claim:probable-travel-chalice-communion"
+      ],
+      "coverage_basis": "Independent revised-readiness-493.md current516: a pre-Mongol XII–XIII bowl's explicitly probable communion function supplies a source-qualified religious item form/function alongside existing documentary/accounting contexts. Unnamed material and absent provenance remain unknown; no local medieval presence, authenticity, institution, current vessel, rite or access is inferred."
     },
     {
       "cell_ref": "wk:npc:status-family",
@@ -1764,7 +2298,7 @@
       "coverage_basis": "Independent social-household-readiness-482.md final compiled-491 composition: kin protection/return, spousal/child, conditional dependant-care, caretaker goods/care and maternal household-care texts compose with role contexts into a family/dependant/status category envelope. They create no demographic instance, family, duty, office or enacted law. Ordinary help/care decisions use committed relationships and free NPC choice, not automatic exposure of internal legal texts."
     },
     {
-        "cell_ref": "wk:npc:occupations",
+      "cell_ref": "wk:npc:occupations",
       "domain": "npc_human_world",
       "subdomain": "work_roles",
       "family": "occupations_crafts_trade_agricultural_authority_religious_military_temporary_roles",
@@ -1779,7 +2313,7 @@
         "materialization_support",
         "npc_decision"
       ],
-        "coverage_status": "covered",
+      "coverage_status": "covered",
       "criticality": "P1",
       "evidence_quality": "production_verified_qualified_relations",
       "claim_refs": [
@@ -1796,11 +2330,11 @@
         "claim:transport-private-boat-arrangement",
         "claim:religion-olenin-church-people",
         "claim:religion-olenin-adjudication",
-          "claim:religion-priest-child-baptism",
-          "claim:posadnik-fedor-conflict-1224",
-          "claim:posadnik-volodislav-pursuit-1228"
-        ],
-        "coverage_basis": "Independent revised-readiness-493.md current513: named 1224/1228 posadnik episodes add a source-qualified possible authority/military activity envelope to existing craft, agriculture, fishing, trade, boat/hired-service and clergy contexts. They do not establish a routine duty, command power, boating practice or current conflict. Actual role, equipment, expertise, schedule, decision and results remain committed profile/state and existing owners."
+        "claim:religion-priest-child-baptism",
+        "claim:posadnik-fedor-conflict-1224",
+        "claim:posadnik-volodislav-pursuit-1228"
+      ],
+      "coverage_basis": "Independent revised-readiness-493.md current513: named 1224/1228 posadnik episodes add a source-qualified possible authority/military activity envelope to existing craft, agriculture, fishing, trade, boat/hired-service and clergy contexts. They do not establish a routine duty, command power, boating practice or current conflict. Actual role, equipment, expertise, schedule, decision and results remain committed profile/state and existing owners."
     },
     {
       "cell_ref": "wk:npc:knowledge",
@@ -1873,7 +2407,7 @@
       "coverage_basis": "Independent 414-claim readiness review confirms historical clothing/headwear and tool-to-work envelope, with common-cultural onuchi, leather shoes and tool context in narration probes. Technical records remain access-filtered; outfit, ownership, skill and carried kit come from committed profile/state."
     },
     {
-        "cell_ref": "wk:npc:routines",
+      "cell_ref": "wk:npc:routines",
       "domain": "npc_human_world",
       "subdomain": "activity",
       "family": "workplace_activities_routines_schedules_seasonal_work_obligations_relationships",
@@ -1888,9 +2422,9 @@
         "npc_decision",
         "narration"
       ],
-        "coverage_status": "covered",
-        "criticality": "P1",
-        "evidence_quality": "qualified_seasonal_activity_and_code_schedule_owner",
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "qualified_seasonal_activity_and_code_schedule_owner",
       "claim_refs": [
         "claim:household-boat-repair-clamp",
         "claim:household-ploughshare-tillage",
@@ -1902,11 +2436,11 @@
         "claim:environment-p1-wildfowl-season",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:population-boat-work",
-          "claim:agriculture-rural-role-context",
-          "claim:transport-winter-sledge-1220",
-          "claim:transport-sledge-summer-cargo"
-        ],
-        "coverage_basis": "Independent revised-readiness-493.md current516: the named winter-1220 sledge conveyance and qualified nonwinter cargo context supply seasonal activity examples alongside occupation, obligation and biology premises. They establish no annual calendar, general medical practice, route condition or current vehicle. Exact schedules, work/rest changes and free NPC decisions remain state-owned."
+        "claim:agriculture-rural-role-context",
+        "claim:transport-winter-sledge-1220",
+        "claim:transport-sledge-summer-cargo"
+      ],
+      "coverage_basis": "Independent revised-readiness-493.md current516: the named winter-1220 sledge conveyance and qualified nonwinter cargo context supply seasonal activity examples alongside occupation, obligation and biology premises. They establish no annual calendar, general medical practice, route condition or current vehicle. Exact schedules, work/rest changes and free NPC decisions remain state-owned."
     },
     {
       "cell_ref": "wk:social:property",
@@ -2004,7 +2538,7 @@
       "coverage_basis": "Independent social-household-readiness-482.md final compiled-491 composition: qualified kin requests, spousal and conditional household-care texts ground relation/obligation contexts without mandatory hospitality or universal family duties. Ordinary help, hosting or care may be accepted, negotiated or refused from committed relationships and NPC choice. A claimed objective customary/legal obligation stays unresolved without its own authority; inventing such a universal rule is not required for ordinary gameplay."
     },
     {
-        "cell_ref": "wk:social:law",
+      "cell_ref": "wk:social:law",
       "domain": "social_law_economy_religion",
       "subdomain": "law",
       "family": "authority_jurisdiction_legal_triggers_disputes_witnesses_evidence_sanctions_remedies",
@@ -2020,14 +2554,14 @@
         "npc_decision",
         "conversation"
       ],
-        "coverage_status": "covered",
-        "criticality": "P1",
-        "evidence_quality": "qualified_local_period_conditional_procedure",
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "qualified_local_period_conditional_procedure",
       "claim_refs": [
-          "claim:rp-market-purchase-relates-proof-participant",
-          "claim:rp-property-claim-relates-acquisition-chain",
-          "claim:rp-entrusted-goods-claim-relates-reference",
-          "claim:rp-merchant-credit-relates-third-party-goods",
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:russkaya-pravda-comparative-only",
         "claim:social-dispute-message-reports-dispatch",
         "claim:social-settlement-demand-reports-court-choice",
@@ -2036,10 +2570,10 @@
         "claim:religion-olenin-adjudication",
         "claim:religion-priest-child-baptism"
       ],
-        "coverage_basis": "Independent revised-readiness-493.md correction: RP articles 29/32/45/50 and Tikhomirov's early-XIII Novgorod-origin argument already supply qualified local-period acquisition-chain, proof/oath, deposit and differentiated loss/remedy contexts. These inferred-medium internal premises compose with ecclesiastical texts; they do not establish universally enacted law, a current court, official jurisdiction, sanction or outcome. Requiring automatic present enforcement was not a factual coverage gap."
+      "coverage_basis": "Independent revised-readiness-493.md correction: RP articles 29/32/45/50 and Tikhomirov's early-XIII Novgorod-origin argument already supply qualified local-period acquisition-chain, proof/oath, deposit and differentiated loss/remedy contexts. These inferred-medium internal premises compose with ecclesiastical texts; they do not establish universally enacted law, a current court, official jurisdiction, sanction or outcome. Requiring automatic present enforcement was not a factual coverage gap."
     },
     {
-        "cell_ref": "wk:social:religion",
+      "cell_ref": "wk:social:religion",
       "domain": "social_law_economy_religion",
       "subdomain": "religion",
       "family": "religious_institutions_practice_calendar_observances_burial_customs",
@@ -2055,9 +2589,9 @@
         "narration",
         "npc_decision"
       ],
-        "coverage_status": "covered",
-        "criticality": "P1",
-        "evidence_quality": "qualified_texts_use_examples_and_burial_forms",
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "qualified_texts_use_examples_and_burial_forms",
       "claim_refs": [
         "claim:social-christian-exegetical-text-relates-urban-context",
         "claim:social-church-calendar-text-relates-feast-list",
@@ -2065,13 +2599,13 @@
         "claim:social-religious-name-list-relates-disjunctive-context",
         "claim:religion-olenin-church-people",
         "claim:religion-olenin-adjudication",
-          "claim:religion-priest-child-baptism",
-          "claim:burial-plank-coffin-nails",
-          "claim:burial-coffin-lid-transverse-plank",
-          "claim:burial-hollowed-log-container",
-          "claim:probable-travel-chalice-communion"
-        ],
-        "coverage_basis": "Independent revised-readiness-493.md current516: the explicitly probable communion-vessel use and preliminary burial-container observations compose with calendar, prayer/name/priest, church-person and regulated baptism texts. This is a qualified religious-use/custom envelope, not a universal rite, personal belief, exact local institution, current clergy, service or burial. Probability and missing provenance are preserved."
+        "claim:religion-priest-child-baptism",
+        "claim:burial-plank-coffin-nails",
+        "claim:burial-coffin-lid-transverse-plank",
+        "claim:burial-hollowed-log-container",
+        "claim:probable-travel-chalice-communion"
+      ],
+      "coverage_basis": "Independent revised-readiness-493.md current516: the explicitly probable communion-vessel use and preliminary burial-container observations compose with calendar, prayer/name/priest, church-person and regulated baptism texts. This is a qualified religious-use/custom envelope, not a universal rite, personal belief, exact local institution, current clergy, service or burial. Probability and missing provenance are preserved."
     },
     {
       "cell_ref": "wk:social:literacy",
@@ -2178,6 +2712,312 @@
         "claim:fodder-healthy-horse-forage"
       ],
       "coverage_basis": "Independent livestock-readiness-470.md closes the shared feed-class prerequisite: plant growth/root/light/water/mineral, seasonal development, fungal decay and animal energy/homeostasis/insulation now compose with ruminant forage digestion and separate swine dietary constraints. No specific unfilled handling prerequisite remains at this family scope; individual state, access, ability, time and exact outcomes remain existing owners."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-wild-mammals",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "wild_mammal_ecology_behavior",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "forest_wetland_meadow",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "animal_habitat_diet_sociality_reproduction_senses_defence_traces_seasonal_movement",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-wolf-howling-communication",
+        "claim:fauna-mammals-wolf-carnivorous-diet",
+        "claim:fauna-mammals-wolf-pack-pup-care",
+        "claim:fauna-mammals-brown-bear-cover-rest",
+        "claim:fauna-mammals-brown-bear-seasonal-omnivory",
+        "claim:fauna-mammals-brown-bear-food-driven-movement",
+        "claim:fauna-mammals-brown-bear-conditional-aggregation",
+        "claim:fauna-mammals-brown-bear-maternal-care",
+        "claim:fauna-mammals-moose-solitary-calf-seclusion",
+        "claim:fauna-mammals-moose-crepuscular-seasonal-movement",
+        "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:fauna-mammals-moose-defensive-antlers-hooves",
+        "claim:fauna-mammals-moose-ecosystem-engineering",
+        "claim:fauna-mammals-wild-boar-sexual-social-structure",
+        "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
+        "claim:fauna-mammals-wild-boar-group-offspring-protection",
+        "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance",
+        "claim:fauna-mammals-eurasian-beaver-family-colony",
+        "claim:fauna-mammals-eurasian-beaver-dam-hydrology",
+        "claim:fauna-mammals-eurasian-beaver-seasonal-food-cache",
+        "claim:fauna-mammals-eurasian-beaver-castoreum-territory",
+        "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm",
+        "claim:fauna-mammals-eurasian-beaver-herbivory",
+        "claim:fauna-mammals-red-fox-habitat-flexibility",
+        "claim:fauna-mammals-red-fox-nonpack-territoriality",
+        "claim:fauna-mammals-red-fox-omnivory-food-caching",
+        "claim:fauna-mammals-red-fox-cooperative-pup-care",
+        "claim:fauna-mammals-red-fox-prey-population-effect",
+        "claim:fauna-mammals-red-fox-seed-dispersal",
+        "claim:fauna-mammals-eurasian-lynx-solitary-cover-activity",
+        "claim:fauna-mammals-eurasian-lynx-sensory-prey-location",
+        "claim:fauna-mammals-eurasian-lynx-gland-urine-range-marking",
+        "claim:fauna-mammals-eurasian-lynx-ambush-hunting",
+        "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+        "claim:fauna-mammals-european-otter-solitary-crepuscular",
+        "claim:fauna-mammals-european-otter-vibrissal-foraging",
+        "claim:fauna-mammals-european-otter-aquatic-prey-diet",
+        "claim:fauna-mammals-roe-deer-seasonal-grouping",
+        "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+        "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:fauna-mammals-red-squirrel-seed-cache",
+        "claim:fauna-mammals-red-squirrel-forgotten-cache-germination",
+        "claim:fauna-mammals-mountain-hare-sheltered-winter-movement",
+        "claim:fauna-mammals-mountain-hare-seasonal-pelage",
+        "claim:fauna-brown-bear-winter-denning"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified wild-mammals premises cover animal habitat diet sociality reproduction senses defence traces seasonal movement. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-domestic-mammals",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "domestic_animal_behavior",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "farmstead_pasture",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "herd_separation_flight_zone_foraging_social_rank_communication_maternal_bond_lambing_kid_hiding",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:fauna-mammals-domestic-cattle-startle-response",
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress",
+        "claim:fauna-mammals-domestic-horse-forage-behavior",
+        "claim:fauna-mammals-ruminant-grazing-selectivity",
+        "claim:fauna-mammals-domestic-pig-mixing-social-rank",
+        "claim:fauna-mammals-domestic-pig-competitive-displacement",
+        "claim:fauna-mammals-domestic-dog-flexible-sociality",
+        "claim:fauna-mammals-domestic-dog-multimodal-communication",
+        "claim:fauna-sheep-flocking",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-ewe-lamb-recognition",
+        "claim:fauna-goat-sociality",
+        "claim:fauna-doe-kid-care"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified domestic-mammals premises cover herd separation flight zone foraging social rank communication. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative. Final reviewed delta adds sheep flock synchrony, pre-lambing seclusion and lamb recognition, plus dynamic goat groups and the early kid-hiding/nursing phase. These are typical species relations, not a deterministic decision policy for each animal."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-birds",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "wild_domestic_bird_ecology",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "woodland_wetland_farmstead",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "foraging_incubation_brood_flocks_territory_senses_pellets_migration",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-mallard-wetland-diet",
+        "claim:fauna-mallard-brood",
+        "claim:fauna-mallard-residency",
+        "claim:fauna-bird-migration-cues",
+        "claim:fauna-bird-navigation",
+        "claim:fauna-bird-migration-energy",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:fauna-tawny-owl-activity",
+        "claim:fauna-tawny-owl-territory",
+        "claim:fauna-tawny-owl-hearing",
+        "claim:fauna-tawny-owl-pellets",
+        "claim:fauna-great-tit-summer-diet",
+        "claim:fauna-great-tit-winter-flocks",
+        "claim:fauna-great-tit-incubation",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-brooding"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified birds premises cover foraging incubation brood flocks territory senses pellets migration. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-fish",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "freshwater_migratory_fish_ecology",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "river_lake_estuary",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "predation_spawning_anadromy_catadromy_oxygen_senses_social_learning",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-pike-ambush",
+        "claim:fauna-pike-spawning",
+        "claim:fauna-pike-juvenile-predation",
+        "claim:fauna-salmon-anadromy",
+        "claim:fauna-salmon-repeat-spawning",
+        "claim:fauna-salmon-homing",
+        "claim:fauna-salmon-age-diet",
+        "claim:fauna-eel-feeding",
+        "claim:fauna-eel-migration",
+        "claim:fauna-fish-low-oxygen",
+        "claim:fauna-fish-summer-night-oxygen",
+        "claim:fauna-fish-vibration-senses",
+        "claim:fauna-fish-hearing-variability",
+        "claim:fauna-perch-experience",
+        "claim:fauna-perch-group-behavior"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified fish premises cover predation spawning anadromy catadromy oxygen senses social learning. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-herptiles",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "amphibian_reptile_ecology",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "damp_ground_pond_cover",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "metamorphosis_breeding_movement_temperature_viviparity_senses_defence",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-frog-damp-foraging",
+        "claim:fauna-frog-metamorphosis",
+        "claim:fauna-frog-calls-parental",
+        "claim:fauna-frog-invertebrate-diet",
+        "claim:fauna-adder-cover-basking",
+        "claim:fauna-adder-viviparity",
+        "claim:fauna-adder-chemical-sensing",
+        "claim:fauna-adder-winter-refuge",
+        "claim:fauna-toad-defence",
+        "claim:fauna-toad-diet",
+        "claim:fauna-adder-defence",
+        "claim:fauna-adder-male-contest",
+        "claim:fauna-amphibian-moist-skin",
+        "claim:fauna-toad-breeding-return",
+        "claim:fauna-tadpole-temperature",
+        "claim:fauna-common-frog-aquatic-overwintering"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified herptiles premises cover metamorphosis breeding movement temperature viviparity senses defence. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-invertebrates",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "terrestrial_aquatic_invertebrate_ecology",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "soil_vegetation_freshwater",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "life_cycle_moulting_pollination_predation_filtering_parasitism_decomposition_swarming_dispersal",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-bee-worker-tasks",
+        "claim:fauna-bee-winter-cluster",
+        "claim:fauna-bee-swarming",
+        "claim:fauna-bee-waggle",
+        "claim:fauna-bee-diurnal",
+        "claim:fauna-dragonfly-lifecycle",
+        "claim:fauna-dragonfly-foodweb",
+        "claim:fauna-dragonfly-emergence",
+        "claim:fauna-dragonfly-adult-foraging",
+        "claim:fauna-culex-life-cycle",
+        "claim:fauna-culex-dusk-rest",
+        "claim:fauna-culex-female-blood",
+        "claim:fauna-mussel-filtration",
+        "claim:fauna-mussel-fish-host",
+        "claim:fauna-earthworm-feeding-burrows",
+        "claim:fauna-earthworm-weather",
+        "claim:fauna-earthworm-soil-effects",
+        "claim:fauna-tick-questing",
+        "claim:fauna-tick-senses",
+        "claim:fauna-tick-feeding",
+        "claim:fauna-cross-spider-web",
+        "claim:fauna-cross-spider-ballooning",
+        "claim:fauna-cross-spider-egg-sac",
+        "claim:fauna-dragonfly-male-territory",
+        "claim:fauna-crayfish-habitat",
+        "claim:fauna-crayfish-diet",
+        "claim:fauna-crayfish-egg-carrying",
+        "claim:fauna-crayfish-juvenile-activity"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified invertebrates premises cover life cycle moulting pollination predation filtering parasitism decomposition swarming dispersal. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
+    },
+    {
+      "cell_ref": "wk:biology:fauna-general-behavior",
+      "domain": "biology_physiology",
+      "subdomain": "fauna_scientific_ecology",
+      "family": "general_animal_behavior",
+      "time": "universal biological relations; conditions retained",
+      "region": "species/class ecology, not a contemporary range transplanted into Novgorod",
+      "location": "compatible_animal_habitat",
+      "npc_role": "actor_with_existing_knowledge_only",
+      "material_resource": "animals_and_ecological_relations",
+      "process": "learning_habituation_signals_partial_facultative_obligate_migration",
+      "player_interaction": "observe_approach_follow_interact",
+      "knowledge_purpose": [
+        "semantic_resolution",
+        "materialization_support"
+      ],
+      "coverage_status": "covered",
+      "criticality": "P1",
+      "evidence_quality": "production_verified_independent_readiness",
+      "claim_refs": [
+        "claim:fauna-animal-learning",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-animal-signals",
+        "claim:fauna-animal-partial-migration"
+      ],
+      "coverage_basis": "Independent source/domain review: verification-fauna-mammals-modern.md, verification-fauna-ecology-modern.md, verification-fauna-supplement-modern.md and verification-fauna-winter-modern.md. Verified general-behavior premises cover learning habituation signals partial facultative obligate migration. Together with existing historical category evidence and habitat context these support ordinary semantic reasoning. Modern scientific knowledge does not require medieval attestation. This is a functional gameplay envelope, not every species or behavior, a closed animal whitelist, a contemporary census, exact population/migration map, schedule, guaranteed reaction, scene entity/resource or actor knowledge. Existing mechanics and committed context remain authoritative."
     }
   ],
   "non_goals": [

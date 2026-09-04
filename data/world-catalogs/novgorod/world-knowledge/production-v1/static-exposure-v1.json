@@ -1,0 +1,267 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "title": "Carbon Monoxide Poisoning Basics",
+      "authors": [
+        "Centers for Disease Control and Prevention, National Center for Environmental Health"
+      ],
+      "publication": "CDC, updated 2026-01-12",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/carbon-monoxide/about/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-niosh-cold-related-illnesses-2026",
+      "title": "Cold-related Illnesses in Workers",
+      "authors": [
+        "National Institute for Occupational Safety and Health"
+      ],
+      "publication": "CDC/NIOSH, updated 2026-03-03",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/niosh/cold-stress/about/related-illness.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-co-combustion",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "anchor": {
+        "section": "What it is; Reducing risk, paragraph beginning ‘CO is found in fumes’"
+      },
+      "note": "Draft pending independent verification. CDC identifies CO as an odorless/colorless gas in fumes produced when fuel burns. No concrete fuel, fire, concentration, source rate, room, exposure, symptom, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-co-indoor-accumulation",
+      "source_ref": "source:research-cdc-carbon-monoxide-basics-2026",
+      "anchor": {
+        "section": "Reducing risk, paragraph beginning ‘CO is found in fumes’"
+      },
+      "note": "Draft pending independent verification. CDC says CO can build up indoors and poison people and animals who breathe it. No actual enclosure, ventilation, concentration, duration, person, symptom, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-cold-water-immersion",
+      "source_ref": "source:research-cdc-niosh-cold-related-illnesses-2026",
+      "anchor": {
+        "section": "Immersion hypothermia from cold water"
+      },
+      "note": "Draft pending independent verification. CDC/NIOSH names cold-water immersion as a cause of immersion hypothermia. The candidate deliberately does not retain the source’s comparative speed wording because no comparison conditions are supplied. No local water temperature, duration, clothing, body temperature, impairment, injury, survival or treatment outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fuel_combustion_can_produce_carbon_monoxide"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-co-combustion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "carbon_monoxide_can_accumulate_in_indoor_air"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-co-indoor-accumulation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cold_water_immersion_can_cause_immersion_hypothermia"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-cold-water-immersion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "locale": "ru",
+      "labels": [
+        "Угарный газ при горении и воздух в помещении"
+      ],
+      "short_definition": "Качественная связь горения топлива, угарного газа и воздуха в помещении.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
+      "locale": "en",
+      "labels": [
+        "Carbon monoxide from combustion and indoor air"
+      ],
+      "short_definition": "Qualitative relation between fuel combustion, carbon monoxide, and indoor air.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "locale": "ru",
+      "labels": [
+        "Переохлаждение при погружении в холодную воду"
+      ],
+      "short_definition": "Качественная связь погружения в холодную воду и переохлаждения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
+      "locale": "en",
+      "labels": [
+        "Cold-water immersion hypothermia"
+      ],
+      "short_definition": "Qualitative relation between cold-water immersion and hypothermia.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "locale": "ru",
+      "runtime_text": "При горении топлива может образовываться угарный газ. Это не устанавливает топливо, огонь, количество, скорость образования, место или исход в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "locale": "en",
+      "runtime_text": "Fuel combustion can produce carbon monoxide. This establishes no fuel, fire, amount, production rate, place, or outcome in a concrete scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "locale": "ru",
+      "runtime_text": "Угарный газ может накапливаться в воздухе помещения. Это не устанавливает помещение, вентиляцию, концентрацию, длительность воздействия, человека, симптом, диагноз или исход в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "locale": "en",
+      "runtime_text": "Carbon monoxide can accumulate in indoor air. This establishes no enclosure, ventilation, concentration, exposure duration, person, symptom, diagnosis, or outcome in a concrete scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "locale": "ru",
+      "runtime_text": "Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "locale": "en",
+      "runtime_text": "Cold-water immersion can cause immersion hypothermia. This establishes no water temperature, duration, clothing, body temperature, functional impairment, injury, survival, or outcome in a concrete scene.",
+      "search_aliases": []
+    }
+  ]
+}

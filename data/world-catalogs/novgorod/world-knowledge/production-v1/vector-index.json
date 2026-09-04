@@ -11000,6 +11000,20 @@
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения. Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-corylus-avellana-hazelnuts-are-documented-edible:en",
+      "target_ref": "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Hazelnut food part Narrow premise about nuts of Corylus avellana. Hazelnuts of Corylus avellana are documented edible. This establishes no shrub, identification, ripeness, harvest, amount, safety, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-corylus-avellana-hazelnuts-are-documented-edible:ru",
+      "target_ref": "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть лещины Узкая предпосылка об орехах Corylus avellana. Орехи Corylus avellana документированы как съедобные. Это не устанавливает куст, определение, зрелость, сбор, количество, безопасность или исход."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-extreme-cold-can-cause-cold-stress:en",
       "target_ref": "claim:research-extreme-cold-can-cause-cold-stress",
       "domain": "biology_physiology",
@@ -11056,6 +11070,20 @@
       "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Паводок может оставлять отметки высокой воды, включая отложившийся ил, зацепившийся за препятствия мусор и эрозионные следы. Это не устанавливает местный паводок, дату события, пик, причину, величину, уровень воды, решение о маршруте или будущий риск в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-footprint-track-interpretation-can-depend-on-substrate:en",
+      "target_ref": "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Track and substrate conditions Qualitative relation between footprint tracks, substrate conditions, and interpretation limits. Footprint-track morphology and interpretation can depend on substrate conditions. This establishes no local trace, animal species, trace age, time, route, abundance, or encounter."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-footprint-track-interpretation-can-depend-on-substrate:ru",
+      "target_ref": "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "След и условия субстрата Качественная связь отпечатка следа, субстрата и пределов интерпретации. Форма отпечатка следа и его интерпретация могут зависеть от условий субстрата. Это не устанавливает местный след, вид животного, возраст следа, время, маршрут, численность или встречу."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion:en",
       "target_ref": "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
       "domain": "environment",
@@ -11068,6 +11096,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Морозное разрыхление осадочного грунта Качественная связь циклов замерзания–оттаивания, осадочного грунта и эрозионной уязвимости. Циклы замерзания и оттаивания могут разрушать ранее связанный осадочный грунт и после оттаивания делать его более уязвимым для эрозии. Это не устанавливает берег, обрушение, скорость, сезон, состав грунта, уровень воды, доступ или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fuel-burning-stoves-can-add-indoor-water-vapour:en",
+      "target_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stove combustion and indoor humidity Fuel-burning stoves can produce water vapour and increase indoor humidity without outdoor venting. Stove presence, fuel composition, draught and actual humidity come from scene state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fuel-burning-stoves-can-add-indoor-water-vapour:ru",
+      "target_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Печное горение и влажность помещения Печи, сжигающие топливо, могут выделять водяной пар и повышать влажность помещения без отвода наружу. Наличие печи, состав топлива, тяга и фактическая влажность задаются состоянием сцены."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-fuel-combustion-can-produce-carbon-monoxide:en",
@@ -11096,6 +11138,62 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Обморок и перфузия мозга Качественная связь краткой глобальной гипоперфузии мозга и обморока. Кратковременное глобальное снижение перфузии мозга может вызвать обморок — преходящую потерю сознания. Это не устанавливает причину, диагноз, длительность, падение, восстановление, повторение или состояние конкретного персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction:en",
+      "target_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Plant herbivory effects Qualitative conditional relation of herbivory to plant tissue loss, growth, or reproduction. Herbivory can remove plant tissue and can reduce plant growth or reproduction under some conditions. This establishes no local animal or plant, consumption amount, growth or reproduction result, yield, or vegetation change."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction:ru",
+      "target_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Поедание растений и последствия для растения Качественная условная связь поедания растений, потери тканей, роста или размножения. Поедание растений животными может удалять ткани растения и при некоторых условиях снижать его рост или размножение. Это не устанавливает местное животное или растение, величину поедания, результат роста или размножения, урожай либо изменение растительности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-increased-ventilation-can-help-reduce-condensation:en",
+      "target_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Air movement and condensation Increased ventilation or air movement can help reduce condensation. The result depends on actual conditions; this establishes no air exchange, temperature, humidity or dryness for a particular room."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-increased-ventilation-can-help-reduce-condensation:ru",
+      "target_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Воздухообмен и конденсация Усиление вентиляции или движения воздуха может помогать уменьшать конденсацию. Результат зависит от фактических условий; это не устанавливает воздухообмен, температуру, влажность или сухость конкретного помещения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour:en",
+      "target_ref": "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Vertebrate infection-associated sickness behaviour Qualitative conditional relation between infection and behavioural change in vertebrates. Infection in vertebrates can be associated with sickness behaviours including altered social interactions or eating and drinking patterns. This establishes no infection, cause, diagnosis, particular behaviour, transmission, intent, mortality, or treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour:ru",
+      "target_ref": "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Болезненное поведение позвоночных при инфекции Качественная условная связь инфекции и изменений поведения у позвоночных. Инфекция у позвоночных может быть связана с болезненным поведением, включая изменённые социальные взаимодействия или режимы еды и питья. Это не устанавливает инфекцию, причину, диагноз, конкретное поведение, передачу, намерение, смертность или лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous:en",
+      "target_ref": "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-apple part distinction Narrow premise distinguishing fruit and seeds of Malus sylvestris. Fruit of Malus sylvestris is documented edible, but its seeds are poisonous. This establishes no tree or fruit, identification, amount, exposure, symptom, treatment, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous:ru",
+      "target_ref": "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Части плода яблони лесной Узкая предпосылка о различии плода и семян Malus sylvestris. Плод Malus sylvestris документирован как съедобный, но его семена ядовиты. Это не устанавливает дерево или плод, определение, количество, воздействие, симптом, лечение или исход."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-memory-postevent-misinformation:en",
@@ -11168,6 +11266,20 @@
       "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Капиллярное впитывание может поместить отметку высокой воды на пористой поверхности выше фактического пика воды; близкие непористые отметки могут подтвердить её оценку. Это не устанавливает отметку, материал, высоту, степень уверенности, обследование, паводок или вывод в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked:en",
+      "target_ref": "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Raspberry food part Narrow premise about fruit of Rubus idaeus. Fruit of Rubus idaeus can be eaten raw or cooked. This establishes no plant, identification, ripeness, harvest, amount, safety, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked:ru",
+      "target_ref": "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть малины Узкая предпосылка о плоде Rubus idaeus. Плоды Rubus idaeus можно есть сырыми или готовить. Это не устанавливает растение, определение, зрелость, сбор, количество, безопасность или исход."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-stitching-can-secure-weak-textile-to-support:en",
       "target_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
       "domain": "physics_material_science",
@@ -11194,6 +11306,48 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Перенос и рассеивание дыма Качественная связь атмосферных условий, температурной инверсии и переноса дыма. Приземная температурная инверсия может удерживать дым на низком уровне и ограничивать его подъём для разбавления или переноса ветром. Это не устанавливает инверсию, время, рельеф, ветер, источник дыма, концентрацию, эффект, направление или безопасное место в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts:en",
+      "target_ref": "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nettle food and contact properties Narrow taxon-specific premises about young leaves and stinging trichomes of Urtica dioica. Urtica dioica trichomes can produce a stinging sensation on skin or welts. This establishes no contact, injury severity, allergy, treatment, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts:ru",
+      "target_ref": "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевые и контактные свойства крапивы Узкие таксономические предпосылки о молодых листьях и жгучих волосках Urtica dioica. Волоски Urtica dioica могут вызывать на коже жгучее ощущение или волдыри. Это не устанавливает контакт, тяжесть повреждения, аллергию, лечение или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts:en",
+      "target_ref": "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nettle food and contact properties Narrow taxon-specific premises about young leaves and stinging trichomes of Urtica dioica. Young tender leaves of Urtica dioica are documented edible food parts. This establishes no plant, identification, amount, preparation, safety, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts:ru",
+      "target_ref": "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевые и контактные свойства крапивы Узкие таксономические предпосылки о молодых листьях и жгучих волосках Urtica dioica. Молодые нежные листья Urtica dioica документированы как съедобные пищевые части. Это не устанавливает растение, его определение, количество, приготовление, безопасность или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible:en",
+      "target_ref": "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Lingonberry food part Narrow premise about the fruit of Vaccinium vitis-idaea. The fruit of Vaccinium vitis-idaea is documented edible. This establishes no plant or berry, identification from resemblance, ripeness, amount, safety, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible:ru",
+      "target_ref": "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть брусники Узкая предпосылка о плоде Vaccinium vitis-idaea. Плод Vaccinium vitis-idaea документирован как съедобный. Это не устанавливает растение или ягоду, определение по сходству, зрелость, количество, безопасность или исход."
     },
     {
       "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
@@ -15592,6 +15746,48 @@
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-hazelnut-food-part:en",
+      "target_ref": "wk:biology_physiology:research-hazelnut-food-part",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Hazelnut food part Narrow premise about nuts of Corylus avellana."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-hazelnut-food-part:ru",
+      "target_ref": "wk:biology_physiology:research-hazelnut-food-part",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть лещины Узкая предпосылка об орехах Corylus avellana."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-lingonberry-fruit-food-part:en",
+      "target_ref": "wk:biology_physiology:research-lingonberry-fruit-food-part",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Lingonberry food part Narrow premise about the fruit of Vaccinium vitis-idaea."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-lingonberry-fruit-food-part:ru",
+      "target_ref": "wk:biology_physiology:research-lingonberry-fruit-food-part",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть брусники Узкая предпосылка о плоде Vaccinium vitis-idaea."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-nettle-food-contact-properties:en",
+      "target_ref": "wk:biology_physiology:research-nettle-food-contact-properties",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nettle food and contact properties Narrow taxon-specific premises about young leaves and stinging trichomes of Urtica dioica."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-nettle-food-contact-properties:ru",
+      "target_ref": "wk:biology_physiology:research-nettle-food-contact-properties",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевые и контактные свойства крапивы Узкие таксономические предпосылки о молодых листьях и жгучих волосках Urtica dioica."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-orienting-response:en",
       "target_ref": "wk:biology_physiology:research-orienting-response",
       "domain": "biology_physiology",
@@ -15606,6 +15802,20 @@
       "retrieval_text": "Ориентировочная реакция на новизну Качественная связь новизны стимула и ориентировочной реакции."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-plant-herbivory-effects:en",
+      "target_ref": "wk:biology_physiology:research-plant-herbivory-effects",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Plant herbivory effects Qualitative conditional relation of herbivory to plant tissue loss, growth, or reproduction."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-plant-herbivory-effects:ru",
+      "target_ref": "wk:biology_physiology:research-plant-herbivory-effects",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Поедание растений и последствия для растения Качественная условная связь поедания растений, потери тканей, роста или размножения."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-pupil-light-reflex:en",
       "target_ref": "wk:biology_physiology:research-pupil-light-reflex",
       "domain": "biology_physiology",
@@ -15618,6 +15828,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Зрачковый световой рефлекс Качественная связь яркого света на сетчатке и сужения зрачка."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-raspberry-food-part:en",
+      "target_ref": "wk:biology_physiology:research-raspberry-food-part",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Raspberry food part Narrow premise about fruit of Rubus idaeus."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-raspberry-food-part:ru",
+      "target_ref": "wk:biology_physiology:research-raspberry-food-part",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пищевая часть малины Узкая предпосылка о плоде Rubus idaeus."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-syncope-cerebral-perfusion:en",
@@ -15646,6 +15870,34 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Тепловой и холодовой стресс Качественные связи сильной жары или холода с тепловым балансом тела."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-vertebrate-infection-sickness-behaviour:en",
+      "target_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Vertebrate infection-associated sickness behaviour Qualitative conditional relation between infection and behavioural change in vertebrates."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-vertebrate-infection-sickness-behaviour:ru",
+      "target_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Болезненное поведение позвоночных при инфекции Качественная условная связь инфекции и изменений поведения у позвоночных."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-wild-apple-part-bound:en",
+      "target_ref": "wk:biology_physiology:research-wild-apple-part-bound",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-apple part distinction Narrow premise distinguishing fruit and seeds of Malus sylvestris."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-wild-apple-part-bound:ru",
+      "target_ref": "wk:biology_physiology:research-wild-apple-part-bound",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Части плода яблони лесной Узкая предпосылка о различии плода и семян Malus sylvestris."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:ruminant-digestion:en",
@@ -17648,6 +17900,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Морозное разрыхление осадочного грунта Качественная связь циклов замерзания–оттаивания, осадочного грунта и эрозионной уязвимости."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-track-substrate-interpretation:en",
+      "target_ref": "wk:environment:research-track-substrate-interpretation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Track and substrate conditions Qualitative relation between footprint tracks, substrate conditions, and interpretation limits."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-track-substrate-interpretation:ru",
+      "target_ref": "wk:environment:research-track-substrate-interpretation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "След и условия субстрата Качественная связь отпечатка следа, субстрата и пределов интерпретации."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:rising-air-cooling-cloud-condensation:en",
@@ -21008,6 +21274,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour:en",
+      "target_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Stove combustion and indoor humidity"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour:ru",
+      "target_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Печное горение и влажность помещения"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation:en",
+      "target_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Air movement and condensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation:ru",
+      "target_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Воздухообмен и конденсация"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-smoke-transport-dispersion:en",

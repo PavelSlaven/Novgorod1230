@@ -602,6 +602,185 @@
       "domains": ["environment"],
       "expected_hard_constraint_refs": [],
       "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_track_mud_sand_ru",
+      "locale": "ru",
+      "query_text": "Почему отпечаток одной лапы может выглядеть иначе в мягкой грязи и на плотном песке? Можно ли при толковании следа игнорировать поверхность?",
+      "relevant_claim_refs": [
+        "claim:research-footprint-track-interpretation-can-depend-on-substrate"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_sick_animal_social_feeding_en",
+      "locale": "en",
+      "query_text": "Can an infection change how a vertebrate animal eats, drinks or interacts with others, without diagnosing the animal in front of us?",
+      "relevant_claim_refs": [
+        "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_browsed_plant_growth_ru",
+      "locale": "ru",
+      "query_text": "Животные объели часть растения. Как потеря его тканей может сказаться на дальнейшем росте и размножении без гарантии гибели?",
+      "relevant_claim_refs": [
+        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_stove_room_dampness_en",
+      "locale": "en",
+      "query_text": "Could a fuel-burning stove add water vapour to indoor air when its emissions are not vented outside?",
+      "relevant_claim_refs": [
+        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_room_air_condensation_ru",
+      "locale": "ru",
+      "query_text": "Может ли движение воздуха и проветривание помогать против конденсата в помещении, если не обещать одинаковый результат при любой погоде?",
+      "relevant_claim_refs": [
+        "claim:research-increased-ventilation-can-help-reduce-condensation"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_nettle_food_contact_ru",
+      "locale": "ru",
+      "query_text": "У крапивы двудомной хотят использовать молодые нежные листья как пищу. Какие пищевые и контактные свойства важны при обращении с ней?",
+      "relevant_claim_refs": [
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_raspberry_lingonberry_food_en",
+      "locale": "en",
+      "query_text": "Which parts of identified raspberry Rubus idaeus and lingonberry Vaccinium vitis-idaea plants are edible, without assuming every part or specimen is suitable?",
+      "relevant_claim_refs": [
+        "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
+        "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_hazel_apple_parts_ru",
+      "locale": "ru",
+      "query_text": "У определённых лещины обыкновенной и яблони лесной какие части пригодны как пища? Почему статус яблока нельзя автоматически переносить на его семена?",
+      "relevant_claim_refs": [
+        "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+        "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     }
   ]
 }

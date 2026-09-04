@@ -66,6 +66,12 @@
     "static-memory-social-v1.json",
     "verification-static-memory-social-v1.json",
     "static-human-physiology-v1.json",
-    "verification-static-human-physiology-v1.json"
+    "verification-static-human-physiology-v1.json",
+    "static-ecology-relations-v1.json",
+    "verification-static-ecology-relations-v1.json",
+    "static-indoor-moisture-v1.json",
+    "verification-static-indoor-moisture-v1.json",
+    "static-plant-use-v1.json",
+    "verification-static-plant-use-v1.json"
   ]
 }

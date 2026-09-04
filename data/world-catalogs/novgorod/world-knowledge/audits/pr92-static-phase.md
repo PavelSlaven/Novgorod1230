@@ -189,6 +189,65 @@ These are static checks, not live gameplay or full CI. No vector rebuild is
 needed because the 926-claim corpus and embedding inputs did not change.
 Full exact-HEAD CI remains required before merge.
 
+## Static ecology, plant use and indoor moisture increment
+
+The corpus now contains 937 claims, 724 concepts, 319 sources and 611 evidence
+records. Eleven independently approved premises are included: footprint/substrate
+interpretation, infection-associated vertebrate behaviour, conditional herbivory
+effects, two indoor-moisture relations and six named plant food/contact
+properties. Ecology candidates are bound to `fd555608709bc9e11647a85383f8d4bf10e825f1`;
+indoor and plant candidates to `cd68250993d8be235389dd6d747578483d9e8a98`.
+The existing verifier format and compiler gate are unchanged. See the three
+`verification/static-{ecology-relations,indoor-moisture,plant-use}-v1.md` reports.
+
+The plant increment concerns nettle, lingonberry, hazel, raspberry and wild
+apple. Taxon/part support is not identification by resemblance, local presence
+or a guarantee that a concrete specimen is safe. A North American strawberry
+candidate was excluded as unhelpful for this regional need. Modern science is
+not evidence of a Novgorod-1230 installation, custom or distribution.
+
+Cartography now has 128 supported families and 29 missing/partial entries.
+Seven stale entries were removed from the missing list: two newly grounded
+ecological relations, aquatic functional form, basic shelter functions, storage
+conditions, riparian debris and Class-A water cooling. Their supported families
+and scene-state boundaries remain mapped; this is not deletion of a gameplay
+need or a completeness claim. Footprint interpretation beyond substrate,
+additional plant taxa and historical applicability remain bounded partial needs.
+Eight additional offline probes exercise the new facts; no live campaign runs.
+
+Further read-only need reconciliation finds concrete research directions in
+watercraft handling, shelter weatherproofing, waste/contact contamination,
+care/dependency and historically applicable religious practice. Existing cargo,
+wood/moisture, infection-chain, kin-letter and baptism/calendar claims supply
+related support, not automatic closure. Collective-work coordination still needs
+separation of general factual premises from task dependencies owned by mechanics.
+Speech acts and reputation do not require a universal compliance/reputation
+rule: meaning belongs to the semantic boundary, relationships to state, and
+asserted local customs to scoped historical evidence. Memory/source confusion
+and post-event misinformation already constrain testimony; exact credibility,
+knowledge and admissibility are not new universal corpus facts.
+
+Increment checks: strict compilation, cartography validation, 163 focused tests
+and `git diff --check` PASS. The unchanged pinned CPU encoder rebuilt 3,322 ×
+1,024 float32 entries (13,606,912 bytes) in 261,436 ms. The 133-query baseline
+passes with hybrid Recall@10 0.96992. The expanded 43-query benchmark passes
+with hybrid Recall@10 0.98837, Recall@20 1.0, noise 0.71696, applicability
+precision 1.0 and hard-constraint recall 1.0. Gates and existing queries are
+unchanged; no benchmark threshold or relevance set was weakened.
+
+On this larger corpus, `water_fire_smoke_ru` ranks the optical-visibility
+premise eleventh. Unlike the earlier admission defect, it is admitted and
+returned in the top-20 result but falls outside top ten. The fixed generic
+admission regression still passes; the earlier 35-query perfect-recall result
+describes its own checkpoint, not this expanded corpus. This bounded ranking
+limitation remains visible rather than being hidden by query/alias changes.
+
+These remaining directions are static work, not authorization for gameplay
+debugging. Full CI succeeded for prior checkpoint `2663c4fa` (run
+`33893098877`); that result does not certify later checkpoints. Read the current
+PR checks for their exact commit. No final completeness or exact-final-HEAD CI
+verdict is claimed here.
+
 ## Future-testing finding: unowned ordinary item → action production
 
 - Classification: `CODE_MECHANICS_GAP`, P1, open; outside static WK repair scope.

@@ -1082,6 +1082,52 @@
         "npc": "no actor state inferred"
       },
       "coverage": "six independently verified physiological premises"
+    },
+    {
+      "id": "static-ecology-relations-v1",
+      "source_path": "static-ecology-relations-v1.json",
+      "domains": [
+        "biology_physiology",
+        "environment"
+      ],
+      "location_applicability": "Animal traces, vertebrate condition and plant/herbivore interactions",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded conditional premise",
+        "npc": "conditional"
+      },
+      "coverage": "bounded independently approved premises"
+    },
+    {
+      "id": "static-indoor-moisture-v1",
+      "source_path": "static-indoor-moisture-v1.json",
+      "domains": [
+        "physics_material_science"
+      ],
+      "location_applicability": "Shelter, store and fuel-burning contexts",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded conditional premise",
+        "npc": "conditional"
+      },
+      "coverage": "bounded independently approved premises"
+    },
+    {
+      "id": "static-plant-use-v1",
+      "source_path": "static-plant-use-v1.json",
+      "domains": [
+        "biology_physiology"
+      ],
+      "location_applicability": "Potential gathering and plant handling",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded conditional premise",
+        "npc": "conditional"
+      },
+      "coverage": "bounded independently approved premises"
     }
   ],
   "families": [
@@ -1101,7 +1147,8 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:endotherm-insulation-reduces-heat-loss",
-        "claim:animal-homeostasis-responds-to-internal-external-change"
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour"
       ]
     },
     {
@@ -1344,7 +1391,8 @@
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stomatal-opening-affects-gas-water-exchange",
-        "claim:foundations-life-40-photosynthesis"
+        "claim:foundations-life-40-photosynthesis",
+        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
       ]
     },
     {
@@ -3886,6 +3934,66 @@
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-surface-inversion-can-trap-smoke-near-ground"
       ]
+    },
+    {
+      "id": "environment-footprint-trace-interpretation",
+      "domain": "environment",
+      "subdomain": "biological_traces",
+      "family": "footprint_substrate_and_interpretation",
+      "location_applicability": "Potential footprint observations on soil, sand or mud; no trace is created.",
+      "applicability": {
+        "resource": "none",
+        "material": "conditional substrate",
+        "process": "conditional trace formation and interpretation",
+        "npc": "conditional observation"
+      },
+      "coverage": "grounded footprint/substrate relation",
+      "evidence_boundary": "Footprint interpretation only; no taxon, trace age, route or encounter.",
+      "claim_refs": [
+        "claim:research-footprint-track-interpretation-can-depend-on-substrate"
+      ]
+    },
+    {
+      "id": "indoor-air-moisture",
+      "domain": "physics_material_science",
+      "subdomain": "indoor_air_and_moisture",
+      "family": "stove_water_vapour_and_condensation_mitigation",
+      "location_applicability": "Enclosures, shelters, stores and fuel-burning contexts; no room conditions inferred.",
+      "applicability": {
+        "resource": "none",
+        "material": "conditional moisture",
+        "process": "conditional combustion and air movement",
+        "npc": "none"
+      },
+      "coverage": "grounded conditional indoor moisture relations",
+      "evidence_boundary": "No appliance, ventilation, temperature, humidity, condensation event or successful drying.",
+      "claim_refs": [
+        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:research-increased-ventilation-can-help-reduce-condensation"
+      ]
+    },
+    {
+      "id": "plant-food-and-contact-properties",
+      "domain": "biology_physiology",
+      "subdomain": "taxon_and_plant_part_properties",
+      "family": "named_plant_food_parts_and_contact_hazards",
+      "location_applicability": "Potential gathering and plant handling with independently established taxon identity.",
+      "applicability": {
+        "resource": "conditional named food part",
+        "material": "none",
+        "process": "conditional handling and use",
+        "npc": "conditional gathering"
+      },
+      "coverage": "grounded named taxa and parts, not an exhaustive flora",
+      "evidence_boundary": "No local plant, identity from resemblance, ripeness, stock, exposure or safe consumption.",
+      "claim_refs": [
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+        "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
+        "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+        "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
+        "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
+      ]
     }
   ],
   "missing_families": [
@@ -3906,56 +4014,11 @@
         "potential:travel"
       ],
       "coverage": "partial",
-      "reason": "Species-scoped pellets and emergence traces exist; the generic evidential relation and weather/substrate/time ambiguity still need source-backed research. No local trace, taxon, age, route, abundance or encounter follows.",
+      "reason": "Footprint/substrate interpretation is now independently grounded. Other trace types and specific weather/preservation conditions remain partial; no local trace, taxon, age, route or encounter follows.",
       "supporting_claim_refs": [
         "claim:fauna-tawny-owl-pellets",
-        "claim:fauna-dragonfly-emergence"
-      ]
-    },
-    {
-      "id": "animal-infection-behaviour-ecology",
-      "domain": "biology_physiology",
-      "subdomain": "animal_health_ecology",
-      "family": "bounded_pathogen_host_condition_and_behaviour_relations",
-      "location_applicability": "Potential wild/domestic-animal contacts and husbandry contexts.",
-      "applicability": {
-        "resource": "none inferred",
-        "material": "none inferred",
-        "process": "conditional pathogen-host effects",
-        "npc": "animal behaviour context, not decision"
-      },
-      "consumer_refs": [
-        "potential:animal_ecology",
-        "potential:husbandry"
-      ],
-      "coverage": "partial",
-      "reason": "Transmission and homeostasis premises do not establish how a specified infection may affect animal behaviour or condition. Research one scoped host/pathogen relation, not a universal all-disease rule. No diagnosis, actual infection, transmission, mortality or treatment follows.",
-      "supporting_claim_refs": [
-        "claim:animal-homeostasis-responds-to-internal-external-change",
-        "claim:foundations-life-43-infection-chain"
-      ]
-    },
-    {
-      "id": "plant-herbivory-effects",
-      "domain": "biology_physiology",
-      "subdomain": "plant_animal_interactions",
-      "family": "plant_consumption_tissue_loss_and_reproductive_opportunity",
-      "location_applicability": "Potential pasture, forest, crop and garden contexts.",
-      "applicability": {
-        "resource": "conditional plant tissue",
-        "material": "conditional biomass",
-        "process": "herbivory and plant response",
-        "npc": "foraging context only"
-      },
-      "consumer_refs": [
-        "potential:ecology",
-        "potential:agriculture"
-      ],
-      "coverage": "partial",
-      "reason": "Species-specific browsing and grubbing exist; general plant-herbivory effects require a scoped source, not an automatic damage rule. No local herbivore, plant, consumed amount, yield or vegetation change follows.",
-      "supporting_claim_refs": [
-        "claim:fauna-mammals-moose-ecosystem-engineering",
-        "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance"
+        "claim:fauna-dragonfly-emergence",
+        "claim:research-footprint-track-interpretation-can-depend-on-substrate"
       ]
     },
     {
@@ -3975,7 +4038,11 @@
       ],
       "coverage": "partial",
       "reason": "Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
-      "supporting_claim_refs": ["claim:rp-property-claim-relates-acquisition-chain","claim:rp-market-purchase-relates-proof-participant","claim:rp-entrusted-goods-claim-relates-reference"],
+      "supporting_claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:rp-entrusted-goods-claim-relates-reference"
+      ],
       "supporting_family_ids": [
         "social-property-and-market",
         "social-law-practice"
@@ -3998,7 +4065,13 @@
       ],
       "coverage": "partial",
       "reason": "Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics.",
-      "supporting_claim_refs": ["claim:debt-record-practice","claim:debt-needs-parties-and-basis","claim:social-loan-request-relates-loan","claim:social-guarantor-relates-transaction-obligation","claim:rp-merchant-credit-relates-third-party-goods"],
+      "supporting_claim_refs": [
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis",
+        "claim:social-loan-request-relates-loan",
+        "claim:social-guarantor-relates-transaction-obligation",
+        "claim:rp-merchant-credit-relates-third-party-goods"
+      ],
       "supporting_family_ids": [
         "social-property-and-market",
         "social-documentary-practice"
@@ -4021,7 +4094,12 @@
       ],
       "coverage": "partial",
       "reason": "Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state.",
-      "supporting_claim_refs": ["claim:rp-market-purchase-relates-proof-participant","claim:rp-entrusted-goods-claim-relates-reference","claim:judicial-accusation-record","claim:social-authority-letter-relates-theft-inquiry"],
+      "supporting_claim_refs": [
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:rp-entrusted-goods-claim-relates-reference",
+        "claim:judicial-accusation-record",
+        "claim:social-authority-letter-relates-theft-inquiry"
+      ],
       "supporting_family_ids": [
         "social-law-practice",
         "social-documentary-practice"
@@ -4044,7 +4122,12 @@
       ],
       "coverage": "partial",
       "reason": "Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
-      "supporting_claim_refs": ["claim:rp-property-claim-relates-acquisition-chain","claim:rp-market-purchase-relates-proof-participant","claim:religion-olenin-adjudication","claim:later-novgorod-judicial-charter"],
+      "supporting_claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:religion-olenin-adjudication",
+        "claim:later-novgorod-judicial-charter"
+      ],
       "supporting_family_ids": [
         "social-law-practice",
         "social-administration"
@@ -4067,7 +4150,14 @@
       ],
       "coverage": "partial",
       "reason": "Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
-      "supporting_claim_refs": ["claim:social-daily-fur-sale-accounting","claim:social-payment-register-records-entry","claim:social-grivna-accounting-unit","claim:occupation-directed-grain-procurement","claim:social-settlement-demand-reports-court-choice","claim:civic-public-market"],
+      "supporting_claim_refs": [
+        "claim:social-daily-fur-sale-accounting",
+        "claim:social-payment-register-records-entry",
+        "claim:social-grivna-accounting-unit",
+        "claim:occupation-directed-grain-procurement",
+        "claim:social-settlement-demand-reports-court-choice",
+        "claim:civic-public-market"
+      ],
       "supporting_family_ids": [
         "social-property-and-market",
         "material-written-objects"
@@ -4090,7 +4180,15 @@
       ],
       "coverage": "partial",
       "reason": "Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners.",
-      "supporting_claim_refs": ["claim:transport-winter-sledge-1220","claim:transport-sledge-summer-cargo","claim:transport-boat-cargo-dispatch","claim:transport-private-boat-arrangement","claim:settlement-underfloor-storage","claim:food-preservation-qualitative","claim:stored-grain-condition-depends-on-temperature-moisture"],
+      "supporting_claim_refs": [
+        "claim:transport-winter-sledge-1220",
+        "claim:transport-sledge-summer-cargo",
+        "claim:transport-boat-cargo-dispatch",
+        "claim:transport-private-boat-arrangement",
+        "claim:settlement-underfloor-storage",
+        "claim:food-preservation-qualitative",
+        "claim:stored-grain-condition-depends-on-temperature-moisture"
+      ],
       "supporting_family_ids": [
         "material-transport",
         "environment-weather",
@@ -4113,11 +4211,17 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Historical operation and physical constraints need separate evidence; capacity, stability, access and current are mechanics/state.",
+      "reason": "Cargo, private boat-use arrangements, boat work and repair are supported. Reconcile launch/mooring/shore transfer against existing buoyancy, load and access premises before adding facts. Vessel, capacity, stability, current conditions and crew remain state/mechanics.",
       "supporting_family_ids": [
         "material-transport",
         "built-river-landing-access",
         "npc-river-occupations"
+      ],
+      "supporting_claim_refs": [
+        "claim:transport-boat-cargo-dispatch",
+        "claim:transport-private-boat-arrangement",
+        "claim:population-boat-work",
+        "claim:household-boat-repair-clamp"
       ]
     },
     {
@@ -4205,7 +4309,13 @@
       ],
       "coverage": "partial",
       "reason": "Existing heating, preservation, pathogen-transport and exposure premises ground broad food processes. Residual under source review: raw-to-cooked/ready food cross-contact through hands or utensils. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating are not corpus facts.",
-      "supporting_claim_refs": ["claim:heating-reduces-microbial-viability","claim:food-preservation-qualitative","claim:foundations-life-44-pathogen-transport","claim:foundations-haz-02-exposure-not-illness","claim:foundations-haz-03-exposure-routes"],
+      "supporting_claim_refs": [
+        "claim:heating-reduces-microbial-viability",
+        "claim:food-preservation-qualitative",
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-haz-03-exposure-routes"
+      ],
       "supporting_family_ids": [
         "process-bread-dough-and-baking",
         "process-food-preservation-and-fermentation",
@@ -4228,10 +4338,16 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Room function is not proof of a defect or its repair; historical techniques, current weather and structure require separate support.",
+      "reason": "Oak-shingle roofs, wood/moisture and joint condition are supported. Reconcile rain/wind ingress, coverings/openings and drainage against existing fluid/material premises before adding repair facts. Local roof customs need historical evidence; actual defect/weather are state.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "materials-wood-moisture-and-coatings"
+      ],
+      "supporting_claim_refs": [
+        "claim:settlement-oak-shingle-roof",
+        "claim:population-material-wood-moisture",
+        "claim:population-joining-bond-moisture",
+        "claim:foundations-mat-02-wood-drying-crack-strength"
       ]
     },
     {
@@ -4250,11 +4366,16 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Keep historical practice separate from universal exposure; no local contamination, sanitation installation or disease is inferred.",
+      "reason": "Washing, exposure routes and infection-chain limits are supported. A waste-to-water/contact pathway remains a practical research direction; actual installation, contamination and illness are state/mechanics. Local sanitation customs need historical evidence.",
       "supporting_family_ids": [
         "built-bathing-sanitation",
         "chemistry-exposure-and-routes",
         "biology-pathogen-immunity-and-infection"
+      ],
+      "supporting_claim_refs": [
+        "claim:bathing-house-heating-before-washing",
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:foundations-life-43-infection-chain"
       ]
     },
     {
@@ -4273,10 +4394,15 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Semantic interpretation alone is not missing factual knowledge; research empirical/cultural premises only, without compliance rules or hidden intent.",
+      "reason": "Norms, prescriptions and social roles supply factual context. Generic request/refusal/promise/threat meaning is the semantic boundary, not a missing universal fact. Further evidence is needed only for asserted local custom/legal form; compliance, commitment and hidden intent remain state/semantics.",
       "supporting_family_ids": [
         "social-roles-norms-and-socialization",
         "social-trust-conflict-and-repair"
+      ],
+      "supporting_claim_refs": [
+        "claim:foundations-ms-39-social-norm",
+        "claim:foundations-ms-40-social-prescription",
+        "claim:foundations-ms-32-social-role"
       ]
     },
     {
@@ -4295,7 +4421,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independently approved source-confusion and post-event-misinformation premises now extend memory/recognition support. Residual: other transmission, corroboration and reliability conditions. A report does not establish truth, deliberate deception, actor knowledge or legal admissibility.",
+      "reason": "Memory/source confusion and post-event misinformation constrain testimony; a dispute-message dispatch supports communication context. Other transmission/corroboration conditions are scoped research. Observation, credibility, truth, intent, knowledge and admissibility remain epistemic/legal/state-owned.",
       "supporting_family_ids": [
         "psychology-memory-and-recognition",
         "social-documentary-practice"
@@ -4303,7 +4429,7 @@
       "supporting_claim_refs": [
         "claim:research-memory-source-misattribution",
         "claim:research-memory-postevent-misinformation",
-        "claim:foundations-ms-09-memory-systems"
+        "claim:social-dispute-message-reports-dispatch"
       ]
     },
     {
@@ -4322,10 +4448,14 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Universal tendencies and historical norms need different scope; no deterministic emotion, reputation score, motive or response.",
+      "reason": "Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need.",
       "supporting_family_ids": [
         "social-trust-conflict-and-repair",
         "psychology-affect-regulation-and-stress"
+      ],
+      "supporting_claim_refs": [
+        "claim:foundations-ms-39-social-norm",
+        "claim:foundations-ms3-06-apology-reinvestment"
       ]
     },
     {
@@ -4344,7 +4474,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independently approved conditional pooled-work output reduction complements existing role premises. Role complementarity, coordination and task dependencies remain research needs. No roster, staffing count, exact duration, labour rate, schedule or forced NPC decision follows.",
+      "reason": "Conditional pooled-work output reduction and role expectations are grounded. Reconcile coordination/complementarity premises with existing mechanics before research; staffing, task dependencies, rates, schedule and decisions are not universal corpus facts.",
       "supporting_family_ids": [
         "social-group-influence-and-coordination",
         "npc-craft-occupations",
@@ -4353,8 +4483,7 @@
       "supporting_claim_refs": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms-32-social-role",
-        "claim:foundations-ms-33-role-predictability",
-        "claim:foundations-ms-34-role-adjustment"
+        "claim:foundations-ms-33-role-predictability"
       ]
     },
     {
@@ -4373,10 +4502,15 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Existing family-care facts require need-level reconciliation; no family entity, universal gender rule, motive or assigned duty.",
+      "reason": "Kin protection/return requests and helping premises supply bounded support. Scoped care/dependency relations remain a research direction without universal gender/motive/duty rules. Actual household, age, need and responsibility are state; local customs require historical evidence.",
       "supporting_family_ids": [
         "social-family-care",
         "social-belonging-and-prosocial-relations"
+      ],
+      "supporting_claim_refs": [
+        "claim:social-kin-letter-reports-protection-request",
+        "claim:social-kin-request-reports-contingent-return",
+        "claim:foundations-ms-29-helping-no-reward"
       ]
     },
     {
@@ -4395,10 +4529,16 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Buildings and objects do not prove a practice or belief; every asserted custom needs period/place/status evidence.",
+      "reason": "Baptism, feast-list text, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Buildings and objects do not establish attendance, belief or a universal custom.",
       "supporting_family_ids": [
         "social-religious-context",
         "material-vessels-furniture-ritual"
+      ],
+      "supporting_claim_refs": [
+        "claim:religion-priest-child-baptism",
+        "claim:social-church-calendar-text-relates-feast-list",
+        "claim:social-written-prayer-relates-invocation",
+        "claim:probable-travel-chalice-communion"
       ]
     },
     {
@@ -4560,12 +4700,13 @@
         "potential:semantic_resolution"
       ],
       "coverage": "partial",
-      "reason": "Atmospheric wind/stability and surface-inversion relations are now independently grounded. Residual: distinct indoor airflow/ventilation and source-specific buoyancy conditions. No current smoke, plume direction, concentration, dose or safe location follows.",
+      "reason": "Atmospheric transport/inversion and conditional indoor air-movement/condensation premises are grounded. Indoor smoke-flow and source-specific buoyancy remain distinct conditional research needs; no current plume, concentration, dose or safe location follows.",
       "supporting_family_ids": [
         "smoke-optical-visibility",
         "thermal-phase-heat-transfer",
         "environment-weather",
-        "smoke-atmospheric-transport"
+        "smoke-atmospheric-transport",
+        "indoor-air-moisture"
       ],
       "supporting_claim_refs": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -4597,29 +4738,6 @@
       ]
     },
     {
-      "id": "flora-shrubs-herbs-aquatic",
-      "domain": "environment",
-      "subdomain": "flora",
-      "family": "shrubs_herbs_and_aquatic_plants",
-      "location_applicability": "riparian and wetland",
-      "applicability": {
-        "resource": "partial",
-        "material": "partial",
-        "process": "partial",
-        "npc": "none"
-      },
-      "consumer_refs": [
-        "S1",
-        "wreck_shore"
-      ],
-      "coverage": "partial",
-      "reason": "Aquatic macrophyte attachment/leaf-position form is now grounded. Remaining bounded need: taxon, density, passability, harvestability and local habitat state are not transferred from form.",
-      "supporting_family_ids": [
-        "biology-fungi-decomposition-and-wild-food-safety",
-        "environment-plant-resources"
-      ]
-    },
-    {
       "id": "flora-toxic-and-food-plants",
       "domain": "biology_physiology",
       "subdomain": "flora",
@@ -4635,9 +4753,10 @@
         "semantic_resolution"
       ],
       "coverage": "partial",
-      "reason": "Diagnostic-character, look-alike and plant-part boundaries are now grounded. Remaining bounded need: species-specific food/hazard claim, processing effect and local presence require separate evidence/state.",
+      "reason": "Named food parts of nettle, lingonberry, hazel, raspberry and wild apple, nettle contact sting and apple-seed hazard now complement diagnostic/part boundaries. Other surfaced taxa or processing claims still need their own support; current identity, presence and condition remain state inputs.",
       "supporting_family_ids": [
-        "biology-fungi-decomposition-and-wild-food-safety"
+        "biology-fungi-decomposition-and-wild-food-safety",
+        "plant-food-and-contact-properties"
       ]
     },
     {
@@ -4665,54 +4784,6 @@
       ]
     },
     {
-      "id": "shelter-interior-space",
-      "domain": "architecture_settlement",
-      "subdomain": "built_space",
-      "family": "ordinary_shelter_and_interior",
-      "location_applicability": "S1 local spaces",
-      "applicability": {
-        "resource": "partial",
-        "material": "partial",
-        "process": "partial",
-        "npc": "partial"
-      },
-      "consumer_refs": [
-        "S1"
-      ],
-      "coverage": "partial",
-      "reason": "Closed compositionally by independently reviewed interior-conditions research. It supplies no room contents, cleanliness, light source, occupancy or current ventilation state.",
-      "supporting_family_ids": [
-        "built-bathing-sanitation",
-        "built-storage-and-household",
-        "material-vessels-furniture-ritual"
-      ]
-    },
-    {
-      "id": "storage-ventilation-and-drying",
-      "domain": "architecture_settlement",
-      "subdomain": "storage",
-      "family": "ventilation_drying_and_spoilage",
-      "location_applicability": "drying shed and storehouse",
-      "applicability": {
-        "resource": "partial",
-        "material": "partial",
-        "process": "partial",
-        "npc": "partial"
-      },
-      "consumer_refs": [
-        "scene_presentation",
-        "drying_shed"
-      ],
-      "coverage": "partial",
-      "reason": "Closed compositionally by independently reviewed interior-conditions research plus approved grain airflow/moisture premises. Current storage condition, duration and spoilage result remain state/time owned.",
-      "supporting_family_ids": [
-        "biology-food-safety-storage-and-fermentation",
-        "built-river-workspace",
-        "built-storage-and-household",
-        "materials-wood-moisture-and-coatings"
-      ]
-    },
-    {
       "id": "fishing-net-boat-care",
       "domain": "craft_technology",
       "subdomain": "water_work",
@@ -4734,52 +4805,6 @@
         "craft-fibre-fishing-processing",
         "material-fishing-hunting",
         "material-transport"
-      ]
-    },
-    {
-      "id": "riparian-substrate-and-debris",
-      "domain": "environment",
-      "subdomain": "riparian",
-      "family": "substrate_debris_and_drift_material",
-      "location_applicability": "wreck shore and landing",
-      "applicability": {
-        "resource": "partial",
-        "material": "partial",
-        "process": "partial",
-        "npc": "none"
-      },
-      "consumer_refs": [
-        "O2a",
-        "S1"
-      ],
-      "coverage": "partial",
-      "reason": "Conditional flood woody-debris transport/retention is now grounded. Present debris, seasonal local stock, access and ownership remain scene state.",
-      "supporting_family_ids": [
-        "environment-geology",
-        "environment-wetland-river-soil"
-      ]
-    },
-    {
-      "id": "fire-extinguishing-water",
-      "domain": "chemistry_process",
-      "subdomain": "fire",
-      "family": "extinguishing_and_water_interaction",
-      "location_applicability": "F1 fire contexts",
-      "applicability": {
-        "resource": "partial",
-        "material": "partial",
-        "process": "partial",
-        "npc": "none"
-      },
-      "consumer_refs": [
-        "F1"
-      ],
-      "coverage": "partial",
-      "reason": "Water cooling of class-A fuel/flame is now grounded. Suppression success, spread, quantity and timing remain exact fire/time mechanics.",
-      "supporting_family_ids": [
-        "fluids-buoyancy-flow-porosity",
-        "process-combustion-and-pyrolysis",
-        "thermal-phase-heat-transfer"
       ]
     }
   ],
@@ -4832,7 +4857,8 @@
         "physiology-autonomic-and-functional-response",
         "aquatic-macrophyte-growth-forms",
         "plant-diagnostic-and-part-bounds",
-        "physiology-cold-water-immersion"
+        "physiology-cold-water-immersion",
+        "plant-food-and-contact-properties"
       ]
     },
     {
@@ -4876,7 +4902,8 @@
         "flora-tree-phenology",
         "flora-nettle-fibre",
         "riparian-woody-debris",
-        "water-dissolved-oxygen-contributors"
+        "water-dissolved-oxygen-contributors",
+        "environment-footprint-trace-interpretation"
       ]
     },
     {
@@ -4894,7 +4921,8 @@
         "flora-tree-phenology",
         "flora-nettle-fibre",
         "riparian-woody-debris",
-        "water-dissolved-oxygen-contributors"
+        "water-dissolved-oxygen-contributors",
+        "environment-footprint-trace-interpretation"
       ]
     },
     {
@@ -4949,7 +4977,8 @@
         "materials-wet-granular-cohesion-and-deformation",
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
-        "smoke-atmospheric-transport"
+        "smoke-atmospheric-transport",
+        "indoor-air-moisture"
       ]
     },
     {
@@ -4996,7 +5025,9 @@
         "material-transport",
         "materials-wet-granular-cohesion-and-deformation",
         "physiology-cold-water-immersion",
-        "smoke-atmospheric-transport"
+        "smoke-atmospheric-transport",
+        "environment-footprint-trace-interpretation",
+        "plant-food-and-contact-properties"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -5020,7 +5051,9 @@
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
         "process-household-water-treatment-limits",
-        "smoke-atmospheric-transport"
+        "smoke-atmospheric-transport",
+        "environment-footprint-trace-interpretation",
+        "plant-food-and-contact-properties"
       ],
       "coverage": "partial: camp/ecology/occupation context"
     },
@@ -5037,7 +5070,8 @@
         "npc-household-routines",
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
-        "process-household-water-treatment-limits"
+        "process-household-water-treatment-limits",
+        "indoor-air-moisture"
       ],
       "coverage": "partial: built-space and drying-process context"
     },
@@ -5057,7 +5091,8 @@
         "npc-clothing-and-personal-kit",
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
-        "process-household-water-treatment-limits"
+        "process-household-water-treatment-limits",
+        "indoor-air-moisture"
       ],
       "coverage": "partial: storage/occupation/economic context"
     }
@@ -5170,11 +5205,9 @@
   ],
   "absent_or_partial_families": [
     "Tree phenology premise is bounded; taxon, local calendar, current state and fruit/yield remain outside it.",
-    "Aquatic form and plant diagnostic/part bounds are grounded; local taxon, density, passability, edible part and historical applicability remain separate needs.",
+    "Named plant food/contact properties and diagnostic bounds are grounded; additional taxon/part and historical-availability claims remain separate factual needs, not inferred from resemblance.",
     "Nettle fibre relation is grounded; other wild-fibre taxa still require taxon-specific regional/historical evidence.",
-    "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one.",
-    "Riparian woody-debris transport/retention is grounded; present debris, access, ownership and quantity remain scene state.",
-    "Water cooling of class-A fuel/flame is grounded; exact suppression success, spread and timing remain fire/time mechanics."
+    "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one."
   ],
   "gameplay_need_cartography": {
     "status": "static_need_expansion_in_progress_not_completeness_approval",
@@ -5254,7 +5287,7 @@
       "active_claim_mapping":"All active claims are classified once in families and source_inventory; the listed fragments are active inputs, not a hypothetical overlay.",
       "source_inventory":"Each approved fragment is present in source_inventory and is linked above to applicable existing family, location and consumer references.",
       "dispositions":{"approved_factual_premise":"May constrain qualitative semantic reasoning within its stated limits.","code_owned":"Current scene state, numeric mechanics, timers, body state, inventory, access and commit remain their existing owners.","bounded_remaining_need":"Taxon-specific historical applicability and any new asserted historical practice require separate evidence."},
-      "interior_closure":"Interior function, ventilation/condensation and spoilage are compositionally closed by independently reviewed gameplay-interior-conditions-v3 research; no room contents, cleanliness, light source or actual condition follows.",
+      "interior_closure":"The damp-item storage probe is compositionally covered; independently approved indoor-air-moisture premises now add stove vapour and conditional air-movement/condensation mitigation. No room contents or actual conditions follow.",
       "not_a_completeness_verdict":"Independent completeness review and real gameplay/retrieval campaigns remain required before any saturation claim."
     }
   }

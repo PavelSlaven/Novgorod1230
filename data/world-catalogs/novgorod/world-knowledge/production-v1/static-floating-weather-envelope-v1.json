@@ -1,0 +1,250 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-utexas-angular-stability-floating-bodies",
+      "title": "Angular Stability of Floating Bodies",
+      "authors": [
+        "Richard Fitzpatrick"
+      ],
+      "publication": "University of Texas at Austin, Physics 336L, Hydrostatics; page dated 2016-03-31",
+      "source_kind": "technical_reference",
+      "citation": "https://farside.ph.utexas.edu/teaching/336L/Fluidhtml/node29.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-bsc-rain-control-buildings-2011",
+      "title": "BSD-013: Rain Control in Buildings",
+      "authors": [
+        "John Straube"
+      ],
+      "publication": "Building Science Corporation, effective 2011-08-22",
+      "source_kind": "technical_reference",
+      "citation": "https://buildingscience.com/documents/digests/bsd-013-rain-control-in-buildings",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-floating-body-positive-metacentric-height-righting",
+      "source_ref": "source:research-utexas-angular-stability-floating-bodies",
+      "anchor": {
+        "section": "Angular Stability of Floating Bodies, paragraphs beginning ‘Suppose that the body turns through a small angle’ and ‘We conclude’"
+      },
+      "note": "For the source's symmetric floating-body model under a small angular displacement and unchanged submerged volume, the changed displaced-water shape shifts buoyancy and, when the metacenter lies above the center of gravity, the resulting torque reduces the angular displacement. This is a conditional small-perturbation relation, not a claim that any vessel floats, is stable, safe, loaded correctly, seaworthy, or remains upright in waves, current, wind, damage, flooding, shifting cargo, or a particular manoeuvre.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-wind-pressure-can-force-rain-across-openings",
+      "source_ref": "source:research-bsc-rain-control-buildings-2011",
+      "anchor": {
+        "section": "Driving Rain; Drainage/Storage/Exclusion, paragraph beginning ‘A vented airspace also allows’"
+      },
+      "note": "The source explains that wind-induced pressure differences across cladding can force rain across openings; it also distinguishes rain deposited on an enclosure from water penetrating imperfections. The candidate is limited to wind-driven rain, a relevant opening or imperfection, and a pressure difference. It establishes no building, roof, wall, opening, rainfall, wind, leak, amount, damage, indoor wetness, repair method, historical construction practice, or outcome in a scene.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "for_a_symmetric_floating_body_under_small_heel_with_unchanged_submerged_volume_a_metacenter_above_the_center_of_gravity_produces_a_righting_torque"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-floating-body-positive-metacentric-height-righting"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wind_induced_pressure_difference_can_force_rain_across_an_opening_or_imperfection_in_a_building_enclosure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-wind-pressure-can-force-rain-across-openings"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "locale": "ru",
+      "labels": [
+        "Остойчивость плавающего тела при малом крене"
+      ],
+      "short_definition": "Условная связь малого крена, метацентра, центра тяжести и восстанавливающей пары плавающего тела.",
+      "search_aliases": [
+        "крен",
+        "остойчивость",
+        "метацентр",
+        "восстанавливающий момент"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-floating-body-small-angle-stability",
+      "locale": "en",
+      "labels": [
+        "Small-angle floating-body stability"
+      ],
+      "short_definition": "Conditional relation between a small heel, metacenter, center of gravity, and righting torque of a floating body.",
+      "search_aliases": [
+        "heel",
+        "stability",
+        "metacenter",
+        "righting torque"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "locale": "ru",
+      "labels": [
+        "Ветровой перепад давления и дождь у проёма"
+      ],
+      "short_definition": "Условная связь ветрового перепада давления, дождя и прохода воды через проём или дефект ограждения.",
+      "search_aliases": [
+        "косой дождь",
+        "ветровой дождь",
+        "проём",
+        "протекание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
+      "locale": "en",
+      "labels": [
+        "Wind-driven rain and opening pressure"
+      ],
+      "short_definition": "Conditional relation between wind pressure difference, rain, and water passage through an opening or enclosure imperfection.",
+      "search_aliases": [
+        "driving rain",
+        "wind-driven rain",
+        "opening",
+        "water ingress"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+      "locale": "ru",
+      "runtime_text": "Для симметричного плавающего тела при малом крене и неизменном объёме погружённой части метацентр выше центра тяжести создаёт восстанавливающую пару. Это не утверждает, что конкретная лодка плавает, остойчива, безопасна, правильно загружена или выдержит волну, течение, ветер, повреждение, затопление, смещение груза либо манёвр.",
+      "search_aliases": [
+        "лодка накренилась",
+        "остойчивость лодки",
+        "переворот"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+      "locale": "en",
+      "runtime_text": "For a symmetric floating body under a small heel with unchanged submerged volume, a metacenter above the center of gravity produces a righting torque. This does not establish that a particular boat floats, is stable, safe, properly loaded, or withstands waves, current, wind, damage, flooding, shifting cargo, or a manoeuvre.",
+      "search_aliases": [
+        "boat heel",
+        "boat stability",
+        "capsize"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "locale": "ru",
+      "runtime_text": "Перепад давления, создаваемый ветром, может проталкивать дождевую воду через проём или дефект ограждения постройки. Это не устанавливает постройку, крышу, стену, проём, дождь, ветер, течь, количество воды, ущерб, влажность внутри, способ ремонта, историческую практику или исход конкретной сцены.",
+      "search_aliases": [
+        "дождь в доме",
+        "ветер загоняет дождь",
+        "протекает проём"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+      "locale": "en",
+      "runtime_text": "A wind-induced pressure difference can force rainwater through an opening or imperfection in a building enclosure. This establishes no building, roof, wall, opening, rain, wind, leak, water amount, damage, indoor wetness, repair method, historical practice, or concrete-scene outcome.",
+      "search_aliases": [
+        "rain in house",
+        "wind drives rain",
+        "opening leak"
+      ]
+    }
+  ]
+}

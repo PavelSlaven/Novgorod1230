@@ -1683,14 +1683,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
       "locale": "ru",
-      "runtime_text": "Доставка кислорода к мозгу зависит от вентиляции, газообмена и кровообращения; недостаток кислорода может нарушать внимание, координацию или сознание. Это не устанавливает причину, срок, обратимость или состояние конкретного персонажа.",
+      "runtime_text": "Низкий уровень кислорода в крови может вызывать сонливость или потерю сознания. Это не устанавливает причину, длительность, обратимость или состояние конкретного человека.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
       "locale": "en",
-      "runtime_text": "Oxygen delivery to the brain depends on ventilation, gas exchange, and circulation; inadequate oxygen can impair attention, coordination, or consciousness. This establishes no cause, duration, reversibility, or state of a concrete actor.",
+      "runtime_text": "Low blood oxygen can cause drowsiness or loss of consciousness. This establishes no cause, duration, reversibility, or state of a particular person.",
       "search_aliases": []
     },
     {
@@ -1725,14 +1725,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
       "locale": "ru",
-      "runtime_text": "Снижение кровотока или доставки кислорода к мозгу может кратко нарушать равновесие, координацию или осознание; конкретная потеря сознания определяется владельцем состояния тела.",
+      "runtime_text": "Снижение поступления крови к мозгу может сопровождаться кратковременным головокружением или потерей равновесия. Это не устанавливает падение, потерю сознания или состояние конкретного человека.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
       "locale": "en",
-      "runtime_text": "Reduced blood flow or oxygen delivery to the brain can transiently impair balance, coordination, or awareness; concrete loss of consciousness requires the state/body owner.",
+      "runtime_text": "Reduced blood delivery to the brain can be accompanied by brief dizziness or loss of balance. This establishes no fall, loss of consciousness, or state of a particular person.",
       "search_aliases": []
     },
     {
@@ -1767,14 +1767,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
       "locale": "ru",
-      "runtime_text": "Употребление алкоголя может ухудшать координацию, внимание, суждение, равновесие и сознание; при высоком воздействии могут ослабляться автоматические защитные ответы. Эффект зависит от количества, времени и индивидуальных факторов.",
+      "runtime_text": "Употребление алкоголя может нарушать двигательную координацию, способность принимать решения и сознание; при высоком воздействии может ослабляться глоточный рефлекс. Эффект зависит от количества, времени и индивидуальных факторов.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
       "locale": "en",
-      "runtime_text": "Alcohol consumption can impair coordination, attention, judgment, balance, and consciousness; at high exposure automatic protective responses can be impaired. Effects depend on amount, time, and individual factors.",
+      "runtime_text": "Alcohol consumption can impair motor coordination, decision-making, and consciousness; at high exposure the gag reflex can be impaired. Effects depend on amount, time, and individual factors.",
       "search_aliases": []
     },
     {

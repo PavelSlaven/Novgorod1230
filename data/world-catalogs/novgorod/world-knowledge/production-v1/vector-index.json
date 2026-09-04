@@ -514,6 +514,34 @@
       "retrieval_text": "Лубяное волокно крапивы и его отделение Современная связь строения стебля крапивы с извлечением волокна. Лубяное волокно крапивы двудомной можно отделять от древесной сердцевины стебля мочкой и декортикацией. Это не доказывает наличие крапивы, её запас, доступность, сезон, историческую практику, инструмент или готовое волокно."
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-helmet-half-mask-find:en",
+      "target_ref": "claim:candidate-novgorod-helmet-half-mask-find",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Troitsky excavation helmet half-mask A later-thirteenth/early-fourteenth-century find, not present equipment. The Novgorod Museum reports a nearly complete combat-helmet half-mask from Troitsky excavation XVII-I. This is an archaeological find, not a present helmet, owner, protection or combat scene. helmet half-mask Troitsky excavation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-helmet-half-mask-find:ru",
+      "target_ref": "claim:candidate-novgorod-helmet-half-mask-find",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Полумаска боевого шлема Троицкого раскопа Поздний XIII–ранний XIV век: находка, не текущий предмет или снаряжение. Новгородский музей сообщает о почти целой полумаске боевого шлема, найденной на Троицком раскопе XVII-И. Это археологическая находка, не шлем, владелец, защита или бой в текущей сцене. шлем полумаска Троицкий раскоп"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-psalter-eleventh-century:en",
+      "target_ref": "claim:candidate-novgorod-psalter-eleventh-century",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod Psalter An eleventh-century manuscript, not a book in the current scene. The Museum of Writing identifies the Novgorod Psalter as an eleventh-century book. It is an early-period monument, not a school, book or reader in a 1230 scene. Psalter eleventh century"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-novgorod-psalter-eleventh-century:ru",
+      "target_ref": "claim:candidate-novgorod-psalter-eleventh-century",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская Псалтырь XI-вековый рукописный памятник, не книга в текущей сцене. Музей письменности называет Новгородскую Псалтырь книгой XI века. Это памятник раннего периода, не школа, книга или читатель в сцене 1230 года. Псалтырь XI век"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection:en",
       "target_ref": "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
       "domain": "biology_physiology",
@@ -834,6 +862,118 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Перенос и задержание древесного плавника при паводке Условный речной механизм, а не наличие плавника в сцене. Речной паводок может переносить древесные остатки, а местные гидрологические особенности и особенности русла могут влиять на их задержание. Это не создаёт плавник, бревно, плот, груз, доступный ресурс или безопасный исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-foodborne-symptoms-vary-by-germ:en",
+      "target_ref": "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Foodborne symptom variation Foodborne illness symptoms vary by germ. Foodborne illness symptoms vary by germ; this identifies no illness or diagnosis in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-foodborne-symptoms-vary-by-germ:ru",
+      "target_ref": "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Вариация пищевых симптомов Симптомы болезней пищевого происхождения различаются по возбудителю. Симптомы болезни пищевого происхождения различаются по возбудителю; это не определяет болезнь или диагноз в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard:en",
+      "target_ref": "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Ice and snow Qualitative relations of ice and snow to surface hazards and ice strength. Ice or snow on a walking surface can be a slip hazard; this establishes no particular surface condition or incident."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard:ru",
+      "target_ref": "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лёд и снег Качественные связи льда и снега с опасностью поверхности и прочностью льда. Лёд или снег на поверхности для ходьбы могут быть причиной скольжения; это не устанавливает состояние конкретной поверхности или происшествие."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-ice-strength-depends-on-physical-conditions:en",
+      "target_ref": "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Ice and snow Qualitative relations of ice and snow to surface hazards and ice strength. Ice strength depends on thickness, temperature and salt content; this supplies no safe-use threshold or site condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-ice-strength-depends-on-physical-conditions:ru",
+      "target_ref": "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лёд и снег Качественные связи льда и снега с опасностью поверхности и прочностью льда. Прочность льда зависит от толщины, температуры и содержания солей; это не задаёт безопасный порог или состояние конкретного участка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-labor-is-a-staged-process:en",
+      "target_ref": "claim:candidate-v2-labor-is-a-staged-process",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Pregnancy and labor General physiological relations of pregnancy and labor. Labor is a staged physiological process; this sets no timing, outcome or individual state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-labor-is-a-staged-process:ru",
+      "target_ref": "claim:candidate-v2-labor-is-a-staged-process",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Беременность и роды Общие физиологические отношения беременности и родов. Роды являются стадийным физиологическим процессом; это не задаёт срок, исход или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-lactation-is-milk-production-and-secretion:en",
+      "target_ref": "claim:candidate-v2-lactation-is-milk-production-and-secretion",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal stages and lactation General physiological relations of birth and lactation. Lactation is the production and secretion of milk; this establishes no feeding event or individual state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-lactation-is-milk-production-and-secretion:ru",
+      "target_ref": "claim:candidate-v2-lactation-is-milk-production-and-secretion",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовой период и лактация Общие физиологические отношения рождения и лактации. Лактация — производство и выделение молока; это не устанавливает кормление или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-near-melting-ice-has-less-strength:en",
+      "target_ref": "claim:candidate-v2-near-melting-ice-has-less-strength",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Ice and snow Qualitative relations of ice and snow to surface hazards and ice strength. Near-melting ice has less strength than same-thickness ice at lower temperature; this supplies no threshold or site finding."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-near-melting-ice-has-less-strength:ru",
+      "target_ref": "claim:candidate-v2-near-melting-ice-has-less-strength",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лёд и снег Качественные связи льда и снега с опасностью поверхности и прочностью льда. Лёд около температуры таяния слабее, чем лёд той же толщины при более низкой температуре; это не задаёт порог или состояние конкретного участка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-newborn-undergoes-adjustments-at-birth:en",
+      "target_ref": "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal stages and lactation General physiological relations of birth and lactation. A newborn undergoes physiological adjustments at birth; this establishes no individual condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-newborn-undergoes-adjustments-at-birth:ru",
+      "target_ref": "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовой период и лактация Общие физиологические отношения рождения и лактации. Новорождённый проходит физиологические адаптации при рождении; это не устанавливает состояние конкретного младенца."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-pregnancy-involves-maternal-physiological-changes:en",
+      "target_ref": "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Pregnancy and labor General physiological relations of pregnancy and labor. Pregnancy involves maternal physiological changes; this establishes no individual's state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-v2-pregnancy-involves-maternal-physiological-changes:ru",
+      "target_ref": "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Беременность и роды Общие физиологические отношения беременности и родов. Беременность связана с физиологическими изменениями организма матери; это не устанавливает состояние конкретного человека."
     },
     {
       "entry_ref": "wk-retrieval:claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties:en",
@@ -14206,6 +14346,48 @@
       "retrieval_text": "Автономное возбуждение при воспринятой угрозе"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-foodborne-symptom-variation:en",
+      "target_ref": "wk:biology_physiology:candidate-v2-foodborne-symptom-variation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Foodborne symptom variation Foodborne illness symptoms vary by germ."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-foodborne-symptom-variation:ru",
+      "target_ref": "wk:biology_physiology:candidate-v2-foodborne-symptom-variation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Вариация пищевых симптомов Симптомы болезней пищевого происхождения различаются по возбудителю."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-postnatal-lactation:en",
+      "target_ref": "wk:biology_physiology:candidate-v2-postnatal-lactation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal stages and lactation General physiological relations of birth and lactation."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-postnatal-lactation:ru",
+      "target_ref": "wk:biology_physiology:candidate-v2-postnatal-lactation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовой период и лактация Общие физиологические отношения рождения и лактации."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-pregnancy-labor:en",
+      "target_ref": "wk:biology_physiology:candidate-v2-pregnancy-labor",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Pregnancy and labor General physiological relations of pregnancy and labor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-v2-pregnancy-labor:ru",
+      "target_ref": "wk:biology_physiology:candidate-v2-pregnancy-labor",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Беременность и роды Общие физиологические отношения беременности и родов."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-vestibular-postural-correction:en",
       "target_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
       "domain": "biology_physiology",
@@ -17580,6 +17762,20 @@
       "retrieval_text": "Лубяное волокно крапивы и его отделение Современная связь строения стебля крапивы с извлечением волокна."
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-v2-ice-snow-hazards:en",
+      "target_ref": "wk:environment:candidate-v2-ice-snow-hazards",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Ice and snow Qualitative relations of ice and snow to surface hazards and ice strength."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-v2-ice-snow-hazards:ru",
+      "target_ref": "wk:environment:candidate-v2-ice-snow-hazards",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Лёд и снег Качественные связи льда и снега с опасностью поверхности и прочностью льда."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:candidate-water-circulation-oxygen:en",
       "target_ref": "wk:environment:candidate-water-circulation-oxygen",
       "domain": "environment",
@@ -18796,6 +18992,20 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Бронза"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-novgorod-helmet-half-mask:en",
+      "target_ref": "wk:material_culture:candidate-novgorod-helmet-half-mask",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Troitsky excavation helmet half-mask A later-thirteenth/early-fourteenth-century find, not present equipment. helmet half-mask Troitsky excavation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:candidate-novgorod-helmet-half-mask:ru",
+      "target_ref": "wk:material_culture:candidate-novgorod-helmet-half-mask",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Полумаска боевого шлема Троицкого раскопа Поздний XIII–ранний XIV век: находка, не текущий предмет или снаряжение. шлем полумаска Троицкий раскоп"
     },
     {
       "entry_ref": "wk-retrieval:wk:material_culture:carbon-black-pigment:en",
@@ -22758,6 +22968,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Деловая запись Категория деловой записи деловая запись"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-novgorod-psalter:en",
+      "target_ref": "wk:social_law_economy:candidate-novgorod-psalter",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod Psalter An eleventh-century manuscript, not a book in the current scene. Psalter eleventh century"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-novgorod-psalter:ru",
+      "target_ref": "wk:social_law_economy:candidate-novgorod-psalter",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородская Псалтырь XI-вековый рукописный памятник, не книга в текущей сцене. Псалтырь XI век"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:candidate-onfim-instructional-text:en",

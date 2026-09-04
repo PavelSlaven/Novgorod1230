@@ -1184,6 +1184,22 @@
       "location_applicability": "Document-specific Novgorod comparators dated 1160–1180, 1200–1220 and 1240–1260",
       "applicability": {"resource":"none","material":"birch-bark document context","process":"bounded education, office-address and external-expedition evidence","npc":"named people and roles only within each record"},
       "coverage": "three independently approved document premises with explicit date limits"
+    },
+    {
+      "id": "macro-universal-life-environment-v2",
+      "source_path": "macro-universal-life-environment-v2.json",
+      "domains": ["biology_physiology", "environment"],
+      "location_applicability": "Universal physiology and ice/snow relations; individual body and local surface conditions remain caller supplied",
+      "applicability": {"resource":"none","material":"none","process":"bounded qualitative physiology and cryosphere relations","npc":"no diagnosis, state or outcome"},
+      "coverage": "eight independently approved universal premises"
+    },
+    {
+      "id": "macro-historical-human-world-v3",
+      "source_path": "macro-historical-human-world-v3.json",
+      "domains": ["material_culture", "social_law_economy"],
+      "location_applicability": "Novgorod comparators explicitly dated 1000–1100 and 1250–1325; neither applies as 1230 scene evidence",
+      "applicability": {"resource":"none","material":"bounded manuscript and archaeological-find context","process":"document/find interpretation only","npc":"none"},
+      "coverage": "two independently approved historical comparator premises with explicit date limits"
     }
   ],
   "families": [
@@ -4099,6 +4115,61 @@
       "claim_refs": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
       ]
+    },
+    {
+      "id": "biology-reproductive-and-newborn-physiology",
+      "domain": "biology_physiology",
+      "subdomain": "human_reproduction_and_newborn_adjustment",
+      "family": "general_pregnancy_labor_newborn_adjustment_and_lactation_relations",
+      "location_applicability": "Universal physiology only; no person, pregnancy, birth, care event or outcome is implied.",
+      "applicability": {"resource":"none","material":"none","process":"bounded physiological relation","npc":"no individual condition or diagnosis"},
+      "coverage": "bounded independently verified universal premises",
+      "evidence_boundary": "No pregnancy, labor timing, postpartum recovery, feeding event, infant condition, complication, treatment or state follows.",
+      "claim_refs": ["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes", "claim:candidate-v2-labor-is-a-staged-process", "claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v2-lactation-is-milk-production-and-secretion"]
+    },
+    {
+      "id": "biology-foodborne-symptom-variation",
+      "domain": "biology_physiology",
+      "subdomain": "foodborne_illness_context",
+      "family": "foodborne_illness_symptom_variation_by_germ",
+      "location_applicability": "Universal foodborne-illness context only after exposure and body state are independently established.",
+      "applicability": {"resource":"none","material":"none","process":"bounded symptom variation relation","npc":"no illness or diagnosis"},
+      "coverage": "one independently verified universal premise",
+      "evidence_boundary": "No food, germ, exposure, illness, symptom, severity, treatment or outcome follows.",
+      "claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ"]
+    },
+    {
+      "id": "environment-ice-snow-hazard-and-strength",
+      "domain": "environment",
+      "subdomain": "cryosphere",
+      "family": "ice_snow_walking_hazard_and_qualitative_ice_strength",
+      "location_applicability": "Universal relation only; ice or snow must be independently established in the current place.",
+      "applicability": {"resource":"conditional established ice or snow","material":"surface context only","process":"bounded qualitative hazard and strength relation","npc":"no fall, injury or route result"},
+      "coverage": "three independently verified universal premises",
+      "evidence_boundary": "No local ice, snow, thickness, temperature, salt content, traction, safe threshold, load, route, fall or injury follows.",
+      "claim_refs": ["claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:candidate-v2-near-melting-ice-has-less-strength"]
+    },
+    {
+      "id": "material-dated-novgorod-helmet-comparator",
+      "domain": "material_culture",
+      "subdomain": "dated_historical_comparators",
+      "family": "dated_novgorod_helmet_find_comparator",
+      "location_applicability": "Novgorod only in the claim's explicit 1250–1325 interval; it supplies no 1230 scene fact.",
+      "applicability": {"resource":"none","material":"archaeological find context only","process":"bounded historical interpretation","npc":"none"},
+      "coverage": "one independently verified later historical comparator premise",
+      "evidence_boundary": "No current helmet, armour, owner, protection value or combat scene follows for 1230.",
+      "claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find"]
+    },
+    {
+      "id": "social-dated-novgorod-psalter-comparator",
+      "domain": "social_law_economy",
+      "subdomain": "dated_historical_comparators",
+      "family": "dated_novgorod_psalter_book_comparator",
+      "location_applicability": "Novgorod only in the claim's explicit 1000–1100 interval; it supplies no 1230 scene fact.",
+      "applicability": {"resource":"none","material":"manuscript context only","process":"bounded historical interpretation","npc":"none"},
+      "coverage": "one independently verified early historical comparator premise",
+      "evidence_boundary": "No school, reader, literacy rate, current book or text follows for 1230.",
+      "claim_refs": ["claim:candidate-novgorod-psalter-eleventh-century"]
     }
   ],
   "missing_families": [
@@ -4984,9 +5055,9 @@
       "applicability": {"resource":"writing surfaces and implements","material":"letters records and exercises","process":"reading writing counting and record keeping","npc":"bounded literacy and numeracy practices"},
       "consumer_refs": ["potential:documents", "potential:trade", "potential:education"],
       "coverage": "partial",
-      "reason": "Practical document genres, accounts, named correspondence and alphabet/syllable exercises are attested. Onfim 199 is explicitly 1240–1260, not direct 1230 evidence; skill distribution, production, delivery and ordinary use of writing/counting remain fragmented.",
-      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts"],
-      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text"]
+      "reason": "Practical document genres, accounts, named correspondence and alphabet/syllable exercises are attested. The XI-century Novgorod Psalter is an early book comparator, while Onfim 199 is 1240–1260; neither is direct 1230 evidence of a school, reader or literacy rate. Skill distribution, production, delivery and ordinary use of writing/counting remain fragmented.",
+      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-psalter-comparator"],
+      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-novgorod-psalter-eleventh-century"]
     },
     {
       "id": "weapons-armour-use-and-maintenance",
@@ -4996,9 +5067,10 @@
       "location_applicability": "Arming, guard, hunt-to-war distinction, travel, conflict and post-conflict equipment handling",
       "applicability": {"resource":"weapon and armour materials","material":"arms protective equipment and fittings","process":"use damage upkeep and repair context","npc":"combatant guard craft and owner roles"},
       "consumer_refs": ["potential:combat_semantics", "potential:equipment_materialization"],
-      "coverage": "missing",
-      "reason": "A hunting bow, axes and defensive construction do not provide a verified military equipment map. Exact combat and damage stay code-owned; WK still needs historical availability and qualitative use/material premises.",
-      "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence"]
+      "coverage": "partial",
+      "reason": "A 1250–1325 Novgorod helmet-half-mask find is a later comparator only, not evidence of a 1230 weapon or armour set. A hunting bow, axes and defensive construction still do not provide a verified military equipment map. Exact combat and damage stay code-owned.",
+      "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence", "material-dated-novgorod-helmet-comparator"],
+      "supporting_claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find"]
     },
     {
       "id": "warfare-organization-logistics-and-aftermath",
@@ -5044,9 +5116,10 @@
       "location_applicability": "Pregnancy, birth, recovery and infant-feeding contexts",
       "applicability": {"resource":"food water warmth and care resources","material":"care materials only when present","process":"qualitative reproductive physiology and care","npc":"condition and dependency context, not diagnosis"},
       "consumer_refs": ["potential:body", "potential:care", "potential:household"],
-      "coverage": "missing",
-      "reason": "Three generic reproduction/development premises do not cover human pregnancy, birth, postpartum physiology, lactation or newborn dependency. Exact body state, timing, complications and outcomes remain body/time owners.",
-      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "body-exertion-hydration-and-sleep"]
+      "coverage": "partial",
+      "reason": "General pregnancy, staged labor, newborn adjustment and lactation relations are grounded. Postpartum recovery, newborn care and all individual state, timing, complications and outcomes remain uncovered or owned by body/time.",
+      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "body-exertion-hydration-and-sleep", "biology-reproductive-and-newborn-physiology"],
+      "supporting_claim_refs": ["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes", "claim:candidate-v2-labor-is-a-staged-process", "claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v2-lactation-is-milk-production-and-secretion"]
     },
     {
       "id": "human-lifecycle-childhood-puberty-and-aging",
@@ -5056,9 +5129,10 @@
       "location_applicability": "All human actor contexts where age or development is independently established",
       "applicability": {"resource":"age-dependent care resources","material":"none","process":"qualitative development and aging","npc":"age-related capacity context, not stereotype"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_behavior"],
-      "coverage": "missing",
-      "reason": "Generic ontogeny and a legal care case do not provide a compositional human lifecycle. Exact age, capacity, health and action success remain authoritative state and mechanics.",
-      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action"]
+      "coverage": "partial",
+      "reason": "Newborn adjustment at birth is grounded as one narrow lifecycle slice. Childhood, puberty, adult aging, frailty and changing capacity remain uncovered; exact age, capacity, health and action success remain authoritative state and mechanics.",
+      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action", "biology-reproductive-and-newborn-physiology"],
+      "supporting_claim_refs": ["claim:candidate-v2-newborn-undergoes-adjustments-at-birth"]
     },
     {
       "id": "sickness-symptoms-care-and-disability",
@@ -5069,8 +5143,9 @@
       "applicability": {"resource":"water food warmth and care resources","material":"none","process":"qualitative illness and recovery relations","npc":"possible symptoms and limitations, not diagnosis"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_routine"],
       "coverage": "partial",
-      "reason": "Infection chains, immunity, dehydration risk and sickness behaviour are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
-      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care"]
+      "reason": "Infection chains, immunity, dehydration risk, sickness behaviour and foodborne symptom variation by germ are grounded, but they are not a medical composition layer and do not cover common symptom/function relations or care limits.",
+      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation"],
+      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ"]
     },
     {
       "id": "injury-poisoning-parasites-and-oral-health",
@@ -5157,8 +5232,9 @@
       "applicability": {"resource":"snow and ice only when established","material":"surface and structure loading context","process":"qualitative cryosphere change and hazard","npc":"travel work and exposure context"},
       "consumer_refs": ["potential:winter_travel", "potential:weather", "potential:settlement"],
       "coverage": "partial",
-      "reason": "Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips do not cover practical snow/ice surface behaviour, weak ice or structural snow loading. Exact weather, load and passability remain owners.",
-      "supporting_family_ids": ["environment-weather", "environment-hydrology", "material-transport", "mechanics-statics-support"]
+      "reason": "Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners.",
+      "supporting_family_ids": ["environment-weather", "environment-hydrology", "material-transport", "mechanics-statics-support", "environment-ice-snow-hazard-and-strength"],
+      "supporting_claim_refs": ["claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:candidate-v2-near-melting-ice-has-less-strength"]
     },
     {
       "id": "daylight-night-sky-and-natural-navigation",

@@ -60,6 +60,12 @@
     "static-exposure-v1.json",
     "verification-static-exposure-v1.json",
     "static-household-water-v1.json",
-    "verification-static-household-water-v1.json"
+    "verification-static-household-water-v1.json",
+    "static-environment-v1.json",
+    "verification-static-environment-v1.json",
+    "static-memory-social-v1.json",
+    "verification-static-memory-social-v1.json",
+    "static-human-physiology-v1.json",
+    "verification-static-human-physiology-v1.json"
   ]
 }

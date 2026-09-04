@@ -1035,6 +1035,53 @@
         "npc": "no actor state"
       },
       "coverage": "independently verified stitching and treatment-limit premises"
+    },
+    {
+      "id": "static-environment-v1",
+      "source_path": "static-environment-v1.json",
+      "domains": [
+        "environment",
+        "physics_material_science"
+      ],
+      "location_applicability": "Conditional sediment freezing, flood-mark observation and atmospheric smoke transport; no local bank, flood or smoke state.",
+      "applicability": {
+        "resource": "conditional sediment",
+        "material": "conditional porous surfaces",
+        "process": "erosion and observation",
+        "npc": "interpretation context only"
+      },
+      "coverage": "five independently verified USGS/NWS premises"
+    },
+    {
+      "id": "static-memory-social-v1",
+      "source_path": "static-memory-social-v1.json",
+      "domains": [
+        "psychology_behavior",
+        "social_behavior"
+      ],
+      "location_applicability": "Potential recollection, testimony and shared-work contexts, never current actor knowledge or legal truth.",
+      "applicability": {
+        "resource": "information only",
+        "material": "none inferred",
+        "process": "memory and shared work",
+        "npc": "conditional qualitative context"
+      },
+      "coverage": "three independently approved psychological/social premises"
+    },
+    {
+      "id": "static-human-physiology-v1",
+      "source_path": "static-human-physiology-v1.json",
+      "domains": [
+        "biology_physiology"
+      ],
+      "location_applicability": "Potential body/perception contexts; never diagnosis, exposure value or a particular actor's outcome.",
+      "applicability": {
+        "resource": "none inferred",
+        "material": "none inferred",
+        "process": "conditional physiological premises",
+        "npc": "no actor state inferred"
+      },
+      "coverage": "six independently verified physiological premises"
     }
   ],
   "families": [
@@ -1907,7 +1954,8 @@
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:river-flow-affects-sediment-transport-deposition",
-        "claim:secondary-clay-forms-through-water-transport-deposition"
+        "claim:secondary-clay-forms-through-water-transport-deposition",
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
       ]
     },
     {
@@ -1955,7 +2003,9 @@
         "claim:foundations-earth-24-water-cycle-fluxes",
         "claim:foundations-earth-25-snowmelt-runoff",
         "claim:foundations-earth-26-runoff-contaminant-transport",
-        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:research-flood-can-leave-high-water-mark-types",
+        "claim:research-porous-high-water-stain-can-require-corroboration"
       ]
     },
     {
@@ -3400,7 +3450,9 @@
       "claim_refs": [
         "claim:foundations-ms-09-memory-systems",
         "claim:foundations-ms-10-recognition-representation",
-        "claim:foundations-ms3-02-working-memory"
+        "claim:foundations-ms3-02-working-memory",
+        "claim:research-memory-source-misattribution",
+        "claim:research-memory-postevent-misinformation"
       ]
     },
     {
@@ -3500,7 +3552,8 @@
         "claim:foundations-ms-23-group-pressure",
         "claim:foundations-ms-25-persuasion-context",
         "claim:foundations-ms-26-group-context",
-        "claim:foundations-ms-38-reference-group"
+        "claim:foundations-ms-38-reference-group",
+        "claim:research-pooled-work-social-loafing"
       ]
     },
     {
@@ -3663,9 +3716,78 @@
         "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ]
     },
-    {"id":"physiology-protective-reflexes","domain":"biology_physiology","subdomain":"protective_reflexes","family":"withdrawal_ocular_airway_and_startle_reflexes","location_applicability":"all actor contexts; body mechanics decide whether any response occurs","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved premises, not forced-action mechanics","claim_refs":["claim:candidate-physiology-v3-protective-withdrawal","claim:candidate-physiology-v3-blink-corneal-protection","claim:candidate-physiology-v3-swallowing-airway-protection","claim:candidate-physiology-v3-cough-reflex-airway-irritation","claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation","claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation","claim:candidate-physiology-v3-emesis-reflex-response","claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus","claim:candidate-physiology-v3-vestibular-postural-correction"]},
-    {"id":"physiology-oxygen-and-perfusion","domain":"biology_physiology","subdomain":"oxygen_delivery_airway_and_perfusion","family":"respiratory_impairment_oxygen_delivery_and_awareness","location_applicability":"all actor contexts; current consciousness and injury state remain body-owned","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved causal premises, not diagnosis or thresholds","claim_refs":["claim:candidate-physiology-v3-oxygen-delivery-brain-function","claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment","claim:candidate-physiology-v3-drowning-respiratory-impairment","claim:candidate-physiology-v3-low-brain-perfusion-awareness","claim:candidate-physiology-v3-blood-volume-perfusion-compensation"]},
-    {"id":"physiology-autonomic-and-functional-response","domain":"biology_physiology","subdomain":"thermoregulation_hydration_intoxication_and_arousal","family":"shivering_dehydration_intoxication_and_threat_arousal","location_applicability":"all actor contexts; current heat, fluid, substance and threat state remain owner-supplied","applicability":{"resource":"none","material":"none","process":"partial","npc":"partial"},"coverage":"bounded approved functional-response premises","claim_refs":["claim:candidate-physiology-v3-shivering-thermogenesis","claim:candidate-physiology-v3-dehydration-functional-risk","claim:candidate-physiology-v3-alcohol-intoxication-impairment","claim:candidate-physiology-v3-threat-autonomic-arousal"]},
+    {
+      "id": "physiology-protective-reflexes",
+      "domain": "biology_physiology",
+      "subdomain": "protective_reflexes",
+      "family": "withdrawal_ocular_airway_and_startle_reflexes",
+      "location_applicability": "all actor contexts; body mechanics decide whether any response occurs",
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "bounded approved premises, not forced-action mechanics",
+      "claim_refs": [
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:candidate-physiology-v3-blink-corneal-protection",
+        "claim:candidate-physiology-v3-swallowing-airway-protection",
+        "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+        "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+        "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+        "claim:candidate-physiology-v3-emesis-reflex-response",
+        "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:candidate-physiology-v3-vestibular-postural-correction",
+        "claim:research-bright-retinal-light-can-constrict-pupils"
+      ]
+    },
+    {
+      "id": "physiology-oxygen-and-perfusion",
+      "domain": "biology_physiology",
+      "subdomain": "oxygen_delivery_airway_and_perfusion",
+      "family": "respiratory_impairment_oxygen_delivery_and_awareness",
+      "location_applicability": "all actor contexts; current consciousness and injury state remain body-owned",
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "bounded approved causal premises, not diagnosis or thresholds",
+      "claim_refs": [
+        "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+        "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+        "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+        "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
+        "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
+      ]
+    },
+    {
+      "id": "physiology-autonomic-and-functional-response",
+      "domain": "biology_physiology",
+      "subdomain": "thermoregulation_hydration_intoxication_arousal_and_orienting",
+      "family": "autonomic_and_qualitative_functional_responses",
+      "location_applicability": "all actor contexts; current heat, fluid, substance and threat state remain owner-supplied",
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "partial",
+        "npc": "partial"
+      },
+      "coverage": "bounded approved functional-response premises",
+      "claim_refs": [
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:candidate-physiology-v3-dehydration-functional-risk",
+        "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+        "claim:candidate-physiology-v3-threat-autonomic-arousal",
+        "claim:research-extreme-heat-can-increase-body-heat-storage",
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:research-novel-stimulus-can-elicit-orienting-response"
+      ]
+    },
     {"id":"flora-tree-phenology","domain":"environment","subdomain":"plant_phenology","family":"deciduous_tree_flower_leaf_sequence","location_applicability":"tree contexts; no local taxon/calendar/state inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved phenology premise","claim_refs":["claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"]},
     {"id":"flora-nettle-fibre","domain":"environment","subdomain":"plant_fibre","family":"nettle_bast_fibre_separation","location_applicability":"plant-fibre process contexts; no historical/local stock inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"partial"},"coverage":"bounded approved fibre premise","claim_refs":["claim:candidate-nettle-bast-fibre-retting-decortication"]},
     {"id":"riparian-woody-debris","domain":"environment","subdomain":"riparian_process","family":"flood_woody_debris_transport_and_retention","location_applicability":"river-flood contexts; no debris presence/access inferred","applicability":{"resource":"partial","material":"partial","process":"partial","npc":"none"},"coverage":"bounded approved conditional mechanism","claim_refs":["claim:candidate-river-flood-woody-debris-transport-retention-conditional"]},
@@ -3746,9 +3868,96 @@
       "claim_refs": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ]
+    },
+    {
+      "id": "smoke-atmospheric-transport",
+      "domain": "physics_material_science",
+      "subdomain": "atmospheric_transport",
+      "family": "wind_stability_and_inversion_smoke_transport",
+      "location_applicability": "Atmospheric smoke context, not a claim about indoor ventilation or a current plume.",
+      "applicability": {
+        "resource": "conditional air",
+        "material": "conditional smoke",
+        "process": "transport and dispersion",
+        "npc": "exposure context, no dose or outcome"
+      },
+      "coverage": "bounded independently verified meteorological premises",
+      "claim_refs": [
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+        "claim:research-surface-inversion-can-trap-smoke-near-ground"
+      ]
     }
   ],
   "missing_families": [
+    {
+      "id": "fauna-trace-interpretation",
+      "domain": "environment",
+      "subdomain": "biological_traces",
+      "family": "tracks_scat_feeding_signs_and_trace_ambiguity",
+      "location_applicability": "Potential observation on soil, snow, vegetation, shelters and shores.",
+      "applicability": {
+        "resource": "no resource inferred",
+        "material": "conditional trace substrate",
+        "process": "trace formation preservation and interpretation",
+        "npc": "observation and tracking context"
+      },
+      "consumer_refs": [
+        "potential:environmental_investigation",
+        "potential:travel"
+      ],
+      "coverage": "partial",
+      "reason": "Species-scoped pellets and emergence traces exist; the generic evidential relation and weather/substrate/time ambiguity still need source-backed research. No local trace, taxon, age, route, abundance or encounter follows.",
+      "supporting_claim_refs": [
+        "claim:fauna-tawny-owl-pellets",
+        "claim:fauna-dragonfly-emergence"
+      ]
+    },
+    {
+      "id": "animal-infection-behaviour-ecology",
+      "domain": "biology_physiology",
+      "subdomain": "animal_health_ecology",
+      "family": "bounded_pathogen_host_condition_and_behaviour_relations",
+      "location_applicability": "Potential wild/domestic-animal contacts and husbandry contexts.",
+      "applicability": {
+        "resource": "none inferred",
+        "material": "none inferred",
+        "process": "conditional pathogen-host effects",
+        "npc": "animal behaviour context, not decision"
+      },
+      "consumer_refs": [
+        "potential:animal_ecology",
+        "potential:husbandry"
+      ],
+      "coverage": "partial",
+      "reason": "Transmission and homeostasis premises do not establish how a specified infection may affect animal behaviour or condition. Research one scoped host/pathogen relation, not a universal all-disease rule. No diagnosis, actual infection, transmission, mortality or treatment follows.",
+      "supporting_claim_refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:foundations-life-43-infection-chain"
+      ]
+    },
+    {
+      "id": "plant-herbivory-effects",
+      "domain": "biology_physiology",
+      "subdomain": "plant_animal_interactions",
+      "family": "plant_consumption_tissue_loss_and_reproductive_opportunity",
+      "location_applicability": "Potential pasture, forest, crop and garden contexts.",
+      "applicability": {
+        "resource": "conditional plant tissue",
+        "material": "conditional biomass",
+        "process": "herbivory and plant response",
+        "npc": "foraging context only"
+      },
+      "consumer_refs": [
+        "potential:ecology",
+        "potential:agriculture"
+      ],
+      "coverage": "partial",
+      "reason": "Species-specific browsing and grubbing exist; general plant-herbivory effects require a scoped source, not an automatic damage rule. No local herbivore, plant, consumed amount, yield or vegetation change follows.",
+      "supporting_claim_refs": [
+        "claim:fauna-mammals-moose-ecosystem-engineering",
+        "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance"
+      ]
+    },
     {
       "id": "possession-title-and-acquisition",
       "domain": "social_law_economy",
@@ -4086,10 +4295,15 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Actor knowledge access is code-owned; research only bounded memory/transmission relations, never infer truth from a report.",
+      "reason": "Independently approved source-confusion and post-event-misinformation premises now extend memory/recognition support. Residual: other transmission, corroboration and reliability conditions. A report does not establish truth, deliberate deception, actor knowledge or legal admissibility.",
       "supporting_family_ids": [
         "psychology-memory-and-recognition",
         "social-documentary-practice"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-memory-source-misattribution",
+        "claim:research-memory-postevent-misinformation",
+        "claim:foundations-ms-09-memory-systems"
       ]
     },
     {
@@ -4130,11 +4344,17 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Independent need-first cartography review identified this distinct need beyond current broad rollups. Existing related families require claim-level reconciliation before identifying residual factual research; this is not a claim that the corpus contains no support. Qualitative context only; no roster, labour number, exact duration, schedule or forced NPC decision.",
+      "reason": "Independently approved conditional pooled-work output reduction complements existing role premises. Role complementarity, coordination and task dependencies remain research needs. No roster, staffing count, exact duration, labour rate, schedule or forced NPC decision follows.",
       "supporting_family_ids": [
         "social-group-influence-and-coordination",
         "npc-craft-occupations",
         "npc-household-routines"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-pooled-work-social-loafing",
+        "claim:foundations-ms-32-social-role",
+        "claim:foundations-ms-33-role-predictability",
+        "claim:foundations-ms-34-role-adjustment"
       ]
     },
     {
@@ -4273,11 +4493,27 @@
       "subdomain": "soil_and_bank_processes",
       "family": "freeze_thaw_unconsolidated_sediment_and_erosion",
       "location_applicability": "seasonally freezing banks, cuttings, paths and excavations; not a canonical terrain assertion",
-      "applicability": {"resource":"soil and sediment","material":"moist granular substrate","process":"freezing thawing erosion","npc":"travel and excavation context"},
-      "consumer_refs": ["potential:semantic_resolution", "potential:excavation", "potential:spatial_hazards"],
+      "applicability": {
+        "resource": "soil and sediment",
+        "material": "moist granular substrate",
+        "process": "freezing thawing erosion",
+        "npc": "travel and excavation context"
+      },
+      "consumer_refs": [
+        "potential:semantic_resolution",
+        "potential:excavation",
+        "potential:spatial_hazards"
+      ],
       "coverage": "partial",
-      "reason": "Existing rock weathering and soil-water families are adjacent support, not verification of thawed-bank stability. Separate sediment relation needs source review; slope geometry, bearing capacity, actual bank failure and route safety remain code/state owned.",
-      "supporting_family_ids": ["environment-geology", "environment-wetland-river-soil"]
+      "reason": "Independently approved sediment freeze-thaw disaggregation now complements rock weathering and water relations. Residual: conditional bank stability under geometry, roots, saturation and loading; actual collapse, bearing capacity and route safety remain mechanics/state.",
+      "supporting_family_ids": [
+        "environment-geology",
+        "environment-wetland-river-soil"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
+      ]
     },
     {
       "id": "flood-marks-observation-and-corroboration",
@@ -4285,11 +4521,26 @@
       "subdomain": "environmental_observation",
       "family": "deposited_marks_and_conditional_high_water_interpretation",
       "location_applicability": "floodplains, banks, structures and riparian vegetation; observed marks require separate perception basis",
-      "applicability": {"resource":"deposits and debris","material":"mud seeds wood staining","process":"deposition wicking and observation","npc":"environmental interpretation"},
-      "consumer_refs": ["potential:semantic_resolution", "potential:environmental_investigation"],
-      "coverage": "missing",
-      "reason": "Debris transport does not establish mark reliability or corroboration requirements. Static research needed for conditional evidential relations; no hidden clue, date, flood event, exact level or authoritative conclusion may be manufactured.",
-      "supporting_family_ids": ["riparian-woody-debris", "environment-hydrology"]
+      "applicability": {
+        "resource": "deposits and debris",
+        "material": "mud seeds wood staining",
+        "process": "deposition wicking and observation",
+        "npc": "environmental interpretation"
+      },
+      "consumer_refs": [
+        "potential:semantic_resolution",
+        "potential:environmental_investigation"
+      ],
+      "coverage": "partial",
+      "reason": "Independently approved mark types and porous-material wicking/corroboration now supply bounded observation premises. Residual: other mark-preservation and interpretation conditions. Observed trace identity, event date, actual peak and authoritative conclusion require separate evidence/state.",
+      "supporting_family_ids": [
+        "riparian-woody-debris",
+        "environment-hydrology"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-flood-can-leave-high-water-mark-types",
+        "claim:research-porous-high-water-stain-can-require-corroboration"
+      ]
     },
     {
       "id": "smoke-transport-and-dispersion",
@@ -4297,11 +4548,29 @@
       "subdomain": "airflow_and_transport",
       "family": "buoyancy_airflow_stratification_and_smoke_dispersion",
       "location_applicability": "outdoor fires and enclosed working/sleeping spaces; indoor and atmospheric regimes require distinct applicability",
-      "applicability": {"resource":"air","material":"smoke aerosol","process":"transport mixing and stratification","npc":"visibility and exposure context"},
-      "consumer_refs": ["potential:fire_context", "potential:shelter_context", "potential:semantic_resolution"],
+      "applicability": {
+        "resource": "air",
+        "material": "smoke aerosol",
+        "process": "transport mixing and stratification",
+        "npc": "visibility and exposure context"
+      },
+      "consumer_refs": [
+        "potential:fire_context",
+        "potential:shelter_context",
+        "potential:semantic_resolution"
+      ],
       "coverage": "partial",
-      "reason": "Optical attenuation is not transport or exposure. Source-backed conditional air-motion relations need separate review; no plume direction, room state, dose or safe location follows.",
-      "supporting_family_ids": ["smoke-optical-visibility", "thermal-phase-heat-transfer", "environment-weather"]
+      "reason": "Atmospheric wind/stability and surface-inversion relations are now independently grounded. Residual: distinct indoor airflow/ventilation and source-specific buoyancy conditions. No current smoke, plume direction, concentration, dose or safe location follows.",
+      "supporting_family_ids": [
+        "smoke-optical-visibility",
+        "thermal-phase-heat-transfer",
+        "environment-weather",
+        "smoke-atmospheric-transport"
+      ],
+      "supporting_claim_refs": [
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+        "claim:research-surface-inversion-can-trap-smoke-near-ground"
+      ]
     },
     {
       "id": "flora-trees",
@@ -4679,7 +4948,8 @@
         "fibre-rope-condition",
         "materials-wet-granular-cohesion-and-deformation",
         "combustion-carbon-monoxide-exposure",
-        "materials-stitched-textile-and-leather-assemblies"
+        "materials-stitched-textile-and-leather-assemblies",
+        "smoke-atmospheric-transport"
       ]
     },
     {
@@ -4725,7 +4995,8 @@
         "materials-wood-moisture-and-coatings",
         "material-transport",
         "materials-wet-granular-cohesion-and-deformation",
-        "physiology-cold-water-immersion"
+        "physiology-cold-water-immersion",
+        "smoke-atmospheric-transport"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -4748,7 +5019,8 @@
         "physiology-cold-water-immersion",
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
-        "process-household-water-treatment-limits"
+        "process-household-water-treatment-limits",
+        "smoke-atmospheric-transport"
       ],
       "coverage": "partial: camp/ecology/occupation context"
     },
@@ -4848,7 +5120,8 @@
         "material-tools",
         "material-fuel-resin-wax",
         "materials-wood-moisture-and-coatings",
-        "combustion-carbon-monoxide-exposure"
+        "combustion-carbon-monoxide-exposure",
+        "smoke-atmospheric-transport"
       ],
       "coverage": "partial: fire lifecycle and water interaction"
     },

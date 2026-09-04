@@ -1,0 +1,12 @@
+# Independent verification — static human physiology v1
+
+Candidate: `git:d4b5568245c6ed4708deb49f01d2706e11705003:data/world-catalogs/novgorod/world-knowledge/production-v1/static-human-physiology-v1.json`.
+
+- APPROVE `claim:research-global-cerebral-hypoperfusion-can-cause-syncope`: the [PubMed abstract](https://pubmed.ncbi.nlm.nih.gov/24365296/) defines syncope as sudden, brief transient loss of consciousness with postural failure due to global cerebral hypoperfusion. The candidate remains limited to a qualitative possible causal relation.
+- APPROVE `claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion`: the [ESICM consensus](https://pmc.ncbi.nlm.nih.gov/articles/PMC4239778/) defines shock as acute circulatory failure unable to deliver oxygen sufficient for tissue demand, resulting in cellular dysfunction.
+- APPROVE `claim:research-bright-retinal-light-can-constrict-pupils`: [OpenStax Anatomy and Physiology 2e, §15.3](https://openstax.org/books/anatomy-and-physiology-2e/pages/15-3-central-control) directly describes bright retinal light triggering the parasympathetic pathway that constricts the pupil.
+- APPROVE `claim:research-extreme-heat-can-increase-body-heat-storage`: [CDC/NIOSH](https://www.cdc.gov/niosh/heat-stress/about/index.html) states occupational heat stress combines metabolic, environmental, and clothing heat and results in increased body heat storage; extreme heat/hot-environment work can produce that stress.
+- APPROVE `claim:research-extreme-cold-can-cause-cold-stress`: [CDC/NIOSH](https://www.cdc.gov/niosh/cold-stress/about/index.html) states that extreme-cold or cold-environment exposure may cause cold stress and that, below normal temperatures, body heat can rapidly leave.
+- Historical first attempt — NEEDS_REVIEW `claim:research-novel-stimulus-can-elicit-orienting-response`: its substantive premise was supported, but candidate metadata then said `Psychophysiology (2013)` rather than final publication in 2008 with PMC availability in 2013. The corrected candidate `git:b6244d51bb7b83cd86e5a30687ddd26dd06158e5` was independently rechecked and is APPROVE: the [Bradley article](https://pmc.ncbi.nlm.nih.gov/articles/PMC3645482/) describes novelty-elicited orienting responses and habituation with repetition.
+
+All six claims are now APPROVE. All approvals preserve the candidate's scene-local exclusions. No approval establishes an individual actor's diagnosis, state, perception, outcome, or treatment.

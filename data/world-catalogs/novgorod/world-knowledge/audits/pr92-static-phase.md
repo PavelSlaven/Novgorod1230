@@ -66,7 +66,7 @@ The next authoring step must isolate residual factual relations. Actual title,
 debt balance, testimony, judgment, prices, inventory, route condition and
 dispatch schedules remain code/state questions, not new corpus facts.
 
-## Static exposure and household increment
+## Static exposure and household increment — checkpoint d872afdc
 
 The next production increment contains six independently approved premises:
 fuel combustion can produce carbon monoxide; CO can accumulate indoors;
@@ -99,8 +99,8 @@ Not promoted:
 - Raw-food transfer via hands/utensils remains NEEDS_REVIEW: the independent
   reviewer could not retrieve the full USDA anchor. This is a source-access
   limitation, not proof that the relation is false.
-- Five environment residual proposals remain research-only, covering soil
-  freeze–thaw, flood marks and smoke transport; none enters the runtime pack.
+- At that checkpoint, five environment proposals were research-only. Their
+  subsequent independent verification is recorded in the next increment below.
 
 The static retrieval benchmark adds nine bilingual probes to the existing
 12-query coverage set. These are offline retrieval queries, not live gameplay
@@ -115,6 +115,63 @@ candidate Git object and verify the exact compiled bundle and embedding-entry
 list. Documentation/knowledge-source checks and `git diff --check` passed.
 The flat index was rebuilt with the unchanged pinned model: 3,230 entries,
 1,024 dimensions, 13,230,080 bytes. This test set is not the full CI suite.
+
+## Static environment, memory and physiology increment
+
+All five environment candidates from committed candidate `d872afdc` now have
+independent APPROVE entries in `verification-static-environment-v1.json`.
+Three USGS premises were checked by `/root/claim_verifier/troitsky_primary`;
+two NWS premises were independently checked by `/root/smoke_source_verifier`.
+The earlier NWS NEEDS_REVIEW was a source-extraction limitation, superseded by
+the exact glossary and PDF passages, not bypassed or silently treated as approval.
+See `verification/static-environment-v1.md` and
+`research/static-smoke-independent-verification-v1.md`.
+
+The environmental additions are sediment freeze–thaw, flood-mark types,
+porous-stain corroboration, atmospheric smoke transport and surface-inversion
+smoke retention. They do not establish any current bank, flood, measured level,
+weather, plume, concentration, exposure or safe location.
+
+Candidate checkpoint `d4b5568245c6ed4708deb49f01d2706e11705003` separately
+contains six physiology and three memory/group-work candidates. All nine now
+have independent APPROVE entries and are included in the descriptor. The
+orienting-response source publication year was corrected in candidate
+`b6244d51bb7b83cd86e5a30687ddd26dd06158e5`; its verifier approves that version.
+See `verification/static-human-physiology-v1.md` and
+`verification/static-memory-social-v1.md`. Each claim retains one independent
+approval; no additional approval tier is introduced.
+
+The corpus contains 926 claims, 714 concepts, 309 sources and 599 evidence
+records. Strict compilation and cartography validation pass. Current work
+follows the user's game-focused evidence standard:
+reliable source, useful factual relation, clear applicability limits and one
+independent verification, without additional proof layers or formal re-audits.
+
+Need-first ecology reconciliation identified three additional residual families:
+general fauna-trace interpretation, scoped animal infection/behaviour relations,
+and general plant-herbivory effects. These are now open cartography needs, not
+approved claims. See `research/static-ecology-need-reconciliation-v1.md`.
+Current cartography contains 125 supported families and 36 missing/partial
+families; an increased need count is discovery, not reduced data quality.
+
+All new probes remain offline retrieval checks. No gameplay campaign, replay,
+saturation attempt or other gameplay-owner repair was run for this increment.
+
+Checkpoint checks: 138 focused tests PASS; documentation/generated artifacts,
+knowledge-source controls and `git diff --check` PASS. The unchanged pinned
+CPU encoder rebuilt 3,280 × 1,024 float32 entries (13,434,880 bytes).
+The 133-query baseline benchmark passes with hybrid Recall@10 0.95990;
+the expanded 35-query coverage benchmark passes with hybrid Recall@10 0.98571,
+lexical Recall@10 0.90000, applicability precision 1.0 and hard-constraint
+recall 1.0. Both retain their existing gates without threshold changes.
+
+Known retrieval limitation: in compound probe `water_fire_smoke_ru`, the new
+atmospheric smoke candidates displace the optical-visibility premise from the
+bounded hybrid result. The fire-cooling premise remains retrieved. This is a
+static retrieval residual, not a gameplay-owner bug or a missing factual claim;
+the passing aggregate gate does not mean perfect retrieval. No probe or source
+wording was changed to conceal this miss. Full exact-HEAD CI is still required
+before merge; these focused checks are not that CI gate.
 
 ## Future-testing finding: unowned ordinary item → action production
 

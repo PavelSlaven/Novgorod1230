@@ -10916,6 +10916,34 @@
       "retrieval_text": "Крещение священником в уставном контексте Связь священника с крещением детей как регулируемым действием в Пространной редакции Устава Ярослава. Пространная редакция Устава Ярослава рассматривает крещение детей священником в чужом уезде как регулируемое действие. Неясная формула исключения не толкуется; местная граница, обряд, его действительность, болезнь, согласие, умение и исполнение нормы не устанавливаются."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion:en",
+      "target_ref": "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Acute circulatory failure and perfusion Qualitative relation between acute circulatory failure, tissue perfusion, and cellular dysfunction. Acute circulatory failure can cause inadequate tissue perfusion and cellular dysfunction. This establishes no diagnosis, type or cause, blood pressure, symptom, organ outcome, severity, or treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion:ru",
+      "target_ref": "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Острая недостаточность кровообращения и перфузия Качественная связь острой недостаточности кровообращения, перфузии тканей и клеточной дисфункции. Острая недостаточность кровообращения может приводить к недостаточной перфузии тканей и клеточной дисфункции. Это не устанавливает диагноз, тип или причину, давление, симптом, органный исход, тяжесть или лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion:en",
+      "target_ref": "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Smoke transport and dispersion Qualitative relation between atmospheric conditions, temperature inversion and smoke transport. Wind and atmospheric stability or instability can affect smoke transport and dispersion. This establishes no fire, smoke, weather state, plume direction or distance, concentration, exposure, visibility, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion:ru",
+      "target_ref": "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Перенос и рассеивание дыма Качественная связь атмосферных условий, температурной инверсии и переноса дыма. Ветер, устойчивость и неустойчивость атмосферы могут влиять на перенос и рассеивание дыма. Это не устанавливает огонь, дым, погоду, направление или дальность шлейфа, концентрацию, воздействие, видимость или исход в конкретной сцене."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability:en",
       "target_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
       "domain": "chemistry_process",
@@ -10928,6 +10956,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Нагрев воды и границы удаления загрязнителей Различие между инактивацией микроорганизмов нагревом и химическими примесями. Одно кипячение само по себе не устанавливает пригодность для питья воды с топливом или токсичными химическими примесями. Это не утверждает универсальную невозможность удаления любого вещества и не устанавливает загрязнение, источник воды, обработку, разрешение на питьё или исход для здоровья в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-bright-retinal-light-can-constrict-pupils:en",
+      "target_ref": "claim:research-bright-retinal-light-can-constrict-pupils",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Pupillary light reflex Qualitative relation between bright retinal light and pupil constriction. Bright light reaching the retina can elicit parasympathetic pupil constriction. This establishes no light, visual function, eye condition, pupil measurement, perception, or concrete actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-bright-retinal-light-can-constrict-pupils:ru",
+      "target_ref": "claim:research-bright-retinal-light-can-constrict-pupils",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Зрачковый световой рефлекс Качественная связь яркого света на сетчатке и сужения зрачка. Яркий свет, попадающий на сетчатку, может вызывать парасимпатическое сужение зрачков. Это не устанавливает свет, зрение, состояние глаза, размер зрачка, восприятие или состояние конкретного персонажа."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-carbon-monoxide-can-accumulate-indoors:en",
@@ -10958,6 +11000,34 @@
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения. Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-extreme-cold-can-cause-cold-stress:en",
+      "target_ref": "claim:research-extreme-cold-can-cause-cold-stress",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Heat and cold stress Qualitative relations of extreme heat or cold to body heat balance. Extreme cold or cold-environment exposure can cause cold stress and rapid body heat loss. This establishes no temperature, duration, clothing, body temperature, diagnosis, impairment, survival, or treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-extreme-cold-can-cause-cold-stress:ru",
+      "target_ref": "claim:research-extreme-cold-can-cause-cold-stress",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Тепловой и холодовой стресс Качественные связи сильной жары или холода с тепловым балансом тела. Сильный холод или воздействие холодной среды могут вызывать холодовой стресс и быструю потерю тепла телом. Это не устанавливает температуру, длительность, одежду, температуру тела, диагноз, нарушение функций, выживание или лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-extreme-heat-can-increase-body-heat-storage:en",
+      "target_ref": "claim:research-extreme-heat-can-increase-body-heat-storage",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Heat and cold stress Qualitative relations of extreme heat or cold to body heat balance. Extreme heat or work in a hot environment can increase body heat storage. This establishes no temperature, work, clothing, hydration, illness, injury, diagnosis, impairment, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-extreme-heat-can-increase-body-heat-storage:ru",
+      "target_ref": "claim:research-extreme-heat-can-increase-body-heat-storage",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Тепловой и холодовой стресс Качественные связи сильной жары или холода с тепловым балансом тела. Сильная жара или работа в горячей среде могут увеличивать накопление тепла в теле. Это не устанавливает температуру, работу, одежду, гидратацию, болезнь, травму, диагноз, нарушение функций или исход."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-failure-of-stitched-leather-join-can-separate-components:en",
       "target_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
       "domain": "physics_material_science",
@@ -10970,6 +11040,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Стежковое соединение частей кожаного изделия Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков. В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-flood-can-leave-high-water-mark-types:en",
+      "target_ref": "claim:research-flood-can-leave-high-water-mark-types",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable high-water marks Qualitative high-water-mark types and limits of interpreting porous-surface marks. A flood can leave high-water marks including deposited mud, snagged debris, and erosion scars. This establishes no local flood, event date, peak, cause, magnitude, water level, route decision, or future risk in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-flood-can-leave-high-water-mark-types:ru",
+      "target_ref": "claim:research-flood-can-leave-high-water-mark-types",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Паводок может оставлять отметки высокой воды, включая отложившийся ил, зацепившийся за препятствия мусор и эрозионные следы. Это не устанавливает местный паводок, дату события, пик, причину, величину, уровень воды, решение о маршруте или будущий риск в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion:en",
+      "target_ref": "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Freeze-thaw sediment loosening Qualitative relation between freeze–thaw cycles, sediment and erosion vulnerability. Freeze–thaw cycles can break up previously consolidated sediment and leave it more vulnerable to erosion after thaw. This establishes no bank, collapse, rate, season, sediment composition, water level, access, or outcome in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion:ru",
+      "target_ref": "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Морозное разрыхление осадочного грунта Качественная связь циклов замерзания–оттаивания, осадочного грунта и эрозионной уязвимости. Циклы замерзания и оттаивания могут разрушать ранее связанный осадочный грунт и после оттаивания делать его более уязвимым для эрозии. Это не устанавливает берег, обрушение, скорость, сезон, состав грунта, уровень воды, доступ или исход в конкретной сцене."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-fuel-combustion-can-produce-carbon-monoxide:en",
@@ -10986,6 +11084,90 @@
       "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении. При горении топлива может образовываться угарный газ. Это не устанавливает топливо, огонь, количество, скорость образования, место или исход в конкретной сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-global-cerebral-hypoperfusion-can-cause-syncope:en",
+      "target_ref": "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Syncope and cerebral perfusion Qualitative relation between transient global cerebral hypoperfusion and syncope. Transient global cerebral hypoperfusion can cause syncope, a transient loss of consciousness. This establishes no cause, diagnosis, duration, fall, recovery, recurrence, or concrete actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-global-cerebral-hypoperfusion-can-cause-syncope:ru",
+      "target_ref": "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обморок и перфузия мозга Качественная связь краткой глобальной гипоперфузии мозга и обморока. Кратковременное глобальное снижение перфузии мозга может вызвать обморок — преходящую потерю сознания. Это не устанавливает причину, диагноз, длительность, падение, восстановление, повторение или состояние конкретного персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-memory-postevent-misinformation:en",
+      "target_ref": "claim:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Post-event misinformation Bounded qualitative premise, not a concrete actor's state. Misleading information received after an event can distort later recollection of it. This establishes no exposure, changed memory, actor knowledge, error probability, testimony verdict, or ability to implant a particular memory."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-memory-postevent-misinformation:ru",
+      "target_ref": "claim:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Дезинформация после события Ограниченная качественная предпосылка; не состояние конкретного actor. Вводящая в заблуждение информация после события может искажать последующее воспоминание о нём. Это не устанавливает получение информации, изменение памяти, знания actor, вероятность ошибки, оценку показаний или возможность внедрить конкретное воспоминание."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-memory-source-misattribution:en",
+      "target_ref": "claim:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Source misattribution Bounded qualitative premise, not a concrete actor's state. Recollection can confuse the source of information. This does not establish what an actor witnessed, remembers, believes, or whether testimony is true or deliberately deceptive."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-memory-source-misattribution:ru",
+      "target_ref": "claim:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Ошибка атрибуции источника Ограниченная качественная предпосылка; не состояние конкретного actor. При воспоминании человек может путать источник информации. Это не устанавливает, что actor видел, помнит или считает истинным, правдивость показаний либо намеренный обман."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-novel-stimulus-can-elicit-orienting-response:en",
+      "target_ref": "claim:research-novel-stimulus-can-elicit-orienting-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Orienting response to novelty Qualitative relation between stimulus novelty and orienting response. A novel or unexpected stimulus can elicit an orienting response that directs sensory attention and can habituate with repetition. This establishes no notice, gaze or body direction, recognition, emotion, threat, decision, action, or perception of a concrete actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-novel-stimulus-can-elicit-orienting-response:ru",
+      "target_ref": "claim:research-novel-stimulus-can-elicit-orienting-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ориентировочная реакция на новизну Качественная связь новизны стимула и ориентировочной реакции. Новый или неожиданный стимул может вызывать ориентировочную реакцию, направляющую сенсорное внимание, и она может ослабевать при повторении. Это не устанавливает замечание, направление взгляда или тела, узнавание, эмоцию, угрозу, решение, действие или восприятие конкретного персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-pooled-work-social-loafing:en",
+      "target_ref": "claim:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Social loafing in pooled work Bounded qualitative premise, not a concrete actor's state. Pooling contributions without individual evaluation can reduce individual work output; this is conditional, not inevitable. This provides no medieval prevalence, worker motive, staffing requirement, labour rate, allocation, compliance, or forced NPC decision."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-pooled-work-social-loafing:ru",
+      "target_ref": "claim:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Снижение личной отдачи в совместной работе Ограниченная качественная предпосылка; не состояние конкретного actor. Объединение вкладов без индивидуальной оценки может снижать личную отдачу в работе; это не неизбежный эффект. Это не задаёт распространённость в Средневековье, мотив работника, необходимый штат, темп труда, распределение работ, подчинение или решение NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-porous-high-water-stain-can-require-corroboration:en",
+      "target_ref": "claim:research-porous-high-water-stain-can-require-corroboration",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable high-water marks Qualitative high-water-mark types and limits of interpreting porous-surface marks. Capillary wicking can place a high-water stain on porous material above the actual water peak; nearby nonporous marks can corroborate its assessment. This establishes no mark, material, elevation, confidence value, survey, flood, or conclusion in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-porous-high-water-stain-can-require-corroboration:ru",
+      "target_ref": "claim:research-porous-high-water-stain-can-require-corroboration",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях. Капиллярное впитывание может поместить отметку высокой воды на пористой поверхности выше фактического пика воды; близкие непористые отметки могут подтвердить её оценку. Это не устанавливает отметку, материал, высоту, степень уверенности, обследование, паводок или вывод в конкретной сцене."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-stitching-can-secure-weak-textile-to-support:en",
       "target_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
       "domain": "physics_material_science",
@@ -10998,6 +11180,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Стежковая поддержка ослабленного текстиля Условная связь стежков, повреждённого текстиля и поддерживающей ткани. Стежки могут закреплять порванный, осыпающийся или ослабленный участок текстиля на поддерживающей ткани. Это не устанавливает текстиль, нить, поддержку, инструмент, навык, историческую практику, прочность или результат ремонта в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-surface-inversion-can-trap-smoke-near-ground:en",
+      "target_ref": "claim:research-surface-inversion-can-trap-smoke-near-ground",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Smoke transport and dispersion Qualitative relation between atmospheric conditions, temperature inversion and smoke transport. A surface-based temperature inversion can trap smoke at low levels and limit lofting for dilution or wind transport. This establishes no inversion, time, terrain, wind, smoke source, concentration, effect, direction, or safe place in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-surface-inversion-can-trap-smoke-near-ground:ru",
+      "target_ref": "claim:research-surface-inversion-can-trap-smoke-near-ground",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Перенос и рассеивание дыма Качественная связь атмосферных условий, температурной инверсии и переноса дыма. Приземная температурная инверсия может удерживать дым на низком уровне и ограничивать его подъём для разбавления или переноса ветром. Это не устанавливает инверсию, время, рельеф, ветер, источник дыма, концентрацию, эффект, направление или безопасное место в конкретной сцене."
     },
     {
       "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
@@ -15368,6 +15564,20 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-circulatory-shock-perfusion:en",
+      "target_ref": "wk:biology_physiology:research-circulatory-shock-perfusion",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Acute circulatory failure and perfusion Qualitative relation between acute circulatory failure, tissue perfusion, and cellular dysfunction."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-circulatory-shock-perfusion:ru",
+      "target_ref": "wk:biology_physiology:research-circulatory-shock-perfusion",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Острая недостаточность кровообращения и перфузия Качественная связь острой недостаточности кровообращения, перфузии тканей и клеточной дисфункции."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-hypothermia:en",
       "target_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
       "domain": "biology_physiology",
@@ -15380,6 +15590,62 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Переохлаждение при погружении в холодную воду Качественная связь погружения в холодную воду и переохлаждения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-orienting-response:en",
+      "target_ref": "wk:biology_physiology:research-orienting-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Orienting response to novelty Qualitative relation between stimulus novelty and orienting response."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-orienting-response:ru",
+      "target_ref": "wk:biology_physiology:research-orienting-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ориентировочная реакция на новизну Качественная связь новизны стимула и ориентировочной реакции."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-pupil-light-reflex:en",
+      "target_ref": "wk:biology_physiology:research-pupil-light-reflex",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Pupillary light reflex Qualitative relation between bright retinal light and pupil constriction."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-pupil-light-reflex:ru",
+      "target_ref": "wk:biology_physiology:research-pupil-light-reflex",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Зрачковый световой рефлекс Качественная связь яркого света на сетчатке и сужения зрачка."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-syncope-cerebral-perfusion:en",
+      "target_ref": "wk:biology_physiology:research-syncope-cerebral-perfusion",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Syncope and cerebral perfusion Qualitative relation between transient global cerebral hypoperfusion and syncope."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-syncope-cerebral-perfusion:ru",
+      "target_ref": "wk:biology_physiology:research-syncope-cerebral-perfusion",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обморок и перфузия мозга Качественная связь краткой глобальной гипоперфузии мозга и обморока."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-thermal-stress:en",
+      "target_ref": "wk:biology_physiology:research-thermal-stress",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Heat and cold stress Qualitative relations of extreme heat or cold to body heat balance."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-thermal-stress:ru",
+      "target_ref": "wk:biology_physiology:research-thermal-stress",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Тепловой и холодовой стресс Качественные связи сильной жары или холода с тепловым балансом тела."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:ruminant-digestion:en",
@@ -17354,6 +17620,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Региональные четвертичные отложения Общая геологическая рамка почвообразующих пород; конкретный источник требует отдельного основания. Геологический фон Почвообразующие породы"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-flood-high-water-mark-observation:en",
+      "target_ref": "wk:environment:research-flood-high-water-mark-observation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable high-water marks Qualitative high-water-mark types and limits of interpreting porous-surface marks."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-flood-high-water-mark-observation:ru",
+      "target_ref": "wk:environment:research-flood-high-water-mark-observation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые отметки высокой воды Качественные виды отметок высокой воды и пределы их интерпретации на пористых поверхностях."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-freeze-thaw-sediment-erosion:en",
+      "target_ref": "wk:environment:research-freeze-thaw-sediment-erosion",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Freeze-thaw sediment loosening Qualitative relation between freeze–thaw cycles, sediment and erosion vulnerability."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:research-freeze-thaw-sediment-erosion:ru",
+      "target_ref": "wk:environment:research-freeze-thaw-sediment-erosion",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Морозное разрыхление осадочного грунта Качественная связь циклов замерзания–оттаивания, осадочного грунта и эрозионной уязвимости."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:rising-air-cooling-cloud-condensation:en",
@@ -20716,6 +21010,20 @@
       "retrieval_text": "Угарный газ при горении и воздух в помещении Качественная связь горения топлива, угарного газа и воздуха в помещении."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-smoke-transport-dispersion:en",
+      "target_ref": "wk:physics_material_science:research-smoke-transport-dispersion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Smoke transport and dispersion Qualitative relation between atmospheric conditions, temperature inversion and smoke transport."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:research-smoke-transport-dispersion:ru",
+      "target_ref": "wk:physics_material_science:research-smoke-transport-dispersion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Перенос и рассеивание дыма Качественная связь атмосферных условий, температурной инверсии и переноса дыма."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-stitched-leather-component-join:en",
       "target_ref": "wk:physics_material_science:research-stitched-leather-component-join",
       "domain": "physics_material_science",
@@ -21458,6 +21766,34 @@
       "retrieval_text": "Экспериментальные механизмы внимания, памяти и стресса Экспериментальные результаты о внимании, памяти, фрустрации и остром стрессе действуют только в описанных условиях."
     },
     {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:research-memory-postevent-misinformation:en",
+      "target_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Post-event misinformation Bounded qualitative premise, not a concrete actor's state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:research-memory-postevent-misinformation:ru",
+      "target_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Дезинформация после события Ограниченная качественная предпосылка; не состояние конкретного actor."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:research-memory-source-misattribution:en",
+      "target_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Source misattribution Bounded qualitative premise, not a concrete actor's state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:research-memory-source-misattribution:ru",
+      "target_ref": "wk:psychology_behavior:research-memory-source-misattribution",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Ошибка атрибуции источника Ограниченная качественная предпосылка; не состояние конкретного actor."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:psychology_behavior:uncertainty-cognitive-control:en",
       "target_ref": "wk:psychology_behavior:uncertainty-cognitive-control",
       "domain": "psychology_behavior",
@@ -21708,6 +22044,20 @@
       "domain": "social_behavior",
       "locale": "ru",
       "retrieval_text": "Экспериментальные механизмы социального взаимодействия Экспериментальные результаты о кооперации, доверии и торге не задают исход конкретного взаимодействия."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:research-pooled-work-social-loafing:en",
+      "target_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Social loafing in pooled work Bounded qualitative premise, not a concrete actor's state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:research-pooled-work-social-loafing:ru",
+      "target_ref": "wk:social_behavior:research-pooled-work-social-loafing",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Снижение личной отдачи в совместной работе Ограниченная качественная предпосылка; не состояние конкретного actor."
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:accounting-amount:en",

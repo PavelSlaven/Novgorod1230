@@ -13,6 +13,248 @@
   },
   "cases": [
     {
+      "case_id": "static_syncope_perfusion_ru",
+      "locale": "ru",
+      "query_text": "Может ли кратковременное общее снижение кровоснабжения мозга привести к обмороку?",
+      "relevant_claim_refs": [
+        "claim:research-global-cerebral-hypoperfusion-can-cause-syncope"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_circulatory_tissue_supply_en",
+      "locale": "en",
+      "query_text": "How can acute circulatory failure affect tissue perfusion and cellular function without diagnosing a particular person?",
+      "relevant_claim_refs": [
+        "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_retinal_light_pupil_ru",
+      "locale": "ru",
+      "query_text": "Как зрачок может непроизвольно ответить на яркий свет, попавший на сетчатку?",
+      "relevant_claim_refs": [
+        "claim:research-bright-retinal-light-can-constrict-pupils"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_hot_work_heat_storage_en",
+      "locale": "en",
+      "query_text": "Can working in a hot environment increase heat stored in the body without proving illness or injury?",
+      "relevant_claim_refs": [
+        "claim:research-extreme-heat-can-increase-body-heat-storage"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_cold_environment_heat_loss_ru",
+      "locale": "ru",
+      "query_text": "Какая качественная связь между воздействием сильного холода и потерей тепла телом без температуры или диагноза?",
+      "relevant_claim_refs": [
+        "claim:research-extreme-cold-can-cause-cold-stress"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_novelty_orienting_habituation_en",
+      "locale": "en",
+      "query_text": "Why might a novel stimulus draw sensory attention and then elicit less orienting as it repeats?",
+      "relevant_claim_refs": [
+        "claim:research-novel-stimulus-can-elicit-orienting-response"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_witness_source_confusion_ru",
+      "locale": "ru",
+      "query_text": "Может ли рассказчик искренне помнить содержание, но перепутать, от кого или откуда он это узнал?",
+      "relevant_claim_refs": [
+        "claim:research-memory-source-misattribution"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_later_misleading_account_en",
+      "locale": "en",
+      "query_text": "Could a misleading account heard after an event alter how a witness later remembers it, without deciding whether this witness lied?",
+      "relevant_claim_refs": [
+        "claim:research-memory-postevent-misinformation"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_shared_work_output_ru",
+      "locale": "ru",
+      "query_text": "Если вклад каждого в общую работу отдельно не оценивают, может ли личная отдача снизиться, хотя это не обязательно произойдёт?",
+      "relevant_claim_refs": [
+        "claim:research-pooled-work-social-loafing"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_smoke_wind_stability_en",
+      "locale": "en",
+      "query_text": "Why might smoke from an outdoor fire travel or disperse differently as wind and atmospheric stability change, without predicting a plume route?",
+      "relevant_claim_refs": [
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "static_low_smoke_inversion_ru",
+      "locale": "ru",
+      "query_text": "Почему дым у поверхности может плохо подниматься и разбавляться при приземной температурной инверсии?",
+      "relevant_claim_refs": [
+        "claim:research-surface-inversion-can-trap-smoke-near-ground"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
       "case_id": "weak_cloth_support_ru",
       "locale": "ru",
       "query_text": "У ослабленного полотна есть разрыв. Могут ли стежки удержать этот участок на подложенной ткани, без обещания восстановить прежнюю прочность?",
@@ -326,6 +568,36 @@
       "locale": "en",
       "query_text": "In a poorly flushed backwater after a sudden rain following dry weather, what can be said about dissolved oxygen without asserting a fish kill?",
       "relevant_claim_refs": ["claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen", "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_frozen_bank_thaw_ru",
+      "locale": "ru",
+      "query_text": "Почему грунт берега после повторного замерзания и оттаивания может легче размываться, хотя раньше был связанным?",
+      "relevant_claim_refs": ["claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_flood_deposited_traces_en",
+      "locale": "en",
+      "query_text": "What kinds of traces might rising river water leave on banks and obstacles after it recedes, without proving a particular flood date?",
+      "relevant_claim_refs": ["claim:research-flood-can-leave-high-water-mark-types"],
+      "purpose": "semantic_resolution",
+      "domains": ["environment"],
+      "expected_hard_constraint_refs": [],
+      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+    },
+    {
+      "case_id": "static_porous_flood_stain_ru",
+      "locale": "ru",
+      "query_text": "Можно ли по одной полосе намокания на пористой деревянной опоре точно назвать высоту паводка? Почему стоит сравнить след на непористой поверхности рядом?",
+      "relevant_claim_refs": ["claim:research-porous-high-water-stain-can-require-corroboration"],
       "purpose": "semantic_resolution",
       "domains": ["environment"],
       "expected_hard_constraint_refs": [],

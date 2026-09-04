@@ -1,79 +1,142 @@
 # Macro-gap static readiness — PR92
 
-Snapshot: `06915b05046179dc944a4346ff4ec02e18d79e3c` (2026-09-05). This is an
-independent static corpus/cartography audit. It runs no live gameplay,
-campaign, replay or saturation check.
+Audited corpus commit: `39b891c17855b1cd8b650e2f758e1ef8b0162e06`
+(2026-09-05). This is an independent static audit. It uses a reality-first
+game-need rubric rather than treating the repository's own cartography as a
+proof of completeness. It runs no live gameplay, campaign, replay or
+saturation check.
 
 ## Verdict
 
-**PASS_STATIC_V1_WITH_DECLARED_PARTIAL_LIMITS.** The static phase is a sound,
-broadly useful v1 checkpoint: the current claims are source-backed,
-independently verified, classified and retrievable. The v5 macro pass leaves
-no wholly missing discovered family: all 49 are explicitly `partial`. It is
-**not** a proof that the world is maximally covered, and it must not be
-described as static completeness or gameplay saturation.
+**PASS_STATIC_V1_WITH_DECLARED_P2_LIMITS.** Across the independent rubric,
+the audit found no P0, no known P1, and no unknown or unregistered P1
+macro-domain. The corpus is a broad source-backed factual envelope suitable
+for the static v1 game phase.
 
-This verdict completes the current static v1 phase with declared limits. It
-does not close the factual-coverage programme.
+This is not a claim that the world is exhaustively or mathematically covered.
+All 49 residual families remain visible as bounded P2 `partial` work. More
+generic static filling is not useful until a concrete game need or a source
+supports a sharper premise; current scene, actor, object, access, weather,
+legal and relationship state and exact mechanics remain with their code
+owners.
 
 ## Observed static state
 
-- `authoring.json` resolves to 987 production claims, 760 concepts, 356 sources
-  and 661 evidence records. Every promoted claim has the existing independent
-  production verification binding; no separate approval mechanism is added.
-- v5 contributes 15 claims with 15/15 exact independent `APPROVE` bindings,
-  each tied to candidate `87ef4ba6d6969d29457bcbaf28e03ae300863363` and its
-  reviewed evidence inputs.
-- `category-cartography.json` classifies the supported corpus into 142 families
-  and keeps 49 discovered gaps visible, all `partial`.
-- The current vector index has 3,494 entries × 1,024 dimensions, using
-  `ai-sage/Giga-Embeddings-instruct-480M-0826` at revision
+- The compiled bundle contains 1,024 claims, 366 sources, 698 evidence records
+  and 774 concepts.
+- The independent approval check found 1,024 unique verification rows: every
+  compiled claim is bound once, all verdicts are `APPROVE`, and none is
+  unbound.
+- Category cartography has 147 supported families and 49 residual gaps, all
+  explicitly `partial` and assessed below as bounded P2.
+- The vector package contains 3,596 bilingual entries x 1,024 dimensions
+  (14,729,216 bytes), built with
+  `ai-sage/Giga-Embeddings-instruct-480M-0826` revision
   `0c94f705aa35719324fb46f7e75b0a5c275da6e4`.
-- The cartography uses external classifications only to find blind spots. They
-  are not treated as evidence for a historical fact, local scene, actor status
-  or gameplay outcome.
+- V9 contributes five independently approved, narrowly bounded premises. The
+  rejected duplicate of the existing Gramota 112 premise was removed rather
+  than retained for count inflation.
 
-## Macro-family assessment
+## Independent reality rubric
 
-| Need family | Static assessment |
-|---|---|
-| Language, names, literacy | The v5 corpus-level Old Russian/dialect premises and named records give narrow support; they do not reconstruct a 1230 utterance, register, intelligibility or naming system. |
-| Warfare and military material culture | Hunting/civic-defence and a later helmet comparator are not a 1230 weapon, armour or organization map; remains P1 partial. |
-| Marriage, kinship, gender and status | Narrow household/letter/care premises plus one early disputed-purchase record give context only; no marriage, status or stratification system follows. |
-| Reproduction and lifecycle | Pregnancy, labour, newborn adjustment, lactation, development, puberty and aging have useful universal premises; postpartum care, functional variation and individual state remain partial/code-owned. |
-| Medicine, sickness and disability | Infection, injury, dehydration, fracture/dislocation, oral health and disability context are useful, but symptom/care composition, poisoning and treatment limits remain partial. |
-| Government, external relations, crime | Isolated documents, assembly/office/conflict context and legal fragments do not form a 1230 institutional, diplomatic or sanctions model; P1 partial. |
-| Education, apprenticeship, recreation | Later-XIII comparators and gusli archaeological context are bounded support, not a 1230 school, skill system or recreation scene; partial. |
-| Winter / cryosphere | Slip, ice-strength, freeze-thaw, snowmelt and ice-jam premises are useful; crust, openings, snow load and local route safety remain partial/code-owned. |
-| Sky, daylight and navigation | Still partial: no adequate human daylight, night illumination or celestial-orientation premise. |
-| Food, hospitality and travel | Food processing and transport compose useful support; universal sleep premises add a bodily-rest limit, not lodging, invitation, host duty or travel custom. |
+The audit separately checked physical and Earth systems; living world;
+human body, lifecycle and health; cognition and communication; kinship and
+status; institutions, law, economy, politics and war; food and subsistence;
+materials and craft; settlement and sanitation; mobility and navigation; and
+religion, culture, education and recreation.
 
-The formerly missing language, status and hospitality families are now narrow
-`partial` support, not closure. Their limits must still produce an honest
-unresolved result where a broader factual premise is needed; they are not
-permission to use LLM pretraining as factual authority. Exact body state,
-combat, inventory, access, time, weather, navigation, authority, relationship
-and committed outcomes stay with their existing code/state owners.
+The four formerly open P1 families now have a minimum useful cumulative game
+envelope and remain bounded P2 rather than being called complete:
+
+- `weapons-armour-use-and-maintenance`: a local XIII-century bow, a dated
+  armed/armoured context and a helmet comparator combine with qualitative
+  iron corrosion and temporary oil-film protection. No present weapon,
+  historical oiling custom, condition, combat statistic or inventory follows.
+- `gender-age-status-and-stratification`: documentary contexts for an
+  enslaved woman, wife and children combine with late-XII-century `отрок` as
+  an administrative debt collector rather than a child. No general hierarchy,
+  freedom/dependency rule, current status or deterministic role follows.
+- `novgorod-government-institutions-and-competencies`: dated mediation,
+  succession and delegation records combine with bounded secondary relations
+  between veche and prince and between the five ends, their assemblies and
+  territorial shares. No exact 1230 constitution, current officeholder,
+  jurisdiction, levy or valid order follows.
+- `crime-responsibility-sanctions-and-public-safety`: the existing
+  settlement-or-court demand, theft inquiry, obligations and accusation
+  fragments give a minimal dispute/public-response envelope. Russkaya Pravda
+  is not promoted as operative Novgorod-1230 law; guilt, sanction,
+  jurisdiction and outcome require an applicable premise and code-owned state.
+
+## Declared bounded P2 families
+
+Natural and physical (12):
+`fauna-trace-interpretation`,
+`combustion-carbon-monoxide-and-ventilation`,
+`cold-water-immersion-heat-loss`,
+`water-heating-pathogens-versus-chemicals`,
+`freeze-thaw-soil-bank-integrity`,
+`flood-marks-observation-and-corroboration`,
+`smoke-transport-and-dispersion`, `flora-trees`,
+`flora-toxic-and-food-plants`, `flora-fibre-taxonomy`,
+`snow-ice-and-winter-surface-processes`, and
+`daylight-night-sky-and-natural-navigation`.
+
+Craft and settlement (7):
+`watercraft-operation-and-shore-transfer`,
+`household-textile-transformation-lifecycle`,
+`leather-object-making-and-repair`,
+`ordinary-cooking-handling-and-cross-contact`,
+`shelter-weatherproofing-and-repair`,
+`household-water-sanitation-and-waste`, and `fishing-net-boat-care`.
+
+Social, legal and economic (12):
+`possession-title-and-acquisition`, `borrowing-pledge-and-debt`,
+`legal-testimony-oath-and-proof`, `legal-locality-period-and-status`,
+`exchange-measures-quality-and-settlement`,
+`seasonal-logistics-and-provisioning`,
+`speech-acts-and-social-commitments`,
+`testimony-rumour-memory-and-provenance`,
+`reputation-honour-shame-and-repair`,
+`collective-work-and-labour-dependencies`,
+`care-dependency-and-household-negotiation`, and
+`religious-practice-calendar-and-institutions`.
+
+Body and lifecycle (4): `pregnancy-childbirth-and-postnatal-care`,
+`human-lifecycle-childhood-puberty-and-aging`,
+`sickness-symptoms-care-and-disability`, and
+`injury-poisoning-parasites-and-oral-health`.
+
+Human, cultural and political (12):
+`historical-spoken-language-and-register`,
+`personal-names-patronymics-address-and-titles`,
+`everyday-literacy-writing-and-accounting`,
+`weapons-armour-use-and-maintenance`,
+`warfare-organization-logistics-and-aftermath`,
+`marriage-kinship-and-household-formation`,
+`gender-age-status-and-stratification`,
+`novgorod-government-institutions-and-competencies`,
+`diplomacy-tribute-and-external-relations`,
+`crime-responsibility-sanctions-and-public-safety`,
+`education-apprenticeship-and-skill-transmission`, and
+`recreation-games-music-and-oral-culture`.
+
+Food and travel (2): `food-system-animal-products-and-care` and
+`hospitality-travel-and-lodging`.
+
+These are bounded because their remaining detail is scene/state-specific,
+code-owned exact mechanics, or open-ended historical practice for which a
+generic extra claim would be weak. A future concrete need can add a compact
+source-backed premise through the existing independent verification path.
 
 ## Retrieval and consistency evidence
 
-Stored reports on this exact bundle pass their unchanged gates:
+- Gameplay coverage v3: 174 cases, PASS; hybrid Recall@10 `0.997126`,
+  Recall@20 `1.0`, hard-constraint recall `1.0`, applicability precision
+  `1.0`.
+- Baseline retrieval v1: 133 cases, PASS; hybrid Recall@10/20 `0.969925`,
+  hard-constraint recall `1.0`, applicability precision `1.0`.
+- V9: 10/10 positive probes retrieve their relevant claim in hybrid top 10;
+  four time-exclusion probes omit the new claim outside its applicability.
 
-- gameplay coverage: 132 cases, hybrid Recall@10 0.996212, Recall@20 1.0,
-  hard-constraint recall 1.0, applicability precision 1.0;
-- baseline retrieval: 133 cases, hybrid Recall@10/20 0.96992,
-  hard-constraint recall 1.0, applicability precision 1.0.
-
-These are offline retrieval benchmarks, not gameplay acceptance. They show
-that the represented claims can be retrieved under the tested predicates; they
-do not prove that every partial family or its unrepresented facets are covered.
-
-## Follow-on authoring
-
-Continue source-backed, independently verified additions for the P1 partial
-families: language/naming/literacy, weapons/warfare, marriage/status,
-medicine/care, government/external relations, crime/sanctions, and
-education/recreation. Continue with P2 winter, sky/navigation, food-system and
-hospitality/travel detail only where a compact factual premise is gameplay-useful.
-Do not launch live gameplay exploration or repair another gameplay owner as
-part of that work.
+These offline checks prove retrieval and boundary filtering for represented
+facts only. They do not prove gameplay saturation or an exhaustive world.

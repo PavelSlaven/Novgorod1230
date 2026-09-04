@@ -8,7 +8,7 @@ This candidate pass narrows the twelve historical/social P1 families to direct, 
 
 - [Novgorod First Chronicle, 1220–1229](http://litopys.org.ua/novglet/novg23.htm): direct annal entries for 1220–1223. Reopened on 2026-09-05.
 - [Novgorod Museum: «Путешествие сквозь века: город под ногами»](https://novgorodmuseum.ru/visit/sobytiya/puteshestvie-skvoz-veka-gorod-pod-nogami): official exhibition description of excavated artefacts, toys and skates. Reopened on 2026-09-05.
-- Existing independently registered primary records are reused without duplicated source cards: gramoty.ru letters 9, 531, 778 and 907; their source refs are already active in the assembled production authoring pack.
+- Existing independently registered primary records are reused without duplicated source cards: gramoty.ru letter 9 (conditional 1160–1180), 531 (conditional 1200–1220 with probable forward shift), 778 (conditional 1200–1220 with probable backward shift and alternative datings), and 907 (conditional 1100–1120 with probable backward shift). The latter three use `time.precision: unknown`; their source refs are already active in the assembled production authoring pack.
 
 ## Candidate coverage (21 claims)
 

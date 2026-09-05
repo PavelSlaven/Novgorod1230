@@ -1,0 +1,674 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-roof-water",
+      "title": "PNNL Building America roof-water guide",
+      "authors": [],
+      "publication": "PNNL Building America roof-water guide",
+      "source_kind": "technical_reference",
+      "citation": "https://basc.pnnl.gov/resource-guides/flashing-penetrations-existing-roofs",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-clay-finish",
+      "title": "NPS Preservation Brief 5: Adobe Buildings",
+      "authors": [],
+      "publication": "NPS Preservation Brief 5: Adobe Buildings",
+      "source_kind": "technical_reference",
+      "citation": "https://www.nps.gov/orgs/1739/upload/preservation-brief-05-adobe.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-dough-gas",
+      "title": "Różyło et al. gas formation kinetics",
+      "authors": [],
+      "publication": "Różyło et al. gas formation kinetics",
+      "source_kind": "scholarship",
+      "citation": "https://pubmed.ncbi.nlm.nih.gov/28455072/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-dough-temperature",
+      "title": "Fermentation-temperature dough study",
+      "authors": [],
+      "publication": "Fermentation-temperature dough study",
+      "source_kind": "scholarship",
+      "citation": "https://academic.oup.com/ijfst/article/44/3/493/7865047",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-trauma-movement",
+      "title": "WHO earthquake public-health advice",
+      "authors": [],
+      "publication": "WHO earthquake public-health advice",
+      "source_kind": "technical_reference",
+      "citation": "https://www.who.int/europe/news-room/questions-and-answers/item/public-health-advice-in-the-aftermath-of-an-earthquake",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:household-trauma-airway",
+      "title": "WHO Community First Aid Response Pocket Guide",
+      "authors": [],
+      "publication": "WHO Community First Aid Response Pocket Guide",
+      "source_kind": "technical_reference",
+      "citation": "https://cdn.who.int/media/docs/default-source/integrated-health-services-(ihs)/csy/cfar-pocketguide.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-roof-water",
+      "source_ref": "source:household-roof-water",
+      "anchor": {
+        "section": "Description"
+      },
+      "note": "Layered water control and conditional local repair; no historical construction claim.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-clay-movement",
+      "source_ref": "source:household-clay-finish",
+      "anchor": {
+        "section": "Adobe construction techniques"
+      },
+      "note": "Moisture-related movement, applied analogically to daub; no mix.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-clay-key",
+      "source_ref": "source:household-clay-finish",
+      "anchor": {
+        "section": "Repair guidance"
+      },
+      "note": "Compatible repair/mechanical engagement; no procedure or durability guarantee.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-dough-gas",
+      "source_ref": "source:household-dough-gas",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Gas formation/retention relation; no recipe or guaranteed loaf.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-dough-temperature",
+      "source_ref": "source:household-dough-temperature",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Temperature affects gas development; no fixed time/temperature.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-trauma-movement",
+      "source_ref": "source:household-trauma-movement",
+      "anchor": {
+        "section": "Advice"
+      },
+      "note": "No unnecessary movement of serious injury; no medical protocol.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:household-trauma-airway-danger",
+      "source_ref": "source:household-trauma-airway",
+      "anchor": {
+        "section": "Trauma Emergencies"
+      },
+      "note": "Airway/safety context only; no procedure.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-roof-water",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-roof-layers-shed-water",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:static-household-roof-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "roof layers and overlaps can direct rainwater downward and outward; gaps or reversed overlaps can interrupt that drainage path"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "moisture_state",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-roof-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-roof-local-condition-guides-repair",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:static-household-roof-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an identified local defect in a roof water-control layer can be inspected and repaired or replaced as local maintenance, without guaranteeing the whole roof is sound or watertight"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "material_state",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-roof-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a clay-rich daub or finish can shrink or swell as moisture changes, and incompatible adjacent materials can crack or separate as they move differently"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "moisture_state",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-clay-movement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-clay-key-and-compatible-patch",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a clay-based daub or plaster patch needs compatible material and enough engagement with its backing to resist detachment; keyed repair does not guarantee durability"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "material_state",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-clay-key"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "yeast fermentation can generate gas in dough, while dough structure determines how much gas is retained and therefore affects expansion"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-dough-gas"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-dough-temperature-changes-proofing",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "surrounding temperature can change fermentation and gas development in dough, so proofing time and expansion are conditional rather than fixed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "temperature_state",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-dough-temperature"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "moving a seriously injured person, especially with a suspected neck or back injury, can worsen harm; an established injury alone does not prove the needed response"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-trauma-movement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "immediate environmental danger or an established airway threat can make a position change necessary, but this is a bounded safety consideration, not a general relocation or treatment protocol"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:household-trauma-airway-danger"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-roof-water",
+      "locale": "ru",
+      "labels": [
+        "Контроль воды кровлей"
+      ],
+      "short_definition": "Контроль воды кровлей",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-roof-water",
+      "locale": "en",
+      "labels": [
+        "Roof water control"
+      ],
+      "short_definition": "Roof water control",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "locale": "ru",
+      "labels": [
+        "Поведение глиняной обмазки"
+      ],
+      "short_definition": "Поведение глиняной обмазки",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "locale": "en",
+      "labels": [
+        "Clay daub behavior"
+      ],
+      "short_definition": "Clay daub behavior",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "locale": "ru",
+      "labels": [
+        "Брожение теста"
+      ],
+      "short_definition": "Брожение теста",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "locale": "en",
+      "labels": [
+        "Dough fermentation"
+      ],
+      "short_definition": "Dough fermentation",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "locale": "ru",
+      "labels": [
+        "Ограничения перемещения при травме"
+      ],
+      "short_definition": "Ограничения перемещения при травме",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "locale": "en",
+      "labels": [
+        "Trauma movement limits"
+      ],
+      "short_definition": "Trauma movement limits",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-roof-layers-shed-water",
+      "locale": "ru",
+      "runtime_text": "Слои и нахлёсты кровли могут направлять дождевую воду вниз и наружу; разрыв или обратный нахлёст прерывает путь стока.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-roof-layers-shed-water",
+      "locale": "en",
+      "runtime_text": "Roof layers and overlaps can direct rainwater down and out; a gap or reversed overlap interrupts that drainage path.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-roof-local-condition-guides-repair",
+      "locale": "ru",
+      "runtime_text": "Установленный местный дефект водоотводящего слоя кровли можно осмотреть и локально чинить либо заменить; это не гарантирует исправность или герметичность всей кровли.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-roof-local-condition-guides-repair",
+      "locale": "en",
+      "runtime_text": "An identified local roof water-control defect can be inspected and locally repaired or replaced; this does not guarantee the whole roof is sound or watertight.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "locale": "ru",
+      "runtime_text": "Глиняная обмазка или отделка может усыхать либо набухать при изменении влаги, а несовместимые соседние материалы могут трескаться или расходиться при разном движении.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "locale": "en",
+      "runtime_text": "Clay-rich daub or finish can shrink or swell as moisture changes; incompatible adjacent materials can crack or separate as they move differently.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-clay-key-and-compatible-patch",
+      "locale": "ru",
+      "runtime_text": "Заплата из глиняной обмазки или штукатурки нуждается в совместимом материале и достаточном сцеплении с основой, чтобы не отстать; ключёная починка не гарантирует долговечность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-clay-key-and-compatible-patch",
+      "locale": "en",
+      "runtime_text": "A clay-based daub or plaster patch needs compatible material and enough engagement with its backing to resist detachment; keyed repair does not guarantee durability.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "locale": "ru",
+      "runtime_text": "Брожение дрожжей может образовывать газ в тесте, а структура теста определяет, сколько газа удержится, и потому влияет на подъём.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "locale": "en",
+      "runtime_text": "Yeast fermentation can generate gas in dough, while dough structure determines how much gas is retained and therefore affects expansion.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-dough-temperature-changes-proofing",
+      "locale": "ru",
+      "runtime_text": "Температура вокруг теста может менять брожение и образование газа, поэтому время расстойки и подъём условны, а не фиксированы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-dough-temperature-changes-proofing",
+      "locale": "en",
+      "runtime_text": "Surrounding temperature can change dough fermentation and gas development, so proofing time and expansion are conditional rather than fixed.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "locale": "ru",
+      "runtime_text": "Перемещение тяжело раненого, особенно при подозрении на травму шеи или спины, может усугубить вред; установленная травма сама по себе не доказывает нужный ответ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "locale": "en",
+      "runtime_text": "Moving a seriously injured person, especially with a suspected neck or back injury, can worsen harm; an established injury alone does not prove the needed response.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "locale": "ru",
+      "runtime_text": "Немедленная опасность среды или установленная угроза дыхательным путям может сделать смену положения необходимой, но это узкое соображение безопасности, не общее правило переноса или лечения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "locale": "en",
+      "runtime_text": "Immediate environmental danger or an established airway threat can make a position change necessary, but this is a bounded safety consideration, not a general relocation or treatment protocol.",
+      "search_aliases": []
+    }
+  ]
+}

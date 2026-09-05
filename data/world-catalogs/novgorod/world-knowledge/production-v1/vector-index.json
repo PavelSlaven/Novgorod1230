@@ -8872,6 +8872,90 @@
       "retrieval_text": "Серп У древнерусского серпа черенок мог иметь деревянную рукоять; Колчин сообщает и о сохранившихся рукоятях. Это возможность конструкции, не универсальное устройство любого серпа, размеры рукояти или доступный материал."
     },
     {
+      "entry_ref": "wk-retrieval:claim:healer-belief-and-bodily-attention:en",
+      "target_ref": "claim:healer-belief-and-bodily-attention",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice In the game reconstruction, bodily attention can coexist with prayer, blessing and familiar explanations of illness. Healer, patient and household may understand the illness differently and choose among available helpers; belief in a remedy does not establish a physical effect. healer prayer illness beliefs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-belief-and-bodily-attention:ru",
+      "target_ref": "claim:healer-belief-and-bodily-attention",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря В игровой реконструкции телесная помощь может соседствовать с молитвой, благословением и привычными объяснениями болезни. Лекарь, больной и семья могут по-разному понимать причину недуга и выбирать между доступными помощниками; вера в средство не доказывает его физического действия. лекарь молитва объяснение болезни"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-care-coordination-and-uncertainty:en",
+      "target_ref": "claim:healer-care-coordination-and-uncertainty",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice A healer can ask relatives to stay with the sufferer, bring available water or cloth, clear resting space and report changes, or seek a more experienced helper when skill is insufficient. Organizing care and acknowledging uncertainty remain meaningful actions without a known treatment, but do not promise recovery. healer care coordination relatives"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-care-coordination-and-uncertainty:ru",
+      "target_ref": "claim:healer-care-coordination-and-uncertainty",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря Лекарь может попросить близких побыть с больным, принести доступные воду или ткань, освободить место для отдыха и сообщать об изменениях; при недостатке умения — позвать более опытного помощника. Распределение ухода и признание неуверенности дают содержательное действие даже без известного лечения, но не обещают выздоровления. лекарь уход родственники больного помощник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-experience-and-reputation:en",
+      "target_ref": "claim:healer-experience-and-reputation",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice A plausible reconstruction has healing skill learned through observation, work alongside an experienced person, family transmission and experience. Acquaintances and prior reputation can bring patients; occupation or renown guarantees neither literacy, competence nor successful treatment. healing skill learning reputation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-experience-and-reputation:ru",
+      "target_ref": "claim:healer-experience-and-reputation",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря В правдоподобной реконструкции лекарское умение приобретается наблюдением, работой рядом с более опытным человеком, семейной передачей и собственным опытом. К лекарю могут обращаться по совету знакомых и прежней репутации; ни название занятия, ни известность не гарантируют грамотности, умения или успешного лечения. лекарское умение обучение лекаря репутация"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-livelihood-and-household-support:en",
+      "target_ref": "claim:healer-livelihood-and-household-support",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice A healer can maintain a household and help neighbours or seek welcome and work while travelling. Agreed payment, food, lodging, a service or a gift are plausible returns for help; means and respect depend on ties, patients' resources and past dealings, not automatically on occupation. healer livelihood payment lodging"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-livelihood-and-household-support:ru",
+      "target_ref": "claim:healer-livelihood-and-household-support",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря Лекарь может жить своим хозяйством и помогать соседям либо искать приём и работу в дороге. За помощь правдоподобны договорённая плата, пища, ночлег, услуга или дар; достаток и уважение зависят от связей, средств пациентов и прежнего опыта общения, а не следуют автоматически из профессии. быт лекаря плата лекарю ночлег достаток"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-observation-and-questioning:en",
+      "target_ref": "claim:healer-observation-and-questioning",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice A healer can begin by asking the sufferer or relatives when illness began, what hurts, what was eaten or drunk, and what has already been tried, then observe alertness, breathing and visible injuries and feel the forehead. This reconstructs practical examination, not modern diagnosis. healer examination illness history"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-observation-and-questioning:ru",
+      "target_ref": "claim:healer-observation-and-questioning",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря Лекарь может начать помощь с расспроса больного или близких: когда началось недомогание, что болит, что человек ел и пил, что уже пробовали; затем смотреть на бодрость, дыхание, видимые повреждения и ощупывать лоб. Это практическая реконструкция осмотра, не современная диагностика. лекарь осмотр расспрос больного лихорадка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-portable-and-household-kit:en",
+      "target_ref": "claim:healer-portable-and-household-kit",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice Linen cloths, a water vessel, a small bag and familiar dried plants are plausible ordinary healer equipment; at home or with a patient the healer can use available vessels, water and warmth. This possible kit specifies neither a particular medicine, its efficacy nor scene possession. healer kit cloths dried plants"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:healer-portable-and-household-kit:ru",
+      "target_ref": "claim:healer-portable-and-household-kit",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря Для обычного лекаря правдоподобны льняные тряпицы, сосуд для воды, небольшая сумка и знакомые ему сушёные растения; дома или у больного он пользуется доступной посудой, водой и теплом. Такой возможный набор не задаёт конкретного лекарства, его действенности или наличия в данной сцене. лекарь сумка лекаря тряпицы сушёные травы"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:heating-reduces-microbial-viability:en",
       "target_ref": "claim:heating-reduces-microbial-viability",
       "domain": "biology_physiology",
@@ -25124,6 +25208,20 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Посадник: контекст деятельности Именованные летописные эпизоды деятельности посадников посадник военная деятельность"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-healer-practice:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Ordinary healer practice"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-healer-practice:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Повседневная практика лекаря"
     },
     {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-hospitality-travel-lodging:en",

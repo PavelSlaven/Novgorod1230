@@ -5406,6 +5406,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-healer-practice-editorial",
+      "title": "Ordinary healer practice — editorial reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-healer-practice-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:reconstructed-human-lifeways-editorial",
       "title": "Reconstructed human lifeways v1 editorial rationale",
       "authors": [
@@ -13909,6 +13925,16 @@
         "section": "Rawhide; Water"
       },
       "note": "Independent verification/verification-leather-plant-fibre-water.md: LP-04. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reconstructed-healer-practice",
+      "source_ref": "source:reconstructed-healer-practice-editorial",
+      "anchor": {
+        "section": "Ordinary healer practice"
+      },
+      "note": "Explicit plausible reconstruction under WK §0.2, not attestation or medical advice. Existing ordinary learning, livelihood, illness support and religious context are composed into a usable healer role; no remedy efficacy or treatment protocol.",
       "review_status": "approved"
     },
     {
@@ -34749,6 +34775,41 @@
             "posadnik",
             "officeholder",
             "military activity"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+          "locale": "ru",
+          "labels": [
+            "Повседневная практика лекаря"
+          ],
+          "short_definition": "Повседневная практика лекаря",
+          "search_aliases": [
+            "Повседневная практика лекаря"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+          "locale": "en",
+          "labels": [
+            "Ordinary healer practice"
+          ],
+          "short_definition": "Ordinary healer practice",
+          "search_aliases": [
+            "Ordinary healer practice"
           ]
         }
       }
@@ -75043,6 +75104,400 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-belief-and-bodily-attention",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In the game reconstruction, bodily attention can coexist with prayer, blessing and familiar explanations of illness. Healer, patient and household may understand the illness differently and choose among available helpers; belief in a remedy does not establish a physical effect."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-belief-and-bodily-attention",
+          "locale": "ru",
+          "runtime_text": "В игровой реконструкции телесная помощь может соседствовать с молитвой, благословением и привычными объяснениями болезни. Лекарь, больной и семья могут по-разному понимать причину недуга и выбирать между доступными помощниками; вера в средство не доказывает его физического действия.",
+          "search_aliases": [
+            "лекарь",
+            "молитва",
+            "объяснение болезни"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-belief-and-bodily-attention",
+          "locale": "en",
+          "runtime_text": "In the game reconstruction, bodily attention can coexist with prayer, blessing and familiar explanations of illness. Healer, patient and household may understand the illness differently and choose among available helpers; belief in a remedy does not establish a physical effect.",
+          "search_aliases": [
+            "healer",
+            "prayer",
+            "illness beliefs"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-belief-and-bodily-attention"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can ask relatives to stay with the sufferer, bring available water or cloth, clear resting space and report changes, or seek a more experienced helper when skill is insufficient. Organizing care and acknowledging uncertainty remain meaningful actions without a known treatment, but do not promise recovery."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+          "locale": "ru",
+          "runtime_text": "Лекарь может попросить близких побыть с больным, принести доступные воду или ткань, освободить место для отдыха и сообщать об изменениях; при недостатке умения — позвать более опытного помощника. Распределение ухода и признание неуверенности дают содержательное действие даже без известного лечения, но не обещают выздоровления.",
+          "search_aliases": [
+            "лекарь",
+            "уход",
+            "родственники больного",
+            "помощник"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+          "locale": "en",
+          "runtime_text": "A healer can ask relatives to stay with the sufferer, bring available water or cloth, clear resting space and report changes, or seek a more experienced helper when skill is insufficient. Organizing care and acknowledging uncertainty remain meaningful actions without a known treatment, but do not promise recovery.",
+          "search_aliases": [
+            "healer",
+            "care coordination",
+            "relatives"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-care-coordination-and-uncertainty"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-experience-and-reputation",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A plausible reconstruction has healing skill learned through observation, work alongside an experienced person, family transmission and experience. Acquaintances and prior reputation can bring patients; occupation or renown guarantees neither literacy, competence nor successful treatment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-experience-and-reputation",
+          "locale": "ru",
+          "runtime_text": "В правдоподобной реконструкции лекарское умение приобретается наблюдением, работой рядом с более опытным человеком, семейной передачей и собственным опытом. К лекарю могут обращаться по совету знакомых и прежней репутации; ни название занятия, ни известность не гарантируют грамотности, умения или успешного лечения.",
+          "search_aliases": [
+            "лекарское умение",
+            "обучение лекаря",
+            "репутация"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-experience-and-reputation",
+          "locale": "en",
+          "runtime_text": "A plausible reconstruction has healing skill learned through observation, work alongside an experienced person, family transmission and experience. Acquaintances and prior reputation can bring patients; occupation or renown guarantees neither literacy, competence nor successful treatment.",
+          "search_aliases": [
+            "healing skill",
+            "learning",
+            "reputation"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-experience-and-reputation"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-livelihood-and-household-support",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can maintain a household and help neighbours or seek welcome and work while travelling. Agreed payment, food, lodging, a service or a gift are plausible returns for help; means and respect depend on ties, patients' resources and past dealings, not automatically on occupation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-livelihood-and-household-support",
+          "locale": "ru",
+          "runtime_text": "Лекарь может жить своим хозяйством и помогать соседям либо искать приём и работу в дороге. За помощь правдоподобны договорённая плата, пища, ночлег, услуга или дар; достаток и уважение зависят от связей, средств пациентов и прежнего опыта общения, а не следуют автоматически из профессии.",
+          "search_aliases": [
+            "быт лекаря",
+            "плата лекарю",
+            "ночлег",
+            "достаток"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-livelihood-and-household-support",
+          "locale": "en",
+          "runtime_text": "A healer can maintain a household and help neighbours or seek welcome and work while travelling. Agreed payment, food, lodging, a service or a gift are plausible returns for help; means and respect depend on ties, patients' resources and past dealings, not automatically on occupation.",
+          "search_aliases": [
+            "healer livelihood",
+            "payment",
+            "lodging"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-livelihood-and-household-support"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-observation-and-questioning",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can begin by asking the sufferer or relatives when illness began, what hurts, what was eaten or drunk, and what has already been tried, then observe alertness, breathing and visible injuries and feel the forehead. This reconstructs practical examination, not modern diagnosis."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-observation-and-questioning",
+          "locale": "ru",
+          "runtime_text": "Лекарь может начать помощь с расспроса больного или близких: когда началось недомогание, что болит, что человек ел и пил, что уже пробовали; затем смотреть на бодрость, дыхание, видимые повреждения и ощупывать лоб. Это практическая реконструкция осмотра, не современная диагностика.",
+          "search_aliases": [
+            "лекарь",
+            "осмотр",
+            "расспрос больного",
+            "лихорадка"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-observation-and-questioning",
+          "locale": "en",
+          "runtime_text": "A healer can begin by asking the sufferer or relatives when illness began, what hurts, what was eaten or drunk, and what has already been tried, then observe alertness, breathing and visible injuries and feel the forehead. This reconstructs practical examination, not modern diagnosis.",
+          "search_aliases": [
+            "healer",
+            "examination",
+            "illness history"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-observation-and-questioning"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-portable-and-household-kit",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Linen cloths, a water vessel, a small bag and familiar dried plants are plausible ordinary healer equipment; at home or with a patient the healer can use available vessels, water and warmth. This possible kit specifies neither a particular medicine, its efficacy nor scene possession."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-portable-and-household-kit",
+          "locale": "ru",
+          "runtime_text": "Для обычного лекаря правдоподобны льняные тряпицы, сосуд для воды, небольшая сумка и знакомые ему сушёные растения; дома или у больного он пользуется доступной посудой, водой и теплом. Такой возможный набор не задаёт конкретного лекарства, его действенности или наличия в данной сцене.",
+          "search_aliases": [
+            "лекарь",
+            "сумка лекаря",
+            "тряпицы",
+            "сушёные травы"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:healer-portable-and-household-kit",
+          "locale": "en",
+          "runtime_text": "Linen cloths, a water vessel, a small bag and familiar dried plants are plausible ordinary healer equipment; at home or with a patient the healer can use available vessels, water and warmth. This possible kit specifies neither a particular medicine, its efficacy nor scene possession.",
+          "search_aliases": [
+            "healer kit",
+            "cloths",
+            "dried plants"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-portable-and-household-kit"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:heating-reduces-microbial-viability",
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:food-heating",
@@ -114316,6 +114771,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:npc_daily_life:reconstructed-healer-practice": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+        "domain": "npc_daily_life",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:npc_daily_life:reconstructed-hospitality-travel-lodging": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:npc_daily_life:reconstructed-hospitality-travel-lodging",
@@ -118732,6 +119196,14 @@
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228"
       ],
+      "wk:npc_daily_life:reconstructed-healer-practice": [
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit"
+      ],
       "wk:npc_daily_life:reconstructed-hospitality-travel-lodging": [
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-reception-depends-on-trust-ties-means",
@@ -120431,6 +120903,12 @@
       "npc_daily_life": [
         "claim:agriculture-rural-role-context",
         "claim:animal-care-needs-presence",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-category-does-not-determine-means-ties-skill",
@@ -121774,6 +122252,12 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-capacity-experience-help-vary",
@@ -122488,6 +122972,12 @@
         "claim:food-practices-millet-cleaning-waste"
       ],
       "range::1200:1300": [
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-capacity-experience-help-vary",
@@ -123606,6 +124096,12 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -124544,6 +125040,7 @@
         "wk:psychology_behavior:foundations-ms-11-practiced-action"
       ],
       "автоматически": [
+        "claim:healer-livelihood-and-household-support",
         "claim:population-wool-lining",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
@@ -125092,6 +125589,7 @@
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-phys-07-surface-tension-interface",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-oral-retelling-varies-with-context",
         "claim:ordinary-life-private-needs-shape-decisions",
         "claim:pain-nociception-distinct",
@@ -125442,6 +125940,9 @@
         "claim:foundations-physical-material3-03-antler-water-workability",
         "claim:foundations-physical-material3-04-osseous-shaping-operations"
       ],
+      "благословением": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "благоустройства": [
         "claim:composite-urban-quarter",
         "claim:localized-improvement-context",
@@ -125463,6 +125964,10 @@
       "близким": [
         "claim:foundations-ms-27-belonging-relations",
         "wk:social_behavior:foundations-ms-27-belonging-relations"
+      ],
+      "близких": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning"
       ],
       "близкого": [
         "claim:foundations-haz-05-slope-water-triggers"
@@ -125518,6 +126023,9 @@
       "богатых": [
         "claim:clothing-silk-shirt"
       ],
+      "бодрость": [
+        "claim:healer-observation-and-questioning"
+      ],
       "бодрствование": [
         "claim:foundations-life-23-sleep-wake-cycle",
         "wk:biology_physiology:foundation-sleep-wake-cycle"
@@ -125563,6 +126071,8 @@
         "claim:foundations-ms-01-attention-intensity",
         "claim:foundations-ms-33-role-predictability",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:judicial-accusation-record",
         "claim:oil-rawhide-moisture-resistance",
@@ -125602,6 +126112,7 @@
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
         "claim:candidate-v5-fever-is-not-itself-a-disease",
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+        "claim:healer-belief-and-bodily-attention",
         "wk:biology_physiology:candidate-v6-foodborne-observations",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:reconstructed-health-support"
@@ -125633,6 +126144,9 @@
         "claim:pain-nociception-distinct",
         "wk:biology_physiology:pain-nociception-distinct"
       ],
+      "болит": [
+        "claim:healer-observation-and-questioning"
+      ],
       "болотные": [
         "claim:fauna-mallard-wetland-diet",
         "wk:biology_physiology:fauna-mallard"
@@ -125647,11 +126161,20 @@
         "claim:pain-nociception-distinct",
         "wk:biology_physiology:pain-nociception-distinct"
       ],
+      "больного": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit"
+      ],
       "больной": [
+        "claim:healer-belief-and-bodily-attention",
         "claim:public-world-health-disclosure-is-contextual"
       ],
       "больному": [
         "claim:public-world-support-needs-available-person-and-resources"
+      ],
+      "больным": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "большая": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
@@ -125968,6 +126491,9 @@
         "claim:foundations-phys-05-flow-regime-speed",
         "claim:population-material-clay-quartz",
         "claim:population-material-clay-steam"
+      ],
+      "быт": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "быте": [
         "claim:agriculture-fauna-rural-tree-borts"
@@ -126340,7 +126866,8 @@
         "claim:construction-rjaz-riverbed-foundation"
       ],
       "вера": [
-        "claim:candidate-v5-gramota715-is-dated-literary-folklore-text"
+        "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+        "claim:healer-belief-and-bodily-attention"
       ],
       "верёвка": [
         "claim:population-net-cord",
@@ -126916,6 +127443,9 @@
       ],
       "видимую": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
+      ],
+      "видимые": [
+        "claim:healer-observation-and-questioning"
       ],
       "видимых": [
         "claim:residual-law-visible-injury-and-witness"
@@ -127656,6 +128186,7 @@
         "claim:foundations-earth-23-hydrothermal-precipitation",
         "claim:foundations-earth-25-snowmelt-runoff",
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:healer-portable-and-household-kit",
         "claim:material-water-leather-water-processing",
         "claim:material-water-textile-water-load",
         "claim:material-water-vegetable-leather-water",
@@ -127732,6 +128263,7 @@
         "claim:foundations-life-02-cell-substances",
         "claim:foundations-life-44-pathogen-transport",
         "claim:foundations-physical-material3-03-antler-water-workability",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:population-ceramic-water",
         "claim:practical-livestock-care",
@@ -127769,6 +128301,7 @@
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:healer-portable-and-household-kit",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lime-transformations",
         "claim:material-water-natural-fibres-water-swelling",
@@ -128079,6 +128612,7 @@
         "claim:casting-defective-casting",
         "claim:casting-sprue",
         "claim:food-practices-processing-area-inference",
+        "claim:healer-portable-and-household-kit",
         "claim:posadnik-fedor-conflict-1224"
       ],
       "возможным": [
@@ -128882,6 +129416,9 @@
       "выбирает": [
         "claim:population-leather-shoes"
       ],
+      "выбирать": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "выбирают": [
         "claim:fauna-mammals-ruminant-grazing-selectivity",
         "claim:practical-boat-unload-order",
@@ -129136,6 +129673,9 @@
         "claim:residual-nature-roof-melt-eave-refreezing",
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:environment:river-ice-jam-flow-obstruction"
+      ],
+      "выздоровления": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "вызывает": [
         "claim:foundations-earth2-07-pressure-gradient-wind",
@@ -129582,7 +130122,8 @@
         "claim:heating-reduces-microbial-viability"
       ],
       "гарантируют": [
-        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+        "claim:healer-experience-and-reputation"
       ],
       "гарантию": [
         "claim:fur-skin-cooling-cleansing"
@@ -130554,6 +131095,7 @@
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:candidate-v5-gramota109-is-dated-private-letter",
+        "claim:healer-experience-and-reputation",
         "claim:practical-document-genres",
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "wk:social_law_economy:candidate-onfim-business-record-drawing",
@@ -130928,6 +131470,7 @@
         "wk:physics_material_science:wood-anisotropy-moisture"
       ],
       "даже": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:population-physics-immersion-buoyancy",
         "claim:residual-law-visible-injury-and-witness",
         "claim:residual-nature-roof-melt-eave-refreezing"
@@ -130957,6 +131500,9 @@
       "данное": [
         "claim:social-spousal-complaint-reports-marital-treatment"
       ],
+      "данной": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "данном": [
         "claim:foundations-ms-21-attitude-definition",
         "claim:occupation-smith-anvil",
@@ -130980,6 +131526,9 @@
       "данью": [
         "claim:candidate-gramota724-yugra-tribute-expedition",
         "wk:social_law_economy:candidate-yugra-tribute-expedition-letter"
+      ],
+      "дар": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "дата": [
         "claim:excavated-urban-structures",
@@ -131077,6 +131626,7 @@
       ],
       "дают": [
         "claim:dietary-macronutrients-support-cellular-energy",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:practical-boat-weather-water",
         "claim:public-world-unfamiliar-speech-allows-clarification",
         "wk:biology_physiology:dietary-macronutrient-energy"
@@ -131213,8 +131763,12 @@
       "дей": [
         "claim:textile-lac-dye-analysis"
       ],
+      "действенности": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "действие": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:religion-priest-child-baptism",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:water-capillary-rise-depression",
@@ -131240,6 +131794,7 @@
       "действия": [
         "claim:foundations-ms-03-attention-expectation",
         "claim:foundations-ms-11-practiced-action",
+        "claim:healer-belief-and-bodily-attention",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:skeletal-muscle-contraction-depends-on-atp",
@@ -131750,6 +132305,9 @@
       "диагнозом": [
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests"
       ],
+      "диагностика": [
+        "claim:healer-observation-and-questioning"
+      ],
       "диагностические": [
         "wk:biology:candidate-plant-diagnostic-identity"
       ],
@@ -131964,6 +132522,8 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-portable-and-household-kit",
         "claim:household-boat-repair-clamp",
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:human-life-visitors-add-resource-demands",
@@ -132228,6 +132788,9 @@
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:rp-entrusted-goods-claim-relates-reference"
       ],
+      "договорённая": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "договорённостей": [
         "claim:human-life-household-formation-needs-residence-provisioning"
       ],
@@ -132343,6 +132906,7 @@
         "claim:foundations-ms3-01-initial-attention",
         "claim:grain-processing-bread-optional-leaven",
         "claim:grain-processing-bread-oven-baking",
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:material-water-leather-water-processing",
         "claim:material-water-rawhide-wet-dry",
@@ -132618,6 +133182,7 @@
         "wk:social_law_economy:reconstructed-household-formation"
       ],
       "дома": [
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-starting-household-needs-coordination",
         "claim:ordinary-life-apprentice-learns-and-assists",
@@ -132762,6 +133327,7 @@
         "claim:population-net-work"
       ],
       "дороге": [
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-travellers-may-seek-local-information"
       ],
       "дорогой": [
@@ -132793,6 +133359,9 @@
       "доставку": [
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:construction-auxiliary-construction-work"
+      ],
+      "достаток": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "достаточен": [
         "claim:livestock-swine-membership"
@@ -132895,6 +133464,7 @@
         "claim:terrain-parent-material-assemblage"
       ],
       "доступной": [
+        "claim:healer-portable-and-household-kit",
         "claim:microbial-growth-depends-on-available-moisture",
         "claim:technology-motor-boundary",
         "wk:biology_physiology:food-drying",
@@ -132947,6 +133517,7 @@
       ],
       "доступные": [
         "claim:fauna-mallard-residency",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "wk:biology_physiology:plant-root-uptake"
       ],
@@ -132960,6 +133531,9 @@
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:water-percolation-openings"
+      ],
+      "доступными": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "доступных": [
         "claim:foundations-life-10-digestion",
@@ -133364,6 +133938,7 @@
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:fauna-fish-summer-night-oxygen",
         "claim:foundations-life-12-respiration",
+        "claim:healer-observation-and-questioning",
         "wk:biology_physiology:foundation-respiration"
       ],
       "дыхании": [
@@ -133447,6 +134022,8 @@
         "claim:foundations-physical-b2-snd-01-sound-source-vibration",
         "claim:foundations-thm-07-thermal-expansion-state-change",
         "claim:grain-processing-bread-ground-plant-base",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-portable-and-household-kit",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-textile-water-load",
         "claim:occupation-smith-tongs",
@@ -133625,6 +134202,9 @@
         "claim:residual-law-widow-separate-property",
         "claim:social-spousal-complaint-reports-marital-treatment"
       ],
+      "ел": [
+        "claim:healer-observation-and-questioning"
+      ],
       "ели": [
         "claim:residual-tree-picea-abies-cones-brown-at-maturity",
         "wk:environment:picea-abies-properties"
@@ -133647,6 +134227,7 @@
       ],
       "ему": [
         "claim:foundations-ms-19-attribution-explanation",
+        "claim:healer-portable-and-household-kit",
         "claim:residual-law-zakup-complaint-not-escape",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
       ],
@@ -134233,6 +134814,7 @@
       "жить": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:rp-mother-household-care-succession"
       ],
@@ -134250,6 +134832,7 @@
         "claim:fauna-tawny-owl-territory",
         "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:ordinary-life-master-has-work-responsibility",
         "claim:population-processes-malt-context",
@@ -134407,6 +134990,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-mat-06-wood-drying-property-change",
         "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:healer-livelihood-and-household-support",
         "claim:metal-properties-depend-on-state",
         "claim:ordinary-life-craftsman-income-varies-with-orders",
         "claim:ordinary-life-linen-wool-clothing",
@@ -134560,6 +135144,7 @@
         "claim:grain-processing-bread-dough-before-baking",
         "claim:grain-processing-bread-ground-plant-base",
         "claim:gramota-73-grivna-term",
+        "claim:healer-portable-and-household-kit",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-plant-fibre-cellulose",
@@ -135031,6 +135616,7 @@
         "claim:public-world-name-can-combine-personal-and-distinguishing-form"
       ],
       "занятия": [
+        "claim:healer-experience-and-reputation",
         "wk:social_law_economy:regional-economic-activities"
       ],
       "занятиями": [
@@ -135376,6 +135962,7 @@
         "claim:fauna-dragonfly-lifecycle",
         "claim:fauna-salmon-anadromy",
         "claim:fuel-pit-charcoal-burning-air-sequence",
+        "claim:healer-observation-and-questioning",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "wk:biology_physiology:fauna-atlantic-salmon",
         "wk:biology_physiology:fauna-dragonfly"
@@ -135891,11 +136478,15 @@
       "знакомству": [
         "claim:public-world-deference-can-be-calibrated-to-seniority-role"
       ],
+      "знакомые": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "знакомый": [
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
       ],
       "знакомых": [
         "claim:foundations-ms-02-attention-novelty",
+        "claim:healer-experience-and-reputation",
         "wk:psychology_behavior:foundations-ms-02-attention-novelty"
       ],
       "знание": [
@@ -136039,7 +136630,8 @@
         "wk:social_law_economy:debt-needs-parties-and-basis"
       ],
       "игровой": [
-        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests"
+        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+        "claim:healer-belief-and-bodily-attention"
       ],
       "игровые": [
         "wk:material_culture:candidate-v7-novgorod-play-artefacts"
@@ -136145,6 +136737,7 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
         "claim:harvest-scythe-iron-steel-specimen",
+        "claim:healer-livelihood-and-household-support",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-new-linen-water",
         "claim:material-water-plant-fibre-cellulose",
@@ -136256,8 +136849,14 @@
         "claim:casting-firesteel-iron",
         "claim:casting-firesteel-steel"
       ],
+      "известного": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "известное": [
         "claim:public-world-armed-presence-changes-public-risk"
+      ],
+      "известность": [
+        "claim:healer-experience-and-reputation"
       ],
       "известны": [
         "claim:environment-p1-pig",
@@ -136445,6 +137044,9 @@
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
         "claim:candidate-physiology-v3-threat-autonomic-arousal",
         "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes"
+      ],
+      "изменениях": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "изменённые": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour"
@@ -136815,6 +137417,11 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
@@ -137741,6 +138348,7 @@
       ],
       "искать": [
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
+        "claim:healer-livelihood-and-household-support",
         "claim:public-world-armed-presence-changes-public-risk",
         "claim:public-world-dispute-can-use-questions-and-kin",
         "claim:residual-law-zakup-complaint-not-escape",
@@ -139405,6 +140013,7 @@
         "claim:foundations-haz-04-slope-force-strength",
         "claim:foundations-physical-b2-snd-01-sound-source-vibration",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:healer-observation-and-questioning",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:human-life-recreation-competes-for-time",
         "claim:practical-fodder-hay",
@@ -139917,6 +140526,7 @@
         "claim:foundations-mat-11-stone-density-compressive-response",
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-portable-and-household-kit",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -141757,6 +142367,29 @@
         "claim:foundations-life-15-blood",
         "wk:biology_physiology:foundation-blood"
       ],
+      "лекарское": [
+        "claim:healer-experience-and-reputation"
+      ],
+      "лекарства": [
+        "claim:healer-portable-and-household-kit"
+      ],
+      "лекарь": [
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit"
+      ],
+      "лекарю": [
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support"
+      ],
+      "лекаря": [
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-portable-and-household-kit",
+        "wk:npc_daily_life:reconstructed-healer-practice"
+      ],
       "лепку": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion"
       ],
@@ -141885,7 +142518,9 @@
       ],
       "лечения": [
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
-        "claim:coagulation-reduces-blood-loss"
+        "claim:coagulation-reduces-blood-loss",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation"
       ],
       "лещина": [
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
@@ -141907,6 +142542,7 @@
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:foundations-physical-material3-04-osseous-shaping-operations",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-livelihood-and-household-support",
         "claim:maslo-birchbark-718-account",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-stone-weight",
@@ -142090,6 +142726,7 @@
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
         "claim:candidate-v5-infections-cause-most-fevers",
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+        "claim:healer-observation-and-questioning",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:social_law_economy:candidate-v5-fever-charm-text"
       ],
@@ -142187,6 +142824,9 @@
         "claim:terrain-background",
         "claim:textile-ellagic-acid-analysis",
         "wk:biology_physiology:fauna-animal-movement"
+      ],
+      "лоб": [
+        "claim:healer-observation-and-questioning"
       ],
       "ловит": [
         "claim:fauna-cross-spider-web",
@@ -142462,7 +143102,8 @@
         "claim:ordinary-life-linen-wool-clothing"
       ],
       "льняные": [
-        "claim:clothing-linen-plain-or-twill"
+        "claim:clothing-linen-plain-or-twill",
+        "claim:healer-portable-and-household-kit"
       ],
       "льячка": [
         "claim:casting-pouring-ladle",
@@ -143161,6 +143802,7 @@
         "claim:foundations-ms-17-individual-variation",
         "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
         "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:healer-belief-and-bodily-attention",
         "claim:population-material-clay-plasticity",
         "claim:practical-textile-cut",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
@@ -143426,6 +144068,7 @@
       "место": [
         "claim:civic-public-assembly",
         "claim:fauna-bee-swarming",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-recreation-competes-for-time",
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
@@ -144046,6 +144689,8 @@
         "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:fur-skin-cooling-cleansing",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-household-pressure-can-interrupt-learning",
@@ -144288,6 +144933,10 @@
         "claim:grain-processing-bread-oven-baking",
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
         "claim:heating-reduces-microbial-viability",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-household-formation-needs-residence-provisioning",
@@ -144494,9 +145143,13 @@
       ],
       "молитва": [
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+        "claim:healer-belief-and-bodily-attention",
         "claim:social-written-prayer-relates-invocation",
         "wk:social_law_economy:candidate-v5-fever-charm-text",
         "wk:social_law_economy:written-prayer-text"
+      ],
+      "молитвой": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "молитву": [
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer"
@@ -144934,6 +145587,7 @@
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:grain-processing-bread-open-fire-baking",
         "claim:hard-stone-abrasive-sawing",
+        "claim:healer-observation-and-questioning",
         "claim:household-apple-orchard",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-reception-depends-on-trust-ties-means",
@@ -145090,6 +145744,9 @@
         "claim:public-world-capacity-can-vary-day-to-day",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration"
       ],
+      "наблюдением": [
+        "claim:healer-experience-and-reputation"
+      ],
       "наблюдению": [
         "claim:residual-nature-twilight-solar-afterglow"
       ],
@@ -145102,6 +145759,7 @@
         "wk:material_culture:textile-colourants"
       ],
       "набор": [
+        "claim:healer-portable-and-household-kit",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -145319,6 +145977,7 @@
         "claim:transport-boat-cargo-dispatch"
       ],
       "название": [
+        "claim:healer-experience-and-reputation",
         "claim:population-physics-section-response",
         "wk:material_culture:rawhide"
       ],
@@ -145654,6 +146313,7 @@
         "claim:construction-pine-resin-surfaces",
         "claim:construction-plinth-patterns-1207",
         "claim:fodder-healthy-horse-forage",
+        "claim:healer-portable-and-household-kit",
         "claim:settlement-cart-transport",
         "claim:settlement-log-building-form",
         "claim:settlement-oak-shingle-roof",
@@ -146116,6 +146776,9 @@
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails"
       ],
+      "началось": [
+        "claim:healer-observation-and-questioning"
+      ],
       "началу": [
         "claim:river-landing-named-list"
       ],
@@ -146127,6 +146790,9 @@
       ],
       "начальный": [
         "wk:biology_physiology:candidate-v3-oral-health"
+      ],
+      "начать": [
+        "claim:healer-observation-and-questioning"
       ],
       "начаться": [
         "claim:public-world-dispute-starts-with-competing-accounts"
@@ -146497,6 +147163,12 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:heating-reduces-microbial-viability",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
@@ -147067,7 +147739,8 @@
         "claim:residual-nature-pole-star-precession-limit"
       ],
       "небольшая": [
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:healer-portable-and-household-kit"
       ],
       "небольшими": [
         "claim:fauna-mammals-eurasian-beaver-family-colony",
@@ -147115,6 +147788,12 @@
       "недоверие": [
         "claim:foundations-ms2-03-distrust-cooperation"
       ],
+      "недомогание": [
+        "claim:healer-observation-and-questioning"
+      ],
+      "недостатке": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "недостаток": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:fauna-fish-low-oxygen",
@@ -147159,6 +147838,9 @@
       ],
       "недублёной": [
         "claim:vegetable-tanning-prepared-hide"
+      ],
+      "недуга": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "неё": [
         "claim:foundations-chm-04-diffusion-limited-heterogeneous-process",
@@ -147545,6 +148227,9 @@
       "неуверенно": [
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised"
       ],
+      "неуверенности": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "неудачный": [
         "claim:casting-defective-casting"
       ],
@@ -147593,6 +148278,7 @@
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:clay-firing-structural-transformation",
         "claim:clothing-linen-plain-or-twill",
+        "claim:healer-experience-and-reputation",
         "claim:material-water-alum-skin-water",
         "claim:wild-food-and-fur-evidence",
         "wk:environment:wild-food-and-fur-evidence"
@@ -147711,6 +148397,7 @@
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
         "claim:food-energy-nutrients",
         "claim:foundations-ms-25-persuasion-context",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:lime-transformations",
@@ -148227,6 +148914,7 @@
       "ночлег": [
         "claim:candidate-v5-gramota600-is-near-1230-private-letter",
         "claim:candidate-v5-sleep-is-basic-human-need",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-travel-conditions-can-justify-delay",
         "wk:npc_daily_life:reconstructed-hospitality-travel-lodging"
@@ -148344,6 +149032,7 @@
         "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
         "claim:construction-plinth-patterns-1207",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
         "claim:transport-private-boat-arrangement",
@@ -148442,6 +149131,9 @@
       ],
       "обещаны": [
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "обещают": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "обжиг": [
         "claim:clay-firing-structural-transformation",
@@ -148825,6 +149517,9 @@
       "обращать": [
         "claim:residual-law-zakup-complaint-not-escape"
       ],
+      "обращаться": [
+        "claim:healer-experience-and-reputation"
+      ],
       "обращаясь": [
         "claim:social-podvoisky-letter-reports-pochestie-assurance"
       ],
@@ -148957,6 +149652,7 @@
         "claim:textile-lac-dye-analysis"
       ],
       "обучение": [
+        "claim:healer-experience-and-reputation",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-learning-feedback-can-shape-practice",
@@ -149029,6 +149725,9 @@
         "claim:social-spousal-complaint-reports-marital-treatment",
         "wk:biology_physiology:candidate-v3-disability-context",
         "wk:material_culture:rawhide"
+      ],
+      "общения": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "общественное": [
         "claim:civic-public-market",
@@ -149194,10 +149893,14 @@
         "claim:foundations-ms-13-movement-demonstration",
         "claim:foundations-ms-19-attribution-explanation",
         "claim:foundations-ms-20-attribution-alternatives",
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-learning-feedback-can-shape-practice",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
         "wk:psychology_behavior:foundations-ms-20-attribution-alternatives"
+      ],
+      "объяснениями": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "объяснить": [
         "claim:public-world-unfamiliar-speech-allows-clarification"
@@ -149287,6 +149990,9 @@
         "wk:biology_physiology:fauna-wild-boar",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:chemistry_process:temperature-solubility-conditional"
+      ],
+      "обычного": [
+        "claim:healer-portable-and-household-kit"
       ],
       "обычное": [
         "claim:candidate-physiology-v3-dehydration-functional-risk",
@@ -150041,6 +150747,7 @@
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:early-rus-hunting-ground-terms",
         "claim:foundations-ms-38-reference-group",
+        "claim:healer-portable-and-household-kit",
         "claim:posadnik-fedor-conflict-1224",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:rp-caretaker-principal-goods",
@@ -150460,6 +151167,7 @@
       ],
       "опыта": [
         "claim:fauna-animal-learning",
+        "claim:healer-livelihood-and-household-support",
         "wk:biology_physiology:fauna-animal-learning"
       ],
       "опытах": [
@@ -150469,6 +151177,15 @@
       ],
       "опыте": [
         "claim:fauna-crayfish-juvenile-activity"
+      ],
+      "опытного": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
+      "опытным": [
+        "claim:healer-experience-and-reputation"
+      ],
+      "опытом": [
+        "claim:healer-experience-and-reputation"
       ],
       "оранжевом": [
         "claim:pigment-red-lead-pigment"
@@ -150714,6 +151431,9 @@
       "освещённым": [
         "claim:white-willow-depends-on-moist-lit-riparian-habitat"
       ],
+      "освободить": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "освобождение": [
         "claim:residual-law-zakup-illegal-sale"
       ],
@@ -150787,7 +151507,11 @@
         "claim:practical-dwelling-roof"
       ],
       "осмотр": [
-        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests"
+        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+        "claim:healer-observation-and-questioning"
+      ],
+      "осмотра": [
+        "claim:healer-observation-and-questioning"
       ],
       "основа": [
         "claim:casting-firesteel-iron"
@@ -151106,6 +151830,7 @@
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
         "claim:ha-firesteel-ignition",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-standing-can-affect-social-access",
@@ -151384,6 +152109,7 @@
       ],
       "отдыха": [
         "claim:fauna-mammals-brown-bear-cover-rest",
+        "claim:healer-care-coordination-and-uncertainty",
         "wk:biology_physiology:fauna-brown-bear"
       ],
       "отдыхает": [
@@ -151948,6 +152674,9 @@
       "ошибочное": [
         "wk:social_behavior:foundations-ms-31-conflict-misperception"
       ],
+      "ощупывать": [
+        "claim:healer-observation-and-questioning"
+      ],
       "ощущение": [
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
       ],
@@ -152203,6 +152932,9 @@
       "пациента": [
         "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"
       ],
+      "пациентов": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "пека": [
         "claim:pine-pitch-woven-basket-coating"
       ],
@@ -152344,6 +153076,9 @@
       "передать": [
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:rp-mother-household-care-succession"
+      ],
+      "передачей": [
+        "claim:healer-experience-and-reputation"
       ],
       "передачи": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
@@ -152851,6 +153586,9 @@
       "пиковой": [
         "claim:foundations-phys-02-impulse-momentum-change"
       ],
+      "пил": [
+        "claim:healer-observation-and-questioning"
+      ],
       "пила": [
         "wk:material_culture:saw"
       ],
@@ -153021,6 +153759,7 @@
       ],
       "пища": [
         "claim:food-energy-nutrients",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
         "claim:population-fish-food",
@@ -153242,6 +153981,9 @@
       "пластичным": [
         "claim:clay-dried-replasticization"
       ],
+      "плата": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "платеж": [
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
@@ -153437,6 +154179,8 @@
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-experience-and-reputation",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-kin-can-offer-contextual-support",
@@ -153515,6 +154259,9 @@
       ],
       "побудить": [
         "claim:public-world-armed-presence-changes-public-risk"
+      ],
+      "побыть": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "поведение": [
         "claim:candidate-physiology-v3-threat-autonomic-arousal",
@@ -153705,6 +154452,7 @@
       ],
       "повреждения": [
         "claim:foundations-mat-07-wood-storage-biological-damage",
+        "claim:healer-observation-and-questioning",
         "claim:material-water-textile-water-load",
         "claim:pain-nociception-distinct",
         "claim:practical-net-dry",
@@ -153729,6 +154477,9 @@
       ],
       "повреждены": [
         "claim:burial-plank-coffin-nails"
+      ],
+      "повседневная": [
+        "wk:npc_daily_life:reconstructed-healer-practice"
       ],
       "повторение": [
         "claim:foundations-ms-12-practice-correction",
@@ -154396,6 +155147,7 @@
         "wk:physics_material_science:research-fire-plume-upper-layer-transport"
       ],
       "позвать": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:public-world-unfamiliar-speech-allows-clarification"
       ],
       "позволяет": [
@@ -154854,6 +155606,9 @@
       "пользоваться": [
         "claim:practical-food-preserve"
       ],
+      "пользуется": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "пользы": [
         "claim:public-world-rest-warmth-drink-food-are-contextual-support"
       ],
@@ -154942,6 +155697,7 @@
       ],
       "помогать": [
         "claim:care-direct-pressure-bleeding",
+        "claim:healer-livelihood-and-household-support",
         "claim:research-increased-ventilation-can-help-reduce-condensation"
       ],
       "помогают": [
@@ -154962,13 +155718,23 @@
         "claim:public-world-help-access-can-be-limited"
       ],
       "помощник": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:population-storage-role"
+      ],
+      "помощника": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
+      "помощниками": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "помощники": [
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
       ],
       "помощь": [
         "claim:foundations-ms-29-helping-no-reward",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-kin-can-offer-contextual-support",
         "claim:human-life-starting-household-needs-coordination",
@@ -154993,6 +155759,9 @@
       ],
       "понижение": [
         "claim:water-capillary-rise-depression"
+      ],
+      "понимать": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "понятий": [
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits"
@@ -155060,6 +155829,9 @@
       ],
       "попону": [
         "claim:transport-horse-sledge-equipment"
+      ],
+      "попросить": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "популяции": [
         "claim:fauna-animal-partial-migration",
@@ -155576,6 +156348,9 @@
         "wk:material_culture:vessel",
         "wk:material_culture:wooden-tableware"
       ],
+      "посудой": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "посуду": [
         "claim:population-household-storage"
       ],
@@ -155928,6 +156703,13 @@
         "claim:research-memory-source-misattribution",
         "claim:social-kin-letter-reports-protection-request"
       ],
+      "правдоподобной": [
+        "claim:healer-experience-and-reputation"
+      ],
+      "правдоподобны": [
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-portable-and-household-kit"
+      ],
       "правду": [
         "claim:residual-law-zakup-complaint-not-escape"
       ],
@@ -156064,6 +156846,7 @@
         "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "wk:material_culture:reconstructed-practical-boat-work",
+        "wk:npc_daily_life:reconstructed-healer-practice",
         "wk:psychology_behavior:foundations-ms-12-practice-correction",
         "wk:social_law_economy:residual-v1-everyday-writing-practice"
       ],
@@ -156096,6 +156879,7 @@
         "wk:environment:regional-agriculture-practice"
       ],
       "практическая": [
+        "claim:healer-observation-and-questioning",
         "claim:technology-newcomen-boundary",
         "wk:biology_physiology:reconstructed-health-support",
         "wk:craft_technology:atmospheric-reciprocating-engine"
@@ -156531,8 +157315,14 @@
         "claim:environment-p1-horse-transport",
         "claim:practical-textile-spin"
       ],
+      "прежнего": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "прежнее": [
         "claim:population-material-leather-dry"
+      ],
+      "прежней": [
+        "claim:healer-experience-and-reputation"
       ],
       "прежний": [
         "claim:fauna-perch-experience",
@@ -156718,6 +157508,7 @@
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:grain-processing-bread-liquid",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-relationship-change-can-alter-household-arrangement",
@@ -156906,6 +157697,9 @@
       "привыкании": [
         "claim:fauna-animal-habituation"
       ],
+      "привычными": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "привязывавшиеся": [
         "claim:settlement-ice-grip-footwear"
       ],
@@ -156971,6 +157765,9 @@
       "приезжего": [
         "claim:residual-law-creditor-priority"
       ],
+      "приём": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "приёма": [
         "claim:civic-defence-stake-support",
         "claim:food-energy-nutrients",
@@ -157020,6 +157817,9 @@
       ],
       "признаку": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "признание": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "признания": [
         "claim:public-world-negotiation-can-precede-formal-escalation"
@@ -157167,6 +157967,9 @@
       "принадлежностью": [
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"
       ],
+      "принести": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "принимать": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
@@ -157198,6 +158001,9 @@
       ],
       "приобрести": [
         "wk:social_law_economy:directed-grain-procurement"
+      ],
+      "приобретается": [
+        "claim:healer-experience-and-reputation"
       ],
       "приобретения": [
         "claim:rp-property-claim-relates-acquisition-chain",
@@ -157362,6 +158168,7 @@
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+        "claim:healer-belief-and-bodily-attention",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:research-flood-can-leave-high-water-mark-types",
@@ -157382,6 +158189,9 @@
       ],
       "пришлых": [
         "claim:construction-plinth-patterns-1207"
+      ],
+      "пробовали": [
+        "claim:healer-observation-and-questioning"
       ],
       "проведение": [
         "claim:human-thermoregulation-depends-on-heat-exchange"
@@ -157975,6 +158785,7 @@
         "wk:social_behavior:foundations-ms-36-socialization"
       ],
       "профессии": [
+        "claim:healer-livelihood-and-household-support",
         "claim:population-wool-lining"
       ],
       "профессий": [
@@ -158591,12 +159402,16 @@
       "работники": [
         "claim:construction-auxiliary-construction-work"
       ],
+      "работой": [
+        "claim:healer-experience-and-reputation"
+      ],
       "работоспособность": [
         "claim:acute-sleep-loss-performance",
         "wk:biology_physiology:acute-sleep-loss-performance"
       ],
       "работу": [
         "claim:force-contact-geometry",
+        "claim:healer-livelihood-and-household-support",
         "claim:occupation-smith-iron-input",
         "claim:occupation-smith-role",
         "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
@@ -159109,6 +159924,7 @@
         "claim:population-joining-assembly-expansion"
       ],
       "разному": [
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-starting-household-needs-coordination",
         "claim:ordinary-life-public-and-private-conduct-differ"
       ],
@@ -159519,6 +160335,7 @@
       ],
       "распределение": [
         "claim:fauna-chicken-dust-bathing",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:research-pooled-work-social-loafing",
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:river-landing-surfacing-allocation",
@@ -159634,7 +160451,11 @@
         "wk:physics_material_science:porous-medium-water-flow"
       ],
       "расспрос": [
+        "claim:healer-observation-and-questioning",
         "claim:public-world-dispute-can-use-questions-and-kin"
+      ],
+      "расспроса": [
+        "claim:healer-observation-and-questioning"
       ],
       "расстановка": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
@@ -159769,6 +160590,7 @@
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:healer-portable-and-household-kit",
         "claim:livestock-ruminant-membership",
         "claim:mezereon-poisonous-sap-all-parts",
         "claim:plant-development-responds-to-light",
@@ -160363,6 +161185,8 @@
         "claim:fuel-pit-charcoal-burning-air-control",
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:fuel-pit-charcoal-burning-wood-input",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-experience-and-reputation",
         "claim:novgorod-wetland-pollen-context",
         "claim:population-processes-weaving-textile",
         "claim:population-processes-weaving-thread",
@@ -160375,6 +161199,7 @@
       "реконструкция": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:clothing-porty-cut",
+        "claim:healer-observation-and-questioning",
         "claim:population-household-storage",
         "claim:population-processes-weaving-device",
         "claim:population-wool-lining",
@@ -160471,10 +161296,14 @@
       "реплику": [
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
+      "репутации": [
+        "claim:healer-experience-and-reputation"
+      ],
       "репутацию": [
         "claim:ordinary-life-public-reputation-follows-conduct"
       ],
       "репутация": [
+        "claim:healer-experience-and-reputation",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:public-world-status-and-ties-affect-access-not-guilt"
@@ -160796,6 +161625,9 @@
       ],
       "родственниках": [
         "claim:human-life-household-formation-needs-residence-provisioning"
+      ],
+      "родственники": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "родственнику": [
         "claim:rp-minor-children-conditional-care",
@@ -161259,6 +162091,7 @@
       "рядом": [
         "claim:animal-pollination-affects-flowering-plant-reproduction",
         "claim:fauna-cross-spider-egg-sac",
+        "claim:healer-experience-and-reputation",
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
@@ -161755,6 +162588,9 @@
       "своей": [
         "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans"
       ],
+      "своим": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "своими": [
         "claim:fauna-ewe-lamb-recognition"
       ],
@@ -161885,6 +162721,9 @@
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "wk:physics_material_science:conductor-insulator-charge-mobility",
         "wk:psychology_behavior:foundations-ms-09-memory-systems"
+      ],
+      "связей": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "связи": [
         "claim:fauna-chicken-allopreening",
@@ -162308,6 +163147,9 @@
         "claim:residual-law-widow-separate-property",
         "wk:social_law_economy:residual-law-status"
       ],
+      "семейной": [
+        "claim:healer-experience-and-reputation"
+      ],
       "семейные": [
         "claim:fauna-mammals-red-fox-nonpack-territoriality"
       ],
@@ -162347,6 +163189,7 @@
         "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
       "семья": [
+        "claim:healer-belief-and-bodily-attention",
         "claim:public-world-armed-loss-reaches-household"
       ],
       "семян": [
@@ -163009,6 +163852,7 @@
       ],
       "следуют": [
         "claim:ceramic-material-category",
+        "claim:healer-livelihood-and-household-support",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:material-water-alum-skin-water",
         "claim:pottery-handmade-local-clay",
@@ -163311,6 +164155,9 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating"
       ],
+      "смотреть": [
+        "claim:healer-observation-and-questioning"
+      ],
       "сна": [
         "claim:acute-sleep-loss-performance",
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
@@ -163556,6 +164403,9 @@
         "claim:foundations-ms-31-conflict-misperception",
         "wk:social_behavior:foundations-ms-31-conflict-misperception"
       ],
+      "собственным": [
+        "claim:healer-experience-and-reputation"
+      ],
       "событие": [
         "claim:foundations-earth-30-upslope-fog"
       ],
@@ -163579,6 +164429,7 @@
         "claim:sweat-evaporation-reduces-surface-heat"
       ],
       "совету": [
+        "claim:healer-experience-and-reputation",
         "claim:human-life-kin-can-offer-contextual-support"
       ],
       "совместима": [
@@ -163737,6 +164588,7 @@
         "wk:biology_physiology:foundation-ontogeny"
       ],
       "современная": [
+        "claim:healer-observation-and-questioning",
         "claim:residual-law-injury-and-treatment-payments",
         "wk:environment:candidate-nettle-bast-fibre-extraction"
       ],
@@ -163803,6 +164655,9 @@
         "claim:foundations-life-02-cell-substances",
         "wk:architecture_settlement:composite-urban-quarter",
         "wk:biology_physiology:foundation-cell-substances"
+      ],
+      "содержательное": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "содержать": [
         "claim:foundations-earth-03-soil-phases",
@@ -164102,6 +164957,9 @@
         "claim:textile-lac-dye-analysis",
         "claim:transport-winter-sledge-1220"
       ],
+      "сообщать": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "сообщаются": [
         "claim:water-permeability-connected-pores"
       ],
@@ -164260,6 +165118,12 @@
       ],
       "соседних": [
         "claim:residual-law-unauthorized-horse-use"
+      ],
+      "соседствовать": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
+      "соседям": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "сословий": [
         "claim:clothing-rank-material-not-cut"
@@ -164530,6 +165394,7 @@
         "claim:ordinary-life-craftsman-income-varies-with-orders"
       ],
       "сосуд": [
+        "claim:healer-portable-and-household-kit",
         "claim:vegetable-tanning-prepared-hide",
         "wk:material_culture:ceramic-vessel"
       ],
@@ -165243,6 +166108,7 @@
       "средств": [
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
@@ -165268,6 +166134,9 @@
       ],
       "средствах": [
         "claim:human-life-relationship-change-can-alter-household-arrangement"
+      ],
+      "средство": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "средством": [
         "claim:transport-boat-cargo-dispatch"
@@ -166131,6 +167000,9 @@
         "claim:residual-nature-twilight-solar-afterglow",
         "wk:environment:residual-nature-sky"
       ],
+      "сумка": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "сумма": [
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
         "wk:physics_material_science:static-force-equilibrium"
@@ -166229,6 +167101,9 @@
       ],
       "сушёной": [
         "claim:population-fish-dried-form"
+      ],
+      "сушёные": [
+        "claim:healer-portable-and-household-kit"
       ],
       "сушить": [
         "claim:ordinary-life-shoes-protect-feet"
@@ -166357,6 +167232,7 @@
         "claim:grain-processing-bread-open-fire-baking",
         "claim:grain-processing-bread-oven-baking",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-portable-and-household-kit",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
         "claim:household-barley-commodity",
@@ -166673,6 +167549,7 @@
       "такой": [
         "claim:construction-construction-pottery-products",
         "claim:foundations-earth-02-ecological-tolerance",
+        "claim:healer-portable-and-household-kit",
         "claim:population-material-iron-coating"
       ],
       "таксон": [
@@ -167078,6 +167955,9 @@
       "телёнка": [
         "claim:fauna-mammals-moose-defensive-antlers-hooves"
       ],
+      "телесная": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "телесные": [
         "claim:foundations-ms-08-duration-rhythm",
         "claim:residual-law-injury-and-treatment-payments",
@@ -167256,6 +168136,9 @@
       ],
       "тёплой": [
         "claim:foundations-thm-10-thermal-gradient-heat-flow"
+      ],
+      "теплом": [
+        "claim:healer-portable-and-household-kit"
       ],
       "теплообмене": [
         "claim:foundations-thm-10-thermal-gradient-heat-flow"
@@ -167556,6 +168439,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:clothing-wool-shirt",
         "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-new-linen-water",
@@ -168010,6 +168894,7 @@
         "claim:fauna-mammals-eurasian-beaver-herbivory"
       ],
       "травы": [
+        "claim:healer-portable-and-household-kit",
         "claim:livestock-rumen-forage-digestion",
         "wk:craft_technology:grass-cutting"
       ],
@@ -168266,6 +169151,9 @@
       "труду": [
         "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory"
       ],
+      "тряпицы": [
+        "claim:healer-portable-and-household-kit"
+      ],
       "туберкулёза": [
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "wk:biology_physiology:foundation-airborne-exposure"
@@ -168413,6 +169301,9 @@
       ],
       "убытка": [
         "claim:rp-caretaker-principal-goods"
+      ],
+      "уважение": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "уважением": [
         "claim:public-world-community-response-to-impairment-varies"
@@ -168666,6 +169557,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:composite-urban-quarter",
         "claim:foundations-haz-05-slope-water-triggers",
+        "claim:healer-observation-and-questioning",
         "claim:occupation-smith-iron-input",
         "claim:occupation-wood-drawknife",
         "claim:population-hide-leather-distinction",
@@ -168874,6 +169766,7 @@
         "claim:construction-compared-church-masonry",
         "claim:fibre-flax-breaker-shive",
         "claim:fibre-hackle-removes-shive",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-learning-feedback-can-shape-practice",
@@ -168889,6 +169782,10 @@
       ],
       "умении": [
         "claim:agriculture-fauna-rural-tree-borts"
+      ],
+      "умения": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation"
       ],
       "уменьшает": [
         "claim:drying-reduces-microbial-growth-conditions",
@@ -169424,6 +170321,9 @@
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession"
       ],
+      "услуга": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "услугу": [
         "claim:transport-horse-sledge-equipment"
       ],
@@ -169438,6 +170338,9 @@
       ],
       "успешная": [
         "claim:stone-whetstone-edge-maintenance"
+      ],
+      "успешного": [
+        "claim:healer-experience-and-reputation"
       ],
       "успешное": [
         "claim:agriculture-fauna-tow-log-gaps"
@@ -169950,6 +170853,7 @@
       ],
       "уход": [
         "claim:animal-care-needs-presence",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
         "claim:human-life-relationship-change-can-alter-household-arrangement",
@@ -169969,6 +170873,7 @@
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:rp-caretaker-principal-goods",
         "wk:biology_physiology:fauna-red-squirrel"
       ],
@@ -170405,6 +171310,9 @@
       "физическими": [
         "claim:buoyancy-pressure-phase-change",
         "wk:physics_material_science:buoyancy-pressure-phase-change"
+      ],
+      "физического": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "физической": [
         "claim:activity-fluid-balance",
@@ -171083,6 +171991,7 @@
       ],
       "хозяйством": [
         "claim:agriculture-rural-role-context",
+        "claim:healer-livelihood-and-household-support",
         "wk:npc_daily_life:agriculture-rural-role-context"
       ],
       "хозяйству": [
@@ -171767,6 +172676,7 @@
       "человек": [
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:healer-observation-and-questioning",
         "claim:human-life-capacity-experience-help-vary",
         "claim:ordinary-life-public-and-private-conduct-differ",
         "claim:public-world-health-disclosure-is-contextual",
@@ -171820,6 +172730,9 @@
         "wk:psychology_behavior:foundations-ms-01-attention-intensity",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
+      ],
+      "человеком": [
+        "claim:healer-experience-and-reputation"
       ],
       "человеку": [
         "claim:foundations-ms-29-helping-no-reward",
@@ -172078,6 +172991,7 @@
         "claim:foundations-ms4-01-reappraisal-negative-experience",
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
         "claim:grain-processing-bread-optional-leaven",
+        "claim:healer-observation-and-questioning",
         "claim:livestock-swine-membership",
         "claim:occupation-smith-anvil",
         "claim:population-material-leather-mould",
@@ -173109,6 +174023,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-observation-and-questioning",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:human-life-learning-observation-practice-feedback",
@@ -175366,6 +176281,9 @@
       "acids": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel"
       ],
+      "acknowledging": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "acoustic": [
         "claim:fauna-animal-signals",
         "wk:biology_physiology:fauna-animal-communication"
@@ -175373,6 +176291,9 @@
       "acquaint": [
         "claim:foundations-ms-13-movement-demonstration",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration"
+      ],
+      "acquaintances": [
+        "claim:healer-experience-and-reputation"
       ],
       "acquire": [
         "claim:foundations-mat-07-wood-storage-biological-damage"
@@ -175428,6 +176349,7 @@
       "actions": [
         "claim:foundations-ms-30-conflict-incompatibility",
         "claim:foundations-ms-38-reference-group",
+        "claim:healer-care-coordination-and-uncertainty",
         "wk:social_behavior:foundations-ms-30-conflict-incompatibility",
         "wk:social_behavior:foundations-ms-38-reference-group"
       ],
@@ -175864,6 +176786,7 @@
         "claim:fauna-mammals-domestic-cattle-startle-response"
       ],
       "agreed": [
+        "claim:healer-livelihood-and-household-support",
         "claim:residual-law-dependency-and-agreement",
         "claim:residual-law-interest-agreement-and-witnesses"
       ],
@@ -175977,6 +176900,9 @@
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
         "claim:residual-tree-alnus-glutinosa-moist-soil",
         "wk:environment:alnus-glutinosa-properties"
+      ],
+      "alertness": [
+        "claim:healer-observation-and-questioning"
       ],
       "alferdov": [
         "claim:river-landing-named-list"
@@ -176104,7 +177030,8 @@
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
       "alongside": [
-        "claim:clothing-bone-button"
+        "claim:clothing-bone-button",
+        "claim:healer-experience-and-reputation"
       ],
       "alphabet": [
         "claim:candidate-gramota199-onfim-instructional-text",
@@ -176127,6 +177054,7 @@
         "claim:animal-care-needs-presence",
         "claim:care-direct-pressure-bleeding",
         "claim:foundations-haz-05-slope-water-triggers",
+        "claim:healer-observation-and-questioning",
         "claim:occupation-smith-iron-input",
         "claim:occupation-wood-drawknife",
         "claim:population-hide-leather-distinction",
@@ -176235,6 +177163,7 @@
         "claim:foundations-ms-17-individual-variation",
         "claim:foundations-ms3-03-goal-frustration",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-belief-and-bodily-attention",
         "claim:household-bark-tues",
         "claim:household-belt-fitting",
         "claim:household-ceramic-vessel",
@@ -176401,6 +177330,7 @@
         "claim:gramota-73-grivna-term",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-experience-and-reputation",
         "claim:household-garden-shovel",
         "claim:household-ploughshare-tillage",
         "claim:household-spindle-whorl",
@@ -176934,6 +177864,12 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-garden-shovel",
@@ -178049,6 +178985,8 @@
         "claim:grain-processing-bread-liquid",
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-portable-and-household-kit",
         "claim:household-riverside-storage",
         "claim:household-spindle-whorl",
         "claim:judicial-accusation-record",
@@ -178436,12 +179374,14 @@
         "claim:grain-processing-bread-open-fire-baking"
       ],
       "ask": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-travellers-may-seek-local-information"
       ],
       "asked": [
         "claim:human-life-audience-can-interpret-standing-contextually"
       ],
       "asking": [
+        "claim:healer-observation-and-questioning",
         "claim:residual-law-unauthorized-horse-use"
       ],
       "asks": [
@@ -178627,6 +179567,7 @@
         "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
         "claim:grain-processing-bread-open-fire-baking",
+        "claim:healer-portable-and-household-kit",
         "claim:household-tar-pot",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:occupation-smith-anvil",
@@ -178760,6 +179701,7 @@
         "claim:foundations-ms-03-attention-expectation",
         "claim:foundations-ms-04-attention-competition",
         "claim:foundations-ms3-01-initial-attention",
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-visitors-add-resource-demands",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
         "claim:practical-boat-leak",
@@ -178943,6 +179885,7 @@
         "wk:social_law_economy:debt-needs-parties-and-basis"
       ],
       "automatically": [
+        "claim:healer-livelihood-and-household-support",
         "claim:population-wool-lining",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
@@ -179004,6 +179947,9 @@
         "claim:fauna-crayfish-juvenile-activity",
         "claim:foundations-phys-09-mechanical-energy-dissipation",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:human-life-standing-can-affect-social-access",
         "claim:microbial-growth-depends-on-available-moisture",
@@ -179089,6 +180035,9 @@
       ],
       "bad": [
         "claim:human-life-travel-conditions-can-justify-delay"
+      ],
+      "bag": [
+        "claim:healer-portable-and-household-kit"
       ],
       "bailing": [
         "claim:practical-boat-leak"
@@ -179477,6 +180426,9 @@
       "beekeeper": [
         "claim:social-daily-wax-commodity-context"
       ],
+      "been": [
+        "claim:healer-observation-and-questioning"
+      ],
       "bees": [
         "claim:social-daily-honey-documentary-entry"
       ],
@@ -179499,10 +180451,12 @@
         "claim:residual-law-arson-remedy-and-sanction"
       ],
       "began": [
+        "claim:healer-observation-and-questioning",
         "claim:residual-law-visible-injury-and-witness"
       ],
       "begin": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
+        "claim:healer-observation-and-questioning",
         "claim:public-world-dispute-starts-with-competing-accounts"
       ],
       "beginning": [
@@ -179571,6 +180525,7 @@
       "belief": [
         "claim:burial-hollowed-log-container",
         "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+        "claim:healer-belief-and-bodily-attention",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
         "claim:social-christian-exegetical-text-relates-urban-context",
@@ -179578,6 +180533,7 @@
       ],
       "beliefs": [
         "claim:foundations-ms-21-attitude-definition",
+        "claim:healer-belief-and-bodily-attention",
         "wk:psychology_behavior:foundations-ms-21-attitude-definition"
       ],
       "believes": [
@@ -179889,6 +180845,9 @@
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
         "wk:biology_physiology:residual-postpartum-maternal-recovery"
       ],
+      "blessing": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "blink": [
         "wk:biology_physiology:candidate-blink-corneal-protection"
       ],
@@ -179975,6 +180934,7 @@
       ],
       "bodily": [
         "claim:foundations-ms-08-duration-rhythm",
+        "claim:healer-belief-and-bodily-attention",
         "claim:residual-law-injury-and-treatment-payments",
         "wk:psychology_behavior:foundations-ms-08-duration-rhythm"
       ],
@@ -180237,7 +181197,8 @@
       ],
       "breathing": [
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
-        "claim:candidate-physiology-v3-threat-autonomic-arousal"
+        "claim:candidate-physiology-v3-threat-autonomic-arousal",
+        "claim:healer-observation-and-questioning"
       ],
       "breeding": [
         "claim:fauna-adder-male-contest",
@@ -180283,6 +181244,10 @@
         "claim:candidate-physiology-v3-blink-corneal-protection",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "wk:biology_physiology:research-pupil-light-reflex"
+      ],
+      "bring": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation"
       ],
       "britannica": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
@@ -180512,6 +181477,7 @@
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
         "claim:food-energy-nutrients",
         "claim:foundations-ms-25-persuasion-context",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:localized-improvement-context",
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
@@ -180588,6 +181554,7 @@
         "claim:fuel-iron-candlestick-form",
         "claim:fuel-iron-splinter-holder-form",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-observation-and-questioning",
         "claim:human-life-learning-observation-practice-feedback",
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:iron-corrosion-moisture-oxygen",
@@ -180928,6 +181895,12 @@
         "claim:grain-processing-bread-oven-baking",
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:heating-reduces-microbial-viability",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-capacity-experience-help-vary",
@@ -181337,6 +182310,7 @@
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:fauna-frog-calls-parental",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
         "claim:human-life-starting-household-needs-coordination",
@@ -182021,6 +182995,7 @@
         "claim:foundations-chm-12-galvanic-contact-corrosion",
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:foundations-life-39-ecosystem-change",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:population-joining-bond-moisture",
         "claim:population-material-clay-quartz",
         "claim:residual-nature-pole-star-precession-limit",
@@ -182275,6 +183250,9 @@
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
       ],
+      "choose": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "chosen": [
         "claim:ordinary-life-fisher-needs-water-and-gear",
         "claim:ordinary-life-linen-wool-clothing",
@@ -182520,6 +183498,7 @@
       "clear": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-earth-28-radiation-fog",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:practical-net-space"
       ],
       "clearance": [
@@ -182595,6 +183574,7 @@
         "claim:clothing-onuchi-wrap",
         "claim:clothing-wool",
         "claim:clothing-wool-shirt",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:population-material-wet-silk",
         "claim:practical-textile-cut",
@@ -182629,6 +183609,9 @@
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "wk:material_culture:svita",
         "wk:material_culture:votola"
+      ],
+      "cloths": [
+        "claim:healer-portable-and-household-kit"
       ],
       "cloud": [
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
@@ -182696,6 +183679,9 @@
         "claim:dry-friction",
         "claim:foundations-phys-01-air-drag-fall",
         "wk:physics_material_science:dry-friction"
+      ],
+      "coexist": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "coffin": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -183233,6 +184219,7 @@
         "claim:candidate-gramota222-letter-to-posadnik",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+        "claim:healer-experience-and-reputation",
         "claim:livestock-rumen-forage-digestion",
         "claim:religion-priest-child-baptism",
         "wk:social_law_economy:candidate-posadnik-addressed-letter"
@@ -184330,7 +185317,8 @@
         "claim:river-landing-named-list"
       ],
       "coordination": [
-        "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
+        "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "copies": [
         "claim:foundations-life-07-mitosis",
@@ -185115,6 +186103,9 @@
       "deadline": [
         "claim:fur-skin-cooling-cleansing"
       ],
+      "dealings": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "death": [
         "claim:public-world-armed-loss-reaches-household"
       ],
@@ -185428,6 +186419,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-mat-06-wood-drying-property-change",
         "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:healer-livelihood-and-household-support",
         "claim:metal-properties-depend-on-state",
         "claim:ordinary-life-apprentice-learns-and-assists",
         "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
@@ -185810,6 +186802,7 @@
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:care-waterproof-wound-cover",
         "claim:fluid-osmotic-balance-depends-on-water-solutes",
+        "claim:healer-observation-and-questioning",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
@@ -185940,6 +186933,7 @@
         "wk:biology:candidate-plant-lookalike-differentiation"
       ],
       "differently": [
+        "claim:healer-belief-and-bodily-attention",
         "claim:ordinary-life-public-and-private-conduct-differ",
         "claim:residual-traces-animal-trace-weather-decay"
       ],
@@ -186393,6 +187387,7 @@
         "claim:fauna-frog-calls-parental",
         "claim:fauna-pike-spawning",
         "claim:force-contact-geometry",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:occupation-smith-hammer",
@@ -186532,6 +187527,7 @@
         "claim:grain-processing-bread-oven-baking",
         "claim:gramota-73-grivna-term",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:leather-broad-context",
         "claim:livestock-rumen-forage-digestion",
@@ -186772,6 +187768,7 @@
       ],
       "dried": [
         "claim:clay-dried-replasticization",
+        "claim:healer-portable-and-household-kit",
         "claim:ordinary-life-shoes-protect-feet",
         "claim:population-fish-dried-form",
         "claim:practical-food-preserve",
@@ -186864,6 +187861,9 @@
       ],
       "drowsiness": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function"
+      ],
+      "drunk": [
+        "claim:healer-observation-and-questioning"
       ],
       "druzhina": [
         "claim:residual-law-daughters-and-status-inheritance"
@@ -187171,6 +188171,7 @@
       ],
       "eaten": [
         "claim:fauna-pike-juvenile-predation",
+        "claim:healer-observation-and-questioning",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked"
       ],
       "eating": [
@@ -187300,6 +188301,7 @@
         "claim:bathing-house-heating-before-washing",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:foundations-ms-25-persuasion-context",
+        "claim:healer-belief-and-bodily-attention",
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "wk:chemistry_process:exothermic-endothermic-reaction",
@@ -187314,6 +188316,9 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:chemistry_process:chemical-exposure-modifiers"
+      ],
+      "efficacy": [
+        "claim:healer-portable-and-household-kit"
       ],
       "efficiency": [
         "claim:foundations-phys-09-mechanical-energy-dissipation"
@@ -187823,6 +188828,7 @@
         "claim:casting-casting-mould",
         "claim:casting-pouring-ladle",
         "claim:foundations-life-44-pathogen-transport",
+        "claim:healer-portable-and-household-kit",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:population-tack-context",
         "claim:public-world-armed-loss-reaches-household",
@@ -187902,6 +188908,7 @@
         "claim:fuel-pit-charcoal-burning-air-control",
         "claim:grain-processing-bread-oven-baking",
         "claim:gramota-73-grivna-term",
+        "claim:healer-belief-and-bodily-attention",
         "claim:leather-broad-context",
         "claim:livestock-rumen-forage-digestion",
         "claim:localized-improvement-context",
@@ -188338,7 +189345,8 @@
         "wk:physics_material_science:dry-friction"
       ],
       "examination": [
-        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests"
+        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+        "claim:healer-observation-and-questioning"
       ],
       "examined": [
         "claim:harvest-scythe-iron-steel-specimen",
@@ -188611,12 +189619,17 @@
         "claim:foundations-ms-18-social-experience",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:pain-nociception-distinct",
         "wk:biology_physiology:fauna-animal-learning",
         "wk:biology_physiology:fauna-eurasian-perch",
         "wk:biology_physiology:pain-nociception-distinct",
         "wk:social_behavior:foundations-ms-18-social-experience"
+      ],
+      "experienced": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation"
       ],
       "experiences": [
         "claim:population-physics-immersion-buoyancy"
@@ -188660,6 +189673,9 @@
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
         "wk:psychology_behavior:foundations-ms-20-attribution-alternatives"
+      ],
+      "explanations": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "explicitly": [
         "claim:early-rus-hunting-ground-terms",
@@ -189013,6 +190029,8 @@
       ],
       "familiar": [
         "claim:foundations-ms-02-attention-novelty",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-portable-and-household-kit",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:residual-nature-stars-horizon-navigation",
         "wk:psychology_behavior:foundations-ms-02-attention-novelty"
@@ -189033,6 +190051,7 @@
         "claim:fauna-mammals-red-fox-nonpack-territoriality",
         "claim:fauna-mammals-roe-deer-seasonal-grouping",
         "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-learning-feedback-can-shape-practice",
         "claim:public-world-armed-loss-reaches-household",
         "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
@@ -189240,6 +190259,9 @@
       ],
       "feeds": [
         "claim:fodder-healthy-horse-forage"
+      ],
+      "feel": [
+        "claim:healer-observation-and-questioning"
       ],
       "feelings": [
         "claim:foundations-ms-21-attitude-definition",
@@ -189899,6 +190921,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:fuel-iron-pan-lifter-use",
         "claim:grain-processing-bread-ground-plant-base",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-standing-can-affect-social-access",
@@ -190080,6 +191103,7 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-livelihood-and-household-support",
         "claim:household-boat-repair-clamp",
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:human-life-shared-role-can-be-negotiated",
@@ -190302,6 +191326,9 @@
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      ],
+      "forehead": [
+        "claim:healer-observation-and-questioning"
       ],
       "foreign": [
         "claim:candidate-gramota724-yugra-tribute-expedition",
@@ -191107,6 +192134,7 @@
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-ms3-07-apology-mediation",
         "claim:foundations-ms3-10-ultimatum-expectations",
+        "claim:healer-belief-and-bodily-attention",
         "claim:human-life-performance-needs-willing-participants-suitable-occasion",
         "claim:human-life-recreation-competes-for-time",
         "wk:environment:hunting-fur-procurement",
@@ -191362,6 +192390,9 @@
       ],
       "germinate": [
         "claim:fauna-mammals-red-squirrel-forgotten-cache-germination"
+      ],
+      "gift": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "gills": [
         "claim:fauna-mussel-fish-host"
@@ -191808,7 +192839,8 @@
       ],
       "guarantees": [
         "claim:care-waterproof-wound-cover",
-        "claim:construction-animal-glue-pegged-planks"
+        "claim:construction-animal-glue-pegged-planks",
+        "claim:healer-experience-and-reputation"
       ],
       "guarantor": [
         "claim:social-guarantor-relates-transaction-obligation",
@@ -192036,6 +193068,8 @@
         "claim:clay-dried-replasticization",
         "claim:clay-fired-no-replasticization",
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-observation-and-questioning",
         "claim:material-water-alum-skin-water",
         "claim:pigment-blue-layer-order",
         "claim:practical-season-work",
@@ -192129,9 +193163,18 @@
       "headwear": [
         "claim:clothing-pointed-cap-xii-depiction"
       ],
+      "healer": [
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
+        "wk:npc_daily_life:reconstructed-healer-practice"
+      ],
       "healing": [
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
+        "claim:healer-experience-and-reputation",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:wound-healing-time-dependent"
       ],
@@ -192276,6 +193319,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:fauna-bird-migration-energy",
         "claim:fauna-chicken-allopreening",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-kin-can-offer-contextual-support",
@@ -192290,10 +193334,12 @@
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery"
       ],
       "helper": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:population-storage-role"
       ],
       "helpers": [
+        "claim:healer-belief-and-bodily-attention",
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
       ],
       "helping": [
@@ -192591,6 +193637,7 @@
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:environment-p1-buried-soil",
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:healer-observation-and-questioning",
         "claim:population-material-clay-steam",
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "wk:biology_physiology:acute-sleep-loss-performance"
@@ -192636,6 +193683,9 @@
       "hollowed": [
         "claim:burial-hollowed-log-container",
         "wk:material_culture:hollowed-log-burial-container"
+      ],
+      "home": [
+        "claim:healer-portable-and-household-kit"
       ],
       "homeostasis": [
         "claim:animal-homeostasis-responds-to-internal-external-change",
@@ -192790,6 +193840,8 @@
         "claim:contextual-evidence-classes",
         "claim:domestic-animal-context",
         "claim:fodder-hay-account",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-livelihood-and-household-support",
         "claim:household-bark-tues",
         "claim:household-belt-fitting",
         "claim:household-ceramic-vessel",
@@ -192914,6 +193966,9 @@
         "wk:environment:hunting-fur-procurement",
         "wk:material_culture:one-piece-ash-hunting-bow",
         "wk:npc_daily_life:resource-occupation-needs-setting"
+      ],
+      "hurts": [
+        "claim:healer-observation-and-questioning"
       ],
       "husband": [
         "claim:residual-law-widow-separate-property",
@@ -193155,6 +194210,8 @@
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
         "claim:foundations-haz-01-exposure-modifiers",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-observation-and-questioning",
         "claim:public-world-community-response-to-impairment-varies",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-illness-can-reallocate-ordinary-work",
@@ -193619,6 +194676,7 @@
         "claim:gramota-73-grivna-term",
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-belief-and-bodily-attention",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-boat-repair-clamp",
@@ -194360,6 +195418,7 @@
         "claim:residual-law-injury-and-treatment-payments"
       ],
       "injuries": [
+        "claim:healer-observation-and-questioning",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:residual-law-visible-injury-and-witness"
       ],
@@ -194507,6 +195566,9 @@
       ],
       "instrument": [
         "wk:material_culture:candidate-novgorod-lyriform-gusli-finds"
+      ],
+      "insufficient": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "insulation": [
         "wk:biology_physiology:endotherm-insulation"
@@ -195121,6 +196183,7 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:heating-reduces-microbial-viability",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-wooden-tableware",
@@ -195626,6 +196689,7 @@
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:foundations-thm-07-thermal-expansion-state-change",
         "claim:grain-processing-bread-liquid",
+        "claim:healer-portable-and-household-kit",
         "claim:maslo-birchbark-718-account",
         "claim:occupation-directed-grain-procurement",
         "claim:occupation-smith-tongs",
@@ -195916,6 +196980,7 @@
         "wk:npc_daily_life:neutral-household-context"
       ],
       "kit": [
+        "claim:healer-portable-and-household-kit",
         "claim:maslo-birchbark-718-account",
         "claim:occupation-smith-hammer",
         "claim:occupation-wood-drawknife"
@@ -195954,6 +197019,7 @@
       ],
       "known": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:public-world-armed-presence-changes-public-risk",
         "claim:public-world-unfamiliar-speech-allows-clarification",
         "claim:wild-mushroom-resemblance-not-edibility",
@@ -196332,6 +197398,7 @@
       "learned": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:fauna-animal-learning",
+        "claim:healer-experience-and-reputation",
         "wk:biology_physiology:fauna-animal-learning"
       ],
       "learner": [
@@ -196341,6 +197408,7 @@
       "learning": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:foundations-ms-36-socialization",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-learning-needs-time-task-material-access",
@@ -196767,6 +197835,7 @@
         "claim:clothing-linen",
         "claim:clothing-linen-plain-or-twill",
         "claim:clothing-linen-shirt",
+        "claim:healer-portable-and-household-kit",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-new-linen-water",
         "claim:ordinary-life-linen-wool-clothing",
@@ -196893,6 +197962,7 @@
         "claim:candidate-v5-gramota600-is-near-1230-private-letter",
         "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:healer-experience-and-reputation",
         "claim:practical-document-genres",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
@@ -196943,6 +198013,9 @@
       ],
       "lived": [
         "claim:rp-mother-household-care-succession"
+      ],
+      "livelihood": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "livestock": [
         "claim:practical-livestock-care",
@@ -197091,6 +198164,7 @@
       "lodging": [
         "claim:candidate-v5-gramota600-is-near-1230-private-letter",
         "claim:candidate-v5-sleep-is-basic-human-need",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:human-life-travellers-may-seek-local-information",
@@ -197384,6 +198458,7 @@
       ],
       "maintain": [
         "claim:fauna-chicken-allopreening",
+        "claim:healer-livelihood-and-household-support",
         "claim:rp-mother-household-care-succession"
       ],
       "maintainable": [
@@ -197948,6 +199023,7 @@
         "claim:foundations-earth-11-consumer-assimilation",
         "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
         "claim:grain-processing-bread-optional-leaven",
+        "claim:healer-belief-and-bodily-attention",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-vegetable-leather-water",
         "claim:neutral-household-context",
@@ -197983,9 +199059,13 @@
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
         "claim:river-landing-category"
       ],
+      "meaningful": [
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
       "means": [
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
@@ -198083,6 +199163,9 @@
         "claim:transport-winter-sledge-1220",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:reconstructed-health-support"
+      ],
+      "medicine": [
+        "claim:healer-portable-and-household-kit"
       ],
       "medieval": [
         "claim:agriculture-fauna-borts-honey",
@@ -198631,6 +199714,7 @@
         "claim:foundations-ms3-07-apology-mediation"
       ],
       "modern": [
+        "claim:healer-observation-and-questioning",
         "claim:localized-improvement-context",
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:residual-law-injury-and-treatment-payments",
@@ -198814,6 +199898,7 @@
         "claim:foundations-ms3-03-goal-frustration",
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:oil-rawhide-moisture-resistance",
@@ -199337,6 +200422,9 @@
         "claim:early-rus-hunting-ground-terms",
         "claim:residual-law-unauthorized-horse-use"
       ],
+      "neighbours": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "neither": [
         "claim:agriculture-fauna-hemp-stem-fibre",
         "claim:animal-care-needs-presence",
@@ -199362,6 +200450,8 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-08-temperature-reaction-rate",
         "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-portable-and-household-kit",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:occupation-wood-drawknife",
@@ -199861,6 +200951,8 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-08-temperature-reaction-rate",
         "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-portable-and-household-kit",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:occupation-wood-drawknife",
@@ -200176,6 +201268,10 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
         "claim:heating-reduces-microbial-viability",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
@@ -201147,6 +202243,7 @@
       "observation": [
         "claim:construction-pine-resin-surfaces",
         "claim:foundations-ms-13-movement-demonstration",
+        "claim:healer-experience-and-reputation",
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:practical-livestock-care",
@@ -201159,6 +202256,9 @@
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:candidate-v6-foodborne-observations",
         "wk:material_culture:textile-colourants"
+      ],
+      "observe": [
+        "claim:healer-observation-and-questioning"
       ],
       "observed": [
         "claim:burial-coffin-lid-transverse-plank"
@@ -201208,6 +202308,8 @@
       ],
       "occupation": [
         "claim:agriculture-rural-role-context",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:occupation-smith-specialisation",
         "claim:ordinary-life-status-does-not-fix-wealth",
@@ -201455,6 +202557,7 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-belief-and-bodily-attention",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-leather-offcut",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
@@ -201962,6 +203065,7 @@
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:ha-firesteel-ignition",
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:livestock-swine-comparative-diet",
@@ -202520,6 +203624,11 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
@@ -203114,6 +204223,7 @@
         "claim:clothing-pointed-cap-xii-depiction",
         "claim:clothing-wool",
         "claim:construction-construction-pottery-products",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-learning-observation-practice-feedback",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
@@ -203133,6 +204243,7 @@
         "wk:chemistry_process:oil-tanning",
         "wk:craft_technology:ordinary-work-lifeways",
         "wk:material_culture:reconstructed-armed-public-world",
+        "wk:npc_daily_life:reconstructed-healer-practice",
         "wk:social_behavior:ordinary-social-lifeways",
         "wk:social_law_economy:reconstructed-public-dispute-and-language"
       ],
@@ -203187,6 +204298,9 @@
       "organizes": [
         "claim:foundations-ms-07-auditory-sequence",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence"
+      ],
+      "organizing": [
+        "claim:healer-care-coordination-and-uncertainty"
       ],
       "organs": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
@@ -203872,6 +204986,7 @@
         "claim:foundations-mat-11-stone-density-compressive-response",
         "claim:foundations-phys-05-flow-regime-speed",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-portable-and-household-kit",
         "claim:household-apple-orchard",
         "claim:livestock-rumen-forage-digestion",
         "claim:material-water-alum-skin-water",
@@ -204082,6 +205197,9 @@
       "passing": [
         "claim:foundations-earth-29-advection-fog"
       ],
+      "past": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "pasture": [
         "claim:fodder-healthy-horse-forage"
       ],
@@ -204126,7 +205244,13 @@
         "wk:physics_material_science:porous-medium-water-flow"
       ],
       "patient": [
-        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"
+        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-portable-and-household-kit"
+      ],
+      "patients": [
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support"
       ],
       "patron": [
         "claim:human-life-capacity-experience-help-vary"
@@ -204166,6 +205290,7 @@
         "claim:social-payment-register-records-entry"
       ],
       "payment": [
+        "claim:healer-livelihood-and-household-support",
         "claim:maslo-birchbark-718-account",
         "claim:ordinary-life-craftsman-income-varies-with-orders",
         "claim:population-processes-malt-context",
@@ -204419,6 +205544,7 @@
         "claim:foundations-ms-38-reference-group",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:public-world-health-disclosure-is-contextual",
@@ -204540,6 +205666,7 @@
         "claim:exercise-heat-dissipation",
         "claim:foundations-earth-09-ecological-competition",
         "claim:gramota-73-grivna-term",
+        "claim:healer-belief-and-bodily-attention",
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:exercise-heat-dissipation",
@@ -204814,6 +205941,7 @@
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
         "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
         "claim:fibre-hackle-removes-shive",
+        "claim:healer-portable-and-household-kit",
         "claim:novgorod-wetland-pollen-context",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "wk:biology:candidate-plant-lookalike-differentiation",
@@ -204855,6 +205983,11 @@
       ],
       "platyrhynchos": [
         "wk:biology_physiology:fauna-mallard"
+      ],
+      "plausible": [
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
+        "claim:healer-portable-and-household-kit"
       ],
       "play": [
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
@@ -205098,6 +206231,7 @@
         "claim:fauna-chicken-allopreening"
       ],
       "possession": [
+        "claim:healer-portable-and-household-kit",
         "claim:occupation-directed-grain-procurement"
       ],
       "possessions": [
@@ -205122,6 +206256,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-life-44-pathogen-transport",
         "claim:foundations-life-45-infection-entry",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:judicial-accusation-record",
         "claim:posadnik-fedor-conflict-1224",
@@ -205216,6 +206351,7 @@
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"
       ],
       "practical": [
+        "claim:healer-observation-and-questioning",
         "claim:practical-document-genres",
         "claim:practical-dwelling-rain-snow",
         "claim:practical-season-work",
@@ -205263,6 +206399,7 @@
         "wk:biology_physiology:horse-forage-feeding",
         "wk:craft_technology:tree-bort-practice",
         "wk:environment:regional-agriculture-practice",
+        "wk:npc_daily_life:reconstructed-healer-practice",
         "wk:npc_daily_life:resource-occupation-needs-setting",
         "wk:psychology_behavior:foundations-ms-12-practice-correction"
       ],
@@ -205311,6 +206448,7 @@
       "prayer": [
         "claim:burial-hollowed-log-container",
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+        "claim:healer-belief-and-bodily-attention",
         "claim:social-christian-exegetical-text-relates-urban-context",
         "claim:social-written-prayer-relates-invocation",
         "wk:social_law_economy:candidate-v5-fever-charm-text",
@@ -205937,6 +207075,7 @@
         "claim:fauna-perch-experience",
         "claim:foundations-ms3-08-mutual-cooperation",
         "claim:foundations-ms3-09-mutual-defection",
+        "claim:healer-experience-and-reputation",
         "claim:population-material-leather-dry",
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
         "claim:residual-law-merchant-entrustment-proof-exception",
@@ -206246,6 +207385,7 @@
       ],
       "promise": [
         "claim:hard-stone-abrasive-shaping",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:social-podvoisky-letter-reports-pochestie-assurance"
       ],
       "promised": [
@@ -207280,6 +208420,8 @@
         "claim:fuel-pit-charcoal-burning-air-control",
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:fuel-pit-charcoal-burning-wood-input",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-experience-and-reputation",
         "claim:novgorod-wetland-pollen-context",
         "claim:population-household-storage",
         "claim:population-processes-weaving-device",
@@ -207291,7 +208433,8 @@
       ],
       "reconstructs": [
         "claim:construction-aspen-cladding-joint",
-        "claim:fuel-pit-charcoal-burning-form"
+        "claim:fuel-pit-charcoal-burning-form",
+        "claim:healer-observation-and-questioning"
       ],
       "recontamination": [
         "claim:food-preservation-qualitative",
@@ -207371,6 +208514,7 @@
         "claim:population-physics-elastic-recovery"
       ],
       "recovery": [
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
@@ -207802,6 +208946,10 @@
         "wk:environment:mineral-hardness-scratch-comparison",
         "wk:physics_material_science:dry-friction"
       ],
+      "relatives": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning"
+      ],
       "relaxing": [
         "claim:foundations-life-18-muscle-movement",
         "wk:biology_physiology:foundation-muscle-movement"
@@ -207864,6 +209012,7 @@
         "claim:foundations-earth-11-consumer-assimilation",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:livestock-rumen-fermentation",
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
         "claim:ordinary-life-master-has-work-responsibility",
@@ -207913,6 +209062,9 @@
       "remarries": [
         "claim:rp-minor-children-conditional-care"
       ],
+      "remedy": [
+        "claim:healer-belief-and-bodily-attention"
+      ],
       "remembered": [
         "claim:human-life-recreation-can-use-voice-memory-body-or-objects"
       ],
@@ -207947,6 +209099,9 @@
       ],
       "renewed": [
         "claim:practical-leather-stitch"
+      ],
+      "renown": [
+        "claim:healer-experience-and-reputation"
       ],
       "repair": [
         "claim:household-boat-repair-clamp",
@@ -208026,6 +209181,7 @@
         "claim:burial-hollowed-log-container",
         "claim:burial-plank-coffin-nails",
         "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:healer-care-coordination-and-uncertainty",
         "wk:material_culture:hollowed-log-burial-container",
         "wk:material_culture:plank-burial-container",
         "wk:social_law_economy:candidate-v5-khotynians-document-context"
@@ -208104,6 +209260,7 @@
         "wk:biology_physiology:research-plant-herbivory-effects"
       ],
       "reputation": [
+        "claim:healer-experience-and-reputation",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:public-world-publicity-raises-reputation-risk",
@@ -208316,6 +209473,7 @@
       "resources": [
         "claim:fauna-brown-bear-winter-denning",
         "claim:foundations-earth-08-ecological-competition",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
         "claim:public-world-support-needs-available-person-and-resources",
@@ -208323,6 +209481,7 @@
         "wk:npc_daily_life:resource-occupation-needs-setting"
       ],
       "respect": [
+        "claim:healer-livelihood-and-household-support",
         "claim:public-world-community-response-to-impairment-varies"
       ],
       "respiration": [
@@ -208403,6 +209562,7 @@
       ],
       "resting": [
         "claim:fauna-earthworm-weather",
+        "claim:healer-care-coordination-and-uncertainty",
         "wk:architecture_settlement:rjaz-supported-bridge"
       ],
       "restore": [
@@ -208531,7 +209691,8 @@
       ],
       "returns": [
         "claim:drying-reduces-microbial-growth-conditions",
-        "claim:fauna-doe-kid-care"
+        "claim:fauna-doe-kid-care",
+        "claim:healer-livelihood-and-household-support"
       ],
       "reuse": [
         "claim:human-life-relationship-change-can-alter-household-arrangement"
@@ -209406,6 +210567,7 @@
         "claim:fuel-iron-candlestick-form",
         "claim:fuel-iron-splinter-holder-form",
         "claim:grain-processing-bread-oven-baking",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-bark-tues",
@@ -209753,6 +210915,8 @@
       "seek": [
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-livelihood-and-household-support",
         "claim:public-world-dispute-can-use-questions-and-kin",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-local-authority-is-one-escalation-option",
@@ -209922,6 +211086,7 @@
         "wk:biology_physiology:foundation-cellular-atp"
       ],
       "service": [
+        "claim:healer-livelihood-and-household-support",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:residual-law-dependency-and-agreement",
         "claim:social-kin-request-reports-contingent-return",
@@ -210528,6 +211693,8 @@
         "claim:foundations-ms-12-practice-correction",
         "claim:fuel-pit-charcoal-burning-air-control",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-learning-feedback-can-shape-practice",
@@ -210679,6 +211846,7 @@
         "claim:fauna-mammals-red-fox-prey-population-effect",
         "claim:fauna-mammals-wolf-carnivorous-diet",
         "claim:fauna-mussel-filtration",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
         "claim:population-physics-elastic-recovery",
@@ -211187,6 +212355,7 @@
         "claim:civic-public-market",
         "claim:foundations-earth-03-soil-phases",
         "claim:foundations-earth-06-soil-aggregation",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-visitors-add-resource-demands",
         "claim:ordinary-life-smith-fire-needs-managed-space",
@@ -211346,6 +212515,7 @@
         "claim:clothing-linen-shirt",
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:healer-portable-and-household-kit",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:residual-law-creditor-priority",
         "claim:residual-law-unauthorized-horse-use",
@@ -211817,6 +212987,7 @@
       "stay": [
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
         "claim:fauna-sheep-flocking",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-stay-can-enable-consented-exchange",
         "wk:biology_physiology:fauna-domestic-sheep"
       ],
@@ -212394,6 +213565,7 @@
         "claim:candidate-physiology-v3-protective-withdrawal",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:care-direct-pressure-bleeding",
+        "claim:healer-experience-and-reputation",
         "claim:occupation-smith-heat-treatment",
         "claim:occupation-wood-plane",
         "claim:stone-whetstone-edge-maintenance",
@@ -212422,6 +213594,10 @@
       "sudden": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:practical-boat-shore-transfer"
+      ],
+      "sufferer": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning"
       ],
       "sufficiency": [
         "claim:rp-market-purchase-relates-proof-participant"
@@ -213780,6 +214956,10 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-apple-orchard",
         "claim:household-belt-fitting",
@@ -214149,6 +215329,7 @@
         "claim:construction-rjaz-riverbed-foundation",
         "claim:fauna-dragonfly-lifecycle",
         "claim:fuel-pit-charcoal-burning-air-sequence",
+        "claim:healer-observation-and-questioning",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "wk:biology_physiology:fauna-dragonfly"
       ],
@@ -214502,6 +215683,8 @@
         "claim:harvest-sheep-shearing-scissors",
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:human-life-learning-observation-practice-feedback",
@@ -214783,6 +215966,7 @@
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
         "claim:foundations-physical-b2-lgt-03-glass-absorption-transmission",
+        "claim:healer-experience-and-reputation",
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:most-fungi-hyphae-substrate-nutrition",
@@ -214834,6 +216018,9 @@
       ],
       "tied": [
         "claim:settlement-ice-grip-footwear"
+      ],
+      "ties": [
+        "claim:healer-livelihood-and-household-support"
       ],
       "tight": [
         "claim:pine-pitch-woven-basket-coating"
@@ -215089,6 +216276,7 @@
         "claim:grain-processing-bread-open-fire-baking",
         "claim:grain-processing-bread-optional-leaven",
         "claim:gramota-73-debt-record",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:household-rye-commodity",
         "claim:household-spur",
         "claim:human-life-category-does-not-determine-means-ties-skill",
@@ -215615,6 +216803,7 @@
       "transmission": [
         "claim:foundations-life-25-reproduction",
         "claim:foundations-life-43-infection-chain",
+        "claim:healer-experience-and-reputation",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "wk:biology_physiology:foundation-infection-chain",
         "wk:biology_physiology:foundation-reproduction",
@@ -215710,6 +216899,7 @@
       ],
       "travelling": [
         "claim:fauna-mammals-wild-boar-group-offspring-protection",
+        "claim:healer-livelihood-and-household-support",
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
       "treadle": [
@@ -215724,6 +216914,8 @@
         "claim:coagulation-reduces-blood-loss",
         "claim:construction-pine-resin-bast",
         "claim:construction-pine-resin-surfaces",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-experience-and-reputation",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:ordinary-life-worker-means-and-duty-vary",
@@ -215787,6 +216979,9 @@
       "trichomes": [
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "wk:biology_physiology:research-nettle-food-contact-properties"
+      ],
+      "tried": [
+        "claim:healer-observation-and-questioning"
       ],
       "trigger": [
         "wk:environment:slope-water-triggers"
@@ -216015,6 +217210,7 @@
       ],
       "uncertainty": [
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
+        "claim:healer-care-coordination-and-uncertainty",
         "wk:psychology_behavior:uncertainty-cognitive-control"
       ],
       "unchanged": [
@@ -216093,6 +217289,9 @@
       ],
       "underlying": [
         "claim:social-settlement-demand-reports-court-choice"
+      ],
+      "understand": [
+        "claim:healer-belief-and-bodily-attention"
       ],
       "understory": [
         "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance"
@@ -216463,6 +217662,7 @@
         "claim:fauna-tick-senses",
         "claim:foundations-life-40-photosynthesis",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-tar-pot",
         "claim:maslo-birchbark-718-account",
@@ -216762,6 +217962,7 @@
         "claim:construction-bast-vessel-fastening",
         "claim:construction-wooden-peg-vessel-joint",
         "claim:foundations-phys-05-flow-regime-speed",
+        "claim:healer-portable-and-household-kit",
         "claim:household-boat-repair-clamp",
         "claim:pottery-handmade-local-clay",
         "claim:practical-food-cooking",
@@ -216778,6 +217979,7 @@
       ],
       "vessels": [
         "claim:coagulation-reduces-blood-loss",
+        "claim:healer-portable-and-household-kit",
         "claim:household-ceramic-vessel",
         "claim:household-utensil-wood",
         "claim:population-household-storage",
@@ -216866,6 +218068,7 @@
       ],
       "visible": [
         "claim:burial-coffin-lid-transverse-plank",
+        "claim:healer-observation-and-questioning",
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:residual-law-visible-injury-and-witness",
         "claim:residual-nature-moon-phase-time-of-visibility",
@@ -217079,6 +218282,7 @@
         "claim:clay-fired-no-replasticization"
       ],
       "warmth": [
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
         "claim:practical-dwelling-smoke-draft",
@@ -217116,6 +218320,7 @@
         "claim:fuel-charcoal-pit-sealing",
         "claim:fuel-pit-charcoal-burning-charcoal-output",
         "claim:grain-processing-bread-optional-leaven",
+        "claim:healer-observation-and-questioning",
         "claim:household-apple-orchard",
         "claim:household-ploughshare-tillage",
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
@@ -217223,6 +218428,8 @@
         "claim:foundations-physical-b2-chm-06-temperature-solubility-conditional",
         "claim:foundations-physical-material3-03-antler-water-workability",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-portable-and-household-kit",
         "claim:human-life-travellers-may-seek-local-information",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lime-transformations",
@@ -217516,6 +218723,9 @@
         "claim:population-net-weights",
         "claim:population-stone-weight"
       ],
+      "welcome": [
+        "claim:healer-livelihood-and-household-support"
+      ],
       "welded": [
         "claim:casting-firesteel-steel"
       ],
@@ -217624,6 +218834,7 @@
         "wk:physics_material_science:liquid-surface-wetting"
       ],
       "what": [
+        "claim:healer-observation-and-questioning",
         "claim:public-world-witness-account-has-bounded-scope",
         "claim:research-memory-source-misattribution",
         "claim:residual-law-interest-agreement-and-witnesses"
@@ -217653,6 +218864,8 @@
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:foundations-physical-b2-snd-01-sound-source-vibration",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-observation-and-questioning",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-recreation-competes-for-time",
@@ -217735,6 +218948,7 @@
         "claim:fauna-mammals-wild-boar-group-offspring-protection",
         "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
         "claim:fuel-charcoal-pit-sealing",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-oral-retelling-varies-with-context",
         "claim:lime-transformations",
         "claim:metalworking-broad-context",
@@ -218025,6 +219239,9 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
         "claim:harvest-scythe-iron-steel-specimen",
+        "claim:healer-belief-and-bodily-attention",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:healer-portable-and-household-kit",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:household-ploughshare-tillage",
         "claim:human-life-household-formation-needs-residence-provisioning",
@@ -218172,6 +219389,7 @@
         "claim:foundations-ms-29-helping-no-reward",
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:healer-care-coordination-and-uncertainty",
         "claim:human-life-oral-retelling-varies-with-context",
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
@@ -218413,6 +219631,8 @@
         "claim:force-contact-geometry",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
         "claim:harvest-sheep-shearing-scissors",
+        "claim:healer-experience-and-reputation",
+        "claim:healer-livelihood-and-household-support",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-household-tasks-can-offer-learning",

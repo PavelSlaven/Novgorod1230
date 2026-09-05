@@ -298,6 +298,7 @@
     }
   ],
   "source_inventory": [
+    {"id":"reconstructed-healer-practice-v1","source_path":"reconstructed-healer-practice-v1.json","domains":["npc_daily_life"],"location_applicability":"Reviewed editorial reconstruction for Novgorod Land 1200–1300; no healer or remedy is materialized.","applicability":{"resource":"care time and available provisions","material":"plausible portable or household kit","process":"observation learning and care coordination","npc":"possible healer livelihood and reputation"},"coverage":"Six independently reviewed editorial premises; no treatment efficacy or exact medical institution."},
     {"id":"reconstructed-public-world-v1","source_path":"reconstructed-public-world-v1.json","domains":["material_culture","social_law_economy","biology_physiology"],"location_applicability":"Contextual public life and universal conditional care; no current authority or scene state.","applicability":{"resource":"conditional","material":"arms where present","process":"public relations and assistance","npc":"non-deterministic expectations"},"coverage":"30 independently approved editorial premises"},
     {
       "id": "built-water-storage-and-urban-foundations",
@@ -1505,6 +1506,7 @@
     {"id":"reconstructed-practical-world-v1","source_path":"reconstructed-practical-world-v1.json","domains":["architecture_settlement","craft_technology","material_culture","npc_daily_life"],"location_applicability":"Ordinary practical reconstruction; no object presence, quantity or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative upkeep/work","npc":"non-deterministic routine context"},"coverage":"30 reviewed editorial practical-world premises."}
   ],
   "families": [
+    {"id":"reconstructed-healer-practice","domain":"npc_daily_life","subdomain":"healer_work_learning_kit_and_livelihood","family":"Ordinary healer observation, kit, learning, livelihood, belief and care coordination","location_applicability":"Households and travel in Novgorod Land 1200–1300; possible role context only","applicability":{"resource":"care time and available provisions","material":"plausible portable or household kit","process":"observation learning and care coordination","npc":"possible healer livelihood and reputation"},"coverage":"partial: useful ordinary practice reconstruction; no diagnosis, remedy efficacy, exact medical institution or patient outcome.","claim_refs":["claim:healer-observation-and-questioning","claim:healer-portable-and-household-kit","claim:healer-experience-and-reputation","claim:healer-livelihood-and-household-support","claim:healer-belief-and-bodily-attention","claim:healer-care-coordination-and-uncertainty"]},
     {"id":"reconstructed-arms-and-equipment-roles","domain":"material_culture","subdomain":"armed_equipment","family":"Conditional weapon, shield, armour and mounted-equipment roles","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"conditional arms and equipment","process":"armed_equipment","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-arms-follow-means-role","claim:public-world-weapons-shields-armour-have-distinct-tradeoffs","claim:public-world-foot-and-mounted-service-have-different-needs"]},
     {"id":"reconstructed-armed-coordination-and-household-cost","domain":"social_law_economy","subdomain":"armed_groups_and_households","family":"Coordination, communication, provisioning and household costs of armed activity","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"armed_groups_and_households","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-senior-can-coordinate-messenger-can-carry-word","claim:public-world-armed-movement-consumes-food-fuel-attention","claim:public-world-armed-loss-reaches-household","claim:public-world-armed-presence-changes-public-risk"]},
     {"id":"reconstructed-dispute-escalation-and-status","domain":"social_law_economy","subdomain":"ordinary_disputes","family":"Competing accounts, negotiation, witnesses and contextual public escalation","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"ordinary_disputes","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-dispute-starts-with-competing-accounts","claim:public-world-dispute-can-use-questions-and-kin","claim:public-world-negotiation-can-precede-formal-escalation","claim:public-world-local-authority-is-one-escalation-option","claim:public-world-publicity-raises-reputation-risk","claim:public-world-status-and-ties-affect-access-not-guilt","claim:public-world-witness-account-has-bounded-scope"]},
@@ -5506,7 +5508,8 @@
         "social-belonging-and-prosocial-relations",
         "social-law-practice",
         "reconstructed-household-formation-and-kin",
-        "reconstructed-health-assistance-and-adaptation"
+      "reconstructed-health-assistance-and-adaptation",
+      "reconstructed-healer-practice"
       ],
       "supporting_claim_refs": [
         "claim:social-kin-letter-reports-protection-request",
@@ -6829,7 +6832,7 @@
         "npc-craft-occupations",
         "npc-household-routines",
         "npc-political-roles",
-        "npc-river-occupations", "reconstructed-learning-and-apprenticeship", "reconstructed-standing-lodging-and-travel", "reconstructed-oral-recreation", "reconstructed-food-provisioning-and-animal-care"
+        "npc-river-occupations", "reconstructed-learning-and-apprenticeship", "reconstructed-standing-lodging-and-travel", "reconstructed-oral-recreation", "reconstructed-food-provisioning-and-animal-care", "reconstructed-healer-practice"
       ]
     },
     {
@@ -7098,15 +7101,15 @@
     "Named plant food/contact properties and diagnostic bounds are grounded; additional taxon/part and historical-availability claims remain separate factual needs, not inferred from resemblance.",
     "Nettle fibre relation is grounded; other wild-fibre taxa still require taxon-specific regional/historical evidence.",
     "Wet-use net serviceability is grounded; a specific historical hull-care routine remains a separate historical claim if gameplay asserts one.",
-    "Named letters and bounded instructional-text components are grounded, but spoken language, systematic naming/address, literacy distribution, school and apprenticeship remain partial or missing.",
-    "Military equipment, organization, logistics, siege and aftermath remain major source-backed gaps; combat mechanics are intentionally outside WK.",
-    "Marriage, kinship, gender, age, status and stratification remain major historical-context gaps; current relationships and statuses are state-owned.",
-    "Human reproduction, lifecycle, medicine, injury classes, disability and care remain partial; one parasite-host premise does not close health coverage.",
+    "Dated letters and instructional texts now combine with reviewed reconstructions of ordinary register, naming/address and skill transmission; they do not establish universal literacy or exact dialect speech.",
+    "Bounded military finds and records combine with reviewed equipment-role, coordination, provisioning and aftermath reconstruction; exact combat mechanics are outside WK and exhaustive warfare coverage is not certified.",
+    "Documentary family/status contexts combine with reviewed kinship, household formation, work standing and public-behaviour reconstruction; current relationships and statuses remain scene-owned.",
+    "Physiology, lifecycle, injury and illness-support premises now combine with reviewed ordinary healer work and kit; they do not supply diagnosis, treatment efficacy or exact body mechanics.",
     "Government and external relations have dated document comparators but no complete 1230 institution/competence map; crime and sanctions remain partial.",
-    "Recreation, music, games, oral culture and hospitality remain explicit missing families; cryosphere, natural illumination/navigation and the wider food system remain partial."
+    "Recreation, music, games, oral culture and hospitality have documented objects plus reviewed practice reconstruction, not absent domains. Winter, sky/navigation and food-system support is expanded; residual significance is assessed through concrete offline contexts, not claim counts."
   ],
   "gameplay_need_cartography": {
-    "status": "reviewed_static_with_bounded_limits",
+    "status": "expanded_static_support_offline_context_acceptance_pending",
     "purpose": "Open-RPG need-first map: approved families classify current support; missing_families records independently identified unmet or partial needs, including potential consumers beyond current scenes. Fragment reconciliation below is inventory only, not the origin or boundary of needs. No action, item, recipe or room-content whitelist.",
     "blind_spot_method": "External cross-domain classifications may challenge this map and reveal omitted gameplay needs, but never serve as evidence for a Novgorod fact. Each resulting production claim still requires its own source and independent verification.",
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
@@ -7189,10 +7192,10 @@
       "dispositions": {
         "approved_factual_premise": "May constrain qualitative semantic reasoning within its stated limits.",
         "code_owned": "Current scene state, numeric mechanics, timers, body state, inventory, access and commit remain their existing owners.",
-        "bounded_remaining_need": "Taxon-specific historical applicability and any new asserted historical practice require separate evidence."
+        "bounded_remaining_need": "New factual assertions require suitable evidence; plausible ordinary reconstruction may use the existing editorial path under contract §0.2 with independent review."
       },
       "interior_closure": "The damp-item storage probe is compositionally covered; independently approved indoor-air-moisture premises now add stove vapour and conditional air-movement/condensation mitigation. No room contents or actual conditions follow.",
-      "not_a_completeness_verdict": "Independent completeness review and real gameplay/retrieval campaigns remain required before any saturation claim."
+      "not_a_completeness_verdict": "Static acceptance requires independent offline context samples under §0.3; gameplay saturation remains a distinct, separately authorized future phase."
     }
   }
 }

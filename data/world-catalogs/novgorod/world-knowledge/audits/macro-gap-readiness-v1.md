@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,222-claim corpus. The later direct-attestation-only residual
+current 1,228-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -32,13 +32,18 @@ summarized in [pr92-static-phase.md](pr92-static-phase.md). The independent
 claim reviews are distinct from completeness review: approving a premise
 does not approve the completeness of its family.
 
-Two independent generators supplied batch 01's 100 offline situations.
-The initial reconstruction report is rejected for templated answers;
-four separate 25-case reads are in progress. Its four special-role findings
-are unconfirmed leads, not proof of missing exact historical rules.
+Four separate 25-case reads replaced batch 01's rejected template report.
+They confirmed a healer-practice gap, now covered by six independently
+approved editorial premises. Batch 02's 100 reads found no substantial gap.
+Both batches remain diagnostic, not acceptance: the user's subsequent
+discipline-diversity requirement requires stratified need-based sampling,
+not technical props inside predominantly social situations.
 
-Contract §0.3 requires three consecutive batches of at least 100 unseen
-cases without a substantial new gap. **No batch is yet counted clean.**
+Contract §0.3 requires three consecutive diverse batches of at least 100
+unseen cases without a substantial new gap. Starting with batch 03, each
+hundred covers 20 primary need areas (80 practical/natural/physical cases,
+20 social/institutional), checked for substantive needs rather than tags.
+**No batch is yet counted clean.**
 Concrete missing context must be filled and independently reviewed; rare
 details, exact values and equally plausible ordinary alternatives do not
 create blockers. No live gameplay or gameplay-owner repair is authorized.

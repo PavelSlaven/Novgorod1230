@@ -128,6 +128,8 @@
     "reconstructed-practical-world-v1.json",
     "verification-reconstructed-practical-world-v1.json",
     "reconstructed-public-world-v1.json",
-    "verification-reconstructed-public-world-v1.json"
+    "verification-reconstructed-public-world-v1.json",
+    "reconstructed-healer-practice-v1.json",
+    "verification-reconstructed-healer-practice-v1.json"
   ]
 }

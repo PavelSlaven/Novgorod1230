@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,319 approved claims, 872 concepts,
-465 sources and 939 evidence records**. This includes 121 independently
+The integrated corpus contains **1,322 approved claims, 873 concepts,
+469 sources and 943 evidence records**. This includes 121 independently
 reviewed editorial premises for ordinary, human, practical and public life.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -27,25 +27,25 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,382 x 1,024 float32 entries (17,948,672 bytes)** and
+package contains **4,390 x 1,024 float32 entries (17,981,440 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
 ## Checks actually completed on this integrated corpus
 
-- Compiler: all 1,319 claims and independent approval bindings validate.
+- Compiler: all 1,322 claims and independent approval bindings validate.
 - Category-cartography validation passes on all included fragments and
   claims, with existing profiles and potential-consumer boundaries.
 - Focused authoring, runtime, population, foundation and cartography tests:
   **85/85 pass**, including independent bindings and runtime/vector alignment.
-- **268-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995647**,
-  Recall@20 **0.997512**, gate PASS.
+- **270-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995679**,
+  Recall@20 **0.997531**, gate PASS.
 - Unchanged **133-case** baseline on the expanded corpus: hybrid
   Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   Existing gates were not weakened. Documentation, knowledge-source and
   architecture checks also pass. All 85 focused tests were run after the
-  aligned 4,382-entry index was written. No gate was changed.
+  aligned 4,390-entry index was written. No gate was changed.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -58,8 +58,8 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`51fb61efc5c99540b50c2099cc21ca08e7630e8f` (run 33955303060).
-Later checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
+`6179c39e93b9af4bd0129a31997216476af8e0ae` (run 33957493074).
+Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
 retrieval-policy manifest pin after the mixed-sampling contract edit.
@@ -70,8 +70,11 @@ ranking change or gameplay-owner repair. Independent Contract Auditor
 The existing policy pin was synchronized with the actual manifest; its
 fail-closed check was not weakened. Local bridge tests pass 11/11 and
 knowledge-source tests pass 40/40; documentation and diff checks pass.
-The full local rerun and new exact-HEAD CI remain pending. These focused
-results do not certify a later candidate or merge readiness.
+The full local npm test rerun passed on the 1,319-claim state, with seven
+reported skips; full CI passed on exact checkpoint 6179c39e. The subsequent
+1,322-claim integration passed the 85 focused tests, 11 bridge tests and
+both retrieval benchmarks. Its exact-HEAD CI remains pending; an earlier
+green checkpoint does not certify a later candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
 
@@ -229,11 +232,25 @@ These are case labels, not automatic discoveries of missing cartography
 families. Root triage corrected unsafe priorities, overclaimed inscription
 identity and an assumed mill-gate direction in the review answers without
 changing inputs, classifications, corpus or game owners.
-One substantive controlled-case need remains: the qualitative effect and
+One substantive controlled-case need was found: the qualitative effect and
 limits of smoke during honeybee colony handling (`b09core-054`). Narrow
-source-backed candidates are under separate verification, not yet included
-in production. Batch 09 is therefore diagnostic, not a clean acceptance
-hundred; the mixed streak remains 0/3.
+source-backed candidates in commit 6636736d received separate source/domain
+approval from `/root/mixed_sampling_contract_audit`. All three are now
+integrated with existing per-claim bindings, the invertebrate family and
+aligned vectors; two new bilingual retrieval probes pass. Separate
+Arizona and Tufts evidence records support the two parts of the handling
+limit. Batch 09 remains diagnostic, not unseen acceptance after its fix.
+
+Batch 10 contains a newly chosen uneven 75-case core (62 practical/natural/
+physical, 13 social/institutional) and 25 independent free cases. Its four
+reviews cover all 100 frozen inputs against 1,322 claims. After full-bundle
+triage, 96 are covered and four substantive needs remain: rendering animal
+fat, lightning-storm precautions, wet parchment/ink preservation, and
+thermal-burn care. Of 28 raw leads, 24 required existing general premises
+or permitted practical reconstruction, not a new named-case rule, exact
+local norm or guaranteed outcome. Initial findings and triage notes remain
+in the review files. Targeted source work on the four remaining needs is
+underway; batch 10 is diagnostic and the mixed streak remains 0/3.
 
 Contract §0.3 requires three consecutive diverse independent mixed batches
 of at least 100 cases with

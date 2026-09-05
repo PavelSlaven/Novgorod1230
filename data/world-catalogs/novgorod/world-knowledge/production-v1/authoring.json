@@ -1,6 +1,8 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "static-bee-smoke-b09.json",
+    "verification-static-bee-smoke-b09.json",
     "static-animal-context-b06.json",
     "verification-static-animal-context-b06.json",
     "static-human-context-b06.json",

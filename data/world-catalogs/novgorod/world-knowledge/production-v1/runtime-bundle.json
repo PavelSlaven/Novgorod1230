@@ -6968,6 +6968,72 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-bee-smoke-b09-arizona-working-hive",
+      "title": "Working the Hive",
+      "authors": [
+        "University of Arizona Cooperative Extension"
+      ],
+      "publication": "University of Arizona Cooperative Extension, AZ2013-2022",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.arizona.edu/sites/default/files/2024-08/az2013-2022.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-bee-smoke-b09-tufts-hand-temperature",
+      "title": "A Way to Bee",
+      "authors": [
+        "Cummings School of Veterinary Medicine"
+      ],
+      "publication": "Tufts University",
+      "source_kind": "official_documentation",
+      "citation": "https://vet.tufts.edu/news-events/news/way-bee",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-bee-smoke-b09-uiuc-alarm-perception",
+      "title": "Alarm pheromone perception in honey bees is decreased by smoke (Hymenoptera: Apidae)",
+      "authors": [
+        "P. Kirk Visscher",
+        "Richard S. Vetter",
+        "Gene E. Robinson"
+      ],
+      "publication": "Journal of Insect Behavior 8(1), pp. 11–18; University of Illinois research record",
+      "source_kind": "scholarship",
+      "citation": "https://experts.illinois.edu/en/publications/alarm-pheromone-perception-in-honey-bees-is-decreased-by-smoke-hy/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-bee-smoke-b09-usu-beekeeping",
+      "title": "Thriving Hives: The Apiary — Beekeeping Essentials",
+      "authors": [
+        "Utah State University Extension"
+      ],
+      "publication": "Utah State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.usu.edu/beekeeping/research/thriving-hives-the-apiary-beekeeping-essentials",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:static-equine-illinois-colic",
       "title": "Spring Pasture-Induced Colic in Horses",
       "authors": [
@@ -16836,6 +16902,46 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-bee-smoke-b09-excess-smoke-irritation",
+      "source_ref": "source:static-bee-smoke-b09-arizona-working-hive",
+      "anchor": {
+        "section": "Smoking"
+      },
+      "note": "University of Arizona Cooperative Extension warns that over-smoking can irritate bees. This is a qualitative handling limit, not a dose, injury diagnosis, or guaranteed outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-bee-smoke-b09-hot-smoke-limit",
+      "source_ref": "source:static-bee-smoke-b09-tufts-hand-temperature",
+      "anchor": {
+        "section": "paragraph beginning ‘The smoke’s temperature is tested with a bare hand’"
+      },
+      "note": "Tufts University advises that smoke too hot for a bare hand is too hot for bees. This is a qualitative heat limit, not a temperature threshold, burn diagnosis, or guaranteed outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement",
+      "source_ref": "source:static-bee-smoke-b09-usu-beekeeping",
+      "anchor": {
+        "section": "Smoking the Hive"
+      },
+      "note": "USU Extension states that smoke can prompt bees to gorge on honey and makes them less likely to sting, while a few may remain active. It establishes neither a particular colony response nor safe access to a concrete hive.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-bee-smoke-b09-smoke-reduces-alarm-perception",
+      "source_ref": "source:static-bee-smoke-b09-uiuc-alarm-perception",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Visscher, Vetter and Robinson report that smoke reduced antennal electroantennograph response to alarm pheromones; the response gradually returned to control levels within 10–20 minutes. The authors identify reduced peripheral sensitivity as one component of reduced nest defense, not a guarantee that a colony becomes calm.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:static-equine-abrupt-diet-colic-risk",
       "source_ref": "source:static-equine-penn-colic",
       "anchor": {
@@ -25549,6 +25655,47 @@
             "heat",
             "fatigue",
             "horse fear"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "domain": "biology_physiology",
+      "broader_refs": [
+        "wk:biology_physiology:fauna-honeybee"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+          "locale": "ru",
+          "labels": [
+            "Дым и защитная реакция пчелиной семьи"
+          ],
+          "short_definition": "Качественные эффекты и пределы дыма при работе с семьёй медоносных пчёл.",
+          "search_aliases": [
+            "дым пчёлы",
+            "окуривание улья",
+            "тревожный феромон пчёл"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+          "locale": "en",
+          "labels": [
+            "Smoke and honey-bee colony defense"
+          ],
+          "short_definition": "Qualitative effects and limits of smoke while handling a honey-bee colony.",
+          "search_aliases": [
+            "bee smoke",
+            "hive smoker",
+            "alarm pheromone"
           ]
         }
       }
@@ -111776,6 +111923,172 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "excessive_smoke_can_irritate_honeybees_and_smoke_that_is_too_hot_for_bare_skin_is_too_hot_for_bees"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-bee-smoke-b09-excess-smoke-irritation",
+        "evidence:static-bee-smoke-b09-hot-smoke-limit"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+          "locale": "ru",
+          "runtime_text": "Избыточный дым может раздражать пчёл; дым, слишком горячий для голой кожи, слишком горяч и для пчёл. Это не устанавливает температуру, дозу, ожог, травму или исход конкретной семьи.",
+          "search_aliases": [
+            "слишком много дыма пчёлы",
+            "горячий дым",
+            "раздражение пчёл"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+          "locale": "en",
+          "runtime_text": "Excessive smoke can irritate bees; smoke too hot for bare skin is too hot for bees. This establishes no temperature, dose, burn, injury, or outcome for a particular colony.",
+          "search_aliases": [
+            "too much smoke bees",
+            "hot smoke",
+            "bee irritation"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:static-bee-smoke-b09-excess-and-heat-limits"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "smoke_can_prompt_honeybees_to_engorge_on_honey_and_reduce_stinging_likelihood_without_guaranteeing_that_all_bees_remain_calm"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+          "locale": "ru",
+          "runtime_text": "Дым может побудить пчёл набирать мёд и снизить вероятность ужаления, но не гарантирует, что все пчёлы останутся спокойны. Это не устанавливает запас, поведение каждой пчелы, безопасность или исход конкретной семьи.",
+          "search_aliases": [
+            "пчёлы набирают мёд от дыма",
+            "пчёлы всё ещё активны",
+            "дым и ужаления"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+          "locale": "en",
+          "runtime_text": "Smoke can prompt honey bees to engorge on honey and reduce stinging likelihood, but does not guarantee that all bees remain calm. This establishes no stores, individual behavior, safety, or outcome for a particular colony.",
+          "search_aliases": [
+            "bees gorge on honey",
+            "bees remain active",
+            "smoke and stinging"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:static-bee-smoke-b09-honey-engorgement-stinging-limit"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "smoke_can_temporarily_reduce_honeybee_alarm_pheromone_perception_and_can_reduce_colony_defensive_response"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-bee-smoke-b09-smoke-reduces-alarm-perception"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+          "locale": "ru",
+          "runtime_text": "Дым может временно ослабить восприятие медоносными пчёлами тревожного феромона и уменьшить защитную реакцию семьи. Это не гарантирует спокойствие, не устанавливает дозу, длительность, доступ к улью или исход конкретной сцены.",
+          "search_aliases": [
+            "дым маскирует тревожный феромон",
+            "пчёлы защищаются",
+            "окурить улей"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+          "locale": "en",
+          "runtime_text": "Smoke can temporarily reduce honey-bee alarm-pheromone perception and can reduce colony defense. This guarantees no calm, dose, duration, hive access, or concrete-scene outcome.",
+          "search_aliases": [
+            "smoke masks alarm pheromone",
+            "bee defense",
+            "smoke hive"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:static-bee-smoke-b09-alarm-perception-defense"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:static-belt-friction-can-resist-relative-slip",
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:static-belt-friction",
@@ -119978,6 +120291,17 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+        "domain": "biology_physiology",
+        "broader_refs": [
+          "wk:biology_physiology:fauna-honeybee"
+        ],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:static-corn-soybean-seedling-frost-response": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
@@ -126843,6 +127167,11 @@
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight"
       ],
+      "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
       "wk:biology_physiology:static-corn-soybean-seedling-frost-response": [
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position"
       ],
@@ -129606,6 +129935,9 @@
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -131810,6 +132142,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
         "claim:static-birch-bark-water-can-deform-layers",
@@ -133209,6 +133544,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
@@ -134617,7 +134955,8 @@
       "активны": [
         "claim:fauna-culex-dusk-rest",
         "claim:fauna-mammals-moose-crepuscular-seasonal-movement",
-        "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night"
+        "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "акты": [
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator"
@@ -135150,6 +135489,7 @@
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:river-landing-category",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:transport-private-boat-arrangement",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:biology_physiology:activity-fluid-balance",
@@ -136484,6 +136824,7 @@
         "claim:care-waterproof-wound-cover",
         "claim:pine-pitch-severe-oxidation",
         "claim:research-memory-postevent-misinformation",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-root-loss-can-cause-transplant-shock"
       ],
       "вероятную": [
@@ -138736,6 +139077,7 @@
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:physics_material_science:research-carbon-monoxide-perceptibility",
         "wk:psychology_behavior:foundations-ms-05-tactile-components",
         "wk:psychology_behavior:foundations-ms-06-visual-selection",
@@ -138862,7 +139204,8 @@
         "wk:psychology_behavior:foundations-ms-08-duration-rhythm"
       ],
       "временно": [
-        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
+        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "временной": [
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -138939,10 +139282,12 @@
       "все": [
         "claim:foundations-chm-04-diffusion-limited-heterogeneous-process",
         "claim:pottery-handmade-local-clay",
-        "claim:public-world-capacity-can-vary-day-to-day"
+        "claim:public-world-capacity-can-vary-day-to-day",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "всё": [
-        "claim:fauna-animal-habituation"
+        "claim:fauna-animal-habituation",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "всеволод": [
         "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
@@ -139931,6 +140276,8 @@
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:sound-background-noise-masks-speech",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:chemistry_process:food-preservation-qualitative"
       ],
       "гарантируется": [
@@ -140570,6 +140917,9 @@
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "wk:biology_physiology:static-head-injury-warning-context-b06"
       ],
+      "голой": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
+      ],
       "голоса": [
         "claim:sound-wind-temperature-gradients-refract"
       ],
@@ -140769,6 +141119,9 @@
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
+      "горяч": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
+      ],
       "горячее": [
         "claim:ordinary-life-shoes-protect-feet"
       ],
@@ -140777,6 +141130,9 @@
       ],
       "горячие": [
         "claim:foundations-earth-22-hydrothermal-metal-transport"
+      ],
+      "горячий": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "горячим": [
         "claim:population-physics-conduction-gradient"
@@ -142429,6 +142785,7 @@
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:textile-dye-application",
@@ -142578,6 +142935,7 @@
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-root-loss-can-cause-transplant-shock",
@@ -142852,7 +143210,9 @@
       "дозу": [
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
-        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "дозы": [
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment"
@@ -143471,6 +143831,7 @@
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:rural-household-economy-context",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:structural-and-object-wood",
         "claim:vegetable-tanning-prepared-hide",
@@ -143985,8 +144346,12 @@
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
       "дыма": [
@@ -143995,6 +144360,9 @@
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:physics_material_science:research-smoke-transport-dispersion",
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
@@ -144394,7 +144762,8 @@
       "ещё": [
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:clay-dried-replasticization",
-        "claim:social-podvoisky-letter-reports-pochestie-assurance"
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "ею": [
         "claim:practical-boat-load"
@@ -145875,6 +146244,7 @@
         "claim:social-daily-economic-activities",
         "claim:social-daily-wax-commodity-context",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:stone-grinding-metal-use",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:textile-ellagic-acid-analysis",
@@ -146277,6 +146647,7 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
       ],
       "защитная": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:physics_material_science:candidate-v9-iron-care-relations"
       ],
       "защитного": [
@@ -146288,6 +146659,9 @@
       "защитной": [
         "claim:foundations-life-34-lymphoid-system",
         "wk:biology_physiology:foundation-lymphoid-system"
+      ],
+      "защитную": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "защитные": [
         "claim:foundations-life-41-immune-components",
@@ -146338,7 +146712,8 @@
         "wk:biology_physiology:fauna-honeybee"
       ],
       "защищаются": [
-        "claim:candidate-physiology-v3-swallowing-airway-protection"
+        "claim:candidate-physiology-v3-swallowing-airway-protection",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "защищённость": [
         "claim:candidate-physiology-v3-emesis-reflex-response"
@@ -147136,6 +147511,9 @@
       "избыточная": [
         "claim:material-water-natural-fibres-water-swelling",
         "claim:residual-nature-snow-uneven-roof-loading"
+      ],
+      "избыточный": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "известен": [
         "claim:population-fish-dried-form"
@@ -148067,6 +148445,9 @@
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-birch-bark-water-can-deform-layers",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -149370,6 +149751,9 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-horses-are-hindgut-fermenters",
@@ -149498,7 +149882,8 @@
         "claim:clothing-linen-plain-or-twill",
         "claim:clothing-wool-shirt",
         "claim:construction-pine-resin-surfaces",
-        "claim:population-felt-lining"
+        "claim:population-felt-lining",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "каждом": [
         "claim:pine-pitch-severe-oxidation",
@@ -149966,6 +150351,7 @@
       "качественные": [
         "wk:biology_physiology:research-thermal-stress",
         "wk:biology_physiology:ruminant-digestion",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
         "wk:environment:candidate-v2-ice-snow-hazards",
         "wk:environment:research-flood-high-water-mark-observation",
@@ -150690,6 +151076,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-shoe-form",
         "claim:practical-leather-stitch",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:textile-conditioning-matters",
         "claim:transport-boat-cargo-dispatch",
@@ -151248,6 +151635,9 @@
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
         "claim:static-horses-are-hindgut-fermenters",
@@ -154185,6 +154575,9 @@
       "маршруте": [
         "claim:research-flood-can-leave-high-water-mark-types"
       ],
+      "маскирует": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
       "масла": [
         "claim:maslo-birchbark-718-account",
         "claim:material-water-textile-liquid-contaminants",
@@ -154592,6 +154985,7 @@
         "claim:agriculture-fauna-borts-honey",
         "claim:fauna-bee-winter-cluster",
         "claim:social-daily-honey-documentary-entry",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:material_culture:honey"
       ],
       "мёда": [
@@ -154655,8 +155049,12 @@
         "claim:fauna-bee-worker-tasks",
         "wk:biology_physiology:fauna-honeybee"
       ],
+      "медоносными": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
       "медоносных": [
-        "claim:fauna-bee-swarming"
+        "claim:fauna-bee-swarming",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "медь": [
         "claim:casting-copper",
@@ -155498,7 +155896,8 @@
         "wk:chemistry_process:temperature-solubility-conditional"
       ],
       "много": [
-        "claim:residual-law-creditor-priority"
+        "claim:residual-law-creditor-priority",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "многоклеточного": [
         "claim:foundations-life-06-growth-mitosis",
@@ -156010,6 +156409,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
         "claim:static-birch-bark-water-can-deform-layers",
@@ -156768,6 +157170,12 @@
         "wk:social_law_economy:entrusted-goods-claim",
         "wk:social_law_economy:entrusted-goods-reference",
         "wk:social_law_economy:guarantor-reference"
+      ],
+      "набирать": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
+      "набирают": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "наблюдаемое": [
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause"
@@ -158715,6 +159123,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
@@ -159747,6 +160158,7 @@
         "claim:social-hired-work-relates-business-record",
         "claim:social-kin-request-reports-contingent-return",
         "claim:soil-texture-affects-infiltration-rate",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:water-permeability-connected-pores",
@@ -161990,7 +162402,8 @@
         "wk:social_behavior:foundations-ms-39-social-norm"
       ],
       "ожог": [
-        "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes"
+        "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "ожога": [
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
@@ -162148,6 +162561,12 @@
       "окунями": [
         "claim:fauna-perch-experience",
         "wk:biology_physiology:fauna-eurasian-perch"
+      ],
+      "окуривание": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
+      ],
+      "окурить": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "олений": [
         "claim:foundations-physical-material3-01-antler-osseous-not-horn",
@@ -162960,7 +163379,8 @@
       "ослабить": [
         "claim:fur-skin-cooling-cleansing",
         "claim:population-joining-bond-contamination",
-        "claim:population-joining-bond-pressure"
+        "claim:population-joining-bond-pressure",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "ослабление": [
         "wk:physics_material_science:smoke-optical-obscuration"
@@ -163141,6 +163561,9 @@
       ],
       "остановку": [
         "claim:care-direct-pressure-bleeding"
+      ],
+      "останутся": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "остатки": [
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
@@ -163391,6 +163814,7 @@
         "claim:social-kin-letter-reports-protection-request",
         "claim:sound-wind-temperature-gradients-refract",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
@@ -165963,7 +166387,8 @@
         "claim:residual-law-visible-injury-and-witness"
       ],
       "побудить": [
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:public-world-armed-presence-changes-public-risk",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "побыть": [
         "claim:healer-care-coordination-and-uncertainty"
@@ -165984,6 +166409,7 @@
         "claim:population-joining-wax-soften",
         "claim:posadnik-fedor-conflict-1224",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:architecture_settlement:static-household-clay-finish",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-animal-learning",
@@ -168940,6 +169366,7 @@
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:foundations-thm-03-combustion-mixture-conditions",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:static-animal-b06-bat-roost-disturbance",
@@ -169587,6 +170014,7 @@
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
         "wk:biology_physiology:research-fish-gutting-gall-bladder",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
         "wk:biology_physiology:static-household-trauma-movement",
         "wk:biology_physiology:static-mushroom-habitat-disturbance",
@@ -171414,18 +171842,26 @@
       ],
       "пчёл": [
         "claim:fauna-bee-swarming",
-        "wk:biology_physiology:research-honeybee-forage-weather"
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "wk:biology_physiology:research-honeybee-forage-weather",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "пчела": [
         "wk:biology_physiology:fauna-honeybee"
       ],
+      "пчёлами": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
       "пчелиной": [
         "claim:agriculture-fauna-rural-tree-borts",
-        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability"
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "пчелы": [
         "claim:fauna-bee-waggle",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:biology_physiology:research-honeybee-forage-weather"
       ],
       "пчёлы": [
@@ -171433,7 +171869,11 @@
         "claim:fauna-bee-winter-cluster",
         "claim:fauna-bee-worker-tasks",
         "claim:social-daily-honey-documentary-entry",
-        "wk:biology_physiology:fauna-honeybee"
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:fauna-honeybee",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "пшена": [
         "claim:food-practices-millet-cleaning-waste",
@@ -171512,6 +171952,7 @@
       "работе": [
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:research-pooled-work-social-loafing",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-visual-comfort-context-b06",
         "wk:social_behavior:research-pooled-work-social-loafing"
       ],
@@ -171874,6 +172315,7 @@
         "wk:biology_physiology:fauna-domestic-goat"
       ],
       "раздражать": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-wood-ash-can-irritate-skin-and-eyes"
       ],
       "раздражающем": [
@@ -171885,6 +172327,7 @@
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:foundations-life-17-reflex",
         "claim:foundations-life-19-sensory-receptor",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:biology_physiology:foundation-reflex",
         "wk:biology_physiology:foundation-sensory-receptor",
         "wk:chemistry_process:static-wood-ash-contact-irritation"
@@ -173110,7 +173553,8 @@
         "claim:foundations-chm-05-mixing-diffusion-control",
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
-        "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal"
+        "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "реакция": [
         "claim:animal-homeostasis-responds-to-internal-external-change",
@@ -173125,6 +173569,7 @@
         "wk:biology_physiology:foundation-reflex",
         "wk:biology_physiology:plant-photoperiod-response",
         "wk:biology_physiology:research-orienting-response",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:chemistry_process:heterogeneous-reaction-interface",
         "wk:chemistry_process:static-ground-b05-fibre-alkali-response",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization"
@@ -175600,9 +176045,16 @@
       "семье": [
         "claim:agriculture-fauna-rural-tree-borts"
       ],
+      "семьёй": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
+      ],
       "семьи": [
         "claim:public-world-armed-loss-reaches-household",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:social_law_economy:candidate-v7-household-and-kin-records",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession"
@@ -176351,6 +176803,7 @@
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:population-material-clay-quartz",
         "claim:population-material-clay-steam",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:environment:cloud-droplet-growth-precipitation"
       ],
       "слияние": [
@@ -176796,7 +177249,8 @@
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs"
       ],
       "снизить": [
-        "claim:care-waterproof-wound-cover"
+        "claim:care-waterproof-wound-cover",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "снимает": [
         "claim:foundations-mat-08-abrasive-hardness-material-removal"
@@ -178346,6 +178800,12 @@
       ],
       "сплошной": [
         "claim:residual-nature-snow-conceals-ice-gaps"
+      ],
+      "спокойны": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
+      "спокойствие": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "спор": [
         "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
@@ -180052,6 +180512,7 @@
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:terrain-background",
         "wk:biology_physiology:consumer-assimilation",
@@ -180840,6 +181301,7 @@
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:textile-dye-application"
@@ -181706,6 +182168,7 @@
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-wood-ash-can-irritate-skin-and-eyes"
       ],
       "травмы": [
@@ -181902,8 +182365,15 @@
       "тревожить": [
         "wk:environment:static-animal-b06-bat-roost-disturbance"
       ],
+      "тревожного": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
       "тревожное": [
         "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "тревожный": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "трение": [
         "claim:dry-friction",
@@ -182502,6 +182972,9 @@
       "уезде": [
         "claim:religion-priest-child-baptism"
       ],
+      "ужаления": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
       "уже": [
         "claim:agriculture-rural-role-context",
         "claim:animal-care-needs-presence",
@@ -182664,6 +183137,7 @@
         "claim:agriculture-fauna-borts-wax",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:craft_technology:tree-bort-practice"
       ],
       "улететь": [
@@ -182713,6 +183187,12 @@
       ],
       "ультимативной": [
         "claim:foundations-ms3-10-ultimatum-expectations"
+      ],
+      "улью": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+      ],
+      "улья": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "умеет": [
         "claim:residual-nature-celestial-pole-daily-circles"
@@ -182795,7 +183275,8 @@
       "уменьшить": [
         "claim:population-joining-steel-temper",
         "claim:public-world-illness-can-reallocate-ordinary-work",
-        "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access"
+        "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "умеренного": [
         "wk:biology_physiology:fauna-amphibian"
@@ -183530,6 +184011,9 @@
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -184331,6 +184815,13 @@
       ],
       "ферментируют": [
         "claim:static-horses-are-hindgut-fermenters"
+      ],
+      "феромон": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
+      ],
+      "феромона": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "фигурирует": [
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator"
@@ -186231,6 +186722,7 @@
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:transport-horse-sledge-equipment",
         "claim:transport-winter-sledge-1220",
         "claim:vegetable-tanning-collagen-stabilization",
@@ -187529,6 +188021,9 @@
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
@@ -187655,6 +188150,9 @@
       ],
       "эффективность": [
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access"
+      ],
+      "эффекты": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "эхолокации": [
         "wk:biology_physiology:static-animal-b06-british-bat-activity"
@@ -189602,6 +190100,7 @@
         "claim:rural-household-economy-context",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
         "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
@@ -189799,6 +190298,7 @@
         "claim:fauna-mammals-moose-crepuscular-seasonal-movement",
         "claim:population-material-copper-iron-contact",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:biology_physiology:fauna-european-otter"
       ],
       "actively": [
@@ -190353,7 +190853,9 @@
       ],
       "alarm": [
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
-        "wk:biology_physiology:static-animal-b06-working-horse-context"
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-animal-b06-working-horse-context",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "alaska": [
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws"
@@ -190422,6 +190924,7 @@
         "claim:religion-olenin-adjudication",
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
         "claim:residual-law-creditor-priority",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
@@ -191737,6 +192240,8 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
@@ -191943,6 +192448,7 @@
         "wk:biology_physiology:static-animal-b06-british-bat-activity",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
@@ -193810,7 +194316,8 @@
         "claim:stone-whetstone-edge-maintenance"
       ],
       "bare": [
-        "claim:candidate-v9-bare-iron-rust-humidity-salts"
+        "claim:candidate-v9-bare-iron-rust-humidity-salts",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "bargaining": [
         "wk:social_behavior:foundations-ms3-experimental-interaction"
@@ -194176,7 +194683,10 @@
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:residual-law-boundaries-and-marked-trees",
         "claim:social-daily-wax-commodity-context",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:biology_physiology:research-honeybee-forage-weather",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:craft_technology:tree-bort-practice"
       ],
       "beekeeper": [
@@ -194186,7 +194696,9 @@
         "claim:healer-observation-and-questioning"
       ],
       "bees": [
-        "claim:social-daily-honey-documentary-entry"
+        "claim:social-daily-honey-documentary-entry",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "beetles": [
         "claim:fauna-toad-diet"
@@ -194242,6 +194754,7 @@
         "claim:foundations-ms-39-social-norm",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:metal-classes-composition",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:architecture_settlement:static-household-clay-finish",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-animal-learning",
@@ -195272,6 +195785,7 @@
         "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
         "claim:population-material-wood-combustion",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:biology_physiology:candidate-v6-burns"
       ],
       "burned": [
@@ -195332,6 +195846,7 @@
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:social-kin-request-reports-contingent-return",
         "claim:soil-texture-affects-infiltration-rate",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:water-permeability-connected-pores",
         "claim:work-waste-context",
@@ -195532,6 +196047,10 @@
         "claim:clothing-votola-cloak",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:textile-chrysin-analysis"
+      ],
+      "calm": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "calorific": [
         "claim:foundations-thm-06-moisture-vaporization-heat-demand"
@@ -195966,6 +196485,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
         "claim:static-birch-bark-water-can-deform-layers",
@@ -197802,7 +198324,11 @@
       ],
       "colony": [
         "claim:agriculture-fauna-rural-tree-borts",
-        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability"
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "colorless": [
         "claim:research-carbon-monoxide-is-colorless-and-odorless"
@@ -198517,6 +199043,7 @@
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-forge-welding-requires-heated-pressed-interface",
@@ -200485,6 +201012,10 @@
         "claim:fauna-tawny-owl-territory",
         "wk:biology_physiology:fauna-honeybee"
       ],
+      "defense": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
+      ],
       "deference": [
         "claim:ordinary-life-public-and-private-conduct-differ"
       ],
@@ -201940,6 +202471,7 @@
         "claim:sound-background-noise-masks-speech",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:stone-grinding-metal-use",
         "claim:technology-circuit-prerequisite",
         "claim:technology-motor-boundary",
@@ -202036,6 +202568,8 @@
       "dose": [
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment"
       ],
       "doubt": [
@@ -202340,6 +202874,7 @@
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:rp-minor-children-conditional-care",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
@@ -202715,6 +203250,7 @@
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:foundations-haz-01-exposure-modifiers",
         "wk:biology_physiology:research-plant-herbivory-effects",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:chemistry_process:chemical-exposure-modifiers",
         "wk:physics_material_science:static-birch-bark-water-deformation"
       ],
@@ -203040,6 +203576,9 @@
       "engineering": [
         "claim:localized-improvement-context",
         "wk:architecture_settlement:localized-improvement-context"
+      ],
+      "engorge": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "engulfment": [
         "claim:foundations-life-31-phagocytosis",
@@ -203549,6 +204088,8 @@
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -203915,6 +204456,7 @@
         "claim:population-joining-metal-cold-work",
         "claim:residual-nature-snow-uneven-roof-loading",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-yarn-strength-can-fall-after-excessive-twist"
       ],
       "exchange": [
@@ -205811,6 +206353,8 @@
         "claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-forge-welding-surface-oxide-can-degrade-join",
@@ -207256,6 +207800,9 @@
         "wk:social_law_economy:merchant-journey-loss-of-third-party-goods-or-funds",
         "wk:social_law_economy:third-party-goods-or-funds"
       ],
+      "gorge": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
       "gorodishche": [
         "claim:environment-p1-bird-taxa",
         "claim:novgorod-wetland-pollen-context",
@@ -207589,6 +208136,7 @@
         "claim:population-physics-point-pressure",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:sound-background-noise-masks-speech",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:textile-fibres-twist-yarn",
@@ -207612,7 +208160,8 @@
         "claim:care-waterproof-wound-cover",
         "claim:construction-animal-glue-pegged-planks",
         "claim:healer-experience-and-reputation",
-        "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own"
+        "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "guarantor": [
         "claim:social-guarantor-relates-transaction-obligation",
@@ -207771,6 +208320,7 @@
         "claim:population-storage-role",
         "claim:practical-boat-load",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:chemistry_process:candidate-v6-food-cross-contamination",
         "wk:physics_material_science:porous-bone-fragility"
       ],
@@ -208496,6 +209046,8 @@
         "claim:agriculture-fauna-rural-tree-borts",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:craft_technology:tree-bort-practice"
       ],
       "hodzhirova": [
@@ -208558,7 +209110,10 @@
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:social-daily-honey-documentary-entry",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:biology_physiology:research-honeybee-forage-weather",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:material_culture:honey",
         "wk:material_culture:tree-climbing-hook"
       ],
@@ -208699,7 +209254,8 @@
       "hot": [
         "claim:foundations-earth-22-hydrothermal-metal-transport",
         "claim:foundations-earth-23-hydrothermal-precipitation",
-        "claim:research-extreme-heat-can-increase-body-heat-storage"
+        "claim:research-extreme-heat-can-increase-body-heat-storage",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "house": [
         "claim:construction-construction-pottery-products",
@@ -210139,6 +210695,7 @@
         "claim:research-pooled-work-social-loafing",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:candidate-v6-clinical-observations",
@@ -210427,6 +210984,7 @@
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
@@ -210985,6 +211543,7 @@
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation"
       ],
       "irritate": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-wood-ash-can-irritate-skin-and-eyes"
       ],
       "irritating": [
@@ -210994,6 +211553,7 @@
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
         "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
         "wk:biology_physiology:static-skin-friction-context-b06",
@@ -211409,6 +211969,7 @@
         "claim:social-written-prayer-relates-invocation",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
@@ -212864,6 +213425,9 @@
         "wk:material_culture:tunic-shirt",
         "wk:physics_material_science:horn-keratin-filament-structure"
       ],
+      "likelihood": [
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
       "likely": [
         "claim:fuel-pit-charcoal-burning-form",
         "claim:probable-travel-chalice-communion",
@@ -212940,6 +213504,7 @@
         "claim:work-intensity-duration",
         "wk:biology_physiology:coagulation",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-household-trauma-movement",
         "wk:biology_physiology:work-intensity-duration",
@@ -213916,6 +214481,9 @@
         "claim:candidate-novgorod-helmet-half-mask-find",
         "claim:sound-background-noise-masks-speech",
         "wk:material_culture:candidate-novgorod-helmet-half-mask"
+      ],
+      "masks": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "maslo": [
         "claim:maslo-birchbark-718-account",
@@ -215355,7 +215923,8 @@
         "claim:environment-p1-wildfowl-season",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:household-dough-yeast-gas-needs-retention",
-        "claim:residual-law-creditor-priority"
+        "claim:residual-law-creditor-priority",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "mud": [
         "claim:research-flood-can-leave-high-water-mark-types"
@@ -216200,6 +216769,9 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
@@ -216908,6 +217480,7 @@
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
@@ -218235,6 +218808,7 @@
         "wk:biology_physiology:research-wild-apple-part-bound",
         "wk:biology_physiology:residual-postpartum-lactation",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
         "wk:biology_physiology:static-plant-wilt-nondiagnostic",
@@ -218614,6 +219188,7 @@
         "claim:sound-wind-temperature-gradients-refract",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
@@ -219471,6 +220046,9 @@
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-birch-bark-water-can-deform-layers",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -220100,6 +220678,9 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
@@ -220670,6 +221251,8 @@
         "claim:social-daily-honey-documentary-entry",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-settlement-demand-reports-court-choice",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:terrain-background",
         "claim:textile-dye-application",
         "claim:vegetable-tanning-collagen-stabilization",
@@ -221097,6 +221680,7 @@
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "wk:psychology_behavior:foundations-ms-05-tactile-components",
         "wk:psychology_behavior:foundations-ms-06-visual-selection",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence"
@@ -221321,6 +221905,10 @@
       ],
       "phenology": [
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence"
+      ],
+      "pheromone": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "photoperiod": [
         "claim:fauna-mammals-mountain-hare-seasonal-pelage",
@@ -223151,7 +223739,8 @@
       ],
       "prompt": [
         "claim:fur-skin-cooling-cleansing",
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:public-world-armed-presence-changes-public-risk",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
       "proof": [
         "claim:candidate-gramota199-onfim-instructional-text",
@@ -223655,6 +224244,7 @@
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:biology_physiology:ruminant-digestion",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
         "wk:biology_physiology:static-skin-friction-context-b06",
@@ -224440,6 +225030,8 @@
         "claim:residual-nature-snow-wind-drift-visibility",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
         "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -224901,6 +225493,7 @@
         "claim:population-net-cord",
         "claim:practical-textile-weave",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:structural-and-object-wood",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:exercise-heat-dissipation",
@@ -226346,6 +226939,7 @@
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:river-landing-category",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:transport-private-boat-arrangement",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:biology_physiology:activity-fluid-balance",
@@ -226681,6 +227275,7 @@
         "claim:social-priest-fragment-relates-office-address",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
@@ -227850,6 +228445,7 @@
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-repeated-skin-friction-can-cause-blistering",
@@ -228041,10 +228637,17 @@
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:physics_material_science:research-smoke-transport-dispersion",
         "wk:physics_material_science:smoke-optical-obscuration"
+      ],
+      "smoker": [
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "smoltification": [
         "claim:fauna-salmon-homing"
@@ -229318,6 +229921,7 @@
       ],
       "stinging": [
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:biology_physiology:research-nettle-food-contact-properties"
       ],
       "stipulated": [
@@ -229495,6 +230099,7 @@
       "stores": [
         "claim:practical-food-provisions",
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "wk:biology_physiology:research-rodent-store-access"
       ],
       "stories": [
@@ -230724,6 +231329,7 @@
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:sound-wind-temperature-gradients-refract",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
@@ -230772,7 +231378,8 @@
         "wk:biology_physiology:fauna-common-frog"
       ],
       "temporarily": [
-        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
+        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
       "temporary": [
         "claim:fauna-mammals-european-otter-solitary-crepuscular",
@@ -231052,6 +231659,7 @@
         "claim:social-settlement-demand-reports-court-choice",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:sound-reflections-arrive-after-direct-path",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-horses-are-hindgut-fermenters",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
@@ -232262,6 +232870,9 @@
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
@@ -232836,6 +233447,7 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+        "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-forge-welding-requires-heated-pressed-interface",
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
@@ -232977,6 +233589,7 @@
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:population-material-clay-quartz",
         "claim:population-material-clay-steam",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:environment:cloud-droplet-growth-precipitation"
       ],
       "took": [
@@ -235666,6 +236279,7 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:fauna-domestic-goat",
+        "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:chemistry_process:lime-transformations",
         "wk:craft_technology:metalworking-broad-context",
         "wk:environment:cloud-radiative-two-way-effect"

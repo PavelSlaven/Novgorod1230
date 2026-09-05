@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,319-claim corpus. The later direct-attestation-only residual
+current 1,322-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -59,8 +59,13 @@ has 75 controlled and 25 independently generated free/adversarial cases,
 all reviewed against the 1,319-claim corpus after input freeze. It reports
 74/75 controlled and 25/25 free cases covered; the remaining need is the
 qualitative effect and limits of smoke in honeybee colony handling.
-Separate source verification is underway; no new bee-smoke claim is yet
-production. This batch is diagnostic and does not advance the 0/3 streak.
+Three bee-smoke premises have since received independent verification and
+are integrated in the 1,322-claim corpus. This batch stays diagnostic.
+Batch 10 adds 75 newly stratified cases (62 practical, 13 social) and 25
+blind free/adversarial cases, all reviewed. After existing-premise triage,
+four substantive needs remain: fat rendering, lightning-storm precautions,
+wet parchment/ink preservation and thermal-burn care. Source work is
+underway; the mixed clean streak remains 0/3, not static completeness.
 No corpus knowledge is discarded.
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary

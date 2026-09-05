@@ -16950,6 +16950,48 @@
       "retrieval_text": "Условия материала подстилки Общие условия материала подстилки без утверждения о конкретном материале или сцене. Выбор материала подстилки может зависеть от сухости, нераздражающих свойств и пыли. Это перенос современного horse-bedding context со средней уверенностью; он не делает любую траву, тростник или солому безопасной либо пригодной для человеческой подстилки."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable:en",
+      "target_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke and honey-bee colony defense Qualitative effects and limits of smoke while handling a honey-bee colony. Excessive smoke can irritate bees; smoke too hot for bare skin is too hot for bees. This establishes no temperature, dose, burn, injury, or outcome for a particular colony. bee smoke hive smoker alarm pheromone too much smoke bees hot smoke bee irritation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable:ru",
+      "target_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым и защитная реакция пчелиной семьи Качественные эффекты и пределы дыма при работе с семьёй медоносных пчёл. Избыточный дым может раздражать пчёл; дым, слишком горячий для голой кожи, слишком горяч и для пчёл. Это не устанавливает температуру, дозу, ожог, травму или исход конкретной семьи. дым пчёлы окуривание улья тревожный феромон пчёл слишком много дыма пчёлы горячий дым раздражение пчёл"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm:en",
+      "target_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke and honey-bee colony defense Qualitative effects and limits of smoke while handling a honey-bee colony. Smoke can prompt honey bees to engorge on honey and reduce stinging likelihood, but does not guarantee that all bees remain calm. This establishes no stores, individual behavior, safety, or outcome for a particular colony. bee smoke hive smoker alarm pheromone bees gorge on honey bees remain active smoke and stinging"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm:ru",
+      "target_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым и защитная реакция пчелиной семьи Качественные эффекты и пределы дыма при работе с семьёй медоносных пчёл. Дым может побудить пчёл набирать мёд и снизить вероятность ужаления, но не гарантирует, что все пчёлы останутся спокойны. Это не устанавливает запас, поведение каждой пчелы, безопасность или исход конкретной семьи. дым пчёлы окуривание улья тревожный феромон пчёл пчёлы набирают мёд от дыма пчёлы всё ещё активны дым и ужаления"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense:en",
+      "target_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke and honey-bee colony defense Qualitative effects and limits of smoke while handling a honey-bee colony. Smoke can temporarily reduce honey-bee alarm-pheromone perception and can reduce colony defense. This guarantees no calm, dose, duration, hive access, or concrete-scene outcome. bee smoke hive smoker alarm pheromone smoke masks alarm pheromone bee defense smoke hive"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense:ru",
+      "target_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым и защитная реакция пчелиной семьи Качественные эффекты и пределы дыма при работе с семьёй медоносных пчёл. Дым может временно ослабить восприятие медоносными пчёлами тревожного феромона и уменьшить защитную реакцию семьи. Это не гарантирует спокойствие, не устанавливает дозу, длительность, доступ к улью или исход конкретной сцены. дым пчёлы окуривание улья тревожный феромон пчёл дым маскирует тревожный феромон пчёлы защищаются окурить улей"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-belt-friction-can-resist-relative-slip:en",
       "target_ref": "claim:static-belt-friction-can-resist-relative-slip",
       "domain": "physics_material_science",
@@ -21750,6 +21792,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Контекст нагрузки и тревоги рабочей лошади Качественный контекст тепла, нагрузки и реакции бегства у лошади без диагноза состояния. рабочая лошадь жара усталость тревога лошади"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-bee-smoke-b09-colony-defense-context:en",
+      "target_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke and honey-bee colony defense Qualitative effects and limits of smoke while handling a honey-bee colony. bee smoke hive smoker alarm pheromone"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-bee-smoke-b09-colony-defense-context:ru",
+      "target_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым и защитная реакция пчелиной семьи Качественные эффекты и пределы дыма при работе с семьёй медоносных пчёл. дым пчёлы окуривание улья тревожный феромон пчёл"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-corn-soybean-seedling-frost-response:en",

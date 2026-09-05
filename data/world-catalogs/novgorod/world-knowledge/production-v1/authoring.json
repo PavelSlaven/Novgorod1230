@@ -120,6 +120,14 @@
     "residual-postpartum-v1.json",
     "verification-residual-postpartum-v1.json",
     "residual-tree-properties-v1.json",
-    "verification-residual-tree-properties-v1.json"
+    "verification-residual-tree-properties-v1.json",
+    "reconstructed-ordinary-lifeways-v1.json",
+    "verification-reconstructed-ordinary-lifeways-v1.json",
+    "reconstructed-human-lifeways-v1.json",
+    "verification-reconstructed-human-lifeways-v1.json",
+    "reconstructed-practical-world-v1.json",
+    "verification-reconstructed-practical-world-v1.json",
+    "reconstructed-public-world-v1.json",
+    "verification-reconstructed-public-world-v1.json"
   ]
 }

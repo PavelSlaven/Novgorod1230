@@ -298,6 +298,7 @@
     }
   ],
   "source_inventory": [
+    {"id":"reconstructed-public-world-v1","source_path":"reconstructed-public-world-v1.json","domains":["material_culture","social_law_economy","biology_physiology"],"location_applicability":"Contextual public life and universal conditional care; no current authority or scene state.","applicability":{"resource":"conditional","material":"arms where present","process":"public relations and assistance","npc":"non-deterministic expectations"},"coverage":"30 independently approved editorial premises"},
     {
       "id": "built-water-storage-and-urban-foundations",
       "source_path": "foundation.json",
@@ -1498,9 +1499,32 @@
       "location_applicability": "General birch, pine, spruce and alder properties; no 1230 local tree or stock.",
       "applicability": {"resource":"conditional","material":"conditional wood/plant part","process":"seasonal/taxon property","npc":"none"},
       "coverage": "12 independently reviewed taxon-property premises; local presence and yield remain contextual."
-    }
+    },
+    {"id":"reconstructed-ordinary-lifeways-v1","source_path":"reconstructed-ordinary-lifeways-v1.json","domains":["architecture_settlement","craft_technology","social_behavior"],"location_applicability":"Ordinary contextual reconstruction; no scene, stock or NPC state.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative work/household context","npc":"non-deterministic role context"},"coverage":"25 reviewed editorial lifeway premises."},
+    {"id":"reconstructed-human-lifeways-v1","source_path":"reconstructed-human-lifeways-v1.json","domains":["npc_daily_life","social_law_economy"],"location_applicability":"Ordinary human-context reconstruction; no person, household or decision state.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative social practice","npc":"non-deterministic context"},"coverage":"30 reviewed editorial human-lifeway premises."},
+    {"id":"reconstructed-practical-world-v1","source_path":"reconstructed-practical-world-v1.json","domains":["architecture_settlement","craft_technology","material_culture","npc_daily_life"],"location_applicability":"Ordinary practical reconstruction; no object presence, quantity or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative upkeep/work","npc":"non-deterministic routine context"},"coverage":"30 reviewed editorial practical-world premises."}
   ],
   "families": [
+    {"id":"reconstructed-arms-and-equipment-roles","domain":"material_culture","subdomain":"armed_equipment","family":"Conditional weapon, shield, armour and mounted-equipment roles","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"conditional arms and equipment","process":"armed_equipment","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-arms-follow-means-role","claim:public-world-weapons-shields-armour-have-distinct-tradeoffs","claim:public-world-foot-and-mounted-service-have-different-needs"]},
+    {"id":"reconstructed-armed-coordination-and-household-cost","domain":"social_law_economy","subdomain":"armed_groups_and_households","family":"Coordination, communication, provisioning and household costs of armed activity","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"armed_groups_and_households","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-senior-can-coordinate-messenger-can-carry-word","claim:public-world-armed-movement-consumes-food-fuel-attention","claim:public-world-armed-loss-reaches-household","claim:public-world-armed-presence-changes-public-risk"]},
+    {"id":"reconstructed-dispute-escalation-and-status","domain":"social_law_economy","subdomain":"ordinary_disputes","family":"Competing accounts, negotiation, witnesses and contextual public escalation","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"ordinary_disputes","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-dispute-starts-with-competing-accounts","claim:public-world-dispute-can-use-questions-and-kin","claim:public-world-negotiation-can-precede-formal-escalation","claim:public-world-local-authority-is-one-escalation-option","claim:public-world-publicity-raises-reputation-risk","claim:public-world-status-and-ties-affect-access-not-guilt","claim:public-world-witness-account-has-bounded-scope"]},
+    {"id":"reconstructed-oral-register-names-and-address","domain":"social_law_economy","subdomain":"language_naming_and_address","family":"Oral register, distinguishing name forms, address and clarification","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"language_naming_and_address","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-ordinary-speech-tracks-relationship-setting","claim:public-world-church-and-official-speech-can-be-marked","claim:public-world-name-can-combine-personal-and-distinguishing-form","claim:public-world-name-form-does-not-prove-status-or-kinship","claim:public-world-deference-can-be-calibrated-to-seniority-role","claim:public-world-speech-can-be-plain-without-modern-slang","claim:public-world-unfamiliar-speech-allows-clarification"]},
+    {"id":"reconstructed-health-assistance-and-adaptation","domain":"biology_physiology","subdomain":"function_care_and_social_context","family":"Conditional support, activity adaptation and varied social responses to illness or impairment","location_applicability":"General conditional support; actual health and assistance remain owner-supplied.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"function_care_and_social_context","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-injured-person-needs-safe-carriage-or-shelter","claim:public-world-illness-can-reallocate-ordinary-work","claim:public-world-rest-warmth-drink-food-are-contextual-support","claim:public-world-support-needs-available-person-and-resources","claim:public-world-route-and-tool-can-be-adapted-to-capacity","claim:public-world-help-access-can-be-limited","claim:public-world-health-disclosure-is-contextual","claim:public-world-community-response-to-impairment-varies","claim:public-world-capacity-can-vary-day-to-day"]},
+    {"id":"reconstructed-work-clothing","domain":"craft_technology","subdomain":"ordinary_clothing_and_workwear","family":"Ordinary layered clothing, footwear and work garments","location_applicability":"Household and work contexts when clothing is separately established","applicability":{"resource":"cloth and leather only when present","material":"garments and footwear","process":"wearing, protection and work suitability","npc":"role context only"},"coverage":"partial: editorial ordinary-lifeway context; no item presence, ownership or outfit state.","claim_refs":["claim:ordinary-life-linen-wool-clothing","claim:ordinary-life-work-clothes-protect-and-move","claim:ordinary-life-shoes-protect-feet","claim:ordinary-life-apron-when-work-warrants","claim:ordinary-life-festive-clothes-differ-from-work"]},
+    {"id":"reconstructed-smith-workshop-practice","domain":"craft_technology","subdomain":"ordinary_metalwork_practice","family":"Smithing tools, fuel, workspace and work waste","location_applicability":"Workshop context only when separately materialized","applicability":{"resource":"iron and fuel only when present","material":"tools, scale, ash and offcuts","process":"qualitative forge work","npc":"craft-role context only"},"coverage":"partial: no workshop, fire, tool, stock, output or process result.","claim_refs":["claim:ordinary-life-smith-forge-and-bellows","claim:ordinary-life-smith-anvil-hammer-tongs","claim:ordinary-life-smith-needs-iron-and-fuel","claim:ordinary-life-smith-leaves-scale-ash-offcuts"]},
+    {"id":"reconstructed-household-workspace-and-repair","domain":"craft_technology","subdomain":"ordinary_household_and_craft_work","family":"Carpentry, weaving, fishing and repair work context","location_applicability":"Households and workspaces when corresponding activity and means are established","applicability":{"resource":"wood, yarn and water access only when present","material":"tools and gear","process":"qualitative making, use and repair","npc":"occupation context only"},"coverage":"partial: no craft admission, tool availability, order, income or output.","claim_refs":["claim:ordinary-life-carpenter-works-wood-with-tools","claim:ordinary-life-weaver-needs-yarn-and-loom-space","claim:ordinary-life-fisher-needs-water-and-gear","claim:ordinary-life-craftsman-income-varies-with-orders"]},
+    {"id":"reconstructed-household-space-and-maintenance","domain":"architecture_settlement","subdomain":"ordinary_household_upkeep","family":"Managed household space, heat, storage and repair pressure","location_applicability":"Household structures only when separately established","applicability":{"resource":"fuel and provisions only when present","material":"household fabric and stored goods","process":"upkeep, heating and storage","npc":"household-role context only"},"coverage":"partial: no building, room contents, stock, repair state or current need.","claim_refs":["claim:ordinary-life-smith-fire-needs-managed-space","claim:ordinary-life-household-needs-heat-food-storage","claim:ordinary-life-household-repairs-compete-with-new-goods"]},
+    {"id":"reconstructed-work-status-and-reciprocity","domain":"social_behavior","subdomain":"ordinary_work_and_social_relations","family":"Work responsibility, reputation, reciprocity and bounded hospitality","location_applicability":"Household, work and public interaction contexts","applicability":{"resource":"help and hospitality only when offered","material":"none","process":"cooperation, learning and reputation context","npc":"non-deterministic social context"},"coverage":"partial: no relation, obligation, consent, wealth, motive or decision.","claim_refs":["claim:ordinary-life-master-has-work-responsibility","claim:ordinary-life-worker-means-and-duty-vary","claim:ordinary-life-apprentice-learns-and-assists","claim:ordinary-life-status-does-not-fix-wealth","claim:ordinary-life-public-reputation-follows-conduct","claim:ordinary-life-public-and-private-conduct-differ","claim:ordinary-life-hospitality-is-resource-and-trust-bounded","claim:ordinary-life-help-can-create-reciprocity","claim:ordinary-life-private-needs-shape-decisions"]},
+    {"id":"reconstructed-learning-and-apprenticeship","domain":"npc_daily_life","subdomain":"learning_and_household_practice","family":"Learning through observation, tasks, feedback and household constraints","location_applicability":"Household and work contexts when persons and tasks are established","applicability":{"resource":"time, task and materials only when available","material":"ordinary learning objects only when present","process":"learning and assistance context","npc":"non-deterministic capability context"},"coverage":"partial: no NPC skill, age, task assignment, schedule or decision.","claim_refs":["claim:human-life-learning-observation-practice-feedback","claim:human-life-learning-tasks-can-match-capacity-risk","claim:human-life-household-tasks-can-offer-learning","claim:human-life-learning-feedback-can-shape-practice","claim:human-life-learning-needs-time-task-material-access","claim:human-life-household-pressure-can-interrupt-learning"]},
+    {"id":"reconstructed-household-formation-and-kin","domain":"social_law_economy","subdomain":"ordinary_household_and_kin_context","family":"Household formation, kin support and changing labour or care arrangements","location_applicability":"Household and kin contexts without asserting a particular household","applicability":{"resource":"residence and provisioning only when established","material":"household goods only when present","process":"coordination, care and labour context","npc":"non-deterministic kin context"},"coverage":"partial: no status, legal entitlement, household membership or actual obligation.","claim_refs":["claim:human-life-household-formation-needs-residence-provisioning","claim:human-life-household-change-can-redistribute-labor-care","claim:human-life-kin-can-offer-contextual-support","claim:human-life-kin-ties-can-create-competing-loyalties","claim:human-life-starting-household-needs-coordination","claim:human-life-relationship-change-can-alter-household-arrangement"]},
+    {"id":"reconstructed-standing-lodging-and-travel","domain":"npc_daily_life","subdomain":"ordinary_social_access_and_lodging","family":"Standing, lodging, visitors and travel delay context","location_applicability":"Household, lodging and travel contexts when separately established","applicability":{"resource":"space and provisions only when available","material":"lodging and travel means only when present","process":"stay, visit and travel context","npc":"non-deterministic access and capacity context"},"coverage":"partial: no current visitor, lodging, route, delay, invitation or consent.","claim_refs":["claim:human-life-perceived-role-can-shape-expectations","claim:human-life-capacity-experience-help-vary","claim:human-life-standing-can-affect-social-access","claim:human-life-category-does-not-determine-means-ties-skill","claim:human-life-audience-can-interpret-standing-contextually","claim:human-life-shared-role-can-be-negotiated","claim:human-life-reception-depends-on-trust-ties-means","claim:human-life-lodging-trades-space-privacy-comfort-security","claim:human-life-visitors-add-resource-demands","claim:human-life-travellers-may-seek-local-information","claim:human-life-travel-conditions-can-justify-delay","claim:human-life-stay-can-enable-consented-exchange"]},
+    {"id":"reconstructed-oral-recreation","domain":"npc_daily_life","subdomain":"ordinary_recreation_and_oral_memory","family":"Oral recreation, performance and retelling context","location_applicability":"Gatherings and households when participants and occasion are established","applicability":{"resource":"time only when available","material":"voice, memory, body or objects only when present","process":"voluntary recreation and retelling","npc":"non-deterministic participation context"},"coverage":"partial: no event, audience, content, memory or participation state.","claim_refs":["claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory","claim:human-life-recreation-competes-for-time","claim:human-life-performance-needs-willing-participants-suitable-occasion","claim:human-life-oral-retelling-varies-with-context","claim:human-life-recreation-participation-can-be-uneven-voluntary","claim:human-life-recreation-can-use-voice-memory-body-or-objects"]},
+    {"id":"reconstructed-boat-handling","domain":"material_culture","subdomain":"ordinary_watercraft_handling","family":"Small-boat loading, shore transfer, weather care, leaks and unloading","location_applicability":"Watercraft and shore contexts only when vessel and conditions are established","applicability":{"resource":"cargo and watercraft only when present","material":"boat and cargo","process":"qualitative handling and transfer","npc":"crew context only"},"coverage":"partial: no boat, cargo, weather, leak, capacity or handling result.","claim_refs":["claim:practical-boat-load","claim:practical-boat-shore-transfer","claim:practical-boat-weather-water","claim:practical-boat-leak","claim:practical-boat-unload-order"]},
+    {"id":"reconstructed-net-drying-and-repair","domain":"craft_technology","subdomain":"ordinary_fishing_gear_maintenance","family":"Net drying, repair and workspace context","location_applicability":"Fishing and drying workspaces when gear is separately established","applicability":{"resource":"time and drying conditions only when established","material":"net and repair means only when present","process":"qualitative maintenance","npc":"fishing-work context only"},"coverage":"partial: no net, damage, repair result, timer or workspace state.","claim_refs":["claim:practical-net-dry","claim:practical-net-repair","claim:practical-net-space"]},
+    {"id":"reconstructed-dwelling-upkeep","domain":"architecture_settlement","subdomain":"ordinary_dwelling_maintenance","family":"Roof, weather, smoke, draft and fuel upkeep context","location_applicability":"Dwellings only when separately established","applicability":{"resource":"fuel only when present","material":"roof and dwelling fabric","process":"qualitative upkeep and heating","npc":"household context only"},"coverage":"partial: no dwelling, weather state, smoke state, fuel stock or repair result.","claim_refs":["claim:practical-dwelling-roof","claim:practical-dwelling-rain-snow","claim:practical-dwelling-smoke-draft","claim:practical-dwelling-fuel"]},
+    {"id":"reconstructed-food-provisioning-and-animal-care","domain":"npc_daily_life","subdomain":"ordinary_food_and_animal_care","family":"Provisions, fodder, livestock care and seasonal work context","location_applicability":"Household, farm and travel contexts when resources and actors are established","applicability":{"resource":"food, fodder and animals only when present","material":"provisions and care equipment only when present","process":"feeding, care and seasonal work context","npc":"non-deterministic household routine context"},"coverage":"partial: no stock, animal, season, schedule, care action or outcome.","claim_refs":["claim:practical-food-provisions","claim:practical-fodder-hay","claim:practical-livestock-care","claim:practical-season-work","claim:practical-work-tradeoff"]},
+    {"id":"reconstructed-food-handling","domain":"craft_technology","subdomain":"ordinary_food_handling","family":"Milk, preservation, cooking and grain-storage context","location_applicability":"Household, storage and cooking contexts when food and facilities are established","applicability":{"resource":"food and fuel only when present","material":"provisions and storage only when present","process":"qualitative cooking and preservation","npc":"household-work context only"},"coverage":"partial: no food, spoilage, fuel, storage condition or output.","claim_refs":["claim:practical-food-milk","claim:practical-food-preserve","claim:practical-food-cooking","claim:practical-food-grain-storage"]},
+    {"id":"reconstructed-textile-and-leather-repair","domain":"craft_technology","subdomain":"ordinary_textile_and_leather_work","family":"Spinning, weaving, cutting, sewing and leather repair context","location_applicability":"Household and workshop contexts when materials and tools are established","applicability":{"resource":"fibre and leather only when present","material":"textiles, leather and footwear","process":"qualitative making and repair","npc":"craft-role context only"},"coverage":"partial: no tool, material, item, repair result or recipe admission.","claim_refs":["claim:practical-textile-spin","claim:practical-textile-weave","claim:practical-textile-cut","claim:practical-textile-sew","claim:practical-textile-repair","claim:practical-leather-cut","claim:practical-leather-stitch","claim:practical-leather-patch","claim:practical-leather-shoe"]},
     {
       "id": "biology-animal-body-condition-and-insulation",
       "domain": "biology_physiology",
@@ -4897,17 +4921,25 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть основные типы обязательства, collateral/guarantee/default там, где это доказуемо для периода. Current support and limits: Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть основные типы обязательства, collateral/guarantee/default там, где это доказуемо для периода. Current support and limits: Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:debt-record-practice",
         "claim:debt-needs-parties-and-basis",
         "claim:social-loan-request-relates-loan",
         "claim:social-guarantor-relates-transaction-obligation",
-        "claim:rp-merchant-credit-relates-third-party-goods"
+        "claim:rp-merchant-credit-relates-third-party-goods",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
       ],
       "supporting_family_ids": [
         "social-property-and-market",
-        "social-documentary-practice"
+        "social-documentary-practice",
+        "reconstructed-dispute-escalation-and-status"
       ]
     },
     {
@@ -4926,16 +4958,24 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен минимальный period-local набор процедурных primitives: witness, oath, written evidence, accusation, inquiry, limits. Current support and limits: Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен минимальный period-local набор процедурных primitives: witness, oath, written evidence, accusation, inquiry, limits. Current support and limits: Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:judicial-accusation-record",
-        "claim:social-authority-letter-relates-theft-inquiry"
+        "claim:social-authority-letter-relates-theft-inquiry",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
       ],
       "supporting_family_ids": [
         "social-law-practice",
-        "social-documentary-practice"
+        "social-documentary-practice",
+        "reconstructed-dispute-escalation-and-status"
       ]
     },
     {
@@ -5012,7 +5052,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны source-backed сезонные transport/provisioning patterns региона. Текущий лёд, запасы и доступность остаются state. Current support and limits: Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны source-backed сезонные transport/provisioning patterns региона. Текущий лёд, запасы и доступность остаются state. Current support and limits: Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners. Reviewed editorial support now supplies Provisions, fodder, livestock care and seasonal work context; Standing, lodging, visitors and travel delay context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:transport-winter-sledge-1220",
         "claim:transport-sledge-summer-cargo",
@@ -5020,12 +5060,31 @@
         "claim:transport-private-boat-arrangement",
         "claim:settlement-underfloor-storage",
         "claim:food-preservation-qualitative",
-        "claim:stored-grain-condition-depends-on-temperature-moisture"
+        "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:practical-food-provisions",
+        "claim:practical-fodder-hay",
+        "claim:practical-livestock-care",
+        "claim:practical-season-work",
+        "claim:practical-work-tradeoff",
+        "claim:human-life-perceived-role-can-shape-expectations",
+        "claim:human-life-capacity-experience-help-vary",
+        "claim:human-life-standing-can-affect-social-access",
+        "claim:human-life-category-does-not-determine-means-ties-skill",
+        "claim:human-life-audience-can-interpret-standing-contextually",
+        "claim:human-life-shared-role-can-be-negotiated",
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:human-life-lodging-trades-space-privacy-comfort-security",
+        "claim:human-life-visitors-add-resource-demands",
+        "claim:human-life-travellers-may-seek-local-information",
+        "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:human-life-stay-can-enable-consented-exchange"
       ],
       "supporting_family_ids": [
         "material-transport",
         "environment-weather",
-        "npc-household-routines"
+        "npc-household-routines",
+        "reconstructed-food-provisioning-and-animal-care",
+        "reconstructed-standing-lodging-and-travel"
       ]
     },
     {
@@ -5044,14 +5103,15 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны primitives эксплуатации речного транспорта: посадка/высадка, перенос груза, причаливание, удержание, rowing/poling/towing — только там, где это исторически подтверждается. Current support and limits: Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны primitives эксплуатации речного транспорта: посадка/высадка, перенос груза, причаливание, удержание, rowing/poling/towing — только там, где это исторически подтверждается. Current support and limits: Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics. Reviewed editorial support now supplies Small-boat loading, shore transfer, weather care, leaks and unloading. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "material-transport",
         "built-river-landing-access",
         "npc-river-occupations",
         "fluids-buoyancy-flow-porosity",
         "mechanics-impact-friction-fracture",
-        "fibre-rope-condition"
+        "fibre-rope-condition",
+        "reconstructed-boat-handling"
       ],
       "supporting_claim_refs": [
         "claim:transport-boat-cargo-dispatch",
@@ -5062,7 +5122,12 @@
         "claim:population-physics-immersion-buoyancy",
         "claim:population-physics-static-friction",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
-        "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
+        "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+        "claim:practical-boat-load",
+        "claim:practical-boat-shore-transfer",
+        "claim:practical-boat-weather-water",
+        "claim:practical-boat-leak",
+        "claim:practical-boat-unload-order"
       ]
     },
     {
@@ -5081,7 +5146,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing spinning, weaving and garment construction compose with approved stitching-to-support repair. Residual factual work concerns other repair/finishing mechanisms and period-local practice if asserted; actual textile, tool, skill, strength and repair outcome remain state/mechanics.",
+      "reason": "Existing spinning, weaving and garment construction compose with approved stitching-to-support repair. Residual factual work concerns other repair/finishing mechanisms and period-local practice if asserted; actual textile, tool, skill, strength and repair outcome remain state/mechanics. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:textile-fibres-twist-yarn",
         "claim:population-processes-weaving-thread",
@@ -5091,12 +5156,22 @@
         "claim:clothing-shirt-gussets",
         "claim:fibre-flax-breaker-shive",
         "claim:fibre-hackle-removes-shive",
-        "claim:research-stitching-can-secure-weak-textile-to-support"
+        "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:practical-textile-spin",
+        "claim:practical-textile-weave",
+        "claim:practical-textile-cut",
+        "claim:practical-textile-sew",
+        "claim:practical-textile-repair",
+        "claim:practical-leather-cut",
+        "claim:practical-leather-stitch",
+        "claim:practical-leather-patch",
+        "claim:practical-leather-shoe"
       ],
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "materials-fibre-leather-water-response",
-        "materials-stitched-textile-and-leather-assemblies"
+        "materials-stitched-textile-and-leather-assemblies",
+        "reconstructed-textile-and-leather-repair"
       ]
     },
     {
@@ -5115,7 +5190,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing hide preparation, tanning, shoemaking/repair and water response compose with possible separation when a stitched leather join fails. This is not proof of every assembly type or medieval maintenance method; material condition, exact load, damage, repair and identity remain owner-supplied.",
+      "reason": "Existing hide preparation, tanning, shoemaking/repair and water response compose with possible separation when a stitched leather join fails. This is not proof of every assembly type or medieval maintenance method; material condition, exact load, damage, repair and identity remain owner-supplied. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:population-hide-leather-distinction",
         "claim:vegetable-tanning-prepared-hide",
@@ -5124,13 +5199,23 @@
         "claim:population-shoe-form",
         "claim:population-shoe-output",
         "claim:material-water-vegetable-leather-water",
-        "claim:research-failure-of-stitched-leather-join-can-separate-components"
+        "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:practical-textile-spin",
+        "claim:practical-textile-weave",
+        "claim:practical-textile-cut",
+        "claim:practical-textile-sew",
+        "claim:practical-textile-repair",
+        "claim:practical-leather-cut",
+        "claim:practical-leather-stitch",
+        "claim:practical-leather-patch",
+        "claim:practical-leather-shoe"
       ],
       "supporting_family_ids": [
         "biology-skin-fur-and-hide-preservation",
         "process-textile-dye-and-collagen-tanning",
         "material-organic-materials",
-        "materials-stitched-textile-and-leather-assemblies"
+        "materials-stitched-textile-and-leather-assemblies",
+        "reconstructed-textile-and-leather-repair"
       ]
     },
     {
@@ -5149,19 +5234,24 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен простой historical cooking envelope: boiling/baking/roasting/stewing/drying/fermentation там, где подтверждено, типичные process/tool relations. Не каталог рецептов. Current support and limits: Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен простой historical cooking envelope: boiling/baking/roasting/stewing/drying/fermentation там, где подтверждено, типичные process/tool relations. Не каталог рецептов. Current support and limits: Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_claim_refs": [
         "claim:heating-reduces-microbial-viability",
         "claim:food-preservation-qualitative",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:foundations-life-44-pathogen-transport",
         "claim:foundations-haz-02-exposure-not-illness",
-        "claim:foundations-haz-03-exposure-routes"
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:practical-food-milk",
+        "claim:practical-food-preserve",
+        "claim:practical-food-cooking",
+        "claim:practical-food-grain-storage"
       ],
       "supporting_family_ids": [
         "process-bread-dough-and-baking",
         "process-food-preservation-and-fermentation",
-        "biology-food-safety-storage-and-fermentation"
+        "biology-food-safety-storage-and-fermentation",
+        "reconstructed-food-handling"
       ]
     },
     {
@@ -5180,11 +5270,12 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Можно добавить пару доказанных repair primitives, но точная течь и состояние крыши — scene state. Current support and limits: Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Можно добавить пару доказанных repair primitives, но точная течь и состояние крыши — scene state. Current support and limits: Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state. Reviewed editorial support now supplies Roof, weather, smoke, draft and fuel upkeep context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "materials-wood-moisture-and-coatings",
-        "fluids-buoyancy-flow-porosity"
+        "fluids-buoyancy-flow-porosity",
+        "reconstructed-dwelling-upkeep"
       ],
       "supporting_claim_refs": [
         "claim:settlement-oak-shingle-roof",
@@ -5193,7 +5284,11 @@
         "claim:foundations-mat-02-wood-drying-crack-strength",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
         "claim:wood-liquid-capillary-uptake",
-        "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
+        "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+        "claim:practical-dwelling-roof",
+        "claim:practical-dwelling-rain-snow",
+        "claim:practical-dwelling-smoke-draft",
+        "claim:practical-dwelling-fuel"
       ]
     },
     {
@@ -5244,15 +5339,31 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Norms, prescriptions and social roles supply factual context. Generic request/refusal/promise/threat meaning is the semantic boundary, not a missing universal fact. Further evidence is needed only for asserted local custom/legal form; compliance, commitment and hidden intent remain state/semantics.",
+      "reason": "Norms, prescriptions and social roles supply factual context. Generic request/refusal/promise/threat meaning is the semantic boundary, not a missing universal fact. Further evidence is needed only for asserted local custom/legal form; compliance, commitment and hidden intent remain state/semantics. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification; Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-roles-norms-and-socialization",
-        "social-trust-conflict-and-repair"
+        "social-trust-conflict-and-repair",
+        "reconstructed-oral-register-names-and-address",
+        "reconstructed-dispute-escalation-and-status"
       ],
       "supporting_claim_refs": [
         "claim:foundations-ms-39-social-norm",
         "claim:foundations-ms-40-social-prescription",
-        "claim:foundations-ms-32-social-role"
+        "claim:foundations-ms-32-social-role",
+        "claim:public-world-ordinary-speech-tracks-relationship-setting",
+        "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-speech-can-be-plain-without-modern-slang",
+        "claim:public-world-unfamiliar-speech-allows-clarification",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
       ]
     },
     {
@@ -5298,14 +5409,32 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужен небольшой source-backed XIII-century social envelope вокруг публичной репутации, оскорбления, примирения, status-sensitive reactions. Не reputation score. Current support and limits: Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужен небольшой source-backed XIII-century social envelope вокруг публичной репутации, оскорбления, примирения, status-sensitive reactions. Не reputation score. Current support and limits: Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-trust-conflict-and-repair",
-        "psychology-affect-regulation-and-stress"
+        "psychology-affect-regulation-and-stress",
+        "reconstructed-work-status-and-reciprocity",
+        "reconstructed-dispute-escalation-and-status"
       ],
       "supporting_claim_refs": [
         "claim:foundations-ms-39-social-norm",
-        "claim:foundations-ms3-06-apology-reinvestment"
+        "claim:foundations-ms3-06-apology-reinvestment",
+        "claim:ordinary-life-master-has-work-responsibility",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-apprentice-learns-and-assists",
+        "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:ordinary-life-public-and-private-conduct-differ",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
       ]
     },
     {
@@ -5324,18 +5453,35 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Conditional pooled-work output reduction, role expectations and documented division of labour in pre-Mongol building projects supply bounded support. They do not establish universal coordination benefits or a mandatory labour hierarchy. Specific coordination effects remain conditional factual questions; staffing, task dependencies, rates, schedule and decisions remain owner/state responsibilities.",
+      "reason": "Conditional pooled-work output reduction, role expectations and documented division of labour in pre-Mongol building projects supply bounded support. They do not establish universal coordination benefits or a mandatory labour hierarchy. Specific coordination effects remain conditional factual questions; staffing, task dependencies, rates, schedule and decisions remain owner/state responsibilities. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints; Work responsibility, reputation, reciprocity and bounded hospitality. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-group-influence-and-coordination",
         "npc-craft-occupations",
         "npc-household-routines",
-        "built-monumental-church-construction"
+        "built-monumental-church-construction",
+        "reconstructed-learning-and-apprenticeship",
+        "reconstructed-work-status-and-reciprocity"
       ],
       "supporting_claim_refs": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms-32-social-role",
         "claim:foundations-ms-33-role-predictability",
-        "claim:construction-auxiliary-construction-work"
+        "claim:construction-auxiliary-construction-work",
+        "claim:human-life-learning-observation-practice-feedback",
+        "claim:human-life-learning-tasks-can-match-capacity-risk",
+        "claim:human-life-household-tasks-can-offer-learning",
+        "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:human-life-learning-needs-time-task-material-access",
+        "claim:human-life-household-pressure-can-interrupt-learning",
+        "claim:ordinary-life-master-has-work-responsibility",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-apprentice-learns-and-assists",
+        "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:ordinary-life-public-and-private-conduct-differ",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:ordinary-life-private-needs-shape-decisions"
       ]
     },
     {
@@ -5354,11 +5500,13 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужны местные household/dependency comparators, чтобы не строить быт на общеславянской юридической аналогии. Current support and limits: Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужны местные household/dependency comparators, чтобы не строить быт на общеславянской юридической аналогии. Current support and limits: Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements; Conditional support, activity adaptation and varied social responses to illness or impairment. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-family-care",
         "social-belonging-and-prosocial-relations",
-        "social-law-practice"
+        "social-law-practice",
+        "reconstructed-household-formation-and-kin",
+        "reconstructed-health-assistance-and-adaptation"
       ],
       "supporting_claim_refs": [
         "claim:social-kin-letter-reports-protection-request",
@@ -5366,7 +5514,22 @@
         "claim:foundations-ms-29-helping-no-reward",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-caretaker-principal-goods",
-        "claim:rp-mother-household-care-succession"
+        "claim:rp-mother-household-care-succession",
+        "claim:human-life-household-formation-needs-residence-provisioning",
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:human-life-kin-can-offer-contextual-support",
+        "claim:human-life-kin-ties-can-create-competing-loyalties",
+        "claim:human-life-starting-household-needs-coordination",
+        "claim:human-life-relationship-change-can-alter-household-arrangement",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+        "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:public-world-help-access-can-be-limited",
+        "claim:public-world-health-disclosure-is-contextual",
+        "claim:public-world-community-response-to-impairment-varies",
+        "claim:public-world-capacity-can-vary-day-to-day"
       ]
     },
     {
@@ -5673,17 +5836,27 @@
         "A1"
       ],
       "coverage": "partial",
-      "reason": "Net mending/worn-part replacement and bounded comparative evidence for tarred-tow hull caulking and retaining clamps are grounded. This is not a universal medieval maintenance routine or a guarantee of watertightness. Other asserted local hull-care customs require historical support.",
+      "reason": "Net mending/worn-part replacement and bounded comparative evidence for tarred-tow hull caulking and retaining clamps are grounded. This is not a universal medieval maintenance routine or a guarantee of watertightness. Other asserted local hull-care customs require historical support. Reviewed editorial support now supplies Net drying, repair and workspace context; Small-boat loading, shore transfer, weather care, leaks and unloading. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "material-fishing-hunting",
         "material-transport",
-        "material-fuel-resin-wax"
+        "material-fuel-resin-wax",
+        "reconstructed-net-drying-and-repair",
+        "reconstructed-boat-handling"
       ],
       "supporting_claim_refs": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
         "claim:construction-iron-clamp-caulking",
-        "claim:construction-tarred-tow-caulking"
+        "claim:construction-tarred-tow-caulking",
+        "claim:practical-net-dry",
+        "claim:practical-net-repair",
+        "claim:practical-net-space",
+        "claim:practical-boat-load",
+        "claim:practical-boat-shore-transfer",
+        "claim:practical-boat-weather-water",
+        "claim:practical-boat-leak",
+        "claim:practical-boat-unload-order"
       ]
     },
     {
@@ -5703,11 +5876,12 @@
         "potential:npc_interaction"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: written household/official/church register distinctions and graphic substitutions; these do not establish a spoken dialect model.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: written household/official/church register distinctions and graphic substitutions; these do not establish a spoken dialect model. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-documentary-practice",
         "social-roles-norms-and-socialization",
-        "social-v5-birch-language-corpus-context"
+        "social-v5-birch-language-corpus-context",
+        "reconstructed-oral-register-names-and-address"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
@@ -5716,7 +5890,14 @@
         "claim:residual-v1-household-and-official-birch-registers-differ",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:public-world-ordinary-speech-tracks-relationship-setting",
+        "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-speech-can-be-plain-without-modern-slang",
+        "claim:public-world-unfamiliar-speech-allows-clarification"
       ]
     },
     {
@@ -5736,12 +5917,13 @@
         "potential:ordinary_npc_materialization"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: bounded owner-label uncertainty, letter etiquette, dated from-to address and husband-derived female forms. Patronymics, bynames and broader spoken address still open.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: bounded owner-label uncertainty, letter etiquette, dated from-to address and husband-derived female forms. Patronymics, bynames and broader spoken address still open. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-documentary-practice",
         "social-religious-context",
         "social-named-correspondence-and-learning-texts",
-        "social-v5-dated-document-context"
+        "social-v5-dated-document-context",
+        "reconstructed-oral-register-names-and-address"
       ],
       "supporting_claim_refs": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
@@ -5751,7 +5933,14 @@
         "claim:residual-v1-name-only-owner-labels-have-disputed-function",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
-        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:public-world-ordinary-speech-tracks-relationship-setting",
+        "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-speech-can-be-plain-without-modern-slang",
+        "claim:public-world-unfamiliar-speech-allows-clarification"
       ]
     },
     {
@@ -5809,19 +5998,23 @@
         "potential:equipment_materialization"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Conditional weapon, shield, armour and mounted-equipment roles. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "material-fishing-hunting",
         "material-tools",
         "built-civic-defence",
         "material-dated-novgorod-helmet-comparator",
-        "materials-metal-state-thermal-treatment"
+        "materials-metal-state-thermal-treatment",
+        "reconstructed-arms-and-equipment-roles"
       ],
       "supporting_claim_refs": [
         "claim:candidate-novgorod-helmet-half-mask-find",
         "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
-        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
+        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+        "claim:public-world-arms-follow-means-role",
+        "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:public-world-foot-and-mounted-service-have-different-needs"
       ]
     },
     {
@@ -5842,17 +6035,26 @@
         "potential:settlement_defence"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Coordination, communication, provisioning and household costs of armed activity; Conditional weapon, shield, armour and mounted-equipment roles. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "npc-political-roles",
         "built-civic-defence",
-        "material-transport"
+        "material-transport",
+        "reconstructed-armed-coordination-and-household-cost",
+        "reconstructed-arms-and-equipment-roles"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1222-kesi-campaign",
         "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
-        "claim:candidate-v7-npl-1223-colyvan-captives-and-gold"
+        "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-armed-movement-consumes-food-fuel-attention",
+        "claim:public-world-armed-loss-reaches-household",
+        "claim:public-world-armed-presence-changes-public-risk",
+        "claim:public-world-arms-follow-means-role",
+        "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:public-world-foot-and-mounted-service-have-different-needs"
       ]
     },
     {
@@ -5873,17 +6075,24 @@
         "potential:legal_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-family-care",
         "npc-household-routines",
         "social-law-practice",
-        "social-dated-novgorod-human-record-comparators"
+        "social-dated-novgorod-human-record-comparators",
+        "reconstructed-household-formation-and-kin"
       ],
       "supporting_claim_refs": [
         "claim:candidate-gramota8-wife-cow-redemption-letter",
         "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
-        "claim:candidate-v7-gramota9-reports-another-wife"
+        "claim:candidate-v7-gramota9-reports-another-wife",
+        "claim:human-life-household-formation-needs-residence-provisioning",
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:human-life-kin-can-offer-contextual-support",
+        "claim:human-life-kin-ties-can-create-competing-loyalties",
+        "claim:human-life-starting-household-needs-coordination",
+        "claim:human-life-relationship-change-can-alter-household-arrangement"
       ]
     },
     {
@@ -5904,18 +6113,41 @@
         "potential:law"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Standing, lodging, visitors and travel delay context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-roles-norms-and-socialization",
         "social-law-practice",
         "npc-household-routines",
         "social-v5-dated-document-context",
-        "social-material-v7-dated-historical-records"
+        "social-material-v7-dated-historical-records",
+        "reconstructed-work-status-and-reciprocity",
+        "reconstructed-standing-lodging-and-travel"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
         "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
-        "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
+        "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+        "claim:ordinary-life-master-has-work-responsibility",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-apprentice-learns-and-assists",
+        "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:ordinary-life-public-and-private-conduct-differ",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:human-life-perceived-role-can-shape-expectations",
+        "claim:human-life-capacity-experience-help-vary",
+        "claim:human-life-standing-can-affect-social-access",
+        "claim:human-life-category-does-not-determine-means-ties-skill",
+        "claim:human-life-audience-can-interpret-standing-contextually",
+        "claim:human-life-shared-role-can-be-negotiated",
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:human-life-lodging-trades-space-privacy-comfort-security",
+        "claim:human-life-visitors-add-resource-demands",
+        "claim:human-life-travellers-may-seek-local-information",
+        "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:human-life-stay-can-enable-consented-exchange"
       ]
     },
     {
@@ -6003,14 +6235,15 @@
         "potential:npc_routine"
       ],
       "coverage": "partial",
-      "reason": "Infection chains, immunity, sickness behaviour, fever/sleep relations, disability context, foodborne observations and three bounded dehydration premises are grounded. The residual is bounded P2: diagnosis, cause, severity, care availability and outcome require a concrete body/state premise; these relations are not a medical composition system.",
+      "reason": "Infection chains, immunity, sickness behaviour, fever/sleep relations, disability context, foodborne observations and three bounded dehydration premises are grounded. The residual is bounded P2: diagnosis, cause, severity, care availability and outcome require a concrete body/state premise; these relations are not a medical composition system. Reviewed editorial support now supplies Conditional support, activity adaptation and varied social responses to illness or impairment. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "biology-pathogen-immunity-and-infection",
         "physiology-autonomic-and-functional-response",
         "social-family-care",
         "biology-foodborne-symptom-variation",
         "biology-human-lifecycle-injury-oral-and-disability-relations",
-        "biology-v5-fever-and-sleep-relations"
+        "biology-v5-fever-and-sleep-relations",
+        "reconstructed-health-assistance-and-adaptation"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
@@ -6020,7 +6253,16 @@
         "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
-        "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations"
+        "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+        "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:public-world-help-access-can-be-limited",
+        "claim:public-world-health-disclosure-is-contextual",
+        "claim:public-world-community-response-to-impairment-varies",
+        "claim:public-world-capacity-can-vary-day-to-day"
       ]
     },
     {
@@ -6147,19 +6389,45 @@
         "potential:public_safety"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: reviewed normative premises now cover injury/witnesses, debt, dependency, boundaries, arson and inheritance, but useful offense-to-procedure/remedy answers require offline assessment beyond documentary comparators. They never establish present guilt, operative court, exact sanction or outcome.",
+      "reason": "OPEN P1: reviewed normative premises now cover injury/witnesses, debt, dependency, boundaries, arson and inheritance, but useful offense-to-procedure/remedy answers require offline assessment beyond documentary comparators. They never establish present guilt, operative court, exact sanction or outcome. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-law-practice",
         "social-property-and-market",
         "social-administration",
-        "social-dated-novgorod-human-record-comparators"
+        "social-dated-novgorod-human-record-comparators",
+        "reconstructed-dispute-escalation-and-status"
       ],
       "supporting_claim_refs": [
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:social-settlement-demand-reports-court-choice",
         "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
-        "claim:residual-law-visible-injury-and-witness", "claim:residual-law-injury-and-treatment-payments", "claim:residual-law-unauthorized-horse-use", "claim:residual-law-detained-thief-and-princely-court", "claim:residual-law-debt-denial-witness-oath", "claim:residual-law-merchant-entrustment-proof-exception", "claim:residual-law-interest-agreement-and-witnesses", "claim:residual-law-monthly-and-longer-interest", "claim:residual-law-creditor-priority", "claim:residual-law-zakup-complaint-not-escape", "claim:residual-law-zakup-loss-context", "claim:residual-law-zakup-illegal-sale", "claim:residual-law-status-and-witness-exceptions", "claim:residual-law-boundaries-and-marked-trees", "claim:residual-law-arson-remedy-and-sanction", "claim:residual-law-daughters-and-status-inheritance", "claim:residual-law-widow-separate-property", "claim:residual-law-stepchildren-paternal-inheritance", "claim:residual-law-dependency-and-agreement"
+        "claim:residual-law-visible-injury-and-witness",
+        "claim:residual-law-injury-and-treatment-payments",
+        "claim:residual-law-unauthorized-horse-use",
+        "claim:residual-law-detained-thief-and-princely-court",
+        "claim:residual-law-debt-denial-witness-oath",
+        "claim:residual-law-merchant-entrustment-proof-exception",
+        "claim:residual-law-interest-agreement-and-witnesses",
+        "claim:residual-law-monthly-and-longer-interest",
+        "claim:residual-law-creditor-priority",
+        "claim:residual-law-zakup-complaint-not-escape",
+        "claim:residual-law-zakup-loss-context",
+        "claim:residual-law-zakup-illegal-sale",
+        "claim:residual-law-status-and-witness-exceptions",
+        "claim:residual-law-boundaries-and-marked-trees",
+        "claim:residual-law-arson-remedy-and-sanction",
+        "claim:residual-law-daughters-and-status-inheritance",
+        "claim:residual-law-widow-separate-property",
+        "claim:residual-law-stepchildren-paternal-inheritance",
+        "claim:residual-law-dependency-and-agreement",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
       ]
     },
     {
@@ -6180,19 +6448,26 @@
         "potential:npc_development"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "psychology-learning-and-skilled-action",
         "social-roles-norms-and-socialization",
         "social-documentary-practice",
         "npc-craft-occupations",
         "social-named-correspondence-and-learning-texts",
-        "social-dated-novgorod-human-record-comparators"
+        "social-dated-novgorod-human-record-comparators",
+        "reconstructed-learning-and-apprenticeship"
       ],
       "supporting_claim_refs": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-gramota202-onfim-business-record-drawing",
-        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:human-life-learning-observation-practice-feedback",
+        "claim:human-life-learning-tasks-can-match-capacity-risk",
+        "claim:human-life-household-tasks-can-offer-learning",
+        "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:human-life-learning-needs-time-task-material-access",
+        "claim:human-life-household-pressure-can-interrupt-learning"
       ]
     },
     {
@@ -6213,12 +6488,13 @@
         "potential:npc_routine"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Oral recreation, performance and retelling context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-belonging-and-prosocial-relations",
         "material-vessels-furniture-ritual",
         "material-dated-novgorod-gusli-comparator",
-        "social-v5-dated-document-context"
+        "social-v5-dated-document-context",
+        "reconstructed-oral-recreation"
       ],
       "supporting_claim_refs": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
@@ -6227,7 +6503,13 @@
         "claim:candidate-v7-museum-individual-toy-types",
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
         "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
-        "claim:candidate-v7-museum-bone-skates-xii-xiii"
+        "claim:candidate-v7-museum-bone-skates-xii-xiii",
+        "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
+        "claim:human-life-recreation-competes-for-time",
+        "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+        "claim:human-life-oral-retelling-varies-with-context",
+        "claim:human-life-recreation-participation-can-be-uneven-voluntary",
+        "claim:human-life-recreation-can-use-voice-memory-body-or-objects"
       ]
     },
     {
@@ -6323,17 +6605,28 @@
         "potential:animal_husbandry"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context; Provisions, fodder, livestock care and seasonal work context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "material-food-resources",
         "environment-fauna-subsistence",
         "biology-domestic-animal-digestion-and-forage",
-        "process-food-preservation-and-fermentation"
+        "process-food-preservation-and-fermentation",
+        "reconstructed-food-handling",
+        "reconstructed-food-provisioning-and-animal-care"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
-        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"
+        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
+        "claim:practical-food-milk",
+        "claim:practical-food-preserve",
+        "claim:practical-food-cooking",
+        "claim:practical-food-grain-storage",
+        "claim:practical-food-provisions",
+        "claim:practical-fodder-hay",
+        "claim:practical-livestock-care",
+        "claim:practical-season-work",
+        "claim:practical-work-tradeoff"
       ]
     },
     {
@@ -6354,16 +6647,39 @@
         "potential:household"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route. Reviewed editorial support now supplies Standing, lodging, visitors and travel delay context; Work responsibility, reputation, reciprocity and bounded hospitality. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
       "supporting_family_ids": [
         "social-belonging-and-prosocial-relations",
         "npc-household-routines",
         "material-transport",
-        "biology-v5-fever-and-sleep-relations"
+        "biology-v5-fever-and-sleep-relations",
+        "reconstructed-standing-lodging-and-travel",
+        "reconstructed-work-status-and-reciprocity"
       ],
       "supporting_claim_refs": [
         "claim:candidate-v5-sleep-is-basic-human-need",
-        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"
+        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+        "claim:human-life-perceived-role-can-shape-expectations",
+        "claim:human-life-capacity-experience-help-vary",
+        "claim:human-life-standing-can-affect-social-access",
+        "claim:human-life-category-does-not-determine-means-ties-skill",
+        "claim:human-life-audience-can-interpret-standing-contextually",
+        "claim:human-life-shared-role-can-be-negotiated",
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:human-life-lodging-trades-space-privacy-comfort-security",
+        "claim:human-life-visitors-add-resource-demands",
+        "claim:human-life-travellers-may-seek-local-information",
+        "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:human-life-stay-can-enable-consented-exchange",
+        "claim:ordinary-life-master-has-work-responsibility",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-apprentice-learns-and-assists",
+        "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:ordinary-life-public-and-private-conduct-differ",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:ordinary-life-private-needs-shape-decisions"
       ]
     }
   ],
@@ -6381,7 +6697,7 @@
         "built-river-workspace",
         "built-storage-and-household",
         "built-street-yard-workshop",
-        "built-urban-form"
+        "built-urban-form", "reconstructed-household-space-and-maintenance", "reconstructed-dwelling-upkeep"
       ]
     },
     {
@@ -6417,7 +6733,8 @@
         "aquatic-macrophyte-growth-forms",
         "plant-diagnostic-and-part-bounds",
         "physiology-cold-water-immersion",
-        "plant-food-and-contact-properties"
+        "plant-food-and-contact-properties",
+        "reconstructed-health-assistance-and-adaptation"
       ]
     },
     {
@@ -6443,7 +6760,7 @@
         "craft-surface-and-wax",
         "craft-technology-boundaries",
         "process-metal-joining",
-        "process-wood-and-ceramic"
+        "process-wood-and-ceramic", "reconstructed-work-clothing", "reconstructed-smith-workshop-practice", "reconstructed-household-workspace-and-repair", "reconstructed-net-drying-and-repair", "reconstructed-food-handling", "reconstructed-textile-and-leather-repair"
       ]
     },
     {
@@ -6501,7 +6818,9 @@
         "material-transport",
         "material-vessels-furniture-ritual",
         "material-written-objects",
-        "npc-clothing-and-personal-kit"
+        "npc-clothing-and-personal-kit",
+        "reconstructed-boat-handling",
+        "reconstructed-arms-and-equipment-roles"
       ]
     },
     {
@@ -6510,7 +6829,7 @@
         "npc-craft-occupations",
         "npc-household-routines",
         "npc-political-roles",
-        "npc-river-occupations"
+        "npc-river-occupations", "reconstructed-learning-and-apprenticeship", "reconstructed-standing-lodging-and-travel", "reconstructed-oral-recreation", "reconstructed-food-provisioning-and-animal-care"
       ]
     },
     {
@@ -6558,7 +6877,7 @@
         "social-belonging-and-prosocial-relations",
         "social-group-influence-and-coordination",
         "social-roles-norms-and-socialization",
-        "social-trust-conflict-and-repair"
+        "social-trust-conflict-and-repair", "reconstructed-work-status-and-reciprocity"
       ]
     },
     {
@@ -6569,7 +6888,11 @@
         "social-family-care",
         "social-law-practice",
         "social-property-and-market",
-        "social-religious-context"
+        "social-religious-context",
+        "reconstructed-household-formation-and-kin",
+        "reconstructed-armed-coordination-and-household-cost",
+        "reconstructed-dispute-escalation-and-status",
+        "reconstructed-oral-register-names-and-address"
       ]
     }
   ],
@@ -6590,7 +6913,7 @@
         "environment-footprint-trace-interpretation",
         "plant-food-and-contact-properties",
         "environment-ice-snow-hazard-and-strength",
-        "environment-celestial-light-and-orientation"
+        "environment-celestial-light-and-orientation", "reconstructed-boat-handling", "reconstructed-net-drying-and-repair", "reconstructed-food-handling"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -6637,7 +6960,7 @@
         "materials-stitched-textile-and-leather-assemblies",
         "process-household-water-treatment-limits",
         "indoor-air-moisture",
-        "environment-ice-snow-hazard-and-strength"
+        "environment-ice-snow-hazard-and-strength", "reconstructed-net-drying-and-repair", "reconstructed-food-handling"
       ],
       "coverage": "partial: built-space and drying-process context"
     },
@@ -6659,7 +6982,7 @@
         "materials-stitched-textile-and-leather-assemblies",
         "process-household-water-treatment-limits",
         "indoor-air-moisture",
-        "environment-ice-snow-hazard-and-strength"
+        "environment-ice-snow-hazard-and-strength", "reconstructed-food-handling", "reconstructed-textile-and-leather-repair"
       ],
       "coverage": "partial: storage/occupation/economic context"
     }

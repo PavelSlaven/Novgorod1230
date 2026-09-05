@@ -9180,6 +9180,426 @@
       "retrieval_text": "Деревянная посуда Деревянная посуда засвидетельствована в бытовом материале раскопа. Средневековая совместимость, не наличие или обязательный набор вещей в сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:human-life-audience-can-interpret-standing-contextually:en",
+      "target_ref": "claim:human-life-audience-can-interpret-standing-contextually",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Seniority or status can affect who speaks first or is asked, but does not settle a disagreement. age gender status seniority audience"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-audience-can-interpret-standing-contextually:ru",
+      "target_ref": "claim:human-life-audience-can-interpret-standing-contextually",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Старшинство или статус могут влиять на очередность речи или просьб, но не решают спор. возраст гендер статус старшинство аудитория"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-capacity-experience-help-vary:en",
+      "target_ref": "claim:human-life-capacity-experience-help-vary",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A dependent person can be cautious about contradicting a patron, especially before others; no decision is predetermined. age gender status capacity help"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-capacity-experience-help-vary:ru",
+      "target_ref": "claim:human-life-capacity-experience-help-vary",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Зависимый человек может осторожничать, возражая покровителю, особенно при людях; решение не предопределено. возраст гендер статус опыт помощь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-category-does-not-determine-means-ties-skill:en",
+      "target_ref": "claim:human-life-category-does-not-determine-means-ties-skill",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Age, gender, or status alone do not determine skill, means, or willingness to help. age gender status reputation kin"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-category-does-not-determine-means-ties-skill:ru",
+      "target_ref": "claim:human-life-category-does-not-determine-means-ties-skill",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Возраст, гендер или статус сами по себе не определяют умение, средства или готовность помочь. возраст гендер статус репутация родня"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-change-can-redistribute-labor-care:en",
+      "target_ref": "claim:human-life-household-change-can-redistribute-labor-care",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Marriage or household formation can change who provides food, care, and daily work; no fixed division follows. marriage kin household labour"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-change-can-redistribute-labor-care:ru",
+      "target_ref": "claim:human-life-household-change-can-redistribute-labor-care",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Брак или создание дома могут менять, кто обеспечивает еду, уход и ежедневный труд; фиксированного деления нет. брак родня дом труд"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-formation-needs-residence-provisioning:en",
+      "target_ref": "claim:human-life-household-formation-needs-residence-provisioning",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. A new household can live with senior kin or separately, depending on means and arrangements. marriage kin household residence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-formation-needs-residence-provisioning:ru",
+      "target_ref": "claim:human-life-household-formation-needs-residence-provisioning",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Новый дом может жить при старших родственниках или отдельно — в зависимости от средств и договорённостей. брак родня дом жильё"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-pressure-can-interrupt-learning:en",
+      "target_ref": "claim:human-life-household-pressure-can-interrupt-learning",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Trust, skill, and safe conditions can precede moving from helper tasks to more responsible work. child apprentice learn season learning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-pressure-can-interrupt-learning:ru",
+      "target_ref": "claim:human-life-household-pressure-can-interrupt-learning",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Доверие, умение и безопасные условия могут предшествовать переходу от подсобного к более ответственному делу. ребёнок ученик учиться сезон обучение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-tasks-can-offer-learning:en",
+      "target_ref": "claim:human-life-household-tasks-can-offer-learning",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Before responsible work, a novice can sweep, sort material, or pass a tool; no profession is assigned. child apprentice learn household learning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-household-tasks-can-offer-learning:ru",
+      "target_ref": "claim:human-life-household-tasks-can-offer-learning",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Новичок до ответственного дела может подметать, сортировать материал или подавать инструмент; профессия не назначается. ребёнок ученик учиться дом обучение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-kin-can-offer-contextual-support:en",
+      "target_ref": "claim:human-life-kin-can-offer-contextual-support",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Paternal, maternal, and marital kin can be distinct routes to help, introductions, or advice. marriage kin household help"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-kin-can-offer-contextual-support:ru",
+      "target_ref": "claim:human-life-kin-can-offer-contextual-support",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Родня по отцу, матери и браку может быть разными путями к помощи, знакомствам или совету. брак родня дом помощь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-kin-ties-can-create-competing-loyalties:en",
+      "target_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. A widow can continue household management when means and kin support make it possible; this is not a right or current status. marriage kin household disagreement"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-kin-ties-can-create-competing-loyalties:ru",
+      "target_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Вдова может вести дом, когда позволяют средства и поддержка родни; это не право и не текущий статус. брак родня дом родство спор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-feedback-can-shape-practice:en",
+      "target_ref": "claim:human-life-learning-feedback-can-shape-practice",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Family instruction can combine spoken explanation, demonstration, and correction; no school or tutor is created. child apprentice learn feedback skill"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-feedback-can-shape-practice:ru",
+      "target_ref": "claim:human-life-learning-feedback-can-shape-practice",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Семейное обучение может сочетать устное объяснение, показ и исправление; школа или наставник не создаются. ребёнок ученик учиться исправление умение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-needs-time-task-material-access:en",
+      "target_ref": "claim:human-life-learning-needs-time-task-material-access",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Access to letters or counting practice can differ, so letter learning is not assumed for every child. child apprentice learn time materials"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-needs-time-task-material-access:ru",
+      "target_ref": "claim:human-life-learning-needs-time-task-material-access",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Доступ к письму или счёту может различаться, поэтому буквенное обучение не предполагается для каждого ребёнка. ребёнок ученик учиться время материалы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-observation-practice-feedback:en",
+      "target_ref": "claim:human-life-learning-observation-practice-feedback",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. A child can learn counting by grouping ordinary objects and carrying light wood chips; this creates no child or lesson. child apprentice learn demonstration"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-observation-practice-feedback:ru",
+      "target_ref": "claim:human-life-learning-observation-practice-feedback",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Ребёнок может учиться счёту, группируя обычные предметы и нося лёгкую щепу; это не создаёт ребёнка или урок. ребёнок ученик учиться показ"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-tasks-can-match-capacity-risk:en",
+      "target_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Children can imitate household or craft tasks in play before responsible work; no age threshold is set. child apprentice learn task"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-learning-tasks-can-match-capacity-risk:ru",
+      "target_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Дети могут в игре подражать домашнему или ремесленному делу до ответственной работы; возрастной порог не задан. ребёнок ученик учиться задача"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-lodging-trades-space-privacy-comfort-security:en",
+      "target_ref": "claim:human-life-lodging-trades-space-privacy-comfort-security",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. A shared room, food, and warmth can be offered at the cost of privacy and comfort. guest travel lodging security"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-lodging-trades-space-privacy-comfort-security:ru",
+      "target_ref": "claim:human-life-lodging-trades-space-privacy-comfort-security",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Общая комната, пища и тепло могут даваться ценой приватности и удобства. гость путь ночлег безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-oral-retelling-varies-with-context:en",
+      "target_ref": "claim:human-life-oral-retelling-varies-with-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Children can join play or imitation while adults can listen, lead a story, or join without a fixed age rule. song story play retelling memory"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-oral-retelling-varies-with-context:ru",
+      "target_ref": "claim:human-life-oral-retelling-varies-with-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Дети могут участвовать в игре или подражании, взрослые — слушать, рассказывать или участвовать без жёсткого возрастного правила. песня рассказ игра пересказ память"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-perceived-role-can-shape-expectations:en",
+      "target_ref": "claim:human-life-perceived-role-can-shape-expectations",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A well-resourced householder can signal means through better clothing or more generous refreshment without proving wealth. age gender status"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-perceived-role-can-shape-expectations:ru",
+      "target_ref": "claim:human-life-perceived-role-can-shape-expectations",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Состоятельный хозяин может показывать средства лучшей одеждой или щедрым угощением, но это не доказывает богатство. возраст гендер статус"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-performance-needs-willing-participants-suitable-occasion:en",
+      "target_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Song, dance, and storytelling can be different forms of shared recreation with different participants. song story play performance game"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-performance-needs-willing-participants-suitable-occasion:ru",
+      "target_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Песня, танец и рассказ могут быть разными видами общего досуга с разными участниками. песня рассказ игра выступление"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-reception-depends-on-trust-ties-means:en",
+      "target_ref": "claim:human-life-reception-depends-on-trust-ties-means",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. An ordinary household can lodge a traveller on a bench or platform with bedding when space and trust allow. guest travel lodging trust"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-reception-depends-on-trust-ties-means:ru",
+      "target_ref": "claim:human-life-reception-depends-on-trust-ties-means",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Обычный дом может уложить путника на лавке или настиле с подстилкой, если позволяют место и доверие. гость путь ночлег доверие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-can-use-voice-memory-body-or-objects:en",
+      "target_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Oral stories can mix remembered events, entertainment, and local news without proving each detail true. song story play music"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-can-use-voice-memory-body-or-objects:ru",
+      "target_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Устные рассказы могут смешивать память о событиях, развлечение и местные вести, не доказывая каждую деталь. песня рассказ игра музыка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-competes-for-time:en",
+      "target_ref": "claim:human-life-recreation-competes-for-time",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. A board or marked game can offer shared recreation when people have time, light, and a place. song story play recreation time"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-competes-for-time:ru",
+      "target_ref": "claim:human-life-recreation-competes-for-time",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Настольная или размеченная игра может дать общий досуг, когда есть время, свет и место. песня рассказ игра досуг время"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-participation-can-be-uneven-voluntary:en",
+      "target_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Work, care, travel, light, and fatigue can limit who joins song, play, dance, or storytelling. song story play participation recreation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-recreation-participation-can-be-uneven-voluntary:ru",
+      "target_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Работа, уход, путь, свет и усталость могут ограничивать участие в песне, игре, танце или рассказе. песня рассказ игра участие досуг"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-relationship-change-can-alter-household-arrangement:en",
+      "target_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Limited means can favor repair, reuse, and careful preservation of household goods. marriage kin household departure"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-relationship-change-can-alter-household-arrangement:ru",
+      "target_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. При скромных средствах вероятны починка, повторное использование и бережное хранение домашнего добра. брак родня дом уход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory:en",
+      "target_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Wooden or bone toys can support children’s play and imitation of ordinary work. song story play"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory:ru",
+      "target_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Деревянные или костяные игрушки могут поддерживать детскую игру и подражание обычному труду. песня рассказ игра"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-shared-role-can-be-negotiated:en",
+      "target_ref": "claim:human-life-shared-role-can-be-negotiated",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A person can be valued for kin connections, experience, or available labour in different combinations. age gender status role conversation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-shared-role-can-be-negotiated:ru",
+      "target_ref": "claim:human-life-shared-role-can-be-negotiated",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Человека могут ценить за родственные связи, опыт или доступный труд в разных сочетаниях. возраст гендер статус роль разговор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-standing-can-affect-social-access:en",
+      "target_ref": "claim:human-life-standing-can-affect-social-access",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Public status display can differ from food, goods, or credit actually available to a household. age gender status standing protection"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-standing-can-affect-social-access:ru",
+      "target_ref": "claim:human-life-standing-can-affect-social-access",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Публичный вид статуса может отличаться от реально доступных дому еды, вещей или кредита. возраст гендер статус положение защита"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-starting-household-needs-coordination:en",
+      "target_ref": "claim:human-life-starting-household-needs-coordination",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Kin help or remarriage can be alternative responses to household strain with different care arrangements. marriage kin household storage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-starting-household-needs-coordination:ru",
+      "target_ref": "claim:human-life-starting-household-needs-coordination",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Помощь родни или повторный брак могут быть разными ответами на трудность дома и по-разному менять уход. брак родня дом хранение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-stay-can-enable-consented-exchange:en",
+      "target_ref": "claim:human-life-stay-can-enable-consented-exchange",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. Host and guest can exchange news, small labour, or food only by agreement and with resources. guest travel lodging stay exchange"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-stay-can-enable-consented-exchange:ru",
+      "target_ref": "claim:human-life-stay-can-enable-consented-exchange",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Хозяин и гость могут обменяться новостями, малым трудом или пищей лишь по согласию и при наличии средств. гость путь ночлег остановка обмен"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-travel-conditions-can-justify-delay:en",
+      "target_ref": "claim:human-life-travel-conditions-can-justify-delay",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. Bad weather, fatigue, or a poor crossing can make delay or another lodging choice reasonable. guest travel lodging delay route"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-travel-conditions-can-justify-delay:ru",
+      "target_ref": "claim:human-life-travel-conditions-can-justify-delay",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Плохая погода, усталость или плохая переправа могут сделать задержку или иной ночлег разумными. гость путь ночлег задержка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-travellers-may-seek-local-information:en",
+      "target_ref": "claim:human-life-travellers-may-seek-local-information",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. A traveller can ask residents about road, water-crossing, or lodging conditions; the answer remains local and uncertain. guest travel lodging route information"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-travellers-may-seek-local-information:ru",
+      "target_ref": "claim:human-life-travellers-may-seek-local-information",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Путник может спросить жителей о дороге, переправе или ночлеге; ответ остаётся местным и неопределённым. гость путь ночлег сведения"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-visitors-add-resource-demands:en",
+      "target_ref": "claim:human-life-visitors-add-resource-demands",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. An overnight guest can compete for food, fuel, sleeping space, and attention. guest travel lodging visitors fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:human-life-visitors-add-resource-demands:ru",
+      "target_ref": "claim:human-life-visitors-add-resource-demands",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. Ночной гость может потребовать еды, топлива, места для сна и внимания. гость путь ночлег гости топливо"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:human-thermoregulation-depends-on-heat-exchange:en",
       "target_ref": "claim:human-thermoregulation-depends-on-heat-exchange",
       "domain": "biology_physiology",
@@ -10032,6 +10452,356 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Масляное дубление Процесс выделки с реакцией масла в структуре шкуры; не обычное поверхностное намасливание и не историческая доступность технологии. В описанной реакции масляного дубления химическое сшивание масла в структуре шкуры предотвращает слипание волокон при высыхании и придаёт мягкость. Зависимость относится к этой реакции, а не обычному поверхностному намасливанию, любому маслу или необогреваемой обработке. Она не задаёт водонепроницаемость, температуру, длительность, оборудование, наличие материалов или историческую доступность технологии. Слипание волокон шкуры при высыхании"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-apprentice-learns-and-assists:en",
+      "target_ref": "claim:ordinary-life-apprentice-learns-and-assists",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways a learner can combine instruction with ordinary assistance and depend on a household or workshop"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-apprentice-learns-and-assists:ru",
+      "target_ref": "claim:ordinary-life-apprentice-learns-and-assists",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Ученик может сочетать обучение с помощью и зависеть от дома или мастерской."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-apron-when-work-warrants:en",
+      "target_ref": "claim:ordinary-life-apron-when-work-warrants",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-apron-when-work-warrants:ru",
+      "target_ref": "claim:ordinary-life-apron-when-work-warrants",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-carpenter-works-wood-with-tools:en",
+      "target_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-carpenter-works-wood-with-tools:ru",
+      "target_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-craftsman-income-varies-with-orders:en",
+      "target_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-craftsman-income-varies-with-orders:ru",
+      "target_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Заказы мастера могут состоять из починки и новых инструментов; оплата или обмен и средства ремесленника зависят от обстоятельств."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-festive-clothes-differ-from-work:en",
+      "target_ref": "claim:ordinary-life-festive-clothes-differ-from-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways clothes for a feast or visit can be cleaner, less worn and less work-suited than everyday clothing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-festive-clothes-differ-from-work:ru",
+      "target_ref": "claim:ordinary-life-festive-clothes-differ-from-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Одежда для праздника или визита может быть чище, менее изношенной и менее рабочей."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-fisher-needs-water-and-gear:en",
+      "target_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-fisher-needs-water-and-gear:ru",
+      "target_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Рыболовству могут быть нужны вода и рациональный набор снастей: сеть с поплавками и грузилами, леса, верша или лодка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-help-can-create-reciprocity:en",
+      "target_ref": "claim:ordinary-life-help-can-create-reciprocity",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways help can create gratitude, negotiation or reciprocal expectation rather than guaranteed debt"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-help-can-create-reciprocity:ru",
+      "target_ref": "claim:ordinary-life-help-can-create-reciprocity",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Помощь может породить благодарность, переговоры или ожидание взаимности, но не долг."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-hospitality-is-resource-and-trust-bounded:en",
+      "target_ref": "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways hospitality can offer food, warmth, shelter or attention within resources, trust and risk"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-hospitality-is-resource-and-trust-bounded:ru",
+      "target_ref": "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Гостеприимство может дать еду, тепло, кров или внимание в пределах средств, доверия и риска."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-household-needs-heat-food-storage:en",
+      "target_ref": "claim:ordinary-life-household-needs-heat-food-storage",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Ordinary household lifeways a household can need shelter, heat, food preparation, storage and repair"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-household-needs-heat-food-storage:ru",
+      "target_ref": "claim:ordinary-life-household-needs-heat-food-storage",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Обычная домашняя жизнь Дому могут быть нужны кров, тепло, приготовление пищи, хранение и починка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-household-repairs-compete-with-new-goods:en",
+      "target_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Ordinary household lifeways maintaining clothing, tools and shelter can take priority over new goods"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-household-repairs-compete-with-new-goods:ru",
+      "target_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Обычная домашняя жизнь Починка одежды, инструмента и жилья может быть важнее новой вещи."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-linen-wool-clothing:en",
+      "target_ref": "claim:ordinary-life-linen-wool-clothing",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-linen-wool-clothing:ru",
+      "target_ref": "claim:ordinary-life-linen-wool-clothing",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Обычная одежда может включать льняную рубаху и шерстяной верх; материал и слои зависят от сезона, работы и средств."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-master-has-work-responsibility:en",
+      "target_ref": "claim:ordinary-life-master-has-work-responsibility",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways a master can hold responsibility for quality, tools, orders and instruction while means remain variable"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-master-has-work-responsibility:ru",
+      "target_ref": "claim:ordinary-life-master-has-work-responsibility",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Мастер может отвечать за качество, инструмент, заказ и обучение, хотя его средства переменчивы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-private-needs-shape-decisions:en",
+      "target_ref": "claim:ordinary-life-private-needs-shape-decisions",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways private needs such as care, food, rest, repair or household duty can shape choices without public proof"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-private-needs-shape-decisions:ru",
+      "target_ref": "claim:ordinary-life-private-needs-shape-decisions",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Частные нужды могут объяснять выбор без публичного доказательства."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-public-and-private-conduct-differ:en",
+      "target_ref": "claim:ordinary-life-public-and-private-conduct-differ",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways people can express requests, disagreement, deference or generosity differently in public and private"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-public-and-private-conduct-differ:ru",
+      "target_ref": "claim:ordinary-life-public-and-private-conduct-differ",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Человек может по-разному выражать просьбу, спор, почтение или щедрость публично и наедине."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-public-reputation-follows-conduct:en",
+      "target_ref": "claim:ordinary-life-public-reputation-follows-conduct",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways visible conduct, reliability and reports can affect public reputation, with contextual effect"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-public-reputation-follows-conduct:ru",
+      "target_ref": "claim:ordinary-life-public-reputation-follows-conduct",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Видимое поведение, надёжность и рассказы других могут влиять на репутацию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-shoes-protect-feet:en",
+      "target_ref": "claim:ordinary-life-shoes-protect-feet",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-shoes-protect-feet:ru",
+      "target_ref": "claim:ordinary-life-shoes-protect-feet",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Кожаную обувь можно чинить и сушить после сырости; очень горячее место ей вредит."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-anvil-hammer-tongs:en",
+      "target_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways a smith can use an anvil, hammer and tongs to hold and shape heated iron"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-anvil-hammer-tongs:ru",
+      "target_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Кузнец может применять наковальню, молот и клещи для формовки нагретого железа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-fire-needs-managed-space:en",
+      "target_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Ordinary household lifeways a forge needs space where heat, smoke, fuel and fire risk can be managed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-fire-needs-managed-space:ru",
+      "target_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Обычная домашняя жизнь Кузне нужен участок для управления жаром, дымом, топливом и пожарным риском."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-forge-and-bellows:en",
+      "target_ref": "claim:ordinary-life-smith-forge-and-bellows",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways ironworking can require a forge and bellows for controlled working heat"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-forge-and-bellows:ru",
+      "target_ref": "claim:ordinary-life-smith-forge-and-bellows",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Кузнечная работа может требовать горна и мехов для управляемого рабочего жара."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-leaves-scale-ash-offcuts:en",
+      "target_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways forge work can leave scale, ash, charcoal residue and small iron offcuts"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-leaves-scale-ash-offcuts:ru",
+      "target_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-needs-iron-and-fuel:en",
+      "target_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways iron stock and fuel can limit or delay a smith's current order"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-smith-needs-iron-and-fuel:ru",
+      "target_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Запас железа и топлива может ограничить или задержать заказ кузнеца."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-status-does-not-fix-wealth:en",
+      "target_ref": "claim:ordinary-life-status-does-not-fix-wealth",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways occupation or status can shape expectations without proving present wealth, stock or influence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-status-does-not-fix-wealth:ru",
+      "target_ref": "claim:ordinary-life-status-does-not-fix-wealth",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Занятие или статус влияют на ожидания, но не доказывают богатство, запас или влияние."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-weaver-needs-yarn-and-loom-space:en",
+      "target_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-weaver-needs-yarn-and-loom-space:ru",
+      "target_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Ткачество требует пряжи и устройства, держащего основу под натяжением, пока уток переплетается; работу можно прервать и продолжить."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-work-clothes-protect-and-move:en",
+      "target_ref": "claim:ordinary-life-work-clothes-protect-and-move",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-work-clothes-protect-and-move:ru",
+      "target_ref": "claim:ordinary-life-work-clothes-protect-and-move",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь Пояс может собрать рабочую одежду для движения; в холод добавляют слои, а одежда защищает от грязи, погоды, искр и грубого материала."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-worker-means-and-duty-vary:en",
+      "target_ref": "claim:ordinary-life-worker-means-and-duty-vary",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways a hired or dependent worker can control less of tools, time and output; treatment remains contextual"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:ordinary-life-worker-means-and-duty-vary:ru",
+      "target_ref": "claim:ordinary-life-worker-means-and-duty-vary",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом."
     },
     {
       "entry_ref": "wk-retrieval:claim:pain-nociception-distinct:en",
@@ -11896,6 +12666,76 @@
       "retrieval_text": "Керамический сосуд Многие ручные сосуды из средневекового корпуса Рюрикова городища и Новгорода изготовлялись из пригодных местных глин и отощителей. Это ограниченный корпусом пример, не обязательный отощитель для любого горшка; тип, пропорция, подготовка и режим обжига здесь не установлены."
     },
     {
+      "entry_ref": "wk-retrieval:claim:practical-boat-leak:en",
+      "target_ref": "claim:practical-boat-leak",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. Water entering a boat needs bailing or landing attention and diverts work from travel or cargo. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-leak:ru",
+      "target_ref": "claim:practical-boat-leak",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. Вода в лодке требует вычерпывания или высадки и отвлекает от пути либо груза. лодка берег груз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-load:en",
+      "target_ref": "claim:practical-boat-load",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. Cargo in a small boat is kept low and distributed between sides so handling remains easier. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-load:ru",
+      "target_ref": "claim:practical-boat-load",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. Груз в малой лодке держат ниже и распределяют по бортам, чтобы ею было легче управлять. лодка берег груз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-shore-transfer:en",
+      "target_ref": "claim:practical-boat-shore-transfer",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. At landing or unloading, a sudden pull or crowding one side makes a boat less steady. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-shore-transfer:ru",
+      "target_ref": "claim:practical-boat-shore-transfer",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. При посадке и разгрузке рывок или скопление на одном борту делает лодку менее устойчивой. лодка берег груз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-unload-order:en",
+      "target_ref": "claim:practical-boat-unload-order",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. Loading order can preserve a path and avoid shifting goods again without need. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-unload-order:ru",
+      "target_ref": "claim:practical-boat-unload-order",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. Порядок погрузки и разгрузки выбирают, чтобы оставить проход и не перекладывать вещи без нужды. лодка берег груз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-weather-water:en",
+      "target_ref": "claim:practical-boat-weather-water",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. Oars give headway without favorable wind; wind and current can help or hinder progress and control. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-boat-weather-water:ru",
+      "target_ref": "claim:practical-boat-weather-water",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. Вёсла дают ход без попутного ветра; ветер и течение могут помочь либо помешать ходу и управлению. лодка берег груз"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:practical-document-genres:en",
       "target_ref": "claim:practical-document-genres",
       "domain": "social_law_economy",
@@ -11908,6 +12748,356 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи Сохранившиеся новгородские берестяные документы включают разные практические жанры, в том числе долговые и судебные записи; это не мера всеобщей грамотности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-fuel:en",
+      "target_ref": "claim:practical-dwelling-fuel",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling upkeep Editorial practical premises. Heating and cooking draw on fuel, tending, and time, so they can compete. roof smoke fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-fuel:ru",
+      "target_ref": "claim:practical-dwelling-fuel",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Содержание жилья Редакционные практические предпосылки. Обогрев и готовка требуют топлива, присмотра и времени, потому могут соперничать. крыша дым топливо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-rain-snow:en",
+      "target_ref": "claim:practical-dwelling-rain-snow",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling upkeep Editorial practical premises. Rain, snow, melt, and wind make covering, drainage, and shelter upkeep practical concerns. roof smoke fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-rain-snow:ru",
+      "target_ref": "claim:practical-dwelling-rain-snow",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Содержание жилья Редакционные практические предпосылки. Дождь, снег, таяние и ветер делают покрытие, сток и содержание укрытия бытовой заботой. крыша дым топливо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-roof:en",
+      "target_ref": "claim:practical-dwelling-roof",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling upkeep Editorial practical premises. Roof covering and joints can be checked and repaired after weather or wear before a small defect grows. roof smoke fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-roof:ru",
+      "target_ref": "claim:practical-dwelling-roof",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Содержание жилья Редакционные практические предпосылки. Кровлю и стыки осматривают и чинят после погоды или износа, пока малый дефект не вырос. крыша дым топливо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-smoke-draft:en",
+      "target_ref": "claim:practical-dwelling-smoke-draft",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling upkeep Editorial practical premises. Opening a dwelling for smoke improves air but can admit draft and lose warmth. roof smoke fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-dwelling-smoke-draft:ru",
+      "target_ref": "claim:practical-dwelling-smoke-draft",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Содержание жилья Редакционные практические предпосылки. Открытие для дыма улучшает воздух, но может впустить сквозняк и выпустить тепло. крыша дым топливо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-fodder-hay:en",
+      "target_ref": "claim:practical-fodder-hay",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. Hay and other fodder can be gathered, kept dry, and allocated when grazing is reduced. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-fodder-hay:ru",
+      "target_ref": "claim:practical-fodder-hay",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. Сено и иной корм собирают, держат сухими и распределяют, когда выпаса становится меньше. сено корм скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-cooking:en",
+      "target_ref": "claim:practical-food-cooking",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Food and provisions Editorial practical premises. Cooking requires heat, fuel, a suitable vessel or surface, and attention. milk fish grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-cooking:ru",
+      "target_ref": "claim:practical-food-cooking",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Пища и припасы Редакционные практические предпосылки. Готовка требует жара, топлива, подходящей посуды или поверхности и присмотра. молоко рыба зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-grain-storage:en",
+      "target_ref": "claim:practical-food-grain-storage",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Food and provisions Editorial practical premises. Stored grain is kept dry and protected from loss and unwanted access as actual storage allows. milk fish grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-grain-storage:ru",
+      "target_ref": "claim:practical-food-grain-storage",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Пища и припасы Редакционные практические предпосылки. Зерно стараются держать сухим и защищённым от потерь и чужого доступа настолько, насколько позволяет хранилище. молоко рыба зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-milk:en",
+      "target_ref": "claim:practical-food-milk",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Food and provisions Editorial practical premises. Milk can be consumed fresh or worked into butter or curds when means and time are available. milk fish grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-milk:ru",
+      "target_ref": "claim:practical-food-milk",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Пища и припасы Редакционные практические предпосылки. Молоко можно пить свежим или переработать в масло либо творог при наличии средств и времени. молоко рыба зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-preserve:en",
+      "target_ref": "claim:practical-food-preserve",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Food and provisions Editorial practical premises. Meat or fish can be salted or dried for use beyond fresh catch or slaughter. milk fish grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-preserve:ru",
+      "target_ref": "claim:practical-food-preserve",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Пища и припасы Редакционные практические предпосылки. Мясо или рыбу солят либо сушат, чтобы пользоваться ими после свежей добычи или забоя. молоко рыба зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-provisions:en",
+      "target_ref": "claim:practical-food-provisions",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. Provisioning links present work and stores to future need; current consumption can compete with it. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-food-provisions:ru",
+      "target_ref": "claim:practical-food-provisions",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. Заготовка связывает нынешний труд и запасы с будущими нуждами; текущее потребление может им соперничать. сено корм скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-cut:en",
+      "target_ref": "claim:practical-leather-cut",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Leather can be cut into components; actual piece size and condition limit the result. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-cut:ru",
+      "target_ref": "claim:practical-leather-cut",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Кожу режут на детали; размер и состояние наличного куска ограничивают результат. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-patch:en",
+      "target_ref": "claim:practical-leather-patch",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. A worn leather article can be patched when compatible material and attachment are available. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-patch:ru",
+      "target_ref": "claim:practical-leather-patch",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Изношенную кожаную вещь можно залатать при совместимом материале и способе крепления. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-shoe:en",
+      "target_ref": "claim:practical-leather-shoe",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Wet work, walking, and repeated flexing make footwear condition, fit, and repair practically relevant. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-shoe:ru",
+      "target_ref": "claim:practical-leather-shoe",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Мокрая работа, ходьба и постоянное сгибание делают состояние, посадку и ремонт обуви практически важными. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-stitch:en",
+      "target_ref": "claim:practical-leather-stitch",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Leather components can be stitched or fastened; a worn join needs renewed attention. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-leather-stitch:ru",
+      "target_ref": "claim:practical-leather-stitch",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Детали из кожи сшивают или скрепляют; изношенный шов требует нового внимания. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-livestock-care:en",
+      "target_ref": "claim:practical-livestock-care",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. Livestock care can combine feed, water, shelter, observation, and labor; needs vary by animal and condition. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-livestock-care:ru",
+      "target_ref": "claim:practical-livestock-care",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. Уход за скотом может включать корм, воду, укрытие, наблюдение и труд; нужды меняются с животным и состоянием. сено корм скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-dry:en",
+      "target_ref": "claim:practical-net-dry",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Net work Editorial practical premises. A wet net can be spread to dry so damage and tangles are easier to notice. net drying mending"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-dry:ru",
+      "target_ref": "claim:practical-net-dry",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Работа с сетью Редакционные практические предпосылки. Мокрую сеть можно разложить для просушки, чтобы легче заметить повреждения и спутывание. сеть сушка починка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-repair:en",
+      "target_ref": "claim:practical-net-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Net work Editorial practical premises. Broken mesh and tangles can be sorted or mended before the next use. net drying mending"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-repair:ru",
+      "target_ref": "claim:practical-net-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Работа с сетью Редакционные практические предпосылки. Разрывы ячеек и спутывание сети разбирают или чинят до следующего использования. сеть сушка починка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-space:en",
+      "target_ref": "claim:practical-net-space",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Net work Editorial practical premises. Laying out and recovering a net need clear space; snags and tangles slow later work. net drying mending"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-net-space:ru",
+      "target_ref": "claim:practical-net-space",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Работа с сетью Редакционные практические предпосылки. Раскладка и выборка сети требуют свободного места: зацепы и клубки замедляют последующую работу. сеть сушка починка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-season-work:en",
+      "target_ref": "claim:practical-season-work",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. Seasonal tasks compete for labor and favorable conditions, so delay has practical cost. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-season-work:ru",
+      "target_ref": "claim:practical-season-work",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. Сезонные дела соперничают за людей и подходящую погоду, поэтому промедление имеет практическую цену. сено корм скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-cut:en",
+      "target_ref": "claim:practical-textile-cut",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Cutting cloth commits it among garment pieces or smaller uses and leaves offcuts. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-cut:ru",
+      "target_ref": "claim:practical-textile-cut",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Раскрой распределяет ткань между деталями и меньшими употреблениями, оставляя обрезки. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-repair:en",
+      "target_ref": "claim:practical-textile-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Cloth can be saved, patched, or resewn when material and time justify repair. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-repair:ru",
+      "target_ref": "claim:practical-textile-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Ткань берегут, латают или перешивают, если материал и время оправдывают починку. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-sew:en",
+      "target_ref": "claim:practical-textile-sew",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Sewing joins cut cloth and closes tears, while a mended garment can wear again. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-sew:ru",
+      "target_ref": "claim:practical-textile-sew",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Шитьё соединяет раскроенные детали и заделывает разрыв, но чинёная вещь продолжает изнашиваться. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-spin:en",
+      "target_ref": "claim:practical-textile-spin",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Prepared fibre can be spun into thread before it is available for weaving or sewing. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-spin:ru",
+      "target_ref": "claim:practical-textile-spin",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Подготовленное волокно прядут в нить, прежде чем оно станет доступно для ткачества или шитья. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-weave:en",
+      "target_ref": "claim:practical-textile-weave",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. Weaving needs a suitable setup and time, but warp and unfinished cloth can remain on it through an interruption. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-textile-weave:ru",
+      "target_ref": "claim:practical-textile-weave",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. Ткачество требует устройства и времени, но основу и незавершённое полотно можно оставить на нём при перерыве. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-work-tradeoff:en",
+      "target_ref": "claim:practical-work-tradeoff",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. Ordinary maintenance, food work, transport, and craft compete for limited time, material, access, and labor. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:practical-work-tradeoff:ru",
+      "target_ref": "claim:practical-work-tradeoff",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. Обычный уход, пища, перевозка и ремесло соперничают за ограниченные время, материал, доступ и труд. сено корм скот"
     },
     {
       "entry_ref": "wk-retrieval:claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence:en",
@@ -11936,6 +13126,426 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Вероятный походный потир Музейная вероятная атрибуция чаши для причастия Новгородский музей описывает домонгольскую чашу XII–XIII веков с процветшим византийским крестом на днище как предмет, который вероятнее всего служил походным потиром для причастия. Это вероятная музейная атрибуция и широкий древнерусский аналог для 1100–1300 гг. с выводом средней уверенности, а не доказательство средневекового присутствия в Новгородской земле. Материал, место находки, изготовление и история происхождения не названы. Факт не создаёт потир, духовенство, освящение, церковь, вино, причастие, право доступа, официальную подлинность или нынешний обряд. чаша потир причастие походный потир чаша для причастия"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-loss-reaches-household:en",
+      "target_ref": "claim:public-world-armed-loss-reaches-household",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Death, injury, absence, or lost equipment can change household work, care, and provisions without fixing a family response. dispute court speech name loss household"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-loss-reaches-household:ru",
+      "target_ref": "claim:public-world-armed-loss-reaches-household",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Смерть, рана, отсутствие или утрата снаряжения могут менять труд, уход и припасы дома, но не предрешают ответ семьи. спор суд речь имя потеря семья"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-movement-consumes-food-fuel-attention:en",
+      "target_ref": "claim:public-world-armed-movement-consumes-food-fuel-attention",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Armed travel or waiting consumes food, fuel, carrying capacity, and household attention; no stock is created. dispute court speech name travel provisions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-movement-consumes-food-fuel-attention:ru",
+      "target_ref": "claim:public-world-armed-movement-consumes-food-fuel-attention",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Вооружённый путь или ожидание расходуют пищу, топливо, перенос и домашнее внимание; запас не создаётся. спор суд речь имя поход припасы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-presence-changes-public-risk:en",
+      "target_ref": "claim:public-world-armed-presence-changes-public-risk",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Known armed presence can prompt distance, allies, information, or restraint; response varies. dispute court speech name armed risk"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-armed-presence-changes-public-risk:ru",
+      "target_ref": "claim:public-world-armed-presence-changes-public-risk",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Известное вооружённое присутствие может побудить людей отойти, искать союзников, сведения или сдержанность; реакция различна. спор суд речь имя вооружённые опасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-arms-follow-means-role:en",
+      "target_ref": "claim:public-world-arms-follow-means-role",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary consequences of armed participation Editorial qualitative premises for armed people and household consequences. Armed people can differ markedly in personal equipment by means, role, access, and purpose. weapons armed group travel equipment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-arms-follow-means-role:ru",
+      "target_ref": "claim:public-world-arms-follow-means-role",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычные последствия вооружённого участия Редакторские качественные посылки о вооружённых людях и их хозяйственных последствиях. Вооружённые люди могут заметно различаться личным снаряжением по средствам, роли, доступу и цели. оружие отряд поход снаряжение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-capacity-can-vary-day-to-day:en",
+      "target_ref": "claim:public-world-capacity-can-vary-day-to-day",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. Available capacity varies with condition, fatigue, environment, support, and task; one limitation does not define all activity or outcome. illness injury disability care capacity fatigue"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-capacity-can-vary-day-to-day:ru",
+      "target_ref": "claim:public-world-capacity-can-vary-day-to-day",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Доступная способность меняется с состоянием, усталостью, средой, поддержкой и задачей; одно наблюдение не определяет все дела и будущий исход. болезнь ранение инвалидность уход способность усталость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-church-and-official-speech-can-be-marked:en",
+      "target_ref": "claim:public-world-church-and-official-speech-can-be-marked",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Church, official, or formal speech can be more formulaic than household talk. dispute court speech name church speech official speech"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-church-and-official-speech-can-be-marked:ru",
+      "target_ref": "claim:public-world-church-and-official-speech-can-be-marked",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Церковная, официальная или формальная речь может быть заметно более формульной, чем домашний разговор. спор суд речь имя церковная речь официальная речь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-community-response-to-impairment-varies:en",
+      "target_ref": "claim:public-world-community-response-to-impairment-varies",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. Response to illness or impairment can be cooperation, respect, impatience, avoidance, doubt, or exclusion; pity and stigma are not automatic. illness injury disability care stigma"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-community-response-to-impairment-varies:ru",
+      "target_ref": "claim:public-world-community-response-to-impairment-varies",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Ответ на болезнь или ограничение может быть помощью и уважением, нетерпением, избеганием, сомнением или исключением; жалость и стигма не обязательны. болезнь ранение инвалидность уход стигма"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-deference-can-be-calibrated-to-seniority-role:en",
+      "target_ref": "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Greeting, request, disagreement, or apology can be calibrated to seniority, role, familiarity, and publicity without one etiquette script. dispute court speech name seniority address"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-deference-can-be-calibrated-to-seniority-role:ru",
+      "target_ref": "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Приветствие, просьбу, спор или извинение можно соразмерять старшинству, роли, знакомству и публичности без единого этикета. спор суд речь имя старшинство обращение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-dispute-can-use-questions-and-kin:en",
+      "target_ref": "claim:public-world-dispute-can-use-questions-and-kin",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. In a dispute people can clarify facts, recall circumstances, seek kin, or use an introduction before going public. dispute court speech name kin questions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-dispute-can-use-questions-and-kin:ru",
+      "target_ref": "claim:public-world-dispute-can-use-questions-and-kin",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. В споре можно выяснять подробности, вспоминать обстоятельства, искать родню или знакомство до публичного шага. спор суд речь имя родня расспрос"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-dispute-starts-with-competing-accounts:en",
+      "target_ref": "claim:public-world-dispute-starts-with-competing-accounts",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A dispute over a thing, payment, injury, or obligation can begin with competing accounts by owner, holder, or witness. dispute court speech name owner"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-dispute-starts-with-competing-accounts:ru",
+      "target_ref": "claim:public-world-dispute-starts-with-competing-accounts",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Спор о вещи, платеже, ране или обязательстве может начаться с противоречивых рассказов владельца, держателя или свидетеля. спор суд речь имя владелец"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-foot-and-mounted-service-have-different-needs:en",
+      "target_ref": "claim:public-world-foot-and-mounted-service-have-different-needs",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary consequences of armed participation Editorial qualitative premises for armed people and household consequences. Mounted participation needs an available horse, fodder, care, and harness; a foot participant carries personal equipment. weapons armed group travel foot mounted harness"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-foot-and-mounted-service-have-different-needs:ru",
+      "target_ref": "claim:public-world-foot-and-mounted-service-have-different-needs",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычные последствия вооружённого участия Редакторские качественные посылки о вооружённых людях и их хозяйственных последствиях. Конному нужны доступный конь, корм, уход и сбруя; пеший несёт личное снаряжение на себе. оружие отряд поход пеший конный сбруя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-health-disclosure-is-contextual:en",
+      "target_ref": "claim:public-world-health-disclosure-is-contextual",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. An ill or impaired person can seek help, conceal difficulty, explain a limit, or rely on someone trusted according to relation and risk. illness injury disability care trust"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-health-disclosure-is-contextual:ru",
+      "target_ref": "claim:public-world-health-disclosure-is-contextual",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Больной или ограниченный человек может просить помощи, скрывать трудность, объяснять предел или доверяться близкому — по связи и риску. болезнь ранение инвалидность уход доверие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-help-access-can-be-limited:en",
+      "target_ref": "claim:public-world-help-access-can-be-limited",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. Distance, weather, work pressure, household means, trust, and availability can limit help without proving neglect or outcome. illness injury disability care access to help weather"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-help-access-can-be-limited:ru",
+      "target_ref": "claim:public-world-help-access-can-be-limited",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Расстояние, погода, работа, средства дома, доверие и текущая доступность могут ограничить помощь, не доказывая пренебрежение или исход. болезнь ранение инвалидность уход доступ к помощи погода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-illness-can-reallocate-ordinary-work:en",
+      "target_ref": "claim:public-world-illness-can-reallocate-ordinary-work",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. Illness, injury, fatigue, or impairment can reduce, postpone, share, or adapt ordinary work without assigning universal incapacity. illness injury disability care work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-illness-can-reallocate-ordinary-work:ru",
+      "target_ref": "claim:public-world-illness-can-reallocate-ordinary-work",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Болезнь, рана, усталость или ограничение могут уменьшить, отложить, разделить или изменить обычную работу без общего приговора о неспособности. болезнь ранение инвалидность уход работа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-injured-person-needs-safe-carriage-or-shelter:en",
+      "target_ref": "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. After an established injury, slower travel, support, carriage, shelter, or helpers may be needed. illness injury disability care injured carriage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-injured-person-needs-safe-carriage-or-shelter:ru",
+      "target_ref": "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. После установленного ранения могут понадобиться медленный путь, поддержка, перенос, укрытие или помощники. болезнь ранение инвалидность уход раненый перенос"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-local-authority-is-one-escalation-option:en",
+      "target_ref": "claim:public-world-local-authority-is-one-escalation-option",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Where recognized local authority or gathering exists, parties can seek hearing, mediation, protection, or referral. dispute court speech name authority hearing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-local-authority-is-one-escalation-option:ru",
+      "target_ref": "claim:public-world-local-authority-is-one-escalation-option",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. К уже признанному местному авторитету или собранию можно обратиться за разбором, посредничеством, защитой или направлением. спор суд речь имя авторитет"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-name-can-combine-personal-and-distinguishing-form:en",
+      "target_ref": "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A personal name can be clarified by father-name, spouse-derived form, byname, occupation, kin, or place when distinction is needed. dispute court speech name byname occupation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-name-can-combine-personal-and-distinguishing-form:ru",
+      "target_ref": "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Личное имя можно уточнять отчеством, формой от мужа, прозвищем, занятием, роднёй или местом, когда нужен различитель. спор суд речь имя отчество прозвище"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-name-form-does-not-prove-status-or-kinship:en",
+      "target_ref": "claim:public-world-name-form-does-not-prove-status-or-kinship",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A name or address form can aid reference without proving rank, marriage, ancestry, office, or legal identity. dispute court speech name rank"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-name-form-does-not-prove-status-or-kinship:ru",
+      "target_ref": "claim:public-world-name-form-does-not-prove-status-or-kinship",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Форма имени или обращения помогает различить человека, но не доказывает статус, брак, происхождение, должность или право. спор суд речь имя статус"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-negotiation-can-precede-formal-escalation:en",
+      "target_ref": "claim:public-world-negotiation-can-precede-formal-escalation",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Apology, return, compensation discussion, delay, or private negotiation are possible without fixing liability or settlement. dispute court speech name negotiation compensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-negotiation-can-precede-formal-escalation:ru",
+      "target_ref": "claim:public-world-negotiation-can-precede-formal-escalation",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Извинение, возврат, разговор о возмещении, отсрочка или частные переговоры возможны без признания вины или решения. спор суд речь имя переговоры возмещение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-ordinary-speech-tracks-relationship-setting:en",
+      "target_ref": "claim:public-world-ordinary-speech-tracks-relationship-setting",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Ordinary speech varies with familiarity, age, role, audience, and purpose rather than using one register. dispute court speech name register"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-ordinary-speech-tracks-relationship-setting:ru",
+      "target_ref": "claim:public-world-ordinary-speech-tracks-relationship-setting",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Обычная речь меняется с близостью, возрастом, ролью, слушателями и целью, а не имеет единого регистра. спор суд речь имя регистр"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-publicity-raises-reputation-risk:en",
+      "target_ref": "claim:public-world-publicity-raises-reputation-risk",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A public dispute can widen support, scrutiny, embarrassment, and retaliation risk without proving guilt. dispute court speech name public reputation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-publicity-raises-reputation-risk:ru",
+      "target_ref": "claim:public-world-publicity-raises-reputation-risk",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Публичный спор может расширить и поддержку, и проверку, и риск стыда или ответного давления; виновность не следует. спор суд речь имя публичность репутация"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-rest-warmth-drink-food-are-contextual-support:en",
+      "target_ref": "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. When safe and available, rest, warmth, drink, food, and company can be practical support, not treatment or guaranteed benefit. illness injury disability care rest warmth"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-rest-warmth-drink-food-are-contextual-support:ru",
+      "target_ref": "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. При безопасности и наличии отдых, тепло, питьё, еда и присутствие рядом могут быть практической поддержкой, не лечением и не гарантией пользы. болезнь ранение инвалидность уход отдых тепло"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-route-and-tool-can-be-adapted-to-capacity:en",
+      "target_ref": "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. With an established limitation, a shorter route, slower pace, companion, rest point, familiar tool, or changed task can be reasonable when available. illness injury disability care route tool capacity"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-route-and-tool-can-be-adapted-to-capacity:ru",
+      "target_ref": "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. При уже установленном ограничении разумны более короткий путь, медленный шаг, спутник, остановка, знакомый инструмент или иная задача, если они доступны. болезнь ранение инвалидность уход маршрут инструмент ограничение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-senior-can-coordinate-messenger-can-carry-word:en",
+      "target_ref": "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A senior can coordinate a small group and a messenger carry word where people and route already exist. dispute court speech name senior messenger"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-senior-can-coordinate-messenger-can-carry-word:ru",
+      "target_ref": "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Старший может координировать малую группу, а посыльный — передать просьбу или известие при уже заданных людях и пути. спор суд речь имя старший посыльный"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-speech-can-be-plain-without-modern-slang:en",
+      "target_ref": "claim:public-world-speech-can-be-plain-without-modern-slang",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. In ordinary oral talk, short requests, repetitions, clarifications, and assessments stand beside established formulas; not every speaker uses official language. dispute court speech name oral speech formula"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-speech-can-be-plain-without-modern-slang:ru",
+      "target_ref": "claim:public-world-speech-can-be-plain-without-modern-slang",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. В обиходном устном разговоре короткие просьбы, повторения, уточнения и оценки стоят рядом с устойчивыми формулами; не каждый говорит официальным языком. спор суд речь имя устная речь формула"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-status-and-ties-affect-access-not-guilt:en",
+      "target_ref": "claim:public-world-status-and-ties-affect-access-not-guilt",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. Standing, kin, reputation, and witnesses can affect access to support or hearing, not truth or guilt. dispute court speech name status witnesses"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-status-and-ties-affect-access-not-guilt:ru",
+      "target_ref": "claim:public-world-status-and-ties-affect-access-not-guilt",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Положение, родня, репутация и свидетели могут влиять на доступ к поддержке или разбору, но не на истину и вину. спор суд речь имя статус свидетели"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-support-needs-available-person-and-resources:en",
+      "target_ref": "claim:public-world-support-needs-available-person-and-resources",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. Help for an ill or injured person depends on people, time, shelter, food, water, warmth, and willingness; it is neither automatic nor absent by default. illness injury disability care help resources"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-support-needs-available-person-and-resources:ru",
+      "target_ref": "claim:public-world-support-needs-available-person-and-resources",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. Помощь больному или раненому зависит от людей, времени, укрытия, пищи, воды, тепла и готовности; она не автоматична и не отсутствует по умолчанию. болезнь ранение инвалидность уход помощь ресурсы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-unfamiliar-speech-allows-clarification:en",
+      "target_ref": "claim:public-world-unfamiliar-speech-allows-clarification",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. An unclear word, name, accent, or message permits repetition, explanation, or a known intermediary. dispute court speech name unclear speech clarification"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-unfamiliar-speech-allows-clarification:ru",
+      "target_ref": "claim:public-world-unfamiliar-speech-allows-clarification",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Непонятное слово, имя, выговор или сообщение дают повод переспросить, объяснить или позвать знакомого посредника. спор суд речь имя непонятная речь переспросить"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-weapons-shields-armour-have-distinct-tradeoffs:en",
+      "target_ref": "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary consequences of armed participation Editorial qualitative premises for armed people and household consequences. A shield is held for cover, armour is worn over particular body areas with incomplete protection, and a weapon needs access and reach. weapons armed group travel shield armour weapon"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-weapons-shields-armour-have-distinct-tradeoffs:ru",
+      "target_ref": "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычные последствия вооружённого участия Редакторские качественные посылки о вооружённых людях и их хозяйственных последствиях. Щит держат для прикрытия, доспех носят на определённых частях тела и он защищает не полностью; оружию нужны доступ и досягаемость. оружие отряд поход щит доспех"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-witness-account-has-bounded-scope:en",
+      "target_ref": "claim:public-world-witness-account-has-bounded-scope",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. A witness or messenger reports what was seen or heard; memory, interest, and incompleteness limit the account. dispute court speech name witness messenger"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:public-world-witness-account-has-bounded-scope:ru",
+      "target_ref": "claim:public-world-witness-account-has-bounded-scope",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Свидетель или посыльный передаёт увиденное либо услышанное; память, интерес и неполнота ограничивают рассказ. спор суд речь имя свидетель посыльный"
     },
     {
       "entry_ref": "wk-retrieval:claim:reduced-atp-reserves-can-cause-muscle-fatigue:en",
@@ -15746,6 +17356,20 @@
       "retrieval_text": "Домонгольское каменное храмовое строительство Специализированное строительство каменных храмов Новгородской земли; не обычный дом и не текущая стройка."
     },
     {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:ordinary-household-lifeways:en",
+      "target_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Ordinary household lifeways"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:ordinary-household-lifeways:ru",
+      "target_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Обычная домашняя жизнь"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:plank-vestibule:en",
       "target_ref": "wk:architecture_settlement:plank-vestibule",
       "domain": "architecture_settlement",
@@ -15786,6 +17410,20 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Частокол Частокол: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-practical-dwelling-upkeep:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling upkeep Editorial practical premises. roof smoke fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-practical-dwelling-upkeep:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Содержание жилья Редакционные практические предпосылки. крыша дым топливо"
     },
     {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:river-landing:en",
@@ -18294,6 +19932,20 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-health-support:en",
+      "target_ref": "wk:biology_physiology:reconstructed-health-support",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical support during illness and impairment Editorial premises for support and adaptation without a medical protocol. illness injury disability care"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-health-support:ru",
+      "target_ref": "wk:biology_physiology:reconstructed-health-support",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. болезнь ранение инвалидность уход"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-circulatory-shock-perfusion:en",
       "target_ref": "wk:biology_physiology:research-circulatory-shock-perfusion",
       "domain": "biology_physiology",
@@ -19610,6 +21262,20 @@
       "retrieval_text": "Литьё цветных металлов"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:ordinary-work-lifeways:en",
+      "target_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work lifeways"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:ordinary-work-lifeways:ru",
+      "target_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Обычная трудовая жизнь"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:oven-bread-baking:en",
       "target_ref": "wk:craft_technology:oven-bread-baking",
       "domain": "craft_technology",
@@ -19650,6 +21316,48 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-cloth-leather-work:en",
+      "target_ref": "wk:craft_technology:reconstructed-practical-cloth-leather-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cloth and leather work Editorial practical premises. spinning sewing shoes"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-cloth-leather-work:ru",
+      "target_ref": "wk:craft_technology:reconstructed-practical-cloth-leather-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Ткань и кожа Редакционные практические предпосылки. прядение шитьё обувь"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-food-provision:en",
+      "target_ref": "wk:craft_technology:reconstructed-practical-food-provision",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Food and provisions Editorial practical premises. milk fish grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-food-provision:ru",
+      "target_ref": "wk:craft_technology:reconstructed-practical-food-provision",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Пища и припасы Редакционные практические предпосылки. молоко рыба зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-net-work:en",
+      "target_ref": "wk:craft_technology:reconstructed-practical-net-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Net work Editorial practical premises. net drying mending"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-net-work:ru",
+      "target_ref": "wk:craft_technology:reconstructed-practical-net-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Работа с сетью Редакционные практические предпосылки. сеть сушка починка"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:rod-binding:en",
@@ -22648,6 +24356,34 @@
       "retrieval_text": "Недублёная высушенная шкура Недублёная шкура (rawhide); не общее название выделанной кожи."
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-armed-public-world:en",
+      "target_ref": "wk:material_culture:reconstructed-armed-public-world",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary consequences of armed participation Editorial qualitative premises for armed people and household consequences. weapons armed group travel"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-armed-public-world:ru",
+      "target_ref": "wk:material_culture:reconstructed-armed-public-world",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычные последствия вооружённого участия Редакторские качественные посылки о вооружённых людях и их хозяйственных последствиях. оружие отряд поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-practical-boat-work:en",
+      "target_ref": "wk:material_culture:reconstructed-practical-boat-work",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Practical boat and shore work Editorial practical premises. boat shore cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-practical-boat-work:ru",
+      "target_ref": "wk:material_culture:reconstructed-practical-boat-work",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Практика лодки и берега Редакционные практические предпосылки. лодка берег груз"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:red-lead-pigment:en",
       "target_ref": "wk:material_culture:red-lead-pigment",
       "domain": "material_culture",
@@ -23388,6 +25124,48 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Посадник: контекст деятельности Именованные летописные эпизоды деятельности посадников посадник военная деятельность"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-hospitality-travel-lodging:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-hospitality-travel-lodging",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Hospitality, travel, and lodging Contextual premises for receiving a traveller. guest travel lodging"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-hospitality-travel-lodging:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-hospitality-travel-lodging",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Гостеприимство, путь и ночлег Контекстные бытовые предпосылки приёма путника. гость путь ночлег"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-learning-apprenticeship:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-learning-apprenticeship",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. child apprentice learn"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-learning-apprenticeship:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-learning-apprenticeship",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. ребёнок ученик учиться"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-practical-seasonal-work:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-practical-seasonal-work",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Seasonal work and care Editorial practical premises. hay fodder livestock"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-practical-seasonal-work:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-practical-seasonal-work",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сезонный труд и уход Редакционные практические предпосылки. сено корм скот"
     },
     {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:resource-occupation-needs-setting:en",
@@ -25266,6 +27044,48 @@
       "retrieval_text": "Экспериментальные механизмы социального взаимодействия Экспериментальные результаты о кооперации, доверии и торге не задают исход конкретного взаимодействия."
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_behavior:ordinary-social-lifeways:en",
+      "target_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary social lifeways"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:ordinary-social-lifeways:ru",
+      "target_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычные социальные отношения"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-recreation-oral-culture:en",
+      "target_ref": "wk:social_behavior:reconstructed-recreation-oral-culture",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. song story play"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-recreation-oral-culture:ru",
+      "target_ref": "wk:social_behavior:reconstructed-recreation-oral-culture",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. песня рассказ игра"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-social-variation:en",
+      "target_ref": "wk:social_behavior:reconstructed-social-variation",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. age gender status"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-social-variation:ru",
+      "target_ref": "wk:social_behavior:reconstructed-social-variation",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. возраст гендер статус"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_behavior:research-pooled-work-social-loafing:en",
       "target_ref": "wk:social_behavior:research-pooled-work-social-loafing",
       "domain": "social_behavior",
@@ -26300,6 +28120,34 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Просьба о защите Заявленная просьба о защите защита"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-household-formation:en",
+      "target_ref": "wk:social_law_economy:reconstructed-household-formation",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. marriage kin household"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-household-formation:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-household-formation",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. брак родня дом"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-public-dispute-and-language:en",
+      "target_ref": "wk:social_law_economy:reconstructed-public-dispute-and-language",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Public disputes and ordinary speech Editorial premises for disputes, address, and naming without a ready legal procedure. dispute court speech name"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-public-dispute-and-language:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-public-dispute-and-language",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. спор суд речь имя"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:regional-economic-activities:en",

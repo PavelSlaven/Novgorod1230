@@ -959,49 +959,92 @@
     {
       "id": "gameplay-physiology-v3",
       "source_path": "gameplay-physiology-v3.json",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "location_applicability": "universal physiology; current actor condition remains body-owned",
-      "applicability": {"resource":"none","material":"none","process":"partial","npc":"partial"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "partial",
+        "npc": "partial"
+      },
       "coverage": "bounded approved reflex, airway, perfusion, thermoregulation and intoxication premises"
     },
     {
       "id": "gameplay-flora-ecology-v3",
       "source_path": "gameplay-flora-ecology-v3.json",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "location_applicability": "universal ecology; historical/local presence remains separately grounded",
-      "applicability": {"resource":"partial","material":"partial","process":"partial","npc":"partial"},
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "partial"
+      },
       "coverage": "bounded phenology, fibre, river-debris and water-quality premises"
     },
     {
       "id": "gameplay-material-process-v3",
       "source_path": "gameplay-material-process-v3.json",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "location_applicability": "fire, storage and wet-work contexts only when state supplies objects/processes",
-      "applicability": {"resource":"partial","material":"grounded","process":"grounded","npc":"partial"},
+      "applicability": {
+        "resource": "partial",
+        "material": "grounded",
+        "process": "grounded",
+        "npc": "partial"
+      },
       "coverage": "bounded grain, water-cooling and net-serviceability premises"
     },
     {
       "id": "gameplay-physical-environment-v3",
       "source_path": "gameplay-physical-environment-v3.json",
-      "domains": ["biology_physiology","physics_material_science"],
+      "domains": [
+        "biology_physiology",
+        "physics_material_science"
+      ],
       "location_applicability": "smoke, rope and aquatic-plant contexts; no present condition inferred",
-      "applicability": {"resource":"partial","material":"partial","process":"partial","npc":"partial"},
+      "applicability": {
+        "resource": "partial",
+        "material": "partial",
+        "process": "partial",
+        "npc": "partial"
+      },
       "coverage": "bounded smoke optics, rope condition and aquatic-form premises"
     },
     {
       "id": "gameplay-plant-identification-v3",
       "source_path": "gameplay-plant-identification-v3.json",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "location_applicability": "plant-recognition and proposed-use contexts; no taxon/presence/food result inferred",
-      "applicability": {"resource":"partial","material":"none","process":"partial","npc":"partial"},
+      "applicability": {
+        "resource": "partial",
+        "material": "none",
+        "process": "partial",
+        "npc": "partial"
+      },
       "coverage": "bounded diagnostic identity, plant-part and look-alike premises"
     },
     {
       "id": "gameplay-granular-materials-v3",
       "source_path": "gameplay-granular-materials-v3.json",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "location_applicability": "Wet granular material and deformation contexts only when state supplies material and phase conditions",
-      "applicability": {"resource":"none","material":"conditional","process":"conditional","npc":"none"},
+      "applicability": {
+        "resource": "none",
+        "material": "conditional",
+        "process": "conditional",
+        "npc": "none"
+      },
       "coverage": "bounded capillary-cohesion and pore-phase configuration premises"
     },
     {
@@ -1117,33 +1160,62 @@
     {
       "id": "static-floating-weather-envelope-v1",
       "source_path": "static-floating-weather-envelope-v1.json",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "location_applicability": "Floating-body and weather-exposed enclosure contexts",
-      "applicability": {"resource":"conditional","material":"conditional","process":"conditional physical mechanism","npc":"none"},
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "conditional physical mechanism",
+        "npc": "none"
+      },
       "coverage": "bounded independently approved premises"
     },
     {
       "id": "static-exposure-mechanisms-v1",
       "source_path": "static-exposure-mechanisms-v1.json",
-      "domains": ["physics_material_science", "biology_physiology"],
+      "domains": [
+        "physics_material_science",
+        "biology_physiology"
+      ],
       "location_applicability": "Fuel-burning enclosures, ventilation and cold-water immersion contexts",
-      "applicability": {"resource":"conditional","material":"conditional","process":"conditional transport and exposure","npc":"conditional physiology, not outcome"},
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "conditional transport and exposure",
+        "npc": "conditional physiology, not outcome"
+      },
       "coverage": "bounded independently approved premises"
     },
     {
       "id": "static-historical-household-practice-v1",
       "source_path": "static-historical-household-practice-v1.json",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "location_applicability": "Historical religious calendar context; no Novgorod-local observance inferred",
-      "applicability": {"resource":"none","material":"textual calendar","process":"bounded historical premise","npc":"conditional"},
+      "applicability": {
+        "resource": "none",
+        "material": "textual calendar",
+        "process": "bounded historical premise",
+        "npc": "conditional"
+      },
       "coverage": "bounded independently approved premise"
     },
     {
       "id": "static-food-contact-v1",
       "source_path": "static-food-contact-v1.json",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "location_applicability": "Food preparation and handling contexts",
-      "applicability": {"resource":"conditional","material":"conditional","process":"grounded conditional premise","npc":"conditional"},
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded conditional premise",
+        "npc": "conditional"
+      },
       "coverage": "bounded independently approved premise"
     },
     {
@@ -1164,90 +1236,220 @@
     {
       "id": "macro-social-history-v1",
       "source_path": "macro-social-history-v1.json",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "location_applicability": "Document-specific Novgorod correspondence dated 1220–1240",
-      "applicability": {"resource":"none","material":"birch-bark document context","process":"bounded written communication","npc":"named correspondents only within the source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark document context",
+        "process": "bounded written communication",
+        "npc": "named correspondents only within the source record"
+      },
       "coverage": "one independently approved document premise"
     },
     {
       "id": "macro-universal-life-environment-v1",
       "source_path": "macro-universal-life-environment-v1.json",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "location_applicability": "Host-parasite reasoning after organism and host context are independently established",
-      "applicability": {"resource":"none","material":"none","process":"bounded host-parasite relation","npc":"possible disease relevance, not diagnosis"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded host-parasite relation",
+        "npc": "possible disease relevance, not diagnosis"
+      },
       "coverage": "one independently approved universal premise"
     },
     {
       "id": "macro-social-history-v2",
       "source_path": "macro-social-history-v2.json",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "location_applicability": "Document-specific Novgorod comparators dated 1160–1180, 1200–1220 and 1240–1260",
-      "applicability": {"resource":"none","material":"birch-bark document context","process":"bounded education, office-address and external-expedition evidence","npc":"named people and roles only within each record"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark document context",
+        "process": "bounded education, office-address and external-expedition evidence",
+        "npc": "named people and roles only within each record"
+      },
       "coverage": "three independently approved document premises with explicit date limits"
     },
     {
       "id": "macro-universal-life-environment-v2",
       "source_path": "macro-universal-life-environment-v2.json",
-      "domains": ["biology_physiology", "environment"],
+      "domains": [
+        "biology_physiology",
+        "environment"
+      ],
       "location_applicability": "Universal physiology and ice/snow relations; individual body and local surface conditions remain caller supplied",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative physiology and cryosphere relations","npc":"no diagnosis, state or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative physiology and cryosphere relations",
+        "npc": "no diagnosis, state or outcome"
+      },
       "coverage": "eight independently approved universal premises"
     },
     {
       "id": "macro-historical-human-world-v3",
       "source_path": "macro-historical-human-world-v3.json",
-      "domains": ["material_culture", "social_law_economy"],
+      "domains": [
+        "material_culture",
+        "social_law_economy"
+      ],
       "location_applicability": "Novgorod comparators explicitly dated 1000–1100 and 1250–1325; neither applies as 1230 scene evidence",
-      "applicability": {"resource":"none","material":"bounded manuscript and archaeological-find context","process":"document/find interpretation only","npc":"none"},
+      "applicability": {
+        "resource": "none",
+        "material": "bounded manuscript and archaeological-find context",
+        "process": "document/find interpretation only",
+        "npc": "none"
+      },
       "coverage": "two independently approved historical comparator premises with explicit date limits"
     },
     {
       "id": "macro-novgorod-human-society-v4",
       "source_path": "macro-novgorod-human-society-v4.json",
-      "domains": ["social_law_economy", "material_culture"],
+      "domains": [
+        "social_law_economy",
+        "material_culture"
+      ],
       "location_applicability": "Record-specific Novgorod document and archaeological contexts; dated comparators and unknown temporal applicability do not establish 1230 scene facts",
-      "applicability": {"resource":"none","material":"bounded birch-bark, manuscript and archaeological-find context","process":"record interpretation only","npc":"no current person, role, skill or event"},
+      "applicability": {
+        "resource": "none",
+        "material": "bounded birch-bark, manuscript and archaeological-find context",
+        "process": "record interpretation only",
+        "npc": "no current person, role, skill or event"
+      },
       "coverage": "four independently approved historical record premises"
     },
     {
       "id": "macro-universal-health-lifecycle-v3",
       "source_path": "macro-universal-health-lifecycle-v3.json",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "location_applicability": "Universal health, lifecycle and injury relations; individual body state and outcomes remain caller supplied",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no diagnosis, capacity or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative health relation",
+        "npc": "no diagnosis, capacity or outcome"
+      },
       "coverage": "eight independently approved universal premises"
     },
     {
       "id": "macro-human-world-blindspots-v5",
       "source_path": "macro-human-world-blindspots-v5.json",
-      "domains": ["social_law_economy", "biology_physiology"],
+      "domains": [
+        "social_law_economy",
+        "biology_physiology"
+      ],
       "location_applicability": "Record-specific Novgorod documentary context and universal fever/sleep relations; neither creates a 1230 scene, actor state, or historical custom.",
-      "applicability": {"resource":"none","material":"bounded birch-bark text context only","process":"document interpretation or qualitative universal relation","npc":"no current identity, competence, diagnosis, capacity, or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "bounded birch-bark text context only",
+        "process": "document interpretation or qualitative universal relation",
+        "npc": "no current identity, competence, diagnosis, capacity, or outcome"
+      },
       "coverage": "fifteen independently approved bounded premises"
     },
     {
       "id": "macro-universal-gap-closure-v6",
       "source_path": "macro-universal-gap-closure-v6.json",
-      "domains": ["biology_physiology", "environment", "chemistry_process"],
+      "domains": [
+        "biology_physiology",
+        "environment",
+        "chemistry_process"
+      ],
       "location_applicability": "Universal health, lunar-phase and food-handling relations; individual body, sky and food state remain caller supplied.",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative relation","npc":"no diagnosis, perception, action or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative relation",
+        "npc": "no diagnosis, perception, action or outcome"
+      },
       "coverage": "eleven independently approved bounded universal premises"
     },
     {
       "id": "macro-historical-p1-closure-v7",
       "source_path": "macro-historical-p1-closure-v7.json",
-      "domains": ["material_culture", "social_law_economy"],
+      "domains": [
+        "material_culture",
+        "social_law_economy"
+      ],
       "location_applicability": "Record-specific Novgorod chronicle, letter and museum contexts; no claim supplies a present 1230 scene, institution, possession, skill or outcome.",
-      "applicability": {"resource":"none","material":"bounded record or collection context","process":"dated event or document interpretation","npc":"named people only within the source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "bounded record or collection context",
+        "process": "dated event or document interpretation",
+        "npc": "named people only within the source record"
+      },
       "coverage": "twenty-one independently approved bounded historical premises"
     },
     {
       "id": "macro-historical-p1-closeout-v9",
       "source_path": "macro-historical-p1-closeout-v9.json",
-      "domains": ["physics_material_science", "social_law_economy"],
+      "domains": [
+        "physics_material_science",
+        "social_law_economy"
+      ],
       "location_applicability": "Universal iron-response relations and bounded Novgorod documentary or secondary-history context; none supplies a current scene, office, item, or outcome.",
-      "applicability": {"resource":"none","material":"conditional iron or record context","process":"bounded material response or historical interpretation","npc":"no current role or authority"},
-      "coverage": "five independently approved bounded closeout premises"
+      "applicability": {
+        "resource": "none",
+        "material": "conditional iron or record context",
+        "process": "bounded material response or historical interpretation",
+        "npc": "no current role or authority"
+      },
+      "coverage": "four independently approved premises; undated five-ends applicability claim withdrawn"
+    },
+    {
+      "id": "residual-nature-v1",
+      "source_path": "residual-nature-v1.json",
+      "domains": [
+        "environment"
+      ],
+      "location_applicability": "Universal qualitative snow and celestial relations; no scene state.",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded factual relations",
+        "npc": "no present actor state"
+      },
+      "coverage": "14 independently approved premises; family completeness remains separately open"
+    },
+    {
+      "id": "residual-language-education-v1",
+      "source_path": "residual-language-education-v1.json",
+      "domains": [
+        "social_law_economy"
+      ],
+      "location_applicability": "Novgorod birch-writing corpus with per-claim dates and limits; no assumed actor literacy.",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded factual relations",
+        "npc": "no present actor state"
+      },
+      "coverage": "9 independently approved premises; family completeness remains separately open"
+    },
+    {
+      "id": "residual-language-education-v2",
+      "source_path": "residual-language-education-v2.json",
+      "domains": [
+        "social_law_economy"
+      ],
+      "location_applicability": "Novgorod birch-writing corpus with per-claim dates and limits; no assumed actor literacy.",
+      "applicability": {
+        "resource": "conditional",
+        "material": "conditional",
+        "process": "grounded factual relations",
+        "npc": "no present actor state"
+      },
+      "coverage": "3 independently approved premises; family completeness remains separately open"
     }
   ],
   "families": [
@@ -3686,7 +3888,19 @@
         "claim:social-alphabet-exercise-records-text",
         "claim:social-daily-economic-activities",
         "claim:social-dispute-message-reports-dispatch",
-        "claim:social-religious-name-list-relates-disjunctive-context"
+        "claim:social-religious-name-list-relates-disjunctive-context",
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
       ]
     },
     {
@@ -4131,7 +4345,12 @@
       "subdomain": "literacy_names_and_everyday_records",
       "family": "dated_named_private_correspondence_and_instructional_text_components",
       "location_applicability": "Novgorod document interpretation within each record's explicit date; not a current message or general literacy rule.",
-      "applicability": {"resource":"none","material":"birch-bark text","process":"document-specific writing context","npc":"named correspondents or learner only in the source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark text",
+        "process": "document-specific writing context",
+        "npc": "named correspondents or learner only in the source record"
+      },
       "coverage": "bounded independently verified document premises",
       "evidence_boundary": "Letter 334 directly overlaps 1230; Onfim 199 is a 1240–1260 comparator and is excluded from 1230 applicability. Neither establishes a literacy rate, naming system, school, current actor knowledge, delivery or truth.",
       "claim_refs": [
@@ -4145,7 +4364,12 @@
       "subdomain": "political_and_external_document_context",
       "family": "dated_posadnik_address_and_yugra_tribute_expedition_records",
       "location_applicability": "Historical document interpretation within 1200–1220 and 1160–1180 respectively; no 1230 institution or event inferred.",
-      "applicability": {"resource":"none","material":"birch-bark text","process":"document-specific office and expedition context","npc":"named roles only within each source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark text",
+        "process": "document-specific office and expedition context",
+        "npc": "named roles only within each source record"
+      },
       "coverage": "bounded independently verified historical comparators",
       "evidence_boundary": "No office competence, jurisdiction, campaign routine, route, tribute right, authority, force, external relation or present actor follows.",
       "claim_refs": [
@@ -4159,7 +4383,12 @@
       "subdomain": "parasites_and_health",
       "family": "parasite_host_relation_and_possible_disease",
       "location_applicability": "Organism/host contexts only after presence and exposure are independently established.",
-      "applicability": {"resource":"none","material":"none","process":"conditional host-parasite relation","npc":"possible disease relevance, not diagnosis"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "conditional host-parasite relation",
+        "npc": "possible disease relevance, not diagnosis"
+      },
       "coverage": "bounded independently verified universal premise",
       "evidence_boundary": "No parasite presence, exposure, infection, symptom, diagnosis, transmission, treatment or outcome.",
       "claim_refs": [
@@ -4172,10 +4401,20 @@
       "subdomain": "human_reproduction_and_newborn_adjustment",
       "family": "general_pregnancy_labor_newborn_adjustment_and_lactation_relations",
       "location_applicability": "Universal physiology only; no person, pregnancy, birth, care event or outcome is implied.",
-      "applicability": {"resource":"none","material":"none","process":"bounded physiological relation","npc":"no individual condition or diagnosis"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded physiological relation",
+        "npc": "no individual condition or diagnosis"
+      },
       "coverage": "bounded independently verified universal premises",
       "evidence_boundary": "No pregnancy, labor timing, postpartum recovery, feeding event, infant condition, complication, treatment or state follows.",
-      "claim_refs": ["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes", "claim:candidate-v2-labor-is-a-staged-process", "claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v2-lactation-is-milk-production-and-secretion"]
+      "claim_refs": [
+        "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+        "claim:candidate-v2-labor-is-a-staged-process",
+        "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+        "claim:candidate-v2-lactation-is-milk-production-and-secretion"
+      ]
     },
     {
       "id": "biology-foodborne-symptom-variation",
@@ -4183,10 +4422,17 @@
       "subdomain": "foodborne_illness_context",
       "family": "foodborne_illness_symptom_variation_by_germ",
       "location_applicability": "Universal foodborne-illness context only after exposure and body state are independently established.",
-      "applicability": {"resource":"none","material":"none","process":"bounded symptom variation relation","npc":"no illness or diagnosis"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded symptom variation relation",
+        "npc": "no illness or diagnosis"
+      },
       "coverage": "one independently verified universal premise",
       "evidence_boundary": "No food, germ, exposure, illness, symptom, severity, treatment or outcome follows.",
-      "claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ"]
+      "claim_refs": [
+        "claim:candidate-v2-foodborne-symptoms-vary-by-germ"
+      ]
     },
     {
       "id": "environment-ice-snow-hazard-and-strength",
@@ -4194,10 +4440,27 @@
       "subdomain": "cryosphere",
       "family": "ice_snow_walking_hazard_and_qualitative_ice_strength",
       "location_applicability": "Universal relation only; ice or snow must be independently established in the current place.",
-      "applicability": {"resource":"conditional established ice or snow","material":"surface context only","process":"bounded qualitative hazard and strength relation","npc":"no fall, injury or route result"},
+      "applicability": {
+        "resource": "conditional established ice or snow",
+        "material": "surface context only",
+        "process": "bounded qualitative hazard and strength relation",
+        "npc": "no fall, injury or route result"
+      },
       "coverage": "three independently verified universal premises",
       "evidence_boundary": "No local ice, snow, thickness, temperature, salt content, traction, safe threshold, load, route, fall or injury follows.",
-      "claim_refs": ["claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:candidate-v2-near-melting-ice-has-less-strength"]
+      "claim_refs": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps"
+      ]
     },
     {
       "id": "material-dated-novgorod-helmet-comparator",
@@ -4205,10 +4468,17 @@
       "subdomain": "dated_historical_comparators",
       "family": "dated_novgorod_helmet_find_comparator",
       "location_applicability": "Novgorod only in the claim's explicit 1250–1325 interval; it supplies no 1230 scene fact.",
-      "applicability": {"resource":"none","material":"archaeological find context only","process":"bounded historical interpretation","npc":"none"},
+      "applicability": {
+        "resource": "none",
+        "material": "archaeological find context only",
+        "process": "bounded historical interpretation",
+        "npc": "none"
+      },
       "coverage": "one independently verified later historical comparator premise",
       "evidence_boundary": "No current helmet, armour, owner, protection value or combat scene follows for 1230.",
-      "claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find"]
+      "claim_refs": [
+        "claim:candidate-novgorod-helmet-half-mask-find"
+      ]
     },
     {
       "id": "social-dated-novgorod-psalter-comparator",
@@ -4216,10 +4486,17 @@
       "subdomain": "dated_historical_comparators",
       "family": "dated_novgorod_psalter_book_comparator",
       "location_applicability": "Novgorod only in the claim's explicit 1000–1100 interval; it supplies no 1230 scene fact.",
-      "applicability": {"resource":"none","material":"manuscript context only","process":"bounded historical interpretation","npc":"none"},
+      "applicability": {
+        "resource": "none",
+        "material": "manuscript context only",
+        "process": "bounded historical interpretation",
+        "npc": "none"
+      },
       "coverage": "one independently verified early historical comparator premise",
       "evidence_boundary": "No school, reader, literacy rate, current book or text follows for 1230.",
-      "claim_refs": ["claim:candidate-novgorod-psalter-eleventh-century"]
+      "claim_refs": [
+        "claim:candidate-novgorod-psalter-eleventh-century"
+      ]
     },
     {
       "id": "social-dated-novgorod-human-record-comparators",
@@ -4227,10 +4504,19 @@
       "subdomain": "dated_documentary_comparators",
       "family": "dated_novgorod_wife_business_record_and_official_obligation_documents",
       "location_applicability": "Novgorod only within each record's explicit range or unknown temporal precision; no record supplies a 1230 scene fact.",
-      "applicability": {"resource":"none","material":"birch-bark document context only","process":"bounded record interpretation","npc":"named people only in their source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark document context only",
+        "process": "bounded record interpretation",
+        "npc": "named people only in their source record"
+      },
       "coverage": "three independently verified document premises",
       "evidence_boundary": "No marriage, property right, cow, debt, school, literacy rate, institution, court, sanction, procedure, jurisdiction, office-holder or outcome follows.",
-      "claim_refs": ["claim:candidate-gramota8-wife-cow-redemption-letter", "claim:candidate-gramota202-onfim-business-record-drawing", "claim:candidate-gramota213-official-obligations-document"]
+      "claim_refs": [
+        "claim:candidate-gramota8-wife-cow-redemption-letter",
+        "claim:candidate-gramota202-onfim-business-record-drawing",
+        "claim:candidate-gramota213-official-obligations-document"
+      ]
     },
     {
       "id": "material-dated-novgorod-gusli-comparator",
@@ -4238,10 +4524,17 @@
       "subdomain": "dated_historical_comparators",
       "family": "dated_novgorod_lyriform_gusli_archaeological_context",
       "location_applicability": "Novgorod archaeological context in the explicit XI–XIII-century interval; not a present instrument or performance.",
-      "applicability": {"resource":"none","material":"archaeological-find context only","process":"bounded historical interpretation","npc":"none"},
+      "applicability": {
+        "resource": "none",
+        "material": "archaeological-find context only",
+        "process": "bounded historical interpretation",
+        "npc": "none"
+      },
       "coverage": "one independently verified archaeological-context premise",
       "evidence_boundary": "No 1230 gusli, performer, music, owner, skill, event or inventory follows.",
-      "claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"]
+      "claim_refs": [
+        "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"
+      ]
     },
     {
       "id": "biology-human-lifecycle-injury-oral-and-disability-relations",
@@ -4249,10 +4542,24 @@
       "subdomain": "human_lifecycle_injury_oral_health_and_disability",
       "family": "general_child_development_aging_injury_oral_health_and_disability_relations",
       "location_applicability": "Universal physiology and health context only; no individual body, age, injury, condition, access or outcome is implied.",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no individual diagnosis or capacity"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative health relation",
+        "npc": "no individual diagnosis or capacity"
+      },
       "coverage": "eight independently verified universal premises",
       "evidence_boundary": "No individual age, development, impairment, prognosis, pressure, fracture, dislocation, symptom, diagnosis, treatment, ability, access or outcome follows.",
-      "claim_refs": ["claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel", "claim:candidate-v3-disability-reflects-health-and-context-interaction"]
+      "claim_refs": [
+        "claim:candidate-v3-child-development-has-recognizable-periods",
+        "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
+        "claim:candidate-v3-aging-changes-cell-function",
+        "claim:candidate-v3-aging-organs-gradually-lose-function",
+        "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
+        "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
+        "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
+        "claim:candidate-v3-disability-reflects-health-and-context-interaction"
+      ]
     },
     {
       "id": "social-v5-dated-document-context",
@@ -4260,10 +4567,24 @@
       "subdomain": "dated_documentary_comparators",
       "family": "dated_private_letter_status_context_and_charm_prayer_records",
       "location_applicability": "Novgorod document interpretation only within each record's explicit range or unknown precision; no record supplies a 1230 scene fact.",
-      "applicability": {"resource":"none","material":"birch-bark document context only","process":"bounded record interpretation","npc":"named people only within the source records"},
+      "applicability": {
+        "resource": "none",
+        "material": "birch-bark document context only",
+        "process": "bounded record interpretation",
+        "npc": "named people only within the source records"
+      },
       "coverage": "eight independently verified documentary premises",
       "evidence_boundary": "No current correspondence, individual identity, naming or status system, legal procedure, political relation, medical diagnosis, treatment, ritual, literacy rate, or scene fact follows.",
-      "claim_refs": ["claim:candidate-v5-gramota109-is-dated-private-letter", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v5-gramota600-is-near-1230-private-letter", "claim:candidate-v5-gramota600-reports-khotynians-context", "claim:candidate-v5-gramota715-is-dated-literary-folklore-text", "claim:candidate-v5-gramota715-is-classified-as-charm-prayer", "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"]
+      "claim_refs": [
+        "claim:candidate-v5-gramota109-is-dated-private-letter",
+        "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+        "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+        "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+        "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+        "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"
+      ]
     },
     {
       "id": "social-v5-birch-language-corpus-context",
@@ -4271,10 +4592,18 @@
       "subdomain": "language_and_register",
       "family": "old_russian_and_dialect_relation_in_surviving_birch_letter_corpus",
       "location_applicability": "Corpus-level linguistic context; not a character, utterance, register, or intelligibility fact.",
-      "applicability": {"resource":"none","material":"surviving birch-bark text corpus","process":"bounded linguistic interpretation","npc":"no individual language competence"},
+      "applicability": {
+        "resource": "none",
+        "material": "surviving birch-bark text corpus",
+        "process": "bounded linguistic interpretation",
+        "npc": "no individual language competence"
+      },
       "coverage": "two independently verified corpus-level linguistic premises",
       "evidence_boundary": "No reconstruction of 1230 speech, dialect form, speaker competence, mutual intelligibility, form of address, or generated phrase follows.",
-      "claim_refs": ["claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian", "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"]
+      "claim_refs": [
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"
+      ]
     },
     {
       "id": "biology-v5-fever-and-sleep-relations",
@@ -4282,10 +4611,21 @@
       "subdomain": "sickness_and_function",
       "family": "general_fever_sign_and_sleep_function_relations",
       "location_applicability": "Universal physiology only after body state is independently established.",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health and function relation","npc":"no diagnosis, state, capacity, or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative health and function relation",
+        "npc": "no diagnosis, state, capacity, or outcome"
+      },
       "coverage": "five independently verified universal premises",
       "evidence_boundary": "No actor temperature, infection, diagnosis, treatment, sleep history, travel fitness, hospitality custom, exact mechanic, or outcome follows.",
-      "claim_refs": ["claim:candidate-v5-fever-is-higher-than-normal-body-temperature", "claim:candidate-v5-fever-is-not-itself-a-disease", "claim:candidate-v5-infections-cause-most-fevers", "claim:candidate-v5-sleep-is-basic-human-need", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
+      "claim_refs": [
+        "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+        "claim:candidate-v5-fever-is-not-itself-a-disease",
+        "claim:candidate-v5-infections-cause-most-fevers",
+        "claim:candidate-v5-sleep-is-basic-human-need",
+        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"
+      ]
     },
     {
       "id": "biology-v6-health-observations-and-burn-relations",
@@ -4293,10 +4633,23 @@
       "subdomain": "sickness_and_injury_context",
       "family": "bounded_dehydration_foodborne_observations_and_burn_relations",
       "location_applicability": "Universal health context only after exposure and body state are independently established.",
-      "applicability": {"resource":"none","material":"none","process":"bounded qualitative health relation","npc":"no diagnosis, treatment, state, or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded qualitative health relation",
+        "npc": "no diagnosis, treatment, state, or outcome"
+      },
       "coverage": "seven independently verified universal premises",
       "evidence_boundary": "No person's fluid balance, diagnosis, cause, test availability, burn, infection, severity, care, treatment or outcome follows.",
-      "claim_refs": ["claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake", "claim:candidate-v6-dehydration-can-have-nonspecific-observations", "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests", "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes", "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk", "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area", "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations"]
+      "claim_refs": [
+        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
+        "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+        "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
+        "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
+        "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations"
+      ]
     },
     {
       "id": "environment-v6-lunar-phase-relation",
@@ -4304,10 +4657,17 @@
       "subdomain": "sky_and_natural_illumination",
       "family": "lunar_phase_and_apparent_illuminated_portion",
       "location_applicability": "Universal lunar observation relation only; date, sky position, weather and local light remain independently established.",
-      "applicability": {"resource":"none","material":"none","process":"bounded celestial observation relation","npc":"no perception, navigation, or outcome"},
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "bounded celestial observation relation",
+        "npc": "no perception, navigation, or outcome"
+      },
       "coverage": "one independently verified universal premise",
       "evidence_boundary": "No date, location, weather, illumination, navigation, route or actor perception follows.",
-      "claim_refs": ["claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"]
+      "claim_refs": [
+        "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
+      ]
     },
     {
       "id": "chemistry-v6-food-handling-controls",
@@ -4315,10 +4675,19 @@
       "subdomain": "food_handling_and_cross_contamination",
       "family": "raw_animal_food_separation_cleaning_and_handling_context",
       "location_applicability": "Universal food-handling context only after food and contact surfaces are independently established.",
-      "applicability": {"resource":"conditional food","material":"conditional food-contact surface","process":"bounded handling-control relation","npc":"no action, cleanliness, illness, or outcome"},
+      "applicability": {
+        "resource": "conditional food",
+        "material": "conditional food-contact surface",
+        "process": "bounded handling-control relation",
+        "npc": "no action, cleanliness, illness, or outcome"
+      },
       "coverage": "three independently verified universal premises",
       "evidence_boundary": "No present food, contamination, microbial state, illness, historical availability, actor action or outcome follows.",
-      "claim_refs": ["claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination", "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control", "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"]
+      "claim_refs": [
+        "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"
+      ]
     },
     {
       "id": "social-material-v7-dated-historical-records",
@@ -4326,10 +4695,33 @@
       "subdomain": "dated_historical_comparators",
       "family": "dated_novgorod_chronicle_and_letter_comparators_for_conflict_office_kin_learning_and_inquiry",
       "location_applicability": "Only within each claim's explicit or conditionally unknown historical time; no record supplies a 1230 scene fact.",
-      "applicability": {"resource":"none","material":"record context only","process":"bounded event or document interpretation","npc":"named people only within the source record"},
+      "applicability": {
+        "resource": "none",
+        "material": "record context only",
+        "process": "bounded event or document interpretation",
+        "npc": "named people only within the source record"
+      },
       "coverage": "fifteen independently verified dated historical premises",
       "evidence_boundary": "No present force, institution, authority, policy, marriage rule, status, school, crime, guilt, sanction, actor, skill, possession, or outcome follows.",
-      "claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin", "claim:candidate-v7-gramota9-reports-another-wife", "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection", "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:candidate-v7-museum-onfim-learning-writing-reading-counting", "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"]
+      "claim_refs": [
+        "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+        "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+        "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+        "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+        "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+        "claim:candidate-v7-npl-1222-kesi-campaign",
+        "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+        "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+        "claim:candidate-v7-gramota9-reports-another-wife",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
+      ]
     },
     {
       "id": "material-v7-dated-military-and-recreation-records",
@@ -4337,10 +4729,45 @@
       "subdomain": "dated_historical_comparators",
       "family": "dated_armed_court_and_museum_recreation_object_comparators",
       "location_applicability": "Only within each claim's explicit historical context; museum context does not place an object in a 1230 scene.",
-      "applicability": {"resource":"none","material":"bounded chronicle or museum collection context","process":"historical interpretation only","npc":"no owner, user, skill, or current activity"},
+      "applicability": {
+        "resource": "none",
+        "material": "bounded chronicle or museum collection context",
+        "process": "historical interpretation only",
+        "npc": "no owner, user, skill, or current activity"
+      },
       "coverage": "six independently verified dated historical premises",
       "evidence_boundary": "No present weapon, armour, toy, instrument, skate, player, performer, possession, skill, safety, recreation or outcome follows.",
-      "claim_refs": ["claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour", "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection", "claim:candidate-v7-museum-individual-toy-types", "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops", "claim:candidate-v7-museum-toy-vessel-sail-xi-xii", "claim:candidate-v7-museum-bone-skates-xii-xiii"]
+      "claim_refs": [
+        "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+        "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+        "claim:candidate-v7-museum-individual-toy-types",
+        "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+        "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+        "claim:candidate-v7-museum-bone-skates-xii-xiii"
+      ]
+    },
+    {
+      "id": "environment-celestial-light-and-orientation",
+      "domain": "environment",
+      "subdomain": "sky_and_natural_illumination",
+      "family": "celestial_light_twilight_and_orientation_relations",
+      "location_applicability": "Outdoor observing context with actual epoch, latitude, sky visibility and observer competence supplied by owners.",
+      "applicability": {
+        "resource": "conditional natural light",
+        "material": "none",
+        "process": "qualitative illumination and orientation",
+        "npc": "conditional perception and learned orientation"
+      },
+      "coverage": "partial: six approved celestial relations, not a full natural-navigation catalogue",
+      "evidence_boundary": "No exact bearing, local illumination, route, current sky state or actor skill. Modern Polaris precision is not projected onto 1230.",
+      "claim_refs": [
+        "claim:residual-nature-twilight-solar-afterglow",
+        "claim:residual-nature-stars-horizon-navigation",
+        "claim:residual-nature-celestial-pole-daily-circles",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility"
+      ]
     }
   ],
   "missing_families": [
@@ -5114,7 +5541,8 @@
         "built-storage-and-household",
         "environment-plant-resources",
         "material-fishing-hunting"
-      ]
+      ],
+      "supporting_claim_refs": []
     },
     {
       "id": "flora-toxic-and-food-plants",
@@ -5136,7 +5564,8 @@
       "supporting_family_ids": [
         "biology-fungi-decomposition-and-wild-food-safety",
         "plant-food-and-contact-properties"
-      ]
+      ],
+      "supporting_claim_refs": []
     },
     {
       "id": "flora-fibre-taxonomy",
@@ -5160,7 +5589,8 @@
         "craft-fibre-fishing-processing",
         "environment-plant-resources",
         "materials-fibre-leather-water-response"
-      ]
+      ],
+      "supporting_claim_refs": []
     },
     {
       "id": "fishing-net-boat-care",
@@ -5198,12 +5628,32 @@
       "subdomain": "language_and_register",
       "family": "Historical spoken language, dialect features, register and intelligibility",
       "location_applicability": "Conversation, overheard speech, oral instruction and public interaction in Novgorod-land contexts",
-      "applicability": {"resource":"none","material":"none","process":"speech interpretation","npc":"speaker and listener language competence"},
-      "consumer_refs": ["potential:dialogue", "potential:npc_interaction"],
+      "applicability": {
+        "resource": "none",
+        "material": "none",
+        "process": "speech interpretation",
+        "npc": "speaker and listener language competence"
+      },
+      "consumer_refs": [
+        "potential:dialogue",
+        "potential:npc_interaction"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. The residual is bounded P2: generated 1230 speech, register, mutual intelligibility and phrase choice remain open-ended semantic work, not a claim system.",
-      "supporting_family_ids": ["social-documentary-practice", "social-roles-norms-and-socialization", "social-v5-birch-language-corpus-context"],
-      "supporting_claim_refs": ["claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian", "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech", "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: written household/official/church register distinctions and graphic substitutions; these do not establish a spoken dialect model.",
+      "supporting_family_ids": [
+        "social-documentary-practice",
+        "social-roles-norms-and-socialization",
+        "social-v5-birch-language-corpus-context"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+      ]
     },
     {
       "id": "personal-names-patronymics-address-and-titles",
@@ -5211,12 +5661,34 @@
       "subdomain": "naming_and_address",
       "family": "Personal names, patronymics, bynames, kin terms, forms of address and titles",
       "location_applicability": "Introductions, letters, households, markets, offices and disputes",
-      "applicability": {"resource":"none","material":"conditional written name","process":"identification and address","npc":"identity description and socially situated address"},
-      "consumer_refs": ["potential:dialogue", "potential:ordinary_npc_materialization"],
+      "applicability": {
+        "resource": "none",
+        "material": "conditional written name",
+        "process": "identification and address",
+        "npc": "identity description and socially situated address"
+      },
+      "consumer_refs": [
+        "potential:dialogue",
+        "potential:ordinary_npc_materialization"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. The residual is bounded P2: a generated name, patronymic, relation, title or address remains an open-ended detail, while current identity, relation and office remain authoritative state.",
-      "supporting_family_ids": ["social-documentary-practice", "social-religious-context", "social-named-correspondence-and-learning-texts", "social-v5-dated-document-context"],
-      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form", "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: bounded owner-label uncertainty, letter etiquette, dated from-to address and husband-derived female forms. Patronymics, bynames and broader spoken address still open.",
+      "supporting_family_ids": [
+        "social-documentary-practice",
+        "social-religious-context",
+        "social-named-correspondence-and-learning-texts",
+        "social-v5-dated-document-context"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+        "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
+      ]
     },
     {
       "id": "everyday-literacy-writing-and-accounting",
@@ -5224,12 +5696,37 @@
       "subdomain": "literacy_and_everyday_records",
       "family": "Reading, writing, birch-bark correspondence, practical records, numeracy and everyday accounting",
       "location_applicability": "Households, markets, craft work, schooling, administration and travel",
-      "applicability": {"resource":"writing surfaces and implements","material":"letters records and exercises","process":"reading writing counting and record keeping","npc":"bounded literacy and numeracy practices"},
-      "consumer_refs": ["potential:documents", "potential:trade", "potential:education"],
+      "applicability": {
+        "resource": "writing surfaces and implements",
+        "material": "letters records and exercises",
+        "process": "reading writing counting and record keeping",
+        "npc": "bounded literacy and numeracy practices"
+      },
+      "consumer_refs": [
+        "potential:documents",
+        "potential:trade",
+        "potential:education"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить достаточную модель everyday writing: surfaces/tools, типы записей, numeracy/accounting, кто/в каких контекстах мог пользоваться письменностью с честной неопределённостью. Current support and limits: Practical document genres, accounts, named correspondence and alphabet exercises are attested. The residual is bounded P2: a 1230 school, reader, literacy rate, delivery and ordinary use remain scene- and actor-state dependent, not inferred from these records.",
-      "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-psalter-comparator", "social-v5-dated-document-context"],
-      "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-novgorod-psalter-eleventh-century", "claim:candidate-v5-gramota600-is-near-1230-private-letter"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить достаточную модель everyday writing: surfaces/tools, типы записей, numeracy/accounting, кто/в каких контекстах мог пользоваться письменностью с честной неопределённостью. Current support and limits: Practical document genres, accounts, named correspondence and alphabet exercises are attested. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: birch inner surface/styli, practical record purposes, genres and syllable/numeral/alphabet exercises. Numeracy operations and literacy access contexts still open.",
+      "supporting_family_ids": [
+        "social-documentary-practice",
+        "material-written-objects",
+        "social-property-and-market",
+        "social-named-correspondence-and-learning-texts",
+        "social-dated-novgorod-psalter-comparator",
+        "social-v5-dated-document-context"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-novgorod-psalter-eleventh-century",
+        "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises"
+      ]
     },
     {
       "id": "weapons-armour-use-and-maintenance",
@@ -5237,12 +5734,31 @@
       "subdomain": "military_material_culture",
       "family": "Historically available weapons, armour, shields, military tools, use contexts, wear and maintenance",
       "location_applicability": "Arming, guard, hunt-to-war distinction, travel, conflict and post-conflict equipment handling",
-      "applicability": {"resource":"weapon and armour materials","material":"arms protective equipment and fittings","process":"use damage upkeep and repair context","npc":"combatant guard craft and owner roles"},
-      "consumer_refs": ["potential:combat_semantics", "potential:equipment_materialization"],
+      "applicability": {
+        "resource": "weapon and armour materials",
+        "material": "arms protective equipment and fittings",
+        "process": "use damage upkeep and repair context",
+        "npc": "combatant guard craft and owner roles"
+      },
+      "consumer_refs": [
+        "potential:combat_semantics",
+        "potential:equipment_materialization"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. The residual is bounded P2: a present weapon, armour set, ownership, wear, repair or skill needs a concrete scene premise; exact combat and damage stay code-owned.",
-      "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence", "material-dated-novgorod-helmet-comparator", "materials-metal-state-thermal-treatment"],
-      "supporting_claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find", "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour", "claim:candidate-v9-bare-iron-rust-humidity-salts", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "material-fishing-hunting",
+        "material-tools",
+        "built-civic-defence",
+        "material-dated-novgorod-helmet-comparator",
+        "materials-metal-state-thermal-treatment"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-novgorod-helmet-half-mask-find",
+        "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+        "claim:candidate-v9-bare-iron-rust-humidity-salts",
+        "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
+      ]
     },
     {
       "id": "warfare-organization-logistics-and-aftermath",
@@ -5250,12 +5766,30 @@
       "subdomain": "warfare_and_collective_defence",
       "family": "Military roles, mobilization, command, marching, provisioning, tactics, siege context, aftermath and peacemaking",
       "location_applicability": "Threat, organized violence, defence, campaign, river movement and recovery contexts",
-      "applicability": {"resource":"provisions transport and equipment","material":"defences and military kit","process":"mobilization campaign conflict and aftermath","npc":"combatants leaders carriers inhabitants and mediators"},
-      "consumer_refs": ["potential:warfare", "potential:travel", "potential:settlement_defence"],
+      "applicability": {
+        "resource": "provisions transport and equipment",
+        "material": "defences and military kit",
+        "process": "mobilization campaign conflict and aftermath",
+        "npc": "combatants leaders carriers inhabitants and mediators"
+      },
+      "consumer_refs": [
+        "potential:warfare",
+        "potential:travel",
+        "potential:settlement_defence"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. The residual is bounded P2: force composition, provisioning, command, tactics, plan and outcome require a concrete event and state/mechanics; these records do not form a 1230 organization system.",
-      "supporting_family_ids": ["npc-political-roles", "built-civic-defence", "material-transport"],
-      "supporting_claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "npc-political-roles",
+        "built-civic-defence",
+        "material-transport"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+        "claim:candidate-v7-npl-1222-kesi-campaign",
+        "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+        "claim:candidate-v7-npl-1223-colyvan-captives-and-gold"
+      ]
     },
     {
       "id": "marriage-kinship-and-household-formation",
@@ -5263,12 +5797,30 @@
       "subdomain": "marriage_and_kinship",
       "family": "Courtship, marriage, spouses, affinity, descent, inheritance context and household formation or dissolution",
       "location_applicability": "Households, ceremonies, property arrangements, care, disputes and succession",
-      "applicability": {"resource":"household goods and transfers","material":"conditional records and ceremonial objects","process":"relationship formation care and succession","npc":"spouses kin dependants and authorities"},
-      "consumer_refs": ["potential:household", "potential:social_relations", "potential:legal_context"],
+      "applicability": {
+        "resource": "household goods and transfers",
+        "material": "conditional records and ceremonial objects",
+        "process": "relationship formation care and succession",
+        "npc": "spouses kin dependants and authorities"
+      },
+      "consumer_refs": [
+        "potential:household",
+        "potential:social_relations",
+        "potential:legal_context"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. The residual is bounded P2: marriage, affinity, succession and household formation vary by concrete relationship and period-local premise; current relationships and transfers remain authoritative state, not a system inferred from records.",
-      "supporting_family_ids": ["social-family-care", "npc-household-routines", "social-law-practice", "social-dated-novgorod-human-record-comparators"],
-      "supporting_claim_refs": ["claim:candidate-gramota8-wife-cow-redemption-letter", "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin", "claim:candidate-v7-gramota9-reports-another-wife"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "social-family-care",
+        "npc-household-routines",
+        "social-law-practice",
+        "social-dated-novgorod-human-record-comparators"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota8-wife-cow-redemption-letter",
+        "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+        "claim:candidate-v7-gramota9-reports-another-wife"
+      ]
     },
     {
       "id": "gender-age-status-and-stratification",
@@ -5276,12 +5828,31 @@
       "subdomain": "social_status_and_roles",
       "family": "Gendered and age-related roles, rank, prestige, dependency, freedom and social stratification",
       "location_applicability": "Households, work, market, public office, legal conflict, care and ritual",
-      "applicability": {"resource":"conditional access and obligations","material":"status-linked material context only when evidenced","process":"role expectation and social response","npc":"socially situated role without deterministic behavior"},
-      "consumer_refs": ["potential:npc_interaction", "potential:work", "potential:law"],
+      "applicability": {
+        "resource": "conditional access and obligations",
+        "material": "status-linked material context only when evidenced",
+        "process": "role expectation and social response",
+        "npc": "socially situated role without deterministic behavior"
+      },
+      "consumer_refs": [
+        "potential:npc_interaction",
+        "potential:work",
+        "potential:law"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. The residual is bounded P2: rank, dependency, freedom, gender and age role in any interaction require a concrete historical and world-state premise, never a deterministic social system.",
-      "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines", "social-v5-dated-document-context", "social-material-v7-dated-historical-records"],
-      "supporting_claim_refs": ["claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "social-roles-norms-and-socialization",
+        "social-law-practice",
+        "npc-household-routines",
+        "social-v5-dated-document-context",
+        "social-material-v7-dated-historical-records"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
+      ]
     },
     {
       "id": "pregnancy-childbirth-and-postnatal-care",
@@ -5289,12 +5860,31 @@
       "subdomain": "human_reproduction",
       "family": "Pregnancy, childbirth, postpartum recovery, lactation and newborn care",
       "location_applicability": "Pregnancy, birth, recovery and infant-feeding contexts",
-      "applicability": {"resource":"food water warmth and care resources","material":"care materials only when present","process":"qualitative reproductive physiology and care","npc":"condition and dependency context, not diagnosis"},
-      "consumer_refs": ["potential:body", "potential:care", "potential:household"],
+      "applicability": {
+        "resource": "food water warmth and care resources",
+        "material": "care materials only when present",
+        "process": "qualitative reproductive physiology and care",
+        "npc": "condition and dependency context, not diagnosis"
+      },
+      "consumer_refs": [
+        "potential:body",
+        "potential:care",
+        "potential:household"
+      ],
       "coverage": "partial",
       "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть базовые postpartum/newborn physiological and care relations. Конкретная беременность, осложнение, тайминг и outcome — body state. Current support and limits: General pregnancy, staged labor, newborn adjustment and lactation relations are grounded. Postpartum recovery, newborn care and all individual state, timing, complications and outcomes remain uncovered or owned by body/time.",
-      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "body-exertion-hydration-and-sleep", "biology-reproductive-and-newborn-physiology"],
-      "supporting_claim_refs": ["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes", "claim:candidate-v2-labor-is-a-staged-process", "claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v2-lactation-is-milk-production-and-secretion"]
+      "supporting_family_ids": [
+        "biology-reproduction-and-development",
+        "social-family-care",
+        "body-exertion-hydration-and-sleep",
+        "biology-reproductive-and-newborn-physiology"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+        "claim:candidate-v2-labor-is-a-staged-process",
+        "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+        "claim:candidate-v2-lactation-is-milk-production-and-secretion"
+      ]
     },
     {
       "id": "human-lifecycle-childhood-puberty-and-aging",
@@ -5302,12 +5892,33 @@
       "subdomain": "human_lifecycle",
       "family": "Infancy, childhood development, puberty, adult aging, frailty and changing functional capacity",
       "location_applicability": "All human actor contexts where age or development is independently established",
-      "applicability": {"resource":"age-dependent care resources","material":"none","process":"qualitative development and aging","npc":"age-related capacity context, not stereotype"},
-      "consumer_refs": ["potential:body", "potential:care", "potential:npc_behavior"],
+      "applicability": {
+        "resource": "age-dependent care resources",
+        "material": "none",
+        "process": "qualitative development and aging",
+        "npc": "age-related capacity context, not stereotype"
+      },
+      "consumer_refs": [
+        "potential:body",
+        "potential:care",
+        "potential:npc_behavior"
+      ],
       "coverage": "partial",
       "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Frailty/capacity можно расширить аккуратно; нельзя превращать возраст в deterministic stereotype. Current support and limits: Newborn adjustment, child-development periods, puberty growth, and general aging relations are grounded. They do not establish a person's age, capacity or state; frailty and changing functional capacity remain only partially covered, while exact age, health and action success remain authoritative state and mechanics.",
-      "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action", "biology-reproductive-and-newborn-physiology", "biology-human-lifecycle-injury-oral-and-disability-relations"],
-      "supporting_claim_refs": ["claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function"]
+      "supporting_family_ids": [
+        "biology-reproduction-and-development",
+        "social-family-care",
+        "psychology-learning-and-skilled-action",
+        "biology-reproductive-and-newborn-physiology",
+        "biology-human-lifecycle-injury-oral-and-disability-relations"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+        "claim:candidate-v3-child-development-has-recognizable-periods",
+        "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
+        "claim:candidate-v3-aging-changes-cell-function",
+        "claim:candidate-v3-aging-organs-gradually-lose-function"
+      ]
     },
     {
       "id": "sickness-symptoms-care-and-disability",
@@ -5315,12 +5926,37 @@
       "subdomain": "sickness_and_function",
       "family": "Symptoms versus diagnosis, fever, gastrointestinal illness, dehydration, sickness behaviour, care needs and functional limitation",
       "location_applicability": "Illness, exposure, recovery and caregiving contexts",
-      "applicability": {"resource":"water food warmth and care resources","material":"none","process":"qualitative illness and recovery relations","npc":"possible symptoms and limitations, not diagnosis"},
-      "consumer_refs": ["potential:body", "potential:care", "potential:npc_routine"],
+      "applicability": {
+        "resource": "water food warmth and care resources",
+        "material": "none",
+        "process": "qualitative illness and recovery relations",
+        "npc": "possible symptoms and limitations, not diagnosis"
+      },
+      "consumer_refs": [
+        "potential:body",
+        "potential:care",
+        "potential:npc_routine"
+      ],
       "coverage": "partial",
       "reason": "Infection chains, immunity, sickness behaviour, fever/sleep relations, disability context, foodborne observations and three bounded dehydration premises are grounded. The residual is bounded P2: diagnosis, cause, severity, care availability and outcome require a concrete body/state premise; these relations are not a medical composition system.",
-      "supporting_family_ids": ["biology-pathogen-immunity-and-infection", "physiology-autonomic-and-functional-response", "social-family-care", "biology-foodborne-symptom-variation", "biology-human-lifecycle-injury-oral-and-disability-relations", "biology-v5-fever-and-sleep-relations"],
-      "supporting_claim_refs": ["claim:candidate-v2-foodborne-symptoms-vary-by-germ", "claim:candidate-v3-disability-reflects-health-and-context-interaction", "claim:candidate-v5-fever-is-higher-than-normal-body-temperature", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction", "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake", "claim:candidate-v6-dehydration-can-have-nonspecific-observations", "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests", "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations"]
+      "supporting_family_ids": [
+        "biology-pathogen-immunity-and-infection",
+        "physiology-autonomic-and-functional-response",
+        "social-family-care",
+        "biology-foodborne-symptom-variation",
+        "biology-human-lifecycle-injury-oral-and-disability-relations",
+        "biology-v5-fever-and-sleep-relations"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
+        "claim:candidate-v3-disability-reflects-health-and-context-interaction",
+        "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
+        "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+        "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
+        "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations"
+      ]
     },
     {
       "id": "injury-poisoning-parasites-and-oral-health",
@@ -5328,12 +5964,36 @@
       "subdomain": "injury_and_health_conditions",
       "family": "Burns, fractures, dislocations, wound infection, poisoning, parasites, dental problems and resulting functional limits",
       "location_applicability": "Accident, violence, work, food, environmental exposure and recovery contexts",
-      "applicability": {"resource":"care resources only when present","material":"injuring or hazardous material only when established","process":"qualitative injury or exposure relation","npc":"possible impairment, not diagnosis or treatment outcome"},
-      "consumer_refs": ["potential:body", "potential:combat", "potential:work", "potential:care"],
+      "applicability": {
+        "resource": "care resources only when present",
+        "material": "injuring or hazardous material only when established",
+        "process": "qualitative injury or exposure relation",
+        "npc": "possible impairment, not diagnosis or treatment outcome"
+      },
+      "consumer_refs": [
+        "potential:body",
+        "potential:combat",
+        "potential:work",
+        "potential:care"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить небольшой generic toxicology/poisoning envelope и наиболее game-relevant parasite relations; exact dose/severity/treatment — body mechanics. Current support and limits: Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. The residual is bounded P2: poisoning, parasite-specific effects, injury severity and treatment need a concrete exposure/body premise; severity and treatment are code/body-owned.",
-      "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes", "biology-parasite-host-disease-relation", "biology-human-lifecycle-injury-oral-and-disability-relations"],
-      "supporting_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel", "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes", "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk", "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить небольшой generic toxicology/poisoning envelope и наиболее game-relevant parasite relations; exact dose/severity/treatment — body mechanics. Current support and limits: Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "body-injury-repair-and-barrier",
+        "biology-pathogen-immunity-and-infection",
+        "chemistry-exposure-and-routes",
+        "biology-parasite-host-disease-relation",
+        "biology-human-lifecycle-injury-oral-and-disability-relations"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
+        "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
+        "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
+        "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
+        "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
+      ]
     },
     {
       "id": "novgorod-government-institutions-and-competencies",
@@ -5341,12 +6001,34 @@
       "subdomain": "government_and_authority",
       "family": "Novgorod political institutions, offices, territorial organization, competencies, orders, levies and relations among authorities",
       "location_applicability": "Public assembly, office, taxation, dispute, mobilization and territorial administration contexts",
-      "applicability": {"resource":"conditional public revenue and levies","material":"documents seals and civic spaces only when evidenced","process":"bounded institutional action","npc":"office roles and authority limits"},
-      "consumer_refs": ["potential:politics", "potential:law", "potential:administration"],
+      "applicability": {
+        "resource": "conditional public revenue and levies",
+        "material": "documents seals and civic spaces only when evidenced",
+        "process": "bounded institutional action",
+        "npc": "office roles and authority limits"
+      },
+      "consumer_refs": [
+        "potential:politics",
+        "potential:law",
+        "potential:administration"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Именно institution map и нужен: offices, assemblies, territorial units, типы компетенций и relations, с uncertainty/applicability. Current officeholder остаётся state. Current support and limits: Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince and five-ends assembly context. The residual is bounded P2: office holder, jurisdiction, competence, valid order and levy require a concrete 1230 authority/state premise; the records do not form an institution map.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space", "social-office-address-and-external-expedition-texts", "social-material-v7-dated-historical-records"],
-      "supporting_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Именно institution map и нужен: offices, assemblies, territorial units, типы компетенций и relations, с uncertainty/applicability. Current officeholder остаётся state. Current support and limits: Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince context (the undated five-ends claim was withdrawn). Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "npc-political-roles",
+        "social-administration",
+        "social-law-practice",
+        "built-public-civic-space",
+        "social-office-address-and-external-expedition-texts",
+        "social-material-v7-dated-historical-records"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota222-letter-to-posadnik",
+        "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+        "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+        "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
+      ]
     },
     {
       "id": "diplomacy-tribute-and-external-relations",
@@ -5354,12 +6036,31 @@
       "subdomain": "external_relations",
       "family": "Diplomacy, envoys, treaties, tribute, trade relations, conflict and peacemaking with external polities",
       "location_applicability": "Borders, routes, courts, assemblies, markets, campaigns and diplomatic encounters",
-      "applicability": {"resource":"gifts tribute and provisions only when established","material":"messages and diplomatic objects only when evidenced","process":"communication negotiation and external relation","npc":"envoys authorities traders and armed parties"},
-      "consumer_refs": ["potential:politics", "potential:travel", "potential:warfare"],
+      "applicability": {
+        "resource": "gifts tribute and provisions only when established",
+        "material": "messages and diplomatic objects only when evidenced",
+        "process": "communication negotiation and external relation",
+        "npc": "envoys authorities traders and armed parties"
+      },
+      "consumer_refs": [
+        "potential:politics",
+        "potential:travel",
+        "potential:warfare"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные формы envoys/tribute/trade/conflict/peace и ключевые внешние направления в рамках period evidence. Current support and limits: The Yugra and Khotynians comparators are supplemented by the 1222 Novgorod delegation to Yuri in Vladimir. The residual is bounded P2: a treaty, tribute, envoy mandate, relation or current diplomatic state requires a concrete 1230 political premise; these records do not form an external-relations system.",
-      "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport", "social-office-address-and-external-expedition-texts", "social-v5-dated-document-context"],
-      "supporting_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition", "claim:candidate-v5-gramota600-reports-khotynians-context", "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные формы envoys/tribute/trade/conflict/peace и ключевые внешние направления в рамках period evidence. Current support and limits: The Yugra and Khotynians comparators are supplemented by the 1222 Novgorod delegation to Yuri in Vladimir. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "npc-political-roles",
+        "social-administration",
+        "material-transport",
+        "social-office-address-and-external-expedition-texts",
+        "social-v5-dated-document-context"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir"
+      ]
     },
     {
       "id": "crime-responsibility-sanctions-and-public-safety",
@@ -5367,12 +6068,30 @@
       "subdomain": "offences_and_sanctions",
       "family": "Offences against persons, property, obligations and authority; responsibility, compensation, sanctions and public-safety response",
       "location_applicability": "Violence, theft, damage, default, accusation, investigation and adjudication contexts",
-      "applicability": {"resource":"disputed goods and compensation","material":"evidence and records only when present","process":"classification inquiry responsibility and sanction context","npc":"parties witnesses officials and community"},
-      "consumer_refs": ["potential:law", "potential:crime", "potential:public_safety"],
+      "applicability": {
+        "resource": "disputed goods and compensation",
+        "material": "evidence and records only when present",
+        "process": "classification inquiry responsibility and sanction context",
+        "npc": "parties witnesses officials and community"
+      },
+      "consumer_refs": [
+        "potential:law",
+        "potential:crime",
+        "potential:public_safety"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен bounded map offense → applicable authority/procedure/remedy/sanction evidence. Нельзя выводить guilt/outcome. Current support and limits: Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. The residual is bounded P2: offence classification, responsibility, jurisdiction, sanction and public response require a concrete applicable legal premise; no guilt or outcome follows from WK.",
-      "supporting_family_ids": ["social-law-practice", "social-property-and-market", "social-administration", "social-dated-novgorod-human-record-comparators"],
-      "supporting_claim_refs": ["claim:candidate-gramota213-official-obligations-document", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:social-settlement-demand-reports-court-choice"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен bounded map offense → applicable authority/procedure/remedy/sanction evidence. Нельзя выводить guilt/outcome. Current support and limits: Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "social-law-practice",
+        "social-property-and-market",
+        "social-administration",
+        "social-dated-novgorod-human-record-comparators"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota213-official-obligations-document",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:social-settlement-demand-reports-court-choice"
+      ]
     },
     {
       "id": "education-apprenticeship-and-skill-transmission",
@@ -5380,12 +6099,32 @@
       "subdomain": "education_and_apprenticeship",
       "family": "Child learning, literacy instruction, apprenticeship, observation, practice, correction and transmission of household or craft skill",
       "location_applicability": "Households, workshops, religious settings, markets and peer groups",
-      "applicability": {"resource":"learning materials and tools only when present","material":"exercises and workpieces","process":"instruction practice and correction","npc":"learner teacher kin master and peer roles"},
-      "consumer_refs": ["potential:education", "potential:craft", "potential:npc_development"],
+      "applicability": {
+        "resource": "learning materials and tools only when present",
+        "material": "exercises and workpieces",
+        "process": "instruction practice and correction",
+        "npc": "learner teacher kin master and peer roles"
+      },
+      "consumer_refs": [
+        "potential:education",
+        "potential:craft",
+        "potential:npc_development"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. The residual is bounded P2: a 1230 school, apprenticeship, teacher, learner, curriculum and skill distribution require a concrete actor/state premise, not an inferred system.",
-      "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-human-record-comparators"],
-      "supporting_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-gramota202-onfim-business-record-drawing", "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "psychology-learning-and-skilled-action",
+        "social-roles-norms-and-socialization",
+        "social-documentary-practice",
+        "npc-craft-occupations",
+        "social-named-correspondence-and-learning-texts",
+        "social-dated-novgorod-human-record-comparators"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-gramota199-onfim-instructional-text",
+        "claim:candidate-gramota202-onfim-business-record-drawing",
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
+      ]
     },
     {
       "id": "recreation-games-music-and-oral-culture",
@@ -5393,12 +6132,34 @@
       "subdomain": "recreation_and_expressive_culture",
       "family": "Children's play, toys, games, contests, music, instruments, storytelling and other oral performance",
       "location_applicability": "Households, streets, feasts, work breaks, gatherings and travel",
-      "applicability": {"resource":"time and objects only when present","material":"toys game pieces and instruments","process":"play performance and participation","npc":"players performers listeners and audiences"},
-      "consumer_refs": ["potential:recreation", "potential:dialogue", "potential:npc_routine"],
+      "applicability": {
+        "resource": "time and objects only when present",
+        "material": "toys game pieces and instruments",
+        "process": "play performance and participation",
+        "npc": "players performers listeners and audiences"
+      },
+      "consumer_refs": [
+        "potential:recreation",
+        "potential:dialogue",
+        "potential:npc_routine"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. The residual is bounded P2: any present instrument, toy, performer, game, safety or recreation scene needs a concrete object/person/state premise, not an inferred cultural system.",
-      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual", "material-dated-novgorod-gusli-comparator", "social-v5-dated-document-context"],
-      "supporting_claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds", "claim:candidate-v5-gramota715-is-classified-as-charm-prayer", "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection", "claim:candidate-v7-museum-individual-toy-types", "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops", "claim:candidate-v7-museum-toy-vessel-sail-xi-xii", "claim:candidate-v7-museum-bone-skates-xii-xiii"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "social-belonging-and-prosocial-relations",
+        "material-vessels-furniture-ritual",
+        "material-dated-novgorod-gusli-comparator",
+        "social-v5-dated-document-context"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
+        "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+        "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+        "claim:candidate-v7-museum-individual-toy-types",
+        "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+        "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+        "claim:candidate-v7-museum-bone-skates-xii-xiii"
+      ]
     },
     {
       "id": "snow-ice-and-winter-surface-processes",
@@ -5406,12 +6167,39 @@
       "subdomain": "cryosphere",
       "family": "Snow accumulation and compaction, crust, surface ice, weak ice and openings, freeze-thaw surfaces, ice formation and breakup",
       "location_applicability": "Winter roads, yards, roofs, rivers, lakes, banks and exposed ground",
-      "applicability": {"resource":"snow and ice only when established","material":"surface and structure loading context","process":"qualitative cryosphere change and hazard","npc":"travel work and exposure context"},
-      "consumer_refs": ["potential:winter_travel", "potential:weather", "potential:settlement"],
+      "applicability": {
+        "resource": "snow and ice only when established",
+        "material": "surface and structure loading context",
+        "process": "qualitative cryosphere change and hazard",
+        "npc": "travel work and exposure context"
+      },
+      "consumer_refs": [
+        "potential:winter_travel",
+        "potential:weather",
+        "potential:settlement"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужен базовый зимний physical envelope: снег/наст/уплотнение, weak ice/open water, freeze-thaw surface, qualitative snow load. Current support and limits: Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners.",
-      "supporting_family_ids": ["environment-weather", "environment-hydrology", "material-transport", "mechanics-statics-support", "environment-ice-snow-hazard-and-strength"],
-      "supporting_claim_refs": ["claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:candidate-v2-near-melting-ice-has-less-strength"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужен базовый зимний physical envelope: снег/наст/уплотнение, weak ice/open water, freeze-thaw surface, qualitative snow load. Current support and limits: Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners. New independently verified support: compaction, melt-refreeze crust, drift, density versus depth, uneven roof loading, eave refreezing, current-weakened ice and concealed openings. Seasonal formation/breakup and surface processes still require a separate coverage decision.",
+      "supporting_family_ids": [
+        "environment-weather",
+        "environment-hydrology",
+        "material-transport",
+        "mechanics-statics-support",
+        "environment-ice-snow-hazard-and-strength"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps"
+      ]
     },
     {
       "id": "daylight-night-sky-and-natural-navigation",
@@ -5419,12 +6207,34 @@
       "subdomain": "sky_and_natural_illumination",
       "family": "Sun, moon and stars as natural light or qualitative orientation cues; daylight, twilight, darkness and visibility relations",
       "location_applicability": "Outdoor travel, work, watch, hunting, fishing and wayfinding",
-      "applicability": {"resource":"natural light only when time and sky state establish it","material":"none","process":"illumination visibility and qualitative orientation","npc":"perception and navigation context"},
-      "consumer_refs": ["potential:travel", "potential:visibility", "potential:time"],
+      "applicability": {
+        "resource": "natural light only when time and sky state establish it",
+        "material": "none",
+        "process": "illumination visibility and qualitative orientation",
+        "npc": "perception and navigation context"
+      },
+      "consumer_refs": [
+        "potential:travel",
+        "potential:visibility",
+        "potential:time"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны qualitative relations солнца/луны/звёзд, twilight/darkness/visibility и возможность ориентирования; exact azimuth/sunrise/time остаётся code-owned. Current support and limits: Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. The residual is bounded P2: illumination, sky position, weather, route and perception require time/weather/state or code, not a navigation conclusion.",
-      "supporting_family_ids": ["environment-weather", "smoke-optical-visibility", "psychology-attention-and-perception"],
-      "supporting_claim_refs": ["claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны qualitative relations солнца/луны/звёзд, twilight/darkness/visibility и возможность ориентирования; exact azimuth/sunrise/time остаётся code-owned. Current support and limits: Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: twilight fading, stellar orientation and competence, celestial-pole motion, epoch-dependent Polaris precision, reflected moonlight and phase/visibility timing. Solar orientation and the full natural-navigation envelope remain open.",
+      "supporting_family_ids": [
+        "environment-weather",
+        "smoke-optical-visibility",
+        "psychology-attention-and-perception",
+        "environment-celestial-light-and-orientation"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
+        "claim:residual-nature-twilight-solar-afterglow",
+        "claim:residual-nature-stars-horizon-navigation",
+        "claim:residual-nature-celestial-pole-daily-circles",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility"
+      ]
     },
     {
       "id": "food-system-animal-products-and-care",
@@ -5432,12 +6242,30 @@
       "subdomain": "food_and_animal_husbandry",
       "family": "Slaughter and butchery, fish processing, dairying, fats, salt, drinks, meal practices, child feeding, fodder cycles and basic animal care",
       "location_applicability": "Households, farms, markets, fishing camps, storage, travel and communal meals",
-      "applicability": {"resource":"animals fish plants water fuel and salt only when present","material":"food vessels and byproducts","process":"production preservation preparation feeding and care","npc":"producers cooks carers eaters and animal keepers"},
-      "consumer_refs": ["potential:food", "potential:household", "potential:animal_husbandry"],
+      "applicability": {
+        "resource": "animals fish plants water fuel and salt only when present",
+        "material": "food vessels and byproducts",
+        "process": "production preservation preparation feeding and care",
+        "npc": "producers cooks carers eaters and animal keepers"
+      },
+      "consumer_refs": [
+        "potential:food",
+        "potential:household",
+        "potential:animal_husbandry"
+      ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. The residual is bounded P2: slaughter, dairying, meals, child feeding, fodder and animal care need a concrete historical or scene premise; no local food custom is inferred.",
-      "supporting_family_ids": ["material-food-resources", "environment-fauna-subsistence", "biology-domestic-animal-digestion-and-forage", "process-food-preservation-and-fermentation"],
-      "supporting_claim_refs": ["claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination", "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control", "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"]
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "supporting_family_ids": [
+        "material-food-resources",
+        "environment-fauna-subsistence",
+        "biology-domestic-animal-digestion-and-forage",
+        "process-food-preservation-and-fermentation"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"
+      ]
     },
     {
       "id": "hospitality-travel-and-lodging",
@@ -5445,12 +6273,29 @@
       "subdomain": "hospitality_and_travel",
       "family": "Guest-host relations, lodging, feeding travellers, introductions, escorts, road information and travel obligations",
       "location_applicability": "Households, inns or lodging contexts when evidenced, roads, landings, markets and journeys",
-      "applicability": {"resource":"food lodging and transport only when offered and available","material":"travel kit and accommodation","process":"request reception stay guidance and departure","npc":"guest host guide carrier and companion roles"},
-      "consumer_refs": ["potential:travel", "potential:dialogue", "potential:household"],
+      "applicability": {
+        "resource": "food lodging and transport only when offered and available",
+        "material": "travel kit and accommodation",
+        "process": "request reception stay guidance and departure",
+        "npc": "guest host guide carrier and companion roles"
+      },
+      "consumer_refs": [
+        "potential:travel",
+        "potential:dialogue",
+        "potential:household"
+      ],
       "coverage": "partial",
       "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route.",
-      "supporting_family_ids": ["social-belonging-and-prosocial-relations", "npc-household-routines", "material-transport", "biology-v5-fever-and-sleep-relations"],
-      "supporting_claim_refs": ["claim:candidate-v5-sleep-is-basic-human-need", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
+      "supporting_family_ids": [
+        "social-belonging-and-prosocial-relations",
+        "npc-household-routines",
+        "material-transport",
+        "biology-v5-fever-and-sleep-relations"
+      ],
+      "supporting_claim_refs": [
+        "claim:candidate-v5-sleep-is-basic-human-need",
+        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"
+      ]
     }
   ],
   "world_knowledge_profile_mappings": [
@@ -5939,11 +6784,15 @@
       {"domain":"biology_physiology","subdomain":"parasites_and_health","disposition":"active_bounded_with_macro_gaps","family_refs":["biology-pathogen-immunity-and-infection","biology-parasite-host-disease-relation"],"limit":"The general parasite-host relation creates no organism presence, exposure, infection, diagnosis, treatment or outcome."}
     ],
     "reconciliation": {
-      "active_claim_mapping":"All active claims are classified once in families and source_inventory; the listed fragments are active inputs, not a hypothetical overlay.",
-      "source_inventory":"Each approved fragment is present in source_inventory and is linked above to applicable existing family, location and consumer references.",
-      "dispositions":{"approved_factual_premise":"May constrain qualitative semantic reasoning within its stated limits.","code_owned":"Current scene state, numeric mechanics, timers, body state, inventory, access and commit remain their existing owners.","bounded_remaining_need":"Taxon-specific historical applicability and any new asserted historical practice require separate evidence."},
-      "interior_closure":"The damp-item storage probe is compositionally covered; independently approved indoor-air-moisture premises now add stove vapour and conditional air-movement/condensation mitigation. No room contents or actual conditions follow.",
-      "not_a_completeness_verdict":"Independent completeness review and real gameplay/retrieval campaigns remain required before any saturation claim."
+      "active_claim_mapping": "All active claims are classified once in families and source_inventory; the listed fragments are active inputs, not a hypothetical overlay.",
+      "source_inventory": "Each approved fragment is present in source_inventory and is linked above to applicable existing family, location and consumer references.",
+      "dispositions": {
+        "approved_factual_premise": "May constrain qualitative semantic reasoning within its stated limits.",
+        "code_owned": "Current scene state, numeric mechanics, timers, body state, inventory, access and commit remain their existing owners.",
+        "bounded_remaining_need": "Taxon-specific historical applicability and any new asserted historical practice require separate evidence."
+      },
+      "interior_closure": "The damp-item storage probe is compositionally covered; independently approved indoor-air-moisture premises now add stove vapour and conditional air-movement/condensation mitigation. No room contents or actual conditions follow.",
+      "not_a_completeness_verdict": "Independent completeness review and real gameplay/retrieval campaigns remain required before any saturation claim."
     }
   }
 }

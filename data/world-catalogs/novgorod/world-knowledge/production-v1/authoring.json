@@ -102,6 +102,12 @@
     "macro-historical-p1-closure-v7.json",
     "verification-macro-historical-p1-closure-v7.json",
     "macro-historical-p1-closeout-v9.json",
-    "verification-macro-historical-p1-closeout-v9.json"
+    "verification-macro-historical-p1-closeout-v9.json",
+    "residual-nature-v1.json",
+    "verification-residual-nature-v1.json",
+    "residual-language-education-v1.json",
+    "verification-residual-language-education-v1.json",
+    "residual-language-education-v2.json",
+    "verification-residual-language-education-v2.json"
   ]
 }

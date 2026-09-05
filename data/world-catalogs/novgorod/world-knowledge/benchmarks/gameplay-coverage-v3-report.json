@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 174,
-    "lexical_recall_at_10": 0.9454022988505747,
-    "hybrid_recall_at_10": 0.9971264367816092,
-    "lexical_recall_at_20": 0.9540229885057471,
+    "case_count": 181,
+    "lexical_recall_at_10": 0.93646408839779,
+    "hybrid_recall_at_10": 0.9972375690607734,
+    "lexical_recall_at_20": 0.9447513812154696,
     "hybrid_recall_at_20": 1,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.4088259441707716,
-    "hybrid_noise_at_10": 0.6619982667396466,
+    "lexical_noise_at_10": 0.43208585459966664,
+    "hybrid_noise_at_10": 0.6759142330965543,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 64.14888505747128,
-    "vector_scan_mean_ms": 0.5702212643679987,
-    "runtime_bundle_bytes": 6254691,
-    "vector_bundle_bytes": 14729216,
-    "encoder_model_load_ms": 2619.028,
-    "peak_process_rss_bytes": 2417856512,
+    "query_embedding_mean_ms": 64.81280662983426,
+    "vector_scan_mean_ms": 0.612604972375708,
+    "runtime_bundle_bytes": 6429163,
+    "vector_bundle_bytes": 14991360,
+    "encoder_model_load_ms": 2697.674,
+    "peak_process_rss_bytes": 2422185984,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -40,23 +40,27 @@
   "cases": [
     {
       "case_id": "static_tree_flower_leaf_sequence_ru",
-      "vector_scan_ms": 8.035500000001775,
+      "vector_scan_ms": 7.988099999998667,
       "lexical_at_10": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
       ],
       "hybrid_at_10": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
       ],
       "lexical_at_20": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
       ],
       "hybrid_at_20": [
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
@@ -65,7 +69,7 @@
     },
     {
       "case_id": "static_fishing_net_upkeep_en",
-      "vector_scan_ms": 0.6318000000028405,
+      "vector_scan_ms": 0.7031999999999243,
       "lexical_at_10": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
       ],
@@ -86,7 +90,7 @@
     },
     {
       "case_id": "static_novgorod_underfloor_function_ru",
-      "vector_scan_ms": 0.2896999999975378,
+      "vector_scan_ms": 0.422099999999773,
       "lexical_at_10": [
         "claim:settlement-underfloor-utility",
         "claim:contextual-evidence-classes"
@@ -111,7 +115,7 @@
     },
     {
       "case_id": "static_co_sensory_limits_ru",
-      "vector_scan_ms": 0.4576999999990221,
+      "vector_scan_ms": 0.5450000000018917,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-is-colorless-and-odorless",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -148,7 +152,7 @@
     },
     {
       "case_id": "static_local_exhaust_capture_en",
-      "vector_scan_ms": 0.48189999999885913,
+      "vector_scan_ms": 0.7247000000024855,
       "lexical_at_10": [
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
@@ -169,7 +173,7 @@
     },
     {
       "case_id": "static_cold_immersion_muscle_control_ru",
-      "vector_scan_ms": 0.7547000000013213,
+      "vector_scan_ms": 0.8911999999982072,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:population-material-leather-mould",
@@ -204,7 +208,7 @@
     },
     {
       "case_id": "static_fire_plume_layer_transport_en",
-      "vector_scan_ms": 0.49320000000079744,
+      "vector_scan_ms": 0.5499000000017986,
       "lexical_at_10": [
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ],
@@ -225,7 +229,7 @@
     },
     {
       "case_id": "static_floating_small_heel_en",
-      "vector_scan_ms": 0.5379000000029919,
+      "vector_scan_ms": 0.5494999999973516,
       "lexical_at_10": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
@@ -246,7 +250,7 @@
     },
     {
       "case_id": "static_wind_driven_rain_opening_ru",
-      "vector_scan_ms": 0.4095000000015716,
+      "vector_scan_ms": 0.5214000000014494,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ],
@@ -267,7 +271,7 @@
     },
     {
       "case_id": "phys_airway_oxygen_awareness_en",
-      "vector_scan_ms": 0.7394999999996799,
+      "vector_scan_ms": 1.2314000000005763,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
@@ -296,7 +300,7 @@
     },
     {
       "case_id": "phys_immersion_not_necessarily_drowning_ru",
-      "vector_scan_ms": 0.6807000000007974,
+      "vector_scan_ms": 1.1476000000002387,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment"
       ],
@@ -317,7 +321,7 @@
     },
     {
       "case_id": "phys_irritated_nose_airway_ru",
-      "vector_scan_ms": 0.6734999999971478,
+      "vector_scan_ms": 0.7950000000018917,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -354,7 +358,7 @@
     },
     {
       "case_id": "phys_pharynx_gag_swallow_en",
-      "vector_scan_ms": 0.6867000000020198,
+      "vector_scan_ms": 0.8286999999982072,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
       ],
@@ -375,7 +379,7 @@
     },
     {
       "case_id": "phys_emesis_without_nausea_ru",
-      "vector_scan_ms": 0.6133999999983644,
+      "vector_scan_ms": 0.8356999999996333,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-emesis-reflex-response"
       ],
@@ -396,7 +400,7 @@
     },
     {
       "case_id": "phys_corneal_touch_blink_en",
-      "vector_scan_ms": 0.6091000000014901,
+      "vector_scan_ms": 0.7858999999989464,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blink-corneal-protection"
       ],
@@ -417,7 +421,7 @@
     },
     {
       "case_id": "phys_painful_contact_withdrawal_ru",
-      "vector_scan_ms": 0.7148999999990338,
+      "vector_scan_ms": 0.7701000000015483,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
@@ -448,7 +452,7 @@
     },
     {
       "case_id": "phys_sudden_stimulus_startle_en",
-      "vector_scan_ms": 0.6835000000028231,
+      "vector_scan_ms": 0.756600000000617,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
       ],
@@ -469,7 +473,7 @@
     },
     {
       "case_id": "phys_volume_loss_compensation_ru",
-      "vector_scan_ms": 0.6916999999994005,
+      "vector_scan_ms": 0.863099999998667,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:candidate-physiology-v3-dehydration-functional-risk"
@@ -492,7 +496,7 @@
     },
     {
       "case_id": "phys_water_loss_function_en",
-      "vector_scan_ms": 1.3127999999996973,
+      "vector_scan_ms": 0.860899999999674,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-dehydration-functional-risk"
       ],
@@ -513,7 +517,7 @@
     },
     {
       "case_id": "phys_alcohol_coordination_awareness_ru",
-      "vector_scan_ms": 0.7132999999994354,
+      "vector_scan_ms": 0.7739999999976135,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
@@ -534,7 +538,7 @@
     },
     {
       "case_id": "phys_sweating_heat_water_en",
-      "vector_scan_ms": 0.6870999999991909,
+      "vector_scan_ms": 0.7708999999995285,
       "lexical_at_10": [
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:continued-sweating-can-cause-body-water-loss",
@@ -567,7 +571,7 @@
     },
     {
       "case_id": "static_sinking_load_buoyant_support_ru",
-      "vector_scan_ms": 0.4629000000022643,
+      "vector_scan_ms": 0.5773999999983062,
       "lexical_at_10": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -616,7 +620,7 @@
     },
     {
       "case_id": "static_wet_wooden_opening_en",
-      "vector_scan_ms": 0.6480999999985215,
+      "vector_scan_ms": 0.6166000000011991,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
@@ -655,7 +659,7 @@
     },
     {
       "case_id": "static_building_auxiliary_work_ru",
-      "vector_scan_ms": 0.30640000000130385,
+      "vector_scan_ms": 0.38439999999900465,
       "lexical_at_10": [
         "claim:construction-auxiliary-construction-work"
       ],
@@ -676,7 +680,7 @@
     },
     {
       "case_id": "static_monthbook_day_commemoration_en",
-      "vector_scan_ms": 0.3752999999996973,
+      "vector_scan_ms": 0.5154999999977008,
       "lexical_at_10": [
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
@@ -697,7 +701,7 @@
     },
     {
       "case_id": "static_conditional_child_care_ru",
-      "vector_scan_ms": 0.2842000000018743,
+      "vector_scan_ms": 0.48149999999805004,
       "lexical_at_10": [
         "claim:rp-mother-household-care-succession",
         "claim:rp-caretaker-principal-goods",
@@ -730,7 +734,7 @@
     },
     {
       "case_id": "static_raw_cooked_food_contact_ru",
-      "vector_scan_ms": 0.7167999999983294,
+      "vector_scan_ms": 0.8633999999983644,
       "lexical_at_10": [
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
@@ -751,7 +755,7 @@
     },
     {
       "case_id": "static_surface_runoff_waste_en",
-      "vector_scan_ms": 0.2919000000001688,
+      "vector_scan_ms": 0.4677000000010594,
       "lexical_at_10": [
         "claim:foundations-earth-26-runoff-contaminant-transport"
       ],
@@ -772,7 +776,7 @@
     },
     {
       "case_id": "static_boat_plank_caulking_ru",
-      "vector_scan_ms": 0.6097000000008848,
+      "vector_scan_ms": 0.6678000000028987,
       "lexical_at_10": [
         "claim:construction-iron-clamp-caulking",
         "claim:agriculture-fauna-tow-log-gaps",
@@ -803,7 +807,7 @@
     },
     {
       "case_id": "static_syncope_perfusion_ru",
-      "vector_scan_ms": 0.6942999999992026,
+      "vector_scan_ms": 0.9171999999998661,
       "lexical_at_10": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness"
@@ -826,7 +830,7 @@
     },
     {
       "case_id": "static_circulatory_tissue_supply_en",
-      "vector_scan_ms": 0.6811999999990803,
+      "vector_scan_ms": 0.8628000000026077,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
       ],
@@ -847,7 +851,7 @@
     },
     {
       "case_id": "static_retinal_light_pupil_ru",
-      "vector_scan_ms": 0.66110000000117,
+      "vector_scan_ms": 0.8071000000018103,
       "lexical_at_10": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:candidate-physiology-v3-blink-corneal-protection"
@@ -870,7 +874,7 @@
     },
     {
       "case_id": "static_hot_work_heat_storage_en",
-      "vector_scan_ms": 0.6517999999996391,
+      "vector_scan_ms": 0.7697000000007392,
       "lexical_at_10": [
         "claim:research-extreme-heat-can-increase-body-heat-storage"
       ],
@@ -891,7 +895,7 @@
     },
     {
       "case_id": "static_cold_environment_heat_loss_ru",
-      "vector_scan_ms": 0.6360999999997148,
+      "vector_scan_ms": 0.8158000000003085,
       "lexical_at_10": [
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
@@ -918,7 +922,7 @@
     },
     {
       "case_id": "static_novelty_orienting_habituation_en",
-      "vector_scan_ms": 0.7219000000004598,
+      "vector_scan_ms": 0.9459999999999127,
       "lexical_at_10": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
       ],
@@ -939,7 +943,7 @@
     },
     {
       "case_id": "static_witness_source_confusion_ru",
-      "vector_scan_ms": 0.18549999999959255,
+      "vector_scan_ms": 0.2338000000017928,
       "lexical_at_10": [
         "claim:foundations-ms-06-visual-selection",
         "claim:research-memory-postevent-misinformation",
@@ -982,7 +986,7 @@
     },
     {
       "case_id": "static_later_misleading_account_en",
-      "vector_scan_ms": 0.13539999999920838,
+      "vector_scan_ms": 0.3084999999991851,
       "lexical_at_10": [
         "claim:research-memory-postevent-misinformation",
         "claim:research-memory-source-misattribution"
@@ -1005,7 +1009,7 @@
     },
     {
       "case_id": "static_shared_work_output_ru",
-      "vector_scan_ms": 0.12840000000142027,
+      "vector_scan_ms": 0.19069999999919673,
       "lexical_at_10": [
         "claim:research-pooled-work-social-loafing",
         "claim:foundations-ms2-03-distrust-cooperation",
@@ -1059,7 +1063,7 @@
     },
     {
       "case_id": "static_smoke_wind_stability_en",
-      "vector_scan_ms": 0.3607000000010885,
+      "vector_scan_ms": 0.4790999999968335,
       "lexical_at_10": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
@@ -1082,7 +1086,7 @@
     },
     {
       "case_id": "static_low_smoke_inversion_ru",
-      "vector_scan_ms": 0.38839999999981956,
+      "vector_scan_ms": 0.5315999999984342,
       "lexical_at_10": [
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
@@ -1105,7 +1109,7 @@
     },
     {
       "case_id": "weak_cloth_support_ru",
-      "vector_scan_ms": 0.399199999999837,
+      "vector_scan_ms": 0.49390000000130385,
       "lexical_at_10": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
@@ -1126,7 +1130,7 @@
     },
     {
       "case_id": "leather_joint_failure_en",
-      "vector_scan_ms": 0.36380000000281143,
+      "vector_scan_ms": 0.4411000000000058,
       "lexical_at_10": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:oil-fat-vegetable-leather-flexibility"
@@ -1151,7 +1155,7 @@
     },
     {
       "case_id": "boiling_chemical_drinkability_ru",
-      "vector_scan_ms": 0.17070000000239816,
+      "vector_scan_ms": 0.2426000000014028,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1172,7 +1176,7 @@
     },
     {
       "case_id": "fuel_water_boiling_en",
-      "vector_scan_ms": 0.16840000000229338,
+      "vector_scan_ms": 0.2635000000009313,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -1193,7 +1197,7 @@
     },
     {
       "case_id": "fuel_fumes_gas_ru",
-      "vector_scan_ms": 0.41709999999875436,
+      "vector_scan_ms": 0.4997000000003027,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1216,7 +1220,7 @@
     },
     {
       "case_id": "enclosed_fuel_fire_en",
-      "vector_scan_ms": 0.5560000000004948,
+      "vector_scan_ms": 0.515400000000227,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -1239,7 +1243,7 @@
     },
     {
       "case_id": "enclosed_air_co_ru",
-      "vector_scan_ms": 0.532999999999447,
+      "vector_scan_ms": 0.6921000000002095,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -1266,7 +1270,7 @@
     },
     {
       "case_id": "immersion_hypothermia_ru",
-      "vector_scan_ms": 0.8100999999987835,
+      "vector_scan_ms": 0.8195999999988999,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -1318,7 +1322,7 @@
     },
     {
       "case_id": "cold_water_body_en",
-      "vector_scan_ms": 0.7334000000009837,
+      "vector_scan_ms": 0.770700000000943,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
@@ -1347,14 +1351,14 @@
     },
     {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 0.7570999999988999,
+      "vector_scan_ms": 0.7988000000004831,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
-        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
-        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts"
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
       ],
       "hybrid_at_10": [
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1362,18 +1366,18 @@
         "claim:care-waterproof-wound-cover",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:foundations-earth-02-ecological-tolerance",
-        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
-        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts"
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
       ],
       "lexical_at_20": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-earth-02-ecological-tolerance",
-        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
-        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts"
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
       ],
       "hybrid_at_20": [
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1381,16 +1385,16 @@
         "claim:care-waterproof-wound-cover",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:foundations-earth-02-ecological-tolerance",
-        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
-        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts"
+        "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 0.7175999999999476,
+      "vector_scan_ms": 0.8034999999981665,
       "lexical_at_10": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
@@ -1399,8 +1403,8 @@
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
-        "claim:foundations-haz-02-exposure-not-illness",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:foundations-haz-02-exposure-not-illness",
         "claim:fauna-mallard-brood"
       ],
       "hybrid_at_10": [
@@ -1413,7 +1417,7 @@
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
-        "claim:foundations-haz-02-exposure-not-illness"
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients"
       ],
       "lexical_at_20": [
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -1423,8 +1427,8 @@
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
-        "claim:foundations-haz-02-exposure-not-illness",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:foundations-haz-02-exposure-not-illness",
         "claim:fauna-mallard-brood",
         "claim:bearberry-lingonberry-resemblance-not-identification",
         "claim:fauna-mallard-wetland-diet",
@@ -1447,8 +1451,8 @@
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
-        "claim:foundations-haz-02-exposure-not-illness",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:foundations-haz-02-exposure-not-illness",
         "claim:fauna-mallard-brood",
         "claim:bearberry-lingonberry-resemblance-not-identification",
         "claim:fauna-mallard-wetland-diet",
@@ -1463,7 +1467,7 @@
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.524199999999837,
+      "vector_scan_ms": 0.7790999999997439,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:grain-processing-bread-ground-plant-base",
@@ -1536,7 +1540,7 @@
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.29130000000077416,
+      "vector_scan_ms": 0.4392999999981839,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -1557,7 +1561,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 0.760100000003149,
+      "vector_scan_ms": 0.8593999999975495,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1608,12 +1612,14 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.31529999999838765,
+      "vector_scan_ms": 0.4491999999991094,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
@@ -1624,6 +1630,8 @@
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
@@ -1633,6 +1641,8 @@
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
@@ -1643,6 +1653,8 @@
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
@@ -1651,7 +1663,7 @@
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 0.7507000000005064,
+      "vector_scan_ms": 0.8346000000019558,
       "lexical_at_10": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:sweat-evaporation-reduces-surface-heat",
@@ -1665,8 +1677,8 @@
         "claim:candidate-v3-aging-changes-cell-function"
       ],
       "hybrid_at_10": [
-        "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:candidate-physiology-v3-shivering-thermogenesis",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:candidate-physiology-v3-protective-withdrawal",
@@ -1698,8 +1710,8 @@
         "claim:exercise-heat-dissipation"
       ],
       "hybrid_at_20": [
-        "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
         "claim:candidate-physiology-v3-shivering-thermogenesis",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:candidate-physiology-v3-protective-withdrawal",
@@ -1722,7 +1734,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 0.7619999999988067,
+      "vector_scan_ms": 0.8572999999996682,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-vestibular-postural-correction",
@@ -1776,7 +1788,7 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.4305999999996857,
+      "vector_scan_ms": 0.48250000000189175,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -1840,7 +1852,7 @@
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.4377999999996973,
+      "vector_scan_ms": 0.4624999999978172,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -1867,7 +1879,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.5364000000008673,
+      "vector_scan_ms": 0.4434000000001106,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -1888,7 +1900,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.343300000000454,
+      "vector_scan_ms": 0.4157999999988533,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
@@ -1911,7 +1923,7 @@
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
-      "vector_scan_ms": 0.3455999999969208,
+      "vector_scan_ms": 0.42659999999887077,
       "lexical_at_10": [
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
@@ -1934,7 +1946,7 @@
     },
     {
       "case_id": "static_flood_deposited_traces_en",
-      "vector_scan_ms": 0.32440000000133296,
+      "vector_scan_ms": 0.41089999999894644,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -1975,32 +1987,39 @@
     },
     {
       "case_id": "static_porous_flood_stain_ru",
-      "vector_scan_ms": 0.37180000000080327,
+      "vector_scan_ms": 0.42009999999936554,
       "lexical_at_10": [
-        "claim:research-porous-high-water-stain-can-require-corroboration"
+        "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "hybrid_at_10": [
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:research-flood-can-leave-high-water-mark-types",
-        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "lexical_at_20": [
-        "claim:research-porous-high-water-stain-can-require-corroboration"
+        "claim:research-porous-high-water-stain-can-require-corroboration",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "hybrid_at_20": [
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:research-flood-can-leave-high-water-mark-types",
-        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "static_track_mud_sand_ru",
-      "vector_scan_ms": 0.46660000000338187,
+      "vector_scan_ms": 0.55370000000039,
       "lexical_at_10": [
         "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
@@ -2010,38 +2029,47 @@
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:domestic-animal-context",
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
-        "claim:candidate-nettle-bast-fibre-retting-decortication",
-        "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
-        "claim:terrain-background"
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
       "lexical_at_20": [
         "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
-        "claim:terrain-background"
+        "claim:terrain-background",
+        "claim:residual-nature-snow-grain-compaction"
       ],
       "hybrid_at_20": [
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:domestic-animal-context",
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
         "claim:candidate-nettle-bast-fibre-retting-decortication",
         "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
-        "claim:terrain-background"
+        "claim:terrain-background",
+        "claim:residual-nature-snow-grain-compaction"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "static_sick_animal_social_feeding_en",
-      "vector_scan_ms": 0.8385000000016589,
+      "vector_scan_ms": 0.7913000000007742,
       "lexical_at_10": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:care-waterproof-wound-cover",
@@ -2090,7 +2118,7 @@
     },
     {
       "case_id": "static_browsed_plant_growth_ru",
-      "vector_scan_ms": 0.7386000000005879,
+      "vector_scan_ms": 0.7878000000018801,
       "lexical_at_10": [
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
@@ -2127,7 +2155,7 @@
     },
     {
       "case_id": "static_stove_room_dampness_en",
-      "vector_scan_ms": 0.4415000000008149,
+      "vector_scan_ms": 0.45310000000245054,
       "lexical_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
       ],
@@ -2148,14 +2176,14 @@
     },
     {
       "case_id": "static_room_air_condensation_ru",
-      "vector_scan_ms": 0.5267000000021653,
+      "vector_scan_ms": 0.4706000000005588,
       "lexical_at_10": [
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
-        "claim:water-permeability-connected-pores",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:water-permeability-connected-pores",
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
         "claim:hard-stone-abrasive-sawing",
         "claim:material-water-vegetable-leather-water",
@@ -2167,8 +2195,8 @@
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
-        "claim:water-permeability-connected-pores",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:water-permeability-connected-pores",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:hard-stone-abrasive-sawing",
         "claim:material-water-vegetable-leather-water"
@@ -2178,8 +2206,8 @@
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
-        "claim:water-permeability-connected-pores",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:water-permeability-connected-pores",
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
         "claim:hard-stone-abrasive-sawing",
         "claim:material-water-vegetable-leather-water",
@@ -2191,8 +2219,8 @@
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
-        "claim:water-permeability-connected-pores",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:water-permeability-connected-pores",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:hard-stone-abrasive-sawing",
         "claim:material-water-vegetable-leather-water",
@@ -2202,7 +2230,7 @@
     },
     {
       "case_id": "static_nettle_food_contact_ru",
-      "vector_scan_ms": 0.7311000000008789,
+      "vector_scan_ms": 0.816900000001624,
       "lexical_at_10": [
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
@@ -2225,7 +2253,7 @@
     },
     {
       "case_id": "static_raspberry_lingonberry_food_en",
-      "vector_scan_ms": 0.7088000000003376,
+      "vector_scan_ms": 0.7623999999996158,
       "lexical_at_10": [
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -2252,7 +2280,7 @@
     },
     {
       "case_id": "static_hazel_apple_parts_ru",
-      "vector_scan_ms": 1.217400000001362,
+      "vector_scan_ms": 0.8355000000010477,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ],
@@ -2273,59 +2301,63 @@
     },
     {
       "case_id": "macro_gramota334_correspondents_ru",
-      "vector_scan_ms": 0.37370000000009895,
+      "vector_scan_ms": 0.37960000000020955,
       "lexical_at_10": [
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-spousal-complaint-reports-marital-treatment",
-        "claim:candidate-gramota334-named-private-letter-monetary-context",
-        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "hybrid_at_10": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-spousal-complaint-reports-marital-treatment",
-        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:candidate-gramota213-official-obligations-document"
       ],
       "lexical_at_20": [
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-spousal-complaint-reports-marital-treatment",
-        "claim:candidate-gramota334-named-private-letter-monetary-context",
-        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
       "hybrid_at_20": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-spousal-complaint-reports-marital-treatment",
-        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:candidate-gramota213-official-obligations-document"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_gramota334_correspondents_en",
-      "vector_scan_ms": 0.3702999999986787,
+      "vector_scan_ms": 0.33950000000186265,
       "lexical_at_10": [
-        "claim:candidate-gramota334-named-private-letter-monetary-context"
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "hybrid_at_10": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
-        "claim:social-daily-fur-sale-accounting"
+        "claim:social-daily-fur-sale-accounting",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "lexical_at_20": [
-        "claim:candidate-gramota334-named-private-letter-monetary-context"
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "hybrid_at_20": [
         "claim:candidate-gramota334-named-private-letter-monetary-context",
         "claim:debt-record-practice",
-        "claim:social-daily-fur-sale-accounting"
+        "claim:social-daily-fur-sale-accounting",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_parasite_host_relation_ru",
-      "vector_scan_ms": 0.7629999999990105,
+      "vector_scan_ms": 0.865300000001298,
       "lexical_at_10": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -2354,7 +2386,7 @@
     },
     {
       "case_id": "macro_parasite_host_relation_en",
-      "vector_scan_ms": 0.7266000000017812,
+      "vector_scan_ms": 0.7828000000008615,
       "lexical_at_10": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-v5-fever-is-not-itself-a-disease"
@@ -2379,10 +2411,11 @@
     },
     {
       "case_id": "macro_onfim_instructional_text_ru",
-      "vector_scan_ms": 0.29360000000087894,
+      "vector_scan_ms": 0.3558000000011816,
       "lexical_at_10": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:religion-olenin-church-people"
       ],
       "hybrid_at_10": [
@@ -2390,11 +2423,13 @@
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:religion-olenin-church-people"
       ],
       "lexical_at_20": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:religion-olenin-church-people"
       ],
       "hybrid_at_20": [
@@ -2402,13 +2437,14 @@
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:religion-olenin-church-people"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_onfim_instructional_text_en",
-      "vector_scan_ms": 0.28180000000065775,
+      "vector_scan_ms": 0.33439999999973224,
       "lexical_at_10": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
@@ -2431,7 +2467,7 @@
     },
     {
       "case_id": "macro_gramota222_posadnik_ru",
-      "vector_scan_ms": 0.3209999999999127,
+      "vector_scan_ms": 0.35089999999763677,
       "lexical_at_10": [
         "claim:candidate-gramota222-letter-to-posadnik"
       ],
@@ -2452,7 +2488,7 @@
     },
     {
       "case_id": "macro_gramota222_posadnik_en",
-      "vector_scan_ms": 0.46819999999934225,
+      "vector_scan_ms": 0.35239999999976135,
       "lexical_at_10": [
         "claim:candidate-gramota222-letter-to-posadnik"
       ],
@@ -2469,7 +2505,7 @@
     },
     {
       "case_id": "macro_gramota724_yugra_ru",
-      "vector_scan_ms": 0.30719999999928405,
+      "vector_scan_ms": 0.31520000000091386,
       "lexical_at_10": [
         "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
@@ -2488,7 +2524,7 @@
     },
     {
       "case_id": "macro_gramota724_yugra_en",
-      "vector_scan_ms": 0.28629999999975553,
+      "vector_scan_ms": 0.2959999999984575,
       "lexical_at_10": [
         "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
@@ -2507,7 +2543,7 @@
     },
     {
       "case_id": "macro_v2_pregnancy_ru",
-      "vector_scan_ms": 0.6788999999989755,
+      "vector_scan_ms": 0.7078000000001339,
       "lexical_at_10": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
         "claim:candidate-v2-labor-is-a-staged-process",
@@ -2547,9 +2583,9 @@
         "claim:foundations-earth-12-consumer-energy-allocation",
         "claim:foundations-earth-13-trophic-levels",
         "claim:foundations-earth-14-ecosystem-energy-flow",
+        "claim:care-direct-pressure-bleeding",
         "claim:food-energy-nutrients",
-        "claim:pain-nociception-distinct",
-        "claim:care-direct-pressure-bleeding"
+        "claim:pain-nociception-distinct"
       ],
       "hybrid_at_20": [
         "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
@@ -2567,15 +2603,15 @@
         "claim:foundations-earth-12-consumer-energy-allocation",
         "claim:foundations-earth-13-trophic-levels",
         "claim:foundations-earth-14-ecosystem-energy-flow",
+        "claim:care-direct-pressure-bleeding",
         "claim:food-energy-nutrients",
-        "claim:pain-nociception-distinct",
-        "claim:care-direct-pressure-bleeding"
+        "claim:pain-nociception-distinct"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v2_pregnancy_en",
-      "vector_scan_ms": 0.7226000000009662,
+      "vector_scan_ms": 0.6841999999996915,
       "lexical_at_10": [
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
@@ -2620,7 +2656,7 @@
     },
     {
       "case_id": "macro_v2_labor_ru",
-      "vector_scan_ms": 0.7107999999971071,
+      "vector_scan_ms": 0.7802999999985332,
       "lexical_at_10": [
         "claim:foundations-earth-09-ecological-competition",
         "claim:candidate-v2-labor-is-a-staged-process",
@@ -2659,7 +2695,7 @@
     },
     {
       "case_id": "macro_v2_labor_en",
-      "vector_scan_ms": 0.7036999999982072,
+      "vector_scan_ms": 0.7796000000016647,
       "lexical_at_10": [
         "claim:candidate-v2-labor-is-a-staged-process"
       ],
@@ -2680,7 +2716,7 @@
     },
     {
       "case_id": "macro_v2_newborn_ru",
-      "vector_scan_ms": 0.674299999998766,
+      "vector_scan_ms": 0.7262000000009721,
       "lexical_at_10": [
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth"
       ],
@@ -2701,7 +2737,7 @@
     },
     {
       "case_id": "macro_v2_newborn_en",
-      "vector_scan_ms": 0.6537000000025728,
+      "vector_scan_ms": 0.67870000000039,
       "lexical_at_10": [
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
         "claim:candidate-v2-lactation-is-milk-production-and-secretion",
@@ -2728,7 +2764,7 @@
     },
     {
       "case_id": "macro_v2_lactation_ru",
-      "vector_scan_ms": 0.6387999999969907,
+      "vector_scan_ms": 0.6514999999999418,
       "lexical_at_10": [
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:livestock-swine-membership"
@@ -2755,7 +2791,7 @@
     },
     {
       "case_id": "macro_v2_lactation_en",
-      "vector_scan_ms": 0.6389999999992142,
+      "vector_scan_ms": 0.6533999999992375,
       "lexical_at_10": [
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:candidate-v2-lactation-is-milk-production-and-secretion",
@@ -2796,7 +2832,7 @@
     },
     {
       "case_id": "macro_v2_foodborne_ru",
-      "vector_scan_ms": 0.7252999999982421,
+      "vector_scan_ms": 0.9235999999982596,
       "lexical_at_10": [
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ"
       ],
@@ -2817,7 +2853,7 @@
     },
     {
       "case_id": "macro_v2_foodborne_en",
-      "vector_scan_ms": 0.686600000000908,
+      "vector_scan_ms": 0.7511999999987893,
       "lexical_at_10": [
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ"
@@ -2840,38 +2876,66 @@
     },
     {
       "case_id": "macro_v2_slip_ru",
-      "vector_scan_ms": 0.2559000000001106,
+      "vector_scan_ms": 0.3584000000009837,
       "lexical_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-uneven-roof-loading",
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-        "claim:candidate-v2-near-melting-ice-has-less-strength"
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "hybrid_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-        "claim:candidate-v2-near-melting-ice-has-less-strength"
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "lexical_at_20": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-uneven-roof-loading",
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-        "claim:candidate-v2-near-melting-ice-has-less-strength"
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "hybrid_at_20": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-        "claim:candidate-v2-near-melting-ice-has-less-strength"
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-melt-refreeze-crust"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v2_slip_en",
-      "vector_scan_ms": 0.261899999997695,
+      "vector_scan_ms": 0.3418000000019674,
       "lexical_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
       ],
       "hybrid_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"
       ],
       "lexical_at_20": [
@@ -2879,14 +2943,14 @@
       ],
       "hybrid_at_20": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v2_ice_strength_ru",
-      "vector_scan_ms": 0.31159999999727006,
+      "vector_scan_ms": 0.32849999999962165,
       "lexical_at_10": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions"
       ],
@@ -2907,36 +2971,64 @@
     },
     {
       "case_id": "macro_v2_ice_strength_en",
-      "vector_scan_ms": 0.2507000000005064,
+      "vector_scan_ms": 0.2988000000004831,
       "lexical_at_10": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:candidate-v2-near-melting-ice-has-less-strength",
-        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading"
       ],
       "hybrid_at_10": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:candidate-v2-near-melting-ice-has-less-strength",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading"
       ],
       "lexical_at_20": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-wind-drift-visibility",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
       ],
       "hybrid_at_20": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:candidate-v2-near-melting-ice-has-less-strength",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-wind-drift-visibility",
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v2_melting_ice_ru",
-      "vector_scan_ms": 0.24139999999897555,
+      "vector_scan_ms": 0.4922000000005937,
       "lexical_at_10": [
         "claim:candidate-v2-near-melting-ice-has-less-strength"
       ],
@@ -2957,7 +3049,7 @@
     },
     {
       "case_id": "macro_v2_melting_ice_en",
-      "vector_scan_ms": 0.2400000000016007,
+      "vector_scan_ms": 0.2890000000006694,
       "lexical_at_10": [
         "claim:candidate-v2-near-melting-ice-has-less-strength"
       ],
@@ -2978,7 +3070,7 @@
     },
     {
       "case_id": "macro_v3_helmet_ru",
-      "vector_scan_ms": 0.44870000000082655,
+      "vector_scan_ms": 0.47620000000097207,
       "lexical_at_10": [
         "claim:candidate-novgorod-helmet-half-mask-find"
       ],
@@ -2997,7 +3089,7 @@
     },
     {
       "case_id": "macro_v3_helmet_en",
-      "vector_scan_ms": 0.5747000000010303,
+      "vector_scan_ms": 0.4798000000009779,
       "lexical_at_10": [
         "claim:candidate-novgorod-helmet-half-mask-find"
       ],
@@ -3016,7 +3108,7 @@
     },
     {
       "case_id": "macro_v3_psalter_ru",
-      "vector_scan_ms": 0.2385000000031141,
+      "vector_scan_ms": 0.28289999999833526,
       "lexical_at_10": [
         "claim:candidate-novgorod-psalter-eleventh-century"
       ],
@@ -3033,7 +3125,7 @@
     },
     {
       "case_id": "macro_v3_psalter_en",
-      "vector_scan_ms": 0.23479999999835854,
+      "vector_scan_ms": 0.27960000000166474,
       "lexical_at_10": [
         "claim:candidate-novgorod-psalter-eleventh-century",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
@@ -3058,7 +3150,7 @@
     },
     {
       "case_id": "macro_v4_letter8_ru",
-      "vector_scan_ms": 0.2800999999999476,
+      "vector_scan_ms": 0.28060000000186847,
       "lexical_at_10": [
         "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
@@ -3075,7 +3167,7 @@
     },
     {
       "case_id": "macro_v4_letter8_en",
-      "vector_scan_ms": 0.2622000000010303,
+      "vector_scan_ms": 0.26370000000315486,
       "lexical_at_10": [
         "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
@@ -3092,38 +3184,38 @@
     },
     {
       "case_id": "macro_v4_onfim202_ru",
-      "vector_scan_ms": 0.3161000000000058,
+      "vector_scan_ms": 0.32700000000113505,
       "lexical_at_10": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
-        "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:rp-caretaker-principal-goods"
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
       "hybrid_at_10": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:rp-caretaker-principal-goods"
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
       "lexical_at_20": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
-        "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:rp-caretaker-principal-goods"
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
       "hybrid_at_20": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:rp-caretaker-principal-goods"
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v4_onfim202_en",
-      "vector_scan_ms": 0.310300000001007,
+      "vector_scan_ms": 0.3010999999969499,
       "lexical_at_10": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
@@ -3148,7 +3240,7 @@
     },
     {
       "case_id": "macro_v4_letter213_ru",
-      "vector_scan_ms": 0.27300000000104774,
+      "vector_scan_ms": 0.28669999999692664,
       "lexical_at_10": [
         "claim:candidate-gramota213-official-obligations-document"
       ],
@@ -3169,7 +3261,7 @@
     },
     {
       "case_id": "macro_v4_letter213_en",
-      "vector_scan_ms": 0.2669999999998254,
+      "vector_scan_ms": 0.26900000000023283,
       "lexical_at_10": [
         "claim:candidate-gramota213-official-obligations-document"
       ],
@@ -3190,7 +3282,7 @@
     },
     {
       "case_id": "macro_v4_gusli_ru",
-      "vector_scan_ms": 0.46529999999984284,
+      "vector_scan_ms": 0.5126999999993131,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -3223,7 +3315,7 @@
     },
     {
       "case_id": "macro_v4_gusli_en",
-      "vector_scan_ms": 0.4565999999977066,
+      "vector_scan_ms": 0.5469999999986612,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"
       ],
@@ -3244,7 +3336,7 @@
     },
     {
       "case_id": "macro_v3_child_development_ru",
-      "vector_scan_ms": 0.8449999999975262,
+      "vector_scan_ms": 0.8698000000003958,
       "lexical_at_10": [
         "claim:candidate-v3-child-development-has-recognizable-periods",
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
@@ -3275,7 +3367,7 @@
     },
     {
       "case_id": "macro_v3_child_development_en",
-      "vector_scan_ms": 0.9129000000029919,
+      "vector_scan_ms": 0.7389000000002852,
       "lexical_at_10": [
         "claim:candidate-v3-child-development-has-recognizable-periods",
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
@@ -3302,7 +3394,7 @@
     },
     {
       "case_id": "macro_v3_puberty_ru",
-      "vector_scan_ms": 0.7224999999998545,
+      "vector_scan_ms": 0.6824999999989814,
       "lexical_at_10": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
@@ -3333,7 +3425,7 @@
     },
     {
       "case_id": "macro_v3_puberty_en",
-      "vector_scan_ms": 0.6995999999999185,
+      "vector_scan_ms": 0.6643000000003667,
       "lexical_at_10": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt"
       ],
@@ -3354,7 +3446,7 @@
     },
     {
       "case_id": "macro_v3_aging_cells_ru",
-      "vector_scan_ms": 0.7497000000003027,
+      "vector_scan_ms": 0.686200000000099,
       "lexical_at_10": [
         "claim:candidate-v3-aging-changes-cell-function",
         "claim:candidate-v3-aging-organs-gradually-lose-function",
@@ -3381,7 +3473,7 @@
     },
     {
       "case_id": "macro_v3_aging_cells_en",
-      "vector_scan_ms": 0.7318999999988591,
+      "vector_scan_ms": 0.680900000003021,
       "lexical_at_10": [
         "claim:candidate-v3-aging-changes-cell-function",
         "claim:candidate-v3-disability-reflects-health-and-context-interaction",
@@ -3410,7 +3502,7 @@
     },
     {
       "case_id": "macro_v3_aging_organs_ru",
-      "vector_scan_ms": 0.7968000000000757,
+      "vector_scan_ms": 0.6722000000008848,
       "lexical_at_10": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
         "claim:candidate-v3-aging-changes-cell-function"
@@ -3433,7 +3525,7 @@
     },
     {
       "case_id": "macro_v3_aging_organs_en",
-      "vector_scan_ms": 0.7652000000016415,
+      "vector_scan_ms": 0.8768999999992957,
       "lexical_at_10": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
         "claim:candidate-v3-aging-changes-cell-function"
@@ -3456,7 +3548,7 @@
     },
     {
       "case_id": "macro_v3_fracture_ru",
-      "vector_scan_ms": 0.7008999999998196,
+      "vector_scan_ms": 0.7747999999992317,
       "lexical_at_10": [
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position"
@@ -3479,7 +3571,7 @@
     },
     {
       "case_id": "macro_v3_fracture_en",
-      "vector_scan_ms": 0.8100000000013097,
+      "vector_scan_ms": 0.7688000000016473,
       "lexical_at_10": [
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position"
@@ -3502,7 +3594,7 @@
     },
     {
       "case_id": "macro_v3_dislocation_ru",
-      "vector_scan_ms": 0.757499999999709,
+      "vector_scan_ms": 0.811200000000099,
       "lexical_at_10": [
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it"
@@ -3525,7 +3617,7 @@
     },
     {
       "case_id": "macro_v3_dislocation_en",
-      "vector_scan_ms": 0.6751000000003842,
+      "vector_scan_ms": 0.7628000000004249,
       "lexical_at_10": [
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature"
@@ -3550,7 +3642,7 @@
     },
     {
       "case_id": "macro_v3_oral_health_ru",
-      "vector_scan_ms": 0.7632999999987078,
+      "vector_scan_ms": 0.8833000000013271,
       "lexical_at_10": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide"
@@ -3575,7 +3667,7 @@
     },
     {
       "case_id": "macro_v3_oral_health_en",
-      "vector_scan_ms": 0.7175000000024738,
+      "vector_scan_ms": 0.7644000000000233,
       "lexical_at_10": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel"
       ],
@@ -3596,7 +3688,7 @@
     },
     {
       "case_id": "macro_v3_disability_ru",
-      "vector_scan_ms": 0.6781000000009954,
+      "vector_scan_ms": 0.772899999999936,
       "lexical_at_10": [
         "claim:candidate-v3-disability-reflects-health-and-context-interaction",
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations"
@@ -3621,7 +3713,7 @@
     },
     {
       "case_id": "macro_v3_disability_en",
-      "vector_scan_ms": 0.7210999999988417,
+      "vector_scan_ms": 0.7013000000006286,
       "lexical_at_10": [
         "claim:candidate-v3-disability-reflects-health-and-context-interaction"
       ],
@@ -3642,7 +3734,7 @@
     },
     {
       "case_id": "macro_v5_fever_ru",
-      "vector_scan_ms": 0.7373000000006869,
+      "vector_scan_ms": 0.6921000000002095,
       "lexical_at_10": [
         "claim:candidate-v5-fever-is-not-itself-a-disease",
         "claim:candidate-v5-infections-cause-most-fevers",
@@ -3669,7 +3761,7 @@
     },
     {
       "case_id": "macro_v5_fever_en",
-      "vector_scan_ms": 0.7299999999995634,
+      "vector_scan_ms": 0.7560999999986961,
       "lexical_at_10": [
         "claim:candidate-v5-infections-cause-most-fevers",
         "claim:candidate-v5-fever-is-not-itself-a-disease"
@@ -3692,7 +3784,7 @@
     },
     {
       "case_id": "macro_v5_sleep_ru",
-      "vector_scan_ms": 0.8375000000014552,
+      "vector_scan_ms": 0.7275000000008731,
       "lexical_at_10": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:acute-sleep-loss-performance",
@@ -3746,7 +3838,7 @@
     },
     {
       "case_id": "macro_v5_sleep_en",
-      "vector_scan_ms": 0.8313000000016473,
+      "vector_scan_ms": 0.7385999999969499,
       "lexical_at_10": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:candidate-v5-sleep-is-basic-human-need"
@@ -3769,7 +3861,7 @@
     },
     {
       "case_id": "macro_v5_birch_language_ru",
-      "vector_scan_ms": 0.38660000000163564,
+      "vector_scan_ms": 0.35090000000127475,
       "lexical_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
@@ -3777,7 +3869,7 @@
       "hybrid_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
-        "claim:judicial-accusation-record"
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "lexical_at_20": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
@@ -3786,66 +3878,76 @@
       "hybrid_at_20": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
-        "claim:judicial-accusation-record"
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v5_birch_language_en",
-      "vector_scan_ms": 0.33800000000337604,
+      "vector_scan_ms": 0.3309000000008382,
       "lexical_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "hybrid_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "lexical_at_20": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "hybrid_at_20": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:residual-v1-household-and-official-birch-registers-differ"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_language_ru",
-      "vector_scan_ms": 0.3363999999965017,
+      "vector_scan_ms": 0.3918999999987136,
       "lexical_at_10": [
         "claim:later-novgorod-judicial-charter",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:rp-caretaker-principal-goods",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:russkaya-pravda-comparative-only",
         "claim:rp-market-purchase-relates-proof-participant"
       ],
       "hybrid_at_10": [
         "claim:later-novgorod-judicial-charter",
-        "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:rp-caretaker-principal-goods",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
       "lexical_at_20": [
         "claim:later-novgorod-judicial-charter",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:rp-caretaker-principal-goods",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:russkaya-pravda-comparative-only",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -3853,18 +3955,19 @@
         "claim:rp-mother-household-care-succession",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:social-church-instruction-reports-demand",
-        "claim:candidate-gramota334-named-private-letter-monetary-context"
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
       "hybrid_at_20": [
         "claim:later-novgorod-judicial-charter",
-        "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:rp-caretaker-principal-goods",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:russkaya-pravda-comparative-only",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -3872,58 +3975,69 @@
         "claim:rp-mother-household-care-succession",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:social-church-instruction-reports-demand",
-        "claim:candidate-gramota334-named-private-letter-monetary-context"
+        "claim:candidate-gramota334-named-private-letter-monetary-context",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_language_en",
-      "vector_scan_ms": 0.36150000000270666,
+      "vector_scan_ms": 0.3953000000001339,
       "lexical_at_10": [
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
         "claim:social-alphabet-exercise-records-text",
-        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:rp-property-claim-relates-acquisition-chain"
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"
       ],
       "hybrid_at_10": [
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
-        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:rp-property-claim-relates-acquisition-chain"
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"
       ],
       "lexical_at_20": [
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
         "claim:social-alphabet-exercise-records-text",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:rp-property-claim-relates-acquisition-chain"
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
       ],
       "hybrid_at_20": [
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:social-alphabet-exercise-records-text",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:rp-property-claim-relates-acquisition-chain"
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_names_ru",
-      "vector_scan_ms": 0.37670000000071013,
+      "vector_scan_ms": 0.33109999999942374,
       "lexical_at_10": [
         "claim:social-kin-letter-reports-protection-request",
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"
@@ -3944,7 +4058,7 @@
     },
     {
       "case_id": "macro_v6_names_en",
-      "vector_scan_ms": 0.3764000000010128,
+      "vector_scan_ms": 0.3401000000012573,
       "lexical_at_10": [
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
         "claim:social-kin-letter-reports-protection-request",
@@ -3969,7 +4083,7 @@
     },
     {
       "case_id": "macro_v6_literacy_ru",
-      "vector_scan_ms": 0.3514999999970314,
+      "vector_scan_ms": 0.34609999999884167,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ],
@@ -3986,7 +4100,7 @@
     },
     {
       "case_id": "macro_v6_literacy_en",
-      "vector_scan_ms": 0.33620000000155414,
+      "vector_scan_ms": 0.558099999998376,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ],
@@ -4003,7 +4117,7 @@
     },
     {
       "case_id": "macro_v6_weapons_ru",
-      "vector_scan_ms": 0.6290999999982887,
+      "vector_scan_ms": 0.5523000000030152,
       "lexical_at_10": [
         "claim:transport-winter-sledge-1220",
         "claim:transport-horse-sledge-equipment",
@@ -4028,7 +4142,7 @@
     },
     {
       "case_id": "macro_v6_weapons_en",
-      "vector_scan_ms": 0.5541999999986729,
+      "vector_scan_ms": 0.6517999999996391,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour"
       ],
@@ -4049,36 +4163,40 @@
     },
     {
       "case_id": "macro_v6_warfare_ru",
-      "vector_scan_ms": 0.35169999999925494,
+      "vector_scan_ms": 0.3330999999998312,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
-        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event"
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "hybrid_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
-        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event"
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "lexical_at_20": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
-        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event"
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "hybrid_at_20": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
-        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event"
+        "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_warfare_en",
-      "vector_scan_ms": 0.4039999999986321,
+      "vector_scan_ms": 0.3355999999985215,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
       ],
@@ -4099,7 +4217,7 @@
     },
     {
       "case_id": "macro_v6_marriage_ru",
-      "vector_scan_ms": 0.9025000000001455,
+      "vector_scan_ms": 0.3621999999995751,
       "lexical_at_10": [
         "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
         "claim:candidate-v7-gramota9-reports-another-wife",
@@ -4126,7 +4244,7 @@
     },
     {
       "case_id": "macro_v6_marriage_en",
-      "vector_scan_ms": 0.3764999999984866,
+      "vector_scan_ms": 0.35680000000138534,
       "lexical_at_10": [
         "claim:candidate-v7-gramota9-reports-another-wife",
         "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
@@ -4159,7 +4277,7 @@
     },
     {
       "case_id": "macro_v6_status_ru",
-      "vector_scan_ms": 0.39060000000245054,
+      "vector_scan_ms": 0.29509999999936554,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
@@ -4188,7 +4306,7 @@
     },
     {
       "case_id": "macro_v6_status_en",
-      "vector_scan_ms": 0.3981000000021595,
+      "vector_scan_ms": 0.28259999999863794,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"
@@ -4213,7 +4331,7 @@
     },
     {
       "case_id": "macro_v6_sickness_ru",
-      "vector_scan_ms": 0.8942999999999302,
+      "vector_scan_ms": 0.7224999999998545,
       "lexical_at_10": [
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
@@ -4262,7 +4380,7 @@
     },
     {
       "case_id": "macro_v6_sickness_en",
-      "vector_scan_ms": 0.8980000000010477,
+      "vector_scan_ms": 0.7962999999981548,
       "lexical_at_10": [
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
@@ -4287,7 +4405,7 @@
     },
     {
       "case_id": "macro_v6_injury_ru",
-      "vector_scan_ms": 0.852100000000064,
+      "vector_scan_ms": 0.7580000000016298,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
@@ -4349,7 +4467,7 @@
     },
     {
       "case_id": "macro_v6_injury_en",
-      "vector_scan_ms": 0.7855000000017753,
+      "vector_scan_ms": 0.6981000000014319,
       "lexical_at_10": [
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
         "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
@@ -4406,7 +4524,7 @@
     },
     {
       "case_id": "macro_v6_government_ru",
-      "vector_scan_ms": 0.3856000000014319,
+      "vector_scan_ms": 0.5389999999970314,
       "lexical_at_10": [
         "claim:later-novgorod-judicial-charter",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
@@ -4442,7 +4560,6 @@
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-minor-children-conditional-care",
@@ -4463,7 +4580,6 @@
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-gramota8-wife-cow-redemption-letter",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-minor-children-conditional-care",
@@ -4477,7 +4593,7 @@
     },
     {
       "case_id": "macro_v6_government_en",
-      "vector_scan_ms": 0.36750000000029104,
+      "vector_scan_ms": 0.3591000000014901,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
@@ -4518,7 +4634,7 @@
     },
     {
       "case_id": "macro_v6_diplomacy_ru",
-      "vector_scan_ms": 0.38290000000051805,
+      "vector_scan_ms": 0.3205000000016298,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
         "claim:rp-mother-household-care-succession",
@@ -4545,7 +4661,7 @@
     },
     {
       "case_id": "macro_v6_diplomacy_en",
-      "vector_scan_ms": 0.36969999999928405,
+      "vector_scan_ms": 0.33959999999933643,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
         "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
@@ -4582,7 +4698,7 @@
     },
     {
       "case_id": "macro_v6_crime_ru",
-      "vector_scan_ms": 0.37039999999979045,
+      "vector_scan_ms": 0.457299999998213,
       "lexical_at_10": [
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry"
@@ -4605,7 +4721,7 @@
     },
     {
       "case_id": "macro_v6_crime_en",
-      "vector_scan_ms": 0.35319999999774154,
+      "vector_scan_ms": 0.43660000000090804,
       "lexical_at_10": [
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:social-authority-letter-relates-theft-inquiry",
@@ -4630,7 +4746,7 @@
     },
     {
       "case_id": "macro_v6_education_ru",
-      "vector_scan_ms": 0.3195999999988999,
+      "vector_scan_ms": 0.4173000000009779,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
@@ -4687,28 +4803,32 @@
     },
     {
       "case_id": "macro_v6_education_en",
-      "vector_scan_ms": 0.3231000000014319,
+      "vector_scan_ms": 0.34279999999853317,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-v5-gramota600-reports-khotynians-context"
       ],
       "hybrid_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-v5-gramota600-reports-khotynians-context"
       ],
       "lexical_at_20": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-v5-gramota600-reports-khotynians-context"
       ],
       "hybrid_at_20": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:candidate-v5-gramota600-reports-khotynians-context"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_recreation_ru",
-      "vector_scan_ms": 0.5719000000026426,
+      "vector_scan_ms": 0.5148000000008324,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -4719,7 +4839,7 @@
         "claim:candidate-v7-museum-individual-toy-types",
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
         "claim:occupation-wood-drawknife",
-        "claim:occupation-smith-hammer"
+        "claim:textile-ellagic-acid-analysis"
       ],
       "hybrid_at_10": [
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -4731,7 +4851,7 @@
         "claim:transport-winter-sledge-1220",
         "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
         "claim:occupation-wood-drawknife",
-        "claim:occupation-smith-hammer"
+        "claim:textile-ellagic-acid-analysis"
       ],
       "lexical_at_20": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
@@ -4743,8 +4863,8 @@
         "claim:candidate-v7-museum-individual-toy-types",
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
         "claim:occupation-wood-drawknife",
-        "claim:occupation-smith-hammer",
-        "claim:textile-ellagic-acid-analysis"
+        "claim:textile-ellagic-acid-analysis",
+        "claim:occupation-smith-hammer"
       ],
       "hybrid_at_20": [
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -4756,14 +4876,14 @@
         "claim:transport-winter-sledge-1220",
         "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
         "claim:occupation-wood-drawknife",
-        "claim:occupation-smith-hammer",
-        "claim:textile-ellagic-acid-analysis"
+        "claim:textile-ellagic-acid-analysis",
+        "claim:occupation-smith-hammer"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_recreation_en",
-      "vector_scan_ms": 0.5815000000002328,
+      "vector_scan_ms": 0.5365999999994528,
       "lexical_at_10": [
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops"
       ],
@@ -4784,15 +4904,15 @@
     },
     {
       "case_id": "macro_v6_moon_ru",
-      "vector_scan_ms": 0.3430999999982305,
+      "vector_scan_ms": 0.3359999999993306,
       "lexical_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
         "claim:research-flood-can-leave-high-water-mark-types"
       ],
       "hybrid_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
-        "claim:foundations-earth2-02-water-mineral-chemical-weathering",
-        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:research-flood-can-leave-high-water-mark-types"
       ],
       "lexical_at_20": [
@@ -4801,36 +4921,36 @@
       ],
       "hybrid_at_20": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
-        "claim:foundations-earth2-02-water-mineral-chemical-weathering",
-        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility",
         "claim:research-flood-can-leave-high-water-mark-types"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_moon_en",
-      "vector_scan_ms": 0.3304000000025553,
+      "vector_scan_ms": 0.34940000000278815,
       "lexical_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
       ],
       "hybrid_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
-        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
-        "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation"
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility"
       ],
       "lexical_at_20": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
       ],
       "hybrid_at_20": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
-        "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
-        "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation"
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:residual-nature-moon-phase-time-of-visibility"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_food_hygiene_ru",
-      "vector_scan_ms": 0.2481999999981781,
+      "vector_scan_ms": 0.25530000000071595,
       "lexical_at_10": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination"
@@ -4853,7 +4973,7 @@
     },
     {
       "case_id": "macro_v6_food_hygiene_en",
-      "vector_scan_ms": 0.5583000000005995,
+      "vector_scan_ms": 0.2430000000022119,
       "lexical_at_10": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
@@ -4878,7 +4998,7 @@
     },
     {
       "case_id": "macro_v9_iron_humidity_ru",
-      "vector_scan_ms": 0.531700000003184,
+      "vector_scan_ms": 0.5093000000015309,
       "lexical_at_10": [
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
       ],
@@ -4899,7 +5019,7 @@
     },
     {
       "case_id": "macro_v9_iron_humidity_en",
-      "vector_scan_ms": 0.5077999999994063,
+      "vector_scan_ms": 0.46709999999802676,
       "lexical_at_10": [
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
       ],
@@ -4920,7 +5040,7 @@
     },
     {
       "case_id": "macro_v9_iron_oil_ru",
-      "vector_scan_ms": 0.47710000000006403,
+      "vector_scan_ms": 0.4529999999977008,
       "lexical_at_10": [
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
       ],
@@ -4941,7 +5061,7 @@
     },
     {
       "case_id": "macro_v9_iron_oil_en",
-      "vector_scan_ms": 0.44329999999899883,
+      "vector_scan_ms": 0.4559000000008382,
       "lexical_at_10": [
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
@@ -4964,7 +5084,7 @@
     },
     {
       "case_id": "macro_v9_otrok_ru",
-      "vector_scan_ms": 0.3449000000000524,
+      "vector_scan_ms": 0.3775000000023283,
       "lexical_at_10": [
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
       ],
@@ -4995,7 +5115,7 @@
     },
     {
       "case_id": "macro_v9_otrok_en",
-      "vector_scan_ms": 0.3235999999997148,
+      "vector_scan_ms": 0.46749999999883585,
       "lexical_at_10": [
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
       ],
@@ -5026,20 +5146,20 @@
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
         "claim:social-dispute-message-reports-dispatch",
         "claim:social-written-prayer-relates-invocation",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:rp-entrusted-goods-claim-relates-reference",
-        "claim:rp-market-purchase-relates-proof-participant",
-        "claim:social-daily-honey-documentary-entry"
+        "claim:rp-market-purchase-relates-proof-participant"
       ]
     },
     {
       "case_id": "macro_v9_veche_ru",
-      "vector_scan_ms": 0.37489999999888823,
+      "vector_scan_ms": 0.5046000000002095,
       "lexical_at_10": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
       "hybrid_at_10": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
+        "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
       ],
       "lexical_at_20": [
@@ -5047,7 +5167,7 @@
       ],
       "hybrid_at_20": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
+        "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
       ],
       "inapplicable_at_20": [
@@ -5069,7 +5189,7 @@
     },
     {
       "case_id": "macro_v9_veche_en",
-      "vector_scan_ms": 0.41640000000188593,
+      "vector_scan_ms": 0.8326000000015483,
       "lexical_at_10": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
@@ -5095,66 +5215,295 @@
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:religion-olenin-church-people"
       ]
     },
     {
-      "case_id": "macro_v9_ends_ru",
-      "vector_scan_ms": 0.4084999999977299,
+      "case_id": "residual_snow_crust_ru",
+      "vector_scan_ms": 1.230199999998149,
       "lexical_at_10": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-twilight-solar-afterglow"
       ],
       "hybrid_at_10": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:social-daily-economic-activities"
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-twilight-solar-afterglow"
       ],
       "lexical_at_20": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-twilight-solar-afterglow"
       ],
       "hybrid_at_20": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:social-daily-economic-activities"
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-twilight-solar-afterglow"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_snow_load_ru",
+      "vector_scan_ms": 0.4676999999974214,
+      "lexical_at_10": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:environment-p1-waterlogged-layer",
+        "claim:foundations-earth-25-snowmelt-runoff",
+        "claim:residual-nature-snow-depth-not-load"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:environment-p1-waterlogged-layer",
+        "claim:foundations-earth-25-snowmelt-runoff"
+      ],
+      "lexical_at_20": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:environment-p1-waterlogged-layer",
+        "claim:foundations-earth-25-snowmelt-runoff",
+        "claim:residual-nature-snow-depth-not-load"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:environment-p1-waterlogged-layer",
+        "claim:foundations-earth-25-snowmelt-runoff"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_river_ice_ru",
+      "vector_scan_ms": 0.5625999999974738,
+      "lexical_at_10": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "hybrid_at_10": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "lexical_at_20": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "hybrid_at_20": [
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:candidate-v2-near-melting-ice-has-less-strength",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:residual-nature-ice-current-thin-areas",
+        "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:foundations-earth2-04-mineral-hardness-not-brittleness"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_twilight_ru",
+      "vector_scan_ms": 0.6682000000000698,
+      "lexical_at_10": [
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-nature-celestial-pole-daily-circles",
+        "claim:residual-nature-twilight-solar-afterglow",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:residual-nature-stars-horizon-navigation"
+      ],
+      "lexical_at_20": [
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-nature-celestial-pole-daily-circles",
+        "claim:residual-nature-twilight-solar-afterglow",
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:residual-nature-stars-horizon-navigation"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_polaris_epoch_ru",
+      "vector_scan_ms": 0.48470000000088476,
+      "lexical_at_10": [
+        "claim:residual-nature-pole-star-precession-limit"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:urban-bird-period-specific",
+        "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      ],
+      "lexical_at_20": [
+        "claim:residual-nature-pole-star-precession-limit"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-nature-pole-star-precession-limit",
+        "claim:urban-bird-period-specific",
+        "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_moon_evening_ru",
+      "vector_scan_ms": 0.49209999999948195,
+      "lexical_at_10": [
+        "claim:residual-nature-moon-phase-time-of-visibility"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-nature-moon-phase-time-of-visibility",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
+      ],
+      "lexical_at_20": [
+        "claim:residual-nature-moon-phase-time-of-visibility"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-nature-moon-phase-time-of-visibility",
+        "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_writing_surface_ru",
+      "vector_scan_ms": 0.5511999999980617,
+      "lexical_at_10": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
+      ],
+      "lexical_at_20": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
       "inapplicable_at_20": [
-        "claim:social-collector-instruction-relates-task-context",
-        "claim:social-kin-letter-reports-protection-request",
-        "claim:rp-caretaker-principal-goods",
-        "claim:rp-entrusted-goods-claim-relates-reference",
-        "claim:social-spousal-complaint-reports-marital-treatment"
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ]
     },
     {
-      "case_id": "macro_v9_ends_en",
-      "vector_scan_ms": 0.3603000000002794,
+      "case_id": "residual_written_register_ru",
+      "vector_scan_ms": 0.4032000000006519,
       "lexical_at_10": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
       "hybrid_at_10": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:social-daily-economic-activities"
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
       "lexical_at_20": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
       ],
       "hybrid_at_20": [
-        "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
-        "claim:social-daily-economic-activities"
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "residual_graphic_not_spoken_ru",
+      "vector_scan_ms": 0.3245999999999185,
+      "lexical_at_10": [
+        "claim:social-priest-fragment-relates-office-address"
+      ],
+      "hybrid_at_10": [
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-priest-fragment-relates-office-address"
+      ],
+      "lexical_at_20": [
+        "claim:social-priest-fragment-relates-office-address"
+      ],
+      "hybrid_at_20": [
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:residual-v1-household-and-official-birch-registers-differ",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance",
+        "claim:social-priest-fragment-relates-office-address"
       ],
       "inapplicable_at_20": [
-        "claim:rp-property-claim-relates-acquisition-chain",
-        "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:rp-minor-children-conditional-care",
-        "claim:rp-mother-household-care-succession",
-        "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
-        "claim:rp-market-purchase-relates-proof-participant",
-        "claim:rp-entrusted-goods-claim-relates-reference",
-        "claim:social-authority-letter-relates-theft-inquiry"
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ]
     }
   ]

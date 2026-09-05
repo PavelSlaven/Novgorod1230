@@ -1,5 +1,15 @@
 # Independent verification — macro historical P1 closeout v9
 
+## Current correction — 2026-09-05
+
+The five-ends claim approval below is withdrawn from production: the cited
+Britannica description does not establish its assigned 1019–1270 time range.
+The claim, its production verification row and dependent retrieval cases are
+removed. Other v9 claims retain their independently reviewed content and
+bindings. The former bounded-P2 family verdict is also superseded by the
+current open-P1 cartography. The earlier review below is historical context,
+not current approval of the withdrawn claim or of family completeness.
+
 Candidate: `git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json`. Auditor: `/root/p1_closure_integration`. The candidate author did not perform this review.
 
 ## Approved — 5/5

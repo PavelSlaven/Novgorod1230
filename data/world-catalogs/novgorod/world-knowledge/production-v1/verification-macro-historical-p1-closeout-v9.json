@@ -1,7 +1,65 @@
-{"schema":"world_knowledge_authoring_fragment_v1","verifications":[
-{"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:macro-historical-p1-closeout-v9-bare-iron-rust-humidity-salts","claim_ref":"claim:candidate-v9-bare-iron-rust-humidity-salts","claim_digest":"276363c79968d7acd8d0dd8ccec48f2427fcac4b298c546cc12219f9f366714a","candidate_ref":"git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-bare-iron-rust-humidity-salts","auditor_ref":"/root/p1_closure_integration","independence_basis":"Independent direct CCI review by an auditor who did not author v9; compared with the active iron-corrosion claims.","evidence_checked":["evidence:candidate-v9-iron-humidity-salts"],"review_ref":"verification/macro-historical-p1-closeout-v9.md#bare-iron-rust-humidity-salts","verdict":"APPROVE","limits":"Universal material relation only; no historical care custom, weapon, inventory, present humidity, salt, corrosion state, damage, or scene fact."},
-{"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:macro-historical-p1-closeout-v9-thin-oil-film","claim_ref":"claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting","claim_digest":"41ecd64047eaeda5ebc645cd2da57b96227fe2310439f53e80b81e8b4f675233","candidate_ref":"git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting","auditor_ref":"/root/p1_closure_integration","independence_basis":"Independent direct CCI review by an auditor who did not author v9; compared with the active generic iron-coating relation.","evidence_checked":["evidence:candidate-v9-iron-oil-film"],"review_ref":"verification/macro-historical-p1-closeout-v9.md#thin-oil-film-temporarily-reduces-iron-rusting","verdict":"APPROVE","limits":"Temporary universal material relation only; no medieval oiling, maintenance practice, weapon usability, inventory, or present object state."},
-{"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:macro-historical-p1-closeout-v9-otrok-administrative-collector","claim_ref":"claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector","claim_digest":"4e24ead8cbfd20f162fc0ca2297afb34eb487caeae19a0bcda846d5eb97f870c","candidate_ref":"git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector","auditor_ref":"/root/p1_closure_integration","independence_basis":"Independent direct review of the RSF report of Gippius's reading of Gramota 1144; auditor did not author v9.","evidence_checked":["evidence:candidate-v9-otrok-administrative-collector"],"review_ref":"verification/macro-historical-p1-closeout-v9.md#late-xii-novgorod-otrok-administrative-collector","verdict":"APPROVE","limits":"One late-XII-century documentary lexical/role context only; no general hierarchy, age category, office system, debt rule, present NPC role, or 1230 status follows."},
-{"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:macro-historical-p1-closeout-v9-veche-prince-military","claim_ref":"claim:candidate-v9-veche-elected-prince-chiefly-military-commander","claim_digest":"548fea8ec6517f3c77fae70ac139da3da7367529ae484845dd104edb02b7673e","candidate_ref":"git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-veche-elected-prince-chiefly-military-commander","auditor_ref":"/root/p1_closure_integration","independence_basis":"Independent direct review of the cited Britannica History paragraph; auditor did not author v9.","evidence_checked":["evidence:candidate-v9-veche-prince-military"],"review_ref":"verification/macro-historical-p1-closeout-v9.md#veche-elected-prince-chiefly-military-commander","verdict":"APPROVE","limits":"Broad secondary medieval context only; no exact 1230 procedure, current prince, officeholder, election, command, entitlement, force, or authority."},
-{"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:macro-historical-p1-closeout-v9-five-ends-assemblies-territory","claim_ref":"claim:candidate-v9-five-novgorod-ends-own-assemblies-territory","claim_digest":"04ff0f0fdcbbdd6ed2399b64215b3702750173a89ea44d4e4c290bb297e756ab","candidate_ref":"git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-five-novgorod-ends-own-assemblies-territory","auditor_ref":"/root/p1_closure_integration","independence_basis":"Independent direct review of the cited Britannica History paragraph; auditor did not author v9.","evidence_checked":["evidence:candidate-v9-five-ends-assemblies-territory"],"review_ref":"verification/macro-historical-p1-closeout-v9.md#five-novgorod-ends-own-assemblies-territory","verdict":"APPROVE","limits":"Broad secondary medieval context only; no exact 1230 boundary, active assembly, competence, property title, levy, current authority, or scene fact."}
-]}
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closeout-v9-bare-iron-rust-humidity-salts",
+      "claim_ref": "claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "claim_digest": "276363c79968d7acd8d0dd8ccec48f2427fcac4b298c546cc12219f9f366714a",
+      "candidate_ref": "git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-bare-iron-rust-humidity-salts",
+      "auditor_ref": "/root/p1_closure_integration",
+      "independence_basis": "Independent direct CCI review by an auditor who did not author v9; compared with the active iron-corrosion claims.",
+      "evidence_checked": [
+        "evidence:candidate-v9-iron-humidity-salts"
+      ],
+      "review_ref": "verification/macro-historical-p1-closeout-v9.md#bare-iron-rust-humidity-salts",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no historical care custom, weapon, inventory, present humidity, salt, corrosion state, damage, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closeout-v9-thin-oil-film",
+      "claim_ref": "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "claim_digest": "41ecd64047eaeda5ebc645cd2da57b96227fe2310439f53e80b81e8b4f675233",
+      "candidate_ref": "git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
+      "auditor_ref": "/root/p1_closure_integration",
+      "independence_basis": "Independent direct CCI review by an auditor who did not author v9; compared with the active generic iron-coating relation.",
+      "evidence_checked": [
+        "evidence:candidate-v9-iron-oil-film"
+      ],
+      "review_ref": "verification/macro-historical-p1-closeout-v9.md#thin-oil-film-temporarily-reduces-iron-rusting",
+      "verdict": "APPROVE",
+      "limits": "Temporary universal material relation only; no medieval oiling, maintenance practice, weapon usability, inventory, or present object state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closeout-v9-otrok-administrative-collector",
+      "claim_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "claim_digest": "4e24ead8cbfd20f162fc0ca2297afb34eb487caeae19a0bcda846d5eb97f870c",
+      "candidate_ref": "git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
+      "auditor_ref": "/root/p1_closure_integration",
+      "independence_basis": "Independent direct review of the RSF report of Gippius's reading of Gramota 1144; auditor did not author v9.",
+      "evidence_checked": [
+        "evidence:candidate-v9-otrok-administrative-collector"
+      ],
+      "review_ref": "verification/macro-historical-p1-closeout-v9.md#late-xii-novgorod-otrok-administrative-collector",
+      "verdict": "APPROVE",
+      "limits": "One late-XII-century documentary lexical/role context only; no general hierarchy, age category, office system, debt rule, present NPC role, or 1230 status follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closeout-v9-veche-prince-military",
+      "claim_ref": "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "claim_digest": "548fea8ec6517f3c77fae70ac139da3da7367529ae484845dd104edb02b7673e",
+      "candidate_ref": "git:e830a78d3b164a331e8fb417c4c8310c310c7737:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closeout-v9.json#claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+      "auditor_ref": "/root/p1_closure_integration",
+      "independence_basis": "Independent direct review of the cited Britannica History paragraph; auditor did not author v9.",
+      "evidence_checked": [
+        "evidence:candidate-v9-veche-prince-military"
+      ],
+      "review_ref": "verification/macro-historical-p1-closeout-v9.md#veche-elected-prince-chiefly-military-commander",
+      "verdict": "APPROVE",
+      "limits": "Broad secondary medieval context only; no exact 1230 procedure, current prince, officeholder, election, command, entitlement, force, or authority."
+    }
+  ]
+}

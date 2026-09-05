@@ -10,6 +10,37 @@ without waiting for a live gameplay case. See the current verdict in
 `macro-gap-readiness-v1.md`; the snapshot and verdict below describe the
 superseded acceptance baseline only.
 
+### Residual integration checkpoint — not final readiness
+
+The current descriptor contains 1,049 claims: 26 independently approved
+snow/sky and birch-writing/name premises added, and one unsupported
+five-ends applicability claim removed. Its 1019–1270 interval was not
+established by the cited paragraph; its production verdict and two dependent
+retrieval probes were removed with it. The original candidate and review
+remain available in Git history.
+
+The compiler and category-cartography check pass. There are 148 supported
+families and 49 explicitly partial need families; 30 P1 and six focused
+P2-review requirements remain open. New written-register premises are not a
+spoken-dialect model, and seasonal/celestial relations are not a complete
+navigation model. No family is promoted merely by this increment.
+
+The aligned vector index contains 3,660 entries (14,991,360 float32 bytes).
+All 69 relevant authoring/population/fauna/foundation tests passed across
+the initial run and one post-generation rerun of the artifact-alignment
+test; category-cartography also passed. The initial alignment test correctly
+failed while the old vector index was still present. No test assertion was
+weakened. `git diff --check` passed.
+
+Updated gameplay coverage: 181 offline cases, hybrid Recall@10 0.997238,
+Recall@20 1.0; nine new positive probes retrieved their intended claims in
+top 10 and three new time-exclusion probes excluded the targeted claims.
+Unchanged retrieval baseline: 133 cases, hybrid Recall@10/20 0.969925.
+Both benchmark gates pass, with hard-constraint recall and applicability
+precision 1.0. These checks establish retrieval, not world completeness.
+Exact-HEAD CI and final independent completeness audit remain outstanding.
+The older results below do not certify this changed corpus.
+
 ## Previous static snapshot
 
 Audited corpus commit: `39b891c17855b1cd8b650e2f758e1ef8b0162e06`.

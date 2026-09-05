@@ -16,91 +16,199 @@
       "case_id": "static_tree_flower_leaf_sequence_ru",
       "locale": "ru",
       "query_text": "Весной наблюдают разные листопадные деревья. Обязательно ли у них совпадает порядок распускания листьев и цветения?",
-      "relevant_claim_refs": ["claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"],
+      "relevant_claim_refs": [
+        "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_fishing_net_upkeep_en",
       "locale": "en",
       "query_text": "A fishing net has worn sections. Can repairing or replacing those sections extend its useful life without guaranteeing a successful repair?",
-      "relevant_claim_refs": ["claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"],
+      "relevant_claim_refs": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_novgorod_underfloor_function_ru",
       "locale": "ru",
       "query_text": "Какую хозяйственную функцию могло иметь холодное пространство под жилым этажом новгородского дома, если ничего не известно о его нынешнем содержимом?",
-      "relevant_claim_refs": ["claim:settlement-underfloor-utility"],
+      "relevant_claim_refs": [
+        "claim:settlement-underfloor-utility"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["architecture_settlement"],
+      "domains": [
+        "architecture_settlement"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_co_sensory_limits_ru",
       "locale": "ru",
       "query_text": "Можно ли обнаружить угарный газ по собственному цвету или запаху, если его наличие и концентрация в комнате неизвестны?",
-      "relevant_claim_refs": ["claim:research-carbon-monoxide-is-colorless-and-odorless"],
+      "relevant_claim_refs": [
+        "claim:research-carbon-monoxide-is-colorless-and-odorless"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_local_exhaust_capture_en",
       "locale": "en",
       "query_text": "How can local exhaust capture polluted air near its source and discharge it outdoors without proving that this room has effective ventilation?",
-      "relevant_claim_refs": ["claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"],
+      "relevant_claim_refs": [
+        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_cold_immersion_muscle_control_ru",
       "locale": "ru",
       "query_text": "Может ли холодное погружение ухудшить управление мышцами без утверждения, что конкретный человек уже потерял способность двигаться?",
-      "relevant_claim_refs": ["claim:research-cold-water-immersion-can-impair-muscle-control"],
+      "relevant_claim_refs": [
+        "claim:research-cold-water-immersion-can-impair-muscle-control"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_fire_plume_layer_transport_en",
       "locale": "en",
       "query_text": "How can a fire plume transport entrained combustion products between the lower and upper layers of an enclosure?",
-      "relevant_claim_refs": ["claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"],
+      "relevant_claim_refs": [
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_floating_small_heel_en",
       "locale": "en",
       "query_text": "A symmetric floating body heels slightly without changing its submerged volume. Under what relation between metacenter and center of gravity does buoyancy produce a righting torque?",
-      "relevant_claim_refs": ["claim:research-positive-metacentric-height-can-right-small-floating-body-heel"],
+      "relevant_claim_refs": [
+        "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_wind_driven_rain_opening_ru",
       "locale": "ru",
       "query_text": "Почему ветровой перепад давления может загонять дождевую воду через щель в ограждении постройки, не доказывая течь в этом доме?",
-      "relevant_claim_refs": ["claim:research-wind-pressure-difference-can-force-rain-across-building-opening"],
+      "relevant_claim_refs": [
+        "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "phys_airway_oxygen_awareness_en",
@@ -374,81 +482,180 @@
       "case_id": "static_sinking_load_buoyant_support_ru",
       "locale": "ru",
       "query_text": "Груз частично погрузился в воду и продолжает тонуть. Исчезла ли поддержка воды и почему одного названия материала недостаточно для решения, будет ли он плавать?",
-      "relevant_claim_refs": ["claim:population-physics-immersion-buoyancy", "claim:population-physics-floating-shape"],
+      "relevant_claim_refs": [
+        "claim:population-physics-immersion-buoyancy",
+        "claim:population-physics-floating-shape"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_wet_wooden_opening_en",
       "locale": "en",
       "query_text": "Water touches a wooden wall containing an opening. How do pressure-driven liquid flow through the opening and capillary uptake into wood differ, without declaring a leak rate or successful repair?",
-      "relevant_claim_refs": ["claim:foundations-phys-06-pressure-driven-liquid-outflow", "claim:wood-liquid-capillary-uptake"],
+      "relevant_claim_refs": [
+        "claim:foundations-phys-06-pressure-driven-liquid-outflow",
+        "claim:wood-liquid-capillary-uptake"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_building_auxiliary_work_ru",
       "locale": "ru",
       "query_text": "Какие простые вспомогательные работы при возведении домонгольских каменных зданий подтверждены исследованием, без назначения каждому персонажу профессии и платы?",
-      "relevant_claim_refs": ["claim:construction-auxiliary-construction-work"],
+      "relevant_claim_refs": [
+        "claim:construction-auxiliary-construction-work"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["architecture_settlement"],
+      "domains": [
+        "architecture_settlement"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_monthbook_day_commemoration_en",
       "locale": "en",
       "query_text": "What relationship between numbered days and commemorations is documented in a thirteenth-century church monthbook, without assuming its use in a particular Novgorod church?",
-      "relevant_claim_refs": ["claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"],
+      "relevant_claim_refs": [
+        "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_conditional_child_care_ru",
       "locale": "ru",
       "query_text": "Какой условный порядок заботы о малых детях при новом браке матери описан в Пространной Русской Правде, без объявления его действующим правом Новгорода?",
-      "relevant_claim_refs": ["claim:rp-minor-children-conditional-care"],
+      "relevant_claim_refs": [
+        "claim:rp-minor-children-conditional-care"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_raw_cooked_food_contact_ru",
       "locale": "ru",
       "query_text": "Если одной утварью касались сырого мяса, а затем готовой еды, могут ли через неё перенестись возбудители, хотя заражение и болезнь ещё не установлены?",
-      "relevant_claim_refs": ["claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"],
+      "relevant_claim_refs": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_surface_runoff_waste_en",
       "locale": "en",
       "query_text": "Can surface runoff carry sewage and sediment into a river or lake if those materials are present on its path?",
-      "relevant_claim_refs": ["claim:foundations-earth-26-runoff-contaminant-transport"],
+      "relevant_claim_refs": [
+        "claim:foundations-earth-26-runoff-contaminant-transport"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_boat_plank_caulking_ru",
       "locale": "ru",
       "query_text": "Как в описанной сравнительной реконструкции деревянного судна использовали просмолённую паклю и железные скобы у щелей между досками?",
-      "relevant_claim_refs": ["claim:construction-tarred-tow-caulking", "claim:construction-iron-clamp-caulking"],
+      "relevant_claim_refs": [
+        "claim:construction-tarred-tow-caulking",
+        "claim:construction-iron-clamp-caulking"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["material_culture"],
+      "domains": [
+        "material_culture"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_syncope_perfusion_ru",
@@ -895,151 +1102,334 @@
       "case_id": "plant_unknown_lookalike_ru",
       "locale": "ru",
       "query_text": "У тропы растёт зонтичное растение, похожее на знакомое. Достаточно ли названия и одного листа, или что ещё сравнить, прежде чем считать его тем же растением?",
-      "relevant_claim_refs": ["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters", "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"],
+      "relevant_claim_refs": [
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "plant_edible_part_en",
       "locale": "en",
       "query_text": "People call this a food plant. Does that alone make its root, leaf, flower, and seed equally fit to eat?",
-      "relevant_claim_refs": ["claim:candidate-edible-plant-status-does-not-transfer-to-every-part"],
+      "relevant_claim_refs": [
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "rope_rough_mooring_ru",
       "locale": "ru",
       "query_text": "Верёвка из растительного волокна несколько раз тёрлась о грубый кол, была перегнута и завязана узлом. Что это меняет для её оставшейся прочности без числа нагрузки?",
-      "relevant_claim_refs": ["claim:modern-fibre-rope-condition-can-reduce-available-strength"],
+      "relevant_claim_refs": [
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "nettle_stem_fibre_en",
       "locale": "en",
       "query_text": "What kind of processing could separate usable bast from the woody core of a nettle stem, without assuming a ready-made thread is already present?",
-      "relevant_claim_refs": ["claim:candidate-nettle-bast-fibre-retting-decortication"],
+      "relevant_claim_refs": [
+        "claim:candidate-nettle-bast-fibre-retting-decortication"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "pond_plant_positions_ru",
       "locale": "ru",
       "query_text": "Почему одни водные растения держатся корнями в грунте под водой, другие выносят листья к поверхности, а третьи плавают свободно?",
-      "relevant_claim_refs": ["claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"],
+      "relevant_claim_refs": [
+        "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "flood_branch_retention_en",
       "locale": "en",
       "query_text": "After a river rises, can branches and woody fragments be carried downstream, and why might some remain caught in one reach rather than another?",
-      "relevant_claim_refs": ["claim:candidate-river-flood-woody-debris-transport-retention-conditional"],
+      "relevant_claim_refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "cold_body_response_ru",
       "locale": "ru",
       "query_text": "Человека внезапно пробирает холодом. Какое непроизвольное телесное действие может помогать вырабатывать тепло, не обещая согревания?",
-      "relevant_claim_refs": ["claim:candidate-physiology-v3-shivering-thermogenesis"],
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-shivering-thermogenesis"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "boat_turn_balance_en",
       "locale": "en",
       "query_text": "A boat lurches sideways and a standing person begins to lose balance. What involuntary body system can help correct posture, without deciding whether they fall?",
-      "relevant_claim_refs": ["claim:candidate-physiology-v3-vestibular-postural-correction"],
+      "relevant_claim_refs": [
+        "claim:candidate-physiology-v3-vestibular-postural-correction"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "water_fire_smoke_ru",
       "locale": "ru",
       "query_text": "У горящих досок пламя и топливо охлаждают водой, но воздух уже полон дыма. Какие качественные пределы видимости и тушения здесь важны без обещания безопасного успеха?",
-      "relevant_claim_refs": ["claim:water-can-cool-class-a-fire-fuel-and-flame", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"],
+      "relevant_claim_refs": [
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "grain_winter_condensation_en",
       "locale": "en",
       "query_text": "A stored grain mass is warm in its middle but cold near the outer wall. How could that difference change where dampness gathers, without proving spoilage?",
-      "relevant_claim_refs": ["claim:stored-grain-temperature-gradient-can-migrate-moisture"],
+      "relevant_claim_refs": [
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "grain_air_passage_ru",
       "locale": "ru",
       "query_text": "Если воздух проходит через запас зерна не до конца, может ли он выровнять его температуру и что остаётся неопределённым?",
-      "relevant_claim_refs": ["claim:stored-grain-airflow-can-reduce-temperature-differences"],
+      "relevant_claim_refs": [
+        "claim:stored-grain-airflow-can-reduce-temperature-differences"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["physics_material_science"],
+      "domains": [
+        "physics_material_science"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "stagnant_water_oxygen_en",
       "locale": "en",
       "query_text": "In a poorly flushed backwater after a sudden rain following dry weather, what can be said about dissolved oxygen without asserting a fish kill?",
-      "relevant_claim_refs": ["claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen", "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen"],
+      "relevant_claim_refs": [
+        "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+        "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
       "locale": "ru",
       "query_text": "Почему грунт берега после повторного замерзания и оттаивания может легче размываться, хотя раньше был связанным?",
-      "relevant_claim_refs": ["claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"],
+      "relevant_claim_refs": [
+        "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_flood_deposited_traces_en",
       "locale": "en",
       "query_text": "What kinds of traces might rising river water leave on banks and obstacles after it recedes, without proving a particular flood date?",
-      "relevant_claim_refs": ["claim:research-flood-can-leave-high-water-mark-types"],
+      "relevant_claim_refs": [
+        "claim:research-flood-can-leave-high-water-mark-types"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_porous_flood_stain_ru",
       "locale": "ru",
       "query_text": "Можно ли по одной полосе намокания на пористой деревянной опоре точно назвать высоту паводка? Почему стоит сравнить след на непористой поверхности рядом?",
-      "relevant_claim_refs": ["claim:research-porous-high-water-stain-can-require-corroboration"],
+      "relevant_claim_refs": [
+        "claim:research-porous-high-water-stain-can-require-corroboration"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["environment"],
+      "domains": [
+        "environment"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "static_track_mud_sand_ru",
@@ -1224,101 +1614,221 @@
       "case_id": "macro_gramota334_correspondents_ru",
       "locale": "ru",
       "query_text": "Что именно известно о грамоте №334, Мирославе, Ратмире и денежных делах?",
-      "relevant_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_gramota334_correspondents_en",
       "locale": "en",
       "query_text": "What does Novgorod birch-bark letter 334 establish about Miroslav, Ratmir, and monetary matters?",
-      "relevant_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_parasite_host_relation_ru",
       "locale": "ru",
       "query_text": "Что означает связь паразита с хозяином и почему она сама по себе не доказывает инфекцию конкретного человека?",
-      "relevant_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"],
+      "relevant_claim_refs": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_parasite_host_relation_en",
       "locale": "en",
       "query_text": "How can a parasite relate to a host and possible disease without establishing an infection in a concrete person?",
-      "relevant_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"],
+      "relevant_claim_refs": [
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["biology_physiology"],
+      "domains": [
+        "biology_physiology"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_onfim_instructional_text_ru",
       "locale": "ru",
       "query_text": "Какие учебные элементы перечислены в грамоте Онфима №199 и к какому времени она относится?",
-      "relevant_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1250},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1250
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_onfim_instructional_text_en",
       "locale": "en",
       "query_text": "Which instructional components are listed in Onfim's letter 199, and what is its date range?",
-      "relevant_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota199-onfim-instructional-text"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1250},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1250
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_gramota222_posadnik_ru",
       "locale": "ru",
       "query_text": "Что сообщает грамота №222 о письме к посаднику Гюргию и теме юридических и денежных дел?",
-      "relevant_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1210},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1210
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_gramota222_posadnik_en",
       "locale": "en",
       "query_text": "What does letter 222 record about a private letter to posadnik Gyurgiy and legal-financial matters?",
-      "relevant_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota222-letter-to-posadnik"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1210},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1210
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_gramota724_yugra_ru",
       "locale": "ru",
       "query_text": "Какой документ описывает экспедицию Саввы в Югру за данью и к какому времени относится это свидетельство?",
-      "relevant_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1170},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1170
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {
       "case_id": "macro_gramota724_yugra_en",
       "locale": "en",
       "query_text": "Which document describes Savva's Yugra tribute expedition, and what is the evidence date range?",
-      "relevant_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition"],
+      "relevant_claim_refs": [
+        "claim:candidate-gramota724-yugra-tribute-expedition"
+      ],
       "purpose": "semantic_resolution",
-      "domains": ["social_law_economy"],
+      "domains": [
+        "social_law_economy"
+      ],
       "expected_hard_constraint_refs": [],
-      "context": {"time":{"year":1170},"place_refs":["region_novgorod_land"],"actor_facets":{}}
+      "context": {
+        "time": {
+          "year": 1170
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
     },
     {"case_id":"macro_v2_pregnancy_ru","locale":"ru","query_text":"Какой общий физиологический факт о беременности нельзя превращать в утверждение о состоянии конкретной женщины?","relevant_claim_refs":["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes"],"purpose":"semantic_resolution","domains":["biology_physiology"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
     {"case_id":"macro_v2_pregnancy_en","locale":"en","query_text":"What general physiological relation of pregnancy must not establish any particular person's condition?","relevant_claim_refs":["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes"],"purpose":"semantic_resolution","domains":["biology_physiology"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
@@ -1410,7 +1920,239 @@
     {"case_id":"macro_v9_otrok_en","locale":"en","query_text":"What does a late-twelfth-century Novgorod record say about otrok as an administrative debt collector without creating an office or NPC role?","relevant_claim_refs":["claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"],"purpose":"semantic_resolution","domains":["social_law_economy"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1180},"place_refs":["region_novgorod_land"],"actor_facets":{}},"inapplicable_claim_refs":["claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"],"inapplicable_context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
     {"case_id":"macro_v9_veche_ru","locale":"ru","query_text":"Как вторичное описание характеризует вече после 1019 года и князя как главным образом военного предводителя, не устанавливая порядок или власть 1230 года?","relevant_claim_refs":["claim:candidate-v9-veche-elected-prince-chiefly-military-commander"],"purpose":"semantic_resolution","domains":["social_law_economy"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1220},"place_refs":["region_novgorod_land"],"actor_facets":{}},"inapplicable_claim_refs":["claim:candidate-v9-veche-elected-prince-chiefly-military-commander"],"inapplicable_context":{"time":{"year":1300},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
     {"case_id":"macro_v9_veche_en","locale":"en","query_text":"How does the secondary account characterize the post-1019 veche and prince chiefly as military commander without establishing a 1230 procedure or authority?","relevant_claim_refs":["claim:candidate-v9-veche-elected-prince-chiefly-military-commander"],"purpose":"semantic_resolution","domains":["social_law_economy"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1220},"place_refs":["region_novgorod_land"],"actor_facets":{}},"inapplicable_claim_refs":["claim:candidate-v9-veche-elected-prince-chiefly-military-commander"],"inapplicable_context":{"time":{"year":1300},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
-    {"case_id":"macro_v9_ends_ru","locale":"ru","query_text":"Что вторичное описание сообщает о пяти новгородских концах, собственных собраниях и долях территориальных владений, не задавая границы или полномочия?","relevant_claim_refs":["claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"],"purpose":"semantic_resolution","domains":["social_law_economy"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1220},"place_refs":["region_novgorod_land"],"actor_facets":{}},"inapplicable_claim_refs":["claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"],"inapplicable_context":{"time":{"year":1300},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
-    {"case_id":"macro_v9_ends_en","locale":"en","query_text":"What does the secondary account say about five Novgorod ends, their own assemblies, and shares of territorial possessions without setting boundaries or competences?","relevant_claim_refs":["claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"],"purpose":"semantic_resolution","domains":["social_law_economy"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1220},"place_refs":["region_novgorod_land"],"actor_facets":{}},"inapplicable_claim_refs":["claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"],"inapplicable_context":{"time":{"year":1300},"place_refs":["region_novgorod_land"],"actor_facets":{}}}
+    {
+      "case_id": "residual_snow_crust_ru",
+      "locale": "ru",
+      "query_text": "После дневной оттепели ночью ударил мороз. Почему на снегу появилась твёрдая корка?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-snow-melt-refreeze-crust"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_snow_load_ru",
+      "locale": "ru",
+      "query_text": "На обеих крышах одинаковый слой снега. Значит ли это одинаковый вес?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-snow-depth-not-load"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_river_ice_ru",
+      "locale": "ru",
+      "query_text": "Рядом с течением речной лёд может быть слабее, хотя дальше он крепкий?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-ice-current-thin-areas"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_twilight_ru",
+      "locale": "ru",
+      "query_text": "Солнце уже село, но небо ещё светлое и звёзд почти не видно. Почему?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-twilight-solar-afterglow"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_polaris_epoch_ru",
+      "locale": "ru",
+      "query_text": "Можно ли использовать точность современного ориентира по Полярной для XIII века?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-pole-star-precession-limit"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_moon_evening_ru",
+      "locale": "ru",
+      "query_text": "Будет ли Луна первой четверти видна вечером или только перед рассветом?",
+      "relevant_claim_refs": [
+        "claim:residual-nature-moon-phase-time-of-visibility"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_writing_surface_ru",
+      "locale": "ru",
+      "query_text": "На какой стороне бересты писали и каким инструментом?",
+      "relevant_claim_refs": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "inapplicable_claim_refs": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1700
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_written_register_ru",
+      "locale": "ru",
+      "query_text": "Одинаково ли написаны бытовые письма и официальные документы в берестяном корпусе?",
+      "relevant_claim_refs": [
+        "claim:residual-v1-household-and-official-birch-registers-differ"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "inapplicable_claim_refs": [
+        "claim:residual-v1-household-and-official-birch-registers-differ"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1700
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "residual_graphic_not_spoken_ru",
+      "locale": "ru",
+      "query_text": "Замена о на ъ в бытовом письме обязательно передаёт произношение?",
+      "relevant_claim_refs": [
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "inapplicable_claim_refs": [
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1700
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    }
   ]
 }

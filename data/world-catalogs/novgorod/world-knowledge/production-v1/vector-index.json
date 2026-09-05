@@ -1816,20 +1816,6 @@
       "retrieval_text": "Коррозия и защитная плёнка железа Универсальные отношения материала, не исторический инвентарь. Оголённое железо ржавеет быстрее во влажном воздухе, ещё быстрее под тонкой водной плёнкой; растворимые соли ускоряют ржавление. Это универсальная связь материала, не исторический обычай ухода или предмет в сцене. железо ржавчина масло влага соль"
     },
     {
-      "entry_ref": "wk-retrieval:claim:candidate-v9-five-novgorod-ends-own-assemblies-territory:en",
-      "target_ref": "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-      "domain": "social_law_economy",
-      "locale": "en",
-      "retrieval_text": "Assembly, territory, and court-demand records Separate bounded historical records, not an operative system. Britannica describes five Novgorod ends, each with its own assembly and a share of territorial possessions. This is not a 1230 boundary, active assembly, competence, or property title. veche ends court assembly territory"
-    },
-    {
-      "entry_ref": "wk-retrieval:claim:candidate-v9-five-novgorod-ends-own-assemblies-territory:ru",
-      "target_ref": "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory",
-      "domain": "social_law_economy",
-      "locale": "ru",
-      "retrieval_text": "Собрание, территория и судебное требование Разные ограниченные исторические записи, не действующая система. Britannica описывает пять новгородских концов, каждый со своим собранием и долей территориальных владений. Это не границы 1230 года, действующее собрание, полномочие или титул собственности. вече концы суд собрание территория"
-    },
-    {
       "entry_ref": "wk-retrieval:claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector:en",
       "target_ref": "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
       "domain": "social_law_economy",
@@ -12568,6 +12554,370 @@
       "retrieval_text": "Ветровой перепад давления и дождь у проёма Условная связь ветрового перепада давления, дождя и прохода воды через проём или дефект ограждения. Перепад давления, создаваемый ветром, может проталкивать дождевую воду через проём или дефект ограждения постройки. Это не устанавливает постройку, крышу, стену, проём, дождь, ветер, течь, количество воды, ущерб, влажность внутри, способ ремонта, историческую практику или исход конкретной сцены. косой дождь ветровой дождь проём протекание дождь в доме ветер загоняет дождь протекает проём"
     },
     {
+      "entry_ref": "wk-retrieval:claim:residual-nature-celestial-pole-daily-circles:en",
+      "target_ref": "claim:residual-nature-celestial-pole-daily-circles",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. As Earth rotates, stars appear to circle the celestial pole. The northern celestial pole follows the direction of Earth's axis and provides a northward reference when an observer can locate it. twilight Moon stars orientation north celestial pole star motion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-celestial-pole-daily-circles:ru",
+      "target_ref": "claim:residual-nature-celestial-pole-daily-circles",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. При вращении Земли звёзды кажутся движущимися вокруг небесного полюса. Северный небесный полюс связан с направлением земной оси и даёт северный ориентир, если наблюдатель умеет определить его положение. сумерки Луна звёзды ориентирование север небесный полюс движение звёзд"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-ice-current-thin-areas:en",
+      "target_ref": "claim:residual-nature-ice-current-thin-areas",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Subsurface flow can create thin ice that is not apparent from above on water bodies and waterways. A visibly frozen surface does not establish uniform thickness. snow ice crust roof current thin ice opening under-ice flow"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-ice-current-thin-areas:ru",
+      "target_ref": "claim:residual-nature-ice-current-thin-areas",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Подлёдное течение может создавать незаметные сверху тонкие участки льда на водоёмах и водотоках. Видимая замёрзшая поверхность не доказывает равномерной толщины. снег лёд наст крыша течение тонкий лёд промоина подлёдная вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-moon-phase-time-of-visibility:en",
+      "target_ref": "claim:residual-nature-moon-phase-time-of-visibility",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. The phase is related to when the Moon is visible: at most latitudes a full Moon rises around sunset and sets around sunrise; first quarter is visible in the evening, last quarter in the latter night and morning. Exact times depend on location and season. twilight Moon stars orientation Moon in evening full Moon first quarter last quarter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-moon-phase-time-of-visibility:ru",
+      "target_ref": "claim:residual-nature-moon-phase-time-of-visibility",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. Фаза связана с временем видимости Луны: на большинстве широт полнолуние примерно соответствует восходу около заката и заходу около рассвета; первая четверть видна вечером, последняя — во второй половине ночи и утром. Точное время зависит от места и сезона. сумерки Луна звёзды ориентирование Луна вечером полнолуние первая четверть последняя четверть"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-moonlight-reflected-sunlight:en",
+      "target_ref": "claim:residual-nature-moonlight-reflected-sunlight",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. Moonlight is reflected sunlight. Mentioning the Moon or its phase does not itself set local illumination: observing conditions and the Moon's position are required. twilight Moon stars orientation moonlight reflected sunlight night illumination"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-moonlight-reflected-sunlight:ru",
+      "target_ref": "claim:residual-nature-moonlight-reflected-sunlight",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. Лунный свет — отражённый солнечный свет. Наличие Луны в описании или её фаза сами по себе не задают освещённость места: нужны условия наблюдения и положение светила. сумерки Луна звёзды ориентирование лунный свет свет Луны освещённость ночью"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-pole-star-precession-limit:en",
+      "target_ref": "claim:residual-nature-pole-star-precession-limit",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. Precession slowly changes the celestial pole's position relative to the stars. Modern precision of orientation by Polaris cannot automatically be transferred to another historical epoch. twilight Moon stars orientation Polaris precession historical sky"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-pole-star-precession-limit:ru",
+      "target_ref": "claim:residual-nature-pole-star-precession-limit",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. Из-за прецессии положение небесного полюса относительно звёзд медленно меняется. Современную точность ориентира по Полярной звезде нельзя автоматически переносить на другую историческую эпоху. сумерки Луна звёзды ориентирование Полярная звезда прецессия историческое небо"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-roof-melt-eave-refreezing:en",
+      "target_ref": "claim:residual-nature-roof-melt-eave-refreezing",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Heat from the interior can melt roof snow even when the outside air is below freezing. Water can refreeze at a colder eave, obstruct drainage and back up beneath the covering. snow ice crust roof ice dam icicles eave meltwater leak"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-roof-melt-eave-refreezing:ru",
+      "target_ref": "claim:residual-nature-roof-melt-eave-refreezing",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Тепло из помещения может растопить снег на крыше даже при морозе снаружи. На более холодном свесе вода может замёрзнуть, затруднить сток и вызвать подпор воды под покрытие. снег лёд наст крыша наледь сосульки свес крыши талая вода течь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-conceals-ice-gaps:en",
+      "target_ref": "claim:residual-nature-snow-conceals-ice-gaps",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Snow can conceal weak spots and gaps in lake shore ice. A continuous white cover does not itself confirm continuous ice beneath it. snow ice crust roof snow-covered ice hidden gap shore ice"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-conceals-ice-gaps:ru",
+      "target_ref": "claim:residual-nature-snow-conceals-ice-gaps",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Снег может скрывать слабые участки и отверстия в прибрежном озёрном льду. Сплошной белый покров сам по себе не подтверждает непрерывность льда под ним. снег лёд наст крыша снег на льду полынья скрытая промоина береговой лёд"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-depth-not-load:en",
+      "target_ref": "claim:residual-nature-snow-depth-not-load",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Equal snow depth does not imply equal loading: wet snow is heavier than dry loose snow. Retained rainfall and further snowfall add mass. snow ice crust roof snow load wet snow snow weight"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-depth-not-load:ru",
+      "target_ref": "claim:residual-nature-snow-depth-not-load",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Одинаковая глубина снега не означает одинаковую нагрузку: мокрый снег тяжелее сухого рыхлого снега. Задержавшийся дождь и новые снегопады добавляют массу. снег лёд наст крыша снеговая нагрузка мокрый снег масса снега"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-grain-compaction:en",
+      "target_ref": "claim:residual-nature-snow-grain-compaction",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Snow changes after deposition: later snowfall compresses lower layers, and footsteps compact its grains. Fresh loose snow and a trodden surface can therefore have different structures. snow ice crust roof loose snow packed snow compaction"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-grain-compaction:ru",
+      "target_ref": "claim:residual-nature-snow-grain-compaction",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Снег после выпадения меняется: новые снегопады сжимают нижние слои, а шаги уплотняют зёрна. Свежий рыхлый снег и утоптанная поверхность поэтому могут иметь разную структуру. снег лёд наст крыша рыхлый снег утоптанный снег уплотнение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-melt-refreeze-crust:en",
+      "target_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Snow that melts and refreezes can form a hard, smooth crust. The presence of a crust alone does not establish whether it can support a person or load. snow ice crust roof snow crust thaw refreeze"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-melt-refreeze-crust:ru",
+      "target_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Подтаявший и вновь замёрзший снег может образовать твёрдую гладкую корку — наст. Наличие корки само по себе не определяет, выдержит ли она человека или груз. снег лёд наст крыша корка оттепель замерзание"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-uneven-roof-loading:en",
+      "target_ref": "claim:residual-nature-snow-uneven-roof-loading",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Wind and roof shape create uneven snow accumulation. Excessive snow loading can bend structural members and cause collapse; the threshold depends on the actual structure. snow ice crust roof roof snow drift deflection collapse"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-uneven-roof-loading:ru",
+      "target_ref": "claim:residual-nature-snow-uneven-roof-loading",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Ветер и форма крыши создают неравномерные скопления снега. Избыточная снеговая нагрузка может прогибать несущие элементы и привести к обрушению; порог зависит от конкретной конструкции. снег лёд наст крыша снег на крыше сугроб прогиб обрушение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-wind-drift-visibility:en",
+      "target_ref": "claim:residual-nature-snow-wind-drift-visibility",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. Wind can lift previously fallen snow, reduce visibility and form drifts that impede travel. Blowing snow does not require a new snowfall. snow ice crust roof blowing snow snowdrift visibility"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-snow-wind-drift-visibility:ru",
+      "target_ref": "claim:residual-nature-snow-wind-drift-visibility",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. Ветер способен поднимать уже выпавший снег, ухудшать видимость и образовывать сугробы, затрудняющие движение. Для позёмки новый снегопад не обязателен. снег лёд наст крыша позёмка метель сугроб видимость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-stars-horizon-navigation:en",
+      "target_ref": "claim:residual-nature-stars-horizon-navigation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. When an observer can distinguish both familiar stars and the horizon, their relative positions can support navigation. This requires identifying the reference points and does not provide a route by itself. twilight Moon stars orientation navigation star reference horizon"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-stars-horizon-navigation:ru",
+      "target_ref": "claim:residual-nature-stars-horizon-navigation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. Когда известные наблюдателю звёзды и горизонт одновременно различимы, их взаимное положение может служить ориентиром для навигации. Это требует распознавания ориентиров и не задаёт готовый маршрут. сумерки Луна звёзды ориентирование навигация звёздный ориентир горизонт"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-twilight-solar-afterglow:en",
+      "target_ref": "claim:residual-nature-twilight-solar-afterglow",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. After sunset, twilight does not disappear at once: as the Sun sinks farther below the horizon its afterglow fades and fainter stars become visible. Cloud or an obstructed horizon can prevent observation. twilight Moon stars orientation sunset darkness visibility"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-nature-twilight-solar-afterglow:ru",
+      "target_ref": "claim:residual-nature-twilight-solar-afterglow",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. После захода Солнца сумеречное свечение не исчезает сразу: при углублении Солнца под горизонт оно ослабевает, становятся заметны более слабые звёзды. Облачность и закрытый горизонт могут мешать наблюдению. сумерки Луна звёзды ориентирование закат темнота видимость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-birch-letter-etiquette-formulas-aid-dating:en",
+      "target_ref": "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Names and address formulas Corpus boundaries for names and etiquette. The character of etiquette formulas in birch letters is one aid to their dating. It is not a reconstructed greeting, title, or social hierarchy. name address etiquette etiquette formula dating"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-birch-letter-etiquette-formulas-aid-dating:ru",
+      "target_ref": "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Имена и формулы обращения Корпусные границы для именных и этикетных форм. Характер этикетных формул берестяных писем служит одним из средств их датирования. Это не реконструированное приветствие, титул или социальная иерархия. имя обращение этикет этикетная формула датировка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-birch-writing-used-styli-on-inner-surface:en",
+      "target_ref": "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Everyday birch writing Corpus material and document practices. Documented birch letters were generally pressed or scratched with dedicated metal or bone styli, most often on the bark’s inner side. This is corpus practice, not a scene object or writer. birch bark stylus register"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-birch-writing-used-styli-on-inner-surface:ru",
+      "target_ref": "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Практика берестяного письма Материал и документные практики корпуса. Засвидетельствованные берестяные грамоты обычно выдавливали или выцарапывали специальным металлическим либо костяным писалóм, чаще на внутренней стороне листа. Это практика корпуса, не предмет или писец в сцене. береста писало реестр"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context:en",
+      "target_ref": "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-text registers Corpus distinctions, not scene speech. Church texts and listed charms in the corpus can be in pure Church Slavonic or mixed language. This assigns no utterance, belief, or literacy to an actor. dialect register letter Church Slavonic charm"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context:ru",
+      "target_ref": "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Регистры берестяных текстов Корпусные различия письма, не речь сцены. Церковные тексты и перечисленные заговоры в корпусе могут быть написаны на чистом церковнославянском или смешанном языке. Это не назначает реплику, веру или грамотность персонажу. диалект регистр грамота церковнославянский заговор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-fragmentary-birch-text-readings-can-be-revised:en",
+      "target_ref": "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-text registers Corpus distinctions, not scene speech. Fragmentary birch texts can have uncertain letter identification and readings or translations revised by later study. This is a source boundary, not unreliability of a particular letter. dialect register letter fragment reading translation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-fragmentary-birch-text-readings-can-be-revised:ru",
+      "target_ref": "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Регистры берестяных текстов Корпусные различия письма, не речь сцены. Фрагментарные берестяные тексты могут иметь неуверенно опознанные буквы, а чтения и переводы могут уточняться позднейшими исследованиями. Это граница интерпретации источника, не недостоверность конкретной грамоты. диалект регистр грамота фрагмент чтение перевод"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-household-and-official-birch-registers-differ:en",
+      "target_ref": "claim:residual-v1-household-and-official-birch-registers-differ",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-text registers Corpus distinctions, not scene speech. In the documented corpus, household letters are normally dialectal while official documents usually orient to supradialectal Old-Russian norms and can retain dialectisms. This is a corpus distinction, not a character rule. dialect register letter official document"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-household-and-official-birch-registers-differ:ru",
+      "target_ref": "claim:residual-v1-household-and-official-birch-registers-differ",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Регистры берестяных текстов Корпусные различия письма, не речь сцены. В изученном корпусе бытовые грамоты обычно диалектны, а официальные документы чаще ориентированы на наддиалектные древнерусские нормы и могут сохранять диалектизмы. Это различие корпуса, не правило речи или письма конкретного персонажа. диалект регистр грамота официальный документ"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises:en",
+      "target_ref": "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Instructional text types Attested texts, not a school. Attested instructional birch texts include alphabets, numeral lists, syllables, and exercises. These are text types, not a school, teacher, pupil, curriculum, or 1230 literacy distribution. alphabet numerals syllables exercise"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises:ru",
+      "target_ref": "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Учебные типы текстов Засвидетельствованные учебные тексты, не школа. Среди засвидетельствованных учебных берестяных текстов есть азбуки, перечни цифр, склады и упражнения. Это типы текстов, не школа, учитель, ученик, программа или распределение грамотности в 1230 году. азбука цифры слоги упражнение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-name-only-owner-labels-have-disputed-function:en",
+      "target_ref": "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Names and address formulas Corpus boundaries for names and etiquette. The corpus includes about two dozen labels bearing only an owner's name; their function remains disputed. This is not a name list, patronymic system, or scene identity. name address etiquette label owner name"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-name-only-owner-labels-have-disputed-function:ru",
+      "target_ref": "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Имена и формулы обращения Корпусные границы для именных и этикетных форм. В корпусе есть около двух десятков ярлычков только с именем владельца; их функция остаётся спорной. Это не список имён, система отчеств или личность в сцене. имя обращение этикет ярлычок имя владельца"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions:en",
+      "target_ref": "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Everyday birch writing Corpus material and document practices. Debt and supply registers could be personal memory aids or written instructions to collect specified debts. This determines neither a particular record’s function, a debt, nor a collection outcome. birch bark stylus register debt instruction"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions:ru",
+      "target_ref": "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Практика берестяного письма Материал и документные практики корпуса. Долговые и поставочные реестры могли быть личной памяткой или письменным распоряжением взыскать указанные долги. Это не определяет функцию конкретной записи, долг или результат взыскания. береста писало реестр долг распоряжение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories:en",
+      "target_ref": "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Everyday birch writing Corpus material and document practices. The corpus is predominantly private letters on current household, family, monetary, and trade matters; it also includes debt lists and money-or-kind supply registers. This is corpus composition, not literacy, delivery, or a current account. birch bark stylus register private letter debt list supply register"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories:ru",
+      "target_ref": "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Практика берестяного письма Материал и документные практики корпуса. Корпус преимущественно состоит из частных писем о текущих хозяйственных, семейных, денежных и торговых делах; в нём есть долговые списки и росписи денежных либо натуральных поставок. Это состав корпуса, не грамотность, доставка или текущий счёт. береста писало реестр частное письмо долговой список поставка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-household-writing-has-bounded-graphic-substitutions:en",
+      "target_ref": "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Documentary language and naming forms Narrowly attested writing and naming forms. In the documented Novgorod household writing system, o and hard sign, and e and soft sign, could be substituted, while e and soft sign could stand for yat. This is a source graphic feature, not a character rule. dialect address name hard sign soft sign yat"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-household-writing-has-bounded-graphic-substitutions:ru",
+      "target_ref": "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные языковые и именующие формы Узко засвидетельствованные формы письма и именования. В засвидетельствованной новгородской бытовой системе письма могли взаимно заменяться о и ъ, е и ь, а е и ь могли ставиться на месте ѣ. Это графическая особенность источников, не правило речи или письма персонажа. диалект адрес имя о ъ е ь ять"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction:en",
+      "target_ref": "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Documentary language and naming forms Narrowly attested writing and naming forms. The complete late-XII-century Novgorod letter 1144 uses a traditional written ‘from whom to whom’ address construction. It is one address comparator, not a spoken greeting, delivery, kinship, or current correspondence. dialect address name letter 1144 from to"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction:ru",
+      "target_ref": "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные языковые и именующие формы Узко засвидетельствованные формы письма и именования. В полной новгородской грамоте второй половины XII века №1144 использована традиционная письменная конструкция «от кого к кому». Это один адресный comparator, не устное приветствие, доставка, родство или текущая переписка. диалект адрес имя грамота 1144 от кого к кому"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms:en",
+      "target_ref": "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Documentary language and naming forms Narrowly attested writing and naming forms. A source discussion of a XIII-century Novgorod letter describes women being called by forms derived from their husbands’ names, including Hodzhirova and Spiridanova. It is attested practice, not a complete name system, marriage, or scene identity. dialect address name Hodzhirova Spiridanova"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms:ru",
+      "target_ref": "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные языковые и именующие формы Узко засвидетельствованные формы письма и именования. Разбор XIII-вековой новгородской грамоты описывает именование женщин формами от имён мужей, включая Ходжировую и Спиридановую. Это засвидетельствованная практика источника, не полный именник, брак или личность в сцене. диалект адрес имя Ходжировая Спиридановая"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:resource-occupation-needs-setting:en",
       "target_ref": "claim:resource-occupation-needs-setting",
       "domain": "npc_daily_life",
@@ -19400,6 +19750,34 @@
       "retrieval_text": "След и условия субстрата Качественная связь отпечатка следа, субстрата и пределов интерпретации."
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:residual-nature-sky:en",
+      "target_ref": "wk:environment:residual-nature-sky",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Natural lighting and celestial references Qualitative natural relations; actual conditions come from world state. twilight Moon stars orientation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:residual-nature-sky:ru",
+      "target_ref": "wk:environment:residual-nature-sky",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. сумерки Луна звёзды ориентирование"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:residual-nature-winter:en",
+      "target_ref": "wk:environment:residual-nature-winter",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow, ice and winter surfaces Qualitative natural relations; actual conditions come from world state. snow ice crust roof"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:residual-nature-winter:ru",
+      "target_ref": "wk:environment:residual-nature-winter",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. снег лёд наст крыша"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:rising-air-cooling-cloud-condensation:en",
       "target_ref": "wk:environment:rising-air-cooling-cloud-condensation",
       "domain": "environment",
@@ -25040,6 +25418,76 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Адрес с религиозной должностью"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-document-register-boundaries:en",
+      "target_ref": "wk:social_law_economy:residual-v1-document-register-boundaries",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Birch-text registers Corpus distinctions, not scene speech. dialect register letter"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-document-register-boundaries:ru",
+      "target_ref": "wk:social_law_economy:residual-v1-document-register-boundaries",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Регистры берестяных текстов Корпусные различия письма, не речь сцены. диалект регистр грамота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-everyday-writing-practice:en",
+      "target_ref": "wk:social_law_economy:residual-v1-everyday-writing-practice",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Everyday birch writing Corpus material and document practices. birch bark stylus register"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-everyday-writing-practice:ru",
+      "target_ref": "wk:social_law_economy:residual-v1-everyday-writing-practice",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Практика берестяного письма Материал и документные практики корпуса. береста писало реестр"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-instructional-text-context:en",
+      "target_ref": "wk:social_law_economy:residual-v1-instructional-text-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Instructional text types Attested texts, not a school. alphabet numerals syllables exercise"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-instructional-text-context:ru",
+      "target_ref": "wk:social_law_economy:residual-v1-instructional-text-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Учебные типы текстов Засвидетельствованные учебные тексты, не школа. азбука цифры слоги упражнение"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-name-and-address-boundaries:en",
+      "target_ref": "wk:social_law_economy:residual-v1-name-and-address-boundaries",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Names and address formulas Corpus boundaries for names and etiquette. name address etiquette"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-name-and-address-boundaries:ru",
+      "target_ref": "wk:social_law_economy:residual-v1-name-and-address-boundaries",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Имена и формулы обращения Корпусные границы для именных и этикетных форм. имя обращение этикет"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v2-concrete-documentary-language-and-naming:en",
+      "target_ref": "wk:social_law_economy:residual-v2-concrete-documentary-language-and-naming",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Documentary language and naming forms Narrowly attested writing and naming forms. dialect address name"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v2-concrete-documentary-language-and-naming:ru",
+      "target_ref": "wk:social_law_economy:residual-v2-concrete-documentary-language-and-naming",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Документные языковые и именующие формы Узко засвидетельствованные формы письма и именования. диалект адрес имя"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:russkaya-pravda-comparative-only:en",

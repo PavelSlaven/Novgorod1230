@@ -4361,7 +4361,7 @@
         "potential:travel"
       ],
       "coverage": "partial",
-      "reason": "Footprint/substrate interpretation is now independently grounded. Other trace types and specific weather/preservation conditions remain partial; no local trace, taxon, age, route or encounter follows.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Минимальная композиционная модель: footprints, scat, feeding signs, disturbed vegetation, различимость/неоднозначность, влияние снега/грязи/дождя/ветра/времени. Без вывода о конкретном звере в сцене. Current support and limits: Footprint/substrate interpretation is now independently grounded. Other trace types and specific weather/preservation conditions remain partial; no local trace, taxon, age, route or encounter follows.",
       "supporting_claim_refs": [
         "claim:fauna-tawny-owl-pellets",
         "claim:fauna-dragonfly-emergence",
@@ -4384,7 +4384,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Source-backed различия possession/custody/title/acquisition и применимые формы доказательства/перехода имущества. Current support and limits: Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
       "supporting_claim_refs": [
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -4411,7 +4411,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть основные типы обязательства, collateral/guarantee/default там, где это доказуемо для периода. Current support and limits: Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics.",
       "supporting_claim_refs": [
         "claim:debt-record-practice",
         "claim:debt-needs-parties-and-basis",
@@ -4440,7 +4440,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен минимальный period-local набор процедурных primitives: witness, oath, written evidence, accusation, inquiry, limits. Current support and limits: Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state.",
       "supporting_claim_refs": [
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -4468,7 +4468,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна явная provenance/applicability модель: что можно применять к Новгороду около 1230, что только comparative. Current support and limits: Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
       "supporting_claim_refs": [
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -4496,7 +4496,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны меры, счётные единицы, формы оплаты/расчёта и qualitative quality distinctions с датировкой. Current support and limits: Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
       "supporting_claim_refs": [
         "claim:social-daily-fur-sale-accounting",
         "claim:social-payment-register-records-entry",
@@ -4526,7 +4526,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны source-backed сезонные transport/provisioning patterns региона. Текущий лёд, запасы и доступность остаются state. Current support and limits: Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners.",
       "supporting_claim_refs": [
         "claim:transport-winter-sledge-1220",
         "claim:transport-sledge-summer-cargo",
@@ -4558,7 +4558,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны primitives эксплуатации речного транспорта: посадка/высадка, перенос груза, причаливание, удержание, rowing/poling/towing — только там, где это исторически подтверждается. Current support and limits: Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics.",
       "supporting_family_ids": [
         "material-transport",
         "built-river-landing-access",
@@ -4663,7 +4663,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен простой historical cooking envelope: boiling/baking/roasting/stewing/drying/fermentation там, где подтверждено, типичные process/tool relations. Не каталог рецептов. Current support and limits: Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics.",
       "supporting_claim_refs": [
         "claim:heating-reduces-microbial-viability",
         "claim:food-preservation-qualitative",
@@ -4694,7 +4694,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Можно добавить пару доказанных repair primitives, но точная течь и состояние крыши — scene state. Current support and limits: Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "materials-wood-moisture-and-coatings",
@@ -4726,7 +4726,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Washing, exposure routes, infection-chain limits, food/contact transfer and surface runoff carrying sewage into rivers/lakes are supported. Remaining historical work concerns asserted local sanitation customs; actual installation, contamination and illness are state/mechanics.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужна archaeological/historical модель wells, drainage, waste/latrine handling, bathing/water access — без материализации конкретной ямы/колодца. Current support and limits: Washing, exposure routes, infection-chain limits, food/contact transfer and surface runoff carrying sewage into rivers/lakes are supported. Remaining historical work concerns asserted local sanitation customs; actual installation, contamination and illness are state/mechanics.",
       "supporting_family_ids": [
         "built-bathing-sanitation",
         "chemistry-exposure-and-routes",
@@ -4812,7 +4812,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужен небольшой source-backed XIII-century social envelope вокруг публичной репутации, оскорбления, примирения, status-sensitive reactions. Не reputation score. Current support and limits: Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need.",
       "supporting_family_ids": [
         "social-trust-conflict-and-repair",
         "psychology-affect-regulation-and-stress"
@@ -4868,7 +4868,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужны местные household/dependency comparators, чтобы не строить быт на общеславянской юридической аналогии. Current support and limits: Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support.",
       "supporting_family_ids": [
         "social-family-care",
         "social-belonging-and-prosocial-relations",
@@ -4899,7 +4899,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Baptism, feast-list text, a thirteenth-century day-to-commemoration monthbook, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Texts, buildings and objects do not establish attendance, belief or a universal custom.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен гораздо более цельный envelope: clergy/monastic roles, fasting/feasts, services, sacraments, calendar observance, household/church practice в пределах источников. Current support and limits: Baptism, feast-list text, a thirteenth-century day-to-commemoration monthbook, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Texts, buildings and objects do not establish attendance, belief or a universal custom.",
       "supporting_family_ids": [
         "social-religious-context",
         "material-vessels-furniture-ritual"
@@ -5022,7 +5022,7 @@
         "potential:spatial_hazards"
       ],
       "coverage": "partial",
-      "reason": "Independently approved sediment freeze-thaw disaggregation now complements rock weathering and water relations. Residual: conditional bank stability under geometry, roots, saturation and loading; actual collapse, bearing capacity and route safety remain mechanics/state.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Добавить несколько общих qualitative primitives устойчивости/размыва; точный обвал и bearing capacity оставить механике. Current support and limits: Independently approved sediment freeze-thaw disaggregation now complements rock weathering and water relations. Residual: conditional bank stability under geometry, roots, saturation and loading; actual collapse, bearing capacity and route safety remain mechanics/state.",
       "supporting_family_ids": [
         "environment-geology",
         "environment-wetland-river-soil"
@@ -5109,7 +5109,7 @@
         "fishing_camp"
       ],
       "coverage": "partial",
-      "reason": "Tree flower/leaf sequence is now grounded. Remaining bounded need: taxon-specific local calendar, fruiting/yield and scene state are not supplied by that universal premise.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна хотя бы основная региональная древесная flora: seasonality, fruiting, части растения, основные бытовые/экологические свойства, с аккуратными границами. Current support and limits: Tree flower/leaf sequence is now grounded. Remaining bounded need: taxon-specific local calendar, fruiting/yield and scene state are not supplied by that universal premise.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "environment-plant-resources",
@@ -5132,7 +5132,7 @@
         "semantic_resolution"
       ],
       "coverage": "partial",
-      "reason": "Named food parts of nettle, lingonberry, hazel, raspberry and wild apple, nettle contact sting and apple-seed hazard now complement diagnostic/part boundaries. Other surfaced taxa or processing claims still need their own support; current identity, presence and condition remain state inputs.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Не надо энциклопедию всей флоры, но нужен достаточный набор обычных местных food/hazard taxa и явные ограничения идентификации. Current support and limits: Named food parts of nettle, lingonberry, hazel, raspberry and wild apple, nettle contact sting and apple-seed hazard now complement diagnostic/part boundaries. Other surfaced taxa or processing claims still need their own support; current identity, presence and condition remain state inputs.",
       "supporting_family_ids": [
         "biology-fungi-decomposition-and-wild-food-safety",
         "plant-food-and-contact-properties"
@@ -5201,7 +5201,7 @@
       "applicability": {"resource":"none","material":"none","process":"speech interpretation","npc":"speaker and listener language competence"},
       "consumer_refs": ["potential:dialogue", "potential:npc_interaction"],
       "coverage": "partial",
-      "reason": "The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. The residual is bounded P2: generated 1230 speech, register, mutual intelligibility and phrase choice remain open-ended semantic work, not a claim system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. The residual is bounded P2: generated 1230 speech, register, mutual intelligibility and phrase choice remain open-ended semantic work, not a claim system.",
       "supporting_family_ids": ["social-documentary-practice", "social-roles-norms-and-socialization", "social-v5-birch-language-corpus-context"],
       "supporting_claim_refs": ["claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian", "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech", "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise"]
     },
@@ -5214,7 +5214,7 @@
       "applicability": {"resource":"none","material":"conditional written name","process":"identification and address","npc":"identity description and socially situated address"},
       "consumer_refs": ["potential:dialogue", "potential:ordinary_npc_materialization"],
       "coverage": "partial",
-      "reason": "Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. The residual is bounded P2: a generated name, patronymic, relation, title or address remains an open-ended detail, while current identity, relation and office remain authoritative state.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. The residual is bounded P2: a generated name, patronymic, relation, title or address remains an open-ended detail, while current identity, relation and office remain authoritative state.",
       "supporting_family_ids": ["social-documentary-practice", "social-religious-context", "social-named-correspondence-and-learning-texts", "social-v5-dated-document-context"],
       "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form", "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"]
     },
@@ -5227,7 +5227,7 @@
       "applicability": {"resource":"writing surfaces and implements","material":"letters records and exercises","process":"reading writing counting and record keeping","npc":"bounded literacy and numeracy practices"},
       "consumer_refs": ["potential:documents", "potential:trade", "potential:education"],
       "coverage": "partial",
-      "reason": "Practical document genres, accounts, named correspondence and alphabet exercises are attested. The residual is bounded P2: a 1230 school, reader, literacy rate, delivery and ordinary use remain scene- and actor-state dependent, not inferred from these records.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить достаточную модель everyday writing: surfaces/tools, типы записей, numeracy/accounting, кто/в каких контекстах мог пользоваться письменностью с честной неопределённостью. Current support and limits: Practical document genres, accounts, named correspondence and alphabet exercises are attested. The residual is bounded P2: a 1230 school, reader, literacy rate, delivery and ordinary use remain scene- and actor-state dependent, not inferred from these records.",
       "supporting_family_ids": ["social-documentary-practice", "material-written-objects", "social-property-and-market", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-psalter-comparator", "social-v5-dated-document-context"],
       "supporting_claim_refs": ["claim:candidate-gramota334-named-private-letter-monetary-context", "claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-novgorod-psalter-eleventh-century", "claim:candidate-v5-gramota600-is-near-1230-private-letter"]
     },
@@ -5240,7 +5240,7 @@
       "applicability": {"resource":"weapon and armour materials","material":"arms protective equipment and fittings","process":"use damage upkeep and repair context","npc":"combatant guard craft and owner roles"},
       "consumer_refs": ["potential:combat_semantics", "potential:equipment_materialization"],
       "coverage": "partial",
-      "reason": "The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. The residual is bounded P2: a present weapon, armour set, ownership, wear, repair or skill needs a concrete scene premise; exact combat and damage stay code-owned.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. The residual is bounded P2: a present weapon, armour set, ownership, wear, repair or skill needs a concrete scene premise; exact combat and damage stay code-owned.",
       "supporting_family_ids": ["material-fishing-hunting", "material-tools", "built-civic-defence", "material-dated-novgorod-helmet-comparator", "materials-metal-state-thermal-treatment"],
       "supporting_claim_refs": ["claim:candidate-novgorod-helmet-half-mask-find", "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour", "claim:candidate-v9-bare-iron-rust-humidity-salts", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"]
     },
@@ -5253,7 +5253,7 @@
       "applicability": {"resource":"provisions transport and equipment","material":"defences and military kit","process":"mobilization campaign conflict and aftermath","npc":"combatants leaders carriers inhabitants and mediators"},
       "consumer_refs": ["potential:warfare", "potential:travel", "potential:settlement_defence"],
       "coverage": "partial",
-      "reason": "Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. The residual is bounded P2: force composition, provisioning, command, tactics, plan and outcome require a concrete event and state/mechanics; these records do not form a 1230 organization system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. The residual is bounded P2: force composition, provisioning, command, tactics, plan and outcome require a concrete event and state/mechanics; these records do not form a 1230 organization system.",
       "supporting_family_ids": ["npc-political-roles", "built-civic-defence", "material-transport"],
       "supporting_claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold"]
     },
@@ -5266,7 +5266,7 @@
       "applicability": {"resource":"household goods and transfers","material":"conditional records and ceremonial objects","process":"relationship formation care and succession","npc":"spouses kin dependants and authorities"},
       "consumer_refs": ["potential:household", "potential:social_relations", "potential:legal_context"],
       "coverage": "partial",
-      "reason": "Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. The residual is bounded P2: marriage, affinity, succession and household formation vary by concrete relationship and period-local premise; current relationships and transfers remain authoritative state, not a system inferred from records.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. The residual is bounded P2: marriage, affinity, succession and household formation vary by concrete relationship and period-local premise; current relationships and transfers remain authoritative state, not a system inferred from records.",
       "supporting_family_ids": ["social-family-care", "npc-household-routines", "social-law-practice", "social-dated-novgorod-human-record-comparators"],
       "supporting_claim_refs": ["claim:candidate-gramota8-wife-cow-redemption-letter", "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin", "claim:candidate-v7-gramota9-reports-another-wife"]
     },
@@ -5279,7 +5279,7 @@
       "applicability": {"resource":"conditional access and obligations","material":"status-linked material context only when evidenced","process":"role expectation and social response","npc":"socially situated role without deterministic behavior"},
       "consumer_refs": ["potential:npc_interaction", "potential:work", "potential:law"],
       "coverage": "partial",
-      "reason": "Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. The residual is bounded P2: rank, dependency, freedom, gender and age role in any interaction require a concrete historical and world-state premise, never a deterministic social system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. The residual is bounded P2: rank, dependency, freedom, gender and age role in any interaction require a concrete historical and world-state premise, never a deterministic social system.",
       "supporting_family_ids": ["social-roles-norms-and-socialization", "social-law-practice", "npc-household-routines", "social-v5-dated-document-context", "social-material-v7-dated-historical-records"],
       "supporting_claim_refs": ["claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman", "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"]
     },
@@ -5292,7 +5292,7 @@
       "applicability": {"resource":"food water warmth and care resources","material":"care materials only when present","process":"qualitative reproductive physiology and care","npc":"condition and dependency context, not diagnosis"},
       "consumer_refs": ["potential:body", "potential:care", "potential:household"],
       "coverage": "partial",
-      "reason": "General pregnancy, staged labor, newborn adjustment and lactation relations are grounded. Postpartum recovery, newborn care and all individual state, timing, complications and outcomes remain uncovered or owned by body/time.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть базовые postpartum/newborn physiological and care relations. Конкретная беременность, осложнение, тайминг и outcome — body state. Current support and limits: General pregnancy, staged labor, newborn adjustment and lactation relations are grounded. Postpartum recovery, newborn care and all individual state, timing, complications and outcomes remain uncovered or owned by body/time.",
       "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "body-exertion-hydration-and-sleep", "biology-reproductive-and-newborn-physiology"],
       "supporting_claim_refs": ["claim:candidate-v2-pregnancy-involves-maternal-physiological-changes", "claim:candidate-v2-labor-is-a-staged-process", "claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v2-lactation-is-milk-production-and-secretion"]
     },
@@ -5305,7 +5305,7 @@
       "applicability": {"resource":"age-dependent care resources","material":"none","process":"qualitative development and aging","npc":"age-related capacity context, not stereotype"},
       "consumer_refs": ["potential:body", "potential:care", "potential:npc_behavior"],
       "coverage": "partial",
-      "reason": "Newborn adjustment, child-development periods, puberty growth, and general aging relations are grounded. They do not establish a person's age, capacity or state; frailty and changing functional capacity remain only partially covered, while exact age, health and action success remain authoritative state and mechanics.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Frailty/capacity можно расширить аккуратно; нельзя превращать возраст в deterministic stereotype. Current support and limits: Newborn adjustment, child-development periods, puberty growth, and general aging relations are grounded. They do not establish a person's age, capacity or state; frailty and changing functional capacity remain only partially covered, while exact age, health and action success remain authoritative state and mechanics.",
       "supporting_family_ids": ["biology-reproduction-and-development", "social-family-care", "psychology-learning-and-skilled-action", "biology-reproductive-and-newborn-physiology", "biology-human-lifecycle-injury-oral-and-disability-relations"],
       "supporting_claim_refs": ["claim:candidate-v2-newborn-undergoes-adjustments-at-birth", "claim:candidate-v3-child-development-has-recognizable-periods", "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt", "claim:candidate-v3-aging-changes-cell-function", "claim:candidate-v3-aging-organs-gradually-lose-function"]
     },
@@ -5331,7 +5331,7 @@
       "applicability": {"resource":"care resources only when present","material":"injuring or hazardous material only when established","process":"qualitative injury or exposure relation","npc":"possible impairment, not diagnosis or treatment outcome"},
       "consumer_refs": ["potential:body", "potential:combat", "potential:work", "potential:care"],
       "coverage": "partial",
-      "reason": "Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. The residual is bounded P2: poisoning, parasite-specific effects, injury severity and treatment need a concrete exposure/body premise; severity and treatment are code/body-owned.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить небольшой generic toxicology/poisoning envelope и наиболее game-relevant parasite relations; exact dose/severity/treatment — body mechanics. Current support and limits: Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. The residual is bounded P2: poisoning, parasite-specific effects, injury severity and treatment need a concrete exposure/body premise; severity and treatment are code/body-owned.",
       "supporting_family_ids": ["body-injury-repair-and-barrier", "biology-pathogen-immunity-and-infection", "chemistry-exposure-and-routes", "biology-parasite-host-disease-relation", "biology-human-lifecycle-injury-oral-and-disability-relations"],
       "supporting_claim_refs": ["claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v3-dislocation-disrupts-normal-joint-position", "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel", "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes", "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk", "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"]
     },
@@ -5344,7 +5344,7 @@
       "applicability": {"resource":"conditional public revenue and levies","material":"documents seals and civic spaces only when evidenced","process":"bounded institutional action","npc":"office roles and authority limits"},
       "consumer_refs": ["potential:politics", "potential:law", "potential:administration"],
       "coverage": "partial",
-      "reason": "Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince and five-ends assembly context. The residual is bounded P2: office holder, jurisdiction, competence, valid order and levy require a concrete 1230 authority/state premise; the records do not form an institution map.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Именно institution map и нужен: offices, assemblies, territorial units, типы компетенций и relations, с uncertainty/applicability. Current officeholder остаётся state. Current support and limits: Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince and five-ends assembly context. The residual is bounded P2: office holder, jurisdiction, competence, valid order and levy require a concrete 1230 authority/state premise; the records do not form an institution map.",
       "supporting_family_ids": ["npc-political-roles", "social-administration", "social-law-practice", "built-public-civic-space", "social-office-address-and-external-expedition-texts", "social-material-v7-dated-historical-records"],
       "supporting_claim_refs": ["claim:candidate-gramota222-letter-to-posadnik", "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation", "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo", "claim:candidate-v7-npl-1222-yuri-gives-vsevolod", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "claim:candidate-v9-five-novgorod-ends-own-assemblies-territory"]
     },
@@ -5357,7 +5357,7 @@
       "applicability": {"resource":"gifts tribute and provisions only when established","material":"messages and diplomatic objects only when evidenced","process":"communication negotiation and external relation","npc":"envoys authorities traders and armed parties"},
       "consumer_refs": ["potential:politics", "potential:travel", "potential:warfare"],
       "coverage": "partial",
-      "reason": "The Yugra and Khotynians comparators are supplemented by the 1222 Novgorod delegation to Yuri in Vladimir. The residual is bounded P2: a treaty, tribute, envoy mandate, relation or current diplomatic state requires a concrete 1230 political premise; these records do not form an external-relations system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные формы envoys/tribute/trade/conflict/peace и ключевые внешние направления в рамках period evidence. Current support and limits: The Yugra and Khotynians comparators are supplemented by the 1222 Novgorod delegation to Yuri in Vladimir. The residual is bounded P2: a treaty, tribute, envoy mandate, relation or current diplomatic state requires a concrete 1230 political premise; these records do not form an external-relations system.",
       "supporting_family_ids": ["npc-political-roles", "social-administration", "material-transport", "social-office-address-and-external-expedition-texts", "social-v5-dated-document-context"],
       "supporting_claim_refs": ["claim:candidate-gramota724-yugra-tribute-expedition", "claim:candidate-v5-gramota600-reports-khotynians-context", "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir"]
     },
@@ -5370,7 +5370,7 @@
       "applicability": {"resource":"disputed goods and compensation","material":"evidence and records only when present","process":"classification inquiry responsibility and sanction context","npc":"parties witnesses officials and community"},
       "consumer_refs": ["potential:law", "potential:crime", "potential:public_safety"],
       "coverage": "partial",
-      "reason": "Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. The residual is bounded P2: offence classification, responsibility, jurisdiction, sanction and public response require a concrete applicable legal premise; no guilt or outcome follows from WK.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен bounded map offense → applicable authority/procedure/remedy/sanction evidence. Нельзя выводить guilt/outcome. Current support and limits: Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. The residual is bounded P2: offence classification, responsibility, jurisdiction, sanction and public response require a concrete applicable legal premise; no guilt or outcome follows from WK.",
       "supporting_family_ids": ["social-law-practice", "social-property-and-market", "social-administration", "social-dated-novgorod-human-record-comparators"],
       "supporting_claim_refs": ["claim:candidate-gramota213-official-obligations-document", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry", "claim:social-settlement-demand-reports-court-choice"]
     },
@@ -5383,7 +5383,7 @@
       "applicability": {"resource":"learning materials and tools only when present","material":"exercises and workpieces","process":"instruction practice and correction","npc":"learner teacher kin master and peer roles"},
       "consumer_refs": ["potential:education", "potential:craft", "potential:npc_development"],
       "coverage": "partial",
-      "reason": "Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. The residual is bounded P2: a 1230 school, apprenticeship, teacher, learner, curriculum and skill distribution require a concrete actor/state premise, not an inferred system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. The residual is bounded P2: a 1230 school, apprenticeship, teacher, learner, curriculum and skill distribution require a concrete actor/state premise, not an inferred system.",
       "supporting_family_ids": ["psychology-learning-and-skilled-action", "social-roles-norms-and-socialization", "social-documentary-practice", "npc-craft-occupations", "social-named-correspondence-and-learning-texts", "social-dated-novgorod-human-record-comparators"],
       "supporting_claim_refs": ["claim:candidate-gramota199-onfim-instructional-text", "claim:candidate-gramota202-onfim-business-record-drawing", "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"]
     },
@@ -5396,7 +5396,7 @@
       "applicability": {"resource":"time and objects only when present","material":"toys game pieces and instruments","process":"play performance and participation","npc":"players performers listeners and audiences"},
       "consumer_refs": ["potential:recreation", "potential:dialogue", "potential:npc_routine"],
       "coverage": "partial",
-      "reason": "Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. The residual is bounded P2: any present instrument, toy, performer, game, safety or recreation scene needs a concrete object/person/state premise, not an inferred cultural system.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. The residual is bounded P2: any present instrument, toy, performer, game, safety or recreation scene needs a concrete object/person/state premise, not an inferred cultural system.",
       "supporting_family_ids": ["social-belonging-and-prosocial-relations", "material-vessels-furniture-ritual", "material-dated-novgorod-gusli-comparator", "social-v5-dated-document-context"],
       "supporting_claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds", "claim:candidate-v5-gramota715-is-classified-as-charm-prayer", "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection", "claim:candidate-v7-museum-individual-toy-types", "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops", "claim:candidate-v7-museum-toy-vessel-sail-xi-xii", "claim:candidate-v7-museum-bone-skates-xii-xiii"]
     },
@@ -5409,7 +5409,7 @@
       "applicability": {"resource":"snow and ice only when established","material":"surface and structure loading context","process":"qualitative cryosphere change and hazard","npc":"travel work and exposure context"},
       "consumer_refs": ["potential:winter_travel", "potential:weather", "potential:settlement"],
       "coverage": "partial",
-      "reason": "Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужен базовый зимний physical envelope: снег/наст/уплотнение, weak ice/open water, freeze-thaw surface, qualitative snow load. Current support and limits: Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners.",
       "supporting_family_ids": ["environment-weather", "environment-hydrology", "material-transport", "mechanics-statics-support", "environment-ice-snow-hazard-and-strength"],
       "supporting_claim_refs": ["claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:candidate-v2-near-melting-ice-has-less-strength"]
     },
@@ -5422,7 +5422,7 @@
       "applicability": {"resource":"natural light only when time and sky state establish it","material":"none","process":"illumination visibility and qualitative orientation","npc":"perception and navigation context"},
       "consumer_refs": ["potential:travel", "potential:visibility", "potential:time"],
       "coverage": "partial",
-      "reason": "Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. The residual is bounded P2: illumination, sky position, weather, route and perception require time/weather/state or code, not a navigation conclusion.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны qualitative relations солнца/луны/звёзд, twilight/darkness/visibility и возможность ориентирования; exact azimuth/sunrise/time остаётся code-owned. Current support and limits: Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. The residual is bounded P2: illumination, sky position, weather, route and perception require time/weather/state or code, not a navigation conclusion.",
       "supporting_family_ids": ["environment-weather", "smoke-optical-visibility", "psychology-attention-and-perception"],
       "supporting_claim_refs": ["claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"]
     },
@@ -5435,7 +5435,7 @@
       "applicability": {"resource":"animals fish plants water fuel and salt only when present","material":"food vessels and byproducts","process":"production preservation preparation feeding and care","npc":"producers cooks carers eaters and animal keepers"},
       "consumer_refs": ["potential:food", "potential:household", "potential:animal_husbandry"],
       "coverage": "partial",
-      "reason": "Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. The residual is bounded P2: slaughter, dairying, meals, child feeding, fodder and animal care need a concrete historical or scene premise; no local food custom is inferred.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. The residual is bounded P2: slaughter, dairying, meals, child feeding, fodder and animal care need a concrete historical or scene premise; no local food custom is inferred.",
       "supporting_family_ids": ["material-food-resources", "environment-fauna-subsistence", "biology-domestic-animal-digestion-and-forage", "process-food-preservation-and-fermentation"],
       "supporting_claim_refs": ["claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination", "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control", "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"]
     },
@@ -5448,7 +5448,7 @@
       "applicability": {"resource":"food lodging and transport only when offered and available","material":"travel kit and accommodation","process":"request reception stay guidance and departure","npc":"guest host guide carrier and companion roles"},
       "consumer_refs": ["potential:travel", "potential:dialogue", "potential:household"],
       "coverage": "partial",
-      "reason": "Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route.",
+      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route.",
       "supporting_family_ids": ["social-belonging-and-prosocial-relations", "npc-household-routines", "material-transport", "biology-v5-fever-and-sleep-relations"],
       "supporting_claim_refs": ["claim:candidate-v5-sleep-is-basic-human-need", "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction"]
     }

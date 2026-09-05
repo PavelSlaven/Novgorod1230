@@ -21,8 +21,11 @@ P2 requires an individually justified residual, such as scene state, exact
 mechanics, nonessential open-ended detail, or a documented exhausted source
 search. Technical CI success does not establish factual coverage.
 
-The v9 government claims also need source/domain re-verification: their
-1019–1270 applicability range has no documented support for the 1270 cutoff.
+The v9 five-ends government claim also needs source/domain re-verification:
+its 1019–1270 applicability range has no source support for that period.
+The separate prince claim must not be conflated with this defect: a fresh
+source check found an explicit post-1270 change in Britannica's prince
+paragraph, although the evidence note had omitted it.
 The old observations below are retained as the challenged baseline, not as
 current acceptance or a waiver for further static filling.
 

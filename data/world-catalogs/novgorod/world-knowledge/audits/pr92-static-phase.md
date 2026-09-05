@@ -161,7 +161,15 @@ to 0**, not acceptance after its gaps were used to fill the corpus.
 
 Batch 06's two generators were blind to the corpus and previous samples.
 Their new 100 inputs were not used to author the 17 additions. Independent
-WK-only reviews now use the frozen 1,295-claim bundle.
+WK-only reviews use the frozen 1,295-claim bundle. Structural checks confirm
+100 unique inputs/reviews, 20 primary areas with five cases each, valid cited
+refs and no reported substantive domain mismatch. After full-bundle triage,
+reviewers report 85 covered cases and 15 remaining raw gap leads, principally
+animal observation, plant care/storage, human physiology and weather cues.
+These are investigation leads, not 15 proven missing families. Source work
+and candidate authoring are separate from the unchanged reviewed bundle.
+Batch 06 is diagnostic while those needs are investigated; it does not
+increase the clean streak.
 
 The current clean streak is **0 of 3**. Contract §0.3 requires
 three consecutive diverse independent batches of at least 100 cases with

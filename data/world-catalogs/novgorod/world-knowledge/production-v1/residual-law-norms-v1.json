@@ -1,0 +1,1548 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-law-waugh-rp-introduction",
+      "title": "Introduction to the Russkaia Pravda and the Church Statutes",
+      "authors": [
+        "Daniel C. Waugh"
+      ],
+      "publication": "University of Washington; discussion based on Daniel H. Kaiser",
+      "source_kind": "scholarship",
+      "citation": "https://faculty.washington.edu/dwaugh/rus/lexintro.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-recension-dating",
+      "source_ref": "source:residual-law-waugh-rp-introduction",
+      "anchor": {
+        "section": "Russkaia Pravda, first two paragraphs"
+      },
+      "note": "The Expanded Pravda likely existed by early XIII century, contains earlier chronological layers, and survives in later copies. Princely legal administration remained limited; this supports cautious comparative use, not uniform local enactment of every rule. Troitsky MSU text used here is a second-half-XIV-century witness with edition-specific numbering.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-visible-injury-and-witness",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 23"
+      },
+      "note": "Article 23 of the Expanded Pravda distinguishes a person bearing blood or bruises from one without visible marks, requiring a witness in the latter case. Evidence about who began the encounter can change the case even when injuries are visible. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-injury-and-treatment-payments",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 21–24"
+      },
+      "note": "Articles 21–24 of the Expanded Pravda distinguish bodily injuries; article 24 separates a fine, payment to the injured person, and a wound-treatment payment. These are distinct textual demands, not one modern damages assessment. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-unauthorized-horse-use",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 27"
+      },
+      "note": "Article 27 of the Expanded Pravda separately specifies a payment for mounting another person’s horse without asking. Such use is not identical to the horse-theft case in neighbouring articles. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-detained-thief-and-princely-court",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 36"
+      },
+      "note": "Article 36 of the Expanded Pravda distinguishes killing a thief at the theft site from a thief held until daylight, whom it directs to the princely court. Killing a person whom others have already seen bound incurs a separate textual payment. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-debt-denial-witness-oath",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 43"
+      },
+      "note": "For a denied monetary debt, article 43 of the Expanded Pravda describes producing witnesses and their oath as a route to recovering the money. A creditor’s assertion and that supporting procedure are distinct. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-merchant-entrustment-proof-exception",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 44"
+      },
+      "note": "Article 44 of the Expanded Pravda singles out one merchant entrusting money to another for trade: prior witnesses are not required, and denial is addressed through the merchant’s own oath. This is a special trading case, not removal of witnesses for every loan. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-interest-agreement-and-witnesses",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 46"
+      },
+      "note": "Article 46 of the Expanded Pravda describes money lent at rez, honey at nastav, and grain at prisop. It calls for witnesses to such terms and links recovery to what the parties agreed. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-monthly-and-longer-interest",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 47"
+      },
+      "note": "Article 47 of the Expanded Pravda distinguishes monthly interest for a short term from a different reckoning when the money remains until the year; it also links proof of debt to witnesses and the amount. Monthly interest is not presented as one indefinitely accumulating tariff. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-creditor-priority",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 51"
+      },
+      "note": "For multiple debts, article 51 of the Expanded Pravda distinguishes an uninformed visiting trader, local creditors, and princely money. It specifies repayment priority from selling the debtor and excludes one who has taken much interest; it is not an equal division among all creditors. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-zakup-complaint-not-escape",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 52"
+      },
+      "note": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-zakup-loss-context",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 53–54"
+      },
+      "note": "Articles 53–54 of the Expanded Pravda distinguish property lost while the zakup is on the master’s business, theft from a shed, and livestock lost after not being driven in and secured as ordered. Textual liability depends on circumstances, not just a shortfall. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-zakup-illegal-sale",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 55"
+      },
+      "note": "Article 55 of the Expanded Pravda does not equate a zakup with a fully enslaved person: a master’s sale of the zakup into full slavery leads in the text to the sold person’s freedom and a fine on the master. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-status-and-witness-exceptions",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 59"
+      },
+      "note": "Article 59 of the Expanded Pravda restricts an enslaved person’s witness role but allows a boyar’s tiun in necessity and a zakup in a minor dispute. These status categories are not interchangeable. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-boundaries-and-marked-trees",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 64–66"
+      },
+      "note": "Articles 64–66 of the Expanded Pravda distinguish altering bee-tree marks, violating boundaries, and cutting a marked or boundary oak, prescribing payments for these acts. Marks and boundary trees have legal significance in the text. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-arson-remedy-and-sanction",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 79"
+      },
+      "note": "For burning a threshing barn or household yard, article 79 of the Expanded Pravda combines making good the loss with potok and razgrablenie, placing compensation before further princely action. The text distinguishes the victim’s loss from the ensuing sanction. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-daughters-and-status-inheritance",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 86"
+      },
+      "note": "Article 86 of the Expanded Pravda singles out the estates of boyars and the druzhina: they do not pass to the prince, and daughters receive them if there are no sons. This is a status-conditioned textual rule, not a universal exclusion of daughters from inheritance. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-widow-separate-property",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 88"
+      },
+      "note": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-stepchildren-paternal-inheritance",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 97"
+      },
+      "note": "For children of one mother by two husbands, article 97 of the Expanded Pravda separates paternal estates: each group receives its own father’s estate. Sharing a mother does not merge these estates into one pool. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-law-dependency-and-agreement",
+      "source_ref": "source:russkaya-pravda-extended-msu",
+      "anchor": {
+        "section": "Троицкий список, статья 102–105"
+      },
+      "note": "Articles 102–105 of the Expanded Pravda distinguish grounds for full slavery from agreed terms: marriage to an enslaved woman, service as a tiun, or taking the key without an agreement are contrasted with stipulated terms. Receiving food or an advance is separately not equated with slavery. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-offense",
+      "domain": "social_law_economy",
+      "broader_refs": [
+        "wk:social_law_economy:russkaya-pravda-comparative-only"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-credit",
+      "domain": "social_law_economy",
+      "broader_refs": [
+        "wk:social_law_economy:russkaya-pravda-comparative-only"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-status",
+      "domain": "social_law_economy",
+      "broader_refs": [
+        "wk:social_law_economy:russkaya-pravda-comparative-only"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-visible-injury-and-witness",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 23 of the Expanded Pravda distinguishes a person bearing blood or bruises from one without visible marks, requiring a witness in the latter case. Evidence about who began the encounter can change the case even when injuries are visible."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-visible-injury-and-witness",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-injury-and-treatment-payments",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Articles 21–24 of the Expanded Pravda distinguish bodily injuries; article 24 separates a fine, payment to the injured person, and a wound-treatment payment. These are distinct textual demands, not one modern damages assessment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-injury-and-treatment-payments",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-unauthorized-horse-use",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 27 of the Expanded Pravda separately specifies a payment for mounting another person’s horse without asking. Such use is not identical to the horse-theft case in neighbouring articles."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-unauthorized-horse-use",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 36 of the Expanded Pravda distinguishes killing a thief at the theft site from a thief held until daylight, whom it directs to the princely court. Killing a person whom others have already seen bound incurs a separate textual payment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-detained-thief-and-princely-court",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-debt-denial-witness-oath",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-credit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For a denied monetary debt, article 43 of the Expanded Pravda describes producing witnesses and their oath as a route to recovering the money. A creditor’s assertion and that supporting procedure are distinct."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-debt-denial-witness-oath",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-credit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 44 of the Expanded Pravda singles out one merchant entrusting money to another for trade: prior witnesses are not required, and denial is addressed through the merchant’s own oath. This is a special trading case, not removal of witnesses for every loan."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-merchant-entrustment-proof-exception",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-credit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 46 of the Expanded Pravda describes money lent at rez, honey at nastav, and grain at prisop. It calls for witnesses to such terms and links recovery to what the parties agreed."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-interest-agreement-and-witnesses",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-monthly-and-longer-interest",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-credit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 47 of the Expanded Pravda distinguishes monthly interest for a short term from a different reckoning when the money remains until the year; it also links proof of debt to witnesses and the amount. Monthly interest is not presented as one indefinitely accumulating tariff."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-monthly-and-longer-interest",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-creditor-priority",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-credit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For multiple debts, article 51 of the Expanded Pravda distinguishes an uninformed visiting trader, local creditors, and princely money. It specifies repayment priority from selling the debtor and excludes one who has taken much interest; it is not an equal division among all creditors."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-creditor-priority",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-zakup-complaint-not-escape",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-zakup-loss-context",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Articles 53–54 of the Expanded Pravda distinguish property lost while the zakup is on the master’s business, theft from a shed, and livestock lost after not being driven in and secured as ordered. Textual liability depends on circumstances, not just a shortfall."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-zakup-loss-context",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-zakup-illegal-sale",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 55 of the Expanded Pravda does not equate a zakup with a fully enslaved person: a master’s sale of the zakup into full slavery leads in the text to the sold person’s freedom and a fine on the master."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-zakup-illegal-sale",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-status-and-witness-exceptions",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 59 of the Expanded Pravda restricts an enslaved person’s witness role but allows a boyar’s tiun in necessity and a zakup in a minor dispute. These status categories are not interchangeable."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-status-and-witness-exceptions",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Articles 64–66 of the Expanded Pravda distinguish altering bee-tree marks, violating boundaries, and cutting a marked or boundary oak, prescribing payments for these acts. Marks and boundary trees have legal significance in the text."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-boundaries-and-marked-trees",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-offense",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For burning a threshing barn or household yard, article 79 of the Expanded Pravda combines making good the loss with potok and razgrablenie, placing compensation before further princely action. The text distinguishes the victim’s loss from the ensuing sanction."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-arson-remedy-and-sanction",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 86 of the Expanded Pravda singles out the estates of boyars and the druzhina: they do not pass to the prince, and daughters receive them if there are no sons. This is a status-conditioned textual rule, not a universal exclusion of daughters from inheritance."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-daughters-and-status-inheritance",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-widow-separate-property",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-widow-separate-property",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For children of one mother by two husbands, article 97 of the Expanded Pravda separates paternal estates: each group receives its own father’s estate. Sharing a mother does not merge these estates into one pool."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-stepchildren-paternal-inheritance",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-law-dependency-and-agreement",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:residual-law-status",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Articles 102–105 of the Expanded Pravda distinguish grounds for full slavery from agreed terms: marriage to an enslaved woman, service as a tiun, or taking the key without an agreement are contrasted with stipulated terms. Receiving food or an advance is separately not equated with slavery."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-law-dependency-and-agreement",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-offense",
+      "locale": "ru",
+      "labels": [
+        "Правонарушение, подтверждение и возмещение в Пространной Правде"
+      ],
+      "short_definition": "Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-offense",
+      "locale": "en",
+      "labels": [
+        "Offense, proof and compensation in the Expanded Pravda"
+      ],
+      "short_definition": "Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-credit",
+      "locale": "ru",
+      "labels": [
+        "Долг и торговое доверие в Пространной Правде"
+      ],
+      "short_definition": "Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-credit",
+      "locale": "en",
+      "labels": [
+        "Debt and trading trust in the Expanded Pravda"
+      ],
+      "short_definition": "Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-status",
+      "locale": "ru",
+      "labels": [
+        "Зависимый статус и семейное имущество в Пространной Правде"
+      ],
+      "short_definition": "Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:residual-law-status",
+      "locale": "en",
+      "labels": [
+        "Dependent status and family property in the Expanded Pravda"
+      ],
+      "short_definition": "Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-visible-injury-and-witness",
+      "locale": "ru",
+      "runtime_text": "Статья 23 Пространной Правды различает явившегося с кровью или побоями и человека без видимых следов: во втором случае требует видока. Свидетельство о том, кто начал столкновение, может изменить разбор даже при наличии повреждений.",
+      "search_aliases": [
+        "побои",
+        "видок",
+        "кровь",
+        "зачинщик"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-visible-injury-and-witness",
+      "locale": "en",
+      "runtime_text": "Article 23 of the Expanded Pravda distinguishes a person bearing blood or bruises from one without visible marks, requiring a witness in the latter case. Evidence about who began the encounter can change the case even when injuries are visible.",
+      "search_aliases": [
+        "bruises",
+        "witness",
+        "blood",
+        "initiator"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-injury-and-treatment-payments",
+      "locale": "ru",
+      "runtime_text": "Статьи 21–24 Пространной Правды различают телесные повреждения; статья 24 отделяет продажу, выплату пострадавшему и лечебное за рану. Это разные требования текста, а не единая современная оценка ущерба.",
+      "search_aliases": [
+        "рана",
+        "лечебное",
+        "возмещение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-injury-and-treatment-payments",
+      "locale": "en",
+      "runtime_text": "Articles 21–24 of the Expanded Pravda distinguish bodily injuries; article 24 separates a fine, payment to the injured person, and a wound-treatment payment. These are distinct textual demands, not one modern damages assessment.",
+      "search_aliases": [
+        "wound",
+        "treatment payment",
+        "compensation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-unauthorized-horse-use",
+      "locale": "ru",
+      "runtime_text": "Статья 27 Пространной Правды отдельно предусматривает платёж за то, что человек сел на чужого коня без спроса. Такое пользование не тождественно описанию кражи коня в соседних статьях.",
+      "search_aliases": [
+        "чужой конь",
+        "без спроса",
+        "пользование"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-unauthorized-horse-use",
+      "locale": "en",
+      "runtime_text": "Article 27 of the Expanded Pravda separately specifies a payment for mounting another person’s horse without asking. Such use is not identical to the horse-theft case in neighbouring articles.",
+      "search_aliases": [
+        "another person horse",
+        "permission",
+        "use"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "locale": "ru",
+      "runtime_text": "Статья 36 Пространной Правды различает убийство вора у места кражи и вора, удержанного до рассвета: последнего предписано вести на княжий двор. Убийство уже связанного человека, которого видели связанным другие, влечёт отдельный платёж по тексту.",
+      "search_aliases": [
+        "вор",
+        "связанный",
+        "княжий двор",
+        "рассвет"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "locale": "en",
+      "runtime_text": "Article 36 of the Expanded Pravda distinguishes killing a thief at the theft site from a thief held until daylight, whom it directs to the princely court. Killing a person whom others have already seen bound incurs a separate textual payment.",
+      "search_aliases": [
+        "thief",
+        "bound",
+        "princely court",
+        "daylight"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-debt-denial-witness-oath",
+      "locale": "ru",
+      "runtime_text": "При отрицании денежного долга статья 43 Пространной Правды описывает предъявление послухов и их роту как путь к получению требуемых денег. Заявление кредитора и такое подтверждение различаются.",
+      "search_aliases": [
+        "долг",
+        "отрицание",
+        "послухи",
+        "рота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-debt-denial-witness-oath",
+      "locale": "en",
+      "runtime_text": "For a denied monetary debt, article 43 of the Expanded Pravda describes producing witnesses and their oath as a route to recovering the money. A creditor’s assertion and that supporting procedure are distinct.",
+      "search_aliases": [
+        "debt",
+        "denial",
+        "witnesses",
+        "oath"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "locale": "ru",
+      "runtime_text": "Статья 44 Пространной Правды выделяет передачу денег одним купцом другому для торговли: предварительные послухи не требуются, а при отрицании назван путь собственной роты купца. Это специальный торговый случай, не отмена свидетелей для всех займов.",
+      "search_aliases": [
+        "купец",
+        "доверенные деньги",
+        "торговля",
+        "рота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "locale": "en",
+      "runtime_text": "Article 44 of the Expanded Pravda singles out one merchant entrusting money to another for trade: prior witnesses are not required, and denial is addressed through the merchant’s own oath. This is a special trading case, not removal of witnesses for every loan.",
+      "search_aliases": [
+        "merchant",
+        "entrusted money",
+        "trade",
+        "oath"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "locale": "ru",
+      "runtime_text": "Статья 46 Пространной Правды описывает отдачу денег в рез, мёда в настав и зерна в присоп. Для таких условий названы послухи; получение связывается с тем, о чём стороны договорились.",
+      "search_aliases": [
+        "рез",
+        "проценты",
+        "зерно",
+        "договор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "locale": "en",
+      "runtime_text": "Article 46 of the Expanded Pravda describes money lent at rez, honey at nastav, and grain at prisop. It calls for witnesses to such terms and links recovery to what the parties agreed.",
+      "search_aliases": [
+        "interest",
+        "grain",
+        "honey",
+        "agreement"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-monthly-and-longer-interest",
+      "locale": "ru",
+      "runtime_text": "Статья 47 Пространной Правды различает месячный рез при коротком сроке и иной расчёт, когда деньги остаются до года; она также связывает путь подтверждения долга с наличием послухов и величиной суммы. Месячный рез не описан как бесконечно нарастающий единый тариф.",
+      "search_aliases": [
+        "месячный рез",
+        "срок",
+        "долг",
+        "свидетели"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-monthly-and-longer-interest",
+      "locale": "en",
+      "runtime_text": "Article 47 of the Expanded Pravda distinguishes monthly interest for a short term from a different reckoning when the money remains until the year; it also links proof of debt to witnesses and the amount. Monthly interest is not presented as one indefinitely accumulating tariff.",
+      "search_aliases": [
+        "monthly interest",
+        "term",
+        "debt",
+        "witnesses"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-creditor-priority",
+      "locale": "ru",
+      "runtime_text": "В случае множества долгов статья 51 Пространной Правды выделяет неосведомлённого приезжего торговца, местных кредиторов и княжьи деньги. Текст задаёт очередность получения из выручки от продажи должника и исключает получавшего много реза; это не равный раздел между всеми кредиторами.",
+      "search_aliases": [
+        "несколько кредиторов",
+        "очередность",
+        "княжьи деньги"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-creditor-priority",
+      "locale": "en",
+      "runtime_text": "For multiple debts, article 51 of the Expanded Pravda distinguishes an uninformed visiting trader, local creditors, and princely money. It specifies repayment priority from selling the debtor and excludes one who has taken much interest; it is not an equal division among all creditors.",
+      "search_aliases": [
+        "multiple creditors",
+        "priority",
+        "princely money"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "locale": "ru",
+      "runtime_text": "Статья 52 Пространной Правды различает бегство закупа и открытый уход искать деньги либо обращение к князю или судьям из-за обиды господина. За последние случаи текст запрещает обращать закупа в обельное холопство и требует разбирательства.",
+      "search_aliases": [
+        "закуп",
+        "жалоба",
+        "господин",
+        "свобода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "locale": "en",
+      "runtime_text": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing.",
+      "search_aliases": [
+        "zakup",
+        "complaint",
+        "master",
+        "freedom"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-loss-context",
+      "locale": "ru",
+      "runtime_text": "Статьи 53–54 Пространной Правды различают утрату имущества по хозяйственному поручению, кражу из хлева и потерю скота, которого закуп не загнал и не запер как велено. Ответственность закупа в тексте зависит от обстоятельств утраты, а не только от самого недостачного имущества.",
+      "search_aliases": [
+        "закуп",
+        "скот",
+        "утрата",
+        "поручение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-loss-context",
+      "locale": "en",
+      "runtime_text": "Articles 53–54 of the Expanded Pravda distinguish property lost while the zakup is on the master’s business, theft from a shed, and livestock lost after not being driven in and secured as ordered. Textual liability depends on circumstances, not just a shortfall.",
+      "search_aliases": [
+        "zakup",
+        "livestock",
+        "loss",
+        "assignment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-illegal-sale",
+      "locale": "ru",
+      "runtime_text": "Статья 55 Пространной Правды не приравнивает закупа к обельному холопу: продажа его господином в обельное холопство по тексту ведёт к свободе проданного и продаже с господина.",
+      "search_aliases": [
+        "закуп",
+        "продажа в холопство",
+        "освобождение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-zakup-illegal-sale",
+      "locale": "en",
+      "runtime_text": "Article 55 of the Expanded Pravda does not equate a zakup with a fully enslaved person: a master’s sale of the zakup into full slavery leads in the text to the sold person’s freedom and a fine on the master.",
+      "search_aliases": [
+        "zakup",
+        "sale into slavery",
+        "release"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-status-and-witness-exceptions",
+      "locale": "ru",
+      "runtime_text": "Статья 59 Пространной Правды ограничивает послушество холопа, но при нужде отдельно допускает боярского тиуна, а в малой тяжбе — закупа. Статусные категории здесь не взаимозаменяемы.",
+      "search_aliases": [
+        "послушество",
+        "холоп",
+        "тиун",
+        "закуп"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-status-and-witness-exceptions",
+      "locale": "en",
+      "runtime_text": "Article 59 of the Expanded Pravda restricts an enslaved person’s witness role but allows a boyar’s tiun in necessity and a zakup in a minor dispute. These status categories are not interchangeable.",
+      "search_aliases": [
+        "witness role",
+        "enslaved person",
+        "tiun",
+        "zakup"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "locale": "ru",
+      "runtime_text": "Статьи 64–66 Пространной Правды различают изменение бортиных знаков, нарушение межи и подрубку отмеченного или межевого дуба; за такие вмешательства предусмотрены платежи. Знаки и межевые деревья имеют правовое значение в тексте.",
+      "search_aliases": [
+        "межа",
+        "борть",
+        "знак",
+        "межевой дуб"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "locale": "en",
+      "runtime_text": "Articles 64–66 of the Expanded Pravda distinguish altering bee-tree marks, violating boundaries, and cutting a marked or boundary oak, prescribing payments for these acts. Marks and boundary trees have legal significance in the text.",
+      "search_aliases": [
+        "boundary",
+        "bee tree",
+        "mark",
+        "boundary oak"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "locale": "ru",
+      "runtime_text": "Для поджога гумна или двора статья 79 Пространной Правды соединяет возмещение потери с потоком и разграблением; возмещение поставлено раньше дальнейшего распоряжения князя. Текст различает потерю пострадавшего и последующую санкцию.",
+      "search_aliases": [
+        "поджог",
+        "гумно",
+        "возмещение",
+        "поток"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "locale": "en",
+      "runtime_text": "For burning a threshing barn or household yard, article 79 of the Expanded Pravda combines making good the loss with potok and razgrablenie, placing compensation before further princely action. The text distinguishes the victim’s loss from the ensuing sanction.",
+      "search_aliases": [
+        "arson",
+        "threshing barn",
+        "compensation",
+        "sanction"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "locale": "ru",
+      "runtime_text": "Статья 86 Пространной Правды выделяет наследство бояр и дружины: оно не отходит князю, а при отсутствии сыновей его получают дочери. Это статусно обусловленная норма текста, не универсальное исключение дочерей из наследования.",
+      "search_aliases": [
+        "дочь",
+        "наследство",
+        "бояре",
+        "дружина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "locale": "en",
+      "runtime_text": "Article 86 of the Expanded Pravda singles out the estates of boyars and the druzhina: they do not pass to the prince, and daughters receive them if there are no sons. This is a status-conditioned textual rule, not a universal exclusion of daughters from inheritance.",
+      "search_aliases": [
+        "daughter",
+        "inheritance",
+        "boyars",
+        "druzhina"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-widow-separate-property",
+      "locale": "ru",
+      "runtime_text": "Статья 88 Пространной Правды выделяет долю вдовы и то, что муж ей передал, отдельно от мужнего наследства; она также сохраняет детям имущество их матери при наличии последующей жены. Семейное хозяйство не описано как нераздельная собственность одного супруга.",
+      "search_aliases": [
+        "вдова",
+        "доля",
+        "материнское имущество"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-widow-separate-property",
+      "locale": "en",
+      "runtime_text": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse.",
+      "search_aliases": [
+        "widow",
+        "portion",
+        "maternal property"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "locale": "ru",
+      "runtime_text": "Для детей одной матери от двух мужей статья 97 Пространной Правды разделяет отцовские наследства: каждая группа получает наследство своего отца. Общая мать не объединяет эти наследства в одну массу.",
+      "search_aliases": [
+        "единоутробные дети",
+        "дети двух мужей",
+        "наследство отца"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "locale": "en",
+      "runtime_text": "For children of one mother by two husbands, article 97 of the Expanded Pravda separates paternal estates: each group receives its own father’s estate. Sharing a mother does not merge these estates into one pool.",
+      "search_aliases": [
+        "children of two husbands",
+        "paternal estate",
+        "inheritance"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-dependency-and-agreement",
+      "locale": "ru",
+      "runtime_text": "Статьи 102–105 Пространной Правды различают основания обельного холопства и условия ряда: брак с робой, тиунство или принятие ключа без ряда противопоставлены оговорённым условиям. Получение хлеба или дачи отдельно не приравнено к холопству.",
+      "search_aliases": [
+        "ряд",
+        "тиунство",
+        "ключ",
+        "холопство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-law-dependency-and-agreement",
+      "locale": "en",
+      "runtime_text": "Articles 102–105 of the Expanded Pravda distinguish grounds for full slavery from agreed terms: marriage to an enslaved woman, service as a tiun, or taking the key without an agreement are contrasted with stipulated terms. Receiving food or an advance is separately not equated with slavery.",
+      "search_aliases": [
+        "agreement",
+        "tiun service",
+        "key",
+        "slavery"
+      ]
+    }
+  ]
+}

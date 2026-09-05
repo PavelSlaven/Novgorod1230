@@ -6393,7 +6393,9 @@
         "flora-nettle-fibre",
         "riparian-woody-debris",
         "water-dissolved-oxygen-contributors",
-        "environment-footprint-trace-interpretation"
+        "environment-footprint-trace-interpretation",
+        "environment-ice-snow-hazard-and-strength",
+        "environment-celestial-light-and-orientation"
       ]
     },
     {
@@ -6517,7 +6519,9 @@
         "physiology-cold-water-immersion",
         "smoke-atmospheric-transport",
         "environment-footprint-trace-interpretation",
-        "plant-food-and-contact-properties"
+        "plant-food-and-contact-properties",
+        "environment-ice-snow-hazard-and-strength",
+        "environment-celestial-light-and-orientation"
       ],
       "coverage": "partial: shore/wreck scene needs; no local stock or topology asserted"
     },
@@ -6543,7 +6547,9 @@
         "process-household-water-treatment-limits",
         "smoke-atmospheric-transport",
         "environment-footprint-trace-interpretation",
-        "plant-food-and-contact-properties"
+        "plant-food-and-contact-properties",
+        "environment-ice-snow-hazard-and-strength",
+        "environment-celestial-light-and-orientation"
       ],
       "coverage": "partial: camp/ecology/occupation context"
     },
@@ -6561,7 +6567,8 @@
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
         "process-household-water-treatment-limits",
-        "indoor-air-moisture"
+        "indoor-air-moisture",
+        "environment-ice-snow-hazard-and-strength"
       ],
       "coverage": "partial: built-space and drying-process context"
     },
@@ -6582,7 +6589,8 @@
         "combustion-carbon-monoxide-exposure",
         "materials-stitched-textile-and-leather-assemblies",
         "process-household-water-treatment-limits",
-        "indoor-air-moisture"
+        "indoor-air-moisture",
+        "environment-ice-snow-hazard-and-strength"
       ],
       "coverage": "partial: storage/occupation/economic context"
     }

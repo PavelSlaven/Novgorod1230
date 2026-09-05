@@ -14,15 +14,15 @@ Reviewed existing `production-v1/runtime-bundle.json` first. It already has (a) 
 
    **Use boundary:** supports only that groundwater/seepage is a possible constraint when an excavation reaches saturated ground. It does not establish a local water table, inflow rate, soil profile, collapse probability, drainage design, pumping method, or a safe digging depth.
 
-3. **Birch bark's material composition can contain energy-rich hydrophobic components.** A direct peer-reviewed chemical study of *Betula pendula* bark reports substantial extractives, suberin and lignin, and reports bark energy content of 21–24 MJ/kg in its studied material. [RSC, *Conversion of birch bark to biofuels* (2020)](https://pubs.rsc.org/en/content/articlehtml/2020/gc/d0gc00405g). The same paper distinguishes outer bark's composition from wood; it is not evidence that all bark behaves alike.
+3. **Studied *Betula pendula* bark contained suberin and lignin.** The peer-reviewed source reports those components in its analysed bark sample. [RSC, *Conversion of birch bark to biofuels* (2020)](https://pubs.rsc.org/en/content/articlehtml/2020/gc/d0gc00405g).
 
-   **Use boundary:** supports a conditional material premise, not an ignition or fuel-use result. It does not show that fresh bark will light, that wet bark or wet wood is usable, a drying method, smoke/toxicity outcome, heat output in a fire, or a safe fire-making route. Existing runtime moisture/combustion claims remain the applicable general limits.
+   **Use boundary:** supports an observation about the studied sample only, not composition of all birch bark or an ignition/fuel-use result. It does not show that fresh bark will light, that wet bark or wet wood is usable, a drying method, smoke/toxicity outcome, heat output in a fire, or a safe fire-making route. Existing runtime moisture/combustion claims remain the applicable general limits.
 
 ## Already covered; no duplicate premise added
 
 - `evidence:static-practical-bark-water-deformation` and `...-bark-form-drying`: moisture, shape change and constrained drying of birch bark.
 - `claim:foundations-thm-06-moisture-vaporization-heat-demand` and `claim:population-material-wood-combustion`: moisture is a condition of fuel behaviour, without a calorific or ignition guarantee.
-- `evidence:static-practical-wool-alkali-risk`: alkaline conditions suit cellulosic fibres while wool/silk can degrade; it explicitly supplies no safe concentration, duration or treatment result. The independent comparative textile study likewise reports alkali-induced structural change in cellulosic fabrics and dissolution of protein fabrics under its test conditions: [*Journal of the Textile Institute* (2022)](https://www.tandfonline.com/doi/full/10.1080/00405000.2022.2144663).
+- `evidence:static-practical-wool-alkali-risk`: existing source covers wool risk. A separate comparative study reports that its alkaline treatment changed the crystalline form of cellulosic fabrics and dissolved protein fabrics under the study conditions: [Olguin et al., *Journal of the Textile Institute* (2023)](https://www.tandfonline.com/doi/abs/10.1080/00405000.2022.2144663). Neither source supplies a safe concentration, duration or treatment result.
 
 ## Unsupported by this source set
 

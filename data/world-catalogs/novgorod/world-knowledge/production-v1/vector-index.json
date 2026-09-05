@@ -17048,6 +17048,20 @@
       "retrieval_text": "Влага и деформация бересты Влияние влаги на форму бересты. Влага может вызывать в бересте набухание, усадку, изгиб или сворачивание из-за неодинаковой реакции её слоёв."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care:en",
+      "target_ref": "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor thermal-burn first aid Modern qualitative context for cooling a minor thermal burn and recognizing urgent-care limits. A very large or deep burn, a burn on face, genitals, or bottom, or a chemical or electrical burn is a modern urgent qualified-care red flag. This is not a way to determine a concrete injury's severity or outcome. minor burn thermal burn cool burn serious burn deep burn face burn electrical burn urgent care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care:ru",
+      "target_ref": "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Первая помощь при небольшом термическом ожоге Современный качественный контекст охлаждения небольшого термического ожога и границ срочной помощи. Очень большой или глубокий ожог, ожог лица, гениталий либо ягодиц, а также химический или электрический ожог — современный тревожный признак для срочной квалифицированной помощи. Это не способ определить тяжесть или исход конкретной травмы. небольшой ожог обжёгся охладить ожог серьёзный ожог глубокий ожог ожог лица электрический ожог срочная помощь"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded:en",
       "target_ref": "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
       "domain": "environment",
@@ -17160,6 +17174,62 @@
       "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Колики у лошади — это абдоминальная боль или дискомфорт; возможны сниженный аппетит, вялость, повторное ложение или катание, взгляд на бок, удары по животу и уменьшение кала. Это не устанавливает причину, тяжесть, диагноз или лечение. лошадь задняя кишка ферментация колики боль в животе катается мало кала"
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option:en",
+      "target_ref": "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Lightning threat and shelter limits Qualitative limits of outdoor safety during a lightning threat and distinction among shelters. A reachable substantial building can be a lightning-shelter option, while small or open structures are not. This establishes no building, access, construction, complete safety, or concrete-scene outcome. thunderstorm lightning isolated tree open water shelter substantial building lightning small shed not shelter lightning shelter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option:ru",
+      "target_ref": "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Гроза, молния и пределы укрытия Качественные пределы наружной безопасности при угрозе молнии и различие между укрытиями. Достижимое капитальное здание может быть вариантом укрытия от молнии, тогда как малые или открытые постройки им не являются. Это не устанавливает здание, доступ, конструкцию, полную безопасность или исход конкретной сцены. гроза молния одинокое дерево открытая вода укрытие капитальное здание гроза малый сарай не укрытие укрыться от молнии"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp:en",
+      "target_ref": "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Animal-fat rendering and wick fuel Qualitative relation among gentle heating of fatty tissue, liquid fat, and wick-lamp fuel. Animal fat can fuel a wick lamp when a suitable lamp and wick are present. This is a Roman-lamp-context analogy, not evidence of a Novgorod lamp type, available fat, construction, brightness, duration, or safety. render fat tallow lamp fat lamp wick fuel animal fat fuel wick"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp:ru",
+      "target_ref": "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вытапливание животного жира и фитильное топливо Качественная связь мягкого нагрева жирной ткани, жидкого жира и топлива фитильной лампы. Животный жир может служить топливом фитильной лампы при наличии подходящих лампы и фитиля. Это аналогия по римскому ламповому контексту, не свидетельство новгородского типа лампы, наличия жира, конструкции, яркости, длительности или безопасности. вытопить жир топлёный жир жирная лампа фитиль жирное топливо жировая лампа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it:en",
+      "target_ref": "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Animal-fat rendering and wick fuel Qualitative relation among gentle heating of fatty tissue, liquid fat, and wick-lamp fuel. Gentle heating can render liquid animal fat from fatty tissue, while overheating can burn it. This is inferred from pork-lard rendering; it establishes no animal, temperature, duration, yield, purity, safety, or concrete-scene result. render fat tallow lamp fat lamp wick fuel gently render fat overheat fat burn fat"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it:ru",
+      "target_ref": "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вытапливание животного жира и фитильное топливо Качественная связь мягкого нагрева жирной ткани, жидкого жира и топлива фитильной лампы. Мягкий нагрев жирной ткани может вытопить жидкий животный жир, тогда как перегрев может его сжечь. Это вывод из вытапливания свиного сала; он не устанавливает вид животного, температуру, время, выход, чистоту, безопасность или результат конкретной сцены. вытопить жир топлёный жир жирная лампа фитиль мягко вытопить жир перегреть жир сжечь жир"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water:en",
+      "target_ref": "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Lightning threat and shelter limits Qualitative limits of outdoor safety during a lightning threat and distinction among shelters. A thunderstorm lightning threat leaves no safe outdoor position; isolated tall trees and open water are exposures to avoid. This is modern qualitative risk guidance, not a local forecast, procedure, safe alternative, or outcome guarantee. thunderstorm lightning isolated tree open water shelter no safe place outdoors isolated tree lightning open water lightning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water:ru",
+      "target_ref": "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Гроза, молния и пределы укрытия Качественные пределы наружной безопасности при угрозе молнии и различие между укрытиями. При грозовой угрозе молнии безопасного места снаружи нет; одиноких высоких деревьев и открытой воды следует избегать. Это современное качественное руководство по риску, не местный прогноз, не процедура, не безопасная альтернатива и не гарантия исхода. гроза молния одинокое дерево открытая вода укрытие нет безопасного места снаружи одинокое дерево молния открытая вода молния"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-forge-welding-pressure-depends-on-temperature-and-material:en",
       "target_ref": "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
       "domain": "physics_material_science",
@@ -17200,6 +17270,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности. Поверхностный оксид может ухудшить кузнечный шов. Это не устанавливает оксид, флюс или результат конкретного соединения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment:en",
+      "target_ref": "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cautious care of fragile wet written material Qualitative handling limits for wet parchment, paper, and vulnerable writing media. Fragile parchment, vellum, or a record with iron-gall ink should not receive uncontrolled humidification or flattening; that treatment requires conservation expertise. This gives no procedure, ink composition, damage diagnosis, or restoration result. wet parchment wet document wet ink dry manuscript iron gall ink flatten parchment document conservation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment:ru",
+      "target_ref": "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Осторожный уход за хрупкой мокрой письменной вещью Качественные пределы обращения с намокшим пергаментом, бумагой и нестойкими чернилами. Хрупкий пергамент, велень или запись железо-галловыми чернилами нельзя бесконтрольно увлажнять либо распрямлять: для такой обработки нужна консервационная экспертиза. Это не даёт процедуры, состава чернил, диагноза повреждения или результата восстановления. мокрый пергамент намокшая грамота мокрые чернила сушить рукопись железо-галловые чернила распрямить пергамент реставрация грамоты"
     },
     {
       "entry_ref": "wk-retrieval:claim:static-fresh-ranunculaceae-sap-can-irritate-skin:en",
@@ -17342,6 +17426,20 @@
       "retrieval_text": "Смазочная плёнка Плёнка смазки между движущимися поверхностями. Смазочная плёнка может разделять движущиеся поверхности. Это не утверждает наличие смазки или низкое трение конкретной опоры."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease:en",
+      "target_ref": "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor thermal-burn first aid Modern qualitative context for cooling a minor thermal burn and recognizing urgent-care limits. For a minor thermal burn, modern first aid uses prompt cool running water and avoids removing adherent material or applying creams, oils, or butter. This is modern universal biology, not 1230 Novgorod medical practice, a diagnosis, or an outcome guarantee. minor burn thermal burn cool burn serious burn stuck clothing burn butter on burn"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease:ru",
+      "target_ref": "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Первая помощь при небольшом термическом ожоге Современный качественный контекст охлаждения небольшого термического ожога и границ срочной помощи. При небольшом термическом ожоге современная первая помощь требует быстро охладить место прохладной проточной водой, не отрывать прилипшее и не наносить кремы, масла или масло сливочное. Это современная универсальная биология, не медицинская практика Новгорода 1230 года, не диагноз и не обещание исхода. небольшой ожог обжёгся охладить ожог серьёзный ожог прилипшая одежда ожог масло на ожог"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws:en",
       "target_ref": "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
       "domain": "environment",
@@ -17368,6 +17466,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Карбонизация негидравлической извести Твердение извести реакцией с углекислым газом воздуха. Негидравлическая известь может твердеть, поглощая углекислый газ воздуха и превращаясь в карбонат кальция. Состав и исход кладки не устанавливаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-parchment-or-vellum-should-not-be-wetted:en",
+      "target_ref": "claim:static-parchment-or-vellum-should-not-be-wetted",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cautious care of fragile wet written material Qualitative handling limits for wet parchment, paper, and vulnerable writing media. Parchment or vellum should not be wetted: wetting can cause cockling and distortion and, in degraded material, irreversible gelatinization. This establishes no document's composition, age, condition, or outcome. wet parchment wet document wet ink dry manuscript wet vellum parchment distortion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-parchment-or-vellum-should-not-be-wetted:ru",
+      "target_ref": "claim:static-parchment-or-vellum-should-not-be-wetted",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Осторожный уход за хрупкой мокрой письменной вещью Качественные пределы обращения с намокшим пергаментом, бумагой и нестойкими чернилами. Пергамент или велень не следует мочить: намокание может вызвать коробление и деформацию, а у разрушенного материала — необратимое желатинирование. Это не устанавливает состав, возраст, состояние или судьбу конкретной грамоты. мокрый пергамент намокшая грамота мокрые чернила сушить рукопись мочить пергамент намокший велень покоробился пергамент"
     },
     {
       "entry_ref": "wk-retrieval:claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia:en",
@@ -21906,6 +22018,20 @@
       "retrieval_text": "Ограничения перемещения при травме"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-minor-thermal-burn-care-b10:en",
+      "target_ref": "wk:biology_physiology:static-minor-thermal-burn-care-b10",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor thermal-burn first aid Modern qualitative context for cooling a minor thermal burn and recognizing urgent-care limits. minor burn thermal burn cool burn serious burn"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-minor-thermal-burn-care-b10:ru",
+      "target_ref": "wk:biology_physiology:static-minor-thermal-burn-care-b10",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Первая помощь при небольшом термическом ожоге Современный качественный контекст охлаждения небольшого термического ожога и границ срочной помощи. небольшой ожог обжёгся охладить ожог серьёзный ожог"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-mushroom-habitat-disturbance:en",
       "target_ref": "wk:biology_physiology:static-mushroom-habitat-disturbance",
       "domain": "biology_physiology",
@@ -22688,6 +22814,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "solute solvation При растворении частицы растворённого вещества взаимодействуют с молекулами растворителя; в воде это гидратация."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel:en",
+      "target_ref": "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Animal-fat rendering and wick fuel Qualitative relation among gentle heating of fatty tissue, liquid fat, and wick-lamp fuel. render fat tallow lamp fat lamp wick fuel"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel:ru",
+      "target_ref": "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вытапливание животного жира и фитильное топливо Качественная связь мягкого нагрева жирной ткани, жидкого жира и топлива фитильной лампы. вытопить жир топлёный жир жирная лампа фитиль"
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:static-ground-b05-fibre-alkali-response:en",
@@ -24648,6 +24788,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. след копыта раздвоенное копыто лось крупный рогатый скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-fat-storm-b10-lightning-shelter-limits:en",
+      "target_ref": "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Lightning threat and shelter limits Qualitative limits of outdoor safety during a lightning threat and distinction among shelters. thunderstorm lightning isolated tree open water shelter"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-fat-storm-b10-lightning-shelter-limits:ru",
+      "target_ref": "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Гроза, молния и пределы укрытия Качественные пределы наружной безопасности при угрозе молнии и различие между укрытиями. гроза молния одинокое дерево открытая вода укрытие"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:static-weather-b06-cloud-rain-observation:en",
@@ -28302,6 +28456,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-fragile-wet-record-care-b10:en",
+      "target_ref": "wk:physics_material_science:static-fragile-wet-record-care-b10",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cautious care of fragile wet written material Qualitative handling limits for wet parchment, paper, and vulnerable writing media. wet parchment wet document wet ink dry manuscript"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-fragile-wet-record-care-b10:ru",
+      "target_ref": "wk:physics_material_science:static-fragile-wet-record-care-b10",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Осторожный уход за хрупкой мокрой письменной вещью Качественные пределы обращения с намокшим пергаментом, бумагой и нестойкими чернилами. мокрый пергамент намокшая грамота мокрые чернила сушить рукопись"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-birch-bark-composition:en",

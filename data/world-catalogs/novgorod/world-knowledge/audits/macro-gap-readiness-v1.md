@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,322-claim corpus. The later direct-attestation-only residual
+current 1,330-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -63,9 +63,15 @@ Three bee-smoke premises have since received independent verification and
 are integrated in the 1,322-claim corpus. This batch stays diagnostic.
 Batch 10 adds 75 newly stratified cases (62 practical, 13 social) and 25
 blind free/adversarial cases, all reviewed. After existing-premise triage,
-four substantive needs remain: fat rendering, lightning-storm precautions,
-wet parchment/ink preservation and thermal-burn care. Source work is
-underway; the mixed clean streak remains 0/3, not static completeness.
+four substantive needs remained: fat rendering, lightning-storm precautions,
+wet parchment/ink preservation and thermal-burn care. Eight independently
+verified premises now address them in the 1,330-claim corpus.
+Batch 11 adds another 75/25 split with changed core strata and blind free
+generation. All 100 frozen situations are reviewed: 97 covered and three
+retained needs (ruminant bloat, mouldy feed, animal-material bait).
+Ten false absence/unique-procedure leads were resolved against existing
+premises with initial findings preserved. Candidate source work continues.
+The mixed clean streak remains 0/3, not static completeness.
 No corpus knowledge is discarded.
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
@@ -82,7 +88,8 @@ primary-domain mismatch. Independent full-bundle secondary triage resolved
 the remaining nine practical leads using existing premises and cautious
 composition. Attributed concrete answers are retained in the A1 review;
 the initial findings remain in Git. No corpus change followed this batch.
-It counts as one clean acceptance sample, not a completeness proof.
+It was one clean sample under the superseded fixed-strata method, not a
+mixed-method acceptance sample or completeness proof.
 There is no world-completeness claim, gameplay saturation result or final
 merge recommendation. The final independent
 coverage verdict must refer to the actually published corpus and completed

@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "static-care-material-b10.json",
+    "verification-static-care-material-b10.json",
+    "static-fat-storm-b10.json",
+    "verification-static-fat-storm-b10.json",
     "static-bee-smoke-b09.json",
     "verification-static-bee-smoke-b09.json",
     "static-animal-context-b06.json",

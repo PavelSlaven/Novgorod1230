@@ -299,6 +299,8 @@
   ],
   "source_inventory": [
     {"id":"static-bee-smoke-b09","source_path":"static-bee-smoke-b09.json","domains":["biology_physiology"],"location_applicability":"Potential honeybee colony handling; no local colony, historical device or access implied.","applicability":{"resource":"none","material":"conditional","process":"qualitative smoke response","npc":"no knowledge or action assigned"},"coverage":"3 independently reviewed premises; no guaranteed calming or precise handling dose."},
+    {"id":"static-care-material-b10","source_path":"static-care-material-b10.json","domains":["biology_physiology","physics_material_science"],"location_applicability":"Potential handling of fragile written material or thermal-burn care; no document, injury, expertise, treatment setting or historical practice implied.","applicability":{"resource":"none","material":"conditional","process":"qualified material-risk or modern first-aid context","npc":"no expertise or action assigned"},"coverage":"4 independently reviewed premises; no restoration method, diagnosis, treatment outcome or medieval medical authority."},
+    {"id":"static-fat-storm-b10","source_path":"static-fat-storm-b10.json","domains":["chemistry_process","environment"],"location_applicability":"Potential food-heating, fuel, hearth or thunderstorm context; no fat, lamp, fire, weather, building, access or local outcome implied.","applicability":{"resource":"conditional","material":"conditional","process":"qualified thermal, combustion or lightning-risk context","npc":"no expertise or action assigned"},"coverage":"4 independently reviewed premises; no exact rendering result, lamp type, forecast, shelter availability or safety guarantee."},
     {"id":"static-weather-traces-b06","source_path":"static-weather-traces-b06.json","domains":["biology_physiology","environment"],"location_applicability":"Qualified natural premises for potential animal observation, plant care, household storage, human condition and weather; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"4 independently reviewed premises; existing family limits retained."},
     {"id":"static-plant-context-b06","source_path":"static-plant-context-b06.json","domains":["biology_physiology"],"location_applicability":"Qualified natural premises for potential animal observation, plant care, household storage, human condition and weather; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"7 independently reviewed premises; existing family limits retained."},
     {"id":"static-human-context-b06","source_path":"static-human-context-b06.json","domains":["biology_physiology"],"location_applicability":"Qualified natural premises for potential animal observation, plant care, household storage, human condition and weather; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"4 independently reviewed premises; existing family limits retained."},
@@ -1911,6 +1913,8 @@
       "claim_refs": [
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+        "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "claim:household-trauma-danger-or-airway-changes-position-choice",
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:wound-healing-time-dependent",
@@ -2568,6 +2572,8 @@
       "claim_refs": [
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
         "claim:foundations-earth-27-fog-visibility",
         "claim:foundations-earth-28-radiation-fog",
         "claim:foundations-earth-29-advection-fog",
@@ -3322,6 +3328,8 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
@@ -3769,6 +3777,7 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:population-material-wood-combustion",
+        "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
         "claim:population-material-wood-pyrolysis",
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-03-combustion-mixture-conditions",
@@ -3791,6 +3800,7 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+        "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
         "claim:food-preservation-qualitative",
@@ -7221,6 +7231,8 @@
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
       {"source_path":"static-bee-smoke-b09.json","claim_count":3,"family_refs":["fauna-invertebrate-lifecycle-and-host-contact"],"location_refs":["potential:animal-care"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern honeybee biology; no historical smoker, guaranteed calm, precise dose, local presence or access."},
+      {"source_path":"static-care-material-b10.json","claim_count":4,"family_refs":["materials-fibre-leather-water-response","body-injury-repair-and-barrier"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern material-risk and first-aid premises only; no document, injury diagnosis, restoration procedure, treatment outcome or medieval medical authority."},
+      {"source_path":"static-fat-storm-b10.json","claim_count":4,"family_refs":["process-food-preservation-and-fermentation","process-combustion-and-pyrolysis","environment-weather"],"location_refs":["potential:household","potential:workshop","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static qualitative grounding only; no fat, lamp, fire, forecast, shelter, access, local availability or outcome."},
       {"source_path":"static-weather-traces-b06.json","claim_count":4,"family_refs":["fauna-mammal-foraging-movement-and-predation","environment-weather"],"location_refs":["potential:household","potential:animal-care","potential:plant-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no species identification, exact forecast, diagnosis, treatment, crop transfer guarantee, local availability or outcome."},
       {"source_path":"static-plant-context-b06.json","claim_count":7,"family_refs":["biology-plant-growth-and-physiology","biology-fungi-decomposition-and-wild-food-safety","biology-food-safety-storage-and-fermentation"],"location_refs":["potential:household","potential:animal-care","potential:plant-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no species identification, exact forecast, diagnosis, treatment, crop transfer guarantee, local availability or outcome."},
       {"source_path":"static-human-context-b06.json","claim_count":4,"family_refs":["body-injury-repair-and-barrier","biology-human-lifecycle-injury-oral-and-disability-relations","biology-organ-systems-movement-and-sensation"],"location_refs":["potential:household","potential:animal-care","potential:plant-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no species identification, exact forecast, diagnosis, treatment, crop transfer guarantee, local availability or outcome."},

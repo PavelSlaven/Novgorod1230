@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,322 approved claims, 873 concepts,
-469 sources and 943 evidence records**. This includes 121 independently
+The integrated corpus contains **1,330 approved claims, 877 concepts,
+476 sources and 951 evidence records**. This includes 121 independently
 reviewed editorial premises for ordinary, human, practical and public life.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -27,25 +27,25 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,390 x 1,024 float32 entries (17,981,440 bytes)** and
+package contains **4,414 x 1,024 float32 entries (18,079,744 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
 ## Checks actually completed on this integrated corpus
 
-- Compiler: all 1,322 claims and independent approval bindings validate.
+- Compiler: all 1,330 claims and independent approval bindings validate.
 - Category-cartography validation passes on all included fragments and
   claims, with existing profiles and potential-consumer boundaries.
 - Focused authoring, runtime, population, foundation and cartography tests:
   **85/85 pass**, including independent bindings and runtime/vector alignment.
-- **270-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995679**,
-  Recall@20 **0.997531**, gate PASS.
+- **278-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995803**,
+  Recall@20 **0.997602**, gate PASS.
 - Unchanged **133-case** baseline on the expanded corpus: hybrid
   Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   Existing gates were not weakened. Documentation, knowledge-source and
   architecture checks also pass. All 85 focused tests were run after the
-  aligned 4,390-entry index was written. No gate was changed.
+  aligned 4,414-entry index was written. No gate was changed.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -73,8 +73,13 @@ knowledge-source tests pass 40/40; documentation and diff checks pass.
 The full local npm test rerun passed on the 1,319-claim state, with seven
 reported skips; full CI passed on exact checkpoint 6179c39e. The subsequent
 1,322-claim integration passed the 85 focused tests, 11 bridge tests and
-both retrieval benchmarks. Its exact-HEAD CI remains pending; an earlier
-green checkpoint does not certify a later candidate or merge readiness.
+both retrieval benchmarks. Its run 33958500338 was cancelled by the next
+checkpoint push, not reported green. The B10 candidate checkpoint
+`f164358f3b451d4d03904f0e41ee0fc1f616215f` has run 33959027728 in progress.
+The 1,330-claim integration passes 85 focused tests, cartography, both
+retrieval benchmarks and docs/activation checks. Its final exact-HEAD CI
+is still required; an earlier green checkpoint does not certify a later
+candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
 
@@ -249,8 +254,25 @@ fat, lightning-storm precautions, wet parchment/ink preservation, and
 thermal-burn care. Of 28 raw leads, 24 required existing general premises
 or permitted practical reconstruction, not a new named-case rule, exact
 local norm or guaranteed outcome. Initial findings and triage notes remain
-in the review files. Targeted source work on the four remaining needs is
-underway; batch 10 is diagnostic and the mixed streak remains 0/3.
+in the review files. Eight independently verified premises now cover those
+four needs in the 1,330-claim corpus, with candidate commit `f164358f`
+and separate source/domain reviewers. The overbroad generic wet-record
+claim was removed before candidate publication; the UMN rendering source
+was independently read through its primary-PDF search extract after a
+direct-access 403. Batch 10 remains diagnostic, not unseen after its fix.
+
+Batch 11 freezes another 75-case core (63 practical, 12 social, seven
+unequal strata) and 25 independently generated free cases before review.
+The free classifications were frozen before WK lookup and remain unchanged.
+All 100 cases were reviewed on 1,330 claims: 97 covered, three substantial
+needs retained: ruminant bloat after legume forage, mould/mycotoxin feed
+risk, and mollusc/animal-material bait suitability. Thirteen raw leads
+were triaged: ten needed existing general premises rather than a named
+rescue procedure, guaranteed result, impossible diagnosis or exact local
+norm. Initial findings and attributed reasoning remain in the reviews.
+Conditional frame cautions for inn terminology, a donkey and unspecified
+letter carrier are retained, not silently rewritten as historical facts.
+Targeted source work continues; mixed clean streak remains 0/3.
 
 Contract §0.3 requires three consecutive diverse independent mixed batches
 of at least 100 cases with

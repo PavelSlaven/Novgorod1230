@@ -1,0 +1,589 @@
+{
+  "input_ref": "data/world-catalogs/novgorod/world-knowledge/benchmarks/offline-context-v1/batch-11-free.json",
+  "generator_ref": "root/mixed_b11_free",
+  "reviewer_ref": "/root/static_b10_care_material_sources",
+  "classifications_frozen_before_lookup": true,
+  "corpus_ref": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+  "corpus_claim_count": 1330,
+  "cases": [
+    {
+      "case_id": "b11free-001",
+      "primary_domain": "equine entanglement and road safety",
+      "intersections": [
+        "harness mechanics",
+        "traffic coordination",
+        "kin disagreement"
+      ],
+      "knowledge_need": "Safe release of an entangled horse while keeping a road usable.",
+      "answer": "Остановить телегу, предупредить следующую, успокоить лошадь и освобождать видимую петлю постепенно; резать ремни лишь когда иначе нельзя.",
+      "claim_refs": [
+        "claim:environment-p1-horse-transport",
+        "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Лошадь — транспорт; угроза может вызвать бегство.",
+      "limits": "Нет данных о повреждении, ремнях, скорости или исходе."
+    },
+    {
+      "case_id": "b11free-002",
+      "primary_domain": "flood exposure and immediate aid priorities",
+      "intersections": [
+        "child welfare",
+        "food spoilage",
+        "crossing safety"
+      ],
+      "knowledge_need": "Prioritizing a distressed child, wet goods, and an unsafe flooded crossing.",
+      "answer": "Не переходить одной по затопленным мосткам; позвать взрослых, держать контакт с ребёнком с берега и убрать хлеб от воды, только не бросая ребёнка без отклика.",
+      "claim_refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:public-world-support-needs-available-person-and-resources"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Паводок меняет обстановку; помощь зависит от доступных людей.",
+      "limits": "Неизвестны глубина, прочность мостков и исход."
+    },
+    {
+      "case_id": "b11free-003",
+      "primary_domain": "fishing gear entanglement and possession dispute",
+      "intersections": [
+        "net handling",
+        "marked property",
+        "conflict avoidance"
+      ],
+      "knowledge_need": "Separating fishing gear and handling another person's marked net without converting possession into ownership.",
+      "answer": "Удержать свой улов, распутывать видимые зацепы без присвоения чужого невода, отметить метку и искать владельца или свидетелей вместо драки.",
+      "claim_refs": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Сеть ремонтопригодна; словесного притязания недостаточно.",
+      "limits": "Метка не доказывает владельца или исход спора."
+    },
+    {
+      "case_id": "b11free-004",
+      "primary_domain": "market exchange under inspection limits",
+      "intersections": [
+        "tool quality",
+        "deception risk",
+        "debt pressure"
+      ],
+      "knowledge_need": "Checking a proposed exchange when inspection is restricted and obligations create urgency.",
+      "answer": "Отложить обмен до осмотра при свете и, если нужно, привлечь мастера или свидетеля покупки; срочный долг не делает сделку надёжной.",
+      "claim_refs": [
+        "claim:rp-market-purchase-relates-proof-participant",
+        "claim:social-debt-records-accounting-amount"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Спорная рыночная вещь связана с доказательством и участниками.",
+      "limits": "Нет оценки качества, цены или обмана."
+    },
+    {
+      "case_id": "b11free-005",
+      "primary_domain": "drought, smoke observation, and household livestock risk",
+      "intersections": [
+        "fire uncertainty",
+        "hay protection",
+        "child tasking",
+        "straying cattle"
+      ],
+      "knowledge_need": "Allocating attention between a possible fire, fodder, and a cow trespassing near another's hay.",
+      "answer": "Сын зовёт соседей с безопасного места; хозяйка проверяет дым с открытой точки и отводит корову от чужого стога, не считая пожар уже доказанным.",
+      "claim_refs": [
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:public-world-support-needs-available-person-and-resources"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Сено/древесина горючи, но дым не определяет масштаб пожара.",
+      "limits": "Нет прогноза, права на стог или состояния коровы."
+    },
+    {
+      "case_id": "b11free-006",
+      "primary_domain": "post-rain river crossing and document protection",
+      "intersections": [
+        "current depth uncertainty",
+        "horse travel",
+        "stranger advice",
+        "sealed writing"
+      ],
+      "knowledge_need": "Choosing a ford without assuming a stranger is reliable or that a sealed letter remains dry.",
+      "answer": "Остановиться до входа в мутную воду, закрепить письмо выше тела, расспросить старика и сравнить поток с берега; при сомнении ждать помощи или менять маршрут.",
+      "claim_refs": [
+        "claim:environment-p1-horse-transport",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:foundations-phys-05-flow-regime-speed",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасной оценке конного брода после ливня."
+      ],
+      "triage_note": "Точный безопасный брод не нужен: flow premise поддерживает осторожный отказ.",
+      "basis": "Поток и чужой рассказ вариативны.",
+      "limits": "Нет глубины, дна, герметичности или исхода."
+    },
+    {
+      "case_id": "b11free-007",
+      "primary_domain": "winter household emergency and childbirth support",
+      "intersections": [
+        "snow-blocked exit",
+        "heat and light",
+        "help-seeking travel risk"
+      ],
+      "knowledge_need": "Maintaining immediate household conditions while deciding how to summon help in a blizzard.",
+      "answer": "Повитуха остаётся с роженицей и распределяет доступные дела: освободить выход настолько, чтобы дверь открывалась, прикрыть лампу от прямого сквозняка без перекрытия воздуха огню, собрать нужные вещи ближе к месту ухода. Хозяин не обязан сразу уходить один: сначала можно подать голос и установить, есть ли достижимая помощь и путь в метель. Тепло и проветривание требуют компромисса; снег с ветром ухудшает движение и видимость. Это ответ на ближайшие бытовые действия, а не протокол родов; травы из сумки не получают лечебного эффекта автоматически.",
+      "claim_refs": [
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:practical-dwelling-smoke-draft"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Нет диагноза, процедуры или исхода родов.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасном ближайшем родовспомогательном действии."
+      ],
+      "triage_note": "Сама ситуация спрашивает сохранение тепла, света и связь с людьми, а не разрешение осложнения родов. Наличие посылок об уходе, координации и снежной среде закрывает заданную потребность.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-008",
+      "primary_domain": "found property and controlled-access duty",
+      "intersections": [
+        "monastic hierarchy",
+        "claimant uncertainty",
+        "storehouse security"
+      ],
+      "knowledge_need": "Safely handling an unattended bundle while respecting assigned access restrictions and an unverified claimant.",
+      "answer": "Не впускать в кладовую и не отдавать свёрток по одним словам; позвать келаря, записать заявление, хранить свёрток на виду без вскрытия.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Притязание не доказывается заявлением.",
+      "limits": "Нет содержимого, владельца или местного порядка."
+    },
+    {
+      "case_id": "b11free-009",
+      "primary_domain": "bog rescue under uncertain sound location",
+      "intersections": [
+        "voice perception",
+        "terrain hazard",
+        "companion aid"
+      ],
+      "knowledge_need": "Checking a call for help without treating its direction as safe ground.",
+      "answer": "Сборщица отвечает с известного устойчивого участка и просит соседку описать, где она и может ли двигаться. Данная длинная палка пригодна как доступный ориентир, но не удостоверяет несущую способность всей трясины. Не переносить вес к голосу через место, которое уже описано как провальное; держать связь и звать других, сообщая известный путь. Это сохраняет возможность помощи без второго пострадавшего; гарантированный способ вытащить человека и неизвестное расположение не выдумываются.",
+      "claim_refs": [
+        "claim:force-contact-geometry",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Голос не доказывает место или нужду соседки.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасной проверке болотного грунта или спасении из трясины."
+      ],
+      "triage_note": "Отсутствие универсального безопасного спасения из трясины не блокирует ограниченную проверку голосом с существующей опоры. Ненадёжное место дано сценой, а не придумано reviewer.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-010",
+      "primary_domain": "weather-sensitive craft work and labor dispute",
+      "intersections": [
+        "unfired clay vulnerability",
+        "rain shelter",
+        "child labor",
+        "fair accountability"
+      ],
+      "knowledge_need": "Protecting vulnerable work before rain while separating an accident from a wage dispute.",
+      "answer": "Сначала убрать целую сырую посуду под навес, затем отдельно осмотреть падение и выслушать обоих подростков до решения о плате.",
+      "claim_refs": [
+        "claim:population-material-clay-drying",
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Влага влияет на глиняное изделие; рассказы спорящих ограничены.",
+      "limits": "Нет цены, вины или числа уцелевших чаш."
+    },
+    {
+      "case_id": "b11free-011",
+      "primary_domain": "apiary security and nonviolent response",
+      "intersections": [
+        "bee agitation",
+        "tree inspection",
+        "possible theft",
+        "inheritance"
+      ],
+      "knowledge_need": "Inspecting a bee tree and preserving evidence without assuming a culprit or escalating to a dangerous fight.",
+      "answer": "Не усиливать дым и не лезть в драку; осмотреть борть с безопасной дистанции, сохранить следы и позвать соседей для разговора.",
+      "claim_refs": [
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Избыточный дым раздражает пчёл; след не доказывает вора.",
+      "limits": "Нет владельца рукавицы, доступа к борти или исхода."
+    },
+    {
+      "case_id": "b11free-012",
+      "primary_domain": "damaged cargo and commercial accountability",
+      "intersections": [
+        "salt salvage",
+        "dock labor",
+        "recordkeeping",
+        "absent owner"
+      ],
+      "knowledge_need": "Containing spilled cargo and recording observations without assigning fault or authority prematurely.",
+      "answer": "Остановить рассыпание, отделить пригодную соль и записать тюк, время и участников без назначения виновного.",
+      "claim_refs": [
+        "claim:transport-boat-cargo-dispatch",
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Ладья — грузовой контекст; спор начинается с разных рассказов.",
+      "limits": "Нет веса, владельца, цены или вины."
+    },
+    {
+      "case_id": "b11free-013",
+      "primary_domain": "night watch and fire-safe alarm",
+      "intersections": [
+        "unknown shed noise",
+        "sleeping child",
+        "open flame",
+        "neighbour coordination"
+      ],
+      "knowledge_need": "Investigating a possible intrusion while giving proportionate warning and avoiding panic or ignition.",
+      "answer": "Сторож знает жителей соседних дворов: может сначала окликнуть сарай и разбудить знакомого взрослого голосом, точно сообщив о скрежете, не объявляя вора. Фонарь держать устойчиво и не подносить пламя к древесине; ничего в сцене пока не подтверждает пожар. При установленной опасности расширить сигнал, используя имеющуюся трещотку, даже если ребёнок проснётся. Осмотр вдвоём возможен при согласии и доступе, но не обещает безопасного входа.",
+      "claim_refs": [
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-ordinary-speech-tracks-relationship-setting"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Шум не доказывает взлом или огонь.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасном ночном осмотре и подаче тревоги."
+      ],
+      "triage_note": "Это композиция наблюдения, соразмерного сообщения и обращения с огнём, не недостающий отдельный night-watch protocol. Старый ref о тушении заменён более релевантным горением.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-014",
+      "primary_domain": "search decision under fading light",
+      "intersections": [
+        "blood trace uncertainty",
+        "missing person",
+        "trail reading",
+        "support mobilization"
+      ],
+      "knowledge_need": "Interpreting partial signs and deciding between immediate pursuit and gathering help before dark.",
+      "answer": "Охотник может осмотреть доступные следы у избушки и сохранить место для помощников, отделяя наблюдение от догадки. Кровь названа свежей в условии, но это не даёт точного времени, объёма кровопотери, личности раненого или истории женского обрывка. Пока темнеет, он сопоставляет видимый участок пути, свои средства и возможность позвать людей: короткое наблюдение не превращается в обязательную долгую погоню одному. Кровь даёт основание серьёзно искать помощь, но не доказывает, что ранен именно брат.",
+      "claim_refs": [
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Нет сведений о раненом, числе людей или направлении.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise для оценки свежести крови/следа и безопасного поиска в темноте."
+      ],
+      "triage_note": "Точное датирование следа или доказательство личности не требуется и из заданных признаков не следует. Ограниченный поиск и выбор поддержки выводимы из existing general premises.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-015",
+      "primary_domain": "lost property and interpersonal dispute de-escalation",
+      "intersections": [
+        "bathhouse setting",
+        "contested account",
+        "prior conflict",
+        "nonviolent inquiry"
+      ],
+      "knowledge_need": "Investigating a missing personal item without treating one account or prior quarrel as proof.",
+      "answer": "Спросить, кто видел пряжку, проверить лавку и путь, затем предложить разговор при свидетелях без угроз.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Один рассказ и старая ссора не доказывают право.",
+      "limits": "Нет владельца, свидетелей или исхода."
+    },
+    {
+      "case_id": "b11free-016",
+      "primary_domain": "child livestock care at eroding bank",
+      "intersections": [
+        "goat rescue",
+        "bank collapse",
+        "crop damage",
+        "adult assistance"
+      ],
+      "knowledge_need": "Seeking help and containing animals without sending a child into an unstable bank or ignoring crop harm.",
+      "answer": "Ребёнок не спускается на уже данный подмываемый уступ ради козы. С устойчивого места зовёт тётю или доступного взрослого, точно объясняя место; прочих коз старается направить от капусты, только пока сам не оказывается у обрыва. Верёвка не доказывает ни надёжную опору, ни возможность подъёма животного ребёнком. Соседу можно сразу сообщить о случившемся и договориться о помощи, не объявляя заранее размер ущерба и вину.",
+      "claim_refs": [
+        "claim:force-contact-geometry",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Нет устойчивости уступа или ущерба.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о спасении животного с подмываемого берега."
+      ],
+      "triage_note": "Задание требует позвать помощь и не усугубить ущерб, а не выполнить силовую спасательную операцию. Опора, координация и переговоры покрывают этот класс поведения.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-017",
+      "primary_domain": "account discrepancy and pressured record alteration",
+      "intersections": [
+        "grain accounting",
+        "official duty",
+        "coercive order",
+        "concealment risk"
+      ],
+      "knowledge_need": "Checking conflicting quantities and responding to a superior's requested alteration without inferring motive as fact.",
+      "answer": "Сверить обе записи с выдачей и свидетелями, сохранить исходную цифру и записать приказ отдельно до приезда хозяина.",
+      "claim_refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Расхождение рассказов не раскрывает мотив.",
+      "limits": "Нет недостачи, вины или юридического исхода."
+    },
+    {
+      "case_id": "b11free-018",
+      "primary_domain": "aid to injured stranger under pursuit risk",
+      "intersections": [
+        "wound triage limits",
+        "multiple tracks",
+        "isolated building",
+        "personal safety"
+      ],
+      "knowledge_need": "Offering bounded help while assessing whether a pursuer may return and without diagnosing the injury.",
+      "answer": "Травница сначала окликает незнакомца, выясняет, отвечает ли он, что произошло и может ли он описать рану; путь к нему под полом не считается безопасным автоматически. Следы нескольких людей сообщают о проходе, а не доказывают преследование или возвращение. Можно звать помощников и осматривать доступный подход, не закрывая себе выход. Если наружное кровотечение установлено, есть чистая ткань и безопасный доступ, общее правило допускает прямое давление; мешок и коренья сами по себе не заменяют чистую повязку и не становятся лекарством. До этих условий остаются связь и координация помощи.",
+      "claim_refs": [
+        "claim:healer-observation-and-questioning",
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:care-direct-pressure-bleeding",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Нет диагноза, преследователей или исхода.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасной первичной помощи раненому при угрозе возвращения людей."
+      ],
+      "triage_note": "В corpus есть содержательные observation/care и условная посылка о кровотечении. Специальный протокол раны с возможными преследователями не нужен; помощь не сведена к диагнозу или гарантии.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-019",
+      "primary_domain": "small-boat transport prioritization and passenger safety",
+      "intersections": [
+        "capacity limits",
+        "armed strangers",
+        "sick child",
+        "animal control",
+        "child companion"
+      ],
+      "knowledge_need": "Sequencing crossings and setting conditions where a small boat cannot safely take all waiting passengers and cargo.",
+      "answer": "Не брать всех разом: сначала устойчиво разместить необходимый минимум, держать груз низко и распределённо, а внучку не оставлять рядом с неурегулированными вооружёнными людьми.",
+      "claim_refs": [
+        "claim:practical-boat-load",
+        "claim:practical-boat-unload-order"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Малой лодкой легче управлять при низком распределённом грузе.",
+      "limits": "Нет вместимости, права очереди или намерений путников."
+    },
+    {
+      "case_id": "b11free-020",
+      "primary_domain": "post-fire rescue and structural instability",
+      "intersections": [
+        "smouldering collapse",
+        "possible trapped person",
+        "salvage pressure",
+        "neighbour coordination"
+      ],
+      "knowledge_need": "Rescuing a possible survivor and protecting property without sending people under an unstable roof.",
+      "answer": "Плотник предупреждает соседей о стуке и прекращает разбор элементов, который может менять опору оставшейся кровли. Зовёт сестру и возможного пострадавшего голосом, распределяет наблюдение и доступные средства между согласными помощниками, ищет достижимый подход снаружи. Топор и лом не делают вход под дымящиеся нависающие брёвна безопасным; извлечение доски может менять нагрузку. Имущество можно складывать отдельно вне опасного участка, сохраняя сведения о находках; не назначать всё бесхозным. Не обещает ни подпорку нужной прочности, ни успешное извлечение.",
+      "claim_refs": [
+        "claim:population-material-wood-loading",
+        "claim:force-contact-geometry",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Стук не доказывает человека под кровлей.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасном спасении при частично обрушенной кровле."
+      ],
+      "triage_note": "Данный риск обрушения и факты об опоре позволяют организовать ограниченное спасение, а не выдумывать гарантированную технологию. Необходимость нового отдельного collapse-rescue claim не доказана.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-021",
+      "primary_domain": "field-boundary dispute before harvest",
+      "intersections": [
+        "markers",
+        "flood alteration claim",
+        "kin conflict",
+        "harvest timing"
+      ],
+      "knowledge_need": "Pausing an escalating boundary dispute and establishing a fair interim process before reaping.",
+      "answer": "Не жать спорную полосу, сохранить колышки, расспросить родню и соседей о прежней меже и договориться о временной границе до проверки.",
+      "claim_refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:residual-law-boundaries-and-marked-trees"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о межевой процедуре или последствиях разлива."
+      ],
+      "triage_note": "Нужны questions/negotiation around marked boundaries, не точный местный суд.",
+      "basis": "Межевые знаки имеют правовое значение.",
+      "limits": "Нет прежней границы или исхода."
+    },
+    {
+      "case_id": "b11free-022",
+      "primary_domain": "traveler security and stranger-route proposal",
+      "intersections": [
+        "book custody",
+        "forest travel",
+        "social accusation",
+        "information asymmetry"
+      ],
+      "knowledge_need": "Protecting a valuable book and evaluating a shortcut offer without treating strangers as guilty by default.",
+      "answer": "Не отдавать книгу для осмотра, спросить о дороге и выбрать путь лишь по проверяемым ориентирам; вежливый отказ не обвиняет путников.",
+      "claim_refs": [
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Чужой рассказ имеет ограниченный scope.",
+      "limits": "Нет безопасности леса или намерений путников."
+    },
+    {
+      "case_id": "b11free-023",
+      "primary_domain": "commissioned craft alteration and bereaved child care",
+      "intersections": [
+        "customer property",
+        "woodworking alteration",
+        "grief",
+        "apprenticeship authority"
+      ],
+      "knowledge_need": "Explaining and resolving an unauthorized alteration to commissioned work without humiliating a bereaved child.",
+      "answer": "Сначала признать заказчику изменение, предложить осмотр и варианты переделки; ребёнка отвести от публичного стыда и обсудить поступок после.",
+      "claim_refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Изменённая доска не задаёт обязательный социальный исход.",
+      "limits": "Нет цены, согласия заказчика или возможности переделки."
+    },
+    {
+      "case_id": "b11free-024",
+      "primary_domain": "storm aftermath, found property, and possible water rescue",
+      "intersections": [
+        "overturned boat",
+        "closed box",
+        "missing people",
+        "family care obligation"
+      ],
+      "knowledge_need": "Assessing found objects and possible drowning emergency without assuming ownership, contents, or survival.",
+      "answer": "Сборщица может осмотреть с устойчивого берега лодку и доступную часть косы, окликнуть возможных людей и привлечь помощь, не заходя в неизвестную воду ради ящика. Находка не делает её владельцем содержимого; закрытый ящик остаётся неизвестным. По мере наблюдений она решает, ждать ли помощников или передать им место и вернуться к больной матери. Обе нужды реальны: отсутствие видимых людей не доказывает ни утопление, ни что всем уже помогли. Мокрый плащ, топорик и санки не создают спасательную лодку.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:practical-boat-weather-water",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Frozen classification unchanged; source-backed/general/editorial premises composed with given observations and bounded ordinary reconstruction.",
+      "limits": "Нет содержимого, людей или состояния воды.",
+      "initial_status": "substantial_gap",
+      "initial_gaps": [
+        "Нет premise о безопасном поиске после опрокидывания лодки."
+      ],
+      "triage_note": "Условный береговой осмотр, вызов помощи, сохранение чужой вещи и оценка домашних обязанностей покрыты. Вопрос не требует недостижимой гарантии поиска на воде.",
+      "triage_by": "/root (integrating independent reviewer follow-up and actual full-bundle checks)"
+    },
+    {
+      "case_id": "b11free-025",
+      "primary_domain": "urban watch triage across concurrent hazards",
+      "intersections": [
+        "unsecured gate",
+        "approaching convoy",
+        "river ice danger",
+        "partner coordination"
+      ],
+      "knowledge_need": "Prioritizing multiple public-safety signals while maintaining observation of a city-wall sector.",
+      "answer": "Один дозорный держит калитку и обоз в наблюдении, другой подаёт сигнал о льде; не оставлять участок без глаз ради одной угрозы.",
+      "claim_refs": [
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:candidate-v2-near-melting-ice-has-less-strength"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "basis": "Прочность льда зависит от условий, но участок не имеет заданного порога.",
+      "limits": "Нет намерений обоза, состояния калитки или конкретной прочности льда."
+    }
+  ],
+  "summary": {
+    "cases": 25,
+    "covered": 25,
+    "substantial_gap": 0
+  }
+}

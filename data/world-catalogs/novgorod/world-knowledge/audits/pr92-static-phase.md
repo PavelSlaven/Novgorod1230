@@ -1,6 +1,16 @@
 # PR92 — static coverage phase, 2026-09-05
 
-## Final static snapshot
+## Current status — static coverage reopened
+
+**BLOCK_STATIC_COVERAGE (2026-09-05).** The prior P1-free verdict is
+withdrawn after a requirement-by-requirement review of the 49 residual
+families. Core historical, cultural and natural-world premises remain
+missing. Filling them is required by potential RPG needs already identified,
+without waiting for a live gameplay case. See the current verdict in
+`macro-gap-readiness-v1.md`; the snapshot and verdict below describe the
+superseded acceptance baseline only.
+
+## Previous static snapshot
 
 Audited corpus commit: `39b891c17855b1cd8b650e2f758e1ef8b0162e06`.
 
@@ -17,7 +27,7 @@ The aligned vector package contains 3,596 x 1,024 float32 entries
 `0c94f705aa35719324fb46f7e75b0a5c275da6e4`. Runtime bundle, vector index and
 authoring source describe the same corpus.
 
-## Independent readiness verdict
+## Superseded independent readiness verdict
 
 **PASS_STATIC_V1_WITH_DECLARED_P2_LIMITS.** A reality-first audit checked
 physical/Earth systems, living world, body/lifecycle/health,

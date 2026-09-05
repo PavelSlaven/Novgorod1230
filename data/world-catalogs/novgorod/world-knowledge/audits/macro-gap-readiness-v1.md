@@ -6,7 +6,27 @@ game-need rubric rather than treating the repository's own cartography as a
 proof of completeness. It runs no live gameplay, campaign, replay or
 saturation check.
 
-## Verdict
+## Current verdict — reopened 2026-09-05
+
+**BLOCK_STATIC_COVERAGE.** The completion review of `683744f` found that
+the earlier audit below accepted a few examples as a sufficient family
+envelope and then deferred missing core premises to future gameplay. That
+does not satisfy active contract §0.1 or §98.1. The previous `known P1 = 0`
+and blanket classification of all 49 residual families as P2 are withdrawn.
+
+The new source-backed pass must cover each family's principal compositional
+needs. Modern universal science does not establish medieval practice;
+earlier/later comparators do not establish availability around 1230.
+P2 requires an individually justified residual, such as scene state, exact
+mechanics, nonessential open-ended detail, or a documented exhausted source
+search. Technical CI success does not establish factual coverage.
+
+The v9 government claims also need source/domain re-verification: their
+1019–1270 applicability range has no documented support for the 1270 cutoff.
+The old observations below are retained as the challenged baseline, not as
+current acceptance or a waiver for further static filling.
+
+## Superseded verdict and baseline observations
 
 **PASS_STATIC_V1_WITH_DECLARED_P2_LIMITS.** Across the independent rubric,
 the audit found no P0, no known P1, and no unknown or unregistered P1

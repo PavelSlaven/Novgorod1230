@@ -11378,6 +11378,20 @@
       "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. У уже заданного контрольного места просьба осмотреть обоз может потребовать остановиться, открыть доступную поклажу, затем уложить и закрепить её снова; погода, свет и дорога влияют на задержку. Это не создаёт полномочие проверяющего, пошлину, обязательный досмотр или состав груза. проход очередь семейные вещи обоз дозор осмотр груза контрольное место"
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-domestic-geese-can-move-as-a-flock-when-herded:en",
+      "target_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic waterfowl group movement Qualitative relation of domestic goose flock movement and human approach to waterfowl. Domestic geese can move as a flock when herded from one area to another. This is a modern husbandry analogue, not the presence, number, route, keeper, destination, or a guarantee that a particular flock will move. herd geese goose flock approach ducks gather geese"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-domestic-geese-can-move-as-a-flock-when-herded:ru",
+      "target_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Групповое движение домашних водоплавающих Качественная связь стадного движения домашних гусей и подхода человека к водоплавающей птице. Домашние гуси могут двигаться как стая, когда их перегоняют из одного места в другое. Это современная хозяйственная аналогия, не наличие гусей, число птиц, маршрут, хозяин, место назначения или гарантия, что конкретная стая пойдёт. согнать гусей стая гусей подойти к уткам перегнать гусей собрать гусей"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions:en",
       "target_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
       "domain": "chemistry_process",
@@ -11714,6 +11728,20 @@
       "retrieval_text": "Временное укрытие растений от холода Ограниченная качественная связь покрытия, удержания местного тепла и негарантированной защиты. Временное укрытие растения до замерзания может удерживать местное тепло, но защита зависит от свойств и укладки покрытия и не гарантирует отсутствия повреждения. Это не доказывает историческое применение именно рогожи, её наличие, подходящий способ, температуру или исход для конкретной гряды. укрытие растений накрыть гряду рогожа заморозок накрыть растения укрыть от заморозка"
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control:en",
+      "target_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic waterfowl group movement Qualitative relation of domestic goose flock movement and human approach to waterfowl. A person's approach and movement can affect poultry response, including ducks and geese; calm, deliberate movement can avoid overexciting birds. This guarantees neither control, whistle obedience, response to a command, nor a transfer from sheep behaviour. herd geese goose flock approach ducks approach geese excited poultry"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control:ru",
+      "target_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Групповое движение домашних водоплавающих Качественная связь стадного движения домашних гусей и подхода человека к водоплавающей птице. Подход и движения человека могут влиять на реакцию домашней птицы, включая уток и гусей; спокойные, размеренные движения могут не дать птицам чрезмерно возбудиться. Это не гарантирует управление, послушание на свист, отклик на команду или перенос поведения овец. согнать гусей стая гусей подойти к уткам подойти к гусям птицы испугались"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair:en",
       "target_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
       "domain": "physics_material_science",
@@ -11754,6 +11782,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Фитильная подача топлива Качественная связь капиллярной подачи топлива, пламени и копчения. Волокнистый фитиль может капиллярно подавать жидкое топливо к пламени; длина открытого фитиля может влиять на горение и копчение. Слишком длинный фитиль может быть причиной копоти, но это не даёт универсальной длины, настройки, яркости, расхода или исхода конкретной лампы. фитиль лампа копоть подрезать фитиль коптит лампа капиллярный фитиль"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization:en",
+      "target_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Salt moisture, caking, and dissolution Qualitative relation of moisture, crystal contacts, dissolution, and salt caking. For common salt based on sodium chloride, moisture at particle contacts can allow partial dissolution and later crystallized bridges during drying, so a damp mass can cake as conditions change. Composition and conditions affect this, so not every damp salt mass must cake. This establishes no humidity, purity, duration, quantity, stock state, or outcome for a particular container. damp salt salt clumps salt dissolving salt caking"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization:ru",
+      "target_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Влага, слёживание и растворение соли Качественная связь влаги, контактов кристаллов, растворения и слёживания соли. У поваренной соли на основе хлорида натрия влага в точках соприкосновения частиц может дать частичное растворение, а затем кристаллические мостики при высыхании; поэтому отсыревшая масса может слежаться при смене условий. Состав и условия влияют на это, так что не всякая отсыревшая соль обязательно слежится. Это не устанавливает влажность, чистоту, срок, количество, состояние запаса или исход конкретной тары. сырая соль комки соли отсырела соль соль слежалась комки в соли"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path:en",
@@ -22396,6 +22438,20 @@
       "retrieval_text": "Ноцицепция и боль различаются Ноцицепция и боль различаются; переживание боли нельзя свести к единой объективной шкале повреждения или вывести без состояния actor."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-domestic-waterfowl-group-handling:en",
+      "target_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic waterfowl group movement Qualitative relation of domestic goose flock movement and human approach to waterfowl. herd geese goose flock approach ducks"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-domestic-waterfowl-group-handling:ru",
+      "target_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Групповое движение домашних водоплавающих Качественная связь стадного движения домашних гусей и подхода человека к водоплавающей птице. согнать гусей стая гусей подойти к уткам"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:place-plant-freezing-injury-context:en",
       "target_ref": "wk:biology_physiology:place-plant-freezing-injury-context",
       "domain": "biology_physiology",
@@ -23822,6 +23878,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Масляное дубление Процесс выделки с реакцией масла в структуре шкуры; не обычное поверхностное намасливание и не историческая доступность технологии."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:place-salt-moisture-caking:en",
+      "target_ref": "wk:chemistry_process:place-salt-moisture-caking",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Salt moisture, caking, and dissolution Qualitative relation of moisture, crystal contacts, dissolution, and salt caking. damp salt salt clumps salt dissolving"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:place-salt-moisture-caking:ru",
+      "target_ref": "wk:chemistry_process:place-salt-moisture-caking",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Влага, слёживание и растворение соли Качественная связь влаги, контактов кристаллов, растворения и слёживания соли. сырая соль комки соли отсырела соль"
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:reaction-rate-reactant-concentration:en",

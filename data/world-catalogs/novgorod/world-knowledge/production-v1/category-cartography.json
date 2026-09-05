@@ -298,6 +298,7 @@
     }
   ],
   "source_inventory": [
+    {"id":"place-salt-poultry-processes-v1","source_path":"place-salt-poultry-processes-v1.json","domains":["chemistry_process","biology_physiology"],"location_applicability":"Potential salt storage and established domestic-poultry context; no stock, bird, enclosure or work created.","applicability":{"resource":"already established salt or poultry only","material":"NaCl-based common salt when present","process":"conditional moisture/caking and poultry group handling","npc":"approach options, not expertise or guaranteed control"},"coverage":"3 independently approved bounded modern premises; not historical local practice or environmental completeness."},
     {
       "id": "place-community-environments-v1",
       "source_path": "place-community-environments-v1.json",
@@ -2301,6 +2302,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:static-wood-ash-water-can-produce-alkaline-runoff",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:foundations-chm-06-catalyst-rate-not-equilibrium",
@@ -2729,6 +2731,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:fauna-mallard-wetland-diet",
         "claim:fauna-mallard-brood",
         "claim:fauna-mallard-residency",
@@ -7318,6 +7322,7 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"place-salt-poultry-processes-v1.json","claim_count":3,"family_refs":["chemistry-solution-equilibrium-and-solubility","fauna-birds-migration-reproduction-and-behavior"],"location_refs":["potential:storage","potential:homestead","potential:pasture"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"NaCl-based common-salt mechanism depends on composition and conditions; domestic-goose flocking and calm poultry approach do not grant a flock, route, control, historical practice or outcome."},
       {
         "source_path": "place-community-environments-v1.json",
         "claim_count": 5,

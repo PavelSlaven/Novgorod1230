@@ -1,0 +1,51 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place06-place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "claim_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "claim_digest": "c070d9be03759457d295ccd5059bda3fe446d399b71bbaa953751bec0dc23edb",
+      "candidate_ref": "git:e7a6d401f14d11e980401a916bb9bef94540be79:data/world-catalogs/novgorod/world-knowledge/production-v1/place-salt-poultry-processes-v1.json#claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place06_salt_poultry and root editorial integrator; navigation-only research child and actual firsthand source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-salt-poultry-nacl-caking",
+        "evidence:place-salt-poultry-mixture-deliquescence"
+      ],
+      "review_ref": "verification/place-salt-poultry-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Bounded inferred NaCl-based common-salt contact dissolution/drying/caking mechanism; composition and conditions matter; no universal humidity threshold, particular stock state, purity, quantity or guaranteed caking."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place06-place-domestic-geese-can-move-as-a-flock-when-herded",
+      "claim_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+      "claim_digest": "359ef0033f091e243998da72a53aa5d7308755165e155c911df56207747a5523",
+      "candidate_ref": "git:e7a6d401f14d11e980401a916bb9bef94540be79:data/world-catalogs/novgorod/world-knowledge/production-v1/place-salt-poultry-processes-v1.json#claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place06_salt_poultry and root editorial integrator; navigation-only research child and actual firsthand source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-salt-poultry-geese-flocking"
+      ],
+      "review_ref": "verification/place-salt-poultry-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern domestic-goose flocking/herding relation; no historical local practice, present birds, route, keeper, command obedience or guaranteed movement."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place06-place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "claim_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "claim_digest": "71698bd2789283bd4dbc7f8a44a91ffa223e6c1f3614020cbde44e6608b6f989",
+      "candidate_ref": "git:e7a6d401f14d11e980401a916bb9bef94540be79:data/world-catalogs/novgorod/world-knowledge/production-v1/place-salt-poultry-processes-v1.json#claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place06_salt_poultry and root editorial integrator; navigation-only research child and actual firsthand source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-salt-poultry-calm-approach"
+      ],
+      "review_ref": "verification/place-salt-poultry-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern poultry handling relation including ducks/geese; quiet calm approach may affect response, not training, universal temperament, successful control or sheep-behaviour transfer."
+    }
+  ]
+}

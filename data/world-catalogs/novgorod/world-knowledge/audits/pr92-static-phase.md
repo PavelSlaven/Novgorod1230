@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,396 approved claims, 903 concepts,
-512 sources and 1,014 evidence records**. This includes 156 independently
+The integrated corpus contains **1,399 approved claims, 905 concepts,
+516 sources and 1,018 evidence records**. This includes 156 independently
 reviewed premises using editorial-reconstruction sources; 167 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,598 x 1,024 float32 entries (18,833,408 bytes)** and
+package contains **4,608 x 1,024 float32 entries (18,874,368 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,396-claim corpus
+## Checks actually completed on the 1,399-claim corpus
 
-- Compiler: all 1,396 claims and independent approval bindings validate.
+- Compiler: all 1,399 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,8 +42,8 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **324-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996399**,
-  Recall@20 **0.997942**, gate PASS.
+- **327-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996432**,
+  Recall@20 **0.997961**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -64,7 +64,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`5a1f21dfcb05b99e4e6601831d615951cd117179` (run 33968958463).
+`4a87b4f8b80832d19d459970950401dd82da7477` (run 33970885095).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -562,3 +562,60 @@ answers. Input-axis and obvious input-fact corrections precede freeze;
 free classification and all WK-only answers follow separately. These are
 not yet acceptance results. No runtime owner, model, gate or gameplay
 subsystem was changed.
+
+## Fifth place-first unseen batch — diagnostic
+
+The 75 controlled and 25 independent free inputs were finally frozen at
+`4a87b4f8b80832d19d459970950401dd82da7477`, after input-only means and
+author-metadata corrections. No WK answers preceded that final freeze.
+The controlled generator assigned 65 practical and ten social/institutional
+cases; a preflight reader classified two traffic/coordination cases as
+practical (67/8). Either open reading meets the controlled diversity floor;
+these labels are not a closed ontology. Root classified the free component
+before lookup as 25 practical/natural/physical central needs, with no imposed
+free quota.
+
+Independent scene readers and the root free-set reader retain **97 covered
+and three gaps** on the unchanged 1,396-claim corpus: damp salt storage
+(018), moving domestic ducks (034), and gathering domestic geese (free 019).
+The latter two share a poultry-handling need: a care checklist or historical
+bird presence does not explain how human approach and group movement affect
+the central interaction. Existing `lime-transformations` resolved the initial
+059 lead; the initial finding and conditional quicklime interpretation remain
+recorded. Material-specific citations were corrected rather than silently
+transferring wood to rope/leather, grain to cabbage, or food drying to clay.
+
+Candidate salt/poultry research is separate from this original diagnostic.
+The unseen clean streak remains **0/3**; known-case replay cannot change it.
+All 100 review IDs and compiled claim references validate. Published
+1,396-claim checkpoint `4a87b4f8` passed exact-HEAD full CI run `33970885095`;
+later local changes still require their own final CI.
+
+### Fifth-batch follow-up and sixth input preparation
+
+Three premises frozen at candidate commit
+`e7a6d401f14d11e980401a916bb9bef94540be79` received independent APPROVE
+verdicts from `/root/place06_verify_publish`: moisture/drying caking of
+NaCl-based common salt, flock movement in domestic geese, and quiet,
+deliberate poultry approach. They are compiled through the existing
+per-claim approval path. Modern scientific and husbandry sources provide
+general relations, not medieval local presence, guaranteed bird control,
+or exact humidity thresholds. Source-access limits remain in the review.
+
+The separate `place-batch-05-known-gap-replay.json` covers the three known
+cases using the 1,399-claim bundle. The root tightened two replay passages
+to avoid claiming that rain expels ducks from water or that an unsupported
+whistle/wide-arc technique controls geese. Original 97/3 and unseen 0/3
+remain unchanged. Both existing cartographies link this support without
+new families or automatic closure: the place map still has 41 environment
+families and 167 facets (110 supported, 57 partial).
+
+The next blind 75+25 inputs are prepared separately. Input preflight
+requires explicit means and upkeep, diverse situations rather than repeated
+object-recovery puzzles, and observations rather than pre-supplied causal
+answers. WK-only reconstruction and free classification start after final
+input freeze, not during generation. No live gameplay or other owner repair
+was used. Both generators completed their input-only revisions before
+publication; root replaced unsupported exact currency props and corrected
+ash/roof-smoke wording without consulting WK for the new answers. The
+integration commit freezes these final inputs for subsequent review.

@@ -5565,6 +5565,77 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-salt-poultry-deliquescence-review",
+      "title": "Water-Solids Interactions: Deliquescence",
+      "authors": [
+        "Lisa J. Mauer",
+        "Lynne S. Taylor"
+      ],
+      "publication": "Annual Review of Food Science and Technology 1 (2010), pp. 41–63",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1146/annurev.food.080708.100915",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-salt-poultry-geese-small-flocks",
+      "title": "Raising Geese in Small or Backyard Flocks",
+      "authors": [
+        "eXtension Foundation"
+      ],
+      "publication": "Small and Backyard Poultry",
+      "source_kind": "official_documentation",
+      "citation": "https://poultry.extension.org/articles/poultry-management/raising-geese-in-small-or-backyard-flocks/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-salt-poultry-nacl-caking",
+      "title": "Caking of sodium chloride: Role of ambient relative humidity in dissolution and recrystallization process",
+      "authors": [
+        "Marina Langlet",
+        "Mohamed Benali",
+        "Isabelle Pezron",
+        "Khashayar Saleh",
+        "Pierre Guigon",
+        "Léa Metlas-Komunjer"
+      ],
+      "publication": "Chemical Engineering Science 86 (2013), pp. 78–86",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1016/j.ces.2012.05.014",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-salt-poultry-vt-handling",
+      "title": "Transporting Poultry in a Humane Manner",
+      "authors": [
+        "Leonie Jacobs",
+        "Philip J. Clauer"
+      ],
+      "publication": "Virginia Cooperative Extension publication 2902-1088",
+      "source_kind": "official_documentation",
+      "citation": "https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/2902/2902-1088/2902-1088.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:place-thermal-birch-tar-schmidt-2023",
       "title": "Production method of the Königsaue birch tar documents cumulative culture in Neanderthals",
       "authors": [
@@ -15508,6 +15579,46 @@
         "section": "Critical temperatures; What can be done to mitigate these situations?"
       },
       "note": "UMN states frost-damage critical temperatures vary by plant type, variety and growth stage. This supports only conditional susceptibility; it establishes no species identity, threshold, injury, survival, yield or recovery in a scene.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-salt-poultry-calm-approach",
+      "source_ref": "source:place-salt-poultry-vt-handling",
+      "anchor": {
+        "section": "Before transport"
+      },
+      "note": "Virginia Cooperative Extension advises approaching poultry quietly and calmly, and says noisy, aggressive catching can cause panic and injury; its waterfowl scope includes ducks and geese. It supports a qualitative handling relation, not a guaranteed response, obedience cue, species-wide training rule, or transfer from sheep behaviour.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-salt-poultry-geese-flocking",
+      "source_ref": "source:place-salt-poultry-geese-small-flocks",
+      "anchor": {
+        "section": "Pasture and range systems"
+      },
+      "note": "Modern small-flock husbandry guidance says geese have a strong flocking instinct and can be herded from one area to another. This is a modern husbandry relation, not evidence of a Novgorod flock, destination, keeper, command response, or successful gathering.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-salt-poultry-mixture-deliquescence",
+      "source_ref": "source:place-salt-poultry-deliquescence-review",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Review states that deliquescence depends on the solid ingredient and that blends with more than one deliquescent component can have a lower solid-to-solution transition humidity; humidity fluctuations can contribute to agglomeration and caking. It does not classify a particular salt as pure or impure, give a fixed threshold, or predict its condition.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-salt-poultry-nacl-caking",
+      "source_ref": "source:place-salt-poultry-nacl-caking",
+      "anchor": {
+        "section": "Abstract"
+      },
+      "note": "Controlled sodium-chloride study describes moisture at particle contacts, partial dissolution, and recrystallized solid bridges as a caking mechanism; humidity and temperature changes can drive the dissolution–recrystallization cycle. It supplies no storage threshold, batch state, or historical practice.",
       "review_status": "approved"
     },
     {
@@ -26063,6 +26174,45 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+          "locale": "ru",
+          "labels": [
+            "Групповое движение домашних водоплавающих"
+          ],
+          "short_definition": "Качественная связь стадного движения домашних гусей и подхода человека к водоплавающей птице.",
+          "search_aliases": [
+            "согнать гусей",
+            "стая гусей",
+            "подойти к уткам"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+          "locale": "en",
+          "labels": [
+            "Domestic waterfowl group movement"
+          ],
+          "short_definition": "Qualitative relation of domestic goose flock movement and human approach to waterfowl.",
+          "search_aliases": [
+            "herd geese",
+            "goose flock",
+            "approach ducks"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:place-plant-freezing-injury-context",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -29469,6 +29619,45 @@
           ],
           "short_definition": "Skin processing involving reaction of oil within its structure; not ordinary surface oiling or historical technological availability.",
           "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:place-salt-moisture-caking",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:place-salt-moisture-caking",
+          "locale": "ru",
+          "labels": [
+            "Влага, слёживание и растворение соли"
+          ],
+          "short_definition": "Качественная связь влаги, контактов кристаллов, растворения и слёживания соли.",
+          "search_aliases": [
+            "сырая соль",
+            "комки соли",
+            "отсырела соль"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:place-salt-moisture-caking",
+          "locale": "en",
+          "labels": [
+            "Salt moisture, caking, and dissolution"
+          ],
+          "short_definition": "Qualitative relation of moisture, crystal contacts, dissolution, and salt caking.",
+          "search_aliases": [
+            "damp salt",
+            "salt clumps",
+            "salt dissolving"
+          ]
         }
       }
     },
@@ -91837,6 +92026,61 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "domestic_geese_can_move_as_a_flock_when_herded_from_one_area_to_another"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-salt-poultry-geese-flocking"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+          "locale": "ru",
+          "runtime_text": "Домашние гуси могут двигаться как стая, когда их перегоняют из одного места в другое. Это современная хозяйственная аналогия, не наличие гусей, число птиц, маршрут, хозяин, место назначения или гарантия, что конкретная стая пойдёт.",
+          "search_aliases": [
+            "перегнать гусей",
+            "собрать гусей",
+            "стая гусей"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+          "locale": "en",
+          "runtime_text": "Domestic geese can move as a flock when herded from one area to another. This is a modern husbandry analogue, not the presence, number, route, keeper, destination, or a guarantee that a particular flock will move.",
+          "search_aliases": [
+            "herd geese",
+            "gather geese",
+            "goose flock"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place06-place-domestic-geese-can-move-as-a-flock-when-herded"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
       "domain": "chemistry_process",
       "subject_ref": "wk:chemistry_process:dyebath-cooling-and-uptake",
@@ -93317,6 +93561,61 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_handler_s_approach_and_movement_can_affect_poultry_response_and_calm_deliberate_movement_can_avoid_overexciting_birds_without_guaranteeing_control_or_obedience"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-salt-poultry-calm-approach"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+          "locale": "ru",
+          "runtime_text": "Подход и движения человека могут влиять на реакцию домашней птицы, включая уток и гусей; спокойные, размеренные движения могут не дать птицам чрезмерно возбудиться. Это не гарантирует управление, послушание на свист, отклик на команду или перенос поведения овец.",
+          "search_aliases": [
+            "подойти к гусям",
+            "подойти к уткам",
+            "птицы испугались"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+          "locale": "en",
+          "runtime_text": "A person's approach and movement can affect poultry response, including ducks and geese; calm, deliberate movement can avoid overexciting birds. This guarantees neither control, whistle obedience, response to a command, nor a transfer from sheep behaviour.",
+          "search_aliases": [
+            "approach geese",
+            "approach ducks",
+            "excited poultry"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place06-place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:staved-vessel-hoop-fit",
@@ -93482,6 +93781,62 @@
         }
       },
       "verification_ref": "wk-verification:place04-place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:place-salt-moisture-caking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "for_common_salt_based_on_sodium_chloride_moisture_at_particle_contacts_can_support_partial_dissolution_and_later_recrystallized_bridges_so_a_damp_mass_can_cake_as_conditions_change_while_composition_and_conditions_do_not_establish_that_every_damp_mass_will_cake"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-salt-poultry-nacl-caking",
+        "evidence:place-salt-poultry-mixture-deliquescence"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+          "locale": "ru",
+          "runtime_text": "У поваренной соли на основе хлорида натрия влага в точках соприкосновения частиц может дать частичное растворение, а затем кристаллические мостики при высыхании; поэтому отсыревшая масса может слежаться при смене условий. Состав и условия влияют на это, так что не всякая отсыревшая соль обязательно слежится. Это не устанавливает влажность, чистоту, срок, количество, состояние запаса или исход конкретной тары.",
+          "search_aliases": [
+            "соль слежалась",
+            "комки в соли",
+            "сырая соль"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+          "locale": "en",
+          "runtime_text": "For common salt based on sodium chloride, moisture at particle contacts can allow partial dissolution and later crystallized bridges during drying, so a damp mass can cake as conditions change. Composition and conditions affect this, so not every damp salt mass must cake. This establishes no humidity, purity, duration, quantity, stock state, or outcome for a particular container.",
+          "search_aliases": [
+            "salt caking",
+            "salt clumps",
+            "damp salt"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place06-place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -127152,6 +127507,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:place-domestic-waterfowl-group-handling": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:place-domestic-waterfowl-group-handling",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:place-plant-freezing-injury-context": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:place-plant-freezing-injury-context",
@@ -128070,6 +128434,15 @@
       "wk:chemistry_process:oil-tanning": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:chemistry_process:oil-tanning",
+        "domain": "chemistry_process",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:chemistry_process:place-salt-moisture-caking": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:chemistry_process:place-salt-moisture-caking",
         "domain": "chemistry_process",
         "broader_refs": [],
         "related_refs": [],
@@ -134475,6 +134848,10 @@
       "wk:biology_physiology:pain-nociception-distinct": [
         "claim:pain-nociception-distinct"
       ],
+      "wk:biology_physiology:place-domestic-waterfowl-group-handling": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "wk:biology_physiology:place-plant-freezing-injury-context": [
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development"
       ],
@@ -134827,6 +135204,9 @@
       ],
       "wk:chemistry_process:oil-tanning": [
         "claim:oil-tanning-crosslinking-fibres"
+      ],
+      "wk:chemistry_process:place-salt-moisture-caking": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "wk:chemistry_process:reaction-rate-reactant-concentration": [
         "claim:foundations-chm-02-reaction-rate-reactant-concentration"
@@ -137436,11 +137816,13 @@
         "claim:microbial-growth-depends-on-species-temperature-range",
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:pain-nociception-distinct",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:plant-development-responds-to-light",
@@ -137587,6 +137969,7 @@
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-clay-steam",
         "claim:population-material-copper-iron-contact",
         "claim:population-material-iron-coating",
@@ -139534,6 +139917,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -139558,9 +139942,11 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -141104,6 +141490,7 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -141115,9 +141502,11 @@
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:plant-development-responds-to-light",
@@ -142856,6 +143245,7 @@
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs"
       ],
       "аналогия": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
@@ -145568,6 +145958,7 @@
         "claim:fauna-mammals-wolf-carnivorous-diet",
         "claim:foundations-ms-23-group-pressure",
         "claim:milling-grain-compression-shear-fracture",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-physics-floating-shape",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
@@ -145581,7 +145972,9 @@
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:foundations-earth-30-upslope-fog",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:static-birch-bark-water-can-deform-layers",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:physics_material_science:static-birch-bark-water-deformation"
       ],
       "влаге": [
@@ -145601,6 +145994,7 @@
         "wk:biology_physiology:food-drying",
         "wk:biology_physiology:sweat-evaporation",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:physics_material_science:moisture-vaporization-heat-demand",
         "wk:physics_material_science:static-birch-bark-water-deformation",
         "wk:physics_material_science:stored-grain-moisture-migration"
@@ -145711,6 +146105,7 @@
         "claim:foundations-earth-30-upslope-fog",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-joining-bond-moisture",
         "claim:population-material-wood-combustion",
         "claim:population-material-wood-shrinkage",
@@ -145811,6 +146206,7 @@
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -145830,6 +146226,7 @@
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-ceramic-porosity",
         "claim:population-joining-bond-moisture",
         "claim:population-material-iron-rust",
@@ -146295,6 +146692,12 @@
       "водоотводящего": [
         "claim:household-roof-local-condition-guides-repair"
       ],
+      "водоплавающей": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
+      "водоплавающих": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
       "водопой": [
         "claim:place-outdoors-shore-working-edge-composition"
       ],
@@ -146490,6 +146893,9 @@
         "wk:biology_physiology:foundation-infection-chain",
         "wk:biology_physiology:foundation-infection-entry",
         "wk:biology_physiology:foundation-pathogen-transport"
+      ],
+      "возбудиться": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "возбуждать": [
         "claim:fauna-mammals-domestic-cattle-startle-response"
@@ -147569,6 +147975,7 @@
         "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri"
       ],
       "всякая": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "всякий": [
@@ -148260,7 +148667,8 @@
       ],
       "высыхании": [
         "claim:material-water-rawhide-wet-dry",
-        "claim:oil-tanning-crosslinking-fibres"
+        "claim:oil-tanning-crosslinking-fibres",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "высыхания": [
         "claim:material-water-new-linen-water",
@@ -148496,6 +148904,7 @@
         "claim:measurement-units-must-be-identified",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:population-material-clay-drying",
         "claim:population-net-weights",
@@ -148525,6 +148934,7 @@
         "claim:flayed-skin-processing-purpose",
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:hard-stone-abrasive-sawing",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
@@ -149900,6 +150310,7 @@
         "claim:human-life-learning-observation-practice-feedback"
       ],
       "групповое": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:social_behavior:foundations-ms-23-group-pressure",
         "wk:social_behavior:foundations-ms-26-group-context"
       ],
@@ -149968,6 +150379,14 @@
         "claim:foundations-life-16-regulation",
         "wk:biology_physiology:foundation-regulation"
       ],
+      "гусей": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
+      "гуси": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
+      ],
       "гуслей": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"
       ],
@@ -149998,6 +150417,9 @@
       ],
       "густые": [
         "claim:place-outdoors-forest-structure-and-season"
+      ],
+      "гусям": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "гюргий": [
         "claim:candidate-gramota222-letter-to-posadnik",
@@ -150245,7 +150667,9 @@
       "дать": [
         "claim:human-life-recreation-competes-for-time",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:population-processes-bone-skate-output",
         "claim:static-wood-ash-water-can-produce-alkaline-runoff"
@@ -150288,6 +150712,9 @@
       "двигательную": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
+      "двигаться": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
+      ],
       "двигаются": [
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
       ],
@@ -150307,6 +150734,7 @@
         "claim:water-percolation-openings",
         "claim:water-permeability-connected-pores",
         "wk:biology_physiology:foundation-muscle-movement",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:environment:pressure-gradient-wind",
         "wk:environment:slope-force-strength",
         "wk:environment:slope-water-triggers"
@@ -150329,7 +150757,9 @@
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:foundations-phys-08-momentum-closed-system",
         "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:research-exposed-fish-drying",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:physics_material_science:impulse-momentum-change",
@@ -152117,6 +152547,7 @@
       ],
       "домашней": [
         "claim:environment-p1-bird-taxa",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "wk:biology_physiology:domestic-chicken-behavior"
       ],
       "домашнем": [
@@ -152128,6 +152559,7 @@
       "домашние": [
         "claim:fauna-mammals-domestic-horse-forage-behavior",
         "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:settlement-oven-cooking",
         "claim:settlement-oven-heating",
         "wk:biology_physiology:fauna-domestic-horse"
@@ -152142,6 +152574,7 @@
         "claim:domestic-animal-context",
         "claim:fauna-adder-defence",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:environment:domestic-animal-context"
       ],
       "домашняя": [
@@ -152798,6 +153231,9 @@
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
+      ],
+      "другое": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "другой": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
@@ -155067,6 +155503,7 @@
         "claim:fauna-mammals-red-squirrel-seed-cache",
         "claim:fodder-hay-account",
         "claim:novgorod-wetland-pollen-context",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:social-daily-fur-sale-accounting",
         "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia"
@@ -155390,6 +155827,7 @@
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:healer-observation-and-questioning",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "wk:biology_physiology:fauna-atlantic-salmon",
@@ -156317,6 +156755,7 @@
         "claim:material-water-plant-fibre-cellulose",
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:ordinary-life-craftsman-income-varies-with-orders",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-outdoors-forest-structure-and-season",
         "claim:place-outdoors-season-work-space-reallocation",
@@ -157170,6 +157609,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -157191,9 +157631,11 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -158341,6 +158783,9 @@
       "испугалась": [
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight"
       ],
+      "испугались": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "испуганный": [
         "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm"
       ],
@@ -158731,6 +159176,7 @@
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-capacity-can-vary-day-to-day",
@@ -158859,6 +159305,7 @@
         "claim:foundations-ms-26-group-context",
         "claim:household-riverside-storage",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:population-household-storage",
         "claim:population-wool-lining",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -158982,6 +159429,7 @@
         "claim:later-novgorod-judicial-charter",
         "claim:oil-rawhide-moisture-resistance",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:population-boat-context",
@@ -159394,6 +159842,7 @@
         "claim:clay-firing-structural-transformation",
         "claim:milling-plate-gap-pressure-fineness",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
@@ -159408,6 +159857,7 @@
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:chemistry_process:fish-smoking-context",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:environment:research-freeze-thaw-sediment-erosion",
@@ -160090,6 +160540,7 @@
         "claim:healer-observation-and-questioning",
         "claim:human-life-kin-ties-can-create-competing-loyalties",
         "claim:human-life-recreation-competes-for-time",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:practical-fodder-hay",
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
@@ -160381,6 +160832,7 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -160506,11 +160958,16 @@
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
       "команду": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:posadnik-volodislav-pursuit-1228"
       ],
       "комары": [
         "claim:fauna-culex-life-cycle",
         "wk:biology_physiology:fauna-culex-mosquito"
+      ],
+      "комки": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "комната": [
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
@@ -160638,6 +161095,7 @@
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
         "claim:foundations-earth-15-igneous-rock-formation",
         "claim:novgorod-leather-items",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:population-processes-hemp-net",
         "claim:population-storage-vessels",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
@@ -160778,6 +161236,7 @@
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-material-wet-silk",
         "claim:population-material-wood-shrinkage",
@@ -161153,6 +161612,9 @@
       ],
       "контактных": [
         "wk:biology_physiology:research-raw-animal-food-cross-contact"
+      ],
+      "контактов": [
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "контейнер": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -162259,11 +162721,15 @@
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode"
       ],
       "кристаллические": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:static-hydraulic-lime-can-initially-set-with-water"
       ],
       "кристаллическую": [
         "claim:clay-firing-structural-transformation",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning"
+      ],
+      "кристаллов": [
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "кров": [
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
@@ -163988,6 +164454,7 @@
       "маршрут": [
         "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:environment-p1-horse-transport",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:residual-nature-stars-horizon-navigation",
@@ -164049,6 +164516,7 @@
       "масса": [
         "claim:measurement-grain-mass-volume-density",
         "claim:measurement-net-excludes-tare",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:residual-nature-snow-depth-not-load",
         "claim:social-grivna-accounting-unit"
       ],
@@ -164748,6 +165216,7 @@
         "claim:food-practices-millet-cleaning-waste",
         "claim:human-life-visitors-add-resource-demands",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-outdoors-means-upkeep-and-environment",
@@ -164910,6 +165379,7 @@
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
         "claim:ordinary-life-shoes-protect-feet",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:population-drying-workspace",
@@ -165620,6 +166090,7 @@
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:place-outdoors-market-activity-and-empty-intervals",
@@ -165627,6 +166098,7 @@
         "claim:place-outdoors-season-work-space-reallocation",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
@@ -165931,6 +166403,7 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-ceramic-fracture",
@@ -166374,6 +166847,7 @@
         "claim:construction-rjaz-polygonal-form"
       ],
       "мостики": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
       ],
@@ -166763,7 +167237,9 @@
         "claim:place-outdoors-microterrain-patches",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:plant-development-responds-to-light",
         "claim:population-boat-context",
@@ -167335,6 +167811,9 @@
         "claim:transport-private-boat-arrangement",
         "wk:craft_technology:woodworked-objects-and-waste"
       ],
+      "назначения": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
+      ],
       "называемым": [
         "claim:foundations-ms-32-social-role",
         "wk:social_behavior:foundations-ms-32-social-role"
@@ -167507,6 +167986,7 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
@@ -168087,6 +168567,9 @@
         "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
         "wk:environment:static-wetland-plant-regional-compatibility"
+      ],
+      "натрия": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "натурального": [
         "claim:stone-grinding-metal-use"
@@ -168699,6 +169182,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -168722,9 +169206,11 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -171977,6 +172463,7 @@
       "обязательно": [
         "claim:fauna-salmon-repeat-spawning",
         "claim:foundations-haz-02-exposure-not-illness",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-physics-evaporation-below-boiling",
         "claim:textile-dye-application"
       ],
@@ -172088,6 +172575,7 @@
       ],
       "овец": [
         "claim:harvest-sheep-shearing-scissors",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "wk:material_culture:sheep-shears"
       ],
       "овин": [
@@ -172468,6 +172956,7 @@
         "claim:foundations-earth-02-ecological-tolerance",
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:measurement-grain-mass-volume-density",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:place-outdoors-microterrain-patches",
@@ -173673,6 +174162,7 @@
       "основе": [
         "claim:foundations-life-08-cell-specialization",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "wk:biology_physiology:foundation-cell-specialization"
       ],
       "основная": [
@@ -174403,6 +174893,9 @@
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
+      "отклик": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "откопку": [
         "claim:construction-auxiliary-construction-work"
       ],
@@ -174761,6 +175254,12 @@
       ],
       "отсутствующее": [
         "claim:population-material-iron-coating"
+      ],
+      "отсыревшая": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "отсырела": [
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "отсюда": [
         "claim:ceramic-material-category",
@@ -175486,6 +175985,9 @@
       "переворот": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
+      "перегнать": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
+      ],
       "перегнутого": [
         "claim:clothing-tunic-shirt-folded-panel"
       ],
@@ -175495,6 +175997,9 @@
       ],
       "перегонка": [
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions"
+      ],
+      "перегоняют": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "перегрев": [
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it"
@@ -175678,6 +176183,7 @@
         "claim:foundations-life-43-infection-chain",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:posadnik-fedor-conflict-1224",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
@@ -176914,6 +177420,9 @@
       "побыть": [
         "claim:healer-care-coordination-and-uncertainty"
       ],
+      "поваренной": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
       "поведение": [
         "claim:candidate-physiology-v3-threat-autonomic-arousal",
         "claim:fauna-animal-learning",
@@ -176954,6 +177463,7 @@
         "claim:foundations-ms-17-individual-variation",
         "claim:foundations-ms-19-attribution-explanation",
         "claim:foundations-ms-39-social-norm",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:psychology_behavior:foundations-ms-17-individual-variation",
@@ -177739,6 +178249,10 @@
       "подозрении": [
         "claim:household-trauma-unnecessary-movement-can-worsen"
       ],
+      "подойти": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
       "подола": [
         "claim:clothing-shirt-gussets"
       ],
@@ -177901,7 +178415,11 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
       ],
       "подход": [
-        "claim:place-outdoors-shore-working-edge-composition"
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
+      "подхода": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "подходом": [
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
@@ -178111,7 +178629,8 @@
         "claim:fauna-bird-irruption-nomadism"
       ],
       "пойдёт": [
-        "claim:foundations-chm-03-heterogeneous-reaction-interface"
+        "claim:foundations-chm-03-heterogeneous-reaction-interface",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "пойменных": [
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
@@ -179234,6 +179753,9 @@
         "claim:residual-law-debt-denial-witness-oath",
         "claim:residual-law-monthly-and-longer-interest"
       ],
+      "послушание": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "послушество": [
         "claim:residual-law-status-and-witness-exceptions"
       ],
@@ -179744,6 +180266,7 @@
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:milling-moisture-changes-grain-deformation",
         "claim:place-outdoors-forest-structure-and-season",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-physics-evaporation-below-boiling",
         "claim:practical-season-work",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -180707,6 +181230,7 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-bark-input",
@@ -182678,6 +183202,7 @@
         "claim:fauna-bird-irruption-nomadism",
         "claim:fauna-bird-migration-cues",
         "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "wk:biology_physiology:fauna-bird-migration",
         "wk:environment:bird-utilization",
@@ -182690,13 +183215,18 @@
         "wk:biology_physiology:domestic-chicken-behavior"
       ],
       "птицам": [
-        "claim:fauna-dragonfly-foodweb"
+        "claim:fauna-dragonfly-foodweb",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
+      "птице": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "птицы": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
         "claim:fauna-bird-migration-energy",
         "claim:fauna-bird-navigation",
         "claim:fauna-pike-juvenile-predation",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:residual-traces-deadwood-feeding-signs",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:urban-bird-period-specific",
@@ -183595,6 +184125,9 @@
       "размера": [
         "claim:water-permeability-connected-pores"
       ],
+      "размеренные": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "размеров": [
         "claim:material-water-natural-fibres-water-swelling",
         "claim:milling-grain-compression-shear-fracture",
@@ -184312,9 +184845,16 @@
         "wk:chemistry_process:ionic-precipitation-threshold",
         "wk:chemistry_process:strong-acid-base-neutralization-heat"
       ],
+      "растворение": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking"
+      ],
       "растворении": [
         "claim:foundations-physical-b2-chm-04-solute-solvation",
         "wk:chemistry_process:solute-solvation"
+      ],
+      "растворения": [
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "растворённого": [
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
@@ -184733,6 +185273,7 @@
         "claim:fauna-animal-habituation",
         "claim:foundations-chm-05-mixing-diffusion-control",
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
@@ -186718,6 +187259,9 @@
       "свинья": [
         "wk:biology_physiology:fauna-domestic-pig"
       ],
+      "свист": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "свистулька": [
         "claim:candidate-v7-museum-individual-toy-types"
       ],
@@ -187080,6 +187624,7 @@
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:candidate-parasite-host-relation",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
@@ -187098,6 +187643,7 @@
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:chemistry_process:fish-smoking-context",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:research-fish-salting-diffusion",
         "wk:chemistry_process:research-starch-gelatinization-thickening",
         "wk:chemistry_process:research-vegetable-fermentation-conditions",
@@ -188303,6 +188849,21 @@
       "следя": [
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
       ],
+      "слежалась": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "слежаться": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "слёживание": [
+        "wk:chemistry_process:place-salt-moisture-caking"
+      ],
+      "слёживания": [
+        "wk:chemistry_process:place-salt-moisture-caking"
+      ],
+      "слежится": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
       "слепая": [
         "claim:static-horses-are-hindgut-fermenters"
       ],
@@ -188549,6 +189110,9 @@
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "wk:biology_physiology:foundation-sleep-wake-cycle"
+      ],
+      "смене": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "сменную": [
         "claim:place-outdoors-means-upkeep-and-environment"
@@ -188927,7 +189491,8 @@
         "wk:environment:southern-deciduous-gathered-plants"
       ],
       "собрать": [
-        "claim:ordinary-life-work-clothes-protect-and-move"
+        "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "собственника": [
         "claim:early-rus-hunting-ground-terms"
@@ -189146,6 +189711,7 @@
       ],
       "современная": [
         "claim:healer-observation-and-questioning",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "wk:biology_physiology:static-straw-horse-bedding",
@@ -189197,6 +189763,9 @@
       ],
       "соглашение": [
         "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans"
+      ],
+      "согнать": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "согнутого": [
         "claim:population-rod-cord"
@@ -189477,6 +190046,7 @@
         "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
         "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift",
         "claim:material-water-alum-skin-water",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-iron-rust",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
@@ -189485,6 +190055,7 @@
         "wk:chemistry_process:common-ion-precipitation-shift",
         "wk:chemistry_process:fish-smoking-context",
         "wk:chemistry_process:ionic-precipitation-threshold",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:research-fish-salting-diffusion",
         "wk:chemistry_process:research-vegetable-fermentation-conditions",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization"
@@ -189538,8 +190109,10 @@
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
-        "wk:chemistry_process:acid-base-neutralization"
+        "wk:chemistry_process:acid-base-neutralization",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "солят": [
         "claim:practical-food-preserve"
@@ -189707,6 +190280,9 @@
       "соприкасающихся": [
         "claim:population-physics-sliding-friction"
       ],
+      "соприкосновения": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
       "сопровождаемое": [
         "claim:foundations-thm-02-combustion-fuel-oxidizer"
       ],
@@ -189843,6 +190419,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-ceramic-porosity",
         "claim:population-joining-wax-soften",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -189944,6 +190521,7 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-joining-metal-melt",
         "claim:population-leather-shoes",
         "claim:population-material-leather-dry",
@@ -190457,6 +191035,9 @@
       ],
       "спокойны": [
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
+      ],
+      "спокойные": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "спокойствие": [
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
@@ -191004,6 +191585,7 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:plant-development-responds-to-light",
         "claim:population-fish-dried-form",
         "claim:population-physics-evaporation-humidity",
@@ -191123,6 +191705,9 @@
       "стадия": [
         "claim:fauna-mussel-fish-host",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue"
+      ],
+      "стадного": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "стаи": [
         "claim:fauna-mammals-wolf-howling-communication",
@@ -191341,7 +191926,9 @@
       ],
       "стая": [
         "claim:fauna-mammals-wolf-pack-pup-care",
-        "claim:fauna-mammals-wolf-territorial-defense"
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "стаями": [
         "claim:fauna-mammals-wolf-pack-sociality"
@@ -192484,8 +193071,10 @@
         "claim:residual-law-daughters-and-status-inheritance"
       ],
       "сырая": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-leather-mould",
-        "claim:population-shoe-input"
+        "claim:population-shoe-input",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "сырого": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination"
@@ -192550,6 +193139,9 @@
       ],
       "тайную": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+      ],
+      "так": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "такая": [
         "claim:food-practices-threshing-chaff"
@@ -192669,7 +193261,8 @@
       ],
       "тары": [
         "claim:measurement-net-excludes-tare",
-        "claim:pine-pitch-woven-basket-coating"
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "тающий": [
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces"
@@ -194074,6 +194667,9 @@
       "точильный": [
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance"
+      ],
+      "точках": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "точки": [
         "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff",
@@ -195647,6 +196243,9 @@
         "claim:gramota-73-grivna-term",
         "wk:material_culture:gramota-73-grivna-term"
       ],
+      "управление": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "управлению": [
         "claim:practical-boat-weather-water"
       ],
@@ -195817,6 +196416,7 @@
         "claim:ha-firesteel-ignition",
         "claim:lime-transformations",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:residual-law-interest-agreement-and-witnesses",
@@ -195842,6 +196442,7 @@
         "claim:foundations-life-27-ontogeny",
         "claim:foundations-phys-01-air-drag-fall",
         "claim:human-life-household-pressure-can-interrupt-learning",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:residual-law-dependency-and-agreement",
         "claim:residual-nature-moonlight-reflected-sunlight",
@@ -196116,6 +196717,7 @@
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-wood-shrinkage",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:regional-fish-exploitation",
@@ -196529,11 +197131,16 @@
         "wk:physics_material_science:wood-storage-biological-damage",
         "wk:physics_material_science:wood-transverse-tension-weakness"
       ],
+      "уткам": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
       "утки": [
         "claim:environment-p1-bird-taxa"
       ],
       "уток": [
         "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-processes-weaving-thread"
       ],
       "утомление": [
@@ -197770,6 +198377,9 @@
       "хлопнуть": [
         "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm"
       ],
+      "хлорида": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
       "хмелевой": [
         "wk:biology_physiology:static-hop-bine-support-water"
       ],
@@ -197826,6 +198436,7 @@
       "хозяин": [
         "claim:human-life-perceived-role-can-shape-expectations",
         "claim:human-life-stay-can-enable-consented-exchange",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "wk:biology_physiology:candidate-parasite-host-relation"
       ],
       "хозяина": [
@@ -197858,6 +198469,7 @@
       ],
       "хозяйственная": [
         "claim:fodder-hay-account",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "хозяйственного": [
@@ -198518,7 +199130,8 @@
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-earth-07-soil-water-states",
         "claim:foundations-earth-17-sedimentary-rock-formation",
-        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "частица": [
         "claim:foundations-life-29-virion-structure",
@@ -198552,7 +199165,8 @@
         "wk:psychology_behavior:foundations-ms-11-practiced-action"
       ],
       "частичное": [
-        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
+        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "частная": [
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
@@ -198732,6 +199346,7 @@
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:human-thermoregulation-depends-on-heat-exchange",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-net-work",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -198750,6 +199365,7 @@
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:fauna-domestic-cattle",
         "wk:biology_physiology:human-thermoregulation",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:residual-postpartum-maternal-recovery",
         "wk:psychology_behavior:emotion-regulation-experimental",
         "wk:psychology_behavior:foundations-ms-01-attention-intensity",
@@ -198965,6 +199581,7 @@
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:metal-properties-depend-on-state",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
@@ -199014,6 +199631,7 @@
       "чистоту": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it"
@@ -199045,6 +199663,9 @@
       "чрезмерная": [
         "claim:population-joining-metal-cold-work",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs"
+      ],
+      "чрезмерно": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "чрезмерное": [
         "claim:population-joining-bond-pressure"
@@ -199087,6 +199708,8 @@
         "claim:healer-observation-and-questioning",
         "claim:livestock-swine-membership",
         "claim:occupation-smith-anvil",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-leather-mould",
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
@@ -200277,6 +200900,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -200293,8 +200917,10 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
@@ -203165,7 +203791,9 @@
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-ceramic-porosity",
         "claim:population-joining-bond-moisture",
         "claim:population-material-iron-rust",
@@ -203550,7 +204178,8 @@
       ],
       "allow": [
         "claim:human-life-reception-depends-on-trust-ties-means",
-        "claim:place-outdoors-means-upkeep-and-environment"
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "allowed": [
         "claim:civic-defence-log-length-joint",
@@ -204169,6 +204798,7 @@
         "claim:civic-defence-log-courses",
         "claim:civic-defence-log-length-joint",
         "claim:civic-defence-transverse-support",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:probable-travel-chalice-communion"
       ],
       "analogy": [
@@ -204668,9 +205298,11 @@
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
@@ -205122,6 +205754,7 @@
         "wk:biology_physiology:fungal-mycelium-nutrition",
         "wk:biology_physiology:orchard-tree-pruning-context",
         "wk:biology_physiology:pain-nociception-distinct",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:plant-growth-requirements",
@@ -205186,6 +205819,7 @@
         "wk:chemistry_process:lime-transformations",
         "wk:chemistry_process:metal-classes-composition",
         "wk:chemistry_process:milk-curd-and-straining",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:reaction-rate-reactant-concentration",
         "wk:chemistry_process:research-fish-salting-diffusion",
         "wk:chemistry_process:research-starch-gelatinization-thickening",
@@ -205537,6 +206171,7 @@
         "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:posadnik-fedor-conflict-1224",
@@ -205696,7 +206331,9 @@
       ],
       "approach": [
         "claim:foundations-ms3-03-goal-frustration",
-        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "approaches": [
         "claim:river-landing-market-approaches"
@@ -206032,6 +206669,7 @@
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:household-apple-orchard",
         "claim:household-ploughshare-tillage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:population-physics-point-pressure",
@@ -206254,7 +206892,9 @@
         "claim:ordinary-life-private-needs-shape-decisions",
         "claim:pigment-wet-dry-techniques",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-boat-context",
         "claim:population-fish-food",
         "claim:population-material-clay-drying",
@@ -206559,6 +207199,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-ceramic-joint",
         "claim:population-net-floats",
         "claim:population-net-weights",
@@ -207009,6 +207650,7 @@
         "claim:foundations-phys-02-impulse-momentum-change"
       ],
       "avoid": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:practical-boat-unload-order",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
@@ -207248,6 +207890,7 @@
         "claim:agriculture-fauna-rural-tree-borts",
         "claim:fauna-fish-vibration-senses",
         "claim:household-clay-key-and-compatible-patch",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:social-daily-wax-commodity-context",
         "wk:biology_physiology:fauna-fish-senses",
@@ -207655,6 +208298,7 @@
         "claim:fauna-brown-bear-winter-denning"
       ],
       "behaviour": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-material-wet-wool",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour",
@@ -207991,6 +208635,7 @@
         "claim:fauna-bird-migration-energy",
         "claim:fauna-bird-navigation",
         "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:residual-traces-deadwood-feeding-signs",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:urban-bird-period-specific",
@@ -208486,6 +209131,7 @@
         "wk:architecture_settlement:wooden-bridge"
       ],
       "bridges": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
       ],
@@ -208978,6 +209624,13 @@
       "caches": [
         "claim:fauna-mammals-red-squirrel-forgotten-cache-germination"
       ],
+      "cake": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "caking": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking"
+      ],
       "calcium": [
         "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
       ],
@@ -209021,6 +209674,7 @@
         "claim:textile-chrysin-analysis"
       ],
       "calm": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
       ],
@@ -209328,6 +209982,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -209345,9 +210000,11 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -210525,6 +211182,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-melting-vaporization-energy",
         "claim:public-world-armed-loss-reaches-household",
@@ -210822,6 +211480,9 @@
       ],
       "chisels": [
         "claim:population-woodwork-chisel"
+      ],
+      "chloride": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "choice": [
         "claim:human-life-travel-conditions-can-justify-delay",
@@ -211299,7 +211960,9 @@
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk"
       ],
       "clumps": [
-        "claim:construction-pine-resin-bast"
+        "claim:construction-pine-resin-bast",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "cluster": [
         "claim:fauna-bee-winter-cluster",
@@ -211656,6 +212319,7 @@
       ],
       "command": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:posadnik-fedor-conflict-1224"
       ],
       "commander": [
@@ -211709,6 +212373,7 @@
         "claim:fauna-toad-defence",
         "claim:fauna-toad-diet",
         "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "wk:biology_physiology:fauna-common-adder",
         "wk:biology_physiology:fauna-common-frog",
         "wk:biology_physiology:fauna-common-toad",
@@ -212089,6 +212754,7 @@
         "claim:metal-properties-depend-on-state",
         "claim:occupation-smith-heat-treatment",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-ceramic-porosity",
         "claim:population-joining-wax-soften",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -212466,6 +213132,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-outdoors-season-work-space-reallocation",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:population-material-leather-dry",
         "claim:population-material-leather-mould",
@@ -212794,7 +213461,9 @@
       ],
       "contacts": [
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
-        "claim:milling-grain-compression-shear-fracture"
+        "claim:milling-grain-compression-shear-fracture",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "contain": [
         "claim:composite-urban-quarter",
@@ -212812,6 +213481,7 @@
       "container": [
         "claim:burial-coffin-lid-transverse-plank",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "wk:material_culture:hollowed-log-burial-container",
         "wk:material_culture:plank-burial-container"
       ],
@@ -213148,6 +213818,7 @@
         "claim:ordinary-life-worker-means-and-duty-vary",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:practical-boat-weather-water",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "wk:architecture_settlement:static-household-roof-water",
@@ -213751,11 +214422,15 @@
         "claim:fauna-mammals-european-otter-aquatic-prey-diet"
       ],
       "crystal": [
-        "claim:clay-firing-structural-transformation"
+        "claim:clay-firing-structural-transformation",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "crystalline": [
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:static-hydraulic-lime-can-initially-set-with-water"
+      ],
+      "crystallized": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "cubs": [
         "claim:fauna-mammals-brown-bear-maternal-care"
@@ -214030,13 +214705,15 @@
       "damp": [
         "claim:fauna-amphibian-moist-skin",
         "claim:fauna-frog-damp-foraging",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-leather-mould",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:biology_physiology:fauna-amphibian",
-        "wk:biology_physiology:fauna-common-frog"
+        "wk:biology_physiology:fauna-common-frog",
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "dampen": [
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
@@ -214472,6 +215149,9 @@
         "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
         "wk:social_law_economy:candidate-v7-conflict-and-office-records"
       ],
+      "deliberate": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+      ],
       "deliberately": [
         "claim:research-memory-source-misattribution"
       ],
@@ -214842,6 +215522,7 @@
         "claim:early-rus-hunting-ground-terms"
       ],
       "destination": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:transport-private-boat-arrangement"
       ],
       "destroying": [
@@ -215503,6 +216184,8 @@
       ],
       "dissolution": [
         "claim:foundations-physical-b2-chm-04-solute-solvation",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:solute-solvation"
       ],
       "dissolved": [
@@ -215519,6 +216202,9 @@
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:environment:candidate-water-circulation-oxygen",
         "wk:environment:water-mineral-chemical-weathering"
+      ],
+      "dissolving": [
+        "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "distance": [
         "claim:fauna-bee-waggle",
@@ -216021,6 +216707,7 @@
         "claim:fauna-mammals-domestic-horse-forage-behavior",
         "claim:fauna-mammals-domestic-horse-herd-sociality",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:settlement-oven-cooking",
         "claim:settlement-oven-heating",
         "wk:architecture_settlement:construction-pottery-production",
@@ -216032,6 +216719,7 @@
         "wk:biology_physiology:fauna-domestic-horse",
         "wk:biology_physiology:fauna-domestic-pig",
         "wk:biology_physiology:fauna-domestic-sheep",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:craft_technology:tree-bort-practice",
         "wk:environment:domestic-animal-context",
         "wk:environment:medieval-novgorod-domestic-food-base",
@@ -216343,6 +217031,7 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-season-work-space-reallocation",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-drying-workspace",
         "claim:population-fish-dried-form",
@@ -216379,6 +217068,10 @@
       ],
       "duck": [
         "claim:environment-p1-bird-taxa"
+      ],
+      "ducks": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "ducts": [
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts"
@@ -216417,6 +217110,7 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-material-iron-rust",
         "claim:population-material-leather-dry",
@@ -216467,6 +217161,7 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-material-clay-plasticity",
         "claim:population-material-clay-quartz",
@@ -217672,6 +218367,7 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:population-physics-evaporation-humidity",
         "claim:posadnik-fedor-conflict-1224",
@@ -217933,6 +218629,7 @@
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-outdoors-microterrain-patches",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:population-boat-context",
@@ -218152,6 +218849,9 @@
       ],
       "exchanges": [
         "claim:population-material-wood-moisture"
+      ],
+      "excited": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "exclude": [
         "claim:technology-motor-boundary"
@@ -219661,8 +220361,10 @@
         "claim:fauna-chicken-flock-hierarchy",
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-sheep-flocking",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "wk:biology_physiology:domestic-chicken-behavior",
-        "wk:biology_physiology:fauna-domestic-sheep"
+        "wk:biology_physiology:fauna-domestic-sheep",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "flocks": [
         "claim:fauna-great-tit-winter-flocks",
@@ -220113,6 +220815,7 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
@@ -220855,9 +221558,11 @@
         "claim:pigment-red-lead-pigment",
         "claim:pigment-red-ochre",
         "claim:pigment-yellow-ochre",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-outdoors-cover-opening-and-work-visibility",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-hide-leather-distinction",
         "claim:population-leather-shoes",
         "claim:population-material-iron-coating",
@@ -221377,7 +222082,8 @@
       ],
       "gather": [
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
-        "claim:ordinary-life-work-clothes-protect-and-move"
+        "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "gathered": [
         "claim:practical-fodder-hay",
@@ -221399,6 +222105,11 @@
         "claim:ordinary-life-fisher-needs-water-and-gear",
         "claim:population-bark-float",
         "claim:population-river-work"
+      ],
+      "geese": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
       ],
       "gel": [
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining"
@@ -221763,6 +222474,10 @@
         "wk:social_law_economy:reconstructed-community-environment",
         "wk:social_law_economy:third-party-goods-or-funds"
       ],
+      "goose": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
       "gorge": [
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
       ],
@@ -222035,6 +222750,7 @@
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:residual-law-stepchildren-paternal-inheritance",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:material_culture:reconstructed-armed-public-world",
         "wk:social_behavior:foundations-ms-23-group-pressure",
         "wk:social_behavior:foundations-ms-26-group-context",
@@ -222112,6 +222828,7 @@
         "claim:household-clay-key-and-compatible-patch",
         "claim:household-roof-local-condition-guides-repair",
         "claim:intact-skin-reduces-pathogen-entry",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
@@ -222150,6 +222867,7 @@
         "claim:care-waterproof-wound-cover",
         "claim:construction-animal-glue-pegged-planks",
         "claim:healer-experience-and-reputation",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
@@ -222817,7 +223535,12 @@
       ],
       "herd": [
         "claim:environment-p1-cattle",
-        "claim:environment-p1-pig"
+        "claim:environment-p1-pig",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
+      "herded": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "herds": [
         "claim:fauna-mammals-domestic-horse-herd-sociality",
@@ -223441,6 +224164,7 @@
         "claim:sweat-evaporation-reduces-surface-heat",
         "wk:biology_physiology:candidate-v3-human-development",
         "wk:biology_physiology:human-thermoregulation",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:psychology_behavior:foundations-ms-01-attention-intensity"
       ],
       "humid": [
@@ -223455,6 +224179,7 @@
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:food-drying-depends-on-humidity-airflow",
         "claim:foundations-earth-30-upslope-fog",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-material-wood-moisture",
         "claim:population-physics-evaporation-humidity",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -223498,6 +224223,9 @@
       "husband": [
         "claim:residual-law-widow-separate-property",
         "claim:social-spousal-complaint-reports-marital-treatment"
+      ],
+      "husbandry": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
       ],
       "husbands": [
         "claim:residual-law-stepchildren-paternal-inheritance",
@@ -224690,6 +225418,7 @@
         "claim:fauna-mammals-wolf-carnivorous-diet",
         "claim:foundations-ms-23-group-pressure",
         "claim:milling-grain-compression-shear-fracture",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-physics-floating-shape",
         "claim:practical-document-genres",
         "claim:research-flood-can-leave-high-water-mark-types",
@@ -226008,6 +226737,7 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
@@ -226740,6 +227470,7 @@
         "wk:biology_physiology:fauna-red-squirrel"
       ],
       "keeper": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:rp-entrusted-goods-claim-relates-reference"
       ],
       "keeping": [
@@ -227150,6 +227881,7 @@
         "claim:later-novgorod-judicial-charter",
         "claim:maslo-birchbark-718-account",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:practical-net-space",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:research-memory-postevent-misinformation",
@@ -228877,6 +229609,7 @@
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:measurement-grain-mass-volume-density",
         "claim:measurement-units-must-be-identified",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:residual-nature-snow-depth-not-load",
         "claim:social-daily-fur-sale-accounting",
         "claim:social-grivna-accounting-unit",
@@ -229979,6 +230712,7 @@
       "modern": [
         "claim:healer-observation-and-questioning",
         "claim:localized-improvement-context",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:residual-nature-pole-star-precession-limit",
@@ -230037,6 +230771,7 @@
         "claim:milling-moisture-changes-grain-deformation",
         "claim:oil-rawhide-moisture-resistance",
         "claim:place-outdoors-forest-structure-and-season",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-joining-bond-moisture",
         "claim:population-material-iron-coating",
@@ -230059,6 +230794,7 @@
         "wk:biology_physiology:food-drying",
         "wk:biology_physiology:stored-grain-condition",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:physics_material_science:moisture-vaporization-heat-demand",
         "wk:physics_material_science:static-birch-bark-water-deformation",
         "wk:physics_material_science:static-ground-b05-wet-soil-trafficability",
@@ -230340,6 +231076,7 @@
         "claim:foundations-life-13-alveolar-exchange",
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:household-clay-drying-and-incompatible-movement",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
@@ -230362,12 +231099,14 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:ordinary-life-work-clothes-protect-and-move",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:transport-winter-sledge-1220",
         "claim:water-percolation-openings",
         "claim:water-permeability-connected-pores",
         "wk:biology_physiology:fauna-animal-movement",
         "wk:biology_physiology:foundation-muscle-movement",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:static-household-trauma-movement",
         "wk:chemistry_process:research-fish-salting-diffusion",
@@ -230511,6 +231250,7 @@
       ],
       "must": [
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
         "claim:urban-bird-period-specific",
@@ -230894,6 +231634,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
@@ -231233,6 +231974,7 @@
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
@@ -231508,6 +232250,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
@@ -231907,6 +232650,7 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -231922,6 +232666,7 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
@@ -232662,6 +233407,7 @@
       "number": [
         "claim:foundations-life-06-growth-mitosis",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
         "wk:biology_physiology:foundation-growth-mitosis"
@@ -232737,6 +233483,9 @@
         "claim:residual-law-merchant-entrustment-proof-exception",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "obedience": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "object": [
         "claim:brittle-fracture-defects",
@@ -233458,6 +234207,7 @@
         "wk:biology_physiology:foundation-sleep-wake-cycle",
         "wk:biology_physiology:fungal-mycelium-nutrition",
         "wk:biology_physiology:orchard-tree-pruning-context",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:plant-photoperiod-response",
@@ -233491,6 +234241,7 @@
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:chemistry_process:milk-curd-and-straining",
         "wk:chemistry_process:oil-tanning",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:chemistry_process:static-ground-b05-fibre-alkali-response",
         "wk:chemistry_process:static-soap-cleaning",
@@ -233832,6 +234583,7 @@
         "claim:place-outdoors-microterrain-patches",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-bark-float",
         "claim:population-joining-metal-anneal",
@@ -233982,6 +234734,7 @@
         "claim:metal-properties-depend-on-state",
         "claim:pain-nociception-distinct",
         "claim:pigment-blue-layer-order",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-means-upkeep-and-environment",
@@ -234558,6 +235311,7 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -234583,6 +235337,7 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -235442,6 +236197,7 @@
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:posadnik-volodislav-pursuit-1228",
@@ -235640,6 +236396,9 @@
       ],
       "overall": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "overexciting": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "overheat": [
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it"
@@ -235977,7 +236736,8 @@
         "wk:physics_material_science:static-force-equilibrium"
       ],
       "partial": [
-        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
+        "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "partially": [
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -236024,6 +236784,7 @@
         "claim:foundations-life-29-virion-structure",
         "claim:foundations-life-31-phagocytosis",
         "claim:milling-grain-compression-shear-fracture",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "wk:biology_physiology:foundation-phagocytosis",
         "wk:biology_physiology:foundation-virion-structure"
       ],
@@ -236083,6 +236844,7 @@
         "claim:occupation-wood-plane",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:pine-pitch-severe-oxidation",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
@@ -236091,6 +236853,7 @@
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-fishing-workspace",
         "claim:population-material-wood-shrinkage",
@@ -236743,6 +237506,7 @@
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -237614,6 +238378,7 @@
       "poultry": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
         "claim:environment-p1-wildfowl-season",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "wk:biology_physiology:domestic-chicken-behavior"
       ],
@@ -238071,6 +238836,7 @@
         "claim:occupation-smith-tongs",
         "claim:occupation-wood-plane",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
@@ -239178,6 +239944,7 @@
       "purity": [
         "claim:bathing-washing-water",
         "claim:foundations-earth-19-aquifer-pore-flow",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:terrain-parent-material-assemblage"
       ],
@@ -239308,6 +240075,7 @@
         "wk:architecture_settlement:reconstructed-place-work-space",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:orchard-tree-pruning-context",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
@@ -239334,6 +240102,7 @@
         "wk:chemistry_process:dyebath-cooling-and-uptake",
         "wk:chemistry_process:fish-smoking-context",
         "wk:chemistry_process:milk-curd-and-straining",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
         "wk:craft_technology:place-thermal-processes",
@@ -239399,6 +240168,7 @@
         "claim:fuel-pit-charcoal-burning-wood-input",
         "claim:grain-processing-bread-liquid",
         "claim:measurement-units-must-be-identified",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:static-horses-are-hindgut-fermenters",
@@ -240489,6 +241259,7 @@
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:candidate-parasite-host-relation",
         "wk:biology_physiology:horse-forage-feeding",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
         "wk:biology_physiology:research-cold-water-immersion-hypothermia",
@@ -240506,6 +241277,7 @@
         "wk:biology_physiology:static-hop-bine-support-water",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:chemistry_process:fish-smoking-context",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:research-fish-salting-diffusion",
         "wk:chemistry_process:research-starch-gelatinization-thickening",
         "wk:chemistry_process:research-vegetable-fermentation-conditions",
@@ -241264,6 +242036,7 @@
         "claim:foundations-ms-17-individual-variation",
         "claim:foundations-ms-34-role-adjustment",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-joining-wax-soften",
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-armed-presence-changes-public-risk",
@@ -241910,6 +242683,7 @@
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:human-life-travellers-may-seek-local-information",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -242301,12 +243075,14 @@
         "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
         "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "wk:chemistry_process:acid-base-neutralization",
         "wk:chemistry_process:common-ion-precipitation-shift",
         "wk:chemistry_process:fish-smoking-context",
         "wk:chemistry_process:ionic-precipitation-threshold",
+        "wk:chemistry_process:place-salt-moisture-caking",
         "wk:chemistry_process:research-fish-salting-diffusion",
         "wk:chemistry_process:research-vegetable-fermentation-conditions",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization"
@@ -243366,6 +244142,7 @@
         "claim:fauna-sheep-flocking",
         "claim:harvest-sheep-shearing-scissors",
         "claim:livestock-ruminant-membership",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "wk:biology_physiology:fauna-domestic-sheep",
         "wk:biology_physiology:fauna-ruminant-grazing-selection",
         "wk:biology_physiology:ruminant-digestion",
@@ -244188,6 +244965,7 @@
         "claim:clothing-votola-cloak",
         "claim:household-dough-temperature-changes-proofing",
         "claim:human-life-learning-needs-time-task-material-access",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:practical-boat-load",
         "claim:practical-dwelling-fuel",
         "claim:practical-net-dry",
@@ -244276,6 +245054,9 @@
       ],
       "soddy": [
         "claim:environment-p1-buried-soil"
+      ],
+      "sodium": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "soft": [
         "claim:fauna-amphibian-moist-skin",
@@ -245208,6 +245989,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:pain-nociception-distinct",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-joining-metal-melt",
         "claim:population-physics-freezing-condensation-energy",
         "claim:population-river-work",
@@ -245571,6 +246353,7 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-outdoors-season-work-space-reallocation",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:regional-fish-exploitation",
@@ -247369,6 +248152,7 @@
         "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:population-material-iron-coating",
@@ -247722,6 +248506,7 @@
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -248506,6 +249291,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -248520,8 +249306,10 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -249257,11 +250045,13 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:plant-development-responds-to-light",
@@ -249388,6 +250178,7 @@
         "wk:biology_physiology:foundation-reflex",
         "wk:biology_physiology:foundation-respiration",
         "wk:biology_physiology:pain-nociception-distinct",
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:plant-light-development",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-plant-herbivory-effects",
@@ -249784,6 +250575,7 @@
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:river-landing-market-approaches",
@@ -251919,6 +252711,9 @@
       "watercourse": [
         "wk:architecture_settlement:riverbed-founded-log-crib"
       ],
+      "waterfowl": [
+        "wk:biology_physiology:place-domestic-waterfowl-group-handling"
+      ],
       "watering": [
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
@@ -252322,6 +253117,7 @@
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-textile-water-load",
         "claim:occupation-smith-heat-treatment",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:population-joining-wax-soften",
@@ -252471,7 +253267,8 @@
         "wk:environment:cloud-radiative-two-way-effect"
       ],
       "whistle": [
-        "claim:candidate-v7-museum-individual-toy-types"
+        "claim:candidate-v7-museum-individual-toy-types",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "white": [
         "claim:residual-nature-snow-conceals-ice-gaps",
@@ -252592,6 +253389,7 @@
         "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode"
       ],
       "willingness": [

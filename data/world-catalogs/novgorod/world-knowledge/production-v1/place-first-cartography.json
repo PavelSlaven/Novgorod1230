@@ -1568,6 +1568,8 @@
             "Как человек и животное взаимно ограничивают место и время работы?"
           ],
           "claim_refs": [
+            "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+            "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
             "claim:animal-care-needs-presence",
             "claim:practical-fodder-hay",
             "claim:ordinary-life-carpenter-works-wood-with-tools"
@@ -1635,6 +1637,7 @@
             "Как сезон, протечка и проветривание меняют сохранность?"
           ],
           "claim_refs": [
+            "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
             "claim:stored-grain-condition-depends-on-temperature-moisture",
             "claim:stored-grain-airflow-can-reduce-temperature-differences",
             "claim:stored-grain-temperature-gradient-can-migrate-moisture"
@@ -2691,6 +2694,8 @@
             "Как animal temperament и число людей меняют movement hazards?"
           ],
           "claim_refs": [
+            "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+            "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
             "claim:practical-livestock-care",
             "claim:animal-care-needs-presence"
           ],

@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,396-claim corpus. The later direct-attestation-only residual
+current 1,399-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -379,3 +379,20 @@ original diagnostic or the 0/3 unseen streak. Both maps, 4,598 vectors,
 the current checkpoint above for measured results and source limits.
 The next blind 75+25 inputs are prepared in `place-batch-05-{core,free}.json`;
 their WK-only review remains pending, not an acceptance claim.
+
+The subsequent fifth hundred was frozen at `4a87b4f8` and reviewed against
+1,396 claims: **97 covered / 3 gaps**, representing damp salt storage and
+domestic-waterfowl handling (duck and goose cases). The known lime lead was
+resolved with existing knowledge. Full details and input-label distinctions
+are retained in the fifth-batch section of `pr92-static-phase.md`; no clean
+hundred is claimed and the streak remains **0/3**. The published checkpoint
+passed exact-HEAD full CI `33970885095`.
+
+The three subsequent salt/poultry premises received independent approval
+against candidate `e7a6d401` and are compiled in the 1,399-claim corpus.
+All three known cases replay as covered, with material and behavioural
+limits preserved. This does not change the original 97/3 or unseen 0/3.
+Both maps, 4,608 vectors, 95 focused tests and passing 327/133 retrieval
+suites are aligned; exact CI for the next integration remains required.
+The sixth blind 75+25 inputs have completed input-only preflight and are
+frozen by the integration checkpoint; they are not new acceptance evidence.

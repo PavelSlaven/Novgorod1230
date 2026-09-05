@@ -47,8 +47,12 @@ test('WK materialization substrate covers real trace location and participant pr
       hints: ['storage', 'fish', 'grain'],
       expected_claim_refs: ['claim:population-household-storage',
         'claim:population-storage-vessels',
-        'claim:stored-grain-condition-depends-on-temperature-moisture',
-        'claim:population-fish-food'] },
+        'claim:stored-grain-condition-depends-on-temperature-moisture'] },
+    // Food availability is a separate need from storage conditions. A single
+    // broad top-12 slice need not retain every premise as the corpus grows.
+    { family: 'fish_as_food', location: 'trace_ld_v1_loc_zhdanko_storehouse',
+      domains: ['material_culture', 'biology_physiology'], hints: ['fish', 'food'],
+      expected_claim_refs: ['claim:population-fish-food'] },
     { family: 'boat_transport', participant: 'trace_ld_v1_onisim_hired_boatman_v1',
       domains: ['craft_technology', 'material_culture'], hints: ['boat', 'transport'],
       expected_claim_refs: ['claim:population-boat-context', 'claim:population-wood-boat'] },

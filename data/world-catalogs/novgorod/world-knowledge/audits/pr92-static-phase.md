@@ -58,10 +58,20 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`5a9d9695e62ecb42e99c41d59e3055d5b056e773`, with GitHub `full-npm-test` passed.
-This certifies that checkpoint, not a
-later candidate or final HEAD. Current readiness audit and a green final
-exact-HEAD full suite remain mandatory before claiming merge readiness.
+`51fb61efc5c99540b50c2099cc21ca08e7630e8f` (run 33955303060).
+Later checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
+a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
+rank 13 after corpus growth; the latter also exposed the stale normative
+retrieval-policy manifest pin after the mixed-sampling contract edit.
+The storage and food needs now have separate bounded acceptance queries:
+all original claim assertions remain, with no larger budget, injected refs,
+ranking change or gameplay-owner repair. Independent Contract Auditor
+`/root/mixed_sampling_contract_audit` confirmed PASS for that decomposition.
+The existing policy pin was synchronized with the actual manifest; its
+fail-closed check was not weakened. Local bridge tests pass 11/11 and
+knowledge-source tests pass 40/40; documentation and diff checks pass.
+The full local rerun and new exact-HEAD CI remain pending. These focused
+results do not certify a later candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
 

@@ -2,7 +2,7 @@
   "schema": "wk_place_first_offline_batch_v1",
   "batch_id": "place-batch-05",
   "sampling_component": "stratified",
-  "generator_agent_identity": "self",
+  "generator_agent_identity": "/root/place05_blind_core",
   "generation_method": "blind independent place-first offline generation",
   "cases": [
     {"case_id":"place05-core-001","primary_domain":"речное судоходство","knowledge_need":"как у воды устроен обычный труд","place":"берег у пристани Новгорода","season":"поздняя весна","weather":"ясно после дождя","time_of_day":"утро","person":"подённый грузчик","activity":"перекладывает мокрые тюки на настил","means":"скромный достаток, плата за день, крюк, рукавицы и помощь напарника","maintenance":"настил местами скользкий, но сваи и сходни недавно подправлены","situation":"прибывший груз надо убрать с сырого края берега"},

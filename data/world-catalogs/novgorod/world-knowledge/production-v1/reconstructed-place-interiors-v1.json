@@ -1,48 +1,803 @@
 {
-  "schema":"world_knowledge_authoring_fragment_v1",
-  "predicate_registry":{},
-  "sources":[{"schema":"world_knowledge_source_v1","source_ref":"source:reconstructed-place-interiors-editorial","title":"Reconstructed place interiors v1 editorial rationale","authors":["Novgorod1230 editorial team"],"publication":"Repository editorial reconstruction note","source_kind":"editorial_reconstruction","citation":"data/world-catalogs/novgorod/world-knowledge/research/reconstructed-place-interiors-v1.md","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}],
-  "evidence":[
-    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:place-interiors-dwelling","source_ref":"source:reconstructed-place-interiors-editorial","anchor":{"section":"Dwelling interior"},"note":"Editorial reconstruction: household interior use composes shelter, shared work, rest, means, weather and upkeep; it creates no room, household, object, access or state.","review_status":"approved"},
-    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:place-interiors-domestic-traces","source_ref":"source:reconstructed-place-interiors-editorial","anchor":{"section":"Moisture, traces, upkeep, and small life"},"note":"Editorial reconstruction: moisture, use, cleaning and shelter can alter ordinary observable traces and small-life opportunities without identifying a cause or current presence.","review_status":"approved"},
-    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:place-interiors-church","source_ref":"source:reconstructed-place-interiors-editorial","anchor":{"section":"Church interior and churchyard"},"note":"Editorial reconstruction: a church interior and its yard compose threshold, light, sound, shared presence, weather and care without asserting rite, jurisdiction, attendance or entry right.","review_status":"approved"},
-    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:place-interiors-monastery","source_ref":"source:reconstructed-place-interiors-editorial","anchor":{"section":"Monastery yard"},"note":"Editorial reconstruction: a maintained compound can coordinate ordinary outdoor work and changing access routes, while people, rules, schedule and resources remain separately established.","review_status":"approved"}
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-place-interiors-editorial",
+      "title": "Reconstructed place interiors v1 editorial rationale",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-place-interiors-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
   ],
-  "concepts":[
-    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","domain":"architecture_settlement","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
-    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","domain":"architecture_settlement","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
-    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:npc_daily_life:reconstructed-compound-upkeep-context","domain":"npc_daily_life","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-interiors-dwelling",
+      "source_ref": "source:reconstructed-place-interiors-editorial",
+      "anchor": {
+        "section": "Dwelling interior"
+      },
+      "note": "Editorial reconstruction: household interior use composes shelter, shared work, rest, means, weather and upkeep; it creates no room, household, object, access or state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-interiors-domestic-traces",
+      "source_ref": "source:reconstructed-place-interiors-editorial",
+      "anchor": {
+        "section": "Moisture, traces, upkeep, and small life"
+      },
+      "note": "Editorial reconstruction: moisture, use, cleaning and shelter can alter ordinary observable traces and small-life opportunities without identifying a cause or current presence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-interiors-church",
+      "source_ref": "source:reconstructed-place-interiors-editorial",
+      "anchor": {
+        "section": "Church interior and churchyard"
+      },
+      "note": "Editorial reconstruction: a church interior and its yard compose threshold, light, sound, shared presence, weather and care without asserting rite, jurisdiction, attendance or entry right.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-interiors-monastery",
+      "source_ref": "source:reconstructed-place-interiors-editorial",
+      "anchor": {
+        "section": "Monastery yard"
+      },
+      "note": "Editorial reconstruction: a maintained compound can coordinate ordinary outdoor work and changing access routes, while people, rules, schedule and resources remain separately established.",
+      "review_status": "approved"
+    }
   ],
-  "claims":[
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","predicate":"supported_fact","object":{"kind":"literal","value":"an inhabited interior can divide or overlap work rest storage and passage according to occupants means weather and available care rather than following one fixed layout"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-dwelling"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","predicate":"supported_fact","object":{"kind":"literal","value":"daylight openings weather and managed fuel can make indoor light warmth air and smoke conditions vary through a day and season"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-dwelling"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention","domain":"npc_daily_life","subject_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","predicate":"supported_fact","object":{"kind":"literal","value":"ordinary indoor tasks can be sequenced moved or shared when warmth smoke limited space fatigue or another persons care changes the practical room for work"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-dwelling"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","predicate":"supported_fact","object":{"kind":"literal","value":"wet footwear carried water cooking and routine work can leave temporary marks smells or dampness that cleaning drying and later traffic can reduce or alter"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-domestic-traces"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity","domain":"biology_physiology","subject_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","predicate":"supported_fact","object":{"kind":"literal","value":"shelter accessible food moisture and household care can change opportunities for small animals or insects around an inhabited place without establishing their presence or harm"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-domestic-traces"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","predicate":"supported_fact","object":{"kind":"literal","value":"a church interior can make threshold light sound and shared movement salient to a visitor or worker while weather time of day and care alter what is noticed"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-church"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths","domain":"npc_daily_life","subject_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","predicate":"supported_fact","object":{"kind":"literal","value":"when people are already present in a church setting a visitor a cleric and a worker can have different practical paths of waiting speaking moving or care without a fixed ritual roster or access rule"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-church"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","predicate":"supported_fact","object":{"kind":"literal","value":"weather foot traffic wax or water use and routine cleaning can alter visible marks and footing around a churchyard without proving a particular gathering or event"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-church"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-compound-upkeep-context","predicate":"supported_fact","object":{"kind":"literal","value":"a maintained compound can bring carrying water food preparation garden work repair and visitors into changing proximity while season means and current care shape what can proceed"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-monastery"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-compound-upkeep-context","predicate":"supported_fact","object":{"kind":"literal","value":"cleaning drainage repair and seasonal preparation can be deferred shared or prioritized differently when weather work pressure and available people or materials compete"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:place-interiors-monastery"],"review_status":"approved","conflict_group_ref":null}
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
   ],
-  "concept_localizations":[
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","locale":"ru","labels":["Жилой интерьер и меняющиеся условия"],"short_definition":"Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении.","search_aliases":["дом внутри","очаг и дым","сырой пол"]},
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:architecture_settlement:reconstructed-dwelling-interior-context","locale":"en","labels":["Dwelling interior and changing conditions"],"short_definition":"Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior.","search_aliases":["inside house","hearth smoke","damp floor"]},
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","locale":"ru","labels":["Церковный интерьер и двор"],"short_definition":"Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве.","search_aliases":["церковь внутри","церковный двор","воск и следы"]},
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:architecture_settlement:reconstructed-church-interior-yard-context","locale":"en","labels":["Church interior and yard"],"short_definition":"Qualitative links among threshold, perception, people, weather, and care in church space.","search_aliases":["inside church","churchyard","wax traces"]},
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:reconstructed-compound-upkeep-context","locale":"ru","labels":["Уход за общим двором"],"short_definition":"Качественные связи сезонного ухода, работы и доступных средств в общем дворе.","search_aliases":["монастырский двор","уборка двора","ремонт после дождя"]},
-    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:reconstructed-compound-upkeep-context","locale":"en","labels":["Shared-yard upkeep"],"short_definition":"Qualitative links among seasonal care, work, and available means in a shared yard.","search_aliases":["monastery yard","yard cleaning","repair after rain"]}
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an inhabited interior can divide or overlap work rest storage and passage according to occupants means weather and available care rather than following one fixed layout"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "daylight openings weather and managed fuel can make indoor light warmth air and smoke conditions vary through a day and season"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ordinary indoor tasks can be sequenced moved or shared when warmth smoke limited space fatigue or another persons care changes the practical room for work"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wet footwear carried water cooking and routine work can leave temporary marks smells or dampness that cleaning drying and later traffic can reduce or alter"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-domestic-traces"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "shelter accessible food moisture and household care can change opportunities for small animals or insects around an inhabited place without establishing their presence or harm"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-domestic-traces"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a church interior can make threshold light sound and shared movement salient to a visitor or worker while weather time of day and care alter what is noticed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-church"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "when people are already present in a church setting a visitor a cleric and a worker can have different practical paths of waiting speaking moving or care without a fixed ritual roster or access rule"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-church"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "weather foot traffic wax or water use and routine cleaning can alter visible marks and footing around a churchyard without proving a particular gathering or event"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-church"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a maintained compound can bring carrying water food preparation garden work repair and visitors into changing proximity while season means and current care shape what can proceed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-monastery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cleaning drainage repair and seasonal preparation can be deferred shared or prioritized differently when weather work pressure and available people or materials compete"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-interiors-monastery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
   ],
-  "claim_localizations":[
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually","locale":"ru","runtime_text":"Жилая комната может держать у стен лавки или настилы с подстилкой; часть места занимает печь или очаг, вокруг которых оставляют рабочую зону и проход. Рядом могут стоять тара, свёртки или переносимые вещи. В тесноте часть дела уносят во двор, откладывают до света или делают по очереди; более обеспеченный дом может разделять занятия лучше, но единой планировки нет.","search_aliases":["тесный дом","работа дома","место для сна"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually","locale":"en","runtime_text":"A living room can keep benches or platforms with bedding by the walls; a stove or hearth takes part of the room, with work space and passage left around it. Containers, bundles, or movable goods may stand nearby. In crowding, work can move to the yard, wait for light, or be done in turns; a better-resourced household may divide activity more easily, but no single layout is required.","search_aliases":["crowded house","work indoors","sleeping space"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel","locale":"ru","runtime_text":"Днём свет идёт от двери, окна или другого проёма, оставляя дальние углы темнее; вечером его дают очаг и доступный огонёк. Открытый проём выпускает дым, но вместе с ним впускает холод и дождь: при сыром топливе и тихом воздухе работа у очага, сон и разговор могут потребовать другого места или паузы.","search_aliases":["темно в доме","дым в избе","сквозняк"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel","locale":"en","runtime_text":"By day, light comes through a door, window, or other opening, leaving farther corners darker; in the evening a hearth and available small flame provide it. An opening lets smoke out but also admits cold and rain: damp fuel and still air can make work, sleep, or conversation shift away from the hearth or pause.","search_aliases":["dark room","house smoke","draft"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention","locale":"ru","runtime_text":"У очага удобнее греть пищу, сушить малую вещь или сидеть с больным, но тот же угол нужен топящему и может быть дымным. Прядение, починка, перебор припасов или разговор переносят к свету, на лавку, к двери либо во двор; нехватка места и приватности делает очередность и взаимную уступку частью обычного быта.","search_aliases":["дела у очага","теснота","уход дома"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention","locale":"en","runtime_text":"The hearth corner suits warming food, drying a small item, or sitting with someone unwell, but it is also needed by the fire-tender and may be smoky. Spinning, mending, sorting stores, or conversation can move toward light, a bench, the doorway, or the yard; limited space and privacy make turns and mutual accommodation part of ordinary life.","search_aliases":["hearth work","crowding","care indoors"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces","locale":"ru","runtime_text":"После дождя или снега мокрая обувь и принесённая вода делают вход грязнее и пол у порога более скользким; мокрые следы и капли остаются отдельно, а солома, зола или тряпка могут задержать часть грязи. Выметание, просушка у тепла и частая ходьба быстро меняют картину, поэтому след показывает недавнее условие, а не тайную историю дома.","search_aliases":["мокрые следы","сырой пол","уборка"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces","locale":"en","runtime_text":"After rain or snow, wet footwear and carried water make the entrance dirtier and the floor by the threshold more slippery; wet marks and drops remain separately, while straw, ash, or a cloth can catch some dirt. Sweeping, warming things dry, and frequent traffic quickly alter the picture, so a trace shows a recent condition rather than a house's hidden story.","search_aliases":["wet marks","damp floor","cleaning"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity","locale":"ru","runtime_text":"Крошки, открытая тара, сырой угол и щели дают мелким животным или насекомым больше поводов держаться около жилья; сухое хранение, уборка и закрытые проёмы уменьшают такие возможности. Сезон и соседняя хозяйственная работа меняют вероятность, но не превращают любой дом в место с вредителями.","search_aliases":["мыши дома","насекомые в жилье","остатки пищи"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity","locale":"en","runtime_text":"Crumbs, open containers, a damp corner, and gaps give small animals or insects more reason to stay near a dwelling; dry storage, cleaning, and closed openings reduce those opportunities. Season and nearby household work change likelihood, but do not make every house vermin-ridden.","search_aliases":["mice indoors","insects in house","food scraps"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception","locale":"ru","runtime_text":"У церковного порога яркий двор и более тёмный интерьер требуют времени глазам; свет из проёмов и свечи выделяют отдельные места, а голоса и шаги меняются под сводом и среди людей. Мокрая погода приносит грязь к входу, а уборка, открытые двери и время службы меняют свет, звук и свободный проход.","search_aliases":["внутри церкви","свет в церкви","звук в церкви"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception","locale":"en","runtime_text":"At a church threshold, a bright yard and darker interior take time for the eyes to adjust; light from openings and candles picks out particular areas, while voices and footsteps change under a vault and among people. Wet weather brings dirt to the entrance, and cleaning, open doors, and service time alter light, sound, and clear passage.","search_aliases":["inside church","church light","church sound"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths","locale":"ru","runtime_text":"При уже идущей службе или обычном посещении пришедший может ждать у входа, искать знакомого, ставить свечу, слушать или проходить дальше лишь когда это уместно; служитель и работник двигаются иначе, следя за пространством, светом или порядком. Поток людей создаёт паузы, уступание прохода и разную слышимость, но не задаёт обязательный чин или право входа.","search_aliases":["посетитель церкви","служитель","работа в церкви"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths","locale":"en","runtime_text":"During an already ongoing service or ordinary visit, an arrival may wait at the entrance, seek someone known, light a candle, listen, or move farther only when fitting; cleric and worker move differently while attending to space, light, or order. The flow creates pauses, yielding passage, and uneven audibility, but sets no mandatory rite or entry right.","search_aliases":["church visitor","cleric","church work"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces","locale":"ru","runtime_text":"Дождь, тающий снег и частые шаги размягчают земляные дорожки, а ступени делают мокрыми и скользкими; у входа остаются мокрые следы, воск или мусор, пока их не смоет, не заметёт или не уберут. Сухой день, подсыпка и расчистка дают другой путь и другую опору, поэтому двор не стоит описывать вечной одинаковой площадкой.","search_aliases":["следы в церковном дворе","мокрые ступени","уборка"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces","locale":"en","runtime_text":"Rain, thawing snow, and repeated steps soften earthen paths, while making steps wet and slippery; wet marks, wax, or litter remain by an entrance until washed away, covered, or cleared. A dry day, added surface material, and clearing create a different route and footing, so the yard should not be narrated as one unchanging square.","search_aliases":["churchyard traces","wet steps","cleaning"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually","locale":"ru","runtime_text":"В монастырском дворе дорожки могут связывать воду, кухню, сад, хозяйственные места и ворота: несущие воду, работающие у огня, чинящие крышу и пришедшие пересекаются, не становясь одним общим делом. Весенняя грязь, зимний снег, летняя работа в саду и доступные руки меняют, какие проходы свободны и что надо сделать прежде.","search_aliases":["монастырский двор","общая работа","сад и вода"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually","locale":"en","runtime_text":"In a monastery yard, paths can link water, kitchen, garden, work areas, and gate: water-carriers, people at a fire, roof repairers, and arrivals cross without becoming one shared task. Spring mud, winter snow, summer garden work, and available hands change which routes are clear and what must be done first.","search_aliases":["monastery yard","shared work","garden water"]},
-    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means","locale":"ru","runtime_text":"После дождя сначала могут расчистить сток и опасный проход, а латание крыши, подсыпка дорожки или уборка двора ждут рук, материала и сухого окна. В другой сезон тот же двор требует снега с порога, просушки, заготовки топлива или ухода за садом; уход меняет среду, но не бывает автоматически завершённым.","search_aliases":["уход за местом","починка после дождя","нехватка работников"]},{"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means","locale":"en","runtime_text":"After rain, people may first clear a drain and a dangerous path, while roof patching, adding surface material, or yard cleaning wait for hands, material, and a dry interval. In another season the same yard needs snow cleared from a threshold, drying, fuel preparation, or garden care; upkeep changes the environment but is never automatically complete.","search_aliases":["place upkeep","repair after rain","few workers"]}
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "locale": "ru",
+      "labels": [
+        "Жилой интерьер и меняющиеся условия"
+      ],
+      "short_definition": "Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении.",
+      "search_aliases": [
+        "дом внутри",
+        "очаг и дым",
+        "сырой пол"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "locale": "en",
+      "labels": [
+        "Dwelling interior and changing conditions"
+      ],
+      "short_definition": "Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior.",
+      "search_aliases": [
+        "inside house",
+        "hearth smoke",
+        "damp floor"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "locale": "ru",
+      "labels": [
+        "Церковный интерьер и двор"
+      ],
+      "short_definition": "Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве.",
+      "search_aliases": [
+        "церковь внутри",
+        "церковный двор",
+        "воск и следы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "locale": "en",
+      "labels": [
+        "Church interior and yard"
+      ],
+      "short_definition": "Qualitative links among threshold, perception, people, weather, and care in church space.",
+      "search_aliases": [
+        "inside church",
+        "churchyard",
+        "wax traces"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "locale": "ru",
+      "labels": [
+        "Уход за общим двором"
+      ],
+      "short_definition": "Качественные связи сезонного ухода, работы и доступных средств в общем дворе.",
+      "search_aliases": [
+        "монастырский двор",
+        "уборка двора",
+        "ремонт после дождя"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "locale": "en",
+      "labels": [
+        "Shared-yard upkeep"
+      ],
+      "short_definition": "Qualitative links among seasonal care, work, and available means in a shared yard.",
+      "search_aliases": [
+        "monastery yard",
+        "yard cleaning",
+        "repair after rain"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "locale": "ru",
+      "runtime_text": "Жилая комната может держать у стен лавки или настилы с подстилкой; часть места занимает печь или очаг, вокруг которых оставляют рабочую зону и проход. Рядом могут стоять тара, свёртки или переносимые вещи. В тесноте часть дела уносят во двор, откладывают до света или делают по очереди; более обеспеченный дом может разделять занятия лучше, но единой планировки нет.",
+      "search_aliases": [
+        "тесный дом",
+        "работа дома",
+        "место для сна"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "locale": "en",
+      "runtime_text": "A living room can keep benches or platforms with bedding by the walls; a stove or hearth takes part of the room, with work space and passage left around it. Containers, bundles, or movable goods may stand nearby. In crowding, work can move to the yard, wait for light, or be done in turns; a better-resourced household may divide activity more easily, but no single layout is required.",
+      "search_aliases": [
+        "crowded house",
+        "work indoors",
+        "sleeping space"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "locale": "ru",
+      "runtime_text": "Днём свет идёт от двери, окна или другого проёма, оставляя дальние углы темнее; вечером его дают очаг и доступный огонёк. Открытый проём выпускает дым, но вместе с ним впускает холод и дождь: при сыром топливе и тихом воздухе работа у очага, сон и разговор могут потребовать другого места или паузы.",
+      "search_aliases": [
+        "темно в доме",
+        "дым в избе",
+        "сквозняк"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "locale": "en",
+      "runtime_text": "By day, light comes through a door, window, or other opening, leaving farther corners darker; in the evening a hearth and available small flame provide it. An opening lets smoke out but also admits cold and rain: damp fuel and still air can make work, sleep, or conversation shift away from the hearth or pause.",
+      "search_aliases": [
+        "dark room",
+        "house smoke",
+        "draft"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "locale": "ru",
+      "runtime_text": "У очага удобнее греть пищу, сушить малую вещь или сидеть с больным, но тот же угол нужен топящему и может быть дымным. Прядение, починка, перебор припасов или разговор переносят к свету, на лавку, к двери либо во двор; нехватка места и приватности делает очередность и взаимную уступку частью обычного быта.",
+      "search_aliases": [
+        "дела у очага",
+        "теснота",
+        "уход дома"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "locale": "en",
+      "runtime_text": "The hearth corner suits warming food, drying a small item, or sitting with someone unwell, but it is also needed by the fire-tender and may be smoky. Spinning, mending, sorting stores, or conversation can move toward light, a bench, the doorway, or the yard; limited space and privacy make turns and mutual accommodation part of ordinary life.",
+      "search_aliases": [
+        "hearth work",
+        "crowding",
+        "care indoors"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "locale": "ru",
+      "runtime_text": "После дождя или снега мокрая обувь и принесённая вода делают вход грязнее и пол у порога более скользким; мокрые следы и капли остаются отдельно, а солома, зола или тряпка могут задержать часть грязи. Выметание, просушка у тепла и частая ходьба быстро меняют картину, поэтому след показывает недавнее условие, а не тайную историю дома.",
+      "search_aliases": [
+        "мокрые следы",
+        "сырой пол",
+        "уборка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "locale": "en",
+      "runtime_text": "After rain or snow, wet footwear and carried water make the entrance dirtier and the floor by the threshold more slippery; wet marks and drops remain separately, while straw, ash, or a cloth can catch some dirt. Sweeping, warming things dry, and frequent traffic quickly alter the picture, so a trace shows a recent condition rather than a house's hidden story.",
+      "search_aliases": [
+        "wet marks",
+        "damp floor",
+        "cleaning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "locale": "ru",
+      "runtime_text": "Крошки, открытая тара, сырой угол и щели дают мелким животным или насекомым больше поводов держаться около жилья; сухое хранение, уборка и закрытые проёмы уменьшают такие возможности. Сезон и соседняя хозяйственная работа меняют вероятность, но не превращают любой дом в место с вредителями.",
+      "search_aliases": [
+        "мыши дома",
+        "насекомые в жилье",
+        "остатки пищи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "locale": "en",
+      "runtime_text": "Crumbs, open containers, a damp corner, and gaps give small animals or insects more reason to stay near a dwelling; dry storage, cleaning, and closed openings reduce those opportunities. Season and nearby household work change likelihood, but do not make every house vermin-ridden.",
+      "search_aliases": [
+        "mice indoors",
+        "insects in house",
+        "food scraps"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "locale": "ru",
+      "runtime_text": "У церковного порога яркий двор и более тёмный интерьер требуют времени глазам; свет из проёмов и свечи выделяют отдельные места, а голоса и шаги меняются под сводом и среди людей. Мокрая погода приносит грязь к входу, а уборка, открытые двери и время службы меняют свет, звук и свободный проход.",
+      "search_aliases": [
+        "внутри церкви",
+        "свет в церкви",
+        "звук в церкви"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "locale": "en",
+      "runtime_text": "At a church threshold, a bright yard and darker interior take time for the eyes to adjust; light from openings and candles picks out particular areas, while voices and footsteps change under a vault and among people. Wet weather brings dirt to the entrance, and cleaning, open doors, and service time alter light, sound, and clear passage.",
+      "search_aliases": [
+        "inside church",
+        "church light",
+        "church sound"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "locale": "ru",
+      "runtime_text": "При уже идущей службе или обычном посещении пришедший может ждать у входа, искать знакомого, ставить свечу, слушать или проходить дальше лишь когда это уместно; служитель и работник двигаются иначе, следя за пространством, светом или порядком. Поток людей создаёт паузы, уступание прохода и разную слышимость, но не задаёт обязательный чин или право входа.",
+      "search_aliases": [
+        "посетитель церкви",
+        "служитель",
+        "работа в церкви"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "locale": "en",
+      "runtime_text": "During an already ongoing service or ordinary visit, an arrival may wait at the entrance, seek someone known, light a candle, listen, or move farther only when fitting; cleric and worker move differently while attending to space, light, or order. The flow creates pauses, yielding passage, and uneven audibility, but sets no mandatory rite or entry right.",
+      "search_aliases": [
+        "church visitor",
+        "cleric",
+        "church work"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "locale": "ru",
+      "runtime_text": "Дождь, тающий снег и частые шаги размягчают земляные дорожки, а ступени делают мокрыми и скользкими; у входа остаются мокрые следы, воск или мусор, пока их не смоет, не заметёт или не уберут. Сухой день, подсыпка и расчистка дают другой путь и другую опору, поэтому двор не стоит описывать вечной одинаковой площадкой.",
+      "search_aliases": [
+        "следы в церковном дворе",
+        "мокрые ступени",
+        "уборка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "locale": "en",
+      "runtime_text": "Rain, thawing snow, and repeated steps soften earthen paths, while making steps wet and slippery; wet marks, wax, or litter remain by an entrance until washed away, covered, or cleared. A dry day, added surface material, and clearing create a different route and footing, so the yard should not be narrated as one unchanging square.",
+      "search_aliases": [
+        "churchyard traces",
+        "wet steps",
+        "cleaning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "locale": "ru",
+      "runtime_text": "В монастырском дворе дорожки могут связывать воду, кухню, сад, хозяйственные места и ворота: несущие воду, работающие у огня, чинящие крышу и пришедшие пересекаются, не становясь одним общим делом. Весенняя грязь, зимний снег, летняя работа в саду и доступные руки меняют, какие проходы свободны и что надо сделать прежде.",
+      "search_aliases": [
+        "монастырский двор",
+        "общая работа",
+        "сад и вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "locale": "en",
+      "runtime_text": "In a monastery yard, paths can link water, kitchen, garden, work areas, and gate: water-carriers, people at a fire, roof repairers, and arrivals cross without becoming one shared task. Spring mud, winter snow, summer garden work, and available hands change which routes are clear and what must be done first.",
+      "search_aliases": [
+        "monastery yard",
+        "shared work",
+        "garden water"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "locale": "ru",
+      "runtime_text": "После дождя сначала могут расчистить сток и опасный проход, а латание крыши, подсыпка дорожки или уборка двора ждут рук, материала и сухого окна. В другой сезон тот же двор требует снега с порога, просушки, заготовки топлива или ухода за садом; уход меняет среду, но не бывает автоматически завершённым.",
+      "search_aliases": [
+        "уход за местом",
+        "починка после дождя",
+        "нехватка работников"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "locale": "en",
+      "runtime_text": "After rain, people may first clear a drain and a dangerous path, while roof patching, adding surface material, or yard cleaning wait for hands, material, and a dry interval. In another season the same yard needs snow cleared from a threshold, drying, fuel preparation, or garden care; upkeep changes the environment but is never automatically complete.",
+      "search_aliases": [
+        "place upkeep",
+        "repair after rain",
+        "few workers"
+      ]
+    }
   ]
 }

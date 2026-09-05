@@ -1,7 +1,7 @@
 # Reconstructed place interiors v1
 
-**Status:** editorial rationale for a review-pending authoring fragment, not a historical source or runtime activation.  
-**Author agent identity:** `/root/static_b10_care_material_sources`  
+**Status:** editorial rationale for a review-pending authoring fragment, not a historical source or runtime activation.
+**Author agent identity:** `/root/static_b10_care_material_sources`
 **Review notes:** Candidate under WK §0.2; independent plausibility review remains required before any authoring inclusion.
 
 ## Method and limits

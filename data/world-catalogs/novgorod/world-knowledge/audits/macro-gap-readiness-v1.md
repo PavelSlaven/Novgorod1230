@@ -43,7 +43,7 @@ Contract §0.3 requires three consecutive diverse batches of at least 100
 unseen cases without a substantial new gap. Starting with batch 03, each
 hundred covers 20 primary need areas (80 practical/natural/physical cases,
 20 social/institutional), checked for substantive needs rather than tags.
-**No batch is yet counted clean.**
+**Batch 04 is the first clean batch; the required streak is 1 of 3.**
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
 needs and 36 raw gap leads. It remains diagnostic. General-premise triage
@@ -55,9 +55,11 @@ details, exact values and equally plausible ordinary alternatives do not
 create blockers. No live gameplay or gameplay-owner repair is authorized.
 
 Batch 04 has 100 WK-only reviews on the expanded corpus and no reported
-primary-domain mismatch. Nine practical leads remain under full-bundle
-triage after correcting several false absence findings; it is not yet a
-clean acceptance batch. These are review leads, not nine proven P1 gaps.
+primary-domain mismatch. Independent full-bundle secondary triage resolved
+the remaining nine practical leads using existing premises and cautious
+composition. Attributed concrete answers are retained in the A1 review;
+the initial findings remain in Git. No corpus change followed this batch.
+It counts as one clean acceptance sample, not a completeness proof.
 There is no current P1-free verdict, world-completeness claim, gameplay
 saturation result or final merge recommendation. The final independent
 coverage verdict must refer to the actually published corpus and completed

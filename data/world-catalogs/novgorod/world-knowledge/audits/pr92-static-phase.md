@@ -124,11 +124,15 @@ All 20 declared areas contain five cases; reviewers report no substantive
 domain mismatch. IDs and cited refs were checked. However, initial gap
 reports falsely claimed existing lever, sharpening, wool, lime and
 fermentation knowledge was absent. Those findings were corrected against
-the full bundle, not used to add duplicate facts. Nine remaining practical
-leads are still under independent full-bundle triage. **Batch 04 is not yet
-counted clean**; its raw findings do not establish nine production gaps.
+the full bundle, not used to add duplicate facts. Independent secondary
+review by `/root/context_review_b01` resolved the nine remaining practical
+leads through existing premises and cautious composition. The attributed
+case answers retain limits; neither special recipes nor guaranteed outcomes
+are required. The corpus was unchanged throughout this batch.
+**Batch 04 is the first clean acceptance batch: 100 cases, no substantial
+new gap after full-bundle triage.** This does not prove whole-world coverage.
 
-No clean acceptance batch has yet been counted. Contract §0.3 requires
+The clean streak is **1 of 3**. Contract §0.3 requires
 three consecutive diverse independent batches of at least 100 cases with
 no substantial new gap; a gap resets the streak. Replayed or imbalanced
 cases cannot count as unseen acceptance. Missing exact names, figures,

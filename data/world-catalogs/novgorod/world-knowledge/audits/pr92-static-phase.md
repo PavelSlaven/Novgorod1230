@@ -20,7 +20,10 @@ Cartography has **182 supported families and 49 retained partial need
 records**. The latter contain earlier direct-source-oriented limitations
 and newly linked reconstruction support. They are not 49 independently
 confirmed current P1 blockers, nor automatically closed P2 details: their
-game-useful significance is being reassessed. Counts and a filled matrix
+game-useful significance was independently reassessed on the 1,278-claim
+bundle: no substantial residual family gap was confirmed under the approved
+reconstruction criterion; bounded limits remain in the macro-gap audit.
+Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
@@ -53,7 +56,7 @@ incorrect widow-claim expectation was corrected to the actual kin-help
 premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
-The published integration checkpoint `2543759092b2affd662a5bafdd4c27230cf031bb`
+The published integration checkpoint `b83b3aa98f75440bc34bde9f46b6b52b5a60436f`
 also passed GitHub `full-npm-test`. This certifies that checkpoint, not a
 later candidate or final HEAD. Current readiness audit and a green final
 exact-HEAD full suite remain mandatory before claiming merge readiness.
@@ -132,7 +135,18 @@ are required. The corpus was unchanged throughout this batch.
 **Batch 04 is the first clean acceptance batch: 100 cases, no substantial
 new gap after full-bundle triage.** This does not prove whole-world coverage.
 
-The clean streak is **1 of 3**. Contract §0.3 requires
+Batch 05 contains another 100 independently generated, stratified cases.
+Four reviewers read 25 each. Review quality checks corrected three answers
+that initially described the wrong input circumstances and rejected several
+false absence findings by looking up existing general premises. Genuine
+remaining needs include wet-ground support, equine digestive distress,
+large-ungulate track differentiation and plant-material/contact context.
+Source investigation produced 17 candidate premises in three fragments;
+they are not yet included in the authoring descriptor or runtime. Independent
+source/domain verification is pending. Raw leads do not automatically become
+new claims. **Batch 05 is diagnostic and resets the clean streak to 0.**
+
+The current clean streak is **0 of 3**. Contract §0.3 requires
 three consecutive diverse independent batches of at least 100 cases with
 no substantial new gap; a gap resets the streak. Replayed or imbalanced
 cases cannot count as unseen acceptance. Missing exact names, figures,

@@ -1,6 +1,6 @@
 # Macro-gap static readiness — PR92
 
-## Current verdict: assessment pending on the expanded reconstruction corpus
+## Current verdict: batch-05 practical gaps under investigation
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
@@ -43,7 +43,7 @@ Contract §0.3 requires three consecutive diverse batches of at least 100
 unseen cases without a substantial new gap. Starting with batch 03, each
 hundred covers 20 primary need areas (80 practical/natural/physical cases,
 20 social/institutional), checked for substantive needs rather than tags.
-**Batch 04 is the first clean batch; the required streak is 1 of 3.**
+**Batch 04 was clean; batch 05 found new needs and reset the streak to 0.**
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
 needs and 36 raw gap leads. It remains diagnostic. General-premise triage
@@ -60,10 +60,54 @@ the remaining nine practical leads using existing premises and cautious
 composition. Attributed concrete answers are retained in the A1 review;
 the initial findings remain in Git. No corpus change followed this batch.
 It counts as one clean acceptance sample, not a completeness proof.
-There is no current P1-free verdict, world-completeness claim, gameplay
-saturation result or final merge recommendation. The final independent
+There is no world-completeness claim, gameplay saturation result or final
+merge recommendation. The final independent
 coverage verdict must refer to the actually published corpus and completed
 offline results, with exact-HEAD green CI reported separately.
+
+## Independent reassessment of the 49 retained partial needs
+
+`/root/residual_coverage_assessment` independently read the 1,278-claim
+bundle, current cartography and contract §0.2/0.3 after batch 04. All
+supporting refs exist. Verdict: no confirmed P0/P1 factual-family gap
+among these 49 records under the approved reconstruction criterion.
+This is not a claim that the 49 families exhaust all possible world needs.
+The partial records and their applicability limits are retained, not erased.
+
+Twenty-nine needs support ordinary practical context: animal traces;
+seasonal provisioning; watercraft and shore transfer; textiles; leather;
+cooking/cross-contact; shelter repair; sanitation/waste; speech commitments;
+rumour/memory; reputation; collective work; household care; religious
+practice; CO/ventilation; cold-water exposure; heating-water limitations;
+freeze-thaw ground; flood marks; smoke dispersion; fishing equipment care;
+gender/age/status; childhood/puberty/aging; illness/disability; education;
+recreation; snow/ice; animal food systems/care; hospitality/lodging.
+
+Twenty further needs support bounded context, not exact local rules:
+property acquisition; debt/pledge; legal testimony/oaths; legal locality;
+exchange/measures; trees; food/toxic plants; fibre plants; spoken register;
+names/address; writing/accounting; weapons/armour; warfare/logistics;
+marriage/kinship; childbirth/postnatal care; injury/poisoning/parasites/oral
+health; government competencies; diplomacy/tribute; crimes/sanctions;
+daylight/night-sky navigation.
+
+Comparative law cannot establish a particular official's Novgorod 1230
+power. A named plant does not establish an unknown specimen's identity,
+edible part or local presence. Register/address premises are not a complete
+dialect grammar. Ordinary food, religious and care context does not promise
+a precise recipe, liturgical calendar, diagnosis, treatment or prognosis.
+Sky premises do not invent exact azimuths. These limits alone are not
+substantial gaps; a concrete unsupported ordinary need would be.
+
+The subsequent batch-05 probe found practical needs beyond that bounded
+residual reassessment: wet-ground support, equine digestive distress,
+large-ungulate track differentiation and plant-material/contact context.
+The earlier no-confirmed-gap result must not be read as a blanket current
+P1-free verdict. Source investigation is in progress; no new claims have
+yet been promoted. After real gaps are filled and independently reviewed,
+three further diverse unseen hundreds without a substantial new gap are
+required, along with final exact-HEAD checks. No runtime owner or live
+campaign is introduced by this work.
 
 ## Historical correction retained
 

@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,384-claim corpus. The later direct-attestation-only residual
+current 1,392-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -157,7 +157,7 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-109 bounded supported and 58 partial on the 1,384-claim corpus.
+110 bounded supported and 57 partial on the 1,392-claim corpus.
 Twelve stale residuals were resolved against existing full-text premises
 and independently checked by /root/place_scene_b; the drying/heat facet
 now links the separately approved process premises. Partial facets retain
@@ -284,12 +284,62 @@ premises; 055 combines dye application with transfer, preparation and
 distributed contact. The original 96/4 unseen results are unchanged.
 This is regression evidence, not another unseen hundred: the streak stays 0/3.
 
-Two new independent generators prepared `place-batch-03-core.json` (75:
-60 practical, 15 social) and `place-batch-03-free.json` (25 blind free).
-Inputs are committed with this integration before WK-only review.
-Before freeze, axis validation caught nested core fields and insufficient
-means/wealth detail; the original generators completed those fields without
-reading WK or changing situations to match answers. Core strata have 75
-open labels, 12 overlapping the preceding core's labels; labels are not a
-completeness measure. The free set remains unclassified and all 100 answers
-remain pending. No clean acceptance result is claimed for these inputs.
+## Third place-first unseen batch — diagnostic
+
+Two independent generators froze `place-batch-03-core.json` (75:
+60 practical, 15 social) and `place-batch-03-free.json` (25 blind free)
+at `5f04867590c5b463f0eaa02e654672f910d67964`. Before freeze, the original
+generators corrected nested axes and insufficient means/wealth detail
+without reading WK or matching answers. Core strata have 75 open labels,
+12 overlapping the preceding core's labels; these are sampling annotations,
+not proved world domains. Root classified the 25 free cases before WK lookup;
+all concern practical/natural/physical situations, without an imposed quota.
+
+Three independent agents reconstructed the controlled set using only the
+frozen 1,384-claim WK; root reconstructed the independently generated free
+set. All 100 concrete scene/interaction/variation answers and valid claim
+references are retained in the four `place-batch-03-*-review.json` files.
+Final diagnostic results are **92 covered and eight retained knowledge gaps**:
+030 hoop/stave fit, 045 settling/cloth filtration, 050 wick/soot,
+066 funeral carrying/passage, 068 established monastic distribution,
+070 household goods during family formation, 071 requested convoy inspection,
+and 075 a locally agreed temporary watch. Initial findings and grounding
+corrections are preserved. Existing combustion, clay/lime and ordinary queue
+coordination resolved other leads without adding unnecessary facts.
+
+Five bounded editorial community premises at
+`d5f59193a450415492c23b938faa6850ebe29828` and three modern-source practical
+premises at `a7fd3e4c2941cf07e7efa25f9647df5d3c179378` were independently
+approved by `/root/place02_publish`. Actual source-access limitations and
+reconstruction limits remain in the verification notes. The earlier
+`35036257` community candidate had an invalid domain and is not an approval
+basis; the valid corrected candidate is used in every binding.
+
+These additions do not establish a ritual, entitlement, official authority,
+present stock, medieval recipe, safe water, universal wick setting or
+successful repair. They support useful ordinary composition through the
+existing WK owner. Known-case replay is separate regression evidence and
+cannot change the original 92/8 result or the **0/3** unseen clean streak.
+No live gameplay or repair of other gameplay owners occurred.
+
+Independent WK-only replay by `/root/place04_gap_replay` reconstructed all
+eight known scenes on the 1,392-claim bundle, with practical interaction,
+environmental variation and bounded approved references. Its separate
+`place-batch-03-known-gap-replay.json` records 8/8 covered; it is explicitly
+not unseen evidence. Root corrected three reference/wording mismatches
+through the original reviewer without changing the corpus or result.
+
+A separate semantic map check replaced weak bridge/road/village references,
+removed irrelevant curd and crop-specific frost citations, and linked these
+new process/community premises. Stale wall-edge and river-signal residuals
+were closed through existing knowledge; winter breath/snow sound, generic
+garden frost response and other bounded residuals remain explicit. The map
+now contains **41 open environmental families, 167 facets: 110 supported and
+57 partial**. These counts describe a revisable map, not a completeness proof.
+
+Two blind generators prepared the next 75 controlled and 25 free inputs in
+`place-batch-04-core.json` and `place-batch-04-free.json`. Before freeze they
+normalized IDs and changed maintenance advice/actions into descriptions of
+actual upkeep, without reading WK or adapting situations to answers. These
+inputs are frozen with this checkpoint; classification of the free set and
+all new WK-only reconstructions follow separately. No clean result is claimed.

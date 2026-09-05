@@ -8,9 +8,9 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,384 approved claims, 895 concepts,
-498 sources and 996 evidence records**. This includes 151 independently
-reviewed premises using editorial-reconstruction sources; 161 claims have
+The integrated corpus contains **1,392 approved claims, 899 concepts,
+505 sources and 1,007 evidence records**. This includes 156 independently
+reviewed premises using editorial-reconstruction sources; 166 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,558 x 1,024 float32 entries (18,669,568 bytes)** and
+package contains **4,582 x 1,024 float32 entries (18,767,872 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,384-claim corpus
+## Checks actually completed on the 1,392-claim corpus
 
-- Compiler: all 1,384 claims and independent approval bindings validate.
+- Compiler: all 1,392 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,15 +42,16 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **312-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996261**,
-  Recall@20 **0.997863**, gate PASS.
+- **320-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996354**,
+  Recall@20 **0.997917**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
 - Knowledge-source generation/check and documentation/activation checks pass
   after synchronizing the changed contract/index and existing retrieval-policy pin.
 - Category/place-first tests were rerun after the 41-environment map merge.
-  The final published integration still needs exact-HEAD CI.
+  Every published integration must pass its own exact-HEAD CI; the live
+  result is recorded on PR92 rather than inferred from this pre-push report.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -63,7 +64,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`84acd1209b6eceeb192eb578630d990862e22da2` (run 33964861611).
+`5f04867590c5b463f0eaa02e654672f910d67964` (run 33966291360).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -84,8 +85,9 @@ checkpoint push, not reported green. The B10 candidate checkpoint
 The 1,330-claim integration passed its focused checks; run 33959687474
 was cancelled, not green. The 1,365-claim place-first integration passed
 full CI at a680ccbc. The 1,374-claim integration passed full CI at 84acd120.
-The 1,384-claim integration passes the local checks above; its exact-HEAD CI
-is tracked separately on the PR. An earlier green checkpoint does not certify a later
+The 1,384-claim integration passed full CI at 5f048675. The later 1,392-claim
+integration has the same exact-HEAD CI requirement, tracked separately on the PR.
+An earlier green checkpoint does not certify a later
 candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
@@ -322,7 +324,7 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-109 bounded supported and 58 partial on the 1,384-claim corpus.
+110 bounded supported and 57 partial on the 1,392-claim corpus.
 Twelve stale residuals were resolved against existing full-text premises
 and independently checked by /root/place_scene_b; the drying/heat facet
 now links the separately approved process premises. Partial facets retain
@@ -449,12 +451,62 @@ premises; 055 combines dye application with transfer, preparation and
 distributed contact. The original 96/4 unseen results are unchanged.
 This is regression evidence, not another unseen hundred: the streak stays 0/3.
 
-Two new independent generators prepared `place-batch-03-core.json` (75:
-60 practical, 15 social) and `place-batch-03-free.json` (25 blind free).
-Inputs are committed with this integration before WK-only review.
-Before freeze, axis validation caught nested core fields and insufficient
-means/wealth detail; the original generators completed those fields without
-reading WK or changing situations to match answers. Core strata have 75
-open labels, 12 overlapping the preceding core's labels; labels are not a
-completeness measure. The free set remains unclassified and all 100 answers
-remain pending. No clean acceptance result is claimed for these inputs.
+## Third place-first unseen batch — diagnostic
+
+Two independent generators froze `place-batch-03-core.json` (75:
+60 practical, 15 social) and `place-batch-03-free.json` (25 blind free)
+at `5f04867590c5b463f0eaa02e654672f910d67964`. Before freeze, the original
+generators corrected nested axes and insufficient means/wealth detail
+without reading WK or matching answers. Core strata have 75 open labels,
+12 overlapping the preceding core's labels; these are sampling annotations,
+not proved world domains. Root classified the 25 free cases before WK lookup;
+all concern practical/natural/physical situations, without an imposed quota.
+
+Three independent agents reconstructed the controlled set using only the
+frozen 1,384-claim WK; root reconstructed the independently generated free
+set. All 100 concrete scene/interaction/variation answers and valid claim
+references are retained in the four `place-batch-03-*-review.json` files.
+Final diagnostic results are **92 covered and eight retained knowledge gaps**:
+030 hoop/stave fit, 045 settling/cloth filtration, 050 wick/soot,
+066 funeral carrying/passage, 068 established monastic distribution,
+070 household goods during family formation, 071 requested convoy inspection,
+and 075 a locally agreed temporary watch. Initial findings and grounding
+corrections are preserved. Existing combustion, clay/lime and ordinary queue
+coordination resolved other leads without adding unnecessary facts.
+
+Five bounded editorial community premises at
+`d5f59193a450415492c23b938faa6850ebe29828` and three modern-source practical
+premises at `a7fd3e4c2941cf07e7efa25f9647df5d3c179378` were independently
+approved by `/root/place02_publish`. Actual source-access limitations and
+reconstruction limits remain in the verification notes. The earlier
+`35036257` community candidate had an invalid domain and is not an approval
+basis; the valid corrected candidate is used in every binding.
+
+These additions do not establish a ritual, entitlement, official authority,
+present stock, medieval recipe, safe water, universal wick setting or
+successful repair. They support useful ordinary composition through the
+existing WK owner. Known-case replay is separate regression evidence and
+cannot change the original 92/8 result or the **0/3** unseen clean streak.
+No live gameplay or repair of other gameplay owners occurred.
+
+Independent WK-only replay by `/root/place04_gap_replay` reconstructed all
+eight known scenes on the 1,392-claim bundle, with practical interaction,
+environmental variation and bounded approved references. Its separate
+`place-batch-03-known-gap-replay.json` records 8/8 covered; it is explicitly
+not unseen evidence. Root corrected three reference/wording mismatches
+through the original reviewer without changing the corpus or result.
+
+A separate semantic map check replaced weak bridge/road/village references,
+removed irrelevant curd and crop-specific frost citations, and linked these
+new process/community premises. Stale wall-edge and river-signal residuals
+were closed through existing knowledge; winter breath/snow sound, generic
+garden frost response and other bounded residuals remain explicit. The map
+now contains **41 open environmental families, 167 facets: 110 supported and
+57 partial**. These counts describe a revisable map, not a completeness proof.
+
+Two blind generators prepared the next 75 controlled and 25 free inputs in
+`place-batch-04-core.json` and `place-batch-04-free.json`. Before freeze they
+normalized IDs and changed maintenance advice/actions into descriptions of
+actual upkeep, without reading WK or adapting situations to answers. These
+inputs are frozen with this checkpoint; classification of the free set and
+all new WK-only reconstructions follow separately. No clean result is claimed.

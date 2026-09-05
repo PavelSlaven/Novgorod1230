@@ -14,22 +14,22 @@
     "max_vector_scan_mean_ms": 10
   },
   "metrics": {
-    "case_count": 312,
-    "lexical_recall_at_10": 0.8969017094017093,
-    "hybrid_recall_at_10": 0.9962606837606837,
-    "lexical_recall_at_20": 0.9033119658119657,
-    "hybrid_recall_at_20": 0.9978632478632478,
+    "case_count": 320,
+    "lexical_recall_at_10": 0.8994791666666666,
+    "hybrid_recall_at_10": 0.9963541666666667,
+    "lexical_recall_at_20": 0.9057291666666666,
+    "hybrid_recall_at_20": 0.9979166666666666,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.4086093304843308,
-    "hybrid_noise_at_10": 0.6322395197395206,
+    "lexical_noise_at_10": 0.406072668650794,
+    "hybrid_noise_at_10": 0.6342981150793658,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 62.30457371794871,
-    "vector_scan_mean_ms": 0.669193269230933,
-    "runtime_bundle_bytes": 8761982,
-    "vector_bundle_bytes": 18669568,
-    "encoder_model_load_ms": 2699.756,
-    "peak_process_rss_bytes": 2424303616,
+    "query_embedding_mean_ms": 74.33239999999999,
+    "vector_scan_mean_ms": 1.1316471874999252,
+    "runtime_bundle_bytes": 8868674,
+    "vector_bundle_bytes": 18767872,
+    "encoder_model_load_ms": 2798.297,
+    "peak_process_rss_bytes": 2403713024,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -39,8 +39,222 @@
   },
   "cases": [
     {
+      "case_id": "place04_community_funeral_ru",
+      "vector_scan_ms": 11.665899999999965,
+      "lexical_at_10": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
+      ],
+      "hybrid_at_10": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
+      ],
+      "hybrid_at_20": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"
+      ],
+      "inapplicable_at_20": [
+        "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
+      ]
+    },
+    {
+      "case_id": "place04_community_distribution_en",
+      "vector_scan_ms": 2.728399999999965,
+      "lexical_at_10": [
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "hybrid_at_10": [
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:social-priest-fragment-relates-office-address",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:social-settlement-demand-reports-court-choice",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "hybrid_at_20": [
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "claim:social-priest-fragment-relates-office-address",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:social-settlement-demand-reports-court-choice",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "inapplicable_at_20": [
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:candidate-gramota213-official-obligations-document",
+        "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
+      ]
+    },
+    {
+      "case_id": "place04_community_household_goods_ru",
+      "vector_scan_ms": 0.6114000000015949,
+      "lexical_at_10": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "hybrid_at_10": [
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "hybrid_at_20": [
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "inapplicable_at_20": [
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:candidate-gramota8-wife-cow-redemption-letter"
+      ]
+    },
+    {
+      "case_id": "place04_community_inspection_en",
+      "vector_scan_ms": 1.2053999999989173,
+      "lexical_at_10": [
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling"
+      ],
+      "hybrid_at_10": [
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:social-dispute-message-reports-dispatch",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling"
+      ],
+      "hybrid_at_20": [
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:social-dispute-message-reports-dispatch",
+        "claim:social-podvoisky-letter-reports-pochestie-assurance"
+      ],
+      "inapplicable_at_20": [
+        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry"
+      ]
+    },
+    {
+      "case_id": "place04_community_watch_ru",
+      "vector_scan_ms": 1.3047000000005937,
+      "lexical_at_10": [
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
+      ],
+      "hybrid_at_10": [
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
+      ],
+      "hybrid_at_20": [
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage"
+      ],
+      "inapplicable_at_20": [
+        "claim:candidate-v5-gramota600-reports-khotynians-context",
+        "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+        "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+        "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
+      ]
+    },
+    {
+      "case_id": "place04_practical_hoop_en",
+      "vector_scan_ms": 1.2692999999999302,
+      "lexical_at_10": [
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
+      ],
+      "hybrid_at_10": [
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+        "claim:material-water-textile-water-load",
+        "claim:material-water-textile-liquid-contaminants"
+      ],
+      "lexical_at_20": [
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
+      ],
+      "hybrid_at_20": [
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+        "claim:material-water-textile-water-load",
+        "claim:material-water-textile-liquid-contaminants"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "place04_practical_water_ru",
+      "vector_scan_ms": 0.6837000000014086,
+      "lexical_at_10": [
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
+      ],
+      "hybrid_at_10": [
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:textile-dye-mordant-fixation"
+      ],
+      "lexical_at_20": [
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
+      ],
+      "hybrid_at_20": [
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:textile-dye-mordant-fixation"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
+      "case_id": "place04_practical_wick_en",
+      "vector_scan_ms": 1.3659999999945285,
+      "lexical_at_10": [
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment"
+      ],
+      "hybrid_at_10": [
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:measurement-grain-mass-volume-density"
+      ],
+      "lexical_at_20": [
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment"
+      ],
+      "hybrid_at_20": [
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:measurement-grain-mass-volume-density"
+      ],
+      "inapplicable_at_20": []
+    },
+    {
       "case_id": "place03_process_milk_coagulation_ru",
-      "vector_scan_ms": 7.6733000000022,
+      "vector_scan_ms": 0.7030000000013388,
       "lexical_at_10": [
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd"
       ],
@@ -61,7 +275,7 @@
     },
     {
       "case_id": "place03_process_milk_whey_draining_en",
-      "vector_scan_ms": 0.6455999999998312,
+      "vector_scan_ms": 0.6239999999961583,
       "lexical_at_10": [
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey"
       ],
@@ -82,7 +296,7 @@
     },
     {
       "case_id": "place03_process_curd_cloth_ru",
-      "vector_scan_ms": 0.6541999999972177,
+      "vector_scan_ms": 0.8024999999979627,
       "lexical_at_10": [
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"
       ],
@@ -99,7 +313,7 @@
     },
     {
       "case_id": "place03_process_dye_cleaning_en",
-      "vector_scan_ms": 0.405800000000454,
+      "vector_scan_ms": 0.46370000000024447,
       "lexical_at_10": [
         "claim:textile-dye-application",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -132,7 +346,7 @@
     },
     {
       "case_id": "place03_process_dye_transfer_ru",
-      "vector_scan_ms": 0.3944999999985157,
+      "vector_scan_ms": 0.424299999998766,
       "lexical_at_10": [
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness"
@@ -155,7 +369,7 @@
     },
     {
       "case_id": "place03_process_dye_movement_en",
-      "vector_scan_ms": 0.48440000000118744,
+      "vector_scan_ms": 0.49429999999847496,
       "lexical_at_10": [
         "claim:place-dye-moving-submerged-textile-can-support-even-contact"
       ],
@@ -174,7 +388,7 @@
     },
     {
       "case_id": "place03_process_orchard_collar_ru",
-      "vector_scan_ms": 0.9249999999992724,
+      "vector_scan_ms": 1.5152000000016415,
       "lexical_at_10": [
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury"
       ],
@@ -195,7 +409,7 @@
     },
     {
       "case_id": "place03_process_orchard_season_en",
-      "vector_scan_ms": 0.989000000001397,
+      "vector_scan_ms": 1.698100000001432,
       "lexical_at_10": [
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth"
       ],
@@ -216,7 +430,7 @@
     },
     {
       "case_id": "place03_process_orchard_renovation_ru",
-      "vector_scan_ms": 0.8427000000010594,
+      "vector_scan_ms": 1.328300000001036,
       "lexical_at_10": [
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
       ],
@@ -237,7 +451,7 @@
     },
     {
       "case_id": "place03_process_peat_drying_en",
-      "vector_scan_ms": 0.3731000000007043,
+      "vector_scan_ms": 0.5625,
       "lexical_at_10": [
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying"
       ],
@@ -258,7 +472,7 @@
     },
     {
       "case_id": "place_process_hide_washing_ru",
-      "vector_scan_ms": 0.9442000000017288,
+      "vector_scan_ms": 2.216200000002573,
       "lexical_at_10": [
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue"
@@ -281,7 +495,7 @@
     },
     {
       "case_id": "place_process_clean_water_en",
-      "vector_scan_ms": 0.37290000000211876,
+      "vector_scan_ms": 0.8582999999998719,
       "lexical_at_10": [
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task"
       ],
@@ -298,7 +512,7 @@
     },
     {
       "case_id": "place_process_smoking_ru",
-      "vector_scan_ms": 0.37449999999807915,
+      "vector_scan_ms": 0.6952999999994063,
       "lexical_at_10": [
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
@@ -321,7 +535,7 @@
     },
     {
       "case_id": "place_process_smoke_signs_en",
-      "vector_scan_ms": 0.3227000000006228,
+      "vector_scan_ms": 0.7329000000027008,
       "lexical_at_10": [
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
       ],
@@ -342,7 +556,7 @@
     },
     {
       "case_id": "place_process_tar_collection_ru",
-      "vector_scan_ms": 0.3747000000003027,
+      "vector_scan_ms": 0.7672000000020489,
       "lexical_at_10": [
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions"
@@ -365,7 +579,7 @@
     },
     {
       "case_id": "place_process_tar_air_en",
-      "vector_scan_ms": 0.34319999999934225,
+      "vector_scan_ms": 0.7527000000045518,
       "lexical_at_10": [
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path"
@@ -388,7 +602,7 @@
     },
     {
       "case_id": "place_process_ovin_air_ru",
-      "vector_scan_ms": 0.375,
+      "vector_scan_ms": 0.6373999999996158,
       "lexical_at_10": [
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
@@ -411,7 +625,7 @@
     },
     {
       "case_id": "place_process_thresher_clearance_en",
-      "vector_scan_ms": 0.34050000000206637,
+      "vector_scan_ms": 0.5946999999941909,
       "lexical_at_10": [
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
@@ -438,7 +652,7 @@
     },
     {
       "case_id": "pf_traffic_ru",
-      "vector_scan_ms": 0.41749999999956344,
+      "vector_scan_ms": 0.7078000000037719,
       "lexical_at_10": [
         "claim:place-outdoors-traffic-wet-ground-and-ruts"
       ],
@@ -459,7 +673,7 @@
     },
     {
       "case_id": "pf_sensory_en",
-      "vector_scan_ms": 0.4121999999988475,
+      "vector_scan_ms": 0.7560000000012224,
       "lexical_at_10": [
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:place-outdoors-shore-working-edge-composition",
@@ -492,7 +706,7 @@
     },
     {
       "case_id": "pf_cover_ru",
-      "vector_scan_ms": 0.386000000002241,
+      "vector_scan_ms": 0.6618999999991502,
       "lexical_at_10": [
         "claim:place-outdoors-cover-opening-and-work-visibility"
       ],
@@ -513,7 +727,7 @@
     },
     {
       "case_id": "pf_means_en",
-      "vector_scan_ms": 0.4997000000003027,
+      "vector_scan_ms": 0.7634999999936554,
       "lexical_at_10": [
         "claim:place-outdoors-means-upkeep-and-environment"
       ],
@@ -534,13 +748,11 @@
     },
     {
       "case_id": "pf_dwelling_ru",
-      "vector_scan_ms": 0.32560000000012224,
+      "vector_scan_ms": 0.6791999999986729,
       "lexical_at_10": [
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:ordinary-life-household-needs-heat-food-storage",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
-        "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
-        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "hybrid_at_10": [
@@ -549,16 +761,12 @@
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:ordinary-life-household-needs-heat-food-storage",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
-        "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
-        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "lexical_at_20": [
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:ordinary-life-household-needs-heat-food-storage",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
-        "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
-        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "hybrid_at_20": [
@@ -567,15 +775,13 @@
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:ordinary-life-household-needs-heat-food-storage",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
-        "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
-        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "pf_church_en",
-      "vector_scan_ms": 0.29060000000026776,
+      "vector_scan_ms": 0.4544999999998254,
       "lexical_at_10": [
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -600,7 +806,7 @@
     },
     {
       "case_id": "pf_entry_ru",
-      "vector_scan_ms": 0.26080000000001746,
+      "vector_scan_ms": 0.6672000000035041,
       "lexical_at_10": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -625,7 +831,7 @@
     },
     {
       "case_id": "pf_workbench_en",
-      "vector_scan_ms": 0.5650999999998021,
+      "vector_scan_ms": 0.7862999999997555,
       "lexical_at_10": [
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
         "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
@@ -656,7 +862,7 @@
     },
     {
       "case_id": "pf_drying_ru",
-      "vector_scan_ms": 0.341100000001461,
+      "vector_scan_ms": 0.5466999999989639,
       "lexical_at_10": [
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
@@ -681,7 +887,7 @@
     },
     {
       "case_id": "pf_mill_en",
-      "vector_scan_ms": 0.33139999999912106,
+      "vector_scan_ms": 0.7543000000005122,
       "lexical_at_10": [
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
       ],
@@ -700,7 +906,7 @@
     },
     {
       "case_id": "b11_ruminant_clover_ru",
-      "vector_scan_ms": 0.8218000000015309,
+      "vector_scan_ms": 1.6539000000047963,
       "lexical_at_10": [
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment"
@@ -723,7 +929,7 @@
     },
     {
       "case_id": "b11_ruminant_urgency_en",
-      "vector_scan_ms": 0.8243000000002212,
+      "vector_scan_ms": 0.9984000000040396,
       "lexical_at_10": [
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment"
       ],
@@ -744,7 +950,7 @@
     },
     {
       "case_id": "b11_mould_feed_ru",
-      "vector_scan_ms": 0.8526999999994587,
+      "vector_scan_ms": 2.0869999999995343,
       "lexical_at_10": [
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level"
@@ -767,7 +973,7 @@
     },
     {
       "case_id": "b11_mycotoxin_limits_en",
-      "vector_scan_ms": 0.9143000000003667,
+      "vector_scan_ms": 2.136899999997695,
       "lexical_at_10": [
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects"
@@ -790,7 +996,7 @@
     },
     {
       "case_id": "b11_mollusc_bait_ru",
-      "vector_scan_ms": 0.8251000000018394,
+      "vector_scan_ms": 1.378499999998894,
       "lexical_at_10": [
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts"
       ],
@@ -811,7 +1017,7 @@
     },
     {
       "case_id": "b11_animal_bait_en",
-      "vector_scan_ms": 0.8559000000022934,
+      "vector_scan_ms": 1.7880000000004657,
       "lexical_at_10": [
         "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
@@ -836,7 +1042,7 @@
     },
     {
       "case_id": "b10_parchment_wetting_ru",
-      "vector_scan_ms": 0.49989999999888823,
+      "vector_scan_ms": 0.7818000000042957,
       "lexical_at_10": [
         "claim:static-parchment-or-vellum-should-not-be-wetted",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment"
@@ -859,7 +1065,7 @@
     },
     {
       "case_id": "b10_parchment_limits_en",
-      "vector_scan_ms": 0.502199999998993,
+      "vector_scan_ms": 1.0205000000059954,
       "lexical_at_10": [
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "claim:static-parchment-or-vellum-should-not-be-wetted"
@@ -882,7 +1088,7 @@
     },
     {
       "case_id": "b10_burn_cooling_ru",
-      "vector_scan_ms": 0.8434000000015658,
+      "vector_scan_ms": 1.1111000000018976,
       "lexical_at_10": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
       ],
@@ -903,7 +1109,7 @@
     },
     {
       "case_id": "b10_burn_escalation_en",
-      "vector_scan_ms": 0.8627999999989697,
+      "vector_scan_ms": 1.6304000000018277,
       "lexical_at_10": [
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
@@ -936,7 +1142,7 @@
     },
     {
       "case_id": "b10_rendering_ru",
-      "vector_scan_ms": 0.31379999999990105,
+      "vector_scan_ms": 0.6151000000027125,
       "lexical_at_10": [
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it"
       ],
@@ -957,7 +1163,7 @@
     },
     {
       "case_id": "b10_fat_lamp_en",
-      "vector_scan_ms": 0.31450000000040745,
+      "vector_scan_ms": 0.6760999999969499,
       "lexical_at_10": [
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp"
@@ -980,7 +1186,7 @@
     },
     {
       "case_id": "b10_lightning_outdoors_ru",
-      "vector_scan_ms": 0.5567000000010012,
+      "vector_scan_ms": 0.6437000000005355,
       "lexical_at_10": [
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "claim:residual-nature-roof-melt-eave-refreezing"
@@ -1005,7 +1211,7 @@
     },
     {
       "case_id": "b10_lightning_shelter_en",
-      "vector_scan_ms": 0.5862999999990279,
+      "vector_scan_ms": 0.6890000000057626,
       "lexical_at_10": [
         "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option"
       ],
@@ -1026,7 +1232,7 @@
     },
     {
       "case_id": "b09_bee_smoke_response_ru",
-      "vector_scan_ms": 1.1480000000010477,
+      "vector_scan_ms": 1.5177000000039698,
       "lexical_at_10": [
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
@@ -1049,7 +1255,7 @@
     },
     {
       "case_id": "b09_bee_smoke_limits_en",
-      "vector_scan_ms": 0.8881000000001222,
+      "vector_scan_ms": 2.0258000000030734,
       "lexical_at_10": [
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm"
@@ -1072,7 +1278,7 @@
     },
     {
       "case_id": "b06_bat_senses_ru",
-      "vector_scan_ms": 1.223999999998341,
+      "vector_scan_ms": 1.9935000000041327,
       "lexical_at_10": [
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
@@ -1097,7 +1303,7 @@
     },
     {
       "case_id": "b06_bat_roost_en",
-      "vector_scan_ms": 0.44830000000001746,
+      "vector_scan_ms": 0.7578000000066822,
       "lexical_at_10": [
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal"
@@ -1120,7 +1326,7 @@
     },
     {
       "case_id": "b06_bat_exit_ru",
-      "vector_scan_ms": 0.47559999999793945,
+      "vector_scan_ms": 0.9694000000017695,
       "lexical_at_10": [
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own"
       ],
@@ -1141,7 +1347,7 @@
     },
     {
       "case_id": "b06_animal_lameness_ru",
-      "vector_scan_ms": 0.9322999999967578,
+      "vector_scan_ms": 1.3541000000041095,
       "lexical_at_10": [
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context"
@@ -1164,7 +1370,7 @@
     },
     {
       "case_id": "b06_horse_context_en",
-      "vector_scan_ms": 0.9695999999967171,
+      "vector_scan_ms": 2.2409999999945285,
       "lexical_at_10": [
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs"
@@ -1187,7 +1393,7 @@
     },
     {
       "case_id": "b06_skin_friction_ru",
-      "vector_scan_ms": 1.0760000000009313,
+      "vector_scan_ms": 1.7655000000013388,
       "lexical_at_10": [
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
@@ -1210,7 +1416,7 @@
     },
     {
       "case_id": "b06_head_warning_en",
-      "vector_scan_ms": 1.0875000000014552,
+      "vector_scan_ms": 1.833200000000943,
       "lexical_at_10": [
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help"
       ],
@@ -1231,7 +1437,7 @@
     },
     {
       "case_id": "b06_visual_fatigue_ru",
-      "vector_scan_ms": 1.0078000000030443,
+      "vector_scan_ms": 1.6512000000002445,
       "lexical_at_10": [
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them"
       ],
@@ -1252,7 +1458,7 @@
     },
     {
       "case_id": "b06_plant_wilt_roots_ru",
-      "vector_scan_ms": 1.0209999999970023,
+      "vector_scan_ms": 1.4579999999987194,
       "lexical_at_10": [
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
@@ -1281,7 +1487,7 @@
     },
     {
       "case_id": "b06_hop_support_en",
-      "vector_scan_ms": 0.9609999999993306,
+      "vector_scan_ms": 1.9565999999977066,
       "lexical_at_10": [
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water"
       ],
@@ -1302,7 +1508,7 @@
     },
     {
       "case_id": "b06_mushroom_habitat_ru",
-      "vector_scan_ms": 0.9709000000002561,
+      "vector_scan_ms": 2.3043999999936204,
       "lexical_at_10": [
         "claim:static-raking-mushroom-ground-can-damage-fungal-habitat"
       ],
@@ -1323,7 +1529,7 @@
     },
     {
       "case_id": "b06_seedling_frost_en",
-      "vector_scan_ms": 0.8902000000016415,
+      "vector_scan_ms": 1.664199999999255,
       "lexical_at_10": [
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position"
       ],
@@ -1344,7 +1550,7 @@
     },
     {
       "case_id": "b06_produce_storage_ru",
-      "vector_scan_ms": 0.9917999999997846,
+      "vector_scan_ms": 2.3353000000061,
       "lexical_at_10": [
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
@@ -1367,7 +1573,7 @@
     },
     {
       "case_id": "b06_beaver_sign_ru",
-      "vector_scan_ms": 0.9552000000003318,
+      "vector_scan_ms": 2.0734000000011292,
       "lexical_at_10": [
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation"
       ],
@@ -1388,7 +1594,7 @@
     },
     {
       "case_id": "b06_rain_clouds_ru",
-      "vector_scan_ms": 0.44170000000303844,
+      "vector_scan_ms": 0.5264999999999418,
       "lexical_at_10": [
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind"
@@ -1411,7 +1617,7 @@
     },
     {
       "case_id": "b05_hoof_trace_comparison_ru",
-      "vector_scan_ms": 0.3974000000016531,
+      "vector_scan_ms": 0.5216999999975087,
       "lexical_at_10": [
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:place-outdoors-clearing-and-trace-renewal",
@@ -1452,7 +1658,7 @@
     },
     {
       "case_id": "b05_hoof_trace_comparison_en",
-      "vector_scan_ms": 0.46000000000276486,
+      "vector_scan_ms": 0.719199999999546,
       "lexical_at_10": [
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -1477,7 +1683,7 @@
     },
     {
       "case_id": "b05_equine_digestion_ru",
-      "vector_scan_ms": 0.9697999999989406,
+      "vector_scan_ms": 2.1181999999971595,
       "lexical_at_10": [
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
       ],
@@ -1498,7 +1704,7 @@
     },
     {
       "case_id": "b05_equine_digestion_en",
-      "vector_scan_ms": 0.995599999998376,
+      "vector_scan_ms": 2.195899999998801,
       "lexical_at_10": [
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-horses-are-hindgut-fermenters"
@@ -1521,7 +1727,7 @@
     },
     {
       "case_id": "b05_equine_colic_ru",
-      "vector_scan_ms": 0.8878000000004249,
+      "vector_scan_ms": 1.70509999999922,
       "lexical_at_10": [
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis"
@@ -1544,7 +1750,7 @@
     },
     {
       "case_id": "b05_equine_colic_en",
-      "vector_scan_ms": 1.037899999999354,
+      "vector_scan_ms": 1.1702000000004773,
       "lexical_at_10": [
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
@@ -1585,7 +1791,7 @@
     },
     {
       "case_id": "b05_wet_ground_ru",
-      "vector_scan_ms": 0.5783999999985099,
+      "vector_scan_ms": 0.8289999999979045,
       "lexical_at_10": [
         "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
         "claim:population-glass-fracture"
@@ -1610,7 +1816,7 @@
     },
     {
       "case_id": "b05_excavation_water_en",
-      "vector_scan_ms": 0.5341000000007625,
+      "vector_scan_ms": 1.104700000003504,
       "lexical_at_10": [
         "claim:static-ground-b05-groundwater-seepage-can-enter-excavation"
       ],
@@ -1631,7 +1837,7 @@
     },
     {
       "case_id": "b05_bark_composition_ru",
-      "vector_scan_ms": 0.5031999999991967,
+      "vector_scan_ms": 1.2916999999943073,
       "lexical_at_10": [
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition"
       ],
@@ -1652,7 +1858,7 @@
     },
     {
       "case_id": "b05_alkali_fibres_en",
-      "vector_scan_ms": 0.2640000000028522,
+      "vector_scan_ms": 0.40120000000024447,
       "lexical_at_10": [
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning"
       ],
@@ -1673,7 +1879,7 @@
     },
     {
       "case_id": "b05_bedding_material_ru",
-      "vector_scan_ms": 1.3574999999982538,
+      "vector_scan_ms": 1.8028999999951338,
       "lexical_at_10": [
         "claim:static-straw-is-a-traditional-horse-bedding-source"
       ],
@@ -1694,7 +1900,7 @@
     },
     {
       "case_id": "b05_reed_buttercup_contact_ru",
-      "vector_scan_ms": 1.3847999999998137,
+      "vector_scan_ms": 1.8540999999968335,
       "lexical_at_10": [
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
         "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
@@ -1719,7 +1925,7 @@
     },
     {
       "case_id": "static_b03_soap_cleaning_ru",
-      "vector_scan_ms": 0.2610999999997148,
+      "vector_scan_ms": 0.5877000000036787,
       "lexical_at_10": [
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
@@ -1758,7 +1964,7 @@
     },
     {
       "case_id": "static_b03_forge_interface_ru",
-      "vector_scan_ms": 0.4642999999996391,
+      "vector_scan_ms": 0.5547999999980675,
       "lexical_at_10": [
         "claim:grain-processing-bread-dough-before-baking",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
@@ -1787,7 +1993,7 @@
     },
     {
       "case_id": "static_b03_wool_felting_ru",
-      "vector_scan_ms": 0.4522999999971944,
+      "vector_scan_ms": 0.5216000000000349,
       "lexical_at_10": [
         "claim:material-water-textile-water-load",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
@@ -1816,7 +2022,7 @@
     },
     {
       "case_id": "static_b03_axle_lubrication_ru",
-      "vector_scan_ms": 0.4422999999987951,
+      "vector_scan_ms": 0.7980000000025029,
       "lexical_at_10": [
         "claim:milling-plate-gap-pressure-fineness",
         "claim:static-lubricant-film-can-separate-moving-surfaces",
@@ -1847,7 +2053,7 @@
     },
     {
       "case_id": "static_b03_lime_setting_ru",
-      "vector_scan_ms": 0.29939999999987776,
+      "vector_scan_ms": 0.48259999999572756,
       "lexical_at_10": [
         "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
@@ -1870,7 +2076,7 @@
     },
     {
       "case_id": "static_b03_ash_contact_ru",
-      "vector_scan_ms": 0.2426999999988766,
+      "vector_scan_ms": 0.6630999999979394,
       "lexical_at_10": [
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:static-wood-ash-can-irritate-skin-and-eyes"
@@ -1893,7 +2099,7 @@
     },
     {
       "case_id": "static_b03_starch_thickening_ru",
-      "vector_scan_ms": 0.22810000000026776,
+      "vector_scan_ms": 0.45579999999608845,
       "lexical_at_10": [
         "claim:population-material-clay-steam",
         "claim:static-hydraulic-lime-can-initially-set-with-water"
@@ -1918,7 +2124,7 @@
     },
     {
       "case_id": "static_b03_vegetable_brine_ru",
-      "vector_scan_ms": 0.22290000000066357,
+      "vector_scan_ms": 0.42360000000189757,
       "lexical_at_10": [
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course"
       ],
@@ -1939,7 +2145,7 @@
     },
     {
       "case_id": "static_b03_fish_preparation_ru",
-      "vector_scan_ms": 0.8561999999983527,
+      "vector_scan_ms": 1.7039999999979045,
       "lexical_at_10": [
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh"
@@ -1962,7 +2168,7 @@
     },
     {
       "case_id": "static_b03_fish_dry_salt_ru",
-      "vector_scan_ms": 1.0108999999974912,
+      "vector_scan_ms": 1.5822000000043772,
       "lexical_at_10": [
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
@@ -2013,7 +2219,7 @@
     },
     {
       "case_id": "static_b03_cold_not_sterile_ru",
-      "vector_scan_ms": 0.7989000000015949,
+      "vector_scan_ms": 1.5014999999984866,
       "lexical_at_10": [
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction"
       ],
@@ -2034,7 +2240,7 @@
     },
     {
       "case_id": "static_b03_rodent_store_ru",
-      "vector_scan_ms": 0.7959999999984575,
+      "vector_scan_ms": 1.6005000000004657,
       "lexical_at_10": [
         "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access"
@@ -2057,7 +2263,7 @@
     },
     {
       "case_id": "static_b03_bee_forage_ru",
-      "vector_scan_ms": 0.8343999999997322,
+      "vector_scan_ms": 1.3922999999995227,
       "lexical_at_10": [
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
@@ -2084,7 +2290,7 @@
     },
     {
       "case_id": "static_b03_grain_measurement_ru",
-      "vector_scan_ms": 0.4970000000030268,
+      "vector_scan_ms": 0.7744000000020606,
       "lexical_at_10": [
         "claim:measurement-net-excludes-tare",
         "claim:pine-pitch-woven-basket-coating"
@@ -2109,7 +2315,7 @@
     },
     {
       "case_id": "static_b03_grain_milling_ru",
-      "vector_scan_ms": 0.48589999999967404,
+      "vector_scan_ms": 0.7687999999980093,
       "lexical_at_10": [
         "claim:milling-plate-gap-pressure-fineness",
         "claim:milling-grain-compression-shear-fracture",
@@ -2154,7 +2360,7 @@
     },
     {
       "case_id": "static_b03_voice_distance_noise_ru",
-      "vector_scan_ms": 0.4129999999968277,
+      "vector_scan_ms": 0.8637000000016997,
       "lexical_at_10": [
         "claim:sound-background-noise-masks-speech",
         "claim:sound-spreading-reduces-intensity"
@@ -2177,7 +2383,7 @@
     },
     {
       "case_id": "static_b03_sound_reflection_delay_ru",
-      "vector_scan_ms": 0.40199999999822467,
+      "vector_scan_ms": 0.6903000000020256,
       "lexical_at_10": [
         "claim:sound-reflections-arrive-after-direct-path"
       ],
@@ -2198,7 +2404,7 @@
     },
     {
       "case_id": "static_b03_sound_weather_ru",
-      "vector_scan_ms": 0.40490000000136206,
+      "vector_scan_ms": 0.7647999999971944,
       "lexical_at_10": [
         "claim:sound-wind-temperature-gradients-refract",
         "claim:sound-reflections-arrive-after-direct-path"
@@ -2221,7 +2427,7 @@
     },
     {
       "case_id": "static_b03_independent_dice_ru",
-      "vector_scan_ms": 0.4063000000023749,
+      "vector_scan_ms": 0.7363000000041211,
       "lexical_at_10": [
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:water-permeability-connected-pores"
@@ -2246,7 +2452,7 @@
     },
     {
       "case_id": "static_b03_bark_drying_ru",
-      "vector_scan_ms": 0.399199999999837,
+      "vector_scan_ms": 0.7985999999946216,
       "lexical_at_10": [
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying"
       ],
@@ -2267,7 +2473,7 @@
     },
     {
       "case_id": "static_b03_yarn_twist_ru",
-      "vector_scan_ms": 0.39570000000094296,
+      "vector_scan_ms": 0.9378999999971711,
       "lexical_at_10": [
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:textile-fibres-twist-yarn",
@@ -2296,7 +2502,7 @@
     },
     {
       "case_id": "static_b03_belt_slip_ru",
-      "vector_scan_ms": 0.5058000000026368,
+      "vector_scan_ms": 1.0315000000045984,
       "lexical_at_10": [
         "claim:foundations-phys-07-surface-tension-interface",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
@@ -2325,7 +2531,7 @@
     },
     {
       "case_id": "static_b03_ash_wool_ru",
-      "vector_scan_ms": 0.2662000000018452,
+      "vector_scan_ms": 0.41849999999976717,
       "lexical_at_10": [
         "claim:static-wood-ash-water-can-produce-alkaline-runoff",
         "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
@@ -2354,7 +2560,7 @@
     },
     {
       "case_id": "static_b03_roof_overlap_ru",
-      "vector_scan_ms": 0.3073999999978696,
+      "vector_scan_ms": 0.5085000000035507,
       "lexical_at_10": [
         "claim:household-roof-local-condition-guides-repair",
         "claim:household-roof-layers-shed-water"
@@ -2382,7 +2588,7 @@
     },
     {
       "case_id": "static_b03_clay_patch_ru",
-      "vector_scan_ms": 0.2911000000021886,
+      "vector_scan_ms": 0.661099999997532,
       "lexical_at_10": [
         "claim:household-clay-drying-and-incompatible-movement"
       ],
@@ -2424,7 +2630,7 @@
     },
     {
       "case_id": "static_b03_dough_gas_ru",
-      "vector_scan_ms": 0.34460000000035507,
+      "vector_scan_ms": 0.8297999999995227,
       "lexical_at_10": [
         "claim:household-dough-temperature-changes-proofing",
         "claim:household-dough-yeast-gas-needs-retention",
@@ -2459,7 +2665,7 @@
     },
     {
       "case_id": "static_b03_trauma_movement_ru",
-      "vector_scan_ms": 0.9405000000006112,
+      "vector_scan_ms": 1.3628000000026077,
       "lexical_at_10": [
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
@@ -2506,7 +2712,7 @@
     },
     {
       "case_id": "healer_observation_ru",
-      "vector_scan_ms": 0.24799999999959255,
+      "vector_scan_ms": 0.5639999999984866,
       "lexical_at_10": [
         "claim:healer-observation-and-questioning",
         "claim:healer-belief-and-bodily-attention",
@@ -2539,7 +2745,7 @@
     },
     {
       "case_id": "healer_kit_en",
-      "vector_scan_ms": 0.2319000000024971,
+      "vector_scan_ms": 0.36239999999816064,
       "lexical_at_10": [
         "claim:healer-livelihood-and-household-support",
         "claim:healer-portable-and-household-kit",
@@ -2574,7 +2780,7 @@
     },
     {
       "case_id": "healer_learning_ru",
-      "vector_scan_ms": 0.28659999999945285,
+      "vector_scan_ms": 0.5539999999964493,
       "lexical_at_10": [
         "claim:healer-belief-and-bodily-attention"
       ],
@@ -2595,7 +2801,7 @@
     },
     {
       "case_id": "public_equipment_ru",
-      "vector_scan_ms": 0.6287000000011176,
+      "vector_scan_ms": 0.7103000000061002,
       "lexical_at_10": [
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:clothing-sheepskin-kozhukh",
@@ -2638,78 +2844,99 @@
     },
     {
       "case_id": "public_mobilization_en",
-      "vector_scan_ms": 0.45130000000062864,
+      "vector_scan_ms": 0.7061000000030617,
       "lexical_at_10": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:residual-law-injury-and-treatment-payments",
-        "claim:residual-law-stepchildren-paternal-inheritance",
-        "claim:social-kin-request-reports-contingent-return",
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
       ],
       "hybrid_at_10": [
-        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:public-world-armed-loss-reaches-household",
         "claim:social-dispute-message-reports-dispatch",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:residual-law-injury-and-treatment-payments",
-        "claim:residual-law-stepchildren-paternal-inheritance",
-        "claim:social-kin-request-reports-contingent-return",
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
       ],
       "lexical_at_20": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:residual-law-injury-and-treatment-payments",
-        "claim:residual-law-stepchildren-paternal-inheritance",
-        "claim:social-kin-request-reports-contingent-return",
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
       ],
       "hybrid_at_20": [
-        "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:public-world-armed-loss-reaches-household",
         "claim:social-dispute-message-reports-dispatch",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:residual-law-injury-and-treatment-payments",
-        "claim:residual-law-stepchildren-paternal-inheritance",
-        "claim:social-kin-request-reports-contingent-return",
-        "claim:public-world-armed-presence-changes-public-risk"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "public_dispute_ru",
-      "vector_scan_ms": 0.5485999999982596,
+      "vector_scan_ms": 0.9055000000007567,
       "lexical_at_10": [
-        "claim:public-world-local-authority-is-one-escalation-option"
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "hybrid_at_10": [
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:public-world-dispute-starts-with-competing-accounts",
         "claim:public-world-local-authority-is-one-escalation-option",
-        "claim:social-collector-instruction-relates-task-context"
+        "claim:social-collector-instruction-relates-task-context",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "lexical_at_20": [
-        "claim:public-world-local-authority-is-one-escalation-option"
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "hybrid_at_20": [
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:public-world-dispute-starts-with-competing-accounts",
         "claim:public-world-local-authority-is-one-escalation-option",
-        "claim:social-collector-instruction-relates-task-context"
+        "claim:social-collector-instruction-relates-task-context",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "public_names_en",
-      "vector_scan_ms": 0.45830000000205473,
+      "vector_scan_ms": 0.7427000000025146,
       "lexical_at_10": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions"
+      ],
+      "hybrid_at_10": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
+        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
+      ],
+      "lexical_at_20": [
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:residual-v1-name-only-owner-labels-have-disputed-function",
         "claim:public-world-deference-can-be-calibrated-to-seniority-role",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
@@ -2721,40 +2948,11 @@
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:residual-law-dependency-and-agreement"
       ],
-      "hybrid_at_10": [
-        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
-        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
-        "claim:public-world-name-form-does-not-prove-status-or-kinship",
-        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
-        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:public-world-dispute-can-use-questions-and-kin",
-        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
-        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
-        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions"
-      ],
-      "lexical_at_20": [
-        "claim:residual-v1-name-only-owner-labels-have-disputed-function",
-        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
-        "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
-        "claim:public-world-name-can-combine-personal-and-distinguishing-form",
-        "claim:public-world-dispute-can-use-questions-and-kin",
-        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
-        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
-        "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
-        "claim:residual-law-dependency-and-agreement",
-        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
-        "claim:public-world-dispute-starts-with-competing-accounts",
-        "claim:public-world-ordinary-speech-tracks-relationship-setting",
-        "claim:public-world-status-and-ties-affect-access-not-guilt",
-        "claim:rp-caretaker-principal-goods",
-        "claim:public-world-witness-account-has-bounded-scope"
-      ],
       "hybrid_at_20": [
         "claim:public-world-deference-can-be-calibrated-to-seniority-role",
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:residual-v1-name-only-owner-labels-have-disputed-function",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
@@ -2762,19 +2960,13 @@
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
-        "claim:residual-law-dependency-and-agreement",
-        "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
-        "claim:public-world-dispute-starts-with-competing-accounts",
-        "claim:public-world-ordinary-speech-tracks-relationship-setting",
-        "claim:public-world-status-and-ties-affect-access-not-guilt",
-        "claim:rp-caretaker-principal-goods",
-        "claim:public-world-witness-account-has-bounded-scope"
+        "claim:residual-law-dependency-and-agreement"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "public_register_ru",
-      "vector_scan_ms": 0.45170000000143773,
+      "vector_scan_ms": 0.9743999999991502,
       "lexical_at_10": [
         "claim:public-world-church-and-official-speech-can-be-marked",
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
@@ -2823,7 +3015,7 @@
     },
     {
       "case_id": "public_disability_en",
-      "vector_scan_ms": 0.8993000000009488,
+      "vector_scan_ms": 1.7497000000003027,
       "lexical_at_10": [
         "claim:public-world-community-response-to-impairment-varies",
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
@@ -2850,7 +3042,7 @@
     },
     {
       "case_id": "static_tree_flower_leaf_sequence_ru",
-      "vector_scan_ms": 0.5162000000018452,
+      "vector_scan_ms": 1.0130999999964843,
       "lexical_at_10": [
         "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
@@ -2895,7 +3087,7 @@
     },
     {
       "case_id": "static_fishing_net_upkeep_en",
-      "vector_scan_ms": 0.8123999999988882,
+      "vector_scan_ms": 0.7705000000059954,
       "lexical_at_10": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
       ],
@@ -2916,7 +3108,7 @@
     },
     {
       "case_id": "static_novgorod_underfloor_function_ru",
-      "vector_scan_ms": 0.3120000000017171,
+      "vector_scan_ms": 0.6274000000048545,
       "lexical_at_10": [
         "claim:settlement-underfloor-utility",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
@@ -2971,7 +3163,7 @@
     },
     {
       "case_id": "static_co_sensory_limits_ru",
-      "vector_scan_ms": 0.49289999999746215,
+      "vector_scan_ms": 0.7914999999993597,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-is-colorless-and-odorless",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
@@ -3004,7 +3196,7 @@
     },
     {
       "case_id": "static_local_exhaust_capture_en",
-      "vector_scan_ms": 0.4651000000012573,
+      "vector_scan_ms": 0.8139000000010128,
       "lexical_at_10": [
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
@@ -3025,7 +3217,7 @@
     },
     {
       "case_id": "static_cold_immersion_muscle_control_ru",
-      "vector_scan_ms": 0.9548999999969965,
+      "vector_scan_ms": 1.131200000003446,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:population-material-leather-mould",
@@ -3072,7 +3264,7 @@
     },
     {
       "case_id": "static_fire_plume_layer_transport_en",
-      "vector_scan_ms": 0.5086999999984982,
+      "vector_scan_ms": 1.2269000000014785,
       "lexical_at_10": [
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
       ],
@@ -3093,7 +3285,7 @@
     },
     {
       "case_id": "static_floating_small_heel_en",
-      "vector_scan_ms": 0.4837999999981548,
+      "vector_scan_ms": 0.6422999999995227,
       "lexical_at_10": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel"
       ],
@@ -3114,7 +3306,7 @@
     },
     {
       "case_id": "static_wind_driven_rain_opening_ru",
-      "vector_scan_ms": 0.5202000000026601,
+      "vector_scan_ms": 0.9775000000008731,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ],
@@ -3135,7 +3327,7 @@
     },
     {
       "case_id": "phys_airway_oxygen_awareness_en",
-      "vector_scan_ms": 0.9011000000027707,
+      "vector_scan_ms": 1.700700000001234,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
         "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
@@ -3164,7 +3356,7 @@
     },
     {
       "case_id": "phys_immersion_not_necessarily_drowning_ru",
-      "vector_scan_ms": 0.8915999999990163,
+      "vector_scan_ms": 2.087099999997008,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment"
       ],
@@ -3185,7 +3377,7 @@
     },
     {
       "case_id": "phys_irritated_nose_airway_ru",
-      "vector_scan_ms": 0.8356999999996333,
+      "vector_scan_ms": 1.236399999994319,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -3226,7 +3418,7 @@
     },
     {
       "case_id": "phys_pharynx_gag_swallow_en",
-      "vector_scan_ms": 0.8982000000032713,
+      "vector_scan_ms": 1.5601999999998952,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
       ],
@@ -3247,7 +3439,7 @@
     },
     {
       "case_id": "phys_emesis_without_nausea_ru",
-      "vector_scan_ms": 0.9209000000009837,
+      "vector_scan_ms": 2.3184999999939464,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-emesis-reflex-response"
       ],
@@ -3268,7 +3460,7 @@
     },
     {
       "case_id": "phys_corneal_touch_blink_en",
-      "vector_scan_ms": 0.8760999999976775,
+      "vector_scan_ms": 1.690099999999802,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blink-corneal-protection"
       ],
@@ -3289,7 +3481,7 @@
     },
     {
       "case_id": "phys_painful_contact_withdrawal_ru",
-      "vector_scan_ms": 0.9873000000006869,
+      "vector_scan_ms": 1.451099999998405,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:public-world-community-response-to-impairment-varies",
@@ -3324,7 +3516,7 @@
     },
     {
       "case_id": "phys_sudden_stimulus_startle_en",
-      "vector_scan_ms": 0.9871999999995751,
+      "vector_scan_ms": 1.3308000000033644,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
       ],
@@ -3345,7 +3537,7 @@
     },
     {
       "case_id": "phys_volume_loss_compensation_ru",
-      "vector_scan_ms": 0.9472999999998137,
+      "vector_scan_ms": 1.589799999994284,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:candidate-physiology-v3-dehydration-functional-risk"
@@ -3368,7 +3560,7 @@
     },
     {
       "case_id": "phys_water_loss_function_en",
-      "vector_scan_ms": 0.997799999997369,
+      "vector_scan_ms": 1.1090999999942142,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-dehydration-functional-risk"
       ],
@@ -3389,7 +3581,7 @@
     },
     {
       "case_id": "phys_alcohol_coordination_awareness_ru",
-      "vector_scan_ms": 1.0165999999990163,
+      "vector_scan_ms": 1.5244999999995343,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
@@ -3410,7 +3602,7 @@
     },
     {
       "case_id": "phys_sweating_heat_water_en",
-      "vector_scan_ms": 1.0287000000025728,
+      "vector_scan_ms": 1.8643000000010943,
       "lexical_at_10": [
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:continued-sweating-can-cause-body-water-loss",
@@ -3451,7 +3643,7 @@
     },
     {
       "case_id": "static_sinking_load_buoyant_support_ru",
-      "vector_scan_ms": 0.7211999999999534,
+      "vector_scan_ms": 0.9368000000031316,
       "lexical_at_10": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -3500,14 +3692,15 @@
     },
     {
       "case_id": "static_wet_wooden_opening_en",
-      "vector_scan_ms": 0.7163000000000466,
+      "vector_scan_ms": 0.7427999999999884,
       "lexical_at_10": [
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
         "claim:foundations-phys-06-pressure-driven-liquid-outflow",
         "claim:wood-liquid-directional-uptake",
         "claim:water-capillary-height",
         "claim:wood-liquid-capillary-uptake",
-        "claim:water-capillary-rise-depression"
+        "claim:water-capillary-rise-depression",
+        "claim:wood-liquid-moisture-change"
       ],
       "hybrid_at_10": [
         "claim:wood-liquid-directional-uptake",
@@ -3524,7 +3717,8 @@
         "claim:wood-liquid-directional-uptake",
         "claim:water-capillary-height",
         "claim:wood-liquid-capillary-uptake",
-        "claim:water-capillary-rise-depression"
+        "claim:water-capillary-rise-depression",
+        "claim:wood-liquid-moisture-change"
       ],
       "hybrid_at_20": [
         "claim:wood-liquid-directional-uptake",
@@ -3539,7 +3733,7 @@
     },
     {
       "case_id": "static_building_auxiliary_work_ru",
-      "vector_scan_ms": 0.4261999999980617,
+      "vector_scan_ms": 0.4510000000009313,
       "lexical_at_10": [
         "claim:construction-auxiliary-construction-work"
       ],
@@ -3560,7 +3754,7 @@
     },
     {
       "case_id": "static_monthbook_day_commemoration_en",
-      "vector_scan_ms": 0.5280999999995402,
+      "vector_scan_ms": 0.559399999998277,
       "lexical_at_10": [
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
@@ -3581,7 +3775,7 @@
     },
     {
       "case_id": "static_conditional_child_care_ru",
-      "vector_scan_ms": 0.5622999999977765,
+      "vector_scan_ms": 0.6909000000014203,
       "lexical_at_10": [
         "claim:rp-mother-household-care-succession",
         "claim:rp-caretaker-principal-goods",
@@ -3630,7 +3824,7 @@
     },
     {
       "case_id": "static_raw_cooked_food_contact_ru",
-      "vector_scan_ms": 1.076099999998405,
+      "vector_scan_ms": 1.4631000000008498,
       "lexical_at_10": [
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
@@ -3651,7 +3845,7 @@
     },
     {
       "case_id": "static_surface_runoff_waste_en",
-      "vector_scan_ms": 0.5622999999977765,
+      "vector_scan_ms": 0.9111999999950058,
       "lexical_at_10": [
         "claim:foundations-earth-26-runoff-contaminant-transport"
       ],
@@ -3672,7 +3866,7 @@
     },
     {
       "case_id": "static_boat_plank_caulking_ru",
-      "vector_scan_ms": 0.6895999999978812,
+      "vector_scan_ms": 1.3331000000034692,
       "lexical_at_10": [
         "claim:construction-iron-clamp-caulking",
         "claim:agriculture-fauna-tow-log-gaps",
@@ -3703,7 +3897,7 @@
     },
     {
       "case_id": "static_syncope_perfusion_ru",
-      "vector_scan_ms": 1.6283999999977823,
+      "vector_scan_ms": 2.120600000002014,
       "lexical_at_10": [
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness"
@@ -3726,7 +3920,7 @@
     },
     {
       "case_id": "static_circulatory_tissue_supply_en",
-      "vector_scan_ms": 1.6339000000007218,
+      "vector_scan_ms": 1.4976999999998952,
       "lexical_at_10": [
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
       ],
@@ -3747,7 +3941,7 @@
     },
     {
       "case_id": "static_retinal_light_pupil_ru",
-      "vector_scan_ms": 1.5293000000019674,
+      "vector_scan_ms": 1.9804000000003725,
       "lexical_at_10": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:candidate-physiology-v3-blink-corneal-protection"
@@ -3770,7 +3964,7 @@
     },
     {
       "case_id": "static_hot_work_heat_storage_en",
-      "vector_scan_ms": 1.025099999998929,
+      "vector_scan_ms": 1.4985000000015134,
       "lexical_at_10": [
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:public-world-help-access-can-be-limited"
@@ -3795,7 +3989,7 @@
     },
     {
       "case_id": "static_cold_environment_heat_loss_ru",
-      "vector_scan_ms": 1.0498000000006869,
+      "vector_scan_ms": 1.7706000000034692,
       "lexical_at_10": [
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
@@ -3834,7 +4028,7 @@
     },
     {
       "case_id": "static_novelty_orienting_habituation_en",
-      "vector_scan_ms": 1.0393000000003667,
+      "vector_scan_ms": 1.9728000000031898,
       "lexical_at_10": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
       ],
@@ -3855,7 +4049,7 @@
     },
     {
       "case_id": "static_witness_source_confusion_ru",
-      "vector_scan_ms": 0.29989999999816064,
+      "vector_scan_ms": 0.4518000000025495,
       "lexical_at_10": [
         "claim:foundations-ms-06-visual-selection",
         "claim:research-memory-postevent-misinformation",
@@ -3898,7 +4092,7 @@
     },
     {
       "case_id": "static_later_misleading_account_en",
-      "vector_scan_ms": 0.29200000000128057,
+      "vector_scan_ms": 0.36569999999483116,
       "lexical_at_10": [
         "claim:research-memory-postevent-misinformation",
         "claim:research-memory-source-misattribution"
@@ -3921,7 +4115,7 @@
     },
     {
       "case_id": "static_shared_work_output_ru",
-      "vector_scan_ms": 0.35740000000078,
+      "vector_scan_ms": 0.39209999999729916,
       "lexical_at_10": [
         "claim:ordinary-life-master-has-work-responsibility"
       ],
@@ -3944,7 +4138,7 @@
     },
     {
       "case_id": "static_smoke_wind_stability_en",
-      "vector_scan_ms": 0.6080000000001746,
+      "vector_scan_ms": 0.7603000000017346,
       "lexical_at_10": [
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
@@ -3967,7 +4161,7 @@
     },
     {
       "case_id": "static_low_smoke_inversion_ru",
-      "vector_scan_ms": 0.617099999995844,
+      "vector_scan_ms": 0.7711999999955879,
       "lexical_at_10": [
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -3994,7 +4188,7 @@
     },
     {
       "case_id": "weak_cloth_support_ru",
-      "vector_scan_ms": 0.6224000000001979,
+      "vector_scan_ms": 0.7796999999991385,
       "lexical_at_10": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
       ],
@@ -4015,7 +4209,7 @@
     },
     {
       "case_id": "leather_joint_failure_en",
-      "vector_scan_ms": 0.6202000000048429,
+      "vector_scan_ms": 0.9182000000000698,
       "lexical_at_10": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:oil-fat-vegetable-leather-flexibility"
@@ -4040,7 +4234,7 @@
     },
     {
       "case_id": "boiling_chemical_drinkability_ru",
-      "vector_scan_ms": 0.40200000000186265,
+      "vector_scan_ms": 0.542699999998149,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water"
@@ -4065,7 +4259,7 @@
     },
     {
       "case_id": "fuel_water_boiling_en",
-      "vector_scan_ms": 0.3951999999990221,
+      "vector_scan_ms": 0.4659999999930733,
       "lexical_at_10": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
@@ -4086,7 +4280,7 @@
     },
     {
       "case_id": "fuel_fumes_gas_ru",
-      "vector_scan_ms": 0.6361999999935506,
+      "vector_scan_ms": 1.1348999999972875,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -4109,7 +4303,7 @@
     },
     {
       "case_id": "enclosed_fuel_fire_en",
-      "vector_scan_ms": 0.6418999999950756,
+      "vector_scan_ms": 0.9239000000015949,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
@@ -4132,7 +4326,7 @@
     },
     {
       "case_id": "enclosed_air_co_ru",
-      "vector_scan_ms": 0.6297000000049593,
+      "vector_scan_ms": 1.1243000000031316,
       "lexical_at_10": [
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -4159,7 +4353,7 @@
     },
     {
       "case_id": "immersion_hypothermia_ru",
-      "vector_scan_ms": 1.050600000002305,
+      "vector_scan_ms": 1.5857000000032713,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -4214,7 +4408,7 @@
     },
     {
       "case_id": "cold_water_body_en",
-      "vector_scan_ms": 1.0851000000038766,
+      "vector_scan_ms": 1.0380000000004657,
       "lexical_at_10": [
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
@@ -4243,7 +4437,7 @@
     },
     {
       "case_id": "plant_unknown_lookalike_ru",
-      "vector_scan_ms": 1.1063999999969383,
+      "vector_scan_ms": 2.6898999999975786,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
@@ -4290,7 +4484,7 @@
     },
     {
       "case_id": "plant_edible_part_en",
-      "vector_scan_ms": 1.037400000001071,
+      "vector_scan_ms": 1.7220000000015716,
       "lexical_at_10": [
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
@@ -4363,7 +4557,7 @@
     },
     {
       "case_id": "rope_rough_mooring_ru",
-      "vector_scan_ms": 0.6684999999997672,
+      "vector_scan_ms": 0.8944999999948777,
       "lexical_at_10": [
         "claim:grain-processing-bread-ground-plant-base",
         "claim:material-water-textile-water-load",
@@ -4404,9 +4598,9 @@
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
         "claim:material-water-textile-liquid-contaminants",
         "claim:population-physics-elastic-recovery",
-        "claim:static-birch-bark-water-can-deform-layers",
         "claim:milling-plate-gap-pressure-fineness",
         "claim:random-independent-trials-do-not-owe-reversal",
+        "claim:static-birch-bark-water-can-deform-layers",
         "claim:foundations-mat-02-wood-drying-crack-strength",
         "claim:foundations-mat-06-wood-drying-property-change"
       ],
@@ -4428,15 +4622,15 @@
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
         "claim:material-water-textile-liquid-contaminants",
         "claim:population-physics-elastic-recovery",
-        "claim:static-birch-bark-water-can-deform-layers",
         "claim:milling-plate-gap-pressure-fineness",
-        "claim:random-independent-trials-do-not-owe-reversal"
+        "claim:random-independent-trials-do-not-owe-reversal",
+        "claim:static-birch-bark-water-can-deform-layers"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "nettle_stem_fibre_en",
-      "vector_scan_ms": 0.5362000000022817,
+      "vector_scan_ms": 1.0287000000025728,
       "lexical_at_10": [
         "claim:candidate-nettle-bast-fibre-retting-decortication"
       ],
@@ -4457,7 +4651,7 @@
     },
     {
       "case_id": "pond_plant_positions_ru",
-      "vector_scan_ms": 1.0198999999993248,
+      "vector_scan_ms": 1.756999999997788,
       "lexical_at_10": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
@@ -4509,7 +4703,7 @@
     },
     {
       "case_id": "flood_branch_retention_en",
-      "vector_scan_ms": 0.48589999999967404,
+      "vector_scan_ms": 0.7021000000022468,
       "lexical_at_10": [
         "claim:place-outdoors-forest-structure-and-season",
         "claim:place-outdoors-microterrain-patches",
@@ -4556,7 +4750,7 @@
     },
     {
       "case_id": "cold_body_response_ru",
-      "vector_scan_ms": 1.1524999999965075,
+      "vector_scan_ms": 1.5985000000000582,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-protective-withdrawal",
         "claim:cellular-atp-production-can-cause-metabolic-heat",
@@ -4629,7 +4823,7 @@
     },
     {
       "case_id": "boat_turn_balance_en",
-      "vector_scan_ms": 1.0751999999993131,
+      "vector_scan_ms": 1.528200000000652,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-vestibular-postural-correction",
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
@@ -4697,9 +4891,10 @@
     },
     {
       "case_id": "water_fire_smoke_ru",
-      "vector_scan_ms": 0.6565999999947962,
+      "vector_scan_ms": 0.7338000000017928,
       "lexical_at_10": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -4707,23 +4902,23 @@
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
-        "claim:static-parchment-or-vellum-should-not-be-wetted",
-        "claim:clay-firing-structural-transformation"
+        "claim:static-parchment-or-vellum-should-not-be-wetted"
       ],
       "hybrid_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
-        "claim:foundations-mat-12-material-thermal-insulation-porosity",
-        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment"
+        "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ],
       "lexical_at_20": [
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:clay-dried-replasticization",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -4736,29 +4931,6 @@
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
-        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
-        "claim:wood-liquid-fibre-saturation",
-        "claim:population-material-leather-dry",
-        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
-        "claim:research-carbon-monoxide-can-accumulate-indoors",
-        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
-        "claim:stored-grain-airflow-can-reduce-temperature-differences"
-      ],
-      "hybrid_at_20": [
-        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
-        "claim:water-can-cool-class-a-fire-fuel-and-flame",
-        "claim:research-surface-inversion-can-trap-smoke-near-ground",
-        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
-        "claim:clay-dried-replasticization",
-        "claim:foundations-mat-01-wood-knot-strength-bonding",
-        "claim:foundations-mat-04-wood-transverse-tension-weakness",
-        "claim:foundations-mat-09-glass-brittle-thermal-stress",
-        "claim:foundations-mat-12-material-thermal-insulation-porosity",
-        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
-        "claim:static-parchment-or-vellum-should-not-be-wetted",
-        "claim:clay-firing-structural-transformation",
-        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
-        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:wood-liquid-fibre-saturation",
         "claim:population-material-leather-dry",
@@ -4766,11 +4938,33 @@
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
+      "hybrid_at_20": [
+        "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:research-surface-inversion-can-trap-smoke-near-ground",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:clay-dried-replasticization",
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-04-wood-transverse-tension-weakness",
+        "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+        "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:clay-firing-structural-transformation",
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:wood-liquid-fibre-saturation",
+        "claim:population-material-leather-dry",
+        "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "grain_winter_condensation_en",
-      "vector_scan_ms": 0.5938999999998487,
+      "vector_scan_ms": 0.8607999999949243,
       "lexical_at_10": [
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -4801,7 +4995,7 @@
     },
     {
       "case_id": "grain_air_passage_ru",
-      "vector_scan_ms": 0.633800000003248,
+      "vector_scan_ms": 1.3376999999964028,
       "lexical_at_10": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
@@ -4822,7 +5016,7 @@
     },
     {
       "case_id": "stagnant_water_oxygen_en",
-      "vector_scan_ms": 0.5601999999998952,
+      "vector_scan_ms": 1.1045999999987544,
       "lexical_at_10": [
         "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
@@ -4845,7 +5039,7 @@
     },
     {
       "case_id": "static_frozen_bank_thaw_ru",
-      "vector_scan_ms": 0.5633000000016182,
+      "vector_scan_ms": 1.0843999999997322,
       "lexical_at_10": [
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture"
@@ -4868,7 +5062,7 @@
     },
     {
       "case_id": "static_flood_deposited_traces_en",
-      "vector_scan_ms": 0.508800000003248,
+      "vector_scan_ms": 1.0446999999985565,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -4913,7 +5107,7 @@
     },
     {
       "case_id": "static_porous_flood_stain_ru",
-      "vector_scan_ms": 0.5178000000014435,
+      "vector_scan_ms": 0.7260999999998603,
       "lexical_at_10": [
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:residual-nature-snow-melt-refreeze-crust",
@@ -4950,7 +5144,7 @@
     },
     {
       "case_id": "static_track_mud_sand_ru",
-      "vector_scan_ms": 0.4658999999955995,
+      "vector_scan_ms": 1.0076999999946565,
       "lexical_at_10": [
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
@@ -4995,7 +5189,7 @@
     },
     {
       "case_id": "static_sick_animal_social_feeding_en",
-      "vector_scan_ms": 0.883800000003248,
+      "vector_scan_ms": 1.6412000000054832,
       "lexical_at_10": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
@@ -5034,8 +5228,7 @@
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
-        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
-        "claim:fauna-animal-learning"
+        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake"
       ],
       "hybrid_at_20": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
@@ -5052,14 +5245,13 @@
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
-        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake",
-        "claim:fauna-animal-learning"
+        "claim:candidate-v6-dehydration-is-fluid-loss-exceeding-intake"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "static_browsed_plant_growth_ru",
-      "vector_scan_ms": 0.9714999999996508,
+      "vector_scan_ms": 1.6304999999993015,
       "lexical_at_10": [
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
@@ -5104,7 +5296,7 @@
     },
     {
       "case_id": "static_stove_room_dampness_en",
-      "vector_scan_ms": 0.538300000000163,
+      "vector_scan_ms": 1.315099999999802,
       "lexical_at_10": [
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
       ],
@@ -5125,7 +5317,7 @@
     },
     {
       "case_id": "static_room_air_condensation_ru",
-      "vector_scan_ms": 0.49380000000383006,
+      "vector_scan_ms": 0.7800999999963096,
       "lexical_at_10": [
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -5183,7 +5375,7 @@
     },
     {
       "case_id": "static_nettle_food_contact_ru",
-      "vector_scan_ms": 0.9534999999959837,
+      "vector_scan_ms": 1.3510000000023865,
       "lexical_at_10": [
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts"
@@ -5206,7 +5398,7 @@
     },
     {
       "case_id": "static_raspberry_lingonberry_food_en",
-      "vector_scan_ms": 0.893499999998312,
+      "vector_scan_ms": 1.5279999999984284,
       "lexical_at_10": [
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -5233,7 +5425,7 @@
     },
     {
       "case_id": "static_hazel_apple_parts_ru",
-      "vector_scan_ms": 0.8458000000027823,
+      "vector_scan_ms": 1.751300000003539,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
       ],
@@ -5254,7 +5446,7 @@
     },
     {
       "case_id": "macro_gramota334_correspondents_ru",
-      "vector_scan_ms": 0.49319999999715947,
+      "vector_scan_ms": 0.8349999999991269,
       "lexical_at_10": [
         "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
@@ -5287,7 +5479,7 @@
     },
     {
       "case_id": "macro_gramota334_correspondents_en",
-      "vector_scan_ms": 0.4201000000030035,
+      "vector_scan_ms": 0.7971999999936088,
       "lexical_at_10": [
         "claim:candidate-gramota334-named-private-letter-monetary-context"
       ],
@@ -5308,7 +5500,7 @@
     },
     {
       "case_id": "macro_parasite_host_relation_ru",
-      "vector_scan_ms": 1.0195999999996275,
+      "vector_scan_ms": 2.0112000000008265,
       "lexical_at_10": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -5349,7 +5541,7 @@
     },
     {
       "case_id": "macro_parasite_host_relation_en",
-      "vector_scan_ms": 0.9524999999994179,
+      "vector_scan_ms": 1.3703999999997905,
       "lexical_at_10": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
       ],
@@ -5370,7 +5562,7 @@
     },
     {
       "case_id": "macro_onfim_instructional_text_ru",
-      "vector_scan_ms": 0.5390999999945052,
+      "vector_scan_ms": 0.8335999999981141,
       "lexical_at_10": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:social-spousal-complaint-reports-marital-treatment",
@@ -5403,7 +5595,7 @@
     },
     {
       "case_id": "macro_onfim_instructional_text_en",
-      "vector_scan_ms": 0.5221999999994296,
+      "vector_scan_ms": 0.8782999999966705,
       "lexical_at_10": [
         "claim:candidate-gramota199-onfim-instructional-text",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
@@ -5426,7 +5618,7 @@
     },
     {
       "case_id": "macro_gramota222_posadnik_ru",
-      "vector_scan_ms": 0.49420000000100117,
+      "vector_scan_ms": 0.867099999995844,
       "lexical_at_10": [
         "claim:candidate-gramota222-letter-to-posadnik"
       ],
@@ -5447,7 +5639,7 @@
     },
     {
       "case_id": "macro_gramota222_posadnik_en",
-      "vector_scan_ms": 0.4591000000000349,
+      "vector_scan_ms": 0.7841999999945983,
       "lexical_at_10": [
         "claim:candidate-gramota222-letter-to-posadnik"
       ],
@@ -5464,7 +5656,7 @@
     },
     {
       "case_id": "macro_gramota724_yugra_ru",
-      "vector_scan_ms": 0.4150000000008731,
+      "vector_scan_ms": 1.037400000001071,
       "lexical_at_10": [
         "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
@@ -5483,7 +5675,7 @@
     },
     {
       "case_id": "macro_gramota724_yugra_en",
-      "vector_scan_ms": 0.39310000000114087,
+      "vector_scan_ms": 0.8822000000000116,
       "lexical_at_10": [
         "claim:candidate-gramota724-yugra-tribute-expedition"
       ],
@@ -5502,7 +5694,7 @@
     },
     {
       "case_id": "macro_v2_pregnancy_ru",
-      "vector_scan_ms": 0.905800000000454,
+      "vector_scan_ms": 1.092899999996007,
       "lexical_at_10": [
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
@@ -5575,7 +5767,7 @@
     },
     {
       "case_id": "macro_v2_pregnancy_en",
-      "vector_scan_ms": 0.8652000000001863,
+      "vector_scan_ms": 1.5005000000019209,
       "lexical_at_10": [
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
@@ -5638,7 +5830,7 @@
     },
     {
       "case_id": "macro_v2_labor_ru",
-      "vector_scan_ms": 1.1699999999982538,
+      "vector_scan_ms": 1.4570999999996275,
       "lexical_at_10": [
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
@@ -5679,7 +5871,7 @@
     },
     {
       "case_id": "macro_v2_labor_en",
-      "vector_scan_ms": 1.2945000000036089,
+      "vector_scan_ms": 2.277699999998731,
       "lexical_at_10": [
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -5716,7 +5908,7 @@
     },
     {
       "case_id": "macro_v2_newborn_ru",
-      "vector_scan_ms": 0.9686999999976251,
+      "vector_scan_ms": 1.5384000000049127,
       "lexical_at_10": [
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -5749,7 +5941,7 @@
     },
     {
       "case_id": "macro_v2_newborn_en",
-      "vector_scan_ms": 0.9459999999962747,
+      "vector_scan_ms": 1.873700000003737,
       "lexical_at_10": [
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
@@ -5757,9 +5949,9 @@
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
-        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
-        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts"
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk"
       ],
       "hybrid_at_10": [
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -5768,9 +5960,9 @@
         "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
-        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
-        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts"
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk"
       ],
       "lexical_at_20": [
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -5779,9 +5971,9 @@
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
-        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
-        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts"
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk"
       ],
       "hybrid_at_20": [
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -5790,15 +5982,15 @@
         "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
-        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
-        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts"
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v2_lactation_ru",
-      "vector_scan_ms": 0.8773000000001048,
+      "vector_scan_ms": 1.4261000000042259,
       "lexical_at_10": [
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:livestock-swine-membership",
@@ -5851,7 +6043,7 @@
     },
     {
       "case_id": "macro_v2_lactation_en",
-      "vector_scan_ms": 0.8320000000021537,
+      "vector_scan_ms": 1.5990999999994528,
       "lexical_at_10": [
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "claim:foundations-haz-02-exposure-not-illness",
@@ -5915,7 +6107,7 @@
     },
     {
       "case_id": "macro_v2_foodborne_ru",
-      "vector_scan_ms": 0.8513000000020838,
+      "vector_scan_ms": 1.0794999999998254,
       "lexical_at_10": [
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ"
       ],
@@ -5936,7 +6128,7 @@
     },
     {
       "case_id": "macro_v2_foodborne_en",
-      "vector_scan_ms": 0.8967999999949825,
+      "vector_scan_ms": 1.518000000003667,
       "lexical_at_10": [
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:candidate-v2-foodborne-symptoms-vary-by-germ"
@@ -5959,7 +6151,7 @@
     },
     {
       "case_id": "macro_v2_slip_ru",
-      "vector_scan_ms": 0.45509999999922,
+      "vector_scan_ms": 0.7550000000046566,
       "lexical_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:residual-nature-ice-current-thin-areas",
@@ -6012,7 +6204,7 @@
     },
     {
       "case_id": "macro_v2_slip_en",
-      "vector_scan_ms": 0.40099999999802094,
+      "vector_scan_ms": 0.6955999999991036,
       "lexical_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
       ],
@@ -6033,7 +6225,7 @@
     },
     {
       "case_id": "macro_v2_ice_strength_ru",
-      "vector_scan_ms": 0.4337999999988824,
+      "vector_scan_ms": 0.9382999999943422,
       "lexical_at_10": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:place-outdoors-microterrain-patches"
@@ -6058,7 +6250,7 @@
     },
     {
       "case_id": "macro_v2_ice_strength_en",
-      "vector_scan_ms": 0.4032999999981257,
+      "vector_scan_ms": 0.7033999999985099,
       "lexical_at_10": [
         "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
@@ -6115,7 +6307,7 @@
     },
     {
       "case_id": "macro_v2_melting_ice_ru",
-      "vector_scan_ms": 0.5307000000029802,
+      "vector_scan_ms": 0.6510999999954947,
       "lexical_at_10": [
         "claim:candidate-v2-near-melting-ice-has-less-strength"
       ],
@@ -6136,7 +6328,7 @@
     },
     {
       "case_id": "macro_v2_melting_ice_en",
-      "vector_scan_ms": 0.3609999999971478,
+      "vector_scan_ms": 1.048899999994319,
       "lexical_at_10": [
         "claim:candidate-v2-near-melting-ice-has-less-strength"
       ],
@@ -6157,7 +6349,7 @@
     },
     {
       "case_id": "macro_v3_helmet_ru",
-      "vector_scan_ms": 0.5061999999961699,
+      "vector_scan_ms": 1.1244999999980791,
       "lexical_at_10": [
         "claim:candidate-novgorod-helmet-half-mask-find"
       ],
@@ -6176,7 +6368,7 @@
     },
     {
       "case_id": "macro_v3_helmet_en",
-      "vector_scan_ms": 0.4970000000030268,
+      "vector_scan_ms": 1.3312000000005355,
       "lexical_at_10": [
         "claim:candidate-novgorod-helmet-half-mask-find"
       ],
@@ -6195,7 +6387,7 @@
     },
     {
       "case_id": "macro_v3_psalter_ru",
-      "vector_scan_ms": 0.38119999999616994,
+      "vector_scan_ms": 0.7790999999997439,
       "lexical_at_10": [
         "claim:candidate-novgorod-psalter-eleventh-century"
       ],
@@ -6212,7 +6404,7 @@
     },
     {
       "case_id": "macro_v3_psalter_en",
-      "vector_scan_ms": 0.5380000000004657,
+      "vector_scan_ms": 1.1647999999986496,
       "lexical_at_10": [
         "claim:candidate-novgorod-psalter-eleventh-century",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
@@ -6237,7 +6429,7 @@
     },
     {
       "case_id": "macro_v4_letter8_ru",
-      "vector_scan_ms": 0.3890000000028522,
+      "vector_scan_ms": 0.9872000000032131,
       "lexical_at_10": [
         "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
@@ -6254,7 +6446,7 @@
     },
     {
       "case_id": "macro_v4_letter8_en",
-      "vector_scan_ms": 0.3672000000005937,
+      "vector_scan_ms": 0.6693999999988591,
       "lexical_at_10": [
         "claim:candidate-gramota8-wife-cow-redemption-letter"
       ],
@@ -6271,7 +6463,7 @@
     },
     {
       "case_id": "macro_v4_onfim202_ru",
-      "vector_scan_ms": 0.3863000000055763,
+      "vector_scan_ms": 0.782100000003993,
       "lexical_at_10": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
@@ -6302,7 +6494,7 @@
     },
     {
       "case_id": "macro_v4_onfim202_en",
-      "vector_scan_ms": 0.3712999999988824,
+      "vector_scan_ms": 0.702000000004773,
       "lexical_at_10": [
         "claim:candidate-gramota202-onfim-business-record-drawing",
         "claim:candidate-gramota199-onfim-instructional-text",
@@ -6327,7 +6519,7 @@
     },
     {
       "case_id": "macro_v4_letter213_ru",
-      "vector_scan_ms": 0.36129999999684514,
+      "vector_scan_ms": 0.7911999999996624,
       "lexical_at_10": [
         "claim:candidate-gramota213-official-obligations-document"
       ],
@@ -6348,7 +6540,7 @@
     },
     {
       "case_id": "macro_v4_letter213_en",
-      "vector_scan_ms": 0.41120000000228174,
+      "vector_scan_ms": 1.1317999999955646,
       "lexical_at_10": [
         "claim:candidate-gramota213-official-obligations-document"
       ],
@@ -6369,7 +6561,7 @@
     },
     {
       "case_id": "macro_v4_gusli_ru",
-      "vector_scan_ms": 0.5308999999979278,
+      "vector_scan_ms": 1.2383999999947264,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -6402,7 +6594,7 @@
     },
     {
       "case_id": "macro_v4_gusli_en",
-      "vector_scan_ms": 0.5,
+      "vector_scan_ms": 1.16019999999844,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds"
       ],
@@ -6423,7 +6615,7 @@
     },
     {
       "case_id": "macro_v3_child_development_ru",
-      "vector_scan_ms": 0.9011000000027707,
+      "vector_scan_ms": 2.296200000004319,
       "lexical_at_10": [
         "claim:candidate-v3-child-development-has-recognizable-periods",
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
@@ -6478,7 +6670,7 @@
     },
     {
       "case_id": "macro_v3_child_development_en",
-      "vector_scan_ms": 0.856500000001688,
+      "vector_scan_ms": 2.066899999997986,
       "lexical_at_10": [
         "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
         "claim:candidate-v3-child-development-has-recognizable-periods",
@@ -6521,7 +6713,7 @@
     },
     {
       "case_id": "macro_v3_puberty_ru",
-      "vector_scan_ms": 0.909799999993993,
+      "vector_scan_ms": 1.805899999999383,
       "lexical_at_10": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
@@ -6564,7 +6756,7 @@
     },
     {
       "case_id": "macro_v3_puberty_en",
-      "vector_scan_ms": 0.8742000000056578,
+      "vector_scan_ms": 1.5874999999941792,
       "lexical_at_10": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt"
       ],
@@ -6585,7 +6777,7 @@
     },
     {
       "case_id": "macro_v3_aging_cells_ru",
-      "vector_scan_ms": 0.8400000000037835,
+      "vector_scan_ms": 1.9495999999999185,
       "lexical_at_10": [
         "claim:candidate-v3-aging-changes-cell-function",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
@@ -6624,7 +6816,7 @@
     },
     {
       "case_id": "macro_v3_aging_cells_en",
-      "vector_scan_ms": 0.8211000000010245,
+      "vector_scan_ms": 1.5314999999973224,
       "lexical_at_10": [
         "claim:candidate-v3-aging-changes-cell-function",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
@@ -6653,7 +6845,7 @@
     },
     {
       "case_id": "macro_v3_aging_organs_ru",
-      "vector_scan_ms": 0.8960000000006403,
+      "vector_scan_ms": 1.2929000000003725,
       "lexical_at_10": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
         "claim:public-world-capacity-can-vary-day-to-day",
@@ -6678,7 +6870,7 @@
     },
     {
       "case_id": "macro_v3_aging_organs_en",
-      "vector_scan_ms": 0.8819999999977881,
+      "vector_scan_ms": 1.280399999996007,
       "lexical_at_10": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
         "claim:candidate-v3-aging-changes-cell-function"
@@ -6701,7 +6893,7 @@
     },
     {
       "case_id": "macro_v3_fracture_ru",
-      "vector_scan_ms": 0.8869000000049709,
+      "vector_scan_ms": 1.507900000004156,
       "lexical_at_10": [
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
@@ -6732,7 +6924,7 @@
     },
     {
       "case_id": "macro_v3_fracture_en",
-      "vector_scan_ms": 0.8317000000024564,
+      "vector_scan_ms": 1.0507999999972526,
       "lexical_at_10": [
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
@@ -6765,7 +6957,7 @@
     },
     {
       "case_id": "macro_v3_dislocation_ru",
-      "vector_scan_ms": 0.8117999999958556,
+      "vector_scan_ms": 0.9804999999978463,
       "lexical_at_10": [
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
@@ -6792,7 +6984,7 @@
     },
     {
       "case_id": "macro_v3_dislocation_en",
-      "vector_scan_ms": 0.9615000000048894,
+      "vector_scan_ms": 1.4602999999988242,
       "lexical_at_10": [
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature"
@@ -6817,7 +7009,7 @@
     },
     {
       "case_id": "macro_v3_oral_health_ru",
-      "vector_scan_ms": 0.9791000000041095,
+      "vector_scan_ms": 1.5083000000013271,
       "lexical_at_10": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide"
@@ -6842,7 +7034,7 @@
     },
     {
       "case_id": "macro_v3_oral_health_en",
-      "vector_scan_ms": 0.9588000000003376,
+      "vector_scan_ms": 1.5817999999999302,
       "lexical_at_10": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel"
       ],
@@ -6863,7 +7055,7 @@
     },
     {
       "case_id": "macro_v3_disability_ru",
-      "vector_scan_ms": 1.015400000003865,
+      "vector_scan_ms": 2.102099999996426,
       "lexical_at_10": [
         "claim:candidate-v3-disability-reflects-health-and-context-interaction",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
@@ -6919,7 +7111,7 @@
     },
     {
       "case_id": "macro_v3_disability_en",
-      "vector_scan_ms": 0.9596999999994296,
+      "vector_scan_ms": 1.5835000000006403,
       "lexical_at_10": [
         "claim:candidate-v3-disability-reflects-health-and-context-interaction"
       ],
@@ -6940,7 +7132,7 @@
     },
     {
       "case_id": "macro_v5_fever_ru",
-      "vector_scan_ms": 0.9386000000013155,
+      "vector_scan_ms": 1.5126000000018394,
       "lexical_at_10": [
         "claim:candidate-v5-fever-is-not-itself-a-disease",
         "claim:candidate-v5-infections-cause-most-fevers",
@@ -6971,7 +7163,7 @@
     },
     {
       "case_id": "macro_v5_fever_en",
-      "vector_scan_ms": 0.9763000000020838,
+      "vector_scan_ms": 1.5541999999986729,
       "lexical_at_10": [
         "claim:candidate-v5-infections-cause-most-fevers",
         "claim:candidate-v5-fever-is-not-itself-a-disease"
@@ -6994,12 +7186,12 @@
     },
     {
       "case_id": "macro_v5_sleep_ru",
-      "vector_scan_ms": 0.9047000000064145,
+      "vector_scan_ms": 1.3608000000022002,
       "lexical_at_10": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:foundations-earth-01-ecological-tolerance",
-        "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:acute-sleep-loss-performance",
+        "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -7022,8 +7214,8 @@
       "lexical_at_20": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:foundations-earth-01-ecological-tolerance",
-        "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:acute-sleep-loss-performance",
+        "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -7031,8 +7223,7 @@
         "claim:fauna-fish-low-oxygen",
         "claim:fauna-fish-summer-night-oxygen",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-mammals-moose-ecosystem-engineering"
+        "claim:fauna-animal-habituation"
       ],
       "hybrid_at_20": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
@@ -7047,14 +7238,13 @@
         "claim:fauna-fish-low-oxygen",
         "claim:fauna-fish-summer-night-oxygen",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-mammals-moose-ecosystem-engineering"
+        "claim:fauna-animal-habituation"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v5_sleep_en",
-      "vector_scan_ms": 0.8827000000019325,
+      "vector_scan_ms": 1.3366000000023632,
       "lexical_at_10": [
         "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
         "claim:candidate-v5-sleep-is-basic-human-need"
@@ -7077,7 +7267,7 @@
     },
     {
       "case_id": "macro_v5_birch_language_ru",
-      "vector_scan_ms": 0.5675000000046566,
+      "vector_scan_ms": 0.6936999999961699,
       "lexical_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian"
@@ -7100,7 +7290,7 @@
     },
     {
       "case_id": "macro_v5_birch_language_en",
-      "vector_scan_ms": 0.46590000000287546,
+      "vector_scan_ms": 0.7233999999953085,
       "lexical_at_10": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
@@ -7131,7 +7321,7 @@
     },
     {
       "case_id": "macro_v6_language_ru",
-      "vector_scan_ms": 0.4709999999977299,
+      "vector_scan_ms": 0.7062999999980093,
       "lexical_at_10": [
         "claim:later-novgorod-judicial-charter",
         "claim:candidate-gramota213-official-obligations-document",
@@ -7204,7 +7394,7 @@
     },
     {
       "case_id": "macro_v6_language_en",
-      "vector_scan_ms": 0.4563999999954831,
+      "vector_scan_ms": 0.733699999997043,
       "lexical_at_10": [
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
@@ -7239,7 +7429,8 @@
         "claim:social-alphabet-exercise-records-text",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
       ],
       "hybrid_at_20": [
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
@@ -7251,13 +7442,14 @@
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
-        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
+        "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "macro_v6_names_ru",
-      "vector_scan_ms": 0.4308000000019092,
+      "vector_scan_ms": 0.8910000000032596,
       "lexical_at_10": [
         "claim:social-kin-letter-reports-protection-request",
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"
@@ -7278,7 +7470,7 @@
     },
     {
       "case_id": "macro_v6_names_en",
-      "vector_scan_ms": 0.4195000000036089,
+      "vector_scan_ms": 0.7395000000033178,
       "lexical_at_10": [
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
         "claim:social-kin-letter-reports-protection-request",
@@ -7307,7 +7499,7 @@
     },
     {
       "case_id": "macro_v6_literacy_ru",
-      "vector_scan_ms": 0.42700000000331784,
+      "vector_scan_ms": 0.7664000000004307,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ],
@@ -7324,7 +7516,7 @@
     },
     {
       "case_id": "macro_v6_literacy_en",
-      "vector_scan_ms": 0.3885000000009313,
+      "vector_scan_ms": 0.9216000000014901,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting"
       ],
@@ -7341,7 +7533,7 @@
     },
     {
       "case_id": "macro_v6_weapons_ru",
-      "vector_scan_ms": 0.5852000000013504,
+      "vector_scan_ms": 0.8469000000040978,
       "lexical_at_10": [
         "claim:transport-winter-sledge-1220",
         "claim:transport-horse-sledge-equipment",
@@ -7366,7 +7558,7 @@
     },
     {
       "case_id": "macro_v6_weapons_en",
-      "vector_scan_ms": 0.5605999999970663,
+      "vector_scan_ms": 0.8515000000043074,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour"
       ],
@@ -7387,7 +7579,7 @@
     },
     {
       "case_id": "macro_v6_warfare_ru",
-      "vector_scan_ms": 0.3964999999952852,
+      "vector_scan_ms": 0.8850000000020373,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
@@ -7420,7 +7612,7 @@
     },
     {
       "case_id": "macro_v6_warfare_en",
-      "vector_scan_ms": 0.38959999999497086,
+      "vector_scan_ms": 0.7952999999979511,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
       ],
@@ -7441,7 +7633,7 @@
     },
     {
       "case_id": "macro_v6_marriage_ru",
-      "vector_scan_ms": 0.4709000000002561,
+      "vector_scan_ms": 0.7062999999980093,
       "lexical_at_10": [
         "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
         "claim:candidate-v7-gramota9-reports-another-wife",
@@ -7468,7 +7660,7 @@
     },
     {
       "case_id": "macro_v6_marriage_en",
-      "vector_scan_ms": 0.445400000004156,
+      "vector_scan_ms": 0.6952000000019325,
       "lexical_at_10": [
         "claim:candidate-v7-gramota9-reports-another-wife",
         "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
@@ -7501,7 +7693,7 @@
     },
     {
       "case_id": "macro_v6_status_ru",
-      "vector_scan_ms": 0.4316000000035274,
+      "vector_scan_ms": 0.6814000000013039,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
@@ -7538,7 +7730,7 @@
     },
     {
       "case_id": "macro_v6_status_en",
-      "vector_scan_ms": 0.43549999999959255,
+      "vector_scan_ms": 0.8992999999973108,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection"
@@ -7563,7 +7755,7 @@
     },
     {
       "case_id": "macro_v6_sickness_ru",
-      "vector_scan_ms": 0.9887999999991735,
+      "vector_scan_ms": 1.5234999999956926,
       "lexical_at_10": [
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
@@ -7626,7 +7818,7 @@
     },
     {
       "case_id": "macro_v6_sickness_en",
-      "vector_scan_ms": 0.9230000000025029,
+      "vector_scan_ms": 1.3897999999971944,
       "lexical_at_10": [
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
@@ -7651,7 +7843,7 @@
     },
     {
       "case_id": "macro_v6_injury_ru",
-      "vector_scan_ms": 0.88470000000234,
+      "vector_scan_ms": 1.4889000000039232,
       "lexical_at_10": [
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
@@ -7708,7 +7900,7 @@
     },
     {
       "case_id": "macro_v6_injury_en",
-      "vector_scan_ms": 0.8930000000036671,
+      "vector_scan_ms": 1.4458000000013271,
       "lexical_at_10": [
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
@@ -7753,7 +7945,7 @@
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
-        "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level"
+        "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk"
       ],
       "hybrid_at_20": [
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
@@ -7781,7 +7973,7 @@
     },
     {
       "case_id": "macro_v6_government_ru",
-      "vector_scan_ms": 0.45530000000144355,
+      "vector_scan_ms": 0.7407999999995809,
       "lexical_at_10": [
         "claim:later-novgorod-judicial-charter",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
@@ -7854,7 +8046,7 @@
     },
     {
       "case_id": "macro_v6_government_en",
-      "vector_scan_ms": 0.42659999999887077,
+      "vector_scan_ms": 0.7468000000008033,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
@@ -7907,7 +8099,7 @@
     },
     {
       "case_id": "macro_v6_diplomacy_ru",
-      "vector_scan_ms": 0.44539999999688007,
+      "vector_scan_ms": 1.029900000001362,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
         "claim:residual-law-visible-injury-and-witness",
@@ -7942,7 +8134,7 @@
     },
     {
       "case_id": "macro_v6_diplomacy_en",
-      "vector_scan_ms": 0.43809999999939464,
+      "vector_scan_ms": 0.6803999999974621,
       "lexical_at_10": [
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
         "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
@@ -7983,7 +8175,7 @@
     },
     {
       "case_id": "macro_v6_crime_ru",
-      "vector_scan_ms": 0.4276000000027125,
+      "vector_scan_ms": 0.7140999999974156,
       "lexical_at_10": [
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry"
@@ -8006,7 +8198,7 @@
     },
     {
       "case_id": "macro_v6_crime_en",
-      "vector_scan_ms": 0.40649999999732245,
+      "vector_scan_ms": 0.707300000001851,
       "lexical_at_10": [
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:social-authority-letter-relates-theft-inquiry",
@@ -8031,7 +8223,7 @@
     },
     {
       "case_id": "macro_v6_education_ru",
-      "vector_scan_ms": 0.42220000000088476,
+      "vector_scan_ms": 0.9466000000029453,
       "lexical_at_10": [
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
@@ -8064,7 +8256,7 @@
     },
     {
       "case_id": "macro_v6_education_en",
-      "vector_scan_ms": 0.41069999999308493,
+      "vector_scan_ms": 0.9547000000020489,
       "lexical_at_10": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
@@ -8089,7 +8281,7 @@
     },
     {
       "case_id": "macro_v6_recreation_ru",
-      "vector_scan_ms": 0.5144000000000233,
+      "vector_scan_ms": 1.166400000001886,
       "lexical_at_10": [
         "claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds",
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -8144,7 +8336,7 @@
     },
     {
       "case_id": "macro_v6_recreation_en",
-      "vector_scan_ms": 0.5095999999975902,
+      "vector_scan_ms": 0.8896999999997206,
       "lexical_at_10": [
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops"
       ],
@@ -8165,7 +8357,7 @@
     },
     {
       "case_id": "macro_v6_moon_ru",
-      "vector_scan_ms": 0.45010000000183936,
+      "vector_scan_ms": 1.0409999999974389,
       "lexical_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
         "claim:research-flood-can-leave-high-water-mark-types",
@@ -8194,7 +8386,7 @@
     },
     {
       "case_id": "macro_v6_moon_en",
-      "vector_scan_ms": 0.4389000000010128,
+      "vector_scan_ms": 0.5351000000009662,
       "lexical_at_10": [
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"
       ],
@@ -8215,7 +8407,7 @@
     },
     {
       "case_id": "macro_v6_food_hygiene_ru",
-      "vector_scan_ms": 0.24799999999959255,
+      "vector_scan_ms": 0.6949000000022352,
       "lexical_at_10": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination"
@@ -8238,7 +8430,7 @@
     },
     {
       "case_id": "macro_v6_food_hygiene_en",
-      "vector_scan_ms": 0.25319999999919673,
+      "vector_scan_ms": 0.7707999999984168,
       "lexical_at_10": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
@@ -8263,7 +8455,7 @@
     },
     {
       "case_id": "macro_v9_iron_humidity_ru",
-      "vector_scan_ms": 0.5729999999966822,
+      "vector_scan_ms": 1.3184000000037486,
       "lexical_at_10": [
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
       ],
@@ -8284,7 +8476,7 @@
     },
     {
       "case_id": "macro_v9_iron_humidity_en",
-      "vector_scan_ms": 0.4996000000028289,
+      "vector_scan_ms": 0.7474999999976717,
       "lexical_at_10": [
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
       ],
@@ -8305,7 +8497,7 @@
     },
     {
       "case_id": "macro_v9_iron_oil_ru",
-      "vector_scan_ms": 0.4739999999947031,
+      "vector_scan_ms": 1.3066000000035274,
       "lexical_at_10": [
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"
       ],
@@ -8326,7 +8518,7 @@
     },
     {
       "case_id": "macro_v9_iron_oil_en",
-      "vector_scan_ms": 0.5627999999996973,
+      "vector_scan_ms": 1.204700000002049,
       "lexical_at_10": [
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
         "claim:candidate-v9-bare-iron-rust-humidity-salts"
@@ -8349,7 +8541,7 @@
     },
     {
       "case_id": "macro_v9_otrok_ru",
-      "vector_scan_ms": 0.5210999999981141,
+      "vector_scan_ms": 1.1238000000012107,
       "lexical_at_10": [
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
       ],
@@ -8380,7 +8572,7 @@
     },
     {
       "case_id": "macro_v9_otrok_en",
-      "vector_scan_ms": 0.5123999999996158,
+      "vector_scan_ms": 0.7540999999982887,
       "lexical_at_10": [
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector"
       ],
@@ -8409,8 +8601,8 @@
         "claim:social-written-complaint-may-assert-compensation",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:rp-mother-household-care-succession",
-        "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
         "claim:social-dispute-message-reports-dispatch",
+        "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
         "claim:social-written-prayer-relates-invocation",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions"
@@ -8418,7 +8610,7 @@
     },
     {
       "case_id": "macro_v9_veche_ru",
-      "vector_scan_ms": 0.5081999999965774,
+      "vector_scan_ms": 1.1713999999992666,
       "lexical_at_10": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
@@ -8456,7 +8648,7 @@
     },
     {
       "case_id": "macro_v9_veche_en",
-      "vector_scan_ms": 0.5423000000009779,
+      "vector_scan_ms": 1.195400000004156,
       "lexical_at_10": [
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
       ],
@@ -8473,8 +8665,8 @@
       ],
       "inapplicable_at_20": [
         "claim:public-world-witness-account-has-bounded-scope",
-        "claim:public-world-local-authority-is-one-escalation-option",
         "claim:candidate-gramota213-official-obligations-document",
+        "claim:public-world-local-authority-is-one-escalation-option",
         "claim:residual-law-debt-denial-witness-oath",
         "claim:residual-law-dependency-and-agreement",
         "claim:rp-mother-household-care-succession",
@@ -8486,17 +8678,17 @@
         "claim:candidate-v5-gramota600-reports-khotynians-context",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
         "claim:residual-law-unauthorized-horse-use",
         "claim:residual-law-visible-injury-and-witness",
-        "claim:residual-law-monthly-and-longer-interest",
-        "claim:residual-law-widow-separate-property"
+        "claim:residual-law-monthly-and-longer-interest"
       ]
     },
     {
       "case_id": "residual_snow_crust_ru",
-      "vector_scan_ms": 0.5258000000030734,
+      "vector_scan_ms": 1.4455999999991036,
       "lexical_at_10": [
         "claim:residual-nature-snow-melt-refreeze-crust",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
@@ -8545,7 +8737,7 @@
     },
     {
       "case_id": "residual_snow_load_ru",
-      "vector_scan_ms": 0.48990000000048894,
+      "vector_scan_ms": 1.0408000000024913,
       "lexical_at_10": [
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:residual-nature-snow-uneven-roof-loading",
@@ -8599,7 +8791,7 @@
     },
     {
       "case_id": "residual_river_ice_ru",
-      "vector_scan_ms": 0.413300000000163,
+      "vector_scan_ms": 0.9752000000007683,
       "lexical_at_10": [
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:candidate-v2-near-melting-ice-has-less-strength",
@@ -8652,7 +8844,7 @@
     },
     {
       "case_id": "residual_twilight_ru",
-      "vector_scan_ms": 0.7382000000070548,
+      "vector_scan_ms": 1.0146999999997206,
       "lexical_at_10": [
         "claim:residual-nature-pole-star-precession-limit",
         "claim:foundations-haz-05-slope-water-triggers"
@@ -8679,7 +8871,7 @@
     },
     {
       "case_id": "residual_polaris_epoch_ru",
-      "vector_scan_ms": 0.778600000005099,
+      "vector_scan_ms": 0.6345000000001164,
       "lexical_at_10": [
         "claim:residual-nature-pole-star-precession-limit"
       ],
@@ -8700,7 +8892,7 @@
     },
     {
       "case_id": "residual_moon_evening_ru",
-      "vector_scan_ms": 0.4845000000059372,
+      "vector_scan_ms": 0.7396000000007916,
       "lexical_at_10": [
         "claim:residual-nature-moon-phase-time-of-visibility"
       ],
@@ -8721,7 +8913,7 @@
     },
     {
       "case_id": "residual_writing_surface_ru",
-      "vector_scan_ms": 0.4864999999990687,
+      "vector_scan_ms": 0.7186000000001513,
       "lexical_at_10": [
         "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
       ],
@@ -8744,7 +8936,7 @@
     },
     {
       "case_id": "residual_written_register_ru",
-      "vector_scan_ms": 0.4724999999962165,
+      "vector_scan_ms": 0.6904999999969732,
       "lexical_at_10": [
         "claim:residual-v1-household-and-official-birch-registers-differ",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
@@ -8769,7 +8961,7 @@
     },
     {
       "case_id": "residual_graphic_not_spoken_ru",
-      "vector_scan_ms": 0.4473999999972875,
+      "vector_scan_ms": 0.8438999999998487,
       "lexical_at_10": [
         "claim:social-priest-fragment-relates-office-address",
         "claim:public-world-witness-account-has-bounded-scope"
@@ -8798,7 +8990,7 @@
     },
     {
       "case_id": "residual_trace_types_ru",
-      "vector_scan_ms": 0.39020000000164146,
+      "vector_scan_ms": 0.7181999999957043,
       "lexical_at_10": [
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -8808,7 +9000,8 @@
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:troitsky-cereal-millet-remains-probably-link-to-poozerie",
-        "claim:troitsky-nonwood-plant-remains-probably-local"
+        "claim:troitsky-nonwood-plant-remains-probably-local",
+        "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use"
       ],
       "hybrid_at_10": [
         "claim:residual-traces-animal-sign-absence-limit",
@@ -8831,7 +9024,8 @@
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:troitsky-cereal-millet-remains-probably-link-to-poozerie",
-        "claim:troitsky-nonwood-plant-remains-probably-local"
+        "claim:troitsky-nonwood-plant-remains-probably-local",
+        "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use"
       ],
       "hybrid_at_20": [
         "claim:residual-traces-animal-sign-absence-limit",
@@ -8844,13 +9038,14 @@
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
         "claim:troitsky-cereal-millet-remains-probably-link-to-poozerie",
-        "claim:troitsky-nonwood-plant-remains-probably-local"
+        "claim:troitsky-nonwood-plant-remains-probably-local",
+        "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "residual_trace_decay_en",
-      "vector_scan_ms": 0.42089999999734573,
+      "vector_scan_ms": 0.6398999999946682,
       "lexical_at_10": [
         "claim:residual-traces-animal-trace-weather-decay",
         "claim:residual-traces-deadwood-feeding-signs",
@@ -8901,7 +9096,7 @@
     },
     {
       "case_id": "residual_offices_1230_ru",
-      "vector_scan_ms": 0.5803000000014435,
+      "vector_scan_ms": 0.903199999993376,
       "lexical_at_10": [
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
@@ -8928,7 +9123,7 @@
     },
     {
       "case_id": "residual_veche_oath_en",
-      "vector_scan_ms": 0.4995000000053551,
+      "vector_scan_ms": 0.7442000000010012,
       "lexical_at_10": [
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
         "claim:public-world-witness-account-has-bounded-scope",
@@ -8963,7 +9158,7 @@
     },
     {
       "case_id": "residual_office_relation_ru",
-      "vector_scan_ms": 0.5051999999996042,
+      "vector_scan_ms": 0.7010999999984051,
       "lexical_at_10": [
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
@@ -9018,7 +9213,7 @@
     },
     {
       "case_id": "residual_hundred_1230_en",
-      "vector_scan_ms": 0.5027000000045518,
+      "vector_scan_ms": 0.7019999999974971,
       "lexical_at_10": [
         "claim:residual-law-zakup-loss-context",
         "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
@@ -9057,6 +9252,7 @@
         "claim:residual-law-widow-separate-property",
         "claim:residual-law-zakup-complaint-not-escape",
         "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:rp-minor-children-conditional-care"
@@ -9076,6 +9272,7 @@
         "claim:residual-law-widow-separate-property",
         "claim:residual-law-zakup-complaint-not-escape",
         "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:rp-minor-children-conditional-care"
@@ -9084,7 +9281,7 @@
     },
     {
       "case_id": "residual_law_witness_ru",
-      "vector_scan_ms": 0.5717000000004191,
+      "vector_scan_ms": 1.0366999999969266,
       "lexical_at_10": [
         "claim:residual-law-zakup-loss-context",
         "claim:rp-caretaker-principal-goods",
@@ -9134,7 +9331,7 @@
     },
     {
       "case_id": "residual_law_debt_oath_en",
-      "vector_scan_ms": 0.5713999999934458,
+      "vector_scan_ms": 0.7422000000005937,
       "lexical_at_10": [
         "claim:residual-law-visible-injury-and-witness",
         "claim:residual-law-debt-denial-witness-oath",
@@ -9183,7 +9380,7 @@
     },
     {
       "case_id": "residual_postpartum_recovery_ru",
-      "vector_scan_ms": 1.0996000000013737,
+      "vector_scan_ms": 1.3044000000008964,
       "lexical_at_10": [
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
@@ -9212,7 +9409,7 @@
     },
     {
       "case_id": "residual_postpartum_colostrum_en",
-      "vector_scan_ms": 1.6802000000025146,
+      "vector_scan_ms": 2.2497000000003027,
       "lexical_at_10": [
         "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
@@ -9255,7 +9452,7 @@
     },
     {
       "case_id": "residual_tree_birch_ru",
-      "vector_scan_ms": 0.5437999999994645,
+      "vector_scan_ms": 0.8870999999999185,
       "lexical_at_10": [
         "claim:residual-tree-betula-pendula-deciduous",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves"
@@ -9280,7 +9477,7 @@
     },
     {
       "case_id": "reconstructed_clothing_work_ru",
-      "vector_scan_ms": 0.4157000000050175,
+      "vector_scan_ms": 0.6416000000026543,
       "lexical_at_10": [
         "claim:technology-newcomen-boundary",
         "claim:technology-motor-boundary",
@@ -9338,7 +9535,7 @@
     },
     {
       "case_id": "reconstructed_smith_waste_en",
-      "vector_scan_ms": 0.40060000000084983,
+      "vector_scan_ms": 0.5323000000062166,
       "lexical_at_10": [
         "claim:ordinary-life-smith-anvil-hammer-tongs",
         "claim:ordinary-life-smith-needs-iron-and-fuel",
@@ -9397,7 +9594,7 @@
     },
     {
       "case_id": "reconstructed_household_repair_ru",
-      "vector_scan_ms": 0.7317000000039116,
+      "vector_scan_ms": 0.7704000000012456,
       "lexical_at_10": [
         "claim:construction-construction-pottery-products",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
@@ -9424,7 +9621,7 @@
     },
     {
       "case_id": "reconstructed_reciprocity_en",
-      "vector_scan_ms": 0.45289999999658903,
+      "vector_scan_ms": 0.5092999999978929,
       "lexical_at_10": [
         "claim:ordinary-life-help-can-create-reciprocity"
       ],
@@ -9445,7 +9642,7 @@
     },
     {
       "case_id": "reconstructed_apprenticeship_ru",
-      "vector_scan_ms": 0.5267000000021653,
+      "vector_scan_ms": 0.4175000000032014,
       "lexical_at_10": [
         "claim:human-life-learning-observation-practice-feedback",
         "claim:human-life-learning-feedback-can-shape-practice",
@@ -9478,28 +9675,32 @@
     },
     {
       "case_id": "reconstructed_kin_labor_en",
-      "vector_scan_ms": 0.9710999999952037,
+      "vector_scan_ms": 0.7160000000003492,
       "lexical_at_10": [
-        "claim:human-life-household-change-can-redistribute-labor-care"
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "hybrid_at_10": [
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-starting-household-needs-coordination",
-        "claim:human-life-kin-can-offer-contextual-support"
+        "claim:human-life-kin-can-offer-contextual-support",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "lexical_at_20": [
-        "claim:human-life-household-change-can-redistribute-labor-care"
+        "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "hybrid_at_20": [
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:human-life-starting-household-needs-coordination",
-        "claim:human-life-kin-can-offer-contextual-support"
+        "claim:human-life-kin-can-offer-contextual-support",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "reconstructed_lodging_ru",
-      "vector_scan_ms": 0.36089999999967404,
+      "vector_scan_ms": 0.4555999999938649,
       "lexical_at_10": [
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
@@ -9536,7 +9737,7 @@
     },
     {
       "case_id": "reconstructed_oral_recreation_en",
-      "vector_scan_ms": 0.5054999999993015,
+      "vector_scan_ms": 0.4017000000021653,
       "lexical_at_10": [
         "claim:human-life-performance-needs-willing-participants-suitable-occasion",
         "claim:human-life-oral-retelling-varies-with-context",
@@ -9573,7 +9774,7 @@
     },
     {
       "case_id": "reconstructed_boat_load_ru",
-      "vector_scan_ms": 0.5987999999997555,
+      "vector_scan_ms": 0.8531000000002678,
       "lexical_at_10": [
         "claim:practical-boat-shore-transfer",
         "claim:practical-boat-load"
@@ -9596,7 +9797,7 @@
     },
     {
       "case_id": "reconstructed_net_maintenance_en",
-      "vector_scan_ms": 0.45770000000629807,
+      "vector_scan_ms": 0.8474000000060187,
       "lexical_at_10": [
         "claim:practical-net-dry",
         "claim:ordinary-life-shoes-protect-feet",
@@ -9625,7 +9826,7 @@
     },
     {
       "case_id": "reconstructed_dwelling_draft_ru",
-      "vector_scan_ms": 0.37410000000090804,
+      "vector_scan_ms": 0.7937999999994645,
       "lexical_at_10": [
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:practical-dwelling-smoke-draft",
@@ -9652,7 +9853,7 @@
     },
     {
       "case_id": "reconstructed_textile_repair_en",
-      "vector_scan_ms": 0.38259999999718275,
+      "vector_scan_ms": 0.8193000000028405,
       "lexical_at_10": [
         "claim:practical-leather-patch",
         "claim:practical-leather-stitch",
@@ -9701,7 +9902,7 @@
     },
     {
       "case_id": "residual_tree_pine_spruce_en",
-      "vector_scan_ms": 0.8735000000015134,
+      "vector_scan_ms": 1.1712999999945168,
       "lexical_at_10": [
         "claim:residual-tree-picea-abies-evergreen-needles",
         "claim:residual-tree-pinus-sylvestris-evergreen-needles"

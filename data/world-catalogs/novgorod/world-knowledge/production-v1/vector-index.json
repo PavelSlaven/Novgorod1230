@@ -11280,6 +11280,76 @@
       "retrieval_text": "Сосновое пековое покрытие Пековое покрытие, идентифицированное в источнике; не любая сосновая смола, канифоль или уже обработанный предмет. В описанной Odegaard и соавторами традиции юго-запада Северной Америки нагретое сосновое пековое покрытие на плетёной корзине делало именно эту систему водонепроницаемой. Это наблюдение о сочетании определённого пека, плетёной основы и нанесённого покрытия, не общее свойство всякой смолы, доски, шва, лодки или тары. Оно не задаёт сцепление с древесиной, долговечность, рецепт, наличие материалов или новгородскую практику."
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage:en",
+      "target_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. Where a monastic household is already distributing food, serving, waiting, and passage around the available prepared portions can need coordination; a slippery surface, containers, and available hands change the course of it. This creates neither a duty to distribute, a food supply, a standing queue, nor a right to a portion. passage queue household goods convoy watch monastic distribution food serving"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage:ru",
+      "target_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. Там, где монастырское хозяйство уже ведёт раздачу, подача, ожидание и проход вокруг доступных приготовленных порций могут требовать согласования; скользкая площадка, тара и число рук меняют ход дела. Это не создаёт обязанность раздавать, запас пищи, постоянную очередь или право на порцию. проход очередь семейные вещи обоз дозор монастырская раздача похлёбка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title:en",
+      "target_ref": "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. During family preparations for a new household, ordinary portable goods can be shown, packed, or carried by agreement between people. This proves neither a marriage, a dowry's contents, consent of the parties, nor transfer of ownership, access, or control over an item. passage queue household goods convoy watch marriage preparation dowry"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title:ru",
+      "target_ref": "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. При семейных приготовлениях к новому хозяйству обычные переносимые вещи могут показывать, укладывать или везти по договорённости между людьми. Это не доказывает брак, состав приданого, согласие сторон или переход собственности, доступа и контроля над вещью. проход очередь семейные вещи обоз дозор свадебные приготовления вещи для хозяйства приданое"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage:en",
+      "target_ref": "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. Where a transfer of the deceased is already under way, relatives or neighbours can coordinate bearers and a passable route: mud, a narrow footbridge, or a crowd change how they carry and whom they ask to lend a hand. This establishes neither a mandatory rite, burial right, procession composition, nor a concrete grave. passage queue household goods convoy watch funeral passage bearers"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage:ru",
+      "target_ref": "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. Если перенос покойного уже происходит, родня или соседи могут согласовать носильщиков и проходимый путь: грязь, узкий мосток или толпа меняют, как несут и кого просят подать руку. Это не устанавливает обязательный обряд, право погребения, состав процессии или наличие конкретной могилы. проход очередь семейные вещи обоз дозор похоронное сопровождение носилки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal:en",
+      "target_ref": "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. People can temporarily agree to watch an approach, hand attention to another person, and give an available agreed signal; fatigue, weather, and visibility affect that agreement. This establishes neither a city guard service, a universal duty, a defined watch shift, nor a right to detain passers-by. passage queue household goods convoy watch local watch attention handover signal"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal:ru",
+      "target_ref": "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. Люди могут на время договориться наблюдать за подходом, передать внимание другому и подать доступный условленный сигнал; усталость, погода и видимость влияют на такую договорённость. Это не устанавливает городскую караульную службу, всеобщую обязанность, состав смены или право задерживать прохожих. проход очередь семейные вещи обоз дозор местный дозор смена наблюдения сигнал"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling:en",
+      "target_ref": "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. At an already established control point, a request to inspect a convoy can require stopping, opening accessible loads, then repacking and securing them; weather, light, and road conditions affect the delay. This creates neither the inspector's authority, a toll, compulsory inspection, nor a defined cargo. passage queue household goods convoy watch cargo inspection control point"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling:ru",
+      "target_ref": "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. У уже заданного контрольного места просьба осмотреть обоз может потребовать остановиться, открыть доступную поклажу, затем уложить и закрепить её снова; погода, свет и дорога влияют на задержку. Это не создаёт полномочие проверяющего, пошлину, обязательный досмотр или состав груза. проход очередь семейные вещи обоз дозор осмотр груза контрольное место"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions:en",
       "target_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
       "domain": "chemistry_process",
@@ -11586,6 +11656,48 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Резной торф и сушка Качественные связи свежесрезанного торфа, сушки и погоды. Если резной торф уже оставлен для воздушной сушки, переворачивание или рыхлая укладка могут открыть материал для дальнейшей потери воды. Это editorial reconstruction, не обязательный рецепт, местный способ, объём, топливо или готовность к использованию. торф резка торфа сушка переворачивание торфа укладка торфа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair:en",
+      "target_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Hoop fit on staves Qualitative relation of a hoop, stave compression, and vessel joints. In a staved vessel, a hoop holds the staves in compression; changing its fit can change stave contact and gaps, and therefore possible leakage. This promises neither repair nor tightness, vessel presence, or a particular working method. hoop staves barrel tighten hoop barrel leak stave gap"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair:ru",
+      "target_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Посадка обруча на клёпках Качественная связь обруча, сжатия клёпок и стыков сосуда. В сосуде из клёпок обруч удерживает клёпки сжатыми; изменение его посадки может изменить прилегание клёпок и щели, а значит и возможную течь. Это не обещание ремонта, герметичности, наличия бочки или конкретного способа работы. обруч клёпки бочка подтянуть обруч течь бочки щель между клёпками"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water:en",
+      "target_ref": "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water settling and cloth filtration Qualitative relations of suspended matter, still water, and cloth as filter media. Water left undisturbed can let some suspended matter settle, and cloth can retain some particles. By themselves these steps neither guarantee nor establish disinfection, removal of dissolved substances, or water safety. muddy water settling cloth filter water sediment strain water"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water:ru",
+      "target_ref": "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Отстаивание и тканевая фильтрация воды Качественные связи взвесей, покоя воды и ткани как фильтрующей среды. Вода, оставленная в покое, может дать осесть части взвесей, а ткань может задержать часть частиц. Эти шаги сами по себе не гарантируют и не подтверждают обеззараживания, удаления растворённых веществ или безопасности воды. мутная вода отстаивание ткань осадок в воде процедить воду"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment:en",
+      "target_ref": "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wick-fed flame Qualitative relation of capillary fuel feed, flame, and soot. A fibrous wick can feed liquid fuel to a flame by capillary action; exposed wick length can affect combustion and soot. An overlong wick can contribute to soot, but this supplies no universal length, adjustment, brightness, consumption, or result for a particular lamp. wick lamp soot trim wick smoky lamp capillary wick"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment:ru",
+      "target_ref": "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Фитильная подача топлива Качественная связь капиллярной подачи топлива, пламени и копчения. Волокнистый фитиль может капиллярно подавать жидкое топливо к пламени; длина открытого фитиля может влиять на горение и копчение. Слишком длинный фитиль может быть причиной копоти, но это не даёт универсальной длины, настройки, яркости, расхода или исхода конкретной лампы. фитиль лампа копоть подрезать фитиль коптит лампа капиллярный фитиль"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path:en",
@@ -23908,6 +24020,20 @@
       "retrieval_text": "Крашение текстиля"
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:water-clarification-by-settling-and-cloth:en",
+      "target_ref": "wk:chemistry_process:water-clarification-by-settling-and-cloth",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water settling and cloth filtration Qualitative relations of suspended matter, still water, and cloth as filter media. muddy water settling cloth filter"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:water-clarification-by-settling-and-cloth:ru",
+      "target_ref": "wk:chemistry_process:water-clarification-by-settling-and-cloth",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Отстаивание и тканевая фильтрация воды Качественные связи взвесей, покоя воды и ткани как фильтрующей среды. мутная вода отстаивание ткань"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:weak-acid-base-incomplete-neutralization:en",
       "target_ref": "wk:chemistry_process:weak-acid-base-incomplete-neutralization",
       "domain": "chemistry_process",
@@ -29578,6 +29704,20 @@
       "retrieval_text": "stationary charge distance force Стационарные электрические заряды действуют друг на друга силой, зависящей от величины зарядов и расстояния между ними."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:staved-vessel-hoop-fit:en",
+      "target_ref": "wk:physics_material_science:staved-vessel-hoop-fit",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Hoop fit on staves Qualitative relation of a hoop, stave compression, and vessel joints. hoop staves barrel"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:staved-vessel-hoop-fit:ru",
+      "target_ref": "wk:physics_material_science:staved-vessel-hoop-fit",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Посадка обруча на клёпках Качественная связь обруча, сжатия клёпок и стыков сосуда. обруч клёпки бочка"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:stone-density-compressive-response:en",
       "target_ref": "wk:physics_material_science:stone-density-compressive-response",
       "domain": "physics_material_science",
@@ -29786,6 +29926,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Капиллярное сцепление влажного зернистого материала Сцепление зёрен через жидкостно-воздушные границы между ними. влажный песок сцепление капиллярные мостики"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wick-fed-flame:en",
+      "target_ref": "wk:physics_material_science:wick-fed-flame",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wick-fed flame Qualitative relation of capillary fuel feed, flame, and soot. wick lamp soot"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:wick-fed-flame:ru",
+      "target_ref": "wk:physics_material_science:wick-fed-flame",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Фитильная подача топлива Качественная связь капиллярной подачи топлива, пламени и копчения. фитиль лампа копоть"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:wood-anisotropy-moisture:en",
@@ -31522,6 +31676,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Просьба о защите Заявленная просьба о защите защита"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-community-environment:en",
+      "target_ref": "wk:social_law_economy:reconstructed-community-environment",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Community environment and agreement Conditional links of people, passage, goods, and temporary coordination in ordinary public situations. passage queue household goods convoy watch"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-community-environment:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-community-environment",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Общественная среда и договорённость Условные связи людей, прохода, вещей и временной координации в ordinary общественных ситуациях. проход очередь семейные вещи обоз дозор"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-household-formation:en",

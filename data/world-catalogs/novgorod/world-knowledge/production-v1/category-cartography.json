@@ -298,6 +298,34 @@
     }
   ],
   "source_inventory": [
+    {
+      "id": "place-community-environments-v1",
+      "source_path": "place-community-environments-v1.json",
+      "domains": [
+        "social_law_economy"
+      ],
+      "location_applicability": "Explicit ordinary Novgorod 1200–1300 editorial reconstruction within already established contexts.",
+      "applicability": {
+        "resource": "existing portions, goods and available help",
+        "material": "no automatic objects or supplies",
+        "process": "carrying, serving, packing, requested inspection and temporary observation",
+        "npc": "local agreements and roles, not fixed decisions or legal powers"
+      },
+      "coverage": "5 independently plausibility-reviewed compositional premises; not institutional completeness."
+    },
+    {
+      "id": "place-practical-processes-v1",
+      "source_path": "place-practical-processes-v1.json",
+      "domains": ["chemistry_process", "physics_material_science"],
+      "location_applicability": "Universal bounded physical and process premises; no vessel, water source, lamp, repair, or scene condition.",
+      "applicability": {
+        "resource": "already established vessel, water, fuel, and cloth only",
+        "material": "staved vessel, suspended matter, cloth, wick, and liquid fuel only when present",
+        "process": "qualitative fit, clarification, and combustion context",
+        "npc": "no expertise, procedure, or outcome"
+      },
+      "coverage": "3 independently reviewed bounded premises; no repair guarantee, water-safety result, or universal wick adjustment."
+    },
     {"id":"place-milk-dye-processes-v1","source_path":"place-milk-dye-processes-v1.json","domains":["chemistry_process","craft_technology"],"location_applicability":"Universal bounded process relations or explicit Novgorod 1200–1300 editorial reconstruction; no local industry or scene presence.","applicability":{"resource":"already established material only","material":"milk, textile, living tree or cut peat as applicable","process":"qualitative transformation, care and drying","npc":"work context, not competence or outcome"},"coverage":"6 independently reviewed process premises; not completeness."},
     {"id":"place-orchard-peat-processes-v1","source_path":"place-orchard-peat-processes-v1.json","domains":["biology_physiology","craft_technology"],"location_applicability":"Universal bounded process relations or explicit Novgorod 1200–1300 editorial reconstruction; no local industry or scene presence.","applicability":{"resource":"already established material only","material":"milk, textile, living tree or cut peat as applicable","process":"qualitative transformation, care and drying","npc":"work context, not competence or outcome"},"coverage":"4 independently reviewed process premises; not completeness."},
     {"id":"place-thermal-processes-v1","source_path":"place-thermal-processes-v1.json","domains":["craft_technology"],"location_applicability":"Universal process premises or explicitly qualified Novgorod reconstruction; no current worksite, resource or outcome.","applicability":{"resource":"existing contextual source only","material":"hide, fish, bark and grain when established","process":"wet-work separation, preservation and controlled heating","npc":"work options, not guaranteed competence or decisions"},"coverage":"4 bounded process premises; not environmental completeness."},
@@ -1550,7 +1578,7 @@
     {"id":"reconstructed-household-space-and-maintenance","domain":"architecture_settlement","subdomain":"ordinary_household_upkeep","family":"Managed household space, heat, storage and repair pressure","location_applicability":"Household structures only when separately established","applicability":{"resource":"fuel and provisions only when present","material":"household fabric and stored goods","process":"upkeep, heating and storage","npc":"household-role context only"},"coverage":"partial: no building, room contents, stock, repair state or current need.","claim_refs":["claim:ordinary-life-smith-fire-needs-managed-space","claim:ordinary-life-household-needs-heat-food-storage","claim:ordinary-life-household-repairs-compete-with-new-goods","claim:place-outdoors-means-upkeep-and-environment","claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually","claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel","claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention","claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces","claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"]},
     {"id":"reconstructed-work-status-and-reciprocity","domain":"social_behavior","subdomain":"ordinary_work_and_social_relations","family":"Work responsibility, reputation, reciprocity and bounded hospitality","location_applicability":"Household, work and public interaction contexts","applicability":{"resource":"help and hospitality only when offered","material":"none","process":"cooperation, learning and reputation context","npc":"non-deterministic social context"},"coverage":"partial: no relation, obligation, consent, wealth, motive or decision.","claim_refs":["claim:ordinary-life-master-has-work-responsibility","claim:ordinary-life-worker-means-and-duty-vary","claim:ordinary-life-apprentice-learns-and-assists","claim:ordinary-life-status-does-not-fix-wealth","claim:ordinary-life-public-reputation-follows-conduct","claim:ordinary-life-public-and-private-conduct-differ","claim:ordinary-life-hospitality-is-resource-and-trust-bounded","claim:ordinary-life-help-can-create-reciprocity","claim:ordinary-life-private-needs-shape-decisions"]},
     {"id":"reconstructed-learning-and-apprenticeship","domain":"npc_daily_life","subdomain":"learning_and_household_practice","family":"Learning through observation, tasks, feedback and household constraints","location_applicability":"Household and work contexts when persons and tasks are established","applicability":{"resource":"time, task and materials only when available","material":"ordinary learning objects only when present","process":"learning and assistance context","npc":"non-deterministic capability context"},"coverage":"partial: no NPC skill, age, task assignment, schedule or decision.","claim_refs":["claim:human-life-learning-observation-practice-feedback","claim:human-life-learning-tasks-can-match-capacity-risk","claim:human-life-household-tasks-can-offer-learning","claim:human-life-learning-feedback-can-shape-practice","claim:human-life-learning-needs-time-task-material-access","claim:human-life-household-pressure-can-interrupt-learning"]},
-    {"id":"reconstructed-household-formation-and-kin","domain":"social_law_economy","subdomain":"ordinary_household_and_kin_context","family":"Household formation, kin support and changing labour or care arrangements","location_applicability":"Household and kin contexts without asserting a particular household","applicability":{"resource":"residence and provisioning only when established","material":"household goods only when present","process":"coordination, care and labour context","npc":"non-deterministic kin context"},"coverage":"partial: no status, legal entitlement, household membership or actual obligation.","claim_refs":["claim:human-life-household-formation-needs-residence-provisioning","claim:human-life-household-change-can-redistribute-labor-care","claim:human-life-kin-can-offer-contextual-support","claim:human-life-kin-ties-can-create-competing-loyalties","claim:human-life-starting-household-needs-coordination","claim:human-life-relationship-change-can-alter-household-arrangement"]},
+    {"id":"reconstructed-household-formation-and-kin","domain":"social_law_economy","subdomain":"ordinary_household_and_kin_context","family":"Household formation, kin support and changing labour or care arrangements","location_applicability":"Household and kin contexts without asserting a particular household","applicability":{"resource":"residence and provisioning only when established","material":"household goods only when present","process":"coordination, care and labour context","npc":"non-deterministic kin context"},"coverage":"partial: no status, legal entitlement, household membership or actual obligation.","claim_refs":["claim:human-life-household-formation-needs-residence-provisioning","claim:human-life-household-change-can-redistribute-labor-care","claim:human-life-kin-can-offer-contextual-support","claim:human-life-kin-ties-can-create-competing-loyalties","claim:human-life-starting-household-needs-coordination","claim:human-life-relationship-change-can-alter-household-arrangement","claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"]},
     {"id":"reconstructed-standing-lodging-and-travel","domain":"npc_daily_life","subdomain":"ordinary_social_access_and_lodging","family":"Standing, lodging, visitors and travel delay context","location_applicability":"Household, lodging and travel contexts when separately established","applicability":{"resource":"space and provisions only when available","material":"lodging and travel means only when present","process":"stay, visit and travel context","npc":"non-deterministic access and capacity context"},"coverage":"partial: no current visitor, lodging, route, delay, invitation or consent.","claim_refs":["claim:human-life-perceived-role-can-shape-expectations","claim:human-life-capacity-experience-help-vary","claim:human-life-standing-can-affect-social-access","claim:human-life-category-does-not-determine-means-ties-skill","claim:human-life-audience-can-interpret-standing-contextually","claim:human-life-shared-role-can-be-negotiated","claim:human-life-reception-depends-on-trust-ties-means","claim:human-life-lodging-trades-space-privacy-comfort-security","claim:human-life-visitors-add-resource-demands","claim:human-life-travellers-may-seek-local-information","claim:human-life-travel-conditions-can-justify-delay","claim:human-life-stay-can-enable-consented-exchange"]},
     {"id":"reconstructed-oral-recreation","domain":"npc_daily_life","subdomain":"ordinary_recreation_and_oral_memory","family":"Oral recreation, performance and retelling context","location_applicability":"Gatherings and households when participants and occasion are established","applicability":{"resource":"time only when available","material":"voice, memory, body or objects only when present","process":"voluntary recreation and retelling","npc":"non-deterministic participation context"},"coverage":"partial: no event, audience, content, memory or participation state.","claim_refs":["claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory","claim:human-life-recreation-competes-for-time","claim:human-life-performance-needs-willing-participants-suitable-occasion","claim:human-life-oral-retelling-varies-with-context","claim:human-life-recreation-participation-can-be-uneven-voluntary","claim:human-life-recreation-can-use-voice-memory-body-or-objects"]},
     {"id":"reconstructed-boat-handling","domain":"material_culture","subdomain":"ordinary_watercraft_handling","family":"Small-boat loading, shore transfer, weather care, leaks and unloading","location_applicability":"Watercraft and shore contexts only when vessel and conditions are established","applicability":{"resource":"cargo and watercraft only when present","material":"boat and cargo","process":"qualitative handling and transfer","npc":"crew context only"},"coverage":"partial: no boat, cargo, weather, leak, capacity or handling result.","claim_refs":["claim:practical-boat-load","claim:practical-boat-shore-transfer","claim:practical-boat-weather-water","claim:practical-boat-leak","claim:practical-boat-unload-order"]},
@@ -3545,6 +3573,7 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:force-contact-geometry",
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:population-physics-load-deformation",
         "claim:population-physics-elastic-recovery",
         "claim:population-physics-stress-failure",
@@ -3814,6 +3843,7 @@
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
         "claim:population-material-wood-combustion",
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
         "claim:population-material-wood-pyrolysis",
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
@@ -4161,7 +4191,10 @@
         "claim:foundations-ms-25-persuasion-context",
         "claim:foundations-ms-26-group-context",
         "claim:foundations-ms-38-reference-group",
-        "claim:research-pooled-work-social-loafing"
+        "claim:research-pooled-work-social-loafing",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
       ]
     },
     {
@@ -4247,7 +4280,8 @@
         "claim:social-written-prayer-relates-invocation",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
-        "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces"
+        "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage"
       ]
     },
     {
@@ -4480,7 +4514,8 @@
       },
       "coverage": "bounded household-treatment safety premise, not universal chemical-removal impossibility",
       "claim_refs": [
-        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
       ]
     },
     {
@@ -7277,6 +7312,34 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {
+        "source_path": "place-community-environments-v1.json",
+        "claim_count": 5,
+        "family_refs": [
+          "social-group-influence-and-coordination",
+          "reconstructed-household-formation-and-kin",
+          "social-religious-context"
+        ],
+        "location_refs": [
+          "potential:village_lane",
+          "potential:churchyard",
+          "potential:monastery_yard",
+          "potential:household",
+          "potential:control_point"
+        ],
+        "consumer_refs": [
+          "potential:ordinary-context-grounding"
+        ],
+        "limits": "Editorial reconstruction only; no obligatory rite, public duty, title transfer, jurisdiction, tariff or guard service."
+      },
+      {
+        "source_path": "place-practical-processes-v1.json",
+        "claim_count": 3,
+        "family_refs": ["mechanics-statics-support", "process-household-water-treatment-limits", "process-combustion-and-pyrolysis"],
+        "location_refs": ["potential:household", "potential:workshop", "potential:place-first-environment"],
+        "consumer_refs": ["potential:ordinary-context-grounding"],
+        "limits": "Bounded modern-source transfers only; no historical local attestation, vessel or lamp presence, repair guarantee, water-safety result, or fixed wick setting."
+      },
       {"source_path":"place-milk-dye-processes-v1.json","claim_count":6,"family_refs":["process-food-preservation-and-fermentation","reconstructed-food-handling","process-textile-dye-and-collagen-tanning","reconstructed-textile-and-leather-repair"],"location_refs":["potential:household","potential:workshop","potential:orchard","potential:peat_worksite"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No recipe, fixed calendar, historic industry, stock, safe threshold or guaranteed result."},
       {"source_path":"place-orchard-peat-processes-v1.json","claim_count":4,"family_refs":["biology-plant-growth-and-physiology","craft-rural-processing"],"location_refs":["potential:household","potential:workshop","potential:orchard","potential:peat_worksite"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No recipe, fixed calendar, historic industry, stock, safe threshold or guaranteed result."},
       {"source_path":"place-thermal-processes-v1.json","claim_count":4,"family_refs":["craft-material-classes","craft-rural-processing"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern process evidence and explicit analogy/editorial reconstruction; no historical local attestation or current scene state."},

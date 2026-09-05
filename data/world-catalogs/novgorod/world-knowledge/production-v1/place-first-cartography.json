@@ -80,7 +80,13 @@
           ],
           "claim_refs": [
             "claim:settlement-cart-transport",
-            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+            "claim:population-material-wood-combustion",
+            "claim:environment-p1-horse-transport",
+            "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
           ],
           "coverage": "supported",
           "limits": "Не приписывать право доступа или охрану без owner/policy.",
@@ -284,7 +290,8 @@
             "claim:domestic-animal-context",
             "claim:place-outdoors-means-upkeep-and-environment",
             "claim:place-outdoors-season-work-space-reallocation",
-            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"
           ],
           "coverage": "supported",
           "limits": "Не выводить состав семьи или имущество автоматически.",
@@ -315,7 +322,11 @@
           ],
           "claim_refs": [
             "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-            "claim:ordinary-life-household-repairs-compete-with-new-goods"
+            "claim:ordinary-life-household-repairs-compete-with-new-goods",
+            "claim:population-material-wood-combustion",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
           ],
           "coverage": "supported",
           "limits": "Maintenance — вопрос состояния, не готовое событие.",
@@ -368,13 +379,13 @@
           ],
           "claim_refs": [
             "claim:residual-traces-animal-trace-weather-decay",
-            "claim:place-outdoors-cover-opening-and-work-visibility"
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:sound-wind-temperature-gradients-refract"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Конкретные ветер, пыль, обзор и следы принадлежат состоянию сцены.",
-          "residual_needs": [
-            "Связь открытого края с ветром, пылью, дальним звуком, обзором и сохранностью человеческих следов."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "edge_risks_and_upkeep",
@@ -516,13 +527,14 @@
           ],
           "claim_refs": [
             "claim:river-flow-affects-sediment-transport-deposition",
-            "claim:research-flood-can-leave-high-water-mark-types"
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Наблюдение не заменяет проверку реального состояния.",
-          "residual_needs": [
-            "Связь течения и погоды с обычными наблюдаемыми сигналами воды и следами береговой работы."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "channel_danger",
@@ -1360,7 +1372,8 @@
             "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
             "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
             "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
-            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
           ],
           "coverage": "partial",
           "limits": "No width or current quality.",
@@ -1377,13 +1390,15 @@
           "claim_refs": [
             "claim:environment-p1-horse-transport",
             "claim:settlement-cart-transport",
-            "claim:ordinary-life-fisher-needs-water-and-gear"
+            "claim:ordinary-life-fisher-needs-water-and-gear",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
           ],
-          "coverage": "partial",
-          "limits": "Roster, schedule and current traffic are scene state.",
-          "residual_needs": [
-            "general material traces of repeated cart, hoof and pedestrian passage"
-          ]
+          "coverage": "supported",
+          "limits": "Текущие люди, грузы и расписание задаются сценой. Повторное движение, его следы, смена хозяйственной работы и согласованный проход покрыты качественно; это не полный roster деревни.",
+          "residual_needs": []
         },
         {
           "facet": "lane_senses_and_marks",
@@ -1395,7 +1410,9 @@
             "claim:residual-traces-animal-trace-types",
             "claim:research-footprint-track-interpretation-can-depend-on-substrate",
             "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
-            "claim:place-outdoors-activity-sensory-pulses"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
           "coverage": "partial",
           "limits": "Traces do not reveal private life.",
@@ -1411,7 +1428,10 @@
           ],
           "claim_refs": [
             "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
           ],
           "coverage": "partial",
           "limits": "No upkeep completion.",
@@ -2060,7 +2080,8 @@
           "claim_refs": [
             "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
             "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
-            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
           ],
           "coverage": "partial",
           "limits": "Статус и допуск не угадываются.",
@@ -2121,8 +2142,9 @@
             "Как сезонная чистка, снег и дожди меняют связность?"
           ],
           "claim_refs": [
-            "claim:water-permeability-connected-pores",
-            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
           ],
           "coverage": "supported",
           "limits": "Не утверждать конкретный монастырь или его устройство.",
@@ -2136,7 +2158,8 @@
           ],
           "claim_refs": [
             "claim:construction-auxiliary-construction-work",
-            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+            "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage"
           ],
           "coverage": "supported",
           "limits": "Роли/доступ требуют authoritative context.",
@@ -2220,8 +2243,11 @@
             "Какие следы колёс, костров, подков, поломки и ремонта требуют time sensitivity?"
           ],
           "claim_refs": [
-            "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
-            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:residual-nature-twilight-solar-afterglow"
           ],
           "coverage": "supported",
           "limits": "Следы не являются tracking guarantee.",
@@ -2235,11 +2261,16 @@
           ],
           "claim_refs": [
             "claim:force-contact-geometry",
-            "claim:work-intensity-duration"
+            "claim:work-intensity-duration",
+            "claim:foundations-mat-02-wood-drying-crack-strength",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
           ],
-          "coverage": "supported",
-          "limits": "Не создаёт угрозы или инфраструктуру автоматически.",
-          "residual_needs": []
+          "coverage": "partial",
+          "limits": "Не создаёт угрозы или инфраструктуру автоматически. Supported mechanical/upkeep relations do not by themselves cover the listed security, cold and navigation needs.",
+          "residual_needs": [
+            "Связный контекст разбойной угрозы, потери пути и холодового воздействия при дорожной остановке; текущие refs преимущественно покрывают груз, утомление, повреждение дерева, грунт и уход."
+          ]
         }
       ]
     },
@@ -2261,7 +2292,11 @@
           ],
           "claim_refs": [
             "claim:force-contact-geometry",
-            "claim:wood-liquid-moisture-change"
+            "claim:population-material-wood-loading",
+            "claim:population-material-wood-decay",
+            "claim:foundations-mat-02-wood-drying-crack-strength",
+            "claim:foundations-haz-05-slope-water-triggers",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
           ],
           "coverage": "supported",
           "limits": "Не утверждать конструкцию конкретного моста.",
@@ -2274,10 +2309,14 @@
             "Какие манёвры, ожидание и помощь нужны при грузе или плохой погоде?"
           ],
           "claim_refs": [
-            "claim:force-contact-geometry"
+            "claim:force-contact-geometry",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:practical-work-tradeoff",
+            "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+            "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling"
           ],
           "coverage": "supported",
-          "limits": "Не делать мост neutral access zone.",
+          "limits": "Обычный встречный проход и ожидание — композиция свободного рабочего пути, ограниченных средств и местной договорённости, не обязательный регламент. Осмотр поклажи применим лишь при уже заданном контрольном месте и просьбе; не делает любой мост заставой или neutral access zone.",
           "residual_needs": []
         },
         {
@@ -2287,7 +2326,12 @@
             "Какие трещины, свежие доски, грязь и водяные отметки требуют осторожного чтения?"
           ],
           "claim_refs": [
-            "claim:wood-liquid-directional-uptake"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:foundations-mat-02-wood-drying-crack-strength",
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
           ],
           "coverage": "supported",
           "limits": "Не ставить диагноз конструкции из атмосферы.",
@@ -2300,7 +2344,13 @@
             "Какие ремонт, очистка, подпорка и сезонное закрытие нуждаются в history?"
           ],
           "claim_refs": [
-            "claim:household-trauma-unnecessary-movement-can-worsen"
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:population-material-wood-loading",
+            "claim:population-material-wood-decay",
+            "claim:foundations-haz-05-slope-water-triggers",
+            "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
           ],
           "coverage": "supported",
           "limits": "Не считать maintenance выполненной.",
@@ -2595,12 +2645,15 @@
             "Какая поливная, оградная и почвенная maintenance меняет состояние?"
           ],
           "claim_refs": [
-            "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
-            "claim:place-outdoors-clearing-and-trace-renewal"
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+            "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth"
           ],
-          "coverage": "supported",
+          "coverage": "partial",
           "limits": "Не заменять растениеводство декоративной статикой.",
-          "residual_needs": []
+          "residual_needs": [
+            "P2: plant-specific response of ordinary garden or orchard growth to frost, drought and animal damage; corn/soy seedling evidence does not transfer to other plants."
+          ]
         }
       ]
     },
@@ -2730,7 +2783,7 @@
           "coverage": "partial",
           "limits": "Метель, свет и конкретные следы — scene state.",
           "residual_needs": [
-            "P2: qualitative snow-surface sound and visible cold-breath cues beyond the supported drift, visibility, twilight and trace-overwrite relations; no exact temperature or scene observation required."
+            "P2: qualitative snow-surface sound and visible cold-breath cues beyond the supported drift, visibility, twilight and trace-overwrite relations; ordinary scene composition may name them only when conditions support it, without exact temperature or a promised observation."
           ]
         },
         {
@@ -2955,10 +3008,7 @@
             "claim:place-outdoors-season-work-space-reallocation",
             "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
             "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
-            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
-            "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
-            "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
-            "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"
+            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
           ],
           "residual_needs": [],
           "limits": "No family, guest, bed, privacy norm, available space or duty is materialized.",
@@ -2973,6 +3023,7 @@
             "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
             "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
             "claim:food-drying-depends-on-humidity-airflow",
+            "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
             "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
           ],
           "residual_needs": [],
@@ -2994,7 +3045,8 @@
             "claim:place-outdoors-season-work-space-reallocation",
             "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
             "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
-            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+            "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment"
           ],
           "residual_needs": [],
           "limits": "No lamp, window, sound source, observed trace, maintenance work or exact time of day is created.",
@@ -3052,7 +3104,9 @@
           "facet": "smoke_wax_fire_and_air",
           "coverage": "partial",
           "claim_refs": [
-            "claim:agriculture-fauna-borts-wax",
+            "claim:candle-wax-material",
+            "claim:candle-thread-wick",
+            "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
             "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
             "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
             "claim:water-can-cool-class-a-fire-fuel-and-flame",
@@ -3141,7 +3195,8 @@
             "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
             "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
             "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
-            "claim:place-dye-moving-submerged-textile-can-support-even-contact"
+            "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+            "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
           ],
           "coverage": "supported",
           "residual_needs": [],

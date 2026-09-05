@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "place-practical-processes-v1.json",
+    "verification-place-practical-processes-v1.json",
+    "place-community-environments-v1.json",
+    "verification-place-community-environments-v1.json",
     "place-milk-dye-processes-v1.json",
     "verification-place-milk-dye-processes-v1.json",
     "place-orchard-peat-processes-v1.json",

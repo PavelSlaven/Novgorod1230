@@ -3,6 +3,45 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-animal-trace-types",
+      "claim_ref": "claim:residual-traces-animal-trace-types",
+      "claim_digest": "92f11630b24d4b6061ed4de0f825de92dbc5f3162049df0ef47f2a1b3ebf3951",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-animal-trace-types",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of New Hampshire source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:residual-traces-animal-trace-types"],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "List of possible animal signs only; no species identification, local occurrence, encounter, count, time, or present-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-deadwood-feeding-signs",
+      "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "claim_digest": "fc26ca4d4147b86685b73dbb8d0c1cd346c71ab6f54806acb1ced06895f5ffed",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-deadwood-feeding-signs",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of New Hampshire source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:residual-traces-deadwood-feeding-signs"],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "Dead wood, insects and bird feeding signs only; no particular bird, occupancy, current presence, local observation, or identification rule."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-weather-decay",
+      "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "claim_digest": "11c8f9e8c1c4ad98376183ca399797641de3105564bbbca660a861f27e57052f",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-animal-trace-weather-decay",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of Maine source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:residual-traces-animal-trace-weather-decay"],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "Mechanisms of trace loss only; no exact age, local clock, species, encounter, current presence, or local-observation inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:residual-traces-absence-limit",
       "claim_ref": "claim:residual-traces-animal-sign-absence-limit",
       "claim_digest": "0f46fa3e80cf127301203aee20344bad7ed4d6a627ce45f30ecbbeb89830b164",

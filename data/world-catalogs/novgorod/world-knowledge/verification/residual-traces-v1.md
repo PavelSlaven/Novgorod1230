@@ -8,14 +8,14 @@ Reviewed live pages: University of New Hampshire, [Finding Animal Signs](https:/
 
 University of Maine says evidence does not remain forever: feathers blow away, weather and foot traffic wear down tracks, and scat breaks down into soil. The current RU/EN claim validly draws its explicitly labelled evidential inference: absence of surviving signs cannot prove that an animal never passed earlier, and possible loss cannot prove presence. It retains no weather-specific clock, species, encounter, current presence, or local-observation result.
 
-## Needs review — trace types and identification
+## Approved narrowed trace claims
 
-UNH directly lists tracks, disturbed leaves or soil, holes, chewed leaves, scat and scratch marks as possible animal signs. It does not establish the additional current claim that the kind of sign, by itself, cannot identify a particular animal. No approval: linked evidence supports the list, not that identification-limit relation.
+UNH directly lists tracks, disturbed leaves or soil, holes, chewed leaves, scat and scratch marks as possible animal signs. Current claim retains only this list and makes no species-identification or local-occurrence inference.
 
-## Needs review — deadwood signs and current presence
+## Approved narrowed deadwood signs
 
-UNH says dead trees are often home to insects and many birds feed on them and may leave signs on a tree. It does not support the current prescriptive requirement to compare damage with other evidence, nor the categorical conclusion that wood damage does not establish a bird's current presence. No approval for the full relation.
+UNH says dead trees are often home to insects; birds feeding on those insects may leave signs on a tree. Current claim retains only that possible relationship, not a prescribed comparison method or a conclusion about a bird's current presence.
 
-## Needs review — weather decay and exact age
+## Approved narrowed weather decay
 
-University of Maine directly supports wind displacement of feathers, weather and foot-traffic wear on tracks, and scat decomposition. It does not state that preservation alone cannot yield an exact age, or make the claimed local-conditions qualification. The source says evidence can *possibly* indicate how long it has been present. No approval for the stronger full claim; retain no exact-age inference from this source alone.
+University of Maine directly supports wind displacement of feathers, weather and foot-traffic wear on tracks, and scat decomposition. Current claim retains only these preservation mechanisms, with no exact-age or local-condition conclusion.

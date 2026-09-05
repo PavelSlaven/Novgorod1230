@@ -1,0 +1,95 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-1215-joint-delegation",
+      "claim_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+      "claim_digest": "c8687bb7646369768f49dccc57c7c992059efa51a7e904dde6912ec5accbde35",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent visual review of Nesin printed pp. 51–55, source-text reconciliation, and current RU/EN review; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-1215-joint-delegation"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#needs-review-1215-joint-mission",
+      "verdict": "NEEDS_REVIEW",
+      "limits": "The statement is directly found on printed p. 50, whereas cited evidence anchor is p. 51. Do not approve this evidence binding until anchor and source publication-page range are corrected; no standing competence or present delegation follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-1218-princely-distinction",
+      "claim_ref": "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+      "claim_digest": "cf8f4aed63c9cd802f317fc12955ed2e9a9cf66d1360074673c323d3ac0fe84b",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent visual review of Nesin printed p. 51 and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-1218-princely-distinction"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
+      "verdict": "APPROVE",
+      "limits": "1218/1219 political episode only; no universal status, competence, officeholder, or present-state rule."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-1229-veche-removal",
+      "claim_ref": "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
+      "claim_digest": "10f000fcf736be6bd64d986fd390dce53b0219ceab99f90544ba70adf9f350b5",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent visual review of Nesin printed p. 53 and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-1229-veche-removal"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
+      "verdict": "APPROVE",
+      "limits": "1228/1229 violent succession episode only; no regular, peaceful, universal, or present election procedure."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-1230-hundreds",
+      "claim_ref": "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "claim_digest": "d4b8dd41a0cd36337e6c8f2581fef54372b0cf0a022c27a309daeca0fd11b802",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent visual review of Nesin printed p. 54 and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-1230-hundreds"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
+      "verdict": "APPROVE",
+      "limits": "1230 property-division terminology only; no standardized territorial hundreds, officers, jurisdiction, map, or present administrative state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-mixed-court",
+      "claim_ref": "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+      "claim_digest": "9c6ef507278ce70beea2caa149bf324becfe9889ecd49a4aa597b7db7276acda",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Independent visual review of Yanin cited PDF page and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-mixed-court"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#approved-yanin-source-criticism",
+      "verdict": "APPROVE",
+      "limits": "Earlier mid-XII local-court comparator only; no 1230 court, procedure, availability, proof or remedy."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gov-law-v2-title-limit",
+      "claim_ref": "claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker",
+      "claim_digest": "b805024d7da352d66a93c9229a64ff3d704590c90fc36d20ca1c15332da78118",
+      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Independent visual review of Yanin cited PDF page and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-archbishop-title-limit"
+      ],
+      "review_ref": "verification/residual-government-law-v2.md#approved-yanin-source-criticism",
+      "verdict": "APPROVE",
+      "limits": "Post-1165 title-reading limitation only; no ecclesiastical competence, person, date or present cleric."
+    }
+  ]
+}

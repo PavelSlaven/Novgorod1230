@@ -54,8 +54,14 @@ Batch 07 has 100 independent WK-only reviews against the frozen 1,319-claim
 bundle. Full-bundle triage resolved seven false absence findings without
 changing the corpus; substantive domain assignments and refs were checked.
 It was clean under the former fixed-strata rule, not mixed-method acceptance.
-Batch 08 inputs are retained unreviewed after the method change; batch 09
-starts independent mixed generation. No corpus knowledge is discarded.
+Batch 08 inputs are retained unreviewed after the method change. Batch 09
+has 75 controlled and 25 independently generated free/adversarial cases,
+all reviewed against the 1,319-claim corpus after input freeze. It reports
+74/75 controlled and 25/25 free cases covered; the remaining need is the
+qualitative effect and limits of smoke in honeybee colony handling.
+Separate source verification is underway; no new bee-smoke claim is yet
+production. This batch is diagnostic and does not advance the 0/3 streak.
+No corpus knowledge is discarded.
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
 needs and 36 raw gap leads. It remains diagnostic. General-premise triage

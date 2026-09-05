@@ -222,8 +222,18 @@ Its generated inputs contain 75 controlled cases across ten independently
 chosen, unevenly sized strata and 25 free/adversarial cases from a separate
 generator. Counts, distinct IDs and the controlled 60 practical/natural/
 physical cases were checked. The free inputs have no preassigned domain or
-knowledge-need fields. Their classification and WK-only review are pending;
-input generation alone is not a clean acceptance result.
+knowledge-need fields. All 100 now have WK-only reviews: 74/75 controlled
+and 25/25 free cases are covered under the permitted reconstruction rule.
+The free reviewer froze open-ended classifications before reading WK.
+These are case labels, not automatic discoveries of missing cartography
+families. Root triage corrected unsafe priorities, overclaimed inscription
+identity and an assumed mill-gate direction in the review answers without
+changing inputs, classifications, corpus or game owners.
+One substantive controlled-case need remains: the qualitative effect and
+limits of smoke during honeybee colony handling (`b09core-054`). Narrow
+source-backed candidates are under separate verification, not yet included
+in production. Batch 09 is therefore diagnostic, not a clean acceptance
+hundred; the mixed streak remains 0/3.
 
 Contract §0.3 requires three consecutive diverse independent mixed batches
 of at least 100 cases with

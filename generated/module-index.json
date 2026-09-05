@@ -705,6 +705,7 @@
         "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set",
         "internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay",
         "production authoring approval: один независимый `APPROVE` на claim, exact",
+        "`editorial_reconstruction` source для игровых реконструкций: существующие",
         "internal `build-world-knowledge-vectors` и",
         "internal `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`:"
       ],

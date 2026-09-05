@@ -1,0 +1,185 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-01",
+      "claim_ref": "claim:residual-tree-betula-pendula-deciduous",
+      "claim_digest": "17a56d3658cfd1647c8bd5327034dd6786fa8a7ded0b116b79f3213a3cfc6beb",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-betula-pendula-deciduous",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-betula-deciduous"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-02",
+      "claim_ref": "claim:residual-tree-betula-pendula-simple-leaves",
+      "claim_digest": "d49fa875572c9c6f4ebd8eb27ab966e6f56a4b63f72e3923a0d60124b2249f2a",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-betula-pendula-simple-leaves",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-betula-leaves"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-03",
+      "claim_ref": "claim:residual-tree-betula-pendula-male-female-catkins",
+      "claim_digest": "23a0de62865595c63405f0c984634ed8acb317b591dbfe8eff024cadc7540192",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-betula-pendula-male-female-catkins",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-betula-catkins"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-04",
+      "claim_ref": "claim:residual-tree-betula-pendula-moist-soil",
+      "claim_digest": "a4e05465eac8082db98476c7badabc2cb57ee16130e4e6e9354c53fe7c313bae",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-betula-pendula-moist-soil",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-betula-moist-soil"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-05",
+      "claim_ref": "claim:residual-tree-pinus-sylvestris-evergreen-needles",
+      "claim_digest": "647d9e0e589cbbced9b9006f6e62598937d0f1383be904d5038bdca5d7d80d41",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-pinus-sylvestris-evergreen-needles",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-pinus-evergreen-needles"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-06",
+      "claim_ref": "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
+      "claim_digest": "b2f8242bd641c2791a9cf5958c31f9cbe2f0ca4741891f6733f62f64d3c4c717",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-pinus-cones-maturity"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-07",
+      "claim_ref": "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+      "claim_digest": "0f372394a31875188d3ba871713126e1d57ff987aaa1bb8b9ab00ad8189da878",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-pinus-dry-infertile-soil"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-08",
+      "claim_ref": "claim:residual-tree-picea-abies-evergreen-needles",
+      "claim_digest": "c4ad86e357f0dc8321e701224cf3a1c1a90d5934b744c163f2c65ed9327bc63d",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-picea-abies-evergreen-needles",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-picea-evergreen-needles"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-09",
+      "claim_ref": "claim:residual-tree-picea-abies-cones-brown-at-maturity",
+      "claim_digest": "7c7d9136f008ecc1dcea8183c80b0fee8dc5e84565b9eaf6880591a573856568",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-picea-abies-cones-brown-at-maturity",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-picea-cones-brown"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-10",
+      "claim_ref": "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
+      "claim_digest": "4fa36cd06ab7f77f83d7837acc4cbb54ead61eb2d4e5d2d247f53452202678e9",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-alnus-deciduous-leaves"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-11",
+      "claim_ref": "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
+      "claim_digest": "96e6c4c10fe7ed8a3b7d0eb29806b1ad806dd776de2d48c96387910802e59853",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-alnus-glutinosa-catkins-nutlets",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-alnus-catkins-nutlets"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:tree-properties-12",
+      "claim_ref": "claim:residual-tree-alnus-glutinosa-moist-soil",
+      "claim_digest": "89f47f626132f7fe9534673478814678ea05f3cd0fb89da54582d7e96d326510",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-tree-properties-v1.json#claim:residual-tree-alnus-glutinosa-moist-soil",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live UConn source review and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-tree-alnus-moist-soil"
+      ],
+      "review_ref": "verification/residual-tree-properties-v1.md#approved-species-properties",
+      "verdict": "APPROVE",
+      "limits": "Species property only; no regional occurrence, historical presence, local soil, seasonal calendar, scene object, materialization, or current world-state inference."
+    }
+  ]
+}

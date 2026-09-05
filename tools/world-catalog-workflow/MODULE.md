@@ -21,6 +21,10 @@
   digest проверенного claim/localizations/concepts/predicate/evidence/sources,
   evidence set и reviewer/candidate/limits metadata; runtime получает только
   `verification_ref`, не editorial ledger;
+- `editorial_reconstruction` source для игровых реконструкций: существующие
+  inference qualifiers сохраняются при compile; реконструкция не выдаётся за
+  direct/high/attested факт и не создаёт hard exclusion. Независимый approval
+  проверяет её plausibility, не требует выдуманного внешнего свидетельства;
 - internal `build-world-knowledge-vectors` и
   `benchmark-world-knowledge-vectors` CLI: строят pinned Giga-Embeddings flat
   index из compiled production pack и сравнивают lexical/hybrid retrieval на

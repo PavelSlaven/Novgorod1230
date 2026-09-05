@@ -127,7 +127,7 @@
       "anchor": {
         "section": "Троицкий список, статья 52"
       },
-      "note": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "note": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and says that the zakup is to receive pravda (justice or redress). Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
       "review_status": "approved"
     },
     {
@@ -197,7 +197,7 @@
       "anchor": {
         "section": "Троицкий список, статья 88"
       },
-      "note": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
+      "note": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also distinguishes children’s claim to their mother’s property. A household is not depicted as undivided property of one spouse. Source assertion concerns the documentary norm only. Temporal and regional compatibility are inferred at medium confidence; no current status, guilt, court, exact tariff, order or outcome is asserted.",
       "review_status": "approved"
     },
     {
@@ -634,7 +634,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing."
+        "value": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and says that the zakup is to receive pravda (justice or redress)."
       },
       "polarity": "support",
       "applicability": {
@@ -921,7 +921,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse."
+        "value": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also distinguishes children’s claim to their mother’s property. A household is not depicted as undivided property of one spouse."
       },
       "polarity": "support",
       "applicability": {
@@ -1314,7 +1314,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
       "locale": "ru",
-      "runtime_text": "Статья 52 Пространной Правды различает бегство закупа и открытый уход искать деньги либо обращение к князю или судьям из-за обиды господина. За последние случаи текст запрещает обращать закупа в обельное холопство и требует разбирательства.",
+      "runtime_text": "Статья 52 Пространной Правды различает бегство закупа и открытый уход искать деньги либо обращение к князю или судьям из-за обиды господина. За последние случаи текст запрещает обращать закупа в обельное холопство и предписывает «дати ему правду» — предоставить правду, то есть справедливость или защиту.",
       "search_aliases": [
         "закуп",
         "жалоба",
@@ -1326,7 +1326,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
       "locale": "en",
-      "runtime_text": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and requires a hearing.",
+      "runtime_text": "Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and says that the zakup is to receive pravda (justice or redress).",
       "search_aliases": [
         "zakup",
         "complaint",
@@ -1480,7 +1480,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-law-widow-separate-property",
       "locale": "ru",
-      "runtime_text": "Статья 88 Пространной Правды выделяет долю вдовы и то, что муж ей передал, отдельно от мужнего наследства; она также сохраняет детям имущество их матери при наличии последующей жены. Семейное хозяйство не описано как нераздельная собственность одного супруга.",
+      "runtime_text": "Статья 88 Пространной Правды выделяет долю вдовы и то, что муж ей передал, отдельно от мужнего наследства; она также отдельно оговаривает имущество матери, причитающееся её детям. Семейное хозяйство не описано как нераздельная собственность одного супруга.",
       "search_aliases": [
         "вдова",
         "доля",
@@ -1491,7 +1491,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-law-widow-separate-property",
       "locale": "en",
-      "runtime_text": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also preserves children’s maternal property where a subsequent wife exists. A household is not depicted as undivided property of one spouse.",
+      "runtime_text": "Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also distinguishes children’s claim to their mother’s property. A household is not depicted as undivided property of one spouse.",
       "search_aliases": [
         "widow",
         "portion",

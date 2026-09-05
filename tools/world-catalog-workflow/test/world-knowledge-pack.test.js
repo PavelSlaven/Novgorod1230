@@ -98,6 +98,29 @@ test('World Knowledge records describe facts, not an action whitelist', async ()
   assert.equal('recipes' in bundle, false);
 });
 
+test('reviewed editorial reconstruction preserves uncertainty through the existing compiler', async () => {
+  const pack = await pilotPack();
+  const claim = pack.claims[0];
+  const evidence = pack.evidence.find(record => record.evidence_ref === claim.evidence_refs[0]);
+  const source = pack.sources.find(record => record.source_ref === evidence.source_ref);
+  pack.sources.push({ ...source, source_ref: 'source:test-editorial-reconstruction',
+    source_kind: 'editorial_reconstruction', citation: 'research/test-reconstruction.md' });
+  evidence.source_ref = 'source:test-editorial-reconstruction';
+  claim.qualifiers = { typicality: 'unknown', confidence: 'medium', directness: 'editorial' };
+  assert.deepEqual(validateWorldKnowledgeAuthoringPack(pack), { ok: true, errors: [] });
+  const compiled = compileWorldKnowledgePack(pack).claims.find(record => record.claim_ref === claim.claim_ref);
+  assert.deepEqual(compiled.qualifiers, claim.qualifiers);
+  for (const mutation of [
+    { directness: 'direct' }, { confidence: 'high' }, { typicality: 'attested' }
+  ]) {
+    const invalid = structuredClone(pack);
+    Object.assign(invalid.claims[0].qualifiers, mutation);
+    assert.match(validateWorldKnowledgeAuthoringPack(invalid).errors.join('\n'), /editorial reconstruction requires/);
+  }
+  claim.hard_exclusion = { eligible: true, basis_kind: 'introduced_after_context' };
+  assert.match(validateWorldKnowledgeAuthoringPack(pack).errors.join('\n'), /editorial reconstruction cannot establish hard exclusion/);
+});
+
 test('World Knowledge validation rejects malformed typed claims and factual policy fields', async () => {
   await invalidPack((pack) => { pack.claims[0].object.kind = 'arbitrary_json'; }, /invalid object kind/u);
   await invalidPack((pack) => { pack.claims[0].applicability = {}; }, /explicit applicability/u);

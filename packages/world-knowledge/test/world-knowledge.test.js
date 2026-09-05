@@ -36,6 +36,22 @@ test('the normative query shape is valid and resolution is deterministic', () =>
   assert.deepEqual(core.resolveWorldKnowledge(input), core.resolveWorldKnowledge(input));
 });
 
+test('model-facing context distinguishes reconstruction from direct facts without changing retrieval', () => {
+  for (const [directness, label] of Object.entries({ direct: 'FACT', inferred: 'INFERENCE',
+    analogical: 'ANALOGY', editorial: 'EDITORIAL', unknown: 'UNCERTAIN' })) {
+    const bundle = structuredClone(baseBundle);
+    const claim = bundle.claims[0];
+    claim.qualifiers = { typicality: 'unknown', confidence: 'medium', directness };
+    const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
+      domains: [claim.domain], focus_refs: [claim.claim_ref]
+    }));
+    assert.ok(slice.facts.some(fact => fact.claim_ref === claim.claim_ref));
+    assert.ok(slice.context_text.includes(`${label} ${claim.claim_ref}:`));
+    if (directness !== 'direct') assert.ok(!slice.context_text.includes(`FACT ${claim.claim_ref}:`));
+    assert.deepEqual(slice.hard_constraints, []);
+  }
+});
+
 test('exact focus outranks a lexical match and locale does not change canonical identity', () => {
   const core = createWorldKnowledgeCore(baseBundle);
   const ru = core.resolveWorldKnowledge(query({

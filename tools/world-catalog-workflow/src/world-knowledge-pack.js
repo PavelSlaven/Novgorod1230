@@ -15,7 +15,7 @@ const CLAIM_POLARITIES = new Set(['support', 'exclude']);
 const CLAIM_OBJECT_KINDS = new Set(['concept_ref', 'literal', 'boolean', 'quantity', 'range']);
 const PACK_STATUSES = new Set(['experimental', 'reviewed', 'production']);
 const PROFILE_STATUSES = new Set(['experimental', 'reviewed', 'production']);
-const SOURCE_KINDS = new Set(['primary_object', 'primary_text', 'excavation', 'catalogue', 'scholarship', 'technical_reference', 'trusted_structured_dataset', 'official_documentation']);
+const SOURCE_KINDS = new Set(['primary_object', 'primary_text', 'excavation', 'catalogue', 'scholarship', 'technical_reference', 'trusted_structured_dataset', 'official_documentation', 'editorial_reconstruction']);
 const QUALIFIER_VALUES = Object.freeze({
   typicality: new Set(['common', 'attested', 'uncommon', 'exceptional', 'unknown']),
   confidence: new Set(['high', 'medium', 'low', 'unknown']),
@@ -179,6 +179,15 @@ export function validateWorldKnowledgeAuthoringPack(value) {
     const evidenceRefs = uniqueStrings(claim.evidence_refs, `${ref}.evidence_refs`, errors);
     if (evidenceRefs.length === 0) errors.push(`${ref}: at least one evidence_ref is required`);
     for (const evidenceRef of evidenceRefs) if (!evidenceByRef.has(evidenceRef)) errors.push(`${ref}: unknown evidence_ref ${evidenceRef}`);
+    const reconstructed = evidenceRefs.some(evidenceRef =>
+      sourceByRef.get(evidenceByRef.get(evidenceRef)?.source_ref)?.source_kind === 'editorial_reconstruction');
+    if (reconstructed) {
+      if (!['inferred', 'analogical', 'editorial'].includes(claim.qualifiers?.directness)
+          || claim.qualifiers?.confidence === 'high' || claim.qualifiers?.typicality === 'attested') {
+        errors.push(`${ref}: editorial reconstruction requires non-attested, non-high inference qualifiers`);
+      }
+      if (claim.hard_exclusion != null) errors.push(`${ref}: editorial reconstruction cannot establish hard exclusion`);
+    }
     if (claim.hard_exclusion != null) {
       if (!isObject(claim.hard_exclusion)) errors.push(`${ref}: hard_exclusion must be an object`);
       else exactKeys(claim.hard_exclusion, ['eligible', 'basis_kind'], `${ref}.hard_exclusion`, errors);

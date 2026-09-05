@@ -2,6 +2,22 @@
 
 ## Current status — static coverage reopened
 
+### Current acceptance clarification — playable reconstruction allowed
+
+The user's subsequent clarification permits plausible reconstruction from
+earlier/later periods, comparable settings and practical reasoning. Contract
+§0.2 now distinguishes reviewed facts, inference, analogy and editorial
+reconstruction. A missing exact-1230 source alone is not a coverage blocker.
+The existing residual list must be reassessed for missing useful answers,
+not merely missing direct attestation; its previous priority counts below
+are a pre-clarification inventory, not a newly validated verdict.
+
+Coverage still needs substantive answers about work, clothing, tools,
+household, means, status and context-sensitive behaviour, rather than generic
+statements that these things may vary. This policy does not automatically
+close any family, promote unreviewed candidates or certify completeness.
+No live gameplay campaign is part of this work.
+
 **BLOCK_STATIC_COVERAGE (2026-09-05).** The prior P1-free verdict is
 withdrawn after a requirement-by-requirement review of the 49 residual
 families. Core historical, cultural and natural-world premises remain

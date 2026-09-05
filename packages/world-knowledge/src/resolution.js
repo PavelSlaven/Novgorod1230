@@ -163,7 +163,9 @@ export function packContext(slice, limit) {
   const lines = [
     ...slice.coverage.map((entry) => `COVERAGE ${entry.domain}: ${entry.status}`),
     ...slice.hardConstraints.map((claim) => `HARD ${claim.claim_ref}: ${claim.runtime_text}`),
-    ...slice.facts.map((claim) => `FACT ${claim.claim_ref}: ${claim.runtime_text}`),
+    ...slice.facts.map((claim) => `${({ direct: 'FACT', inferred: 'INFERENCE',
+      analogical: 'ANALOGY', editorial: 'EDITORIAL', unknown: 'UNCERTAIN'
+    })[claim.qualifiers.directness]} ${claim.claim_ref}: ${claim.runtime_text}`),
     ...slice.disputes.map((group) => `DISPUTE ${group.conflict_group_ref}: ${group.claims.map((claim) => claim.claim_ref).join(', ')}`),
     ...slice.gaps.map((gap) => `GAP ${gap.domain}: ${gap.status}`)
   ];

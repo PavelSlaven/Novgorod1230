@@ -114,6 +114,12 @@ requirements, классификацию, lifecycle и saturation; наличи�
 development tooling не активирует testing и не делает saturation gate
 критерием статической готовности.
 
+World Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из
+аналогий и здравого смысла. §35.1 использует тот же независимый approval для
+source accuracy либо plausibility; точное свидетельство 1230 года для каждой
+ordinary-детали не требуется. `editorial_reconstruction` — редакторское
+основание, не внешний научный источник. Runtime owners и exact state неизменны.
+
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |

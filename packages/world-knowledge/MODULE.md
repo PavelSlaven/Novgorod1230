@@ -4,6 +4,12 @@
 
 Pure read-only gameplay factual owner. Загружает caller-provided immutable compiled Knowledge Pack и детерминированно разрешает `world_knowledge_query_v1` в bounded `world_knowledge_slice_v1`.
 
+Pack может включать независимо проверенные игровые реконструкции (§0.2 WK
+контракта). Existing qualifiers и runtime text сохраняют отличие реконструкции
+от установленного факта; отдельного retrieval interface или генератора нет.
+Compact context помечает direct/inferred/analogical/editorial/unknown как
+FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
+
 ## Владеет
 
 - query/bundle validation и slice construction;

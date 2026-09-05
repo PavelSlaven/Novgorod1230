@@ -5,16 +5,16 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:gov-law-v2-1215-joint-delegation",
       "claim_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
-      "claim_digest": "c8687bb7646369768f49dccc57c7c992059efa51a7e904dde6912ec5accbde35",
-      "candidate_ref": "git:bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+      "claim_digest": "02f7d2115ab21e8159d4b2573b797bd074082708ab8179fbb9448509c28944ab",
+      "candidate_ref": "git:c52621c673141d26f575e08480cbea99bfe154ad:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
       "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent visual review of Nesin printed pp. 51–55, source-text reconciliation, and current RU/EN review; reviewer did not author candidate.",
+      "independence_basis": "Independent visual review of Nesin printed p. 50 and current RU/EN reconciliation; reviewer did not author candidate.",
       "evidence_checked": [
         "evidence:residual-government-law-v2-1215-joint-delegation"
       ],
-      "review_ref": "verification/residual-government-law-v2.md#needs-review-1215-joint-mission",
-      "verdict": "NEEDS_REVIEW",
-      "limits": "The statement is directly found on printed p. 50, whereas cited evidence anchor is p. 51. Do not approve this evidence binding until anchor and source publication-page range are corrected; no standing competence or present delegation follows."
+      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
+      "verdict": "APPROVE",
+      "limits": "1215 joint mission only; no permanent diplomatic competence, present delegation, officeholder or current world-state inference."
     },
     {
       "schema": "world_knowledge_verification_v1",

@@ -5,7 +5,7 @@ Scope: современные общие механизмы; не историч
 
 ## 1. Береста: влага, форма и сушка
 
-Источник: [Biebricher et al., *The interaction of water with archaeological and ethnographic birch bark and its effects on swelling, shrinkage and deformations*](https://www.nature.com/articles/s40494-020-00476-y), *npj Heritage Science* 2020, разделы “Water adsorption and deformation” и “Conclusions”, doi: [10.1186/s40494-020-00476-y](https://doi.org/10.1186/s40494-020-00476-y).
+Источник: [Johanna Klügl и Giovanna Di Pietro, *The interaction of water with archaeological and ethnographic birch bark and its effects on swelling, shrinkage and deformations*](https://www.nature.com/articles/s40494-020-00476-y), *Heritage Science* 9, статья 3, 7 января 2021, doi: [10.1186/s40494-020-00476-y](https://doi.org/10.1186/s40494-020-00476-y). Независимая проверка исправила ошибочные имена авторов и год в первом кандидате; физические посылки не менялись.
 
 - Водяной пар/вода могут менять размеры и вызывать изгиб или сворачивание бересты; эффект связан с неодинаковой реакцией слоёв.
 - При увлажнении и сушке бересту можно удерживать в желаемой форме; это снижает риск деформации, но не гарантирует отсутствие расслоения или трещин.

@@ -33,9 +33,9 @@
     {
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:household-dough-gas",
-      "title": "Różyło et al. gas formation kinetics",
-      "authors": [],
-      "publication": "Różyło et al. gas formation kinetics",
+      "title": "Impact of gas formation kinetics on dough development and bread quality",
+      "authors": ["C. Verheyen", "A. Albrecht", "D. Elgeti", "M. Jekle", "T. Becker"],
+      "publication": "Food Research International 76, part 3, 860–866 (2015), doi:10.1016/j.foodres.2015.08.013",
       "source_kind": "scholarship",
       "citation": "https://pubmed.ncbi.nlm.nih.gov/28455072/",
       "rights": {
@@ -61,11 +61,11 @@
     {
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:household-trauma-movement",
-      "title": "WHO earthquake public-health advice",
-      "authors": [],
-      "publication": "WHO earthquake public-health advice",
+      "title": "2024 American Heart Association and American Red Cross Guidelines for First Aid",
+      "authors": ["American Heart Association", "American Red Cross"],
+      "publication": "2024 First Aid Guidelines, Positioning of the Ill or Injured Person; recommendation-specific supportive text",
       "source_kind": "technical_reference",
-      "citation": "https://www.who.int/europe/news-room/questions-and-answers/item/public-health-advice-in-the-aftermath-of-an-earthquake",
+      "citation": "https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -143,9 +143,9 @@
       "evidence_ref": "evidence:household-trauma-movement",
       "source_ref": "source:household-trauma-movement",
       "anchor": {
-        "section": "Advice"
+        "section": "Positioning of the Ill or Injured Person: Recommendation-Specific Supportive Text"
       },
-      "note": "No unnecessary movement of serious injury; no medical protocol.",
+      "note": "Guidelines discuss avoiding potential worsening of neck, back, hip or pelvic injury through unnecessary movement, while unsafe surroundings may require relocation. Direct first-aid movement studies were not identified; the causal premise is a cautious inference, not a transport or treatment protocol.",
       "review_status": "approved"
     },
     {
@@ -220,8 +220,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "inferred"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -422,7 +422,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "moving a seriously injured person, especially with a suspected neck or back injury, can worsen harm; an established injury alone does not prove the needed response"
+      "value": "unnecessary movement with a suspected neck, back, hip or pelvic injury may worsen harm; this is a cautious safety inference, not a diagnosis or a transport protocol"
       },
       "polarity": "support",
       "applicability": {
@@ -469,7 +469,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:household-trauma-airway-danger"
+        "evidence:household-trauma-airway-danger",
+        "evidence:household-trauma-movement"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -604,7 +605,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:household-clay-key-and-compatible-patch",
       "locale": "ru",
-      "runtime_text": "Заплата из глиняной обмазки или штукатурки нуждается в совместимом материале и достаточном сцеплении с основой, чтобы не отстать; ключёная починка не гарантирует долговечность.",
+      "runtime_text": "Заплата из глиняной обмазки или штукатурки нуждается в совместимом материале и достаточном сцеплении с основой, чтобы не отстать; механическое сцепление само по себе не гарантирует долговечность.",
       "search_aliases": []
     },
     {
@@ -646,14 +647,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
       "locale": "ru",
-      "runtime_text": "Перемещение тяжело раненого, особенно при подозрении на травму шеи или спины, может усугубить вред; установленная травма сама по себе не доказывает нужный ответ.",
+      "runtime_text": "Лишнее перемещение при подозрении на травму шеи, спины, бедра или таза может усугубить вред; это осторожный вывод о риске, не диагноз и не способ переноски.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
       "locale": "en",
-      "runtime_text": "Moving a seriously injured person, especially with a suspected neck or back injury, can worsen harm; an established injury alone does not prove the needed response.",
+      "runtime_text": "Unnecessary movement with a suspected neck, back, hip or pelvic injury may worsen harm; this is a cautious safety inference, not a diagnosis or a transport protocol.",
       "search_aliases": []
     },
     {

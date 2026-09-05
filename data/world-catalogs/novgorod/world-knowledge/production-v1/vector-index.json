@@ -9068,6 +9068,62 @@
       "retrieval_text": "Керамический сосуд Керамические сосуды входят в средневековые бытовые находки. Средневековая совместимость, не наличие или обязательный набор вещей в сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:household-clay-drying-and-incompatible-movement:en",
+      "target_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Clay daub behavior Clay-rich daub or finish can shrink or swell as moisture changes; incompatible adjacent materials can crack or separate as they move differently."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-clay-drying-and-incompatible-movement:ru",
+      "target_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Поведение глиняной обмазки Глиняная обмазка или отделка может усыхать либо набухать при изменении влаги, а несовместимые соседние материалы могут трескаться или расходиться при разном движении."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-clay-key-and-compatible-patch:en",
+      "target_ref": "claim:household-clay-key-and-compatible-patch",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Clay daub behavior A clay-based daub or plaster patch needs compatible material and enough engagement with its backing to resist detachment; keyed repair does not guarantee durability."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-clay-key-and-compatible-patch:ru",
+      "target_ref": "claim:household-clay-key-and-compatible-patch",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Поведение глиняной обмазки Заплата из глиняной обмазки или штукатурки нуждается в совместимом материале и достаточном сцеплении с основой, чтобы не отстать; механическое сцепление само по себе не гарантирует долговечность."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-dough-temperature-changes-proofing:en",
+      "target_ref": "claim:household-dough-temperature-changes-proofing",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Dough fermentation Surrounding temperature can change dough fermentation and gas development, so proofing time and expansion are conditional rather than fixed."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-dough-temperature-changes-proofing:ru",
+      "target_ref": "claim:household-dough-temperature-changes-proofing",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Брожение теста Температура вокруг теста может менять брожение и образование газа, поэтому время расстойки и подъём условны, а не фиксированы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-dough-yeast-gas-needs-retention:en",
+      "target_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Dough fermentation Yeast fermentation can generate gas in dough, while dough structure determines how much gas is retained and therefore affects expansion."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-dough-yeast-gas-needs-retention:ru",
+      "target_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Брожение теста Брожение дрожжей может образовывать газ в тесте, а структура теста определяет, сколько газа удержится, и потому влияет на подъём."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:household-furniture-wood:en",
       "target_ref": "claim:household-furniture-wood",
       "domain": "material_culture",
@@ -9152,6 +9208,34 @@
       "retrieval_text": "Прибрежный склад У берега Волхова исследованы крупные средневековые складские помещения; их содержимое неизвестно. Средневековая совместимость, не наличие или обязательный набор вещей в сцене."
     },
     {
+      "entry_ref": "wk-retrieval:claim:household-roof-layers-shed-water:en",
+      "target_ref": "claim:household-roof-layers-shed-water",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Roof water control Roof layers and overlaps can direct rainwater down and out; a gap or reversed overlap interrupts that drainage path."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-roof-layers-shed-water:ru",
+      "target_ref": "claim:household-roof-layers-shed-water",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Контроль воды кровлей Слои и нахлёсты кровли могут направлять дождевую воду вниз и наружу; разрыв или обратный нахлёст прерывает путь стока."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-roof-local-condition-guides-repair:en",
+      "target_ref": "claim:household-roof-local-condition-guides-repair",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Roof water control An identified local roof water-control defect can be inspected and locally repaired or replaced; this does not guarantee the whole roof is sound or watertight."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-roof-local-condition-guides-repair:ru",
+      "target_ref": "claim:household-roof-local-condition-guides-repair",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Контроль воды кровлей Установленный местный дефект водоотводящего слоя кровли можно осмотреть и локально чинить либо заменить; это не гарантирует исправность или герметичность всей кровли."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:household-rye-commodity:en",
       "target_ref": "claim:household-rye-commodity",
       "domain": "material_culture",
@@ -9234,6 +9318,34 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Керамический горшок В прибрежном раскопе найдены керамические горшки с дёгтем — один вариант хранения. Средневековая совместимость, не наличие или обязательный набор вещей в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-trauma-danger-or-airway-changes-position-choice:en",
+      "target_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Trauma movement limits Immediate environmental danger or an established airway threat can make a position change necessary, but this is a bounded safety consideration, not a general relocation or treatment protocol."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-trauma-danger-or-airway-changes-position-choice:ru",
+      "target_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения перемещения при травме Немедленная опасность среды или установленная угроза дыхательным путям может сделать смену положения необходимой, но это узкое соображение безопасности, не общее правило переноса или лечения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-trauma-unnecessary-movement-can-worsen:en",
+      "target_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Trauma movement limits Unnecessary movement with a suspected neck, back, hip or pelvic injury may worsen harm; this is a cautious safety inference, not a diagnosis or a transport protocol."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:household-trauma-unnecessary-movement-can-worsen:ru",
+      "target_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения перемещения при травме Лишнее перемещение при подозрении на травму шеи, спины, бедра или таза может усугубить вред; это осторожный вывод о риске, не диагноз и не способ переноски."
     },
     {
       "entry_ref": "wk-retrieval:claim:household-utensil-wood:en",
@@ -10090,6 +10202,48 @@
       "retrieval_text": "Растительно-дублёная кожа Кожа с растительным дублением; способ выделки конкретного объекта требует отдельного основания. Растительно-дублёная кожа при прямом контакте с водой может усыхать или твердеть; миграция дубильных веществ к поверхности может вызвать окрашивание и поверхностную хрупкость. Это не общее правило для любой кожи и не свидетельство местной технологии дубления. Растительное дубление вода"
     },
     {
+      "entry_ref": "wk-retrieval:claim:measurement-grain-mass-volume-density:en",
+      "target_ref": "claim:measurement-grain-mass-volume-density",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution Grain mass and volume are linked by bulk density: equal volumes of batches with different bulk densities have different masses. Conversion needs an applicable density, not only the grain name."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:measurement-grain-mass-volume-density:ru",
+      "target_ref": "claim:measurement-grain-mass-volume-density",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение Масса и объём зерна связаны его насыпной плотностью: одинаковый объём партий с разной насыпной плотностью имеет разную массу. Пересчёт требует подходящего значения плотности, а не одного названия зерна."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:measurement-net-excludes-tare:en",
+      "target_ref": "claim:measurement-net-excludes-tare",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution Gross load includes contents and packaging tare. Comparing contents requires accounting for tare separately; a heavier sack need not contain more grain."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:measurement-net-excludes-tare:ru",
+      "target_ref": "claim:measurement-net-excludes-tare",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение Масса груза вместе с упаковкой включает массу содержимого и тары. Чтобы сравнивать само содержимое, тару учитывают отдельно; тяжёлый мешок не означает больше зерна."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:measurement-units-must-be-identified:en",
+      "target_ref": "claim:measurement-units-must-be-identified",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution Comparing measures requires identifying the quantity and unit: mass cannot be equated directly with volume, and the same measure name need not denote the same volume."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:measurement-units-must-be-identified:ru",
+      "target_ref": "claim:measurement-units-must-be-identified",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение Для сопоставления мер нужно знать, какую величину и какую единицу используют: массу нельзя напрямую приравнивать объёму, а одинаковое название меры не гарантирует одинакового объёма."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:medieval-novgorod-fishing-attests-major-occupation-food-context:en",
       "target_ref": "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
       "domain": "environment",
@@ -10228,6 +10382,48 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Рост микроорганизмов зависит от температурного диапазона конкретного вида."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-grain-compression-shear-fracture:en",
+      "target_ref": "claim:milling-grain-compression-shear-fracture",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution In milling, grain fractures under compression and shear at contacts, producing a range of particle sizes including fines and dust. Load, contact and grain condition affect the result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-grain-compression-shear-fracture:ru",
+      "target_ref": "claim:milling-grain-compression-shear-fracture",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение При помоле зерно разрушается под сжатием и сдвигом в местах контакта; это даёт частицы разных размеров, включая мелочь и пыль. Нагрузка, контакт и состояние зерна влияют на результат."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-moisture-changes-grain-deformation:en",
+      "target_ref": "claim:milling-moisture-changes-grain-deformation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution Dry grain is more brittle during milling; moist grain can deform more before fracture. The same mechanical action therefore need not give the same product at different moisture contents."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-moisture-changes-grain-deformation:ru",
+      "target_ref": "claim:milling-moisture-changes-grain-deformation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение Сухое зерно при измельчении более хрупко; влажное способно сильнее деформироваться до разрушения. Поэтому одинаковое механическое воздействие не обязано давать одинаковый помол при разной влажности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-plate-gap-pressure-fineness:en",
+      "target_ref": "claim:milling-plate-gap-pressure-fineness",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution In the described plate milling, narrowing the working gap raises pressure on grain and changes fineness; contact between the working surfaces themselves causes excess wear. This is a qualitative mechanism, not a setting for every mill."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:milling-plate-gap-pressure-fineness:ru",
+      "target_ref": "claim:milling-plate-gap-pressure-fineness",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение В описанном помоле между плитами сужение рабочего зазора повышает давление на зерно и меняет тонкость помола; контакт самих рабочих поверхностей вызывает лишний износ. Это качественная механическая связь, не настройка любой мельницы."
     },
     {
       "entry_ref": "wk-retrieval:claim:modern-fibre-rope-condition-can-reduce-available-strength:en",
@@ -13632,6 +13828,20 @@
       "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Свидетель или посыльный передаёт увиденное либо услышанное; память, интерес и неполнота ограничивают рассказ. спор суд речь имя свидетель посыльный"
     },
     {
+      "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
+      "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Independent random trials For genuinely independent trials, a previous outcome does not change the next outcome's probability. In an independent fair-roll model repetitions are possible and do not make a reversal obligatory; this does not establish fairness of a physical die."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:ru",
+      "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Независимые случайные испытания Если испытания действительно независимы, предыдущий исход не меняет вероятности следующего. В модели независимых честных бросков повторения допустимы и не делают противоположный исход обязательным; это не доказывает честность реальной кости."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:reduced-atp-reserves-can-cause-muscle-fatigue:en",
       "target_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
       "domain": "biology_physiology",
@@ -13828,6 +14038,20 @@
       "retrieval_text": "Холодное погружение и контроль мышц Условная связь холодного погружения и контроля мышц. Погружение в холодную воду может нарушать контроль мышц. Это не устанавливает температуру воды, длительность, одежду, человека, степень нарушения, диагноз, травму, выживание, лечение или исход конкретной сцены."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction:en",
+      "target_ref": "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold storage and microorganisms Limit of cold storage as a means of destroying microorganisms. Cooling or freezing food does not by itself guarantee microorganism destruction. This establishes no storage method, temperature, duration, microbial load, safety, or outcome for a particular item."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction:ru",
+      "target_ref": "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Холодное хранение и микроорганизмы Предел холодного хранения как способа уничтожать микроорганизмы. Охлаждение или замораживание пищи само по себе не гарантирует уничтожение микроорганизмов. Это не устанавливает способ хранения, температуру, длительность, микробную нагрузку, безопасность или исход конкретного продукта."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-corylus-avellana-hazelnuts-are-documented-edible:en",
       "target_ref": "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
       "domain": "biology_physiology",
@@ -13840,6 +14064,34 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть лещины Узкая предпосылка об орехах Corylus avellana. Орехи Corylus avellana документированы как съедобные. Это не устанавливает куст, определение, зрелость, сбор, количество, безопасность или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access:en",
+      "target_ref": "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Rodent access to stores Relation among food stores, entry openings, and rodent access. Enclosing food and sealing entry openings can reduce rodent access to stores. This establishes no material, complete exclusion, barrier performance, or concrete situation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access:ru",
+      "target_ref": "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Доступ грызунов к запасам Связь пищевых запасов, входов и доступа грызунов. Закрытие пищи и заделывание входных отверстий могут уменьшить доступ грызунов к запасам. Это не устанавливает материал, полную непроницаемость, эффективность барьера или конкретную ситуацию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests:en",
+      "target_ref": "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposed fish drying Relation among sun heat, moving air, fish drying, and external pests. Exposed fish drying uses sun heat and moving air, but weather, insects, vermin, dirt, and sand remain relevant. This establishes no weather, duration, contamination, preservation, or storage result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests:ru",
+      "target_ref": "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Открытая сушка рыбы Связь солнечного тепла, движения воздуха, сушки рыбы и внешних вредителей. Открытая сушка рыбы использует солнечное тепло и движение воздуха, но погода, насекомые, грызуны, грязь и песок остаются важны. Это не устанавливает погоду, длительность, загрязнение, сохранность или результат хранения."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-extreme-cold-can-cause-cold-stress:en",
@@ -13896,6 +14148,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Перенос продуктов горения пожарным факелом в верхний слой Условная связь пожарного факела, переноса продуктов горения и верхнего слоя помещения. Пожарный факел может переносить увлечённые продукты горения из нижнего слоя в верхний слой помещения. Это не устанавливает огонь, помещение, проёмы, количество дыма, высоту слоя, температуру, концентрацию, видимость, воздействие, безопасное место или исход конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk:en",
+      "target_ref": "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fish gutting and gall bladder Removal of viscera in gutting and risk of gall-bladder damage. Fish gutting removes viscera and blood from the body cavity; gall-bladder damage is a handling fault to avoid. This establishes no damage, cleanliness, edibility, spoilage, or outcome for a particular fish."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk:ru",
+      "target_ref": "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Потрошение рыбы и желчный пузырь Удаление внутренностей при потрошении и риск повреждения желчного пузыря. Потрошение рыбы удаляет внутренности и кровь из полости тела; повреждения желчного пузыря следует избегать. Это не устанавливает повреждение, чистоту, съедобность, порчу или исход конкретной рыбы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution:en",
+      "target_ref": "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fish salting and diffusion Relation between fish salting, water and salt movement, and salt distribution. In fish salting or brining, water moves out of flesh and salt moves in; effect depends on salt distribution, concentration, time, and drying. This establishes no dosage, preservation result, or storage duration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution:ru",
+      "target_ref": "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Посол рыбы и диффузия Связь посола рыбы, переноса воды и соли и равномерности посола. При посоле или рассоле вода выходит из плоти рыбы, а соль входит; действие зависит от распределения соли, её концентрации, времени и сушки. Это не устанавливает дозу, сохранность или срок хранения."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-flood-can-leave-high-water-mark-types:en",
@@ -13982,6 +14262,20 @@
       "retrieval_text": "Обморок и перфузия мозга Качественная связь краткой глобальной гипоперфузии мозга и обморока. Кратковременное глобальное снижение перфузии мозга может вызвать обморок — преходящую потерю сознания. Это не устанавливает причину, диагноз, длительность, падение, восстановление, повторение или состояние конкретного персонажа."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh:en",
+      "target_ref": "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fish heating and muscle texture Relation between heating fish, muscle proteins, water binding, and texture. Heating fish denatures muscle proteins, reduces water binding, and can make flesh more opaque, firm, and flake-like. This establishes no doneness, safety, species, or texture of a particular fish."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh:ru",
+      "target_ref": "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нагрев рыбы и текстура мышц Связь нагрева рыбы, белков, удержания воды и текстуры. Нагрев рыбы денатурирует мышечные белки, уменьшает удержание воды и может сделать плоть непрозрачнее, плотнее и слоистой. Это не устанавливает готовность, безопасность, вид или текстуру конкретной рыбы."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction:en",
       "target_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
       "domain": "biology_physiology",
@@ -13994,6 +14288,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Поедание растений и последствия для растения Качественная условная связь поедания растений, потери тканей, роста или размножения. Поедание растений животными может удалять ткани растения и при некоторых условиях снижать его рост или размножение. Это не устанавливает местное животное или растение, величину поедания, результат роста или размножения, урожай либо изменение растительности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather:en",
+      "target_ref": "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Honey-bee forage and weather Relation among light, temperature, weather, bee foraging, and available forage. Honey-bee foraging requires suitable light and temperature and can be interrupted by poor weather. This establishes no weather, hive, flight, bloom, or collection."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather:ru",
+      "target_ref": "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Фуражировка медоносной пчелы и погода Связь света, температуры, погоды, фуражировки и доступного корма пчёл. Фуражировка медоносной пчелы требует подходящих света и температуры и может прерываться плохой погодой. Это не устанавливает погоду, улей, полёт, цветение или сбор."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-increased-ventilation-can-help-reduce-condensation:en",
@@ -14150,6 +14458,20 @@
       "retrieval_text": "Контакт сырой животной пищи с другой пищей Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу. Возбудители с сырой животной пищи могут переноситься на другую пищу, в том числе приготовленную или готовую к употреблению, через руки, утварь или поверхности подготовки пищи. Это не устанавливает пищу, загрязнение, чистоту рук или утвари, дозу, болезнь, безопасность либо исход конкретной сцены."
     },
     {
+      "entry_ref": "wk-retrieval:claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites:en",
+      "target_ref": "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Rodent access to stores Relation among food stores, entry openings, and rodent access. Rodents are drawn to accessible food, water, and convenient nesting sites. This establishes no species, population, arrival, damage, or contamination."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites:ru",
+      "target_ref": "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Доступ грызунов к запасам Связь пищевых запасов, входов и доступа грызунов. Грызунов привлекают доступные пища, вода и удобные места для гнёзд. Это не устанавливает вид, численность, появление, ущерб или загрязнение."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked:en",
       "target_ref": "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
       "domain": "biology_physiology",
@@ -14162,6 +14484,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть малины Узкая предпосылка о плоде Rubus idaeus. Плоды Rubus idaeus можно есть сырыми или готовить. Это не устанавливает растение, определение, зрелость, сбор, количество, безопасность или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture:en",
+      "target_ref": "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Starch gelatinization and thickening Relation between heating starch in water, granular swelling, and liquid thickening. Heating starch in water can cause granular swelling and gelatinization that thickens the liquid. This establishes no dish, amount, cooking time, viscosity, or concrete-scene result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture:ru",
+      "target_ref": "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Клейстеризация крахмала Связь нагрева крахмала в воде, набухания гранул и загущения жидкости. Нагрев крахмала в воде может вызвать набухание гранул и клейстеризацию, загущающую жидкость. Это не устанавливает блюдо, количество, время готовки, вязкость или результат конкретной сцены."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-stitching-can-secure-weak-textile-to-support:en",
@@ -14190,6 +14526,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Перенос и рассеивание дыма Качественная связь атмосферных условий, температурной инверсии и переноса дыма. Приземная температурная инверсия может удерживать дым на низком уровне и ограничивать его подъём для разбавления или переноса ветром. Это не устанавливает инверсию, время, рельеф, ветер, источник дыма, концентрацию, эффект, направление или безопасное место в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-surplus-honey-depends-on-forager-number-and-forage-availability:en",
+      "target_ref": "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Honey-bee forage and weather Relation among light, temperature, weather, bee foraging, and available forage. A honey-bee colony's capacity to accumulate surplus honey depends on forager number and forage availability. This establishes no flowers, honey amount, harvest, yield, or particular hive."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-surplus-honey-depends-on-forager-number-and-forage-availability:ru",
+      "target_ref": "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Фуражировка медоносной пчелы и погода Связь света, температуры, погоды, фуражировки и доступного корма пчёл. Возможность пчелиной семьи накопить избыток мёда зависит от числа фуражиров и доступности корма. Это не устанавливает цветы, количество мёда, сбор, урожайность или конкретный улей."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts:en",
@@ -14232,6 +14582,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть брусники Узкая предпосылка о плоде Vaccinium vitis-idaea. Плод Vaccinium vitis-idaea документирован как съедобный. Это не устанавливает растение или ягоду, определение по сходству, зрелость, количество, безопасность или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course:en",
+      "target_ref": "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Vegetable fermentation conditions Relation between submersion, salt, temperature, and vegetable-fermentation course. Vegetable submersion, salt amount, and temperature can shape which organisms grow and fermentation course. This establishes no recipe, ratio, duration, vessel, safety, or batch outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course:ru",
+      "target_ref": "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Условия овощного брожения Связь погружения, соли, температуры и хода овощного брожения. Погружение овощей, количество соли и температура могут определять, какие организмы растут и как идёт брожение. Это не устанавливает рецепт, пропорцию, срок, сосуд, безопасность или исход конкретной партии."
     },
     {
       "entry_ref": "wk-retrieval:claim:research-wind-pressure-difference-can-force-rain-across-building-opening:en",
@@ -16362,6 +16726,342 @@
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Высокая концентрация растворённых веществ уменьшает доступную многим микроорганизмам воду; есть устойчивые виды."
     },
     {
+      "entry_ref": "wk-retrieval:claim:sound-background-noise-masks-speech:en",
+      "target_ref": "claim:sound-background-noise-masks-speech",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sound propagation Strong surrounding noise can make speech difficult to understand even near the speaker. Proximity does not guarantee intelligibility when other sounds mask speech."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-background-noise-masks-speech:ru",
+      "target_ref": "claim:sound-background-noise-masks-speech",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Распространение звука Сильный окружающий шум может мешать разбирать речь даже рядом с говорящим. Близость источника не гарантирует разборчивости, если речь перекрывается другими звуками."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-reflections-arrive-after-direct-path:en",
+      "target_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sound propagation Reflected sound travels a longer path and can arrive after direct sound; indoors this produces delayed reflections that alter the heard sequence of sounds."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-reflections-arrive-after-direct-path:ru",
+      "target_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Распространение звука Отражённый звук проходит более длинный путь и может приходить позже прямого; в помещении это создаёт задержанные отражения, которые меняют слышимую последовательность звуков."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-spreading-reduces-intensity:en",
+      "target_ref": "claim:sound-spreading-reduces-intensity",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sound propagation In a free field, a spreading sound wave distributes energy over increasing area, so intensity decreases with distance. Reflections, obstacles and the medium can change actual audibility."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-spreading-reduces-intensity:ru",
+      "target_ref": "claim:sound-spreading-reduces-intensity",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Распространение звука В свободном пространстве расходящаяся звуковая волна распределяет энергию по растущей площади, поэтому её интенсивность падает с расстоянием. Отражения, преграды и среда могут менять реальную слышимость."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-wind-temperature-gradients-refract:en",
+      "target_ref": "claim:sound-wind-temperature-gradients-refract",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sound propagation Wind and temperature gradients refract airborne sound: under some conditions downwind propagation bends toward the ground and upwind propagation away from it. Audibility depends on propagation conditions, not only voice level."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:sound-wind-temperature-gradients-refract:ru",
+      "target_ref": "claim:sound-wind-temperature-gradients-refract",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Распространение звука Градиенты ветра и температуры преломляют звук в воздухе: при некоторых условиях по ветру он изгибается к земле, против ветра — от неё. Слышимость зависит от условий распространения, а не только громкости голоса."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-asperity-contact-can-cause-local-stress-and-wear:en",
+      "target_ref": "claim:static-asperity-contact-can-cause-local-stress-and-wear",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Asperity contact and wear Local roughness contact through lubricant film. Asperity contact through a lubricant film can cause high local stress and wear or plastic deformation. Rate and extent are not supplied."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-asperity-contact-can-cause-local-stress-and-wear:ru",
+      "target_ref": "claim:static-asperity-contact-can-cause-local-stress-and-wear",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Контакт выступов и износ Локальный контакт шероховатостей через смазочную плёнку. Контакт выступов через смазочную плёнку может создать высокие локальные напряжения и износ либо пластическую деформацию. Скорость и степень не заданы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-belt-friction-can-resist-relative-slip:en",
+      "target_ref": "claim:static-belt-friction-can-resist-relative-slip",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Belt friction Conditions resisting belt slip. Friction between a belt and its pulley can resist relative sliding up to a limiting condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-belt-friction-can-resist-relative-slip:ru",
+      "target_ref": "claim:static-belt-friction-can-resist-relative-slip",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Трение ременного привода Условия сопротивления проскальзыванию ремня. Трение между ремнём и шкивом может сопротивляться относительному скольжению до предельного состояния."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-belt-slip-limit-depends-on-tension-friction-wrap:en",
+      "target_ref": "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Belt friction Conditions resisting belt slip. A belt slip limit depends on initial tension, friction and pulley wrap angle."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-belt-slip-limit-depends-on-tension-friction-wrap:ru",
+      "target_ref": "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Трение ременного привода Условия сопротивления проскальзыванию ремня. Предел проскальзывания ремня зависит от начального натяжения, трения и угла охвата шкива."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-birch-bark-form-can-be-held-during-humidification-drying:en",
+      "target_ref": "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Birch bark moisture deformation Moisture effects on birch bark form. Holding birch bark in a desired form during humidification and drying can reduce deformation risk."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-birch-bark-form-can-be-held-during-humidification-drying:ru",
+      "target_ref": "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влага и деформация бересты Влияние влаги на форму бересты. Удерживание бересты в нужной форме при увлажнении и сушке может уменьшать риск деформации."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-birch-bark-water-can-deform-layers:en",
+      "target_ref": "claim:static-birch-bark-water-can-deform-layers",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Birch bark moisture deformation Moisture effects on birch bark form. Moisture can cause swelling, shrinkage, bending or rolling in birch bark through unequal layer response."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-birch-bark-water-can-deform-layers:ru",
+      "target_ref": "claim:static-birch-bark-water-can-deform-layers",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влага и деформация бересты Влияние влаги на форму бересты. Влага может вызывать в бересте набухание, усадку, изгиб или сворачивание из-за неодинаковой реакции её слоёв."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-pressure-depends-on-temperature-and-material:en",
+      "target_ref": "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding pressure conditions Required pressure depends on material and heat. Required forge-welding pressure depends on temperature, material hardness and strength. No force value is supplied."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-pressure-depends-on-temperature-and-material:ru",
+      "target_ref": "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Условия давления кузнечной сварки Зависимость требуемого давления от материала и нагрева. Требуемое давление кузнечной сварки зависит от температуры, твёрдости и прочности материала. Число усилия не задано."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-requires-heated-pressed-interface:en",
+      "target_ref": "claim:static-forge-welding-requires-heated-pressed-interface",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding contact, heat and pressure Conditions for contact forge joining. Forge welding requires a seated interface, heating to welding condition, and subsequent pressure. Material, conditions, force and result belong to the concrete process."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-requires-heated-pressed-interface:ru",
+      "target_ref": "claim:static-forge-welding-requires-heated-pressed-interface",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Контакт, нагрев и давление в кузнечной сварке Условия контактного кузнечного соединения. Кузнечная сварка требует прижатой границы, нагрева до сварочного состояния и последующего давления. Материал, режим, усилие и результат задаются конкретным процессом."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-surface-oxide-can-degrade-join:en",
+      "target_ref": "claim:static-forge-welding-surface-oxide-can-degrade-join",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding surface oxide Effect of oxide on weld surfaces. Surface oxide can degrade a forge-weld join. This establishes no oxide, flux or result for a concrete joint."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-forge-welding-surface-oxide-can-degrade-join:ru",
+      "target_ref": "claim:static-forge-welding-surface-oxide-can-degrade-join",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности. Поверхностный оксид может ухудшить кузнечный шов. Это не устанавливает оксид, флюс или результат конкретного соединения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-hydraulic-lime-can-initially-set-with-water:en",
+      "target_ref": "claim:static-hydraulic-lime-can-initially-set-with-water",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Hydraulic lime water setting Initial hydraulic-lime setting with water. Hydraulic lime can initially set with water by forming crystalline hydrates. Water, composition and result of a concrete mix are not established."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-hydraulic-lime-can-initially-set-with-water:ru",
+      "target_ref": "claim:static-hydraulic-lime-can-initially-set-with-water",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Водное начальное твердение гидравлической извести Начальное твердение гидравлической извести с водой. Гидравлическая известь может начать твердеть с водой, образуя кристаллические гидраты. Вода, состав и результат конкретной смеси не устанавливаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-lubricant-film-can-separate-moving-surfaces:en",
+      "target_ref": "claim:static-lubricant-film-can-separate-moving-surfaces",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Lubrication film Lubricant film between moving surfaces. A lubricant film can separate moving surfaces. This establishes no lubricant or low friction for a concrete support."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-lubricant-film-can-separate-moving-surfaces:ru",
+      "target_ref": "claim:static-lubricant-film-can-separate-moving-surfaces",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Смазочная плёнка Плёнка смазки между движущимися поверхностями. Смазочная плёнка может разделять движущиеся поверхности. Это не утверждает наличие смазки или низкое трение конкретной опоры."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-nonhydraulic-lime-can-harden-by-carbonation:en",
+      "target_ref": "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Non-hydraulic lime carbonation Lime hardening by reaction with airborne carbon dioxide. Non-hydraulic lime can harden by absorbing airborne carbon dioxide and becoming calcium carbonate. Mix and masonry state are not established."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-nonhydraulic-lime-can-harden-by-carbonation:ru",
+      "target_ref": "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Карбонизация негидравлической извести Твердение извести реакцией с углекислым газом воздуха. Негидравлическая известь может твердеть, поглощая углекислый газ воздуха и превращаясь в карбонат кальция. Состав и исход кладки не устанавливаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap:en",
+      "target_ref": "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Saponification and soap cleaning General chemical mechanisms of soap formation and cleaning. Alkaline hydrolysis of triglycerides forms glycerol and salts of long-chain fatty acids that are soaps."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap:ru",
+      "target_ref": "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Омыление и очистка мылом Общие химические механизмы образования и действия мыла. Щелочной гидролиз триглицеридов образует глицерин и соли длинноцепочечных жирных кислот — мыла."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water:en",
+      "target_ref": "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Saponification and soap cleaning General chemical mechanisms of soap formation and cleaning. An amphiphilic cleaning molecule can surround oil or grease with hydrophobic tails inward and hydrophilic heads outward, dispersing it in water for removal."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water:ru",
+      "target_ref": "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Омыление и очистка мылом Общие химические механизмы образования и действия мыла. Амфифильное очищающее вещество может окружать масло или жир гидрофобными хвостами внутрь и гидрофильными головками наружу, диспергируя его в воде для удаления."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-can-irritate-skin-and-eyes:en",
+      "target_ref": "claim:static-wood-ash-can-irritate-skin-and-eyes",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Wood-ash contact irritation Skin and eye irritation risk from ash contact. Wood ash can irritate skin and eyes. This establishes no contact, injury or compatibility with a concrete material."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-can-irritate-skin-and-eyes:ru",
+      "target_ref": "claim:static-wood-ash-can-irritate-skin-and-eyes",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Контактное раздражение от древесной золы Риск раздражения кожи и глаз при контакте с золой. Древесная зола может раздражать кожу и глаза. Это не устанавливает контакт, травму или совместимость с конкретным материалом."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-ph-raising-effect-varies-by-sample:en",
+      "target_ref": "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Variable wood-ash alkalinity Wood-ash samples vary in pH-raising effect. Wood ash pH-raising effect varies by sample. This supplies no lye strength or cleaning effect."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-ph-raising-effect-varies-by-sample:ru",
+      "target_ref": "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Изменчивая щёлочность древесной золы Разная способность образцов древесной золы повышать pH. Способность древесной золы повышать pH различается между образцами. Это не задаёт силу щёлока или эффект очистки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-water-can-produce-alkaline-runoff:en",
+      "target_ref": "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Wood ash lye and wool risk Wood-ash alkaline runoff and wool limitation. Water passed through wood ash can produce caustic alkaline runoff."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wood-ash-water-can-produce-alkaline-runoff:ru",
+      "target_ref": "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Зольный щёлок и риск для шерсти Щёлочной сток древесной золы и ограничение шерсти. Вода, прошедшая через древесную золу, может дать едкий щёлочной сток."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions:en",
+      "target_ref": "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Wood ash lye and wool risk Wood-ash alkaline runoff and wool limitation. Wool is susceptible to degradation in alkaline cleaning conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions:ru",
+      "target_ref": "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Зольный щёлок и риск для шерсти Щёлочной сток древесной золы и ограничение шерсти. Шерсть чувствительна к разрушению в щелочных условиях очистки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wool-moisture-heat-mechanical-action-can-felt:en",
+      "target_ref": "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wool felting Interlocking of wool scales under combined conditions. With moisture, heat and mechanical action, wool scales can interlock in felting. Wool and all conditions must be established separately."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-wool-moisture-heat-mechanical-action-can-felt:ru",
+      "target_ref": "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Валяние шерсти Сцепление чешуек шерсти при совместных условиях. При влаге, тепле и механическом воздействии чешуйки шерсти могут сцепляться в валянии. Наличие шерсти и всех условий требуется отдельно."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-yarn-strength-can-fall-after-excessive-twist:en",
+      "target_ref": "claim:static-yarn-strength-can-fall-after-excessive-twist",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Yarn twist cohesion Qualitative twist-strength relation in yarn. For staple-fibre yarn, strength can fall after excessive twist and overtwist can kink the yarn."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-yarn-strength-can-fall-after-excessive-twist:ru",
+      "target_ref": "claim:static-yarn-strength-can-fall-after-excessive-twist",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Крутка и сцепление пряжи Качественная связь крутки и прочности пряжи. У коротковолокнистой пряжи прочность может падать после чрезмерной крутки, а перекрут способен образовать петли."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-yarn-twist-can-increase-fibre-cohesion:en",
+      "target_ref": "claim:static-yarn-twist-can-increase-fibre-cohesion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Yarn twist cohesion Qualitative twist-strength relation in yarn. Twist can entwine staple fibres and increase resistance to their mutual slip under longitudinal load."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-yarn-twist-can-increase-fibre-cohesion:ru",
+      "target_ref": "claim:static-yarn-twist-can-increase-fibre-cohesion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Крутка и сцепление пряжи Качественная связь крутки и прочности пряжи. Крутка может переплетать короткие волокна и повышать сопротивление их взаимному проскальзыванию при продольной нагрузке."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:stomatal-opening-affects-gas-water-exchange:en",
       "target_ref": "claim:stomatal-opening-affects-gas-water-exchange",
       "domain": "biology_physiology",
@@ -17592,6 +18292,34 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Контекст севернорусского сельского поселения"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:static-household-clay-finish:en",
+      "target_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Clay daub behavior"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:static-household-clay-finish:ru",
+      "target_ref": "wk:architecture_settlement:static-household-clay-finish",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Поведение глиняной обмазки"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:static-household-roof-water:en",
+      "target_ref": "wk:architecture_settlement:static-household-roof-water",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Roof water control"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:static-household-roof-water:ru",
+      "target_ref": "wk:architecture_settlement:static-household-roof-water",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Контроль воды кровлей"
     },
     {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:stone-filled-log-crib:en",
@@ -20044,6 +20772,20 @@
       "retrieval_text": "Острая недостаточность кровообращения и перфузия Качественная связь острой недостаточности кровообращения, перфузии тканей и клеточной дисфункции."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-storage-microorganisms:en",
+      "target_ref": "wk:biology_physiology:research-cold-storage-microorganisms",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold storage and microorganisms Limit of cold storage as a means of destroying microorganisms."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-storage-microorganisms:ru",
+      "target_ref": "wk:biology_physiology:research-cold-storage-microorganisms",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Холодное хранение и микроорганизмы Предел холодного хранения как способа уничтожать микроорганизмы."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-cold-water-immersion-hypothermia:en",
       "target_ref": "wk:biology_physiology:research-cold-water-immersion-hypothermia",
       "domain": "biology_physiology",
@@ -20072,6 +20814,48 @@
       "retrieval_text": "Холодное погружение и контроль мышц Условная связь холодного погружения и контроля мышц."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-exposed-fish-drying:en",
+      "target_ref": "wk:biology_physiology:research-exposed-fish-drying",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposed fish drying Relation among sun heat, moving air, fish drying, and external pests."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-exposed-fish-drying:ru",
+      "target_ref": "wk:biology_physiology:research-exposed-fish-drying",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Открытая сушка рыбы Связь солнечного тепла, движения воздуха, сушки рыбы и внешних вредителей."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-fish-gutting-gall-bladder:en",
+      "target_ref": "wk:biology_physiology:research-fish-gutting-gall-bladder",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fish gutting and gall bladder Removal of viscera in gutting and risk of gall-bladder damage."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-fish-gutting-gall-bladder:ru",
+      "target_ref": "wk:biology_physiology:research-fish-gutting-gall-bladder",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Потрошение рыбы и желчный пузырь Удаление внутренностей при потрошении и риск повреждения желчного пузыря."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-fish-heating-muscle-texture:en",
+      "target_ref": "wk:biology_physiology:research-fish-heating-muscle-texture",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fish heating and muscle texture Relation between heating fish, muscle proteins, water binding, and texture."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-fish-heating-muscle-texture:ru",
+      "target_ref": "wk:biology_physiology:research-fish-heating-muscle-texture",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нагрев рыбы и текстура мышц Связь нагрева рыбы, белков, удержания воды и текстуры."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-hazelnut-food-part:en",
       "target_ref": "wk:biology_physiology:research-hazelnut-food-part",
       "domain": "biology_physiology",
@@ -20084,6 +20868,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Пищевая часть лещины Узкая предпосылка об орехах Corylus avellana."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-honeybee-forage-weather:en",
+      "target_ref": "wk:biology_physiology:research-honeybee-forage-weather",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Honey-bee forage and weather Relation among light, temperature, weather, bee foraging, and available forage."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-honeybee-forage-weather:ru",
+      "target_ref": "wk:biology_physiology:research-honeybee-forage-weather",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Фуражировка медоносной пчелы и погода Связь света, температуры, погоды, фуражировки и доступного корма пчёл."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-lingonberry-fruit-food-part:en",
@@ -20182,6 +20980,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Контакт сырой животной пищи с другой пищей Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-rodent-store-access:en",
+      "target_ref": "wk:biology_physiology:research-rodent-store-access",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Rodent access to stores Relation among food stores, entry openings, and rodent access."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:research-rodent-store-access:ru",
+      "target_ref": "wk:biology_physiology:research-rodent-store-access",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Доступ грызунов к запасам Связь пищевых запасов, входов и доступа грызунов."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-syncope-cerebral-perfusion:en",
@@ -20322,6 +21134,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Кожный барьер Неповреждённая кожа служит барьером для патогенов."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-household-trauma-movement:en",
+      "target_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Trauma movement limits"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-household-trauma-movement:ru",
+      "target_ref": "wk:biology_physiology:static-household-trauma-movement",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения перемещения при травме"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:stomatal-opening-tradeoff:en",
@@ -20912,6 +21738,48 @@
       "retrieval_text": "Концентрация реагентов и скорость реакции Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-fish-salting-diffusion:en",
+      "target_ref": "wk:chemistry_process:research-fish-salting-diffusion",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fish salting and diffusion Relation between fish salting, water and salt movement, and salt distribution."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-fish-salting-diffusion:ru",
+      "target_ref": "wk:chemistry_process:research-fish-salting-diffusion",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Посол рыбы и диффузия Связь посола рыбы, переноса воды и соли и равномерности посола."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-starch-gelatinization-thickening:en",
+      "target_ref": "wk:chemistry_process:research-starch-gelatinization-thickening",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Starch gelatinization and thickening Relation between heating starch in water, granular swelling, and liquid thickening."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-starch-gelatinization-thickening:ru",
+      "target_ref": "wk:chemistry_process:research-starch-gelatinization-thickening",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Клейстеризация крахмала Связь нагрева крахмала в воде, набухания гранул и загущения жидкости."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-vegetable-fermentation-conditions:en",
+      "target_ref": "wk:chemistry_process:research-vegetable-fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Vegetable fermentation conditions Relation between submersion, salt, temperature, and vegetable-fermentation course."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:research-vegetable-fermentation-conditions:ru",
+      "target_ref": "wk:chemistry_process:research-vegetable-fermentation-conditions",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Условия овощного брожения Связь погружения, соли, температуры и хода овощного брожения."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:research-water-heating-contaminant-boundary:en",
       "target_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
       "domain": "chemistry_process",
@@ -20952,6 +21820,90 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "solute solvation При растворении частицы растворённого вещества взаимодействуют с молекулами растворителя; в воде это гидратация."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-hydraulic-lime-water-setting:en",
+      "target_ref": "wk:chemistry_process:static-hydraulic-lime-water-setting",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Hydraulic lime water setting Initial hydraulic-lime setting with water."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-hydraulic-lime-water-setting:ru",
+      "target_ref": "wk:chemistry_process:static-hydraulic-lime-water-setting",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Водное начальное твердение гидравлической извести Начальное твердение гидравлической извести с водой."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-nonhydraulic-lime-carbonation:en",
+      "target_ref": "wk:chemistry_process:static-nonhydraulic-lime-carbonation",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Non-hydraulic lime carbonation Lime hardening by reaction with airborne carbon dioxide."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-nonhydraulic-lime-carbonation:ru",
+      "target_ref": "wk:chemistry_process:static-nonhydraulic-lime-carbonation",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Карбонизация негидравлической извести Твердение извести реакцией с углекислым газом воздуха."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-soap-cleaning:en",
+      "target_ref": "wk:chemistry_process:static-soap-cleaning",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Saponification and soap cleaning General chemical mechanisms of soap formation and cleaning."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-soap-cleaning:ru",
+      "target_ref": "wk:chemistry_process:static-soap-cleaning",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Омыление и очистка мылом Общие химические механизмы образования и действия мыла."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-contact-irritation:en",
+      "target_ref": "wk:chemistry_process:static-wood-ash-contact-irritation",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Wood-ash contact irritation Skin and eye irritation risk from ash contact."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-contact-irritation:ru",
+      "target_ref": "wk:chemistry_process:static-wood-ash-contact-irritation",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Контактное раздражение от древесной золы Риск раздражения кожи и глаз при контакте с золой."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-lye-wool-risk:en",
+      "target_ref": "wk:chemistry_process:static-wood-ash-lye-wool-risk",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Wood ash lye and wool risk Wood-ash alkaline runoff and wool limitation."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-lye-wool-risk:ru",
+      "target_ref": "wk:chemistry_process:static-wood-ash-lye-wool-risk",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Зольный щёлок и риск для шерсти Щёлочной сток древесной золы и ограничение шерсти."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-variable-alkalinity:en",
+      "target_ref": "wk:chemistry_process:static-wood-ash-variable-alkalinity",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Variable wood-ash alkalinity Wood-ash samples vary in pH-raising effect."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-wood-ash-variable-alkalinity:ru",
+      "target_ref": "wk:chemistry_process:static-wood-ash-variable-alkalinity",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Изменчивая щёлочность древесной золы Разная способность образцов древесной золы повышать pH."
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:strong-acid-base-neutralization-heat:en",
@@ -21512,6 +22464,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Прядение"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:static-household-dough-fermentation:en",
+      "target_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Dough fermentation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:static-household-dough-fermentation:ru",
+      "target_ref": "wk:craft_technology:static-household-dough-fermentation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Брожение теста"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:steel-working-part-heat-treatment:en",
@@ -25812,6 +26778,20 @@
       "retrieval_text": "Пористость и теплоперенос материала Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:measurement-and-milling:en",
+      "target_ref": "wk:physics_material_science:measurement-and-milling",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Measurement and comminution"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:measurement-and-milling:ru",
+      "target_ref": "wk:physics_material_science:measurement-and-milling",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Измерение и измельчение"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:mechanical-energy-dissipation:en",
       "target_ref": "wk:physics_material_science:mechanical-energy-dissipation",
       "domain": "physics_material_science",
@@ -25992,6 +26972,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Истечение жидкости из-за разности давления Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:random-trials:en",
+      "target_ref": "wk:physics_material_science:random-trials",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Independent random trials"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:random-trials:ru",
+      "target_ref": "wk:physics_material_science:random-trials",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Независимые случайные испытания"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air:en",
@@ -26218,6 +27212,20 @@
       "retrieval_text": "sound material medium Звуковой волне нужна материальная среда; в вакууме она не распространяется."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:sound-propagation:en",
+      "target_ref": "wk:physics_material_science:sound-propagation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sound propagation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:sound-propagation:ru",
+      "target_ref": "wk:physics_material_science:sound-propagation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Распространение звука"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:sound-reflection-surface:en",
       "target_ref": "wk:physics_material_science:sound-reflection-surface",
       "domain": "physics_material_science",
@@ -26246,6 +27254,48 @@
       "retrieval_text": "sound source vibration Колеблющееся тело излучает звук; когда его колебания прекращаются, прекращается новое звуковое излучение этого тела."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-asperity-contact-wear:en",
+      "target_ref": "wk:physics_material_science:static-asperity-contact-wear",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Asperity contact and wear Local roughness contact through lubricant film."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-asperity-contact-wear:ru",
+      "target_ref": "wk:physics_material_science:static-asperity-contact-wear",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Контакт выступов и износ Локальный контакт шероховатостей через смазочную плёнку."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-belt-friction:en",
+      "target_ref": "wk:physics_material_science:static-belt-friction",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Belt friction Conditions resisting belt slip."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-belt-friction:ru",
+      "target_ref": "wk:physics_material_science:static-belt-friction",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Трение ременного привода Условия сопротивления проскальзыванию ремня."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-birch-bark-water-deformation:en",
+      "target_ref": "wk:physics_material_science:static-birch-bark-water-deformation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Birch bark moisture deformation Moisture effects on birch bark form."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-birch-bark-water-deformation:ru",
+      "target_ref": "wk:physics_material_science:static-birch-bark-water-deformation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влага и деформация бересты Влияние влаги на форму бересты."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:static-force-equilibrium:en",
       "target_ref": "wk:physics_material_science:static-force-equilibrium",
       "domain": "physics_material_science",
@@ -26258,6 +27308,90 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "static force equilibrium Для покоя рассматриваемой детали сумма действующих на неё сил должна быть равна нулю."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-interface:en",
+      "target_ref": "wk:physics_material_science:static-forge-welding-interface",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding contact, heat and pressure Conditions for contact forge joining."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-interface:ru",
+      "target_ref": "wk:physics_material_science:static-forge-welding-interface",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Контакт, нагрев и давление в кузнечной сварке Условия контактного кузнечного соединения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-pressure-conditions:en",
+      "target_ref": "wk:physics_material_science:static-forge-welding-pressure-conditions",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding pressure conditions Required pressure depends on material and heat."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-pressure-conditions:ru",
+      "target_ref": "wk:physics_material_science:static-forge-welding-pressure-conditions",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Условия давления кузнечной сварки Зависимость требуемого давления от материала и нагрева."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-surface-oxide:en",
+      "target_ref": "wk:physics_material_science:static-forge-welding-surface-oxide",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Forge-welding surface oxide Effect of oxide on weld surfaces."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-forge-welding-surface-oxide:ru",
+      "target_ref": "wk:physics_material_science:static-forge-welding-surface-oxide",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-lubrication-film:en",
+      "target_ref": "wk:physics_material_science:static-lubrication-film",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Lubrication film Lubricant film between moving surfaces."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-lubrication-film:ru",
+      "target_ref": "wk:physics_material_science:static-lubrication-film",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Смазочная плёнка Плёнка смазки между движущимися поверхностями."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-wool-felting:en",
+      "target_ref": "wk:physics_material_science:static-wool-felting",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wool felting Interlocking of wool scales under combined conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-wool-felting:ru",
+      "target_ref": "wk:physics_material_science:static-wool-felting",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Валяние шерсти Сцепление чешуек шерсти при совместных условиях."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-yarn-twist-cohesion:en",
+      "target_ref": "wk:physics_material_science:static-yarn-twist-cohesion",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Yarn twist cohesion Qualitative twist-strength relation in yarn."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-yarn-twist-cohesion:ru",
+      "target_ref": "wk:physics_material_science:static-yarn-twist-cohesion",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Крутка и сцепление пряжи Качественная связь крутки и прочности пряжи."
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:stationary-charge-distance-force:en",

@@ -1,0 +1,109 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-roof-layers-shed-water",
+      "claim_ref": "claim:household-roof-layers-shed-water",
+      "claim_digest": "e6f42a26ec4a5281270e09ccaf4ffe978214c8289be050974c8d9bf67fbc9935",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-roof-layers-shed-water",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-roof-water"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "PNNL describes modern roof water-control layers. Approval is only for generic layered drainage relation, not medieval construction, a particular roof, weather, leak, repair recipe, or watertight result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-roof-local-condition-guides-repair",
+      "claim_ref": "claim:household-roof-local-condition-guides-repair",
+      "claim_digest": "a7eafb721aaeefe881617d776b99983d741093174ffd1ee62b415608a0c358f4",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-roof-local-condition-guides-repair",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-roof-water"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "PNNL advises inspection and repair/replacement of flashing defects in a modern roof system. No historical local practice, defect diagnosis, material availability, skill, or whole-roof outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-clay-drying-and-incompatible-movement",
+      "claim_ref": "claim:household-clay-drying-and-incompatible-movement",
+      "claim_digest": "3b3136cd05b9a48bbf46d645fae8c28a34e6ce6d1d71b0ae18745832763bb5a5",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-clay-drying-and-incompatible-movement",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-clay-movement"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "NPS states these relations for adobe. Daub/finish transfer remains analogical; no attestation, mix, application method, patch outcome, or durability claim."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-clay-key-and-compatible-patch",
+      "claim_ref": "claim:household-clay-key-and-compatible-patch",
+      "claim_digest": "8478b681850d7702943e3fcdd2c4a9ed9faba7d94c359eb8ee68e6dd4da4fec1",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-clay-key-and-compatible-patch",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-clay-key"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "NPS supports a mechanical key and like materials for adobe repair, analogically only. This is not attestation for daub, a procedure, material availability, patch durability, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-dough-yeast-gas-needs-retention",
+      "claim_ref": "claim:household-dough-yeast-gas-needs-retention",
+      "claim_digest": "a18a1bb705bf6486793cd9b4cdbc9e5c24ec006082efadb48c4dceef886da55f",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-dough-yeast-gas-needs-retention",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-dough-gas"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "PMID 28455072 supports gas formation and retention in yeast-leavened wheat dough. It supplies no recipe, exact process condition, historical practice, or guaranteed expansion or loaf result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-dough-temperature-changes-proofing",
+      "claim_ref": "claim:household-dough-temperature-changes-proofing",
+      "claim_digest": "d442efadae7b43d8aa02af768acef13520994f3db611b7d74bac182b53754669",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-dough-temperature-changes-proofing",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-dough-temperature"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "Study is wheat bread dough under experimental conditions. It supports temperature-sensitive fermentation/gas development, not a fixed proofing time, historical recipe, ingredients, equipment, or loaf result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-trauma-unnecessary-movement-can-worsen",
+      "claim_ref": "claim:household-trauma-unnecessary-movement-can-worsen",
+      "claim_digest": "84639e7477da623c4178f105223252463d5c01196343671d079113cea7743f86",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-trauma-unnecessary-movement-can-worsen",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-trauma-movement"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "AHA/ARC positioning guidance limits this relation to suspected neck, back, hip, or pelvic injury and explicitly preserves unsafe-area exception. No diagnosis, transport procedure, treatment, actor capability, or outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-household-care-gap-v1-trauma-danger-or-airway-changes-position-choice",
+      "claim_ref": "claim:household-trauma-danger-or-airway-changes-position-choice",
+      "claim_digest": "ef0fc6ab69c23f3af880c819fccb1f7fad4a59bd1c9fea4b6fb30378b86cc611",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-household-care-gap-v1.json#claim:household-trauma-danger-or-airway-changes-position-choice",
+      "auditor_ref": "/root/process_gap_research",
+      "independence_basis": "Independent reopening of cited source, source-domain and localization review, and full assembled pack plus candidate duplicate review; auditor did not author candidate.",
+      "evidence_checked": ["evidence:household-trauma-airway-danger", "evidence:household-trauma-movement"],
+      "review_ref": "verification/static-household-care-gap-v1.md#verdicts",
+      "verdict": "APPROVE",
+      "limits": "WHO CFAR supports positioning for defined airway obstruction/choking risk; AHA/ARC supports relocation from an unsafe area. Relation remains contextual safety reasoning, not treatment or transport protocol."
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,228-claim corpus. The later direct-attestation-only residual
+current 1,278-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -44,10 +44,20 @@ unseen cases without a substantial new gap. Starting with batch 03, each
 hundred covers 20 primary need areas (80 practical/natural/physical cases,
 20 social/institutional), checked for substantive needs rather than tags.
 **No batch is yet counted clean.**
+Batch 03's declared 20-by-five distribution passed structural checks, but
+independent semantic review found seven incorrectly labelled primary
+needs and 36 raw gap leads. It remains diagnostic. General-premise triage
+has removed several apparent recipe-specific gaps; source-backed candidate
+work addresses real process, food, measurement and acoustic omissions.
+Neither declared quotas nor raw gap counts alone establish coverage.
 Concrete missing context must be filled and independently reviewed; rare
 details, exact values and equally plausible ordinary alternatives do not
 create blockers. No live gameplay or gameplay-owner repair is authorized.
 
+Batch 04 has 100 WK-only reviews on the expanded corpus and no reported
+primary-domain mismatch. Nine practical leads remain under full-bundle
+triage after correcting several false absence findings; it is not yet a
+clean acceptance batch. These are review leads, not nine proven P1 gaps.
 There is no current P1-free verdict, world-completeness claim, gameplay
 saturation result or final merge recommendation. The final independent
 coverage verdict must refer to the actually published corpus and completed

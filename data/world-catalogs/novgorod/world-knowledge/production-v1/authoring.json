@@ -130,6 +130,18 @@
     "reconstructed-public-world-v1.json",
     "verification-reconstructed-public-world-v1.json",
     "reconstructed-healer-practice-v1.json",
-    "verification-reconstructed-healer-practice-v1.json"
+    "verification-reconstructed-healer-practice-v1.json",
+    "static-process-gap-v1.json",
+    "verification-static-process-gap-v1.json",
+    "static-food-bio-gap-v1.json",
+    "verification-static-food-bio-gap-v1.json",
+    "static-measurement-sound-milling-v1.json",
+    "verification-static-measurement-sound-milling-v1.json",
+    "static-practical-residual-v1.json",
+    "verification-static-practical-residual-v1.json",
+    "static-household-care-gap-v1.json",
+    "verification-static-household-care-gap-v1.json",
+    "static-soap-cleaning-v1.json",
+    "verification-static-soap-cleaning-v1.json"
   ]
 }

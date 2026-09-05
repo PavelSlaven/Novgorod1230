@@ -21,15 +21,15 @@
     "hybrid_recall_at_20": 0.9699248120300752,
     "lexical_hard_constraint_recall": 1,
     "hybrid_hard_constraint_recall": 1,
-    "lexical_noise_at_10": 0.3827336197636949,
-    "hybrid_noise_at_10": 0.5851265067430478,
+    "lexical_noise_at_10": 0.3897093925289414,
+    "hybrid_noise_at_10": 0.5821607590404582,
     "applicability_precision": 1,
-    "query_embedding_mean_ms": 60.42251127819549,
-    "vector_scan_mean_ms": 0.5428503759396157,
-    "runtime_bundle_bytes": 7360120,
-    "vector_bundle_bytes": 16736256,
-    "encoder_model_load_ms": 2456.009,
-    "peak_process_rss_bytes": 2394173440,
+    "query_embedding_mean_ms": 62.41241353383459,
+    "vector_scan_mean_ms": 0.6453879699248024,
+    "runtime_bundle_bytes": 7688282,
+    "vector_bundle_bytes": 17399808,
+    "encoder_model_load_ms": 3133.036,
+    "peak_process_rss_bytes": 2402828288,
     "cuda_peak_allocated_bytes": 0
   },
   "decision": {
@@ -40,7 +40,7 @@
   "cases": [
     {
       "case_id": "foundations_reappraisal_en",
-      "vector_scan_ms": 1.4724999999998545,
+      "vector_scan_ms": 1.480599999998958,
       "lexical_at_10": [
         "claim:foundations-ms4-01-reappraisal-negative-experience"
       ],
@@ -61,7 +61,7 @@
     },
     {
       "case_id": "foundations_uncertainty_ru",
-      "vector_scan_ms": 0.3811999999998079,
+      "vector_scan_ms": 0.5586000000002969,
       "lexical_at_10": [
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
         "claim:foundations-ms3-04-acute-stress"
@@ -84,7 +84,7 @@
     },
     {
       "case_id": "foundations_antler_workability_ru",
-      "vector_scan_ms": 6.694700000000012,
+      "vector_scan_ms": 6.8026000000027125,
       "lexical_at_10": [
         "claim:foundations-physical-material3-03-antler-water-workability"
       ],
@@ -105,7 +105,7 @@
     },
     {
       "case_id": "foundations_acute_stress_ru",
-      "vector_scan_ms": 0.26120000000082655,
+      "vector_scan_ms": 0.3106000000007043,
       "lexical_at_10": [
         "claim:foundations-ms3-04-acute-stress",
         "claim:foundations-ms4-03-uncertainty-cognitive-control"
@@ -128,7 +128,7 @@
     },
     {
       "case_id": "foundations_apology_experiment_en",
-      "vector_scan_ms": 0.2595000000001164,
+      "vector_scan_ms": 0.3378000000011525,
       "lexical_at_10": [
         "claim:foundations-ms3-07-apology-mediation",
         "claim:foundations-ms3-06-apology-reinvestment"
@@ -151,7 +151,7 @@
     },
     {
       "case_id": "foundations_infection_routes_ru",
-      "vector_scan_ms": 0.8823000000011234,
+      "vector_scan_ms": 0.9295000000020082,
       "lexical_at_10": [
         "claim:foundations-life-43-infection-chain",
         "claim:foundations-life-44-pathogen-transport",
@@ -178,7 +178,7 @@
     },
     {
       "case_id": "foundations_chemical_exposure_en",
-      "vector_scan_ms": 0.9376000000011118,
+      "vector_scan_ms": 0.9776000000019849,
       "lexical_at_10": [
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:foundations-haz-01-exposure-modifiers",
@@ -207,7 +207,7 @@
     },
     {
       "case_id": "foundations_wet_slope_ru",
-      "vector_scan_ms": 0.4399999999986903,
+      "vector_scan_ms": 0.4632999999994354,
       "lexical_at_10": [
         "claim:foundations-haz-05-slope-water-triggers"
       ],
@@ -228,24 +228,28 @@
     },
     {
       "case_id": "foundations_air_resistance_ru",
-      "vector_scan_ms": 0.5520999999971536,
+      "vector_scan_ms": 0.666799999999057,
       "lexical_at_10": [
+        "claim:sound-wind-temperature-gradients-refract",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "hybrid_at_10": [
         "claim:foundations-phys-01-air-drag-fall",
+        "claim:sound-wind-temperature-gradients-refract",
         "claim:population-physics-floating-shape",
         "claim:population-physics-immersion-buoyancy",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "lexical_at_20": [
+        "claim:sound-wind-temperature-gradients-refract",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:research-carbon-monoxide-can-accumulate-indoors"
       ],
       "hybrid_at_20": [
         "claim:foundations-phys-01-air-drag-fall",
+        "claim:sound-wind-temperature-gradients-refract",
         "claim:population-physics-floating-shape",
         "claim:population-physics-immersion-buoyancy",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
@@ -255,26 +259,30 @@
     },
     {
       "case_id": "foundations_impact_duration_en",
-      "vector_scan_ms": 0.43170000000100117,
+      "vector_scan_ms": 0.5625,
       "lexical_at_10": [
         "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:sound-spreading-reduces-intensity",
         "claim:population-physics-point-pressure",
         "claim:force-contact-geometry"
       ],
       "hybrid_at_10": [
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:population-physics-point-pressure",
+        "claim:sound-spreading-reduces-intensity",
         "claim:population-physics-sliding-friction",
         "claim:force-contact-geometry"
       ],
       "lexical_at_20": [
         "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:sound-spreading-reduces-intensity",
         "claim:population-physics-point-pressure",
         "claim:force-contact-geometry"
       ],
       "hybrid_at_20": [
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:population-physics-point-pressure",
+        "claim:sound-spreading-reduces-intensity",
         "claim:population-physics-sliding-friction",
         "claim:force-contact-geometry"
       ],
@@ -282,40 +290,36 @@
     },
     {
       "case_id": "foundations_wet_metal_contact_ru",
-      "vector_scan_ms": 0.20789999999760767,
+      "vector_scan_ms": 0.30670000000100117,
       "lexical_at_10": [
         "claim:foundations-chm-12-galvanic-contact-corrosion",
-        "claim:foundations-chm-10-metal-environment-corrosion",
-        "claim:foundations-haz-03-exposure-routes",
-        "claim:population-material-copper-iron-contact"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:foundations-chm-10-metal-environment-corrosion"
       ],
       "hybrid_at_10": [
         "claim:foundations-chm-12-galvanic-contact-corrosion",
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
         "claim:iron-corrosion-moisture-oxygen",
-        "claim:foundations-chm-10-metal-environment-corrosion",
-        "claim:foundations-haz-03-exposure-routes",
-        "claim:population-material-copper-iron-contact"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:foundations-chm-10-metal-environment-corrosion"
       ],
       "lexical_at_20": [
         "claim:foundations-chm-12-galvanic-contact-corrosion",
-        "claim:foundations-chm-10-metal-environment-corrosion",
-        "claim:foundations-haz-03-exposure-routes",
-        "claim:population-material-copper-iron-contact"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:foundations-chm-10-metal-environment-corrosion"
       ],
       "hybrid_at_20": [
         "claim:foundations-chm-12-galvanic-contact-corrosion",
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
         "claim:iron-corrosion-moisture-oxygen",
-        "claim:foundations-chm-10-metal-environment-corrosion",
-        "claim:foundations-haz-03-exposure-routes",
-        "claim:population-material-copper-iron-contact"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:foundations-chm-10-metal-environment-corrosion"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "foundations_neutralization_en",
-      "vector_scan_ms": 0.2620999999999185,
+      "vector_scan_ms": 0.29249999999956344,
       "lexical_at_10": [
         "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat",
         "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
@@ -342,89 +346,95 @@
     },
     {
       "case_id": "foundations_sound_medium_ru",
-      "vector_scan_ms": 0.5169000000023516,
+      "vector_scan_ms": 0.5918999999994412,
       "lexical_at_10": [
-        "claim:foundations-physical-b2-snd-04-sound-reflection-surface"
+        "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+        "claim:sound-spreading-reduces-intensity"
       ],
       "hybrid_at_10": [
         "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
-        "claim:foundations-physical-b2-snd-02-sound-material-medium",
-        "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material"
+        "claim:sound-spreading-reduces-intensity",
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
       ],
       "lexical_at_20": [
-        "claim:foundations-physical-b2-snd-04-sound-reflection-surface"
+        "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+        "claim:sound-spreading-reduces-intensity"
       ],
       "hybrid_at_20": [
         "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
-        "claim:foundations-physical-b2-snd-02-sound-material-medium",
-        "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material"
+        "claim:sound-spreading-reduces-intensity",
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "foundations_horn_water_en",
-      "vector_scan_ms": 0.48840000000200234,
+      "vector_scan_ms": 0.6320999999988999,
       "lexical_at_10": [
-        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:material-water-natural-fibres-water-swelling"
       ],
       "hybrid_at_10": [
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
-        "claim:population-physics-point-pressure"
+        "claim:population-physics-point-pressure",
+        "claim:material-water-natural-fibres-water-swelling"
       ],
       "lexical_at_20": [
-        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:material-water-natural-fibres-water-swelling"
       ],
       "hybrid_at_20": [
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
-        "claim:population-physics-point-pressure"
+        "claim:population-physics-point-pressure",
+        "claim:material-water-natural-fibres-water-swelling"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "foundations_digestion_absorption_ru",
-      "vector_scan_ms": 0.7194999999992433,
+      "vector_scan_ms": 0.9004000000022643,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+        "claim:foundations-life-20-kidneys",
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:public-world-support-needs-available-person-and-resources",
-        "claim:foundations-life-20-kidneys",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-ruminant-membership"
       ],
       "hybrid_at_10": [
-        "claim:food-energy-nutrients",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:foundations-life-10-digestion",
+        "claim:food-energy-nutrients",
         "claim:foundations-life-11-absorption",
+        "claim:foundations-life-20-kidneys",
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:public-world-support-needs-available-person-and-resources",
-        "claim:foundations-life-20-kidneys",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-rumen-forage-digestion"
       ],
       "lexical_at_20": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+        "claim:foundations-life-20-kidneys",
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:public-world-support-needs-available-person-and-resources",
-        "claim:foundations-life-20-kidneys",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-ruminant-membership"
       ],
       "hybrid_at_20": [
-        "claim:food-energy-nutrients",
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
         "claim:foundations-life-10-digestion",
+        "claim:food-energy-nutrients",
         "claim:foundations-life-11-absorption",
+        "claim:foundations-life-20-kidneys",
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
         "claim:public-world-support-needs-available-person-and-resources",
-        "claim:foundations-life-20-kidneys",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-rumen-forage-digestion",
@@ -434,7 +444,7 @@
     },
     {
       "case_id": "foundations_lung_gas_exchange_en",
-      "vector_scan_ms": 0.6945000000014261,
+      "vector_scan_ms": 0.9144999999989523,
       "lexical_at_10": [
         "claim:foundations-life-13-alveolar-exchange"
       ],
@@ -455,7 +465,7 @@
     },
     {
       "case_id": "foundations_attention_task_ru",
-      "vector_scan_ms": 0.26450000000113505,
+      "vector_scan_ms": 0.3021999999982654,
       "lexical_at_10": [
         "claim:foundations-ms4-01-reappraisal-negative-experience",
         "claim:research-memory-source-misattribution"
@@ -482,7 +492,7 @@
     },
     {
       "case_id": "foundations_practice_learning_en",
-      "vector_scan_ms": 0.27009999999791034,
+      "vector_scan_ms": 0.3084999999991851,
       "lexical_at_10": [
         "claim:foundations-ms-12-practice-correction"
       ],
@@ -503,7 +513,7 @@
     },
     {
       "case_id": "foundations_attribution_ru",
-      "vector_scan_ms": 0.25679999999920256,
+      "vector_scan_ms": 0.3063000000001921,
       "lexical_at_10": [
         "claim:foundations-ms-20-attribution-alternatives",
         "claim:foundations-ms-13-movement-demonstration",
@@ -530,7 +540,7 @@
     },
     {
       "case_id": "foundations_persuasion_en",
-      "vector_scan_ms": 0.24049999999988358,
+      "vector_scan_ms": 0.2900999999983469,
       "lexical_at_10": [
         "claim:foundations-ms-25-persuasion-context",
         "claim:ordinary-life-public-reputation-follows-conduct"
@@ -555,7 +565,7 @@
     },
     {
       "case_id": "foundations_aquifer_recharge_ru",
-      "vector_scan_ms": 0.3984999999993306,
+      "vector_scan_ms": 0.4162999999971362,
       "lexical_at_10": [
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
@@ -592,7 +602,7 @@
     },
     {
       "case_id": "foundations_radiation_fog_en",
-      "vector_scan_ms": 0.3725000000013097,
+      "vector_scan_ms": 0.4076999999997497,
       "lexical_at_10": [
         "claim:foundations-earth-28-radiation-fog",
         "claim:foundations-earth-29-advection-fog",
@@ -631,7 +641,7 @@
     },
     {
       "case_id": "foundations_foggy_attention_ru",
-      "vector_scan_ms": 0.4989000000023225,
+      "vector_scan_ms": 0.5714000000007218,
       "lexical_at_10": [
         "claim:foundations-earth-31-freezing-fog-rime",
         "claim:foundations-earth-30-upslope-fog",
@@ -672,7 +682,7 @@
     },
     {
       "case_id": "ewe_maternal_ru",
-      "vector_scan_ms": 0.7124999999978172,
+      "vector_scan_ms": 0.8319000000010419,
       "lexical_at_10": [
         "claim:fauna-ewe-lamb-recognition"
       ],
@@ -693,7 +703,7 @@
     },
     {
       "case_id": "goat_groups_en",
-      "vector_scan_ms": 0.7076000000015483,
+      "vector_scan_ms": 0.8237000000008265,
       "lexical_at_10": [
         "claim:fauna-doe-kid-care",
         "claim:fauna-goat-sociality"
@@ -716,7 +726,7 @@
     },
     {
       "case_id": "wolf_pup_care_ru",
-      "vector_scan_ms": 0.6745000000009895,
+      "vector_scan_ms": 0.8391000000010536,
       "lexical_at_10": [
         "claim:fauna-mammals-wolf-territorial-defense"
       ],
@@ -737,18 +747,18 @@
     },
     {
       "case_id": "horse_separation_en",
-      "vector_scan_ms": 0.6653000000005704,
+      "vector_scan_ms": 0.7986999999993714,
       "lexical_at_10": [
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:fauna-mammals-domestic-horse-forage-behavior",
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-ewe-lamb-recognition",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-animal-learning",
         "claim:fauna-chicken-allopreening",
         "claim:fauna-chicken-brooding",
         "claim:fauna-chicken-dust-bathing",
-        "claim:fauna-chicken-flock-hierarchy"
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-animal-habituation"
       ],
       "hybrid_at_10": [
         "claim:fauna-mammals-domestic-horse-separation-stress",
@@ -756,24 +766,24 @@
         "claim:fauna-mammals-domestic-horse-herd-sociality",
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-ewe-lamb-recognition",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-animal-learning",
         "claim:fauna-chicken-allopreening",
         "claim:fauna-chicken-brooding",
-        "claim:fauna-chicken-dust-bathing"
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-foraging"
       ],
       "lexical_at_20": [
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:fauna-mammals-domestic-horse-forage-behavior",
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-ewe-lamb-recognition",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-animal-learning",
         "claim:fauna-chicken-allopreening",
         "claim:fauna-chicken-brooding",
         "claim:fauna-chicken-dust-bathing",
         "claim:fauna-chicken-flock-hierarchy",
         "claim:fauna-chicken-foraging",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-animal-learning",
         "claim:fauna-mammals-domestic-horse-herd-sociality",
         "claim:fauna-sheep-flocking"
       ],
@@ -783,20 +793,20 @@
         "claim:fauna-mammals-domestic-horse-herd-sociality",
         "claim:fauna-ewe-lambing-seclusion",
         "claim:fauna-ewe-lamb-recognition",
-        "claim:fauna-animal-habituation",
-        "claim:fauna-animal-learning",
         "claim:fauna-chicken-allopreening",
         "claim:fauna-chicken-brooding",
         "claim:fauna-chicken-dust-bathing",
         "claim:fauna-chicken-flock-hierarchy",
         "claim:fauna-chicken-foraging",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-animal-learning",
         "claim:fauna-sheep-flocking"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "bird_navigation_ru",
-      "vector_scan_ms": 0.655799999996816,
+      "vector_scan_ms": 0.9853999999977532,
       "lexical_at_10": [
         "claim:fauna-bird-migration-energy",
         "claim:fauna-dragonfly-foodweb",
@@ -845,7 +855,7 @@
     },
     {
       "case_id": "salmon_eel_migration_en",
-      "vector_scan_ms": 0.7841999999982363,
+      "vector_scan_ms": 0.8100999999987835,
       "lexical_at_10": [
         "claim:fauna-eel-migration",
         "claim:fauna-salmon-age-diet",
@@ -878,7 +888,7 @@
     },
     {
       "case_id": "adder_defence_ru",
-      "vector_scan_ms": 0.7256000000015774,
+      "vector_scan_ms": 0.8250999999982014,
       "lexical_at_10": [
         "claim:fauna-adder-defence",
         "claim:fauna-adder-chemical-sensing",
@@ -915,28 +925,28 @@
     },
     {
       "case_id": "bee_winter_en",
-      "vector_scan_ms": 0.9801000000006752,
+      "vector_scan_ms": 1.1124999999992724,
       "lexical_at_10": [
         "claim:fauna-bee-winter-cluster"
       ],
       "hybrid_at_10": [
         "claim:fauna-bee-winter-cluster",
-        "claim:fauna-bee-swarming",
-        "claim:fauna-bee-waggle"
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:fauna-bee-swarming"
       ],
       "lexical_at_20": [
         "claim:fauna-bee-winter-cluster"
       ],
       "hybrid_at_20": [
         "claim:fauna-bee-winter-cluster",
-        "claim:fauna-bee-swarming",
-        "claim:fauna-bee-waggle"
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:fauna-bee-swarming"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "dragonfly_development_ru",
-      "vector_scan_ms": 1.0182999999997264,
+      "vector_scan_ms": 1.0486000000018976,
       "lexical_at_10": [
         "claim:fauna-dragonfly-adult-foraging",
         "claim:fauna-dragonfly-emergence",
@@ -991,7 +1001,7 @@
     },
     {
       "case_id": "tick_movement_en",
-      "vector_scan_ms": 0.9655999999995402,
+      "vector_scan_ms": 0.9844999999986612,
       "lexical_at_10": [
         "claim:fauna-tick-feeding",
         "claim:fauna-tick-questing",
@@ -1016,7 +1026,7 @@
     },
     {
       "case_id": "chicken_dust_ru",
-      "vector_scan_ms": 0.7704000000012456,
+      "vector_scan_ms": 1.1572000000014668,
       "lexical_at_10": [
         "claim:fauna-chicken-allopreening",
         "claim:fauna-chicken-brooding",
@@ -1065,7 +1075,7 @@
     },
     {
       "case_id": "crayfish_eggs_en",
-      "vector_scan_ms": 0.8067000000010012,
+      "vector_scan_ms": 0.9019000000007509,
       "lexical_at_10": [
         "claim:fauna-crayfish-juvenile-activity",
         "claim:fauna-crayfish-diet",
@@ -1094,7 +1104,7 @@
     },
     {
       "case_id": "squirrel_winter_ru",
-      "vector_scan_ms": 0.7749000000003434,
+      "vector_scan_ms": 0.8247999999985041,
       "lexical_at_10": [
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
       ],
@@ -1115,14 +1125,14 @@
     },
     {
       "case_id": "fish_oxygen_en",
-      "vector_scan_ms": 0.7857000000003609,
+      "vector_scan_ms": 0.7982000000010885,
       "lexical_at_10": [
         "claim:fauna-fish-summer-night-oxygen"
       ],
       "hybrid_at_10": [
         "claim:fauna-fish-summer-night-oxygen",
         "claim:fauna-fish-low-oxygen",
-        "claim:candidate-physiology-v3-oxygen-delivery-brain-function"
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
       ],
       "lexical_at_20": [
         "claim:fauna-fish-summer-night-oxygen"
@@ -1130,13 +1140,13 @@
       "hybrid_at_20": [
         "claim:fauna-fish-summer-night-oxygen",
         "claim:fauna-fish-low-oxygen",
-        "claim:candidate-physiology-v3-oxygen-delivery-brain-function"
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "mushroom_resemblance_not_edibility_ru",
-      "vector_scan_ms": 0.7141000000010536,
+      "vector_scan_ms": 0.8623000000006869,
       "lexical_at_10": [
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "claim:bearberry-lingonberry-resemblance-not-identification",
@@ -1194,7 +1204,7 @@
     },
     {
       "case_id": "fungal_substrate_nutrition_en",
-      "vector_scan_ms": 0.7004000000015367,
+      "vector_scan_ms": 0.8438999999998487,
       "lexical_at_10": [
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:fauna-tick-feeding",
@@ -1223,7 +1233,7 @@
     },
     {
       "case_id": "wild_berry_identification_ru",
-      "vector_scan_ms": 0.6902000000009139,
+      "vector_scan_ms": 0.9130000000004657,
       "lexical_at_10": [
         "claim:bearberry-lingonberry-resemblance-not-identification"
       ],
@@ -1244,7 +1254,7 @@
     },
     {
       "case_id": "mezereon_toxicity_en",
-      "vector_scan_ms": 0.7703000000001339,
+      "vector_scan_ms": 0.8909000000021479,
       "lexical_at_10": [
         "claim:mezereon-poisonous-sap-all-parts"
       ],
@@ -1265,7 +1275,7 @@
     },
     {
       "case_id": "qualified_winter_sledge_context_en",
-      "vector_scan_ms": 0.5466999999989639,
+      "vector_scan_ms": 0.6483999999982188,
       "lexical_at_10": [
         "claim:transport-winter-sledge-1220"
       ],
@@ -1286,7 +1296,7 @@
     },
     {
       "case_id": "probable_communion_bowl_function_ru",
-      "vector_scan_ms": 0.5619999999980791,
+      "vector_scan_ms": 0.6667000000015832,
       "lexical_at_10": [
         "claim:probable-travel-chalice-communion"
       ],
@@ -1307,7 +1317,7 @@
     },
     {
       "case_id": "ordinary_restraint_grounded_geometry_en",
-      "vector_scan_ms": 0.640400000000227,
+      "vector_scan_ms": 0.7481000000007043,
       "lexical_at_10": [
         "claim:early-rus-hunting-ground-terms",
         "claim:force-contact-geometry"
@@ -1332,7 +1342,7 @@
     },
     {
       "case_id": "officeholder_military_episode_context_en",
-      "vector_scan_ms": 0.2334999999984575,
+      "vector_scan_ms": 0.3492000000005646,
       "lexical_at_10": [
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:posadnik-fedor-conflict-1224"
@@ -1355,7 +1365,7 @@
     },
     {
       "case_id": "burial_container_material_forms_ru",
-      "vector_scan_ms": 0.5420999999987544,
+      "vector_scan_ms": 0.6417000000001281,
       "lexical_at_10": [
         "claim:burial-plank-coffin-nails",
         "claim:burial-coffin-lid-transverse-plank",
@@ -1380,28 +1390,28 @@
     },
     {
       "case_id": "spinning_fibre_capability_en",
-      "vector_scan_ms": 0.47000000000116415,
+      "vector_scan_ms": 0.5959000000002561,
       "lexical_at_10": [
         "claim:textile-fibres-twist-yarn"
       ],
       "hybrid_at_10": [
         "claim:textile-fibres-twist-yarn",
-        "claim:material-water-hemp-cellulosic-fibre",
-        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+        "claim:static-yarn-twist-can-increase-fibre-cohesion",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist"
       ],
       "lexical_at_20": [
         "claim:textile-fibres-twist-yarn"
       ],
       "hybrid_at_20": [
         "claim:textile-fibres-twist-yarn",
-        "claim:material-water-hemp-cellulosic-fibre",
-        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+        "claim:static-yarn-twist-can-increase-fibre-cohesion",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "maslo_historical_account_ru",
-      "vector_scan_ms": 0.6077999999979511,
+      "vector_scan_ms": 1.1929999999993015,
       "lexical_at_10": [
         "claim:maslo-birchbark-718-account"
       ],
@@ -1422,7 +1432,7 @@
     },
     {
       "case_id": "novgorod_thirteenth_century_colourants_en",
-      "vector_scan_ms": 0.5237000000015541,
+      "vector_scan_ms": 0.6250999999974738,
       "lexical_at_10": [
         "claim:textile-lac-dye-analysis",
         "claim:textile-indigo-yellow-analysis",
@@ -1451,7 +1461,7 @@
     },
     {
       "case_id": "oil_treatments_distinct_skin_states_en",
-      "vector_scan_ms": 0.4026999999987311,
+      "vector_scan_ms": 0.580999999998312,
       "lexical_at_10": [
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:oil-rawhide-moisture-resistance",
@@ -1484,7 +1494,7 @@
     },
     {
       "case_id": "oil_tanning_reaction_ru",
-      "vector_scan_ms": 0.3875000000007276,
+      "vector_scan_ms": 0.3606000000036147,
       "lexical_at_10": [
         "claim:oil-tanning-crosslinking-fibres"
       ],
@@ -1505,7 +1515,7 @@
     },
     {
       "case_id": "textile_dye_application_en",
-      "vector_scan_ms": 0.2959000000009837,
+      "vector_scan_ms": 0.3666000000011991,
       "lexical_at_10": [
         "claim:textile-dye-mordant-fixation",
         "claim:textile-dye-application"
@@ -1528,14 +1538,14 @@
     },
     {
       "case_id": "fur_skin_preservation_ru",
-      "vector_scan_ms": 0.7907999999988533,
+      "vector_scan_ms": 1.1033000000024913,
       "lexical_at_10": [
         "claim:fur-skin-cooling-cleansing"
       ],
       "hybrid_at_10": [
         "claim:fur-skin-cooling-cleansing",
         "claim:flayed-skin-processing-purpose",
-        "claim:food-drying-reduces-microbial-growth-conditions"
+        "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh"
       ],
       "lexical_at_20": [
         "claim:fur-skin-cooling-cleansing"
@@ -1543,13 +1553,13 @@
       "hybrid_at_20": [
         "claim:fur-skin-cooling-cleansing",
         "claim:flayed-skin-processing-purpose",
-        "claim:food-drying-reduces-microbial-growth-conditions"
+        "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "flax_breaker_hackle_function_ru",
-      "vector_scan_ms": 0.29279999999926076,
+      "vector_scan_ms": 0.39789999999993597,
       "lexical_at_10": [
         "claim:fibre-hackle-removes-shive",
         "claim:fibre-flax-breaker-shive"
@@ -1570,7 +1580,7 @@
     },
     {
       "case_id": "rural_economic_context_en",
-      "vector_scan_ms": 0.22710000000006403,
+      "vector_scan_ms": 0.31820000000152504,
       "lexical_at_10": [
         "claim:rural-agriculture-crop-context",
         "claim:rural-household-economy-context"
@@ -1593,7 +1603,7 @@
     },
     {
       "case_id": "novgorod_wetland_pollen_ru",
-      "vector_scan_ms": 0.4881999999997788,
+      "vector_scan_ms": 0.47439999999915017,
       "lexical_at_10": [
         "claim:novgorod-wetland-pollen-context"
       ],
@@ -1614,7 +1624,7 @@
     },
     {
       "case_id": "stone_edge_maintenance_en",
-      "vector_scan_ms": 0.5800000000017462,
+      "vector_scan_ms": 0.6201000000000931,
       "lexical_at_10": [
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance"
@@ -1637,7 +1647,7 @@
     },
     {
       "case_id": "clay_rewetting_state_en",
-      "vector_scan_ms": 0.4239999999990687,
+      "vector_scan_ms": 0.5299000000013621,
       "lexical_at_10": [
         "claim:clay-dried-replasticization",
         "claim:clay-fired-no-replasticization"
@@ -1660,7 +1670,7 @@
     },
     {
       "case_id": "stone_abrasive_shaping_en",
-      "vector_scan_ms": 0.5365999999994528,
+      "vector_scan_ms": 0.580999999998312,
       "lexical_at_10": [
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping"
@@ -1683,7 +1693,7 @@
     },
     {
       "case_id": "novgorod_pottery_wheel_ru",
-      "vector_scan_ms": 0.551500000001397,
+      "vector_scan_ms": 0.6185000000004948,
       "lexical_at_10": [
         "claim:ceramic-novgorod-wheel",
         "claim:textile-lac-dye-analysis",
@@ -1732,7 +1742,7 @@
     },
     {
       "case_id": "church_statute_roles_ru",
-      "vector_scan_ms": 0.4250999999967462,
+      "vector_scan_ms": 0.6032999999988533,
       "lexical_at_10": [
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people"
@@ -1755,7 +1765,7 @@
     },
     {
       "case_id": "goat_forage_biology_en",
-      "vector_scan_ms": 0.7547000000013213,
+      "vector_scan_ms": 0.8519999999989523,
       "lexical_at_10": [
         "claim:livestock-rumen-forage-digestion"
       ],
@@ -1776,7 +1786,7 @@
     },
     {
       "case_id": "swine_ruminant_diet_ru",
-      "vector_scan_ms": 0.7302999999992608,
+      "vector_scan_ms": 0.9073000000025786,
       "lexical_at_10": [
         "claim:livestock-swine-comparative-diet",
         "claim:livestock-swine-membership"
@@ -1799,7 +1809,7 @@
     },
     {
       "case_id": "harvest_handle_ru",
-      "vector_scan_ms": 0.47229999999763095,
+      "vector_scan_ms": 0.603899999998248,
       "lexical_at_10": [
         "claim:harvest-sickle-crops-grasses",
         "claim:harvest-sickle-wooden-handle"
@@ -1822,7 +1832,7 @@
     },
     {
       "case_id": "cereal_food_uses_en",
-      "vector_scan_ms": 0.6290000000008149,
+      "vector_scan_ms": 0.7878999999993539,
       "lexical_at_10": [
         "claim:food-practices-rye-flour-bread",
         "claim:food-practices-barley-porridge-soup"
@@ -1845,7 +1855,7 @@
     },
     {
       "case_id": "grain_processing_traces_ru",
-      "vector_scan_ms": 0.4745999999977357,
+      "vector_scan_ms": 0.5630000000019209,
       "lexical_at_10": [
         "claim:food-practices-millet-cleaning-waste"
       ],
@@ -1866,7 +1876,7 @@
     },
     {
       "case_id": "hemp_stem_byproduct_ru",
-      "vector_scan_ms": 0.9291999999986729,
+      "vector_scan_ms": 1.108699999997043,
       "lexical_at_10": [
         "claim:agriculture-fauna-tow-log-gaps",
         "claim:agriculture-fauna-hemp-stem-fibre",
@@ -1893,7 +1903,7 @@
     },
     {
       "case_id": "rural_bort_tools_en",
-      "vector_scan_ms": 0.7415000000000873,
+      "vector_scan_ms": 0.7620999999999185,
       "lexical_at_10": [
         "claim:agriculture-fauna-borts-honey",
         "claim:agriculture-fauna-borts-wax",
@@ -1922,7 +1932,7 @@
     },
     {
       "case_id": "handmade_pottery_inputs_en",
-      "vector_scan_ms": 0.5205000000023574,
+      "vector_scan_ms": 0.6354999999966822,
       "lexical_at_10": [
         "claim:pottery-handmade-temper",
         "claim:pottery-handmade-local-clay"
@@ -1945,7 +1955,7 @@
     },
     {
       "case_id": "fur_sale_accounting_ru",
-      "vector_scan_ms": 0.49029999999766005,
+      "vector_scan_ms": 0.5786999999982072,
       "lexical_at_10": [
         "claim:social-daily-fur-sale-accounting"
       ],
@@ -1966,7 +1976,7 @@
     },
     {
       "case_id": "bark_laced_sleeve_ru",
-      "vector_scan_ms": 0.33109999999942374,
+      "vector_scan_ms": 0.38469999999870197,
       "lexical_at_10": [
         "claim:population-bark-bast",
         "claim:population-bark-pierce"
@@ -1989,7 +1999,7 @@
     },
     {
       "case_id": "bent_rod_hoop_en",
-      "vector_scan_ms": 0.29290000000037253,
+      "vector_scan_ms": 0.37080000000059954,
       "lexical_at_10": [
         "claim:population-rod-cord",
         "claim:population-rod-input"
@@ -2010,15 +2020,16 @@
     },
     {
       "case_id": "fresh_clay_over_fire_ru",
-      "vector_scan_ms": 0.19090000000142027,
+      "vector_scan_ms": 0.32660000000032596,
       "lexical_at_10": [
         "claim:population-material-wood-combustion",
         "claim:population-material-wood-pyrolysis"
       ],
       "hybrid_at_10": [
-        "claim:population-material-wood-combustion",
         "claim:population-material-clay-steam",
+        "claim:population-material-wood-combustion",
         "claim:population-material-wood-pyrolysis",
+        "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
         "claim:food-preservation-qualitative"
       ],
       "lexical_at_20": [
@@ -2026,16 +2037,17 @@
         "claim:population-material-wood-pyrolysis"
       ],
       "hybrid_at_20": [
-        "claim:population-material-wood-combustion",
         "claim:population-material-clay-steam",
+        "claim:population-material-wood-combustion",
         "claim:population-material-wood-pyrolysis",
+        "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
         "claim:food-preservation-qualitative"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "wet_wool_lashing_en",
-      "vector_scan_ms": 0.39219999999841093,
+      "vector_scan_ms": 0.5463999999992666,
       "lexical_at_10": [
         "claim:population-material-wet-wool",
         "claim:population-material-wood-shrinkage",
@@ -2045,7 +2057,8 @@
         "claim:material-water-rawhide-wet-dry",
         "claim:material-water-textile-water-load",
         "claim:water-wetting-forces",
-        "claim:textile-fibres-twist-yarn"
+        "claim:textile-fibres-twist-yarn",
+        "claim:material-water-alum-skin-water"
       ],
       "hybrid_at_10": [
         "claim:population-material-wet-wool",
@@ -2056,7 +2069,8 @@
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-rawhide-wet-dry",
         "claim:water-wetting-forces",
-        "claim:textile-fibres-twist-yarn"
+        "claim:textile-fibres-twist-yarn",
+        "claim:material-water-alum-skin-water"
       ],
       "lexical_at_20": [
         "claim:population-material-wet-wool",
@@ -2067,7 +2081,8 @@
         "claim:material-water-rawhide-wet-dry",
         "claim:material-water-textile-water-load",
         "claim:water-wetting-forces",
-        "claim:textile-fibres-twist-yarn"
+        "claim:textile-fibres-twist-yarn",
+        "claim:material-water-alum-skin-water"
       ],
       "hybrid_at_20": [
         "claim:population-material-wet-wool",
@@ -2078,13 +2093,14 @@
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-rawhide-wet-dry",
         "claim:water-wetting-forces",
-        "claim:textile-fibres-twist-yarn"
+        "claim:textile-fibres-twist-yarn",
+        "claim:material-water-alum-skin-water"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "coated_iron_scratch_ru",
-      "vector_scan_ms": 0.2636000000020431,
+      "vector_scan_ms": 0.31719999999768334,
       "lexical_at_10": [
         "claim:population-material-iron-coating"
       ],
@@ -2105,7 +2121,7 @@
     },
     {
       "case_id": "heated_wood_low_air_ru",
-      "vector_scan_ms": 0.23539999999775318,
+      "vector_scan_ms": 0.3011000000005879,
       "lexical_at_10": [
         "claim:population-material-wood-pyrolysis"
       ],
@@ -2126,7 +2142,7 @@
     },
     {
       "case_id": "oil_on_glued_splint_ru",
-      "vector_scan_ms": 0.40060000000084983,
+      "vector_scan_ms": 0.530800000000454,
       "lexical_at_10": [
         "claim:population-joining-bond-contamination"
       ],
@@ -2147,7 +2163,7 @@
     },
     {
       "case_id": "fresh_glue_load_ru",
-      "vector_scan_ms": 0.3801999999996042,
+      "vector_scan_ms": 0.4584999999970023,
       "lexical_at_10": [
         "claim:water-permeability-connected-pores",
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
@@ -2202,11 +2218,12 @@
     },
     {
       "case_id": "work_hardened_wire_ru",
-      "vector_scan_ms": 0.3440999999984342,
+      "vector_scan_ms": 0.5112000000008265,
       "lexical_at_10": [
         "claim:population-material-wood-loading",
         "claim:technology-circuit-prerequisite",
         "claim:population-physics-elastic-recovery",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-joining-bond-cure",
         "claim:population-joining-metal-melt"
@@ -2217,6 +2234,7 @@
         "claim:population-joining-metal-fatigue",
         "claim:population-material-wood-loading",
         "claim:technology-circuit-prerequisite",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-joining-bond-cure",
         "claim:population-joining-metal-melt"
@@ -2225,6 +2243,7 @@
         "claim:population-material-wood-loading",
         "claim:technology-circuit-prerequisite",
         "claim:population-physics-elastic-recovery",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-joining-bond-cure",
         "claim:population-joining-metal-melt"
@@ -2235,6 +2254,7 @@
         "claim:population-joining-metal-fatigue",
         "claim:population-material-wood-loading",
         "claim:technology-circuit-prerequisite",
+        "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-joining-bond-cure",
         "claim:population-joining-metal-melt"
@@ -2243,7 +2263,7 @@
     },
     {
       "case_id": "warm_wax_impression_ru",
-      "vector_scan_ms": 0.33799999999973807,
+      "vector_scan_ms": 0.5135000000009313,
       "lexical_at_10": [
         "claim:population-joining-wax-soften",
         "claim:population-material-clay-quartz",
@@ -2272,7 +2292,7 @@
     },
     {
       "case_id": "fisher_bark_sewing_role_ru",
-      "vector_scan_ms": 0.24579999999696156,
+      "vector_scan_ms": 0.31120000000009895,
       "lexical_at_10": [
         "claim:population-bark-bast"
       ],
@@ -2293,7 +2313,7 @@
     },
     {
       "case_id": "material_leather_personal_item_ru",
-      "vector_scan_ms": 0.4951999999975669,
+      "vector_scan_ms": 0.5607999999992899,
       "lexical_at_10": [
         "claim:clothing-sheepskin-kozhukh",
         "claim:clothing-linen-shirt",
@@ -2330,7 +2350,7 @@
     },
     {
       "case_id": "material_waterlogged_preservation_en",
-      "vector_scan_ms": 0.49059999999735737,
+      "vector_scan_ms": 0.5740000000005239,
       "lexical_at_10": [
         "claim:burial-hollowed-log-container",
         "claim:novgorod-waterlogged-organic-preservation",
@@ -2357,7 +2377,7 @@
     },
     {
       "case_id": "material_timber_streetscape_ru",
-      "vector_scan_ms": 0.5452999999979511,
+      "vector_scan_ms": 0.5280000000020664,
       "lexical_at_10": [
         "claim:population-wool-lining",
         "claim:burial-plank-coffin-nails",
@@ -2409,7 +2429,7 @@
     },
     {
       "case_id": "craft_smithy_assumption_en",
-      "vector_scan_ms": 0.31889999999839347,
+      "vector_scan_ms": 0.36770000000251457,
       "lexical_at_10": [
         "claim:technology-newcomen-boundary",
         "claim:occupation-smith-iron-input",
@@ -2426,12 +2446,12 @@
         "claim:technology-newcomen-boundary",
         "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
         "claim:ordinary-life-smith-forge-and-bellows",
+        "claim:metalworking-broad-context",
         "claim:occupation-smith-iron-input",
         "claim:ceramic-material-category",
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:casting-defective-casting",
         "claim:casting-sprue",
-        "claim:metalworking-broad-context",
         "claim:early-rus-hunting-ground-terms"
       ],
       "lexical_at_20": [
@@ -2451,12 +2471,12 @@
         "claim:technology-newcomen-boundary",
         "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
         "claim:ordinary-life-smith-forge-and-bellows",
+        "claim:metalworking-broad-context",
         "claim:occupation-smith-iron-input",
         "claim:ceramic-material-category",
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:casting-defective-casting",
         "claim:casting-sprue",
-        "claim:metalworking-broad-context",
         "claim:early-rus-hunting-ground-terms",
         "claim:fibre-flax-breaker-shive"
       ],
@@ -2464,7 +2484,7 @@
     },
     {
       "case_id": "craft_shavings_identity_ru",
-      "vector_scan_ms": 0.3004000000000815,
+      "vector_scan_ms": 0.3544000000001688,
       "lexical_at_10": [
         "claim:practical-food-milk",
         "claim:practical-leather-patch",
@@ -2519,26 +2539,24 @@
     },
     {
       "case_id": "craft_clay_firing_ru",
-      "vector_scan_ms": 0.25790000000051805,
+      "vector_scan_ms": 0.34509999999863794,
       "lexical_at_10": [
         "claim:ceramic-material-category"
       ],
       "hybrid_at_10": [
-        "claim:ceramic-material-category",
-        "claim:metalworking-broad-context"
+        "claim:ceramic-material-category"
       ],
       "lexical_at_20": [
         "claim:ceramic-material-category"
       ],
       "hybrid_at_20": [
-        "claim:ceramic-material-category",
-        "claim:metalworking-broad-context"
+        "claim:ceramic-material-category"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "environment_fishing_presence_ru",
-      "vector_scan_ms": 0.33799999999973807,
+      "vector_scan_ms": 0.3598999999994703,
       "lexical_at_10": [
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:residual-nature-snow-melt-refreeze-crust",
@@ -2579,7 +2597,7 @@
     },
     {
       "case_id": "environment_livestock_basis_en",
-      "vector_scan_ms": 0.3408999999992375,
+      "vector_scan_ms": 0.3580000000001746,
       "lexical_at_10": [
         "claim:domestic-animal-context",
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
@@ -2618,7 +2636,7 @@
     },
     {
       "case_id": "environment_fur_food_evidence_ru",
-      "vector_scan_ms": 0.3786000000000058,
+      "vector_scan_ms": 0.3570999999974447,
       "lexical_at_10": [
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:residual-nature-snow-melt-refreeze-crust",
@@ -2667,7 +2685,7 @@
     },
     {
       "case_id": "architecture_single_find_function_ru",
-      "vector_scan_ms": 0.2175999999999476,
+      "vector_scan_ms": 0.24189999999725842,
       "lexical_at_10": [
         "claim:contextual-evidence-classes"
       ],
@@ -2688,7 +2706,7 @@
     },
     {
       "case_id": "architecture_paved_route_en",
-      "vector_scan_ms": 0.2143999999971129,
+      "vector_scan_ms": 0.23570000000108848,
       "lexical_at_10": [
         "claim:composite-urban-quarter",
         "claim:settlement-wooden-paving",
@@ -2751,7 +2769,7 @@
     },
     {
       "case_id": "architecture_modern_sewer_ru",
-      "vector_scan_ms": 0.19369999999980791,
+      "vector_scan_ms": 0.38260000000082073,
       "lexical_at_10": [],
       "hybrid_at_10": [
         "claim:localized-improvement-context",
@@ -2768,7 +2786,7 @@
     },
     {
       "case_id": "npc_combined_resource_skills_ru",
-      "vector_scan_ms": 0.15209999999933643,
+      "vector_scan_ms": 0.23570000000108848,
       "lexical_at_10": [
         "claim:resource-occupation-needs-setting"
       ],
@@ -2789,7 +2807,7 @@
     },
     {
       "case_id": "npc_current_fieldwork_en",
-      "vector_scan_ms": 0.14919999999983702,
+      "vector_scan_ms": 0.22369999999864376,
       "lexical_at_10": [
         "claim:agriculture-rural-role-context"
       ],
@@ -2810,7 +2828,7 @@
     },
     {
       "case_id": "npc_house_family_wealth_ru",
-      "vector_scan_ms": 0.14689999999973224,
+      "vector_scan_ms": 0.2183999999979278,
       "lexical_at_10": [
         "claim:neutral-household-context"
       ],
@@ -2829,7 +2847,7 @@
     },
     {
       "case_id": "physics_wet_grain_ru",
-      "vector_scan_ms": 0.36559999999735737,
+      "vector_scan_ms": 0.46380000000135624,
       "lexical_at_10": [
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-05-wood-grain-shear-vs-cut",
@@ -2860,18 +2878,18 @@
     },
     {
       "case_id": "physics_ceramic_crack_en",
-      "vector_scan_ms": 0.36600000000180444,
+      "vector_scan_ms": 0.4474000000009255,
       "lexical_at_10": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
         "claim:clay-fired-no-replasticization",
         "claim:brittle-fracture-defects",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:population-material-leather-dry",
+        "claim:sound-background-noise-masks-speech",
         "claim:foundations-phys-05-flow-regime-speed",
+        "claim:population-physics-elastic-recovery",
         "claim:foundations-mat-07-wood-storage-biological-damage",
-        "claim:foundations-thm-07-thermal-expansion-state-change",
-        "claim:population-ceramic-fracture",
-        "claim:population-glass-fracture"
+        "claim:foundations-thm-07-thermal-expansion-state-change"
       ],
       "hybrid_at_10": [
         "claim:brittle-fracture-defects",
@@ -2881,9 +2899,9 @@
         "claim:clay-fired-no-replasticization",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:population-material-leather-dry",
+        "claim:sound-background-noise-masks-speech",
         "claim:foundations-phys-05-flow-regime-speed",
-        "claim:foundations-mat-07-wood-storage-biological-damage",
-        "claim:foundations-thm-07-thermal-expansion-state-change"
+        "claim:population-physics-elastic-recovery"
       ],
       "lexical_at_20": [
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
@@ -2891,15 +2909,17 @@
         "claim:brittle-fracture-defects",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:population-material-leather-dry",
+        "claim:sound-background-noise-masks-speech",
         "claim:foundations-phys-05-flow-regime-speed",
+        "claim:population-physics-elastic-recovery",
         "claim:foundations-mat-07-wood-storage-biological-damage",
         "claim:foundations-thm-07-thermal-expansion-state-change",
         "claim:population-ceramic-fracture",
         "claim:population-glass-fracture",
-        "claim:population-physics-elastic-recovery",
+        "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+        "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:population-material-clay-plasticity",
-        "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
-        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+        "claim:random-independent-trials-do-not-owe-reversal"
       ],
       "hybrid_at_20": [
         "claim:brittle-fracture-defects",
@@ -2909,22 +2929,25 @@
         "claim:clay-fired-no-replasticization",
         "claim:foundations-physical-b2-lgt-02-glass-scattering-translucency",
         "claim:population-material-leather-dry",
+        "claim:sound-background-noise-masks-speech",
         "claim:foundations-phys-05-flow-regime-speed",
+        "claim:population-physics-elastic-recovery",
         "claim:foundations-mat-07-wood-storage-biological-damage",
         "claim:foundations-thm-07-thermal-expansion-state-change",
-        "claim:population-physics-elastic-recovery",
+        "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+        "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:population-material-clay-plasticity",
-        "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
-        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass"
+        "claim:random-independent-trials-do-not-owe-reversal"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "physics_lever_energy_ru",
-      "vector_scan_ms": 0.34389999999984866,
+      "vector_scan_ms": 0.5404000000016822,
       "lexical_at_10": [
         "claim:force-contact-geometry",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:population-physics-load-deformation"
       ],
       "hybrid_at_10": [
@@ -2932,11 +2955,13 @@
         "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff",
         "claim:buoyancy-pressure-phase-change",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:population-physics-load-deformation"
       ],
       "lexical_at_20": [
         "claim:force-contact-geometry",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:population-physics-load-deformation"
       ],
       "hybrid_at_20": [
@@ -2944,13 +2969,14 @@
         "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff",
         "claim:buoyancy-pressure-phase-change",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:population-physics-load-deformation"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "chemistry_damp_iron_ru",
-      "vector_scan_ms": 0.1988999999994121,
+      "vector_scan_ms": 0.21600000000034925,
       "lexical_at_10": [
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte"
       ],
@@ -2973,55 +2999,65 @@
     },
     {
       "case_id": "chemistry_salted_food_en",
-      "vector_scan_ms": 0.2106999999996333,
+      "vector_scan_ms": 0.2662000000018452,
       "lexical_at_10": [
         "claim:food-preservation-qualitative",
+        "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "hybrid_at_10": [
         "claim:food-preservation-qualitative",
         "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "lexical_at_20": [
         "claim:food-preservation-qualitative",
+        "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "hybrid_at_20": [
         "claim:food-preservation-qualitative",
         "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "chemistry_quicklime_water_ru",
-      "vector_scan_ms": 0.20309999999881256,
+      "vector_scan_ms": 0.2875999999996566,
       "lexical_at_10": [
+        "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:lime-transformations",
-        "claim:population-material-clay-steam"
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
       ],
       "hybrid_at_10": [
         "claim:lime-transformations",
-        "claim:population-material-clay-steam",
-        "claim:textile-dye-application"
+        "claim:static-hydraulic-lime-can-initially-set-with-water",
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
       ],
       "lexical_at_20": [
+        "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:lime-transformations",
-        "claim:population-material-clay-steam"
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
       ],
       "hybrid_at_20": [
         "claim:lime-transformations",
-        "claim:population-material-clay-steam",
-        "claim:textile-dye-application"
+        "claim:static-hydraulic-lime-can-initially-set-with-water",
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "biology_one_meal_ru",
-      "vector_scan_ms": 0.7451000000000931,
+      "vector_scan_ms": 0.8545000000012806,
       "lexical_at_10": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation"
       ],
@@ -3044,7 +3080,7 @@
     },
     {
       "case_id": "biology_work_heat_en",
-      "vector_scan_ms": 0.7209000000002561,
+      "vector_scan_ms": 0.7848999999987427,
       "lexical_at_10": [
         "claim:work-intensity-duration",
         "claim:public-world-health-disclosure-is-contextual",
@@ -3081,15 +3117,15 @@
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
         "claim:foundations-earth-11-consumer-assimilation",
+        "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-adder-male-contest",
         "claim:fauna-mammals-roe-deer-seasonal-grouping",
         "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
+        "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
-        "claim:fauna-chicken-allopreening",
-        "claim:fauna-chicken-brooding",
-        "claim:fauna-chicken-dust-bathing"
+        "claim:fauna-chicken-allopreening"
       ],
       "hybrid_at_20": [
         "claim:exercise-heat-dissipation",
@@ -3104,20 +3140,20 @@
         "claim:fauna-mammals-moose-browse-aquatic-forage",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
         "claim:foundations-earth-11-consumer-assimilation",
+        "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:fauna-adder-male-contest",
         "claim:fauna-mammals-roe-deer-seasonal-grouping",
         "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
-        "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
-        "claim:fauna-chicken-allopreening",
-        "claim:fauna-chicken-brooding"
+        "claim:household-trauma-unnecessary-movement-can-worsen",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "biology_pain_damage_ru",
-      "vector_scan_ms": 0.7115999999987253,
+      "vector_scan_ms": 0.8117999999994936,
       "lexical_at_10": [
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:pain-nociception-distinct"
@@ -3142,7 +3178,7 @@
     },
     {
       "case_id": "social_debt_seizure_ru",
-      "vector_scan_ms": 0.3591999999989639,
+      "vector_scan_ms": 0.39719999999942956,
       "lexical_at_10": [
         "claim:residual-law-daughters-and-status-inheritance",
         "claim:residual-law-dependency-and-agreement",
@@ -3221,7 +3257,7 @@
     },
     {
       "case_id": "social_pravda_direct_code_en",
-      "vector_scan_ms": 0.3757999999979802,
+      "vector_scan_ms": 0.40680000000065775,
       "lexical_at_10": [
         "claim:russkaya-pravda-comparative-only",
         "claim:rp-property-claim-relates-acquisition-chain",
@@ -3294,7 +3330,7 @@
     },
     {
       "case_id": "social_later_charter_hard_exclusion_ru",
-      "vector_scan_ms": 0.3672000000005937,
+      "vector_scan_ms": 0.40390000000115833,
       "lexical_at_10": [
         "claim:later-novgorod-judicial-charter",
         "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
@@ -3367,7 +3403,7 @@
     },
     {
       "case_id": "plank_gap_patch_en",
-      "vector_scan_ms": 0.5825000000004366,
+      "vector_scan_ms": 0.574400000001333,
       "lexical_at_10": [
         "claim:construction-iron-clamp-caulking",
         "claim:construction-tarred-tow-caulking",
@@ -3402,7 +3438,7 @@
     },
     {
       "case_id": "shirt_gusset_fastener_ru",
-      "vector_scan_ms": 0.5236000000004424,
+      "vector_scan_ms": 0.6340000000018335,
       "lexical_at_10": [
         "claim:clothing-button-shirt",
         "claim:clothing-shirt-gussets",
@@ -3429,7 +3465,7 @@
     },
     {
       "case_id": "charcoal_pit_air_en",
-      "vector_scan_ms": 0.34319999999934225,
+      "vector_scan_ms": 0.3904999999977008,
       "lexical_at_10": [
         "claim:fuel-pit-charcoal-burning-air-sequence",
         "claim:fuel-pit-charcoal-burning-charcoal-output",
@@ -3462,7 +3498,7 @@
     },
     {
       "case_id": "domestic_pan_handling_ru",
-      "vector_scan_ms": 0.4831999999987602,
+      "vector_scan_ms": 0.6363999999994121,
       "lexical_at_10": [
         "claim:fuel-iron-pan-lifter-use"
       ],
@@ -3483,7 +3519,7 @@
     },
     {
       "case_id": "seasonal_wild_bird_use_en",
-      "vector_scan_ms": 0.32879999999931897,
+      "vector_scan_ms": 0.4495000000024447,
       "lexical_at_10": [
         "claim:environment-p1-wildfowl-season"
       ],
@@ -3504,7 +3540,7 @@
     },
     {
       "case_id": "cloth_cold_weather_ru",
-      "vector_scan_ms": 0.48280000000158907,
+      "vector_scan_ms": 0.8116999999983818,
       "lexical_at_10": [
         "claim:clothing-sheepskin-kozhukh",
         "claim:clothing-onuchi-wrap"
@@ -3527,7 +3563,7 @@
     },
     {
       "case_id": "smith_equipment_en",
-      "vector_scan_ms": 0.8207999999976892,
+      "vector_scan_ms": 1.0073000000011234,
       "lexical_at_10": [
         "claim:ordinary-life-smith-anvil-hammer-tongs",
         "claim:occupation-smith-anvil",
@@ -3564,7 +3600,7 @@
     },
     {
       "case_id": "crib_foundation_en",
-      "vector_scan_ms": 0.23140000000057626,
+      "vector_scan_ms": 0.336699999999837,
       "lexical_at_10": [
         "claim:construction-rjaz-riverbed-foundation",
         "claim:construction-rjaz-stone-fill",
@@ -3593,7 +3629,7 @@
     },
     {
       "case_id": "soaked_wooden_wedge_ru",
-      "vector_scan_ms": 0.3977000000013504,
+      "vector_scan_ms": 0.5650000000023283,
       "lexical_at_10": [
         "claim:population-material-wood-shrinkage",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -3626,7 +3662,7 @@
     },
     {
       "case_id": "porous_insert_wetting_en",
-      "vector_scan_ms": 0.38650000000052387,
+      "vector_scan_ms": 0.6048999999984517,
       "lexical_at_10": [
         "claim:water-permeability-connected-pores",
         "claim:water-percolation-openings"
@@ -3649,7 +3685,7 @@
     },
     {
       "case_id": "wet_hide_binding_ru",
-      "vector_scan_ms": 0.37700000000040745,
+      "vector_scan_ms": 0.5712000000021362,
       "lexical_at_10": [
         "claim:material-water-rawhide-wet-dry",
         "claim:oil-rawhide-moisture-resistance"
@@ -3672,7 +3708,7 @@
     },
     {
       "case_id": "hemp_fibre_wetting_en",
-      "vector_scan_ms": 0.45130000000062864,
+      "vector_scan_ms": 0.5528999999987718,
       "lexical_at_10": [
         "claim:material-water-natural-fibres-water-swelling"
       ],
@@ -3693,7 +3729,7 @@
     },
     {
       "case_id": "resin_bast_binding_ru",
-      "vector_scan_ms": 0.54399999999805,
+      "vector_scan_ms": 0.6225999999987835,
       "lexical_at_10": [
         "claim:construction-pine-resin-bast",
         "claim:construction-pine-resin-surfaces"
@@ -3714,7 +3750,7 @@
     },
     {
       "case_id": "glue_chalk_wood_layers_en",
-      "vector_scan_ms": 0.6392000000014377,
+      "vector_scan_ms": 0.5927000000010594,
       "lexical_at_10": [
         "claim:construction-animal-glue-chalk",
         "claim:construction-bast-vessel-fastening",
@@ -3745,7 +3781,7 @@
     },
     {
       "case_id": "church_building_supply_ru",
-      "vector_scan_ms": 0.22030000000086147,
+      "vector_scan_ms": 0.3511999999973341,
       "lexical_at_10": [
         "claim:construction-quarry-procurement"
       ],
@@ -3766,15 +3802,14 @@
     },
     {
       "case_id": "potter_building_order_en",
-      "vector_scan_ms": 0.20879999999669963,
+      "vector_scan_ms": 0.3328000000001339,
       "lexical_at_10": [
         "claim:construction-plinth-patterns-1207",
         "claim:construction-construction-pottery-products"
       ],
       "hybrid_at_10": [
         "claim:construction-plinth-patterns-1207",
-        "claim:construction-construction-pottery-products",
-        "claim:construction-compared-church-masonry"
+        "claim:construction-construction-pottery-products"
       ],
       "lexical_at_20": [
         "claim:construction-plinth-patterns-1207",
@@ -3782,14 +3817,13 @@
       ],
       "hybrid_at_20": [
         "claim:construction-plinth-patterns-1207",
-        "claim:construction-construction-pottery-products",
-        "claim:construction-compared-church-masonry"
+        "claim:construction-construction-pottery-products"
       ],
       "inapplicable_at_20": []
     },
     {
       "case_id": "regional_parent_materials_ru",
-      "vector_scan_ms": 0.522000000000844,
+      "vector_scan_ms": 0.4225000000005821,
       "lexical_at_10": [
         "claim:terrain-parent-material-assemblage"
       ],
@@ -3810,7 +3844,7 @@
     },
     {
       "case_id": "transport_nonwinter_equipment_ru",
-      "vector_scan_ms": 0.565999999998894,
+      "vector_scan_ms": 0.5819999999985157,
       "lexical_at_10": [
         "claim:transport-horse-sledge-equipment",
         "claim:transport-sledge-summer-cargo",
@@ -3843,7 +3877,7 @@
     },
     {
       "case_id": "transport_boat_service_en",
-      "vector_scan_ms": 0.5894999999982247,
+      "vector_scan_ms": 0.6445999999996275,
       "lexical_at_10": [
         "claim:transport-hired-boatman",
         "claim:transport-boat-cargo-dispatch"
@@ -3866,7 +3900,7 @@
     },
     {
       "case_id": "hay_horse_composition_en",
-      "vector_scan_ms": 1.1732000000010885,
+      "vector_scan_ms": 1.3247000000010303,
       "lexical_at_10": [
         "claim:fodder-healthy-horse-forage"
       ],
@@ -3887,7 +3921,7 @@
     },
     {
       "case_id": "conditional_household_care_en",
-      "vector_scan_ms": 0.45500000000174623,
+      "vector_scan_ms": 0.5299000000013621,
       "lexical_at_10": [
         "claim:rp-mother-household-care-succession",
         "claim:rp-caretaker-principal-goods",
@@ -3912,7 +3946,7 @@
     },
     {
       "case_id": "pitch_coating_system_en",
-      "vector_scan_ms": 0.4540000000015425,
+      "vector_scan_ms": 0.5981999999967229,
       "lexical_at_10": [
         "claim:pine-pitch-woven-basket-coating",
         "claim:pine-pitch-severe-oxidation"
@@ -3935,7 +3969,7 @@
     },
     {
       "case_id": "care_bleeding_water_exposure_ru",
-      "vector_scan_ms": 0.8335000000006403,
+      "vector_scan_ms": 1.3798999999999069,
       "lexical_at_10": [
         "claim:care-waterproof-wound-cover",
         "claim:care-direct-pressure-bleeding"
@@ -3958,7 +3992,7 @@
     },
     {
       "case_id": "vegetable_tanning_inputs_en",
-      "vector_scan_ms": 0.6912999999985914,
+      "vector_scan_ms": 0.6612999999997555,
       "lexical_at_10": [
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:vegetable-tanning-prepared-hide"
@@ -3981,7 +4015,7 @@
     },
     {
       "case_id": "market_landing_surfacing_ru",
-      "vector_scan_ms": 0.2940999999991618,
+      "vector_scan_ms": 0.4599000000016531,
       "lexical_at_10": [
         "claim:river-landing-market-approaches",
         "claim:river-landing-surfacing-allocation",

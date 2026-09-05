@@ -298,6 +298,12 @@
     }
   ],
   "source_inventory": [
+    {"id":"static-soap-cleaning-v1","source_path":"static-soap-cleaning-v1.json","domains":["chemistry_process"],"location_applicability":"Potential washing, greasy contamination and chemical transformation contexts.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative chemistry","npc":"no action or knowledge assigned"},"coverage":"Two independently reviewed general mechanisms, not a recipe or historical availability."},
+    {"id":"static-household-care-gap-v1","source_path":"static-household-care-gap-v1.json","domains":["architecture_settlement","craft_technology","biology_physiology"],"location_applicability":"Qualified physical, care and conservation mechanisms or explicit material analogies; no period-specific attestation.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative relation","npc":"no action or expertise assigned"},"coverage":"8 independently reviewed premises; not whole-family completeness"},
+    {"id":"static-practical-residual-v1","source_path":"static-practical-residual-v1.json","domains":["physics_material_science","chemistry_process"],"location_applicability":"Qualified physical, care and conservation mechanisms or explicit material analogies; no period-specific attestation.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative relation","npc":"no action or expertise assigned"},"coverage":"8 independently reviewed premises; not whole-family completeness"},
+    {"id":"static-measurement-sound-milling-v1","source_path":"static-measurement-sound-milling-v1.json","domains":["physics_material_science"],"location_applicability":"Universal qualified mechanisms in potential ordinary work, food and physical contexts.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative mechanism","npc":"no action or expertise assigned"},"coverage":"11 independently reviewed premises; not whole-family completeness"},
+    {"id":"static-food-bio-gap-v1","source_path":"static-food-bio-gap-v1.json","domains":["chemistry_process","biology_physiology"],"location_applicability":"Universal qualified mechanisms in potential ordinary work, food and physical contexts.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative mechanism","npc":"no action or expertise assigned"},"coverage":"11 independently reviewed premises; not whole-family completeness"},
+    {"id":"static-process-gap-v1","source_path":"static-process-gap-v1.json","domains":["physics_material_science","chemistry_process"],"location_applicability":"Universal qualified mechanisms in potential ordinary work, food and physical contexts.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative mechanism","npc":"no action or expertise assigned"},"coverage":"10 independently reviewed premises; not whole-family completeness"},
     {"id":"reconstructed-healer-practice-v1","source_path":"reconstructed-healer-practice-v1.json","domains":["npc_daily_life"],"location_applicability":"Reviewed editorial reconstruction for Novgorod Land 1200–1300; no healer or remedy is materialized.","applicability":{"resource":"care time and available provisions","material":"plausible portable or household kit","process":"observation learning and care coordination","npc":"possible healer livelihood and reputation"},"coverage":"Six independently reviewed editorial premises; no treatment efficacy or exact medical institution."},
     {"id":"reconstructed-public-world-v1","source_path":"reconstructed-public-world-v1.json","domains":["material_culture","social_law_economy","biology_physiology"],"location_applicability":"Contextual public life and universal conditional care; no current authority or scene state.","applicability":{"resource":"conditional","material":"arms where present","process":"public relations and assistance","npc":"non-deterministic expectations"},"coverage":"30 independently approved editorial premises"},
     {
@@ -1506,6 +1512,12 @@
     {"id":"reconstructed-practical-world-v1","source_path":"reconstructed-practical-world-v1.json","domains":["architecture_settlement","craft_technology","material_culture","npc_daily_life"],"location_applicability":"Ordinary practical reconstruction; no object presence, quantity or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative upkeep/work","npc":"non-deterministic routine context"},"coverage":"30 reviewed editorial practical-world premises."}
   ],
   "families": [
+    {"id":"chemistry-fat-hydrolysis-and-cleaning","domain":"chemistry_process","subdomain":"cleaning_and_fat_transformation","family":"saponification_and_amphiphilic_cleaning","location_applicability":"Potential ordinary washing and material transformation where actual substances are known.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative chemistry","npc":"conditional handling"},"coverage":"bounded mechanisms, not complete chemical or textile practice","claim_refs":["claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap","claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water"]},
+    {"id":"built-water-shedding-and-finish-repair","domain":"architecture_settlement","subdomain":"material_handling_and_maintenance","family":"built_water_shedding_and_finish_repair","location_applicability":"Potential ordinary craft, construction and maintenance contexts; material applicability must be checked.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation or marked analogy","npc":"conditional observation"},"coverage":"bounded practical premises, not exhaustive coverage","claim_refs":["claim:household-roof-layers-shed-water","claim:household-roof-local-condition-guides-repair","claim:household-clay-drying-and-incompatible-movement","claim:household-clay-key-and-compatible-patch"]},
+    {"id":"materials-bark-moisture-and-form","domain":"physics_material_science","subdomain":"material_handling_and_maintenance","family":"materials_bark_moisture_and_form","location_applicability":"Potential ordinary craft, construction and maintenance contexts; material applicability must be checked.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation or marked analogy","npc":"conditional observation"},"coverage":"bounded practical premises, not exhaustive coverage","claim_refs":["claim:static-birch-bark-water-can-deform-layers","claim:static-birch-bark-form-can-be-held-during-humidification-drying"]},
+    {"id":"physics-independent-trial-models","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"physics_independent_trial_models","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:random-independent-trials-do-not-owe-reversal"]},
+    {"id":"mechanics-granular-comminution","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"mechanics_granular_comminution","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:milling-grain-compression-shear-fracture","claim:milling-moisture-changes-grain-deformation","claim:milling-plate-gap-pressure-fineness"]},
+    {"id":"measurement-mass-volume-and-tare","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"measurement_mass_volume_and_tare","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:measurement-net-excludes-tare","claim:measurement-grain-mass-volume-density","claim:measurement-units-must-be-identified"]},
     {"id":"reconstructed-healer-practice","domain":"npc_daily_life","subdomain":"healer_work_learning_kit_and_livelihood","family":"Ordinary healer observation, kit, learning, livelihood, belief and care coordination","location_applicability":"Households and travel in Novgorod Land 1200–1300; possible role context only","applicability":{"resource":"care time and available provisions","material":"plausible portable or household kit","process":"observation learning and care coordination","npc":"possible healer livelihood and reputation"},"coverage":"partial: useful ordinary practice reconstruction; no diagnosis, remedy efficacy, exact medical institution or patient outcome.","claim_refs":["claim:healer-observation-and-questioning","claim:healer-portable-and-household-kit","claim:healer-experience-and-reputation","claim:healer-livelihood-and-household-support","claim:healer-belief-and-bodily-attention","claim:healer-care-coordination-and-uncertainty"]},
     {"id":"reconstructed-arms-and-equipment-roles","domain":"material_culture","subdomain":"armed_equipment","family":"Conditional weapon, shield, armour and mounted-equipment roles","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"conditional arms and equipment","process":"armed_equipment","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-arms-follow-means-role","claim:public-world-weapons-shields-armour-have-distinct-tradeoffs","claim:public-world-foot-and-mounted-service-have-different-needs"]},
     {"id":"reconstructed-armed-coordination-and-household-cost","domain":"social_law_economy","subdomain":"armed_groups_and_households","family":"Coordination, communication, provisioning and household costs of armed activity","location_applicability":"Plausible Novgorod-area 1200–1300 reconstruction; actual people, events and institutions remain contextual.","applicability":{"resource":"conditional supplies and assistance","material":"no automatic material grant","process":"armed_groups_and_households","npc":"expectations and alternatives, not predetermined conduct"},"coverage":"reviewed compositional reconstruction; static scenario acceptance pending","evidence_boundary":"Editorial plausibility, not directly attested local law, scene presence or exact mechanics.","claim_refs":["claim:public-world-senior-can-coordinate-messenger-can-carry-word","claim:public-world-armed-movement-consumes-food-fuel-attention","claim:public-world-armed-loss-reaches-household","claim:public-world-armed-presence-changes-public-risk"]},
@@ -1641,6 +1653,10 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+        "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "claim:food-drying-reduces-microbial-growth-conditions",
         "claim:food-drying-depends-on-humidity-airflow",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
@@ -1867,6 +1883,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:household-trauma-danger-or-airway-changes-position-choice",
+        "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:wound-healing-time-dependent",
         "claim:pain-nociception-distinct",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
@@ -2153,6 +2171,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-haz-03-exposure-routes"
       ]
@@ -2196,6 +2216,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+        "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:foundations-chm-06-catalyst-rate-not-equilibrium",
         "claim:foundations-chm-07-dynamic-chemical-equilibrium",
         "claim:foundations-chm-08-equilibrium-condition-change",
@@ -2686,6 +2708,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
+        "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
         "claim:fauna-bee-worker-tasks",
         "claim:fauna-bee-winter-cluster",
         "claim:fauna-bee-swarming",
@@ -2731,6 +2755,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+        "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
         "claim:fauna-mammals-wolf-carnivorous-diet",
         "claim:fauna-mammals-brown-bear-seasonal-omnivory",
         "claim:fauna-mammals-brown-bear-food-driven-movement",
@@ -3251,6 +3277,9 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-yarn-strength-can-fall-after-excessive-twist",
+        "claim:static-yarn-twist-can-increase-fibre-cohesion",
+        "claim:static-wool-moisture-heat-mechanical-action-can-felt",
         "claim:textile-conditioning-matters",
         "claim:population-material-leather-dry",
         "claim:population-material-wet-wool",
@@ -3285,6 +3314,9 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
+        "claim:static-forge-welding-surface-oxide-can-degrade-join",
+        "claim:static-forge-welding-requires-heated-pressed-interface",
         "claim:metal-properties-depend-on-state",
         "claim:population-joining-metal-melt",
         "claim:population-joining-metal-fatigue",
@@ -3392,6 +3424,10 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+        "claim:static-belt-friction-can-resist-relative-slip",
+        "claim:static-asperity-contact-can-cause-local-stress-and-wear",
+        "claim:static-lubricant-film-can-separate-moving-surfaces",
         "claim:dry-friction",
         "claim:brittle-fracture-defects",
         "claim:population-physics-point-pressure",
@@ -3635,6 +3671,10 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:sound-wind-temperature-gradients-refract",
+        "claim:sound-reflections-arrive-after-direct-path",
+        "claim:sound-background-noise-masks-speech",
+        "claim:sound-spreading-reduces-intensity",
         "claim:foundations-physical-b2-snd-01-sound-source-vibration",
         "claim:foundations-physical-b2-snd-02-sound-material-medium",
         "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
@@ -3657,6 +3697,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:household-dough-temperature-changes-proofing",
+        "claim:household-dough-yeast-gas-needs-retention",
         "claim:grain-processing-bread-ground-plant-base",
         "claim:grain-processing-bread-liquid",
         "claim:grain-processing-bread-optional-leaven",
@@ -3702,6 +3744,9 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
+        "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
+        "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
         "claim:food-preservation-qualitative",
         "claim:fermentation-conditions"
       ]
@@ -3746,6 +3791,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-hydraulic-lime-can-initially-set-with-water",
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
         "claim:lime-transformations",
         "claim:metal-classes-composition",
         "claim:population-material-clay-steam"
@@ -6690,6 +6737,7 @@
     {
       "profile_ref": "wk-profile:architecture_settlement:production-v1",
       "expected_family_ids": [
+        "built-water-shedding-and-finish-repair",
         "built-bathing-sanitation",
         "built-charcoal-pit",
         "built-civic-defence",
@@ -6743,6 +6791,7 @@
     {
       "profile_ref": "wk-profile:chemistry_process:production-v1",
       "expected_family_ids": [
+        "chemistry-fat-hydrolysis-and-cleaning",
         "chemistry-exposure-and-routes",
         "chemistry-reaction-rate-interface-and-mixing",
         "chemistry-solution-equilibrium-and-solubility",
@@ -6838,6 +6887,10 @@
     {
       "profile_ref": "wk-profile:physics_material_science:production-v1",
       "expected_family_ids": [
+        "materials-bark-moisture-and-form",
+        "physics-independent-trial-models",
+        "mechanics-granular-comminution",
+        "measurement-mass-volume-and-tare",
         "fluids-buoyancy-flow-porosity",
         "materials-bone-horn-antler",
         "materials-clay-ceramic-glass-response",
@@ -7115,6 +7168,12 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"static-soap-cleaning-v1.json","claim_count":2,"family_refs":["chemistry-fat-hydrolysis-and-cleaning"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact composition, concentration, process rate, guaranteed cleaning or period availability."},
+      {"source_path":"static-household-care-gap-v1.json","claim_count":8,"family_refs":["built-water-shedding-and-finish-repair","process-bread-dough-and-baking","body-injury-repair-and-barrier"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact recipe, repair guarantee, treatment protocol, local object or historical authority."},
+      {"source_path":"static-practical-residual-v1.json","claim_count":8,"family_refs":["materials-bark-moisture-and-form","materials-fibre-leather-water-response","mechanics-impact-friction-fracture","chemistry-solution-equilibrium-and-solubility","chemistry-exposure-and-routes"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact recipe, repair guarantee, treatment protocol, local object or historical authority."},
+      {"source_path":"static-measurement-sound-milling-v1.json","claim_count":11,"family_refs":["measurement-mass-volume-and-tare","mechanics-granular-comminution","physics-sound-and-vibration","physics-independent-trial-models"],"location_refs":["potential:household","potential:workshop","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static qualitative grounding; mechanics, state and historical availability separately owned."},
+      {"source_path":"static-food-bio-gap-v1.json","claim_count":11,"family_refs":["process-food-preservation-and-fermentation","biology-food-safety-storage-and-fermentation","fauna-mammal-foraging-movement-and-predation","fauna-invertebrate-lifecycle-and-host-contact"],"location_refs":["potential:household","potential:workshop","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static qualitative grounding; mechanics, state and historical availability separately owned."},
+      {"source_path":"static-process-gap-v1.json","claim_count":10,"family_refs":["materials-metal-state-thermal-treatment","materials-fibre-leather-water-response","mechanics-impact-friction-fracture","process-mineral-and-lime-transformation","chemistry-solution-equilibrium-and-solubility","chemistry-exposure-and-routes"],"location_refs":["potential:household","potential:workshop","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static qualitative grounding; mechanics, state and historical availability separately owned."},
       {"source_path":"gameplay-physiology-v3.json","claim_count":18,"family_refs":["physiology-protective-reflexes","physiology-oxygen-and-perfusion","physiology-autonomic-and-functional-response"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"Factual causal premises only; body/combat/time own actor state, severity, duration and forced action."},
       {"source_path":"gameplay-material-process-v3.json","claim_count":4,"family_refs":["storage-grain-airflow-and-moisture","fire-water-cooling","net-serviceability-maintenance"],"location_refs":["trace_ld_v1_loc_fishing_camp","trace_ld_v1_loc_old_drying_shed","trace_ld_v1_loc_zhdanko_storehouse"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_f1_local_exact_fire_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"No fire, grain, net, repair, quantity, maintenance result or timer is created."},
       {"source_path":"gameplay-physical-environment-v3.json","claim_count":3,"family_refs":["smoke-optical-visibility","fibre-rope-condition","aquatic-macrophyte-growth-forms"],"location_refs":["trace_ld_v1_loc_wreck_shore","trace_ld_v1_loc_fishing_camp"],"consumer_refs":["lower_dvina_trace_a1_open_physical_action_profile_v1","lower_dvina_trace_f1_local_exact_fire_profile_v1","lower_dvina_trace_scene_presentation_v2"],"limits":"Rope condition, smoke optics and plant form are qualitative; no safe load, smoke state, plant presence or route result."},

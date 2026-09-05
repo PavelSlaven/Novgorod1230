@@ -65,6 +65,23 @@ exact-HEAD full suite remain mandatory before claiming merge readiness.
 
 ## Offline context acceptance — not live gameplay
 
+**Current method:** 75 stratified cases plus 25 independently generated
+free/adversarial cases per hundred. The free generator sees no domain list,
+corpus, cartography, prior examples or stratified inputs. Reviewers assign
+open-ended domains only after free inputs are fixed; unfamiliar domains
+must not be discarded or coerced into the old twenty. Stratified areas and
+their granularity rotate, with at least 60 practical/natural/physical cases
+in the controlled 75. Both sampling components and actual domain findings
+are reported. Earlier fully stratified batches are retained as diagnostic
+baselines, not mixed-method acceptance. The mixed clean streak is **0 of 3**.
+
+Independent Contract Auditor `/root/mixed_sampling_contract_audit` returned
+`PASS_WITH_NOTES` for this method change: no new runtime owner, whitelist,
+authority or gameplay activation. Its required manifest/derived-document
+synchronization was completed; knowledge-source and documentation checks
+were rerun. Batch inputs and post-generation classifications remain ordinary
+offline artifacts, not a new runtime framework or integrity ledger.
+
 Two independent generators supplied 50 unseen situations each for batch 01,
 covering diverse people, work, places, relations and circumstances. This is
 stochastic LLM sampling, not a seeded uniform statistical world sample.
@@ -83,7 +100,7 @@ they predate explicit discipline-balanced sampling, and many cases place
 technical objects in social dilemmas without testing the underlying process.
 They remain useful diagnostic records, not whole-world coverage evidence.
 
-Starting with batch 03, each hundred has 20 declared primary knowledge
+Batches 03–08 used 20 declared primary knowledge
 areas with five cases each: 80 practical/natural/physical and 20 social or
 institutional. Each case records its actual knowledge need. Reviewers must
 check substantive diversity, not merely labels or objects mentioned.
@@ -185,11 +202,21 @@ Seven initial absence findings were corrected against existing metal,
 fibre, bond-contact, fermentation and beaver-sign premises; their initial
 statuses remain in the review records. The public-work coordination case
 was reassessed as a social/public-safety need, not a mechanics calculation.
-No corpus change followed these reviews. **Batch 07 is the first clean
-sample after the batch-05/06 diagnostic additions.**
+No corpus change followed these reviews. **Batch 07 was clean under the
+former fully stratified method**, not the subsequent mixed acceptance rule.
 
-The current clean streak is **1 of 3**. Contract §0.3 requires
-three consecutive diverse independent batches of at least 100 cases with
+Batch 08's fixed-strata inputs had already been generated when the user
+identified the closed-test blind spot. They are retained without WK review;
+they cannot count toward the new series. Batch 09 starts the mixed method.
+Its generated inputs contain 75 controlled cases across ten independently
+chosen, unevenly sized strata and 25 free/adversarial cases from a separate
+generator. Counts, distinct IDs and the controlled 60 practical/natural/
+physical cases were checked. The free inputs have no preassigned domain or
+knowledge-need fields. Their classification and WK-only review are pending;
+input generation alone is not a clean acceptance result.
+
+Contract §0.3 requires three consecutive diverse independent mixed batches
+of at least 100 cases with
 no substantial new gap; a gap resets the streak. Replayed or imbalanced
 cases cannot count as unseen acceptance. Missing exact names, figures,
 legal powers or equally plausible ordinary variants are not by themselves

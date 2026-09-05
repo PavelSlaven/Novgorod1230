@@ -1,6 +1,6 @@
 # Macro-gap static readiness — PR92
 
-## Current verdict: batch-06 additions verified; one clean sample, acceptance open
+## Current verdict: mixed sampling required; acceptance open
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
@@ -39,18 +39,23 @@ Both batches remain diagnostic, not acceptance: the user's subsequent
 discipline-diversity requirement requires stratified need-based sampling,
 not technical props inside predominantly social situations.
 
-Contract §0.3 requires three consecutive diverse batches of at least 100
-unseen cases without a substantial new gap. Starting with batch 03, each
-hundred covers 20 primary need areas (80 practical/natural/physical cases,
-20 social/institutional), checked for substantive needs rather than tags.
+Contract §0.3 now requires three consecutive independent mixed batches:
+75 stratified plus 25 free/adversarial cases per hundred, without substantial
+new gaps. Free generation sees no domain list, corpus or previous examples;
+classification follows input freeze and accepts new domains. The controlled
+75 retain at least 60 practical/natural/physical cases, while strata rotate
+and can expand. The current mixed clean streak is **0 of 3**.
+Earlier batches 03–08 used fixed 20-by-five strata. Their substantive reviews
+remain diagnostic baselines, not proof that the strata themselves are complete.
 **Batch 04 was clean; batch 05 found new needs and reset the streak to 0.**
 Batch 06 retained 15 raw leads after full-bundle triage and prompted 24
 independently source-verified general premises. It remains diagnostic.
 Batch 07 has 100 independent WK-only reviews against the frozen 1,319-claim
 bundle. Full-bundle triage resolved seven false absence findings without
 changing the corpus; substantive domain assignments and refs were checked.
-It is the first clean sample of the new streak (**1 of 3**), not whole-world
-completeness or final acceptance.
+It was clean under the former fixed-strata rule, not mixed-method acceptance.
+Batch 08 inputs are retained unreviewed after the method change; batch 09
+starts independent mixed generation. No corpus knowledge is discarded.
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
 needs and 36 raw gap leads. It remains diagnostic. General-premise triage

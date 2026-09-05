@@ -228,7 +228,17 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",

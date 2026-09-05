@@ -11280,6 +11280,34 @@
       "retrieval_text": "Сосновое пековое покрытие Пековое покрытие, идентифицированное в источнике; не любая сосновая смола, канифоль или уже обработанный предмет. В описанной Odegaard и соавторами традиции юго-запада Северной Америки нагретое сосновое пековое покрытие на плетёной корзине делало именно эту систему водонепроницаемой. Это наблюдение о сочетании определённого пека, плетёной основы и нанесённого покрытия, не общее свойство всякой смолы, доски, шва, лодки или тары. Оно не задаёт сцепление с древесиной, долговечность, рецепт, наличие материалов или новгородскую практику."
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt:en",
+      "target_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fish smoking Qualitative relation of smoke, drying, heat, and salt in fish smoking. In fish smoking, drying removes some water, smoke deposits compounds on the product, and heat acts differently in hot and cold processes; salt, when used, lowers available water. The preservative effect depends on the actual combination of these factors, not one sign. This establishes no recipe, duration, temperature, stock, safety, or batch outcome. fish smoking drying fish smoking salt"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt:ru",
+      "target_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Копчение рыбы Качественная связь дыма, сушки, тепла и соли при копчении. При копчении рыбы сушка удаляет часть влаги, дым оставляет соединения на продукте, а тепло действует по-разному в горячем и холодном процессе; соль, если она применяется, уменьшает доступную воду. Сохраняющий эффект зависит от фактического сочетания этих факторов, а не от одного признака. Это не рецепт, срок, температура, запас, безопасность или результат конкретной партии. рыба копчение сушка копчение рыбы соль"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome:en",
+      "target_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fish smoking Qualitative relation of smoke, drying, heat, and salt in fish smoking. Smoke smell, colour, or visible smoke alone do not establish the safety or storage outcome of smoked fish. This is neither a spoilage diagnosis nor a ban on sensory scene description. fish smoking drying smoked fish colour smoke smell"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome:ru",
+      "target_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Копчение рыбы Качественная связь дыма, сушки, тепла и соли при копчении. Запах дыма, цвет или видимый дым сами по себе не устанавливают безопасность или исход хранения копчёной рыбы. Это не диагноз порчи и не запрет использовать чувственные признаки как описание сцены. рыба копчение сушка цвет копчёной рыбы запах дыма"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-outdoors-activity-sensory-pulses:en",
       "target_ref": "claim:place-outdoors-activity-sensory-pulses",
       "domain": "environment",
@@ -11418,6 +11446,104 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Повторный проход людей, копыт и колёс меняет используемую полосу земли: приминает растительность, оставляет отпечатки и при подходящем влажном грунте колеи. В углублениях может задерживаться вода; подсыпка, отвод стока и обход меняют удобство прохода, но не обеспечивают автоматически твёрдую дорогу. среда место сезон уход колея грязь улица дорога дождь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path:en",
+      "target_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place thermal processes Qualitative links between heating, material, and work space. In birch-tar making, heating bark can release material that is then condensed or collected along a separate path. This describes process relations, not available bark, finished tar, or a fixed apparatus. birch tar bark ovin grain drying tar collection"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path:ru",
+      "target_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Тепловые процессы места Качественные связи нагрева, материала и рабочего пространства. При изготовлении берёзового дёгтя нагрев бересты может выделять материал, который затем конденсируют или собирают отдельным путём. Это описывает связь этапов процесса, а не наличие бересты, готового дёгтя или заданную установку. дёготь береста овин сушка берёзовый дёготь сбор дёгтя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions:en",
+      "target_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place thermal processes Qualitative links between heating, material, and work space. Birch-tar methods can differ in oxygen access and product collection; a damaged cover or closure changes those conditions but guarantees no outcome. This implies neither one required pit, vessel, firing regime, nor recipe. birch tar bark ovin grain drying tar method oxygen distillation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions:ru",
+      "target_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Тепловые процессы места Качественные связи нагрева, материала и рабочего пространства. Разные способы получения берёзового дёгтя по-разному ограничивают приток воздуха и собирают продукт; повреждённое покрытие или закрытие меняет эти условия, но не гарантирует исход. Из этого не следует единственная обязательная яма, сосуд, режим огня или рецепт. дёготь береста овин сушка кислород перегонка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates:en",
+      "target_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place thermal processes Qualitative links between heating, material, and work space. In an ovin or riga reconstruction, a furnace can relate to sheaves held with gaps on grates, where warmed air or smoke can pass toward them. This is an analogy of structure and function, not proof of a particular building, fire, or grain stock. birch tar bark ovin grain drying riga sheaves grates"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates:ru",
+      "target_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Тепловые процессы места Качественные связи нагрева, материала и рабочего пространства. В реконструкции овина или риги печь может быть связана с местом, где снопы лежат на колосниках с промежутками: к ним проходит нагретый воздух или дым. Это аналогия устройства и функции, не доказательство конкретной постройки, топки или запаса зерна. дёготь береста овин сушка рига снопы колосники"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles:en",
+      "target_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place thermal processes Qualitative links between heating, material, and work space. Warmed air and air exchange around spaced sheaves can carry away moisture during drying. Direct flame or sparks remain a separate hazard for dry material; this fixes no room count, air regime, temperature, or duration. birch tar bark ovin grain drying furnace sheaves air"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles:ru",
+      "target_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Тепловые процессы места Качественные связи нагрева, материала и рабочего пространства. Нагретый воздух и воздухообмен вокруг разложенных с промежутками снопов могут уносить влагу при сушке. Прямой огонь или искры остаются отдельной опасностью для сухого материала; это не задаёт число помещений, режим воздуха, температуру или длительность. дёготь береста овин сушка сушка зерна печь снопы воздух"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue:en",
+      "target_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wet hide work Qualitative relations of washing, removable residue, and work flows. Where hide preparation is already established, washing or soaking can be accompanied by removal of attached flesh or other residue. This establishes no recipe, stage for every tanning process, hide, water, tool, or outcome. hide washing effluent hide washing hide cleaning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue:ru",
+      "target_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая обработка шкуры Качественные связи промывки, удаляемых остатков и рабочих потоков. Там, где обработка шкуры уже установлена, промывка или вымачивание могут сопровождаться удалением приставшей плоти либо иных остатков. Это не рецепт, не стадия каждой выделки, не наличие шкуры, воды, инструмента или результат. шкура промывка сток промывка шкуры очистка шкуры"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue:en",
+      "target_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wet hide work Qualitative relations of washing, removable residue, and work flows. Wet hide washing and fleshing can leave liquid effluent and removable organic residue; they need not use one handling path. This creates no pollution, amount, smell, water body, or disposal method in a scene. hide washing effluent tannery effluent fleshings"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue:ru",
+      "target_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая обработка шкуры Качественные связи промывки, удаляемых остатков и рабочих потоков. Мокрая промывка и мездрение шкуры могут оставлять жидкий сток и удаляемые органические остатки; они не обязаны идти одним путём. Это не создаёт загрязнение, объём, запах, водоём или способ удаления в сцене. шкура промывка сток сток кожевника мездра"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task:en",
+      "target_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Work space and traces Qualitative limits of work space, traces and obstructions. Where work water and water reserved for a clean task are established, separate vessels, surfaces, or flow paths can avoid direct mixing. This is editorial reconstruction, not a layout, water quality, or rule for every yard. clearance work traces spill clean water work water"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task:ru",
+      "target_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. Если установлены и рабочая вода, и вода для чистой задачи, отдельные сосуды, поверхности или пути стока могут не дать им смешаться напрямую. Это editorial reconstruction, не планировка, не качество воды и не правило для всякого двора. проход стружка расчистка чистая вода рабочая вода"
     },
     {
       "entry_ref": "wk-retrieval:claim:plant-development-responds-to-light:en",
@@ -14126,14 +14252,14 @@
       "target_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
       "domain": "craft_technology",
       "locale": "en",
-      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Dust and chaff need swing space; fire and dry fuel are not the same condition. workshop mill threshing grain drying threshing floor"
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Threshing needs swing space, while dust and chaff are traces of that operation; fire and dry fuel are not the same condition. workshop mill threshing grain drying threshing floor"
     },
     {
       "entry_ref": "wk-retrieval:claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts:ru",
       "target_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
       "domain": "craft_technology",
       "locale": "ru",
-      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Пыль и мякина требуют пространства для взмахов; огонь и сухое топливо здесь не одно и то же условие. мастерская работа мельница овин ток сушка зерна"
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Для взмахов при обмолоте нужно пространство, а пыль и мякина остаются следствием операции; огонь и сухое топливо здесь не одно и то же условие. мастерская работа мельница овин ток сушка зерна"
     },
     {
       "entry_ref": "wk-retrieval:claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance:en",
@@ -22830,6 +22956,20 @@
       "retrieval_text": "Трофические уровни Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:wet-hide-work-context:en",
+      "target_ref": "wk:biology_physiology:wet-hide-work-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wet hide work Qualitative relations of washing, removable residue, and work flows. hide washing effluent"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:wet-hide-work-context:ru",
+      "target_ref": "wk:biology_physiology:wet-hide-work-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая обработка шкуры Качественные связи промывки, удаляемых остатков и рабочих потоков. шкура промывка сток"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:wild-mushroom-identification:en",
       "target_ref": "wk:biology_physiology:wild-mushroom-identification",
       "domain": "biology_physiology",
@@ -23150,6 +23290,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Ферментация зависит от субстрата, микроорганизмов, времени и условий Ферментация зависит от субстрата, микроорганизмов, времени и условий; порча и загрязнение остаются возможными, а конкретный исторический продукт не подразумевается."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:fish-smoking-context:en",
+      "target_ref": "wk:chemistry_process:fish-smoking-context",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Fish smoking Qualitative relation of smoke, drying, heat, and salt in fish smoking. fish smoking drying"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:fish-smoking-context:ru",
+      "target_ref": "wk:chemistry_process:fish-smoking-context",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Копчение рыбы Качественная связь дыма, сушки, тепла и соли при копчении. рыба копчение сушка"
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:food-preservation-qualitative:en",
@@ -23934,6 +24088,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Ямное углежжение Получение древесного угля в закрываемой яме"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:place-thermal-processes:en",
+      "target_ref": "wk:craft_technology:place-thermal-processes",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place thermal processes Qualitative links between heating, material, and work space. birch tar bark ovin grain drying"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:place-thermal-processes:ru",
+      "target_ref": "wk:craft_technology:place-thermal-processes",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Тепловые процессы места Качественные связи нагрева, материала и рабочего пространства. дёготь береста овин сушка"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:plank-gap-caulking:en",

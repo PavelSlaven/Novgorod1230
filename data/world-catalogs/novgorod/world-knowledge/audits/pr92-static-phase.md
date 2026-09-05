@@ -8,9 +8,10 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,365 approved claims, 886 concepts,
-484 sources and 977 evidence records**. This includes 149 independently
-reviewed editorial premises for ordinary, human, practical and public life.
+The integrated corpus contains **1,374 approved claims, 889 concepts,
+491 sources and 985 evidence records**. This includes 150 independently
+reviewed premises using editorial-reconstruction sources; 158 claims have
+editorial directness overall, including editorial composition of external sources.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
 validate against the full assembled authoring input. No new approval system
@@ -27,19 +28,21 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,502 x 1,024 float32 entries (18,440,192 bytes)** and
+package contains **4,526 x 1,024 float32 entries (18,538,496 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,365-claim corpus
+## Checks actually completed on the 1,374-claim corpus
 
-- Compiler: all 1,365 claims and independent approval bindings validate.
+- Compiler: all 1,374 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
-  **86/86 pass**. Knowledge-source/RAG tests: **26/26 pass**.
-- **294-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996032**,
-  Recall@20 **0.997732**, gate PASS.
+  **86/86 pass** across the generation sequence: 85 passed initially; the
+  vector-alignment check was rerun successfully after vector generation.
+  Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
+- **302-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996137**,
+  Recall@20 **0.997792**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -59,7 +62,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`e9ea5d9cfa479337e24699b1fd0350a4d333133e` (run 33959896036).
+`a680ccbcafbf767b6dbe952c978a45c877dfe5df` (run 33962798929).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -78,7 +81,8 @@ both retrieval benchmarks. Its run 33958500338 was cancelled by the next
 checkpoint push, not reported green. The B10 candidate checkpoint
 `f164358f3b451d4d03904f0e41ee0fc1f616215f` had run 33959027728 cancelled by a later push.
 The 1,330-claim integration passed its focused checks; run 33959687474
-was cancelled, not green. The 1,365-claim integration passes the checks
+was cancelled, not green. The 1,365-claim place-first integration passed
+full CI at a680ccbc. The 1,374-claim integration passes the local checks
 above, but its final exact-HEAD CI is still required; an earlier green checkpoint does not certify a later
 candidate or merge readiness.
 
@@ -316,8 +320,10 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-91 bounded supported and 76 partial after linking the 28 approved
-place-first premises into the 1,365-claim corpus. Partial facets retain
+104 bounded supported and 63 partial on the 1,374-claim corpus.
+Twelve stale residuals were resolved against existing full-text premises
+and independently checked by /root/place_scene_b; the drying/heat facet
+now links the separately approved process premises. Partial facets retain
 specific remaining relations; an approved link alone did not close them.
 These are provisional mapping assessments, not a place-completeness verdict.
 The map remains open to new families and cross-place composition.
@@ -347,14 +353,59 @@ still 0/3. Root rejected advice-only/givens-only coverage and requested
 fuller environment grounding. A reported mill gap was resolved against
 existing approved relations, with its initial finding retained.
 
-Retained leads: `place01-core-010` hide washing/working effluent;
+The first batch's retained leads were: `place01-core-010` hide washing/working effluent;
 `place01-core-015` birch-tar pit process/environment;
 `place01-core-055` drying-shed heat, sheaf placement and air path;
 `place01-core-061` smoking fish versus drying/heating/salting.
 Exact recipes, fixed layouts and present stocks are not required to close
-these relations. A poorly worded threshing/dust sentence is also noted in
-the core-C review for editorial correction, not gameplay-owner repair.
+these relations. Nine independently checked premises now address these
+four needs: wet-hide washing/residues and water separation, combined fish
+smoking, birch-tar heating/collection, and drying-shed heat/air/sheaf layout.
+The poorly worded threshing/dust sentence was corrected and independently
+reviewed; no gameplay owner was changed.
+Candidate 71199d0 received eight new-claim approvals and the changed drying
+approval. The hide-preparation claim was initially rejected for insufficient
+bound evidence; f4a9f01b binds the checked EPA primary source and received
+a narrow approval. d89f2004 limits the water-separation premise to its
+Novgorod 1200–1300 editorial context and received metadata-only approval.
+All current per-claim bindings and generated bundle validate. Replaying
+these known cases does not turn the first batch into a clean unseen sample.
 Inputs with questionable specific props retain frame caveats rather than
 silently becoming historical availability evidence. Earlier general batches
 and the unfinished general B12 work do not replace this place-first pass.
 No live gameplay was run.
+
+## Second place-first unseen batch — diagnostic
+
+Inputs were frozen at `d89f2004f5d55e7262f60192c932e260d5a85c1c` before
+WK-only review against the 1,374-claim bundle. Independent blind generators
+supplied 75 controlled cases and 25 free cases. The controlled set contains
+60 practical/natural/physical and 15 social/institutional needs: agriculture,
+craft, food, storage, construction, transport, materials, water, heat,
+weather, plants, animals and bodily constraints occur alongside social life.
+Its 75 primary labels are open sampling annotations, not 75 proved domains
+or a replacement whitelist. Free domains were classified after input freeze,
+before review-specific corpus lookup; no social quota was imposed on them.
+
+Three independent reconstruction agents completed the controlled cases;
+one also reconstructed the separately generated free set. Final controlled
+results are 71 covered and four retained process needs; free results are
+25 covered. Full-scene answers, practical interactions, variation and actual
+claim references are retained in the four `place-batch-02-*-review.json`
+files. These are qualitative compositional checks, not statistical proof
+that every environment or variation is covered.
+
+The remaining leads are `place02-core-006` (orchard pruning/injury and
+seasonal care), `015` (wet cut peat, working faces and drying), `024`
+(milk curd formation and straining), and `055` (dye-bath cooling and
+dye uptake/fixation/evenness). They require qualitative process relations,
+not guaranteed outcomes, exact safe limits, recipes or diagnosis of a
+particular scene. Initial kiln, charcoal, well, mill, wax and masonry
+findings were narrowed or resolved against existing full-text knowledge;
+the corpus was not changed during review to force a clean result.
+
+Root spot-checks also corrected irrelevant citations and distinguished
+hypothetical input props from historical prevalence. Counts do not excuse
+unsupported scene statements. This second hundred is diagnostic: new
+substantial leads leave the clean unseen streak at **0/3**. No live gameplay
+or gameplay-owner repair was performed.

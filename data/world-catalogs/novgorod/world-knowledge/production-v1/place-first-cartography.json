@@ -31,13 +31,14 @@
           ],
           "claim_refs": [
             "claim:urban-pavements",
-            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Не выводить мостовую, ширину или состояние без места и времени.",
-          "residual_needs": [
-            "Связь осадков, стока, грязи и ремонтного покрытия с проходимостью улицы."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "frontage_and_traffic",
@@ -61,13 +62,15 @@
           ],
           "claim_refs": [
             "claim:work-waste-context",
-            "claim:place-outdoors-activity-sensory-pulses"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+            "claim:sound-background-noise-masks-speech"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Конкретные сигналы, освещение и следы принадлежат состоянию сцены; след не доказывает скрытый факт.",
-          "residual_needs": [
-            "Связь ordinary городской деятельности с шумом, запахом, дымом, освещением и обзором."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "use_and_risk",
@@ -104,13 +107,14 @@
           "claim_refs": [
             "claim:civic-public-market",
             "claim:place-outdoors-traffic-wet-ground-and-ruts",
-            "claim:place-outdoors-market-activity-and-empty-intervals"
+            "claim:place-outdoors-market-activity-and-empty-intervals",
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:place-outdoors-microterrain-patches",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Торговые позиции и товары не materialize без causal basis.",
-          "residual_needs": [
-            "Связь открытого рыночного грунта, временных конструкций и осадков с проходом и стоком."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "goods_people_animals",
@@ -136,13 +140,15 @@
           "claim_refs": [
             "claim:work-waste-context",
             "claim:place-outdoors-activity-sensory-pulses",
-            "claim:place-outdoors-market-activity-and-empty-intervals"
+            "claim:place-outdoors-market-activity-and-empty-intervals",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:sound-background-noise-masks-speech",
+            "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Текущий чувственный профиль и сохранность остатков принадлежат состоянию сцены; наблюдаемое не даёт знания о сделках вне восприятия.",
-          "residual_needs": [
-            "Связь торговой деятельности с шумом, запахом, дымом, светом и их затуханием."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "commerce_and_hazards",
@@ -257,13 +263,14 @@
           "claim_refs": [
             "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
             "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-season-work-space-reallocation"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Конкретные поверхность, ограды, проходы и их состояние принадлежат сцене; граница двора не заменяет ownership/access check.",
-          "residual_needs": [
-            "Связь дворового покрытия, осадков, стока и расчистки с проходимостью."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "household_life",
@@ -290,13 +297,14 @@
           ],
           "claim_refs": [
             "claim:domestic-animal-context",
-            "claim:place-outdoors-activity-sensory-pulses"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+            "claim:ordinary-life-smith-leaves-scale-ash-offcuts"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Не превращать бытовой след в hidden evidence.",
-          "residual_needs": [
-            "Связь ordinary household work с запахами, звуками, золой и различимыми следами."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "domestic_safety",
@@ -1010,13 +1018,13 @@
             "claim:foundations-earth-07-soil-water-states",
             "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
             "claim:place-outdoors-forest-structure-and-season",
-            "claim:place-outdoors-microterrain-patches"
+            "claim:place-outdoors-microterrain-patches",
+            "claim:residual-nature-snow-melt-refreeze-crust",
+            "claim:residual-nature-snow-wind-drift-visibility"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "No local substrate or route follows.",
-          "residual_needs": [
-            "fine-scale woodland mosaic and seasonal route change"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "foraging_and_movement",
@@ -1029,13 +1037,12 @@
             "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
             "claim:ordinary-life-carpenter-works-wood-with-tools",
             "claim:place-outdoors-forest-structure-and-season",
-            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Co-occurrence, resource, animal, occupation and access in a specific transition are scene state, not WK facts.",
-          "residual_needs": [
-            "how ordinary woodland work changes or maintains a traversed opening"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "changing_signals",
@@ -1431,13 +1438,15 @@
           "claim_refs": [
             "claim:settlement-log-building-form",
             "claim:settlement-underfloor-storage",
-            "claim:agriculture-fauna-tow-log-gaps"
+            "claim:agriculture-fauna-tow-log-gaps",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:place-outdoors-microterrain-patches"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Plot layout, current drainage, manure, stock and wealth are scene state.",
-          "residual_needs": [
-            "general relation of repeated wet work to household drainage and walking surfaces"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "household_cycles",
@@ -1451,13 +1460,13 @@
             "claim:animal-care-needs-presence",
             "claim:place-outdoors-means-upkeep-and-environment",
             "claim:place-outdoors-season-work-space-reallocation",
-            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Household members, cycles, child care and work allocation are scene state.",
-          "residual_needs": [
-            "general conflict/coordination effects of shared work surfaces and sequential wet/dry tasks"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "domestic_signals",
@@ -1469,13 +1478,14 @@
             "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
             "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
             "claim:population-material-wood-combustion",
-            "claim:place-outdoors-activity-sensory-pulses"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "No intent from traces.",
-          "residual_needs": [
-            "ordinary domestic sound/smell/trace causality"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "homestead_risk_and_care",
@@ -1619,13 +1629,15 @@
           "claim_refs": [
             "claim:measurement-grain-mass-volume-density",
             "claim:practical-food-grain-storage",
-            "claim:settlement-underfloor-storage"
+            "claim:settlement-underfloor-storage",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+            "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Actual light, tare, owner, access and contents are scene state.",
-          "residual_needs": [
-            "pest-access and food-spillage relations for stored dry goods"
-          ]
+          "residual_needs": []
         },
         {
           "facet": "storage_signals",
@@ -2833,7 +2845,8 @@
             "claim:population-net-work",
             "claim:practical-net-repair",
             "claim:population-fish-dried-form",
-            "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
+            "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+            "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt"
           ],
           "coverage": "supported",
           "limits": "Catch, workers, means and processing state need valid sources.",
@@ -2864,7 +2877,8 @@
           "claim_refs": [
             "claim:practical-boat-leak",
             "claim:practical-boat-shore-transfer",
-            "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk"
+            "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+            "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
           ],
           "coverage": "supported",
           "limits": "Water, knife, cold and boat risks depend on scene conditions.",
@@ -3090,7 +3104,8 @@
             "claim:ordinary-life-smith-fire-needs-managed-space",
             "claim:place-outdoors-cover-opening-and-work-visibility",
             "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
-            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task"
           ],
           "coverage": "supported",
           "residual_needs": [],
@@ -3106,7 +3121,11 @@
             "claim:work-waste-context",
             "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
             "claim:place-outdoors-activity-sensory-pulses",
-            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+            "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+            "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+            "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+            "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions"
           ],
           "coverage": "supported",
           "residual_needs": [],
@@ -3187,7 +3206,9 @@
             "claim:food-drying-depends-on-humidity-airflow",
             "claim:stored-grain-condition-depends-on-temperature-moisture",
             "claim:stored-grain-airflow-can-reduce-temperature-differences",
-            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+            "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+            "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
           ],
           "coverage": "supported",
           "residual_needs": [],
@@ -3204,12 +3225,12 @@
             "claim:water-can-cool-class-a-fire-fuel-and-flame",
             "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
             "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
-            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+            "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+            "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
           ],
-          "coverage": "partial",
-          "residual_needs": [
-            "Общее отношение между сушкой зерна нагревом, дымом и управлением пожарным риском."
-          ],
+          "coverage": "supported",
+          "residual_needs": [],
           "limits": "Fire, flue, heat level and outcome are scene state.",
           "needs": [
             "Как источник тепла и расположение сухого материала меняют сушку, дым и опасность загорания в овине?"

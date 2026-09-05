@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,365-claim corpus. The later direct-attestation-only residual
+current 1,374-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -157,8 +157,10 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-91 bounded supported and 76 partial after linking the 28 approved
-place-first premises into the 1,365-claim corpus. Partial facets retain
+104 bounded supported and 63 partial on the 1,374-claim corpus.
+Twelve stale residuals were resolved against existing full-text premises
+and independently checked by /root/place_scene_b; the drying/heat facet
+now links the separately approved process premises. Partial facets retain
 specific remaining relations; an approved link alone did not close them.
 These are provisional mapping assessments, not a place-completeness verdict.
 The map remains open to new families and cross-place composition.
@@ -188,14 +190,59 @@ still 0/3. Root rejected advice-only/givens-only coverage and requested
 fuller environment grounding. A reported mill gap was resolved against
 existing approved relations, with its initial finding retained.
 
-Retained leads: `place01-core-010` hide washing/working effluent;
+The first batch's retained leads were: `place01-core-010` hide washing/working effluent;
 `place01-core-015` birch-tar pit process/environment;
 `place01-core-055` drying-shed heat, sheaf placement and air path;
 `place01-core-061` smoking fish versus drying/heating/salting.
 Exact recipes, fixed layouts and present stocks are not required to close
-these relations. A poorly worded threshing/dust sentence is also noted in
-the core-C review for editorial correction, not gameplay-owner repair.
+these relations. Nine independently checked premises now address these
+four needs: wet-hide washing/residues and water separation, combined fish
+smoking, birch-tar heating/collection, and drying-shed heat/air/sheaf layout.
+The poorly worded threshing/dust sentence was corrected and independently
+reviewed; no gameplay owner was changed.
+Candidate 71199d0 received eight new-claim approvals and the changed drying
+approval. The hide-preparation claim was initially rejected for insufficient
+bound evidence; f4a9f01b binds the checked EPA primary source and received
+a narrow approval. d89f2004 limits the water-separation premise to its
+Novgorod 1200–1300 editorial context and received metadata-only approval.
+All current per-claim bindings and generated bundle validate. Replaying
+these known cases does not turn the first batch into a clean unseen sample.
 Inputs with questionable specific props retain frame caveats rather than
 silently becoming historical availability evidence. Earlier general batches
 and the unfinished general B12 work do not replace this place-first pass.
 No live gameplay was run.
+
+## Second place-first unseen batch — diagnostic
+
+Inputs were frozen at `d89f2004f5d55e7262f60192c932e260d5a85c1c` before
+WK-only review against the 1,374-claim bundle. Independent blind generators
+supplied 75 controlled cases and 25 free cases. The controlled set contains
+60 practical/natural/physical and 15 social/institutional needs: agriculture,
+craft, food, storage, construction, transport, materials, water, heat,
+weather, plants, animals and bodily constraints occur alongside social life.
+Its 75 primary labels are open sampling annotations, not 75 proved domains
+or a replacement whitelist. Free domains were classified after input freeze,
+before review-specific corpus lookup; no social quota was imposed on them.
+
+Three independent reconstruction agents completed the controlled cases;
+one also reconstructed the separately generated free set. Final controlled
+results are 71 covered and four retained process needs; free results are
+25 covered. Full-scene answers, practical interactions, variation and actual
+claim references are retained in the four `place-batch-02-*-review.json`
+files. These are qualitative compositional checks, not statistical proof
+that every environment or variation is covered.
+
+The remaining leads are `place02-core-006` (orchard pruning/injury and
+seasonal care), `015` (wet cut peat, working faces and drying), `024`
+(milk curd formation and straining), and `055` (dye-bath cooling and
+dye uptake/fixation/evenness). They require qualitative process relations,
+not guaranteed outcomes, exact safe limits, recipes or diagnosis of a
+particular scene. Initial kiln, charcoal, well, mill, wax and masonry
+findings were narrowed or resolved against existing full-text knowledge;
+the corpus was not changed during review to force a clean result.
+
+Root spot-checks also corrected irrelevant citations and distinguished
+hypothetical input props from historical prevalence. Counts do not excuse
+unsupported scene statements. This second hundred is diagnostic: new
+substantial leads leave the clean unseen streak at **0/3**. No live gameplay
+or gameplay-owner repair was performed.

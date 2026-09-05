@@ -298,6 +298,8 @@
     }
   ],
   "source_inventory": [
+    {"id":"place-thermal-processes-v1","source_path":"place-thermal-processes-v1.json","domains":["craft_technology"],"location_applicability":"Universal process premises or explicitly qualified Novgorod reconstruction; no current worksite, resource or outcome.","applicability":{"resource":"existing contextual source only","material":"hide, fish, bark and grain when established","process":"wet-work separation, preservation and controlled heating","npc":"work options, not guaranteed competence or decisions"},"coverage":"4 bounded process premises; not environmental completeness."},
+    {"id":"place-wet-food-processes-v1","source_path":"place-wet-food-processes-v1.json","domains":["architecture_settlement","biology_physiology","chemistry_process"],"location_applicability":"Universal process premises or explicitly qualified Novgorod reconstruction; no current worksite, resource or outcome.","applicability":{"resource":"existing contextual source only","material":"hide, fish, bark and grain when established","process":"wet-work separation, preservation and controlled heating","npc":"work options, not guaranteed competence or decisions"},"coverage":"5 bounded process premises; not environmental completeness."},
     {"id":"reconstructed-place-outdoors-v1","source_path":"reconstructed-place-outdoors-v1.json","domains":["environment"],"location_applicability":"Potential place-first environments; no actual place, inhabitants, objects or conditions created.","applicability":{"resource":"existing contextual source only","material":"conditional environmental composition","process":"ordinary work, perception and maintenance","npc":"qualitative options, not decisions or authority"},"coverage":"10 independently reviewed editorial premises; not local attestation or environmental completeness."},
     {"id":"reconstructed-place-interiors-v1","source_path":"reconstructed-place-interiors-v1.json","domains":["architecture_settlement","npc_daily_life"],"location_applicability":"Potential place-first environments; no actual place, inhabitants, objects or conditions created.","applicability":{"resource":"existing contextual source only","material":"conditional environmental composition","process":"ordinary work, perception and maintenance","npc":"qualitative options, not decisions or authority"},"coverage":"10 independently reviewed editorial premises; not local attestation or environmental completeness."},
     {"id":"reconstructed-place-work-v1","source_path":"reconstructed-place-work-v1.json","domains":["architecture_settlement","craft_technology"],"location_applicability":"Potential place-first environments; no actual place, inhabitants, objects or conditions created.","applicability":{"resource":"existing contextual source only","material":"conditional environmental composition","process":"ordinary work, perception and maintenance","npc":"qualitative options, not decisions or authority"},"coverage":"8 independently reviewed editorial premises; not local attestation or environmental completeness."},
@@ -1881,7 +1883,9 @@
       "evidence_boundary": "Source claims describe processing purpose and cooling/cleansing constraints. They do not establish a carcass, hide, animal, owner, access, stock, or processing event.",
       "claim_refs": [
         "claim:flayed-skin-processing-purpose",
-        "claim:fur-skin-cooling-cleansing"
+        "claim:fur-skin-cooling-cleansing",
+        "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+        "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue"
       ]
     },
     {
@@ -2124,7 +2128,8 @@
       "claim_refs": [
         "claim:population-drying-workspace",
         "claim:population-fishing-workspace",
-        "claim:population-river-work"
+        "claim:population-river-work",
+        "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task"
       ]
     },
     {
@@ -2332,7 +2337,9 @@
         "claim:structural-and-object-wood",
         "claim:urban-wooden-coverings",
         "claim:work-waste-context",
-        "claim:reconstructed-place-work-process-residue-can-differ-by-material-work"
+        "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+        "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+        "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions"
       ]
     },
     {
@@ -2356,7 +2363,9 @@
         "claim:food-practices-millet-cleaning-waste",
         "claim:food-practices-threshing-chaff",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
-        "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+        "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+        "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+        "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
       ]
     },
     {
@@ -3826,7 +3835,9 @@
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
         "claim:food-preservation-qualitative",
-        "claim:fermentation-conditions"
+        "claim:fermentation-conditions",
+        "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
       ]
     },
     {
@@ -7256,6 +7267,8 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"place-thermal-processes-v1.json","claim_count":4,"family_refs":["craft-material-classes","craft-rural-processing"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern process evidence and explicit analogy/editorial reconstruction; no historical local attestation or current scene state."},
+      {"source_path":"place-wet-food-processes-v1.json","claim_count":5,"family_refs":["biology-skin-fur-and-hide-preservation","built-river-workspace","process-food-preservation-and-fermentation"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern process evidence and explicit analogy/editorial reconstruction; no historical local attestation or current scene state."},
       {"source_path":"reconstructed-place-outdoors-v1.json","claim_count":10,"family_refs":["environment-historical-landscape","environment-celestial-light-and-orientation","environment-terrain","residual-trace-primitives","reconstructed-household-space-and-maintenance","reconstructed-food-provisioning-and-animal-care","built-landing-and-shore","built-public-civic-space","environment-plant-resources"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Editorial reconstruction, not whole-environment acceptance; remaining needs are in place-first-cartography.json."},
       {"source_path":"reconstructed-place-interiors-v1.json","claim_count":10,"family_refs":["reconstructed-household-space-and-maintenance","social-religious-context","reconstructed-dwelling-upkeep"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Editorial reconstruction, not whole-environment acceptance; remaining needs are in place-first-cartography.json."},
       {"source_path":"reconstructed-place-work-v1.json","claim_count":8,"family_refs":["reconstructed-household-workspace-and-repair","craft-material-classes","storage-grain-airflow-and-moisture","reconstructed-smith-workshop-practice","craft-rural-processing","environment-plant-resources"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Editorial reconstruction, not whole-environment acceptance; remaining needs are in place-first-cartography.json."},

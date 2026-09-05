@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "place-thermal-processes-v1.json",
+    "verification-place-thermal-processes-v1.json",
+    "place-wet-food-processes-v1.json",
+    "verification-place-wet-food-processes-v1.json",
     "verification-reconstructed-place-outdoors-v1.json",
     "verification-reconstructed-place-interiors-v1.json",
     "verification-reconstructed-place-work-v1.json",

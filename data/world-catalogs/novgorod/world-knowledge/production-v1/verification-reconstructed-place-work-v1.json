@@ -95,16 +95,16 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:place-v1-reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
       "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
-      "claim_digest": "a8ddde4d63f93cce8a565cbb0f5439bc14f58d075aa70b71f48875c03c8d5e02",
-      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
-      "auditor_ref": "/root/place_premise_verifier",
-      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "claim_digest": "dad506ad4582c477346c47c98b4a936b2e78873a2796a153d3ac8892985b3678",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
       "evidence_checked": [
-        "evidence:place-work-grain-vegetation"
+        "evidence:place-work-grain-drying-threshing"
       ],
-      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "review_ref": "verification/place-thermal-processes-v1.md",
       "verdict": "APPROVE",
-      "limits": "No oven, threshing floor, crop, fuel, process, or fire state. Editorial reconstruction, not direct historical attestation or current world state."
+      "limits": "Editorial claim preserves no place state, exact layout, fuel, fire, or completed operation."
     },
     {
       "schema": "world_knowledge_verification_v1",

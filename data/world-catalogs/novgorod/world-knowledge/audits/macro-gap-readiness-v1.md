@@ -1,10 +1,10 @@
 # Macro-gap static readiness — PR92
 
-## Current verdict: batch-05 additions verified; new sampling pending
+## Current verdict: batch-06 additions verified; one clean sample, acceptance open
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,295-claim corpus. The later direct-attestation-only residual
+current 1,319-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -44,6 +44,13 @@ unseen cases without a substantial new gap. Starting with batch 03, each
 hundred covers 20 primary need areas (80 practical/natural/physical cases,
 20 social/institutional), checked for substantive needs rather than tags.
 **Batch 04 was clean; batch 05 found new needs and reset the streak to 0.**
+Batch 06 retained 15 raw leads after full-bundle triage and prompted 24
+independently source-verified general premises. It remains diagnostic.
+Batch 07 has 100 independent WK-only reviews against the frozen 1,319-claim
+bundle. Full-bundle triage resolved seven false absence findings without
+changing the corpus; substantive domain assignments and refs were checked.
+It is the first clean sample of the new streak (**1 of 3**), not whole-world
+completeness or final acceptance.
 Batch 03's declared 20-by-five distribution passed structural checks, but
 independent semantic review found seven incorrectly labelled primary
 needs and 36 raw gap leads. It remains diagnostic. General-premise triage

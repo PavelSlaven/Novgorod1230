@@ -16796,6 +16796,132 @@
       "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Резкая смена сена, концентратов или доступа лошади к пастбищу может повышать риск колик, пока кишечные микроорганизмы приспосабливаются. Это не устанавливает неизбежность, причину, диагноз или исход конкретной лошади. лошадь задняя кишка ферментация колики резкая смена корма пастбище"
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-animal-welfare-indicators-require-species-context:en",
+      "target_ref": "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Limits of observable animal state Observed movement and behaviour changes do not replace species context or diagnosis. Animal welfare indicators require species context and do not make one observable sign a cross-species diagnosis. This creates no score, state, or diagnosis for a concrete animal. lameness gait animal pain animal condition animal pain signs species context"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-animal-welfare-indicators-require-species-context:ru",
+      "target_ref": "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пределы наблюдения состояния животного Наблюдаемые изменения движения и поведения не заменяют видовой контекст и диагноз. Индикаторы благополучия животных требуют видового контекста и не превращают один наблюдаемый признак в диагноз для разных видов. Это не создаёт шкалу, состояние или диагноз конкретного животного. хромота походка боль животного состояние животного признаки боли животных видовой контекст"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside:en",
+      "target_ref": "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Low-disturbance bat-roost observation Qualitative limits of roost disturbance and outside observation of bats. Bat roost entries and exits can be observed from outside the roost while minimizing disturbance. This creates no mandatory procedure, roost access, or historical practice. bat roost do not disturb bat exit observe bat exit outside roost"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside:ru",
+      "target_ref": "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение убежища летучих мышей без тревоги Качественные пределы тревоги убежища и внешнего наблюдения за летучими мышами. Входы и выходы летучих мышей из убежища можно наблюдать снаружи, уменьшая тревогу. Это не создаёт обязательную процедуру, доступ к убежищу или историческую практику. убежище летучих мышей не тревожить выход летучих мышей наблюдать выход летучих мышей убежище снаружи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance:en",
+      "target_ref": "claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Low-disturbance bat-roost observation Qualitative limits of roost disturbance and outside observation of bats. British bats need safe undisturbed sites for winter hibernation. This establishes no roost, species, season, or state of a concrete bat. bat roost do not disturb bat exit bat hibernation winter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance:ru",
+      "target_ref": "claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение убежища летучих мышей без тревоги Качественные пределы тревоги убежища и внешнего наблюдения за летучими мышами. Британским летучим мышам нужны безопасные ненарушаемые места зимней спячки. Это не устанавливает убежище, вид, сезон или состояние конкретной летучей мыши. убежище летучих мышей не тревожить выход летучих мышей зимовка летучих мышей убежище спячка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night:en",
+      "target_ref": "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "British insectivorous bat night activity British-source context for nocturnal activity, echolocation, and insect feeding in bats. British insectivorous bats are active at night and use echolocation to navigate and catch food. This is not a rule for every bat and establishes no species, count, roost, place, or concrete animal. bat night echolocation insects bat at night"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night:ru",
+      "target_ref": "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ночная активность британских насекомоядных летучих мышей Ограниченный британским источником контекст ночной активности, эхолокации и насекомоядности летучих мышей. Британские насекомоядные летучие мыши активны ночью и используют эхолокацию для ориентации и добывания пищи. Это не правило для всех летучих мышей и не устанавливает вид, число, убежище, место или конкретное животное. летучая мышь ночь эхолокация насекомые летучая мышь ночью"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause:en",
+      "target_ref": "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Limits of observable animal state Observed movement and behaviour changes do not replace species context or diagnosis. An observed equine gait change or reduced performance does not by itself identify its cause. This establishes no affected body part, pain, severity, disease, treatment, or outcome. lameness gait animal pain animal condition horse lameness gait change reduced performance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause:ru",
+      "target_ref": "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пределы наблюдения состояния животного Наблюдаемые изменения движения и поведения не заменяют видовой контекст и диагноз. Наблюдаемое изменение походки лошади или снижение работоспособности само по себе не устанавливает причину. Это не определяет поражённую часть тела, боль, тяжесть, болезнь, лечение или исход. хромота походка боль животного состояние животного хромота лошади изменение походки снижение работоспособности"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs:en",
+      "target_ref": "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working-horse load and alarm context Qualitative context for horse heat/load and flight response without state diagnosis. Heat, humidity, direct sun, poor ventilation, excessive work, and transport can contextualize possible equine heat-strain signs. This establishes no diagnosis, threshold, dehydration, thirst, water amount, or outcome. working horse heat fatigue horse fear horse heat heavy work rapid breathing sweat"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs:ru",
+      "target_ref": "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контекст нагрузки и тревоги рабочей лошади Качественный контекст тепла, нагрузки и реакции бегства у лошади без диагноза состояния. Жара, влажность, прямое солнце, плохая вентиляция, чрезмерная работа и перевозка могут задавать контекст возможных признаков тепловой нагрузки у лошади. Это не устанавливает диагноз, порог, обезвоживание, жажду, количество воды или исход. рабочая лошадь жара усталость тревога лошади жара лошади тяжёлая работа быстрое дыхание пот"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own:en",
+      "target_ref": "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Low-disturbance bat-roost observation Qualitative limits of roost disturbance and outside observation of bats. A single bat flying inside a structure can try to locate an exit and leave on its own. This guarantees no outcome, removal method, or concrete bat. bat roost do not disturb bat exit bat indoors"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own:ru",
+      "target_ref": "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение убежища летучих мышей без тревоги Качественные пределы тревоги убежища и внешнего наблюдения за летучими мышами. Одна летучая мышь, летающая внутри строения, может попытаться найти выход и улететь сама. Это не гарантирует исход, не задаёт способ удаления и не устанавливает конкретную летучую мышь. убежище летучих мышей не тревожить выход летучих мышей летучая мышь в доме выход летучей мыши"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-perceived-threat-can-prompt-horse-flight:en",
+      "target_ref": "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working-horse load and alarm context Qualitative context for horse heat/load and flight response without state diagnosis. A horse can respond to a perceived threat by fleeing. This establishes no perceived object, fear state, injury, intent, or action outcome. working horse heat fatigue horse fear horse flight alarm"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-perceived-threat-can-prompt-horse-flight:ru",
+      "target_ref": "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контекст нагрузки и тревоги рабочей лошади Качественный контекст тепла, нагрузки и реакции бегства у лошади без диагноза состояния. Лошадь может ответить бегством на воспринимаемую угрозу. Это не устанавливает, что именно она восприняла, страх, травму, намерение или исход действия. рабочая лошадь жара усталость тревога лошади лошадь испугалась бегство лошади тревога"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal:en",
+      "target_ref": "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Low-disturbance bat-roost observation Qualitative limits of roost disturbance and outside observation of bats. Disturbance can cause many bat species to abandon a roost and can arouse hibernating bats. This predicts no exact response, mortality, count, or outcome in a concrete scene. bat roost do not disturb bat exit roost disturbance bat hibernation bat abandonment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal:ru",
+      "target_ref": "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение убежища летучих мышей без тревоги Качественные пределы тревоги убежища и внешнего наблюдения за летучими мышами. Тревога может заставить многие виды летучих мышей покинуть убежище и может разбудить зимующих летучих мышей. Это не предсказывает точную реакцию, гибель, численность или исход конкретной сцены. убежище летучих мышей не тревожить выход летучих мышей тревога убежища летучие мыши спячка"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-asperity-contact-can-cause-local-stress-and-wear:en",
       "target_ref": "claim:static-asperity-contact-can-cause-local-stress-and-wear",
       "domain": "physics_material_science",
@@ -16906,6 +17032,48 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. При сравнении следа раздвоенного копыта можно вместе учитывать форму и размеры отпечатка, отметины вторичных пальцев и рисунок цепочки следов, сохраняя неопределённость при неполном или изменённом отпечатке. Это не определяет вид, свежесть, число животных, маршрут или встречу. след копыта раздвоенное копыто лось крупный рогатый скот сравнение следов размер следа цепочка следов неопределённость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-cool-storage-can-slow-respiration-of-harvested-produce:en",
+      "target_ref": "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cool storage and harvested-produce respiration Cooling as qualitative slowing of harvested-produce respiration. Cooler storage can slow respiration and quality loss of harvested produce, but requirements vary by crop. This sets no universal cool cellar, temperature, humidity, duration, maturity, or storage outcome for all root crops."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-cool-storage-can-slow-respiration-of-harvested-produce:ru",
+      "target_ref": "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дыхание собранной продукции при охлаждении Охлаждение как качественное замедление дыхания собранной продукции. Более прохладное хранение может замедлять дыхание и потерю качества собранной продукции, но нужные условия различаются по культурам. Это не задаёт общий холодный погреб, температуру, влажность, срок, зрелость или сохранность для всех корнеплодов."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position:en",
+      "target_ref": "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Corn and soybean stage-dependent seedling frost response Corn- and soybean-specific frost response conditional on stage and growing-point position. In corn and soybean seedlings, frost response can vary with developmental stage, injured tissue, and growing-point position. This gives no temperature threshold, death rule, yield, or recovery guarantee for flax or another species."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position:ru",
+      "target_ref": "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Стадийный ответ сеянцев кукурузы и сои на заморозок Установленная для кукурузы и сои зависимость ответа на заморозок от стадии и расположения точки роста. У сеянцев кукурузы и сои ответ на заморозок может зависеть от стадии развития, повреждённой ткани и расположения точки роста. Это не устанавливает для льна либо другого вида температурный порог, смерть, урожай или гарантированное восстановление."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-dim-light-reading-can-tire-eyes-without-harming-them:en",
+      "target_ref": "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Visual comfort in near work Qualitative context for temporary visual fatigue and dim-light reading. Visually demanding near work can be associated with temporary eye fatigue or discomfort, and dim-light reading can tire eyes without itself harming them. This establishes no diagnosis, visual acuity, workload threshold, duration, or scene visibility. eye fatigue reading dim light dim light reading visual strain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-dim-light-reading-can-tire-eyes-without-harming-them:ru",
+      "target_ref": "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Зрительный комфорт при близкой работе Качественный контекст временной зрительной усталости и чтения при тусклом свете. Зрительно напряжённая близкая работа может сопровождаться временной усталостью или дискомфортом глаз; чтение при тусклом свете может утомлять глаза, но само по себе не вредит им. Это не устанавливает диагноз, остроту зрения, порог нагрузки, длительность или видимость сцены. усталость глаз чтение тусклый свет чтение при тусклом свете зрительное напряжение"
     },
     {
       "entry_ref": "wk-retrieval:claim:static-equine-abdominal-distension-is-not-specific-diagnosis:en",
@@ -17062,6 +17230,34 @@
       "retrieval_text": "Влажный грунт и проходимость Качественная связь влажности грунта, опоры под нагрузкой и колейности. Повышенная влажность грунта может уменьшать проходимость и допускать образование колеи под нагрузкой. Это не устанавливает грунт, влажность, нагрузку, маршрут, глубину колеи или состояние конкретного места."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk:en",
+      "target_ref": "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Harvested root wound loss Water-loss and decay risk after damage to harvested underground organs. Cuts and bruises on harvested roots, tubers, and bulbs can increase water loss and decay risk. This proves no actual damage, spoilage, successful curing, storage state, or harvest quantity."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk:ru",
+      "target_ref": "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Повреждение собранных корнеплодов Потеря воды и риск порчи после повреждения собранных подземных органов. Порезы и ушибы собранных корней, клубней и луковиц могут увеличить потерю воды и риск порчи. Это не доказывает фактическое повреждение, порчу, успешное залечивание, условия хранения или количество сбора."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water:en",
+      "target_ref": "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Hop bine support and water Support and water relation for hop bines without asserting a particular plant. Hop bines can grip and be trained on support, while their roots do not tolerate standing water. This proves no plant, support, water amount, growth rate, cone yield, or transplant result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water:ru",
+      "target_ref": "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Опора и вода для хмелевой лианы Опора и водный режим хмелевых побегов без вывода о конкретном растении. Побеги хмеля могут цепляться за опору и направляться по ней; его корни не переносят стоячей воды. Это не доказывает наличие растения, опоры, количества воды, темпа роста, урожая шишек или результата пересадки."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-horses-are-hindgut-fermenters:en",
       "target_ref": "claim:static-horses-are-hindgut-fermenters",
       "domain": "biology_physiology",
@@ -17146,6 +17342,48 @@
       "retrieval_text": "Региональная совместимость болотных растений Современный нативный ареал как контекст совместимости, не доказательство местного присутствия. Современный нативный ареал Phragmites australis включает Центральную, Северную и Северо-Западную Европейскую Россию. Это контекст совместимости, не доказательство средневекового местного присутствия, зарослей, запаса, доступа, сбора или использования."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis:en",
+      "target_ref": "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nondiagnostic plant wilt Wilt as a non-exclusive sign of plant water-balance disruption. Wilt can occur when leaf water loss outpaces root supply even in moist soil. By itself it proves no drought, disease, pest, root condition, watering need, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis:ru",
+      "target_ref": "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Увядание без однозначной причины Увядание как неединственный признак нарушения водного баланса растения. Увядание может возникать, когда потеря воды листьями опережает поступление от корней, даже при влажной почве. Само по себе оно не доказывает засуху, болезнь, вредителей, состояние корней, нужду в поливе или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help:en",
+      "target_ref": "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Post-head-injury warning observations Nonspecific post-head-injury observations warranting urgent qualified help. After a head injury, worsening or reduced consciousness, repeated vomiting, or a seizure are warning observations that warrant urgent qualified help. No one sign by itself establishes a diagnosis, cause, or outcome. head injury vomiting seizure consciousness repeated vomiting"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help:ru",
+      "target_ref": "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Предупреждающие наблюдения после травмы головы Неспецифичные наблюдения после травмы головы, требующие срочной квалифицированной помощи. После травмы головы ухудшение или угнетение сознания, повторная рвота либо судороги — предупреждающие наблюдения, требующие срочной квалифицированной помощи. Ни один такой признак сам по себе не устанавливает диагноз, причину или исход. травма головы рвота судороги сознание повторная рвота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-raking-mushroom-ground-can-damage-fungal-habitat:en",
+      "target_ref": "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Mushroom habitat disturbance Fungal-habitat damage from substrate disturbance. Raking mushroom ground can damage mushroom habitat. This establishes no species, edibility, access right, picking method, later fruiting, or yield."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-raking-mushroom-ground-can-damage-fungal-habitat:ru",
+      "target_ref": "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение грибного местообитания Повреждение грибного местообитания при нарушении субстрата. Разгребание грибной подстилки может повредить грибное местообитание. Это не определяет вид, съедобность, право сбора, способ сбора, повторное плодоношение или урожай."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia:en",
       "target_ref": "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
       "domain": "environment",
@@ -17158,6 +17396,48 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Региональная совместимость болотных растений Современный нативный ареал как контекст совместимости, не доказательство местного присутствия. Современный нативный ареал Ranunculus sceleratus включает Северную и Северо-Западную Европейскую Россию. Это контекст совместимости, не доказательство средневекового местного присутствия, определения экземпляра, контакта или опасности в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context:en",
+      "target_ref": "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Skin friction and protective context Qualitative relation of repeated skin friction, blistering, and reduced repeat irritation. Reducing the source of repeat friction and covering a blister are general protective context while skin recovers. This is not a treatment procedure, dressing material, or outcome guarantee. friction blister chafing skin rubbing protect blister stop friction chafing care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context:ru",
+      "target_ref": "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Трение кожи и защитный контекст Качественная связь повторного трения кожи, волдыря и уменьшения повторного раздражения. Уменьшение источника повторного трения и прикрытие волдыря — общий защитный контекст, пока кожа восстанавливается. Это не процедура лечения, не материал повязки и не гарантия исхода. натёртость волдырь трение кожи защитить волдырь прекратить трение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-repeated-skin-friction-can-cause-blistering:en",
+      "target_ref": "claim:static-repeated-skin-friction-can-cause-blistering",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Skin friction and protective context Qualitative relation of repeated skin friction, blistering, and reduced repeat irritation. Repeated skin friction can damage skin and cause a friction blister. This establishes no concrete wound, severity, infection, recovery time, or individual state. friction blister chafing skin rubbing skin damage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-repeated-skin-friction-can-cause-blistering:ru",
+      "target_ref": "claim:static-repeated-skin-friction-can-cause-blistering",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Трение кожи и защитный контекст Качественная связь повторного трения кожи, волдыря и уменьшения повторного раздражения. Повторное трение может повредить кожу и вызвать волдырь от трения. Это не устанавливает рану, тяжесть, инфекцию, срок восстановления или состояние конкретного человека. натёртость волдырь трение кожи трение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-root-loss-can-cause-transplant-shock:en",
+      "target_ref": "claim:static-root-loss-can-cause-transplant-shock",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Transplant root disturbance Transplant-shock risk from root loss. Root loss can cause transplant shock; watering disturbed soil can settle it and support moisture for new roots. This proves no species, root loss, season, plant state, survival probability, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-root-loss-can-cause-transplant-shock:ru",
+      "target_ref": "claim:static-root-loss-can-cause-transplant-shock",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение корней при пересадке Риск шока от потери корней при пересадке. Потеря корней может вызвать шок при пересадке; полив нарушенной почвы может осадить её и поддержать влагу для новых корней. Это не доказывает вид, потерю корней, сезон, состояние растения, вероятность выживания или исход."
     },
     {
       "entry_ref": "wk-retrieval:claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap:en",
@@ -17200,6 +17480,62 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Соломенная подстилка для лошадей Современная общая предпосылка о соломе как подстилке для лошадей. Солома — традиционный материал подстилки для лошадей. Это не устанавливает историческую практику, пригодность для сна человека, местную солому, её количество, состояние, доступ или использование в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves:en",
+      "target_ref": "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Observable beaver-compatible cut signs Qualitative analogical signs of beaver-compatible gnawing without animal identification. A beaver-compatible cut can show a conical stump top and visible incisor grooves. This is a North-American-beaver analogy, not species identification, proof of a nearby beaver, exclusion of human cutting, or dating of a sign. beaver gnaw incisor grooves conical stump beaver"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves:ru",
+      "target_ref": "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые признаки бобрового погрыза Качественные, аналогические признаки бобрового погрыза без идентификации животного. Совместимый с бобровым погрызом срез может иметь коническую вершину пня и заметные резцовые борозды. Это аналогия по североамериканскому бобру, не определение вида, не доказательство бобра рядом, не исключение рубки человеком и не датировка следа. бобровый погрыз зубные борозды конический пень борозды зубов бобр"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue:en",
+      "target_ref": "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable cloud rain cues Qualitative cloud observations that can justify preparation for possible precipitation. Gray altostratus or nimbostratus can be a qualitative preparation cue for continuous rain or snow. This establishes no clouds, timing, precipitation amount, local weather, route, or outcome. altostratus nimbostratus approaching rain rain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue:ru",
+      "target_ref": "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые облачные признаки дождя Качественные признаки облаков как повод подготовиться к возможным осадкам. Серые высокослоистые или слоисто-дождевые облака могут быть качественным поводом подготовиться к продолжительному дождю или снегу. Это не устанавливает облака, время, количество осадков, местную погоду, маршрут или исход. слоистые облака дождевые облака усиление ветра высокослоистые облака слоисто-дождевые облака дождь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation:en",
+      "target_ref": "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Observable beaver-compatible cut signs Qualitative analogical signs of beaver-compatible gnawing without animal identification. Multiple nearby beaver-compatible signs can corroborate a beaver explanation more than one damaged sapling alone. This is an analogy, not species identification, proof of presence, or exclusion of other damage causes. beaver gnaw incisor grooves conical stump beaver signs near water dam gnawing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation:ru",
+      "target_ref": "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые признаки бобрового погрыза Качественные, аналогические признаки бобрового погрыза без идентификации животного. Несколько близких к воде признаков, совместимых с бобром, могут подкреплять бобровое объяснение лучше, чем один повреждённый саженец. Это аналогия, не идентификация вида, не доказательство присутствия и не исключение иных причин повреждения. бобровый погрыз зубные борозды конический пень следы бобра у воды плотина погрыз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind:en",
+      "target_ref": "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable cloud rain cues Qualitative cloud observations that can justify preparation for possible precipitation. A typical advancing storm cloud sequence can warn of approaching rain and increasing wind. This is not a statistical comparison, universal forecast, or establishment of local weather, timing, route, or outcome. altostratus nimbostratus approaching rain cloud sequence increasing wind"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind:ru",
+      "target_ref": "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые облачные признаки дождя Качественные признаки облаков как повод подготовиться к возможным осадкам. Типичная последовательность облаков перед приближающимся штормом может предупреждать о возможном дожде и усилении ветра. Это не статистическое сравнение, не универсальный прогноз, не установление местной погоды, времени, маршрута или исхода. слоистые облака дождевые облака усиление ветра последовательность облаков приближение дождя"
     },
     {
       "entry_ref": "wk-retrieval:claim:static-wood-ash-can-irritate-skin-and-eyes:en",
@@ -21374,6 +21710,62 @@
       "retrieval_text": "Кожный барьер Неповреждённая кожа служит барьером для патогенов."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-british-bat-activity:en",
+      "target_ref": "wk:biology_physiology:static-animal-b06-british-bat-activity",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "British insectivorous bat night activity British-source context for nocturnal activity, echolocation, and insect feeding in bats. bat night echolocation insects"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-british-bat-activity:ru",
+      "target_ref": "wk:biology_physiology:static-animal-b06-british-bat-activity",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ночная активность британских насекомоядных летучих мышей Ограниченный британским источником контекст ночной активности, эхолокации и насекомоядности летучих мышей. летучая мышь ночь эхолокация насекомые"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-observable-animal-state-limits:en",
+      "target_ref": "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Limits of observable animal state Observed movement and behaviour changes do not replace species context or diagnosis. lameness gait animal pain animal condition"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-observable-animal-state-limits:ru",
+      "target_ref": "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пределы наблюдения состояния животного Наблюдаемые изменения движения и поведения не заменяют видовой контекст и диагноз. хромота походка боль животного состояние животного"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-working-horse-context:en",
+      "target_ref": "wk:biology_physiology:static-animal-b06-working-horse-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working-horse load and alarm context Qualitative context for horse heat/load and flight response without state diagnosis. working horse heat fatigue horse fear"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-animal-b06-working-horse-context:ru",
+      "target_ref": "wk:biology_physiology:static-animal-b06-working-horse-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контекст нагрузки и тревоги рабочей лошади Качественный контекст тепла, нагрузки и реакции бегства у лошади без диагноза состояния. рабочая лошадь жара усталость тревога лошади"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-corn-soybean-seedling-frost-response:en",
+      "target_ref": "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Corn and soybean stage-dependent seedling frost response Corn- and soybean-specific frost response conditional on stage and growing-point position."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-corn-soybean-seedling-frost-response:ru",
+      "target_ref": "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Стадийный ответ сеянцев кукурузы и сои на заморозок Установленная для кукурузы и сои зависимость ответа на заморозок от стадии и расположения точки роста."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-equine-hindgut-and-colic-context:en",
       "target_ref": "wk:biology_physiology:static-equine-hindgut-and-colic-context",
       "domain": "biology_physiology",
@@ -21386,6 +21778,62 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. лошадь задняя кишка ферментация колики"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-harvested-produce-cool-respiration:en",
+      "target_ref": "wk:biology_physiology:static-harvested-produce-cool-respiration",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cool storage and harvested-produce respiration Cooling as qualitative slowing of harvested-produce respiration."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-harvested-produce-cool-respiration:ru",
+      "target_ref": "wk:biology_physiology:static-harvested-produce-cool-respiration",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дыхание собранной продукции при охлаждении Охлаждение как качественное замедление дыхания собранной продукции."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-harvested-root-wound-loss:en",
+      "target_ref": "wk:biology_physiology:static-harvested-root-wound-loss",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Harvested root wound loss Water-loss and decay risk after damage to harvested underground organs."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-harvested-root-wound-loss:ru",
+      "target_ref": "wk:biology_physiology:static-harvested-root-wound-loss",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Повреждение собранных корнеплодов Потеря воды и риск порчи после повреждения собранных подземных органов."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-head-injury-warning-context-b06:en",
+      "target_ref": "wk:biology_physiology:static-head-injury-warning-context-b06",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Post-head-injury warning observations Nonspecific post-head-injury observations warranting urgent qualified help. head injury vomiting seizure consciousness"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-head-injury-warning-context-b06:ru",
+      "target_ref": "wk:biology_physiology:static-head-injury-warning-context-b06",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Предупреждающие наблюдения после травмы головы Неспецифичные наблюдения после травмы головы, требующие срочной квалифицированной помощи. травма головы рвота судороги сознание"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-hop-bine-support-water:en",
+      "target_ref": "wk:biology_physiology:static-hop-bine-support-water",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Hop bine support and water Support and water relation for hop bines without asserting a particular plant."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-hop-bine-support-water:ru",
+      "target_ref": "wk:biology_physiology:static-hop-bine-support-water",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Опора и вода для хмелевой лианы Опора и водный режим хмелевых побегов без вывода о конкретном растении."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-household-trauma-movement:en",
@@ -21402,6 +21850,34 @@
       "retrieval_text": "Ограничения перемещения при травме"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-mushroom-habitat-disturbance:en",
+      "target_ref": "wk:biology_physiology:static-mushroom-habitat-disturbance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Mushroom habitat disturbance Fungal-habitat damage from substrate disturbance."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-mushroom-habitat-disturbance:ru",
+      "target_ref": "wk:biology_physiology:static-mushroom-habitat-disturbance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение грибного местообитания Повреждение грибного местообитания при нарушении субстрата."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-plant-wilt-nondiagnostic:en",
+      "target_ref": "wk:biology_physiology:static-plant-wilt-nondiagnostic",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nondiagnostic plant wilt Wilt as a non-exclusive sign of plant water-balance disruption."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-plant-wilt-nondiagnostic:ru",
+      "target_ref": "wk:biology_physiology:static-plant-wilt-nondiagnostic",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Увядание без однозначной причины Увядание как неединственный признак нарушения водного баланса растения."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-ranunculaceae-sap-contact:en",
       "target_ref": "wk:biology_physiology:static-ranunculaceae-sap-contact",
       "domain": "biology_physiology",
@@ -21416,6 +21892,20 @@
       "retrieval_text": "Контакт с соком лютиковых Общая предпосылка о раздражающем свежем соке Ranunculaceae."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-skin-friction-context-b06:en",
+      "target_ref": "wk:biology_physiology:static-skin-friction-context-b06",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Skin friction and protective context Qualitative relation of repeated skin friction, blistering, and reduced repeat irritation. friction blister chafing skin rubbing"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-skin-friction-context-b06:ru",
+      "target_ref": "wk:biology_physiology:static-skin-friction-context-b06",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Трение кожи и защитный контекст Качественная связь повторного трения кожи, волдыря и уменьшения повторного раздражения. натёртость волдырь трение кожи"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-straw-horse-bedding:en",
       "target_ref": "wk:biology_physiology:static-straw-horse-bedding",
       "domain": "biology_physiology",
@@ -21428,6 +21918,48 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Соломенная подстилка для лошадей Современная общая предпосылка о соломе как подстилке для лошадей."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-transplant-root-disturbance:en",
+      "target_ref": "wk:biology_physiology:static-transplant-root-disturbance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Transplant root disturbance Transplant-shock risk from root loss."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-transplant-root-disturbance:ru",
+      "target_ref": "wk:biology_physiology:static-transplant-root-disturbance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Нарушение корней при пересадке Риск шока от потери корней при пересадке."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-visual-comfort-context-b06:en",
+      "target_ref": "wk:biology_physiology:static-visual-comfort-context-b06",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Visual comfort in near work Qualitative context for temporary visual fatigue and dim-light reading. eye fatigue reading dim light"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-visual-comfort-context-b06:ru",
+      "target_ref": "wk:biology_physiology:static-visual-comfort-context-b06",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Зрительный комфорт при близкой работе Качественный контекст временной зрительной усталости и чтения при тусклом свете. усталость глаз чтение тусклый свет"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-weather-b06-beaver-cut-signs:en",
+      "target_ref": "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Observable beaver-compatible cut signs Qualitative analogical signs of beaver-compatible gnawing without animal identification. beaver gnaw incisor grooves conical stump"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-weather-b06-beaver-cut-signs:ru",
+      "target_ref": "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые признаки бобрового погрыза Качественные, аналогические признаки бобрового погрыза без идентификации животного. бобровый погрыз зубные борозды конический пень"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:stomatal-opening-tradeoff:en",
@@ -24034,6 +24566,20 @@
       "retrieval_text": "Южный лиственный лес и собираемые растения Вероятный источник отдельных собранных растений."
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:static-animal-b06-bat-roost-disturbance:en",
+      "target_ref": "wk:environment:static-animal-b06-bat-roost-disturbance",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Low-disturbance bat-roost observation Qualitative limits of roost disturbance and outside observation of bats. bat roost do not disturb bat exit"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-animal-b06-bat-roost-disturbance:ru",
+      "target_ref": "wk:environment:static-animal-b06-bat-roost-disturbance",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение убежища летучих мышей без тревоги Качественные пределы тревоги убежища и внешнего наблюдения за летучими мышами. убежище летучих мышей не тревожить выход летучих мышей"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:static-cloven-hoof-trace-comparison:en",
       "target_ref": "wk:environment:static-cloven-hoof-trace-comparison",
       "domain": "environment",
@@ -24046,6 +24592,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. след копыта раздвоенное копыто лось крупный рогатый скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-weather-b06-cloud-rain-observation:en",
+      "target_ref": "wk:environment:static-weather-b06-cloud-rain-observation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Observable cloud rain cues Qualitative cloud observations that can justify preparation for possible precipitation. altostratus nimbostratus approaching rain"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-weather-b06-cloud-rain-observation:ru",
+      "target_ref": "wk:environment:static-weather-b06-cloud-rain-observation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Наблюдаемые облачные признаки дождя Качественные признаки облаков как повод подготовиться к возможным осадкам. слоистые облака дождевые облака усиление ветра"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:static-wetland-plant-regional-compatibility:en",

@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,295 approved claims, 856 concepts,
-442 sources and 913 evidence records**. This includes 121 independently
+The integrated corpus contains **1,319 approved claims, 872 concepts,
+465 sources and 939 evidence records**. This includes 121 independently
 reviewed editorial premises for ordinary, human, practical and public life.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -27,26 +27,25 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,302 x 1,024 float32 entries (17,620,992 bytes)** and
+package contains **4,382 x 1,024 float32 entries (17,948,672 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
 ## Checks actually completed on this integrated corpus
 
-- Compiler: all 1,295 claims and independent approval bindings validate.
+- Compiler: all 1,319 claims and independent approval bindings validate.
 - Category-cartography validation passes on all included fragments and
   claims, with existing profiles and potential-consumer boundaries.
 - Focused authoring, runtime, population, foundation and cartography tests:
   **85/85 pass**, including independent bindings and runtime/vector alignment.
-- **253-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995389**,
-  Recall@20 **0.997365**, gate PASS.
+- **268-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995647**,
+  Recall@20 **0.997512**, gate PASS.
 - Unchanged **133-case** baseline on the expanded corpus: hybrid
   Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   Existing gates were not weakened. Documentation, knowledge-source and
-  architecture checks also pass. A focused run started before the vector
-  rebuild completed caught the expected old-index mismatch; after the aligned
-  4,302-entry index was written, all 85 tests passed. No gate was changed.
+  architecture checks also pass. All 85 focused tests were run after the
+  aligned 4,382-entry index was written. No gate was changed.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -58,8 +57,9 @@ incorrect widow-claim expectation was corrected to the actual kin-help
 premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
-The published integration checkpoint `b83b3aa98f75440bc34bde9f46b6b52b5a60436f`
-also passed GitHub `full-npm-test`. This certifies that checkpoint, not a
+The latest confirmed green CI checkpoint is
+`5a9d9695e62ecb42e99c41d59e3055d5b056e773`, with GitHub `full-npm-test` passed.
+This certifies that checkpoint, not a
 later candidate or final HEAD. Current readiness audit and a green final
 exact-HEAD full suite remain mandatory before claiming merge readiness.
 
@@ -167,11 +167,28 @@ refs and no reported substantive domain mismatch. After full-bundle triage,
 reviewers report 85 covered cases and 15 remaining raw gap leads, principally
 animal observation, plant care/storage, human physiology and weather cues.
 These are investigation leads, not 15 proven missing families. Source work
-and candidate authoring are separate from the unchanged reviewed bundle.
-Batch 06 is diagnostic while those needs are investigated; it does not
-increase the clean streak.
+produced 24 general premises in animal, plant, human and weather/trace
+fragments. Their candidate commit is `51fb61efc5c99540b50c2099cc21ca08e7630e8f`;
+four separate source/domain reviewers approved them before runtime inclusion.
+Review narrowed a frost statement to the crops actually studied, restricted
+mushroom disturbance to supported habitat damage, and corrected a source
+title and a Russian consciousness term. General relations remain distinct
+from exact diagnosis, specimen identification, crop-specific frost thresholds,
+weather forecasts or local state. The source-filled batch remains diagnostic,
+not retrospective unseen acceptance. It does not increase the clean streak.
 
-The current clean streak is **0 of 3**. Contract §0.3 requires
+Batch 07 has another two blind 50-case inputs under the same diversity rule.
+Those inputs were not used to author the 24 additions. Independent WK-only
+reviews used the frozen 1,319-claim bundle. All 100 cases are covered after
+full-bundle triage, with 20 primary areas of five cases and valid cited refs.
+Seven initial absence findings were corrected against existing metal,
+fibre, bond-contact, fermentation and beaver-sign premises; their initial
+statuses remain in the review records. The public-work coordination case
+was reassessed as a social/public-safety need, not a mechanics calculation.
+No corpus change followed these reviews. **Batch 07 is the first clean
+sample after the batch-05/06 diagnostic additions.**
+
+The current clean streak is **1 of 3**. Contract §0.3 requires
 three consecutive diverse independent batches of at least 100 cases with
 no substantial new gap; a gap resets the streak. Replayed or imbalanced
 cases cannot count as unseen acceptance. Missing exact names, figures,

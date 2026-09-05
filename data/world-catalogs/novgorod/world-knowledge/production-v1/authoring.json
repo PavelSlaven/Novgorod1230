@@ -1,6 +1,14 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "static-animal-context-b06.json",
+    "verification-static-animal-context-b06.json",
+    "static-human-context-b06.json",
+    "verification-static-human-context-b06.json",
+    "static-plant-context-b06.json",
+    "verification-static-plant-context-b06.json",
+    "static-weather-traces-b06.json",
+    "verification-static-weather-traces-b06.json",
     "foundation.json",
     "historical-population.json",
     "physical-interaction.json",

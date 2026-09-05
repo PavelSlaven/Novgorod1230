@@ -298,6 +298,8 @@
     }
   ],
   "source_inventory": [
+    {"id":"place-skin-fat-context-v1","source_path":"place-skin-fat-context-v1.json","domains":["biology_physiology"],"location_applicability":"Potential ordinary dry-skin care context, not a clinical or historical treatment.","applicability":{"resource":"only an established skin application","material":"an actual continuous hydrophobic oily or fatty film","process":"conditional reduction of evaporative water loss","npc":"qualitative grounding, not diagnosis or prescribed care"},"coverage":"1 independently approved conditional physical relation; no particular fat suitability, cure or scene state."},
+    {"id":"place-garden-birds-dyes-v1","source_path":"place-garden-birds-dyes-v1.json","domains":["biology_physiology","chemistry_process"],"location_applicability":"Potential garden, built bird shelter, dye-work and dry-skin care contexts; no local organism, stock or scene state.","applicability":{"resource":"only established plants, animals or suitable preparations","material":"conditional leaf dye source or actual emollient/occlusive preparation","process":"bounded feeding, group response, dye sourcing and skin moisture retention","npc":"general grounding, not actor expertise or medical practice"},"coverage":"5 independently approved modern-source premises; not environmental completeness or historical prevalence."},
     {"id":"place-salt-poultry-processes-v1","source_path":"place-salt-poultry-processes-v1.json","domains":["chemistry_process","biology_physiology"],"location_applicability":"Potential salt storage and established domestic-poultry context; no stock, bird, enclosure or work created.","applicability":{"resource":"already established salt or poultry only","material":"NaCl-based common salt when present","process":"conditional moisture/caking and poultry group handling","npc":"approach options, not expertise or guaranteed control"},"coverage":"3 independently approved bounded modern premises; not historical local practice or environmental completeness."},
     {
       "id": "place-community-environments-v1",
@@ -1962,6 +1964,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
@@ -2731,6 +2735,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:fauna-mallard-wetland-diet",
@@ -2827,6 +2832,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+        "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
@@ -3950,6 +3957,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
@@ -7322,6 +7330,8 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"place-skin-fat-context-v1.json","claim_count":1,"family_refs":["body-injury-repair-and-barrier"],"location_refs":["potential:dwelling"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"The application must actually form and retain a continuous hydrophobic film; no universal fat classification, tolerability, treatment, healing or historical practice."},
+      {"source_path":"place-garden-birds-dyes-v1.json","claim_count":5,"family_refs":["fauna-invertebrate-lifecycle-and-host-contact","fauna-birds-migration-reproduction-and-behavior","process-textile-dye-and-collagen-tanning","body-injury-repair-and-barrier"],"location_refs":["potential:garden","potential:outbuilding","potential:workshop","potential:dwelling"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Garden-snail/slug and rock-pigeon scope is bounded; sorrel foliage is a modern dye example, not local presence; only suitable emollient preparations gain skin-moisture relation, not arbitrary fat, burns or prescriptions."},
       {"source_path":"place-salt-poultry-processes-v1.json","claim_count":3,"family_refs":["chemistry-solution-equilibrium-and-solubility","fauna-birds-migration-reproduction-and-behavior"],"location_refs":["potential:storage","potential:homestead","potential:pasture"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"NaCl-based common-salt mechanism depends on composition and conditions; domestic-goose flocking and calm poultry approach do not grant a flock, route, control, historical practice or outcome."},
       {
         "source_path": "place-community-environments-v1.json",

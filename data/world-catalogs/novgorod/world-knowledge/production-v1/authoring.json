@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "place-skin-fat-context-v1.json",
+    "verification-place-skin-fat-context-v1.json",
+    "place-garden-birds-dyes-v1.json",
+    "verification-place-garden-birds-dyes-v1.json",
     "place-salt-poultry-processes-v1.json",
     "verification-place-salt-poultry-processes-v1.json",
     "place-adhesive-bast-processes-v1.json",

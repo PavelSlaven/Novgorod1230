@@ -1568,6 +1568,7 @@
             "Как человек и животное взаимно ограничивают место и время работы?"
           ],
           "claim_refs": [
+            "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
             "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
             "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
             "claim:animal-care-needs-presence",
@@ -2634,6 +2635,8 @@
             "Какие следы рыхления, обрезки, вредителей, упавших плодов и дождя видны?"
           ],
           "claim_refs": [
+            "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+            "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
             "claim:animal-pollination-affects-flowering-plant-reproduction",
             "claim:place-outdoors-clearing-and-trace-renewal"
           ],
@@ -3007,6 +3010,8 @@
           "facet": "sleep_care_and_means_variation",
           "coverage": "supported",
           "claim_refs": [
+            "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+            "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
             "claim:human-life-reception-depends-on-trust-ties-means",
             "claim:human-life-visitors-add-resource-demands",
             "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
@@ -3191,6 +3196,7 @@
         {
           "facet": "tools_material_and_waste",
           "claim_refs": [
+            "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
             "claim:ordinary-life-household-repairs-compete-with-new-goods",
             "claim:work-waste-context",
             "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",

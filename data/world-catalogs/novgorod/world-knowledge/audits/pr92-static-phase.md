@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,399 approved claims, 905 concepts,
-516 sources and 1,018 evidence records**. This includes 156 independently
+The integrated corpus contains **1,405 approved claims, 909 concepts,
+521 sources and 1,024 evidence records**. This includes 156 independently
 reviewed premises using editorial-reconstruction sources; 167 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,608 x 1,024 float32 entries (18,874,368 bytes)** and
+package contains **4,628 x 1,024 float32 entries (18,956,288 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,399-claim corpus
+## Checks actually completed on the 1,405-claim corpus
 
-- Compiler: all 1,399 claims and independent approval bindings validate.
+- Compiler: all 1,405 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,8 +42,8 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **327-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996432**,
-  Recall@20 **0.997961**, gate PASS.
+- **333-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996496**,
+  Recall@20 **0.997998**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -64,7 +64,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`4a87b4f8b80832d19d459970950401dd82da7477` (run 33970885095).
+`8504a4fd0f784e3a13c19345ea2ab69033afbffe` (run 33973272939).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -619,3 +619,71 @@ was used. Both generators completed their input-only revisions before
 publication; root replaced unsupported exact currency props and corrected
 ash/roof-smoke wording without consulting WK for the new answers. The
 integration commit freezes these final inputs for subsequent review.
+
+## Sixth place-first unseen batch — diagnostic
+
+The final 75 controlled and 25 independent free inputs were frozen at
+`8504a4fd0f784e3a13c19345ea2ab69033afbffe` and read against the unchanged
+1,399-claim corpus. The controlled author reports 61 practical and 14
+social/institutional central needs across 75 rotating, open labels. Root
+classified the free component before lookup: 20 practical/natural/physical
+and five social central needs, without imposing a free quota. Classification
+does not turn these labels into a whitelist.
+
+`/root/place05_scene_a` read controlled parts A and C; the distinct
+`/root/place06_scene_b` read B; root reconstructed the independently
+generated free cases. Every case records a concrete environment, practical
+interaction, variation and compiled claim references. Final triage retains
+**96 covered / four substantial gaps**:
+
+- A025: useful dry-skin/emollient relation; blister care and leather are not
+  evidence that ordinary fat benefits cracked human skin.
+- B028: garden snails, moisture/shelter and leaf feeding; generic herbivory
+  does not supply the missing animal relation or identify the culprit.
+- B047: pigeon food attraction and flocking; medieval pigeon-yard attestation
+  is not required for a hypothetical bird already specified in the input.
+- Free022: leaf material usable for dyeing, with a useful bounded example;
+  the actor's expertise or a dye found in cloth cannot supply a plant source.
+
+The initial A003 glue lead was resolved from existing WK using an explicitly
+conditional animal-glue alternative without inventing a cause of delayed
+setting. Root removed material/task mismatches (blister/cold, rope/leather,
+ash/needle search, built-opening rain/roof runoff, and body insulation used
+as clothing evidence), strengthened existing evaporation/food handling/
+storage links, and removed an assumption that a returned tub contained water.
+Ordinary equal alternatives and absent exact recipes are not substantive
+gaps. All 100 IDs and claim refs validate; no new candidate knowledge was
+used to revise the original diagnostic. The mixed unseen streak is **0/3**.
+
+Five bounded follow-up premises at
+`37e407817f0c8fd30e5d9b7b93ac8923de7ac979` received independent source/domain
+approval from `/root/place06_verify_publish` and entered the 1,404-claim
+corpus. They cover moist garden-snail/slug activity and cabbage feeding,
+rock-pigeon shelter/food grouping, sorrel foliage as a modern leaf-dye
+example, and actual emollient moisture retention. Source and transfer limits
+remain in `verification/place-garden-birds-dyes-v1.md`.
+
+Known-case replay initially covered three cases but retained A025: a clinical
+preparation category did not explain the ordinary fatty application. One
+additional conditional physical relation at
+`1ff05f837ea5f8ab1691240135d7fd3864ea7449` was independently checked against
+DermNet by the same source reviewer: an actual continuous hydrophobic oily
+film can reduce evaporative water loss. It does not promise that any chosen
+fat forms the film, is tolerated or heals skin. This adds no clinical recipe.
+The existing compiler/verification path integrates it into 1,405 claims.
+
+`/root/place05_scene_a` replayed the remaining case using only compiled WK:
+the separate `place-batch-06-known-gap-replay.json` now records **4/4 covered**,
+retaining the initial 1,404-claim result and original 1,399-claim **96/4**.
+Both maps link the six additions without new families or automatic residual
+closure. Root checked all original 100 case IDs, review references and the
+333 retrieval-case references. The unseen clean streak remains **0/3**.
+
+The next 75 controlled and 25 independent blind free inputs are prepared in
+`place-batch-07-{core,free}.json`. A separate input-only preflight read all
+100 for diverse needs, explicit means/upkeep and unstated causal assumptions;
+it did not consult WK or supply answers. The free generator saw no corpus,
+map, domain list, controlled input or previous batches. Input freeze precedes
+free classification and WK-only reconstruction. No new clean batch is claimed.
+The 1,399-claim checkpoint passed exact CI `33973272939`; later integrations
+still require their own exact-HEAD CI.

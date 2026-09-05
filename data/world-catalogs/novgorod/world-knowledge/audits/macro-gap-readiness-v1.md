@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,399-claim corpus. The later direct-attestation-only residual
+current 1,405-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -396,3 +396,23 @@ Both maps, 4,608 vectors, 95 focused tests and passing 327/133 retrieval
 suites are aligned; exact CI for the next integration remains required.
 The sixth blind 75+25 inputs have completed input-only preflight and are
 frozen by the integration checkpoint; they are not new acceptance evidence.
+
+The sixth hundred subsequently completed WK-only review on the 1,399-claim
+bundle frozen at `8504a4fd`: **96 covered / 4 gaps**, concerning dry-skin
+emollients, garden-snail activity/feeding, pigeon food/flocking behaviour,
+and leaf-dye material selection. The existing conditional animal-glue
+relation resolved one initial false absence. A/C share one independent
+scene reader, B has a separate reader, and root read the blind free set;
+this is not represented as four distinct agents. The free classification
+was 20 practical and five social central needs before lookup, without a
+quota. Full scene/interaction/variation records and root citation corrections
+are retained in the review files and static-phase report. Streak stays 0/3.
+Published exact CI `33973272939` passed for the 1,399-claim checkpoint.
+Five premises at `37e40781` and one additional conditional oily-skin-film
+relation at `1ff05f8` subsequently received separate source/domain approval
+and are compiled into 1,405 claims. The known-case replay initially covered
+3/4 on 1,404 claims, then 4/4 on 1,405; neither result changes original 96/4
+or unseen 0/3. Both maps retain their open families and partial records.
+The next blind 75+25 inputs passed input-only preflight; reconstruction is
+pending their freeze. See the static-phase report for actual vector,
+retrieval and test results; later exact-HEAD CI is required separately.

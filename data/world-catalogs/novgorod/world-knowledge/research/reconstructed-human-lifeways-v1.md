@@ -8,20 +8,20 @@ Every claim is editorial, medium or low confidence, and unknown typicality. Cont
 
 ## Childhood, learning, and apprenticeship
 
-Learning can be treated as situated practical activity: watching, repeating, trying, receiving correction, and being trusted with tasks within present capacity. Household work can be one possible setting. Time, access to tasks and materials, care demands, and seasonal pressure can alter opportunity. These are alternatives for semantic reasoning, not a school, apprenticeship contract, child NPC, age threshold, curriculum, or measured competence.
+Children can plausibly count grouped ordinary objects, carry light chips, imitate work in play, and learn alongside family work. A novice can plausibly sweep, sort material, or pass a tool before being trusted with responsible work. Access to letter-learning and counting practice varies; neither literacy nor a school is presumed for every child. These are alternatives for semantic reasoning, not a child NPC, age threshold, curriculum, or measured competence.
 
 ## Marriage, kinship, and household formation
 
-Joining or forming a household can require settling ordinary questions of residence, provisioning, shared work, care, shelter, food, and storage. Kin can help, introduce, advise, or disagree; absence and changed relations can alter arrangements. These claims never decide marriage, property, succession, status, authority, obligation, or a current family relation.
+Joining or forming a household can mean living with senior kin or separately, and can change food, care, work, shelter, and storage arrangements. Paternal, maternal, and marital kin are distinct possible links for help or advice. A widow may maintain a household where means and support allow; kin help and remarriage are alternative responses to strain. These claims never decide marriage, property, succession, status, authority, obligation, or a current family relation.
 
 ## Age, gender, and status variation
 
-People can be read through age, gender, standing, seniority, experience, and prior ties, but those descriptors do not determine capacity, resources, reputation, preferences, or conduct. Shared work and conversation can be negotiated. This supports bounded alternatives instead of a universal etiquette or NPC script.
+Means can show through clothing or refreshment, while limited means can favor repair, reuse, and preservation. A dependent person may be more cautious about contradicting a patron publicly. Age, gender, and status do not alone determine skill, means, or willingness to help. This supports bounded alternatives instead of a universal etiquette or NPC script.
 
 ## Hospitality, travel, and lodging
 
-Receiving a traveller can depend on trust, relationships, reputation, space, food, fuel, attention, and risk. Lodging can trade comfort, privacy, supervision, and security. Travellers may seek information and delay or alter a plan when conditions change; a stay may allow consensual exchange. None of this creates a host, route, lodging, goods, news, or journey.
+An ordinary household can plausibly lay a traveller on a bench or platform with bedding when space and trust allow. A shared room, food, and warmth trade against privacy and comfort. Travellers may ask about road, crossing, and lodging conditions; poor weather, fatigue, or a bad crossing can change a plan. None of this creates a host, route, lodging, goods, news, or journey.
 
 ## Recreation, music, and oral culture
 
-Speech, stories, song, play, and performance can provide recreation and circulate remembered material when willing people and an occasion exist. Leisure competes with work, care, travel, light, and fatigue; retelling can vary with performer and audience. These are not claims about a named tradition, historical fact, current gathering, instrument, or participant.
+Wooden or bone toys can support children’s play and imitation of work; a board or marked game can offer shared recreation. Song, dance, and storytelling permit different forms and participants; work, care, travel, light, and fatigue limit attendance. Oral stories can mix memory, entertainment, and local news without making each detail true. These are not claims about a named tradition, historical fact, current gathering, instrument, or participant.

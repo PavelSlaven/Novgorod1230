@@ -27,7 +27,7 @@
       "anchor": {
         "section": "Clothing and work"
       },
-      "note": "Editorial reconstruction: Linen and wool, footwear, layers and protective garments are useful ordinary possibilities, not a fixed outfit, wealth level or person.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     },
     {
@@ -37,7 +37,7 @@
       "anchor": {
         "section": "Smith and forge"
       },
-      "note": "Editorial reconstruction: Forge, bellows, anvil, hammer, tongs, iron, fuel and residues form a plausible connected work context; no workshop, stock or job is materialized.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     },
     {
@@ -47,7 +47,7 @@
       "anchor": {
         "section": "Other trades"
       },
-      "note": "Editorial reconstruction: Carpenter, weaver and fisher work use distinct tools, materials and places. Examples do not close occupations.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     },
     {
@@ -57,7 +57,7 @@
       "anchor": {
         "section": "Household and means"
       },
-      "note": "Editorial reconstruction: Shelter, heat, storage, food work, repair and provisioning compete for household means; dwelling, possessions and kin remain state-owned.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     },
     {
@@ -67,7 +67,7 @@
       "anchor": {
         "section": "Status, learning and public conduct"
       },
-      "note": "Editorial reconstruction: Master, worker and learner can have different means, duties and standing. Expectations are contextual, not fixed caste, pay or reaction.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     },
     {
@@ -77,7 +77,7 @@
       "anchor": {
         "section": "Public and private relations"
       },
-      "note": "Editorial reconstruction: Reputation, audience, trust and resources can shape conduct, hospitality and reciprocity without creating a scene fact.",
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
       "review_status": "approved"
     }
   ],
@@ -119,7 +119,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "ordinary clothing can use linen or wool, with material and layers chosen for season, work and means"
+        "value": "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means"
       },
       "polarity": "support",
       "applicability": {
@@ -159,7 +159,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "working clothes can balance movement with protection from dirt, weather, sparks or rough material"
+        "value": "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material"
       },
       "polarity": "support",
       "applicability": {
@@ -199,7 +199,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "footwear can be maintained or selected for wet ground, cold, walking and task hazards"
+        "value": "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use"
       },
       "polarity": "support",
       "applicability": {
@@ -239,7 +239,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "an apron or other outer layer can protect main clothing during repeatedly dirty work"
+        "value": "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work"
       },
       "polarity": "support",
       "applicability": {
@@ -519,7 +519,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a carpenter can work timber with marking and cutting or shaping tools, leaving shavings and offcuts"
+        "value": "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts"
       },
       "polarity": "support",
       "applicability": {
@@ -559,7 +559,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "weaving can depend on yarn, a loom or warp setup, space and uninterrupted time"
+        "value": "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed"
       },
       "polarity": "support",
       "applicability": {
@@ -599,7 +599,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "fishing can require water access and gear such as nets, lines, traps or a boat"
+        "value": "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means"
       },
       "polarity": "support",
       "applicability": {
@@ -639,7 +639,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a craft worker's means can vary with orders, season, material costs and household obligations"
+        "value": "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations"
       },
       "polarity": "support",
       "applicability": {
@@ -1101,72 +1101,72 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-linen-wool-clothing",
       "locale": "ru",
-      "runtime_text": "Обычная одежда может быть льняной или шерстяной; материал и слои зависят от сезона, работы и средств.",
+      "runtime_text": "Обычная одежда может включать льняную рубаху и шерстяной верх; материал и слои зависят от сезона, работы и средств.",
       "search_aliases": [
-        "Обычная одежда может быть льняной или шерстяной; материал и слои зависят от сезона, работы и средств."
+        "Обычная одежда может включать льняную рубаху и шерстяной верх; материал и слои зависят от сезона, работы и средств."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-linen-wool-clothing",
       "locale": "en",
-      "runtime_text": "ordinary clothing can use linen or wool, with material and layers chosen for season, work and means",
+      "runtime_text": "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means",
       "search_aliases": [
-        "ordinary clothing can use linen or wool, with material and layers chosen for season, work and means"
+        "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-work-clothes-protect-and-move",
       "locale": "ru",
-      "runtime_text": "Рабочая одежда может сочетать подвижность с защитой от грязи, погоды, искр и грубого материала.",
+      "runtime_text": "Пояс может собрать рабочую одежду для движения; в холод добавляют слои, а одежда защищает от грязи, погоды, искр и грубого материала.",
       "search_aliases": [
-        "Рабочая одежда может сочетать подвижность с защитой от грязи, погоды, искр и грубого материала."
+        "Пояс может собрать рабочую одежду для движения; в холод добавляют слои, а одежда защищает от грязи, погоды, искр и грубого материала."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-work-clothes-protect-and-move",
       "locale": "en",
-      "runtime_text": "working clothes can balance movement with protection from dirt, weather, sparks or rough material",
+      "runtime_text": "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material",
       "search_aliases": [
-        "working clothes can balance movement with protection from dirt, weather, sparks or rough material"
+        "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-shoes-protect-feet",
       "locale": "ru",
-      "runtime_text": "Обувь выбирают и чинят с учётом сырости, холода, ходьбы и опасностей работы.",
+      "runtime_text": "Кожаную обувь можно чинить и сушить после сырости; очень горячее место ей вредит.",
       "search_aliases": [
-        "Обувь выбирают и чинят с учётом сырости, холода, ходьбы и опасностей работы."
+        "Кожаную обувь можно чинить и сушить после сырости; очень горячее место ей вредит."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-shoes-protect-feet",
       "locale": "en",
-      "runtime_text": "footwear can be maintained or selected for wet ground, cold, walking and task hazards",
+      "runtime_text": "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use",
       "search_aliases": [
-        "footwear can be maintained or selected for wet ground, cold, walking and task hazards"
+        "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-apron-when-work-warrants",
       "locale": "ru",
-      "runtime_text": "Передник или иной верхний слой может защищать основную одежду при грязной работе.",
+      "runtime_text": "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни.",
       "search_aliases": [
-        "Передник или иной верхний слой может защищать основную одежду при грязной работе."
+        "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-apron-when-work-warrants",
       "locale": "en",
-      "runtime_text": "an apron or other outer layer can protect main clothing during repeatedly dirty work",
+      "runtime_text": "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work",
       "search_aliases": [
-        "an apron or other outer layer can protect main clothing during repeatedly dirty work"
+        "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work"
       ]
     },
     {
@@ -1209,9 +1209,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
       "locale": "ru",
-      "runtime_text": "Кузнец может применять наковальню, молот и клещи для удерживания и формовки нагретого железа.",
+      "runtime_text": "Кузнец может применять наковальню, молот и клещи для формовки нагретого железа.",
       "search_aliases": [
-        "Кузнец может применять наковальню, молот и клещи для удерживания и формовки нагретого железа."
+        "Кузнец может применять наковальню, молот и клещи для формовки нагретого железа."
       ]
     },
     {
@@ -1227,9 +1227,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
       "locale": "ru",
-      "runtime_text": "Запас железа и топлива может ограничить или задержать текущий кузнечный заказ.",
+      "runtime_text": "Запас железа и топлива может ограничить или задержать заказ кузнеца.",
       "search_aliases": [
-        "Запас железа и топлива может ограничить или задержать текущий кузнечный заказ."
+        "Запас железа и топлива может ограничить или задержать заказ кузнеца."
       ]
     },
     {
@@ -1245,9 +1245,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
       "locale": "ru",
-      "runtime_text": "Кузнечная работа может оставлять окалину, золу, остатки угля и мелкие обрезки железа.",
+      "runtime_text": "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа.",
       "search_aliases": [
-        "Кузнечная работа может оставлять окалину, золу, остатки угля и мелкие обрезки железа."
+        "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа."
       ]
     },
     {
@@ -1263,9 +1263,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
       "locale": "ru",
-      "runtime_text": "Кузне нужен участок, где можно управлять жаром, дымом, топливом и пожарным риском.",
+      "runtime_text": "Кузне нужен участок для управления жаром, дымом, топливом и пожарным риском.",
       "search_aliases": [
-        "Кузне нужен участок, где можно управлять жаром, дымом, топливом и пожарным риском."
+        "Кузне нужен участок для управления жаром, дымом, топливом и пожарным риском."
       ]
     },
     {
@@ -1281,72 +1281,72 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
       "locale": "ru",
-      "runtime_text": "Плотник может работать с древесиной разметочным и режущим либо формующим инструментом; остаются стружка и обрезки.",
+      "runtime_text": "Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки.",
       "search_aliases": [
-        "Плотник может работать с древесиной разметочным и режущим либо формующим инструментом; остаются стружка и обрезки."
+        "Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
       "locale": "en",
-      "runtime_text": "a carpenter can work timber with marking and cutting or shaping tools, leaving shavings and offcuts",
+      "runtime_text": "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts",
       "search_aliases": [
-        "a carpenter can work timber with marking and cutting or shaping tools, leaving shavings and offcuts"
+        "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
       "locale": "ru",
-      "runtime_text": "Ткачество может требовать пряжи, ткацкого устройства, места и непрерывного времени.",
+      "runtime_text": "Ткачество требует пряжи и устройства, держащего основу под натяжением, пока уток переплетается; работу можно прервать и продолжить.",
       "search_aliases": [
-        "Ткачество может требовать пряжи, ткацкого устройства, места и непрерывного времени."
+        "Ткачество требует пряжи и устройства, держащего основу под натяжением, пока уток переплетается; работу можно прервать и продолжить."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
       "locale": "en",
-      "runtime_text": "weaving can depend on yarn, a loom or warp setup, space and uninterrupted time",
+      "runtime_text": "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed",
       "search_aliases": [
-        "weaving can depend on yarn, a loom or warp setup, space and uninterrupted time"
+        "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
       "locale": "ru",
-      "runtime_text": "Рыболовство может требовать доступа к воде и снастей: сетей, лес, ловушек или лодки.",
+      "runtime_text": "Рыболовству могут быть нужны вода и рациональный набор снастей: сеть с поплавками и грузилами, леса, верша или лодка.",
       "search_aliases": [
-        "Рыболовство может требовать доступа к воде и снастей: сетей, лес, ловушек или лодки."
+        "Рыболовству могут быть нужны вода и рациональный набор снастей: сеть с поплавками и грузилами, леса, верша или лодка."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
       "locale": "en",
-      "runtime_text": "fishing can require water access and gear such as nets, lines, traps or a boat",
+      "runtime_text": "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means",
       "search_aliases": [
-        "fishing can require water access and gear such as nets, lines, traps or a boat"
+        "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
       "locale": "ru",
-      "runtime_text": "Средства ремесленника могут меняться из-за заказов, сезона, цены материала и домашних обязанностей.",
+      "runtime_text": "Заказы мастера могут состоять из починки и новых инструментов; оплата или обмен и средства ремесленника зависят от обстоятельств.",
       "search_aliases": [
-        "Средства ремесленника могут меняться из-за заказов, сезона, цены материала и домашних обязанностей."
+        "Заказы мастера могут состоять из починки и новых инструментов; оплата или обмен и средства ремесленника зависят от обстоятельств."
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
       "locale": "en",
-      "runtime_text": "a craft worker's means can vary with orders, season, material costs and household obligations",
+      "runtime_text": "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations",
       "search_aliases": [
-        "a craft worker's means can vary with orders, season, material costs and household obligations"
+        "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations"
       ]
     },
     {
@@ -1371,9 +1371,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
       "locale": "ru",
-      "runtime_text": "Починка одежды, инструмента и жилья может быть важнее приобретения новой вещи.",
+      "runtime_text": "Починка одежды, инструмента и жилья может быть важнее новой вещи.",
       "search_aliases": [
-        "Починка одежды, инструмента и жилья может быть важнее приобретения новой вещи."
+        "Починка одежды, инструмента и жилья может быть важнее новой вещи."
       ]
     },
     {
@@ -1407,9 +1407,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-worker-means-and-duty-vary",
       "locale": "ru",
-      "runtime_text": "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом; обращение зависит от контекста.",
+      "runtime_text": "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом.",
       "search_aliases": [
-        "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом; обращение зависит от контекста."
+        "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом."
       ]
     },
     {
@@ -1425,9 +1425,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-apprentice-learns-and-assists",
       "locale": "ru",
-      "runtime_text": "Ученик может сочетать обучение с обычной помощью и зависеть от дома или мастерской.",
+      "runtime_text": "Ученик может сочетать обучение с помощью и зависеть от дома или мастерской.",
       "search_aliases": [
-        "Ученик может сочетать обучение с обычной помощью и зависеть от дома или мастерской."
+        "Ученик может сочетать обучение с помощью и зависеть от дома или мастерской."
       ]
     },
     {
@@ -1443,9 +1443,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-status-does-not-fix-wealth",
       "locale": "ru",
-      "runtime_text": "Занятие или статус могут влиять на ожидания, но не доказывают нынешнее богатство, запас или влияние.",
+      "runtime_text": "Занятие или статус влияют на ожидания, но не доказывают богатство, запас или влияние.",
       "search_aliases": [
-        "Занятие или статус могут влиять на ожидания, но не доказывают нынешнее богатство, запас или влияние."
+        "Занятие или статус влияют на ожидания, но не доказывают богатство, запас или влияние."
       ]
     },
     {
@@ -1461,9 +1461,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-public-reputation-follows-conduct",
       "locale": "ru",
-      "runtime_text": "Видимое поведение, надёжность и рассказы других могут влиять на публичную репутацию, но эффект контекстен.",
+      "runtime_text": "Видимое поведение, надёжность и рассказы других могут влиять на репутацию.",
       "search_aliases": [
-        "Видимое поведение, надёжность и рассказы других могут влиять на публичную репутацию, но эффект контекстен."
+        "Видимое поведение, надёжность и рассказы других могут влиять на репутацию."
       ]
     },
     {
@@ -1515,9 +1515,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-help-can-create-reciprocity",
       "locale": "ru",
-      "runtime_text": "Помощь может породить благодарность, переговоры или ожидание взаимности, но не гарантированный долг.",
+      "runtime_text": "Помощь может породить благодарность, переговоры или ожидание взаимности, но не долг.",
       "search_aliases": [
-        "Помощь может породить благодарность, переговоры или ожидание взаимности, но не гарантированный долг."
+        "Помощь может породить благодарность, переговоры или ожидание взаимности, но не долг."
       ]
     },
     {
@@ -1533,9 +1533,9 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:ordinary-life-private-needs-shape-decisions",
       "locale": "ru",
-      "runtime_text": "Частные нужды — уход, еда, отдых, починка или домашняя обязанность — могут объяснять выбор без публичного доказательства.",
+      "runtime_text": "Частные нужды могут объяснять выбор без публичного доказательства.",
       "search_aliases": [
-        "Частные нужды — уход, еда, отдых, починка или домашняя обязанность — могут объяснять выбор без публичного доказательства."
+        "Частные нужды могут объяснять выбор без публичного доказательства."
       ]
     },
     {
@@ -1549,4 +1549,3 @@
     }
   ]
 }
-

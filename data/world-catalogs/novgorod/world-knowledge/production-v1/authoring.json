@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "place-milk-dye-processes-v1.json",
+    "verification-place-milk-dye-processes-v1.json",
+    "place-orchard-peat-processes-v1.json",
+    "verification-place-orchard-peat-processes-v1.json",
     "place-thermal-processes-v1.json",
     "verification-place-thermal-processes-v1.json",
     "place-wet-food-processes-v1.json",

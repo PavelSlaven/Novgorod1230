@@ -217,13 +217,14 @@
           ],
           "claim_refs": [
             "claim:research-flood-can-leave-high-water-mark-types",
-            "claim:place-outdoors-activity-sensory-pulses"
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:foundations-earth-27-fog-visibility",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "След не доказывает конкретное судно или лицо.",
-          "residual_needs": [
-            "Связь обычной швартовки и береговой работы с мокрыми следами, звуком, запахом и их смывом."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "waterfront_risks",
@@ -666,13 +667,12 @@
             "claim:population-river-work",
             "claim:place-outdoors-shore-working-edge-composition",
             "claim:place-outdoors-microterrain-patches",
-            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+            "claim:place-outdoors-clearing-and-trace-renewal"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Не создавать постоянную стоянку без causal basis.",
-          "residual_needs": [
-            "Связь обычного берегового пользования с остаточными следами, смываемыми водой."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "lake_hazards",
@@ -782,13 +782,15 @@
           ],
           "claim_refs": [
             "claim:household-scythe-cutting",
-            "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
+            "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+            "claim:practical-fodder-hay",
+            "claim:food-drying-depends-on-humidity-airflow",
+            "claim:population-physics-evaporation-humidity",
+            "claim:place-outdoors-microterrain-patches"
           ],
-          "coverage": "partial",
+          "coverage": "supported",
           "limits": "Не считать сенокос уже проведённым.",
-          "residual_needs": [
-            "Связь скошенной травы, росы, осадков и воздушного движения с сушкой сена."
-          ]
+          "residual_needs": []
         },
         {
           "facet": "workers_means_and_carrying",
@@ -1209,7 +1211,8 @@
           "claim_refs": [
             "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
             "claim:fauna-dragonfly-foodweb",
-            "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia"
+            "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
+            "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying"
           ],
           "coverage": "partial",
           "limits": "No taxon or resource presence.",
@@ -2549,7 +2552,10 @@
           ],
           "claim_refs": [
             "claim:static-root-loss-can-cause-transplant-shock",
-            "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"
+            "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+            "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+            "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+            "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
           ],
           "coverage": "supported",
           "limits": "Не фиксировать культуры или урожай.",
@@ -2714,12 +2720,17 @@
           ],
           "claim_refs": [
             "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-            "claim:research-extreme-cold-can-cause-cold-stress"
+            "claim:research-extreme-cold-can-cause-cold-stress",
+            "claim:residual-nature-snow-wind-drift-visibility",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:residual-nature-twilight-solar-afterglow",
+            "claim:sound-wind-temperature-gradients-refract"
           ],
           "coverage": "partial",
           "limits": "Метель, свет и конкретные следы — scene state.",
           "residual_needs": [
-            "Общая связь снежного покрова с видимостью и сохранностью или заносом следов."
+            "P2: qualitative snow-surface sound and visible cold-breath cues beyond the supported drift, visibility, twilight and trace-overwrite relations; no exact temperature or scene observation required."
           ]
         },
         {
@@ -2914,18 +2925,19 @@
         },
         {
           "facet": "warmth_damp_and_weather_enclosure",
-          "coverage": "partial",
+          "coverage": "supported",
           "claim_refs": [
             "claim:practical-dwelling-rain-snow",
             "claim:household-roof-layers-shed-water",
             "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
             "claim:research-increased-ventilation-can-help-reduce-condensation",
             "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
-            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+            "claim:foundations-mat-12-material-thermal-insulation-porosity",
+            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+            "claim:place-outdoors-means-upkeep-and-environment"
           ],
-          "residual_needs": [
-            "Qualitative relation among wall/floor moisture, drafts, bedding and ordinary indoor comfort; no fixed room-type or comfort threshold is needed."
-          ],
+          "residual_needs": [],
           "limits": "No actual leak, roof condition, room temperature, bedding state or successful repair follows.",
           "needs": [
             "Как крыша, стены, пол, щели, влажные вещи и уход влияют на укрытие от холода и сырости?"
@@ -2943,7 +2955,10 @@
             "claim:place-outdoors-season-work-space-reallocation",
             "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
             "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
-            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+            "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+            "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+            "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"
           ],
           "residual_needs": [],
           "limits": "No family, guest, bed, privacy norm, available space or duty is materialized.",
@@ -2953,16 +2968,14 @@
         },
         {
           "facet": "household_biota_food_and_storage",
-          "coverage": "partial",
+          "coverage": "supported",
           "claim_refs": [
             "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
             "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
             "claim:food-drying-depends-on-humidity-airflow",
             "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
           ],
-          "residual_needs": [
-            "Other ordinary indoor insects and their seasonal relation to food, bedding and refuse; this is a factual need, not a guarantee of infestation."
-          ],
+          "residual_needs": [],
           "limits": "No rodent, food stock, contamination, disease, cleanliness or successful exclusion is inferred.",
           "needs": [
             "Какие условия пищи, подстилки, щелей, влажности и уборки привлекают либо ограничивают обычную домашнюю биоту?"
@@ -3125,7 +3138,10 @@
             "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
             "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
             "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
-            "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions"
+            "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+            "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+            "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+            "claim:place-dye-moving-submerged-textile-can-support-even-contact"
           ],
           "coverage": "supported",
           "residual_needs": [],

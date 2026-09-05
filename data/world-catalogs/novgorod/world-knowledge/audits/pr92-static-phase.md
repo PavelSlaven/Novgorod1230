@@ -8,11 +8,11 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,374 approved claims, 889 concepts,
-491 sources and 985 evidence records**. This includes 150 independently
-reviewed premises using editorial-reconstruction sources; 158 claims have
+The integrated corpus contains **1,384 approved claims, 895 concepts,
+498 sources and 996 evidence records**. This includes 151 independently
+reviewed premises using editorial-reconstruction sources; 161 claims have
 editorial directness overall, including editorial composition of external sources.
-Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
+Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
 validate against the full assembled authoring input. No new approval system
 or runtime owner was introduced.
@@ -28,21 +28,22 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,526 x 1,024 float32 entries (18,538,496 bytes)** and
+package contains **4,558 x 1,024 float32 entries (18,669,568 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,374-claim corpus
+## Checks actually completed on the 1,384-claim corpus
 
-- Compiler: all 1,374 claims and independent approval bindings validate.
+- Compiler: all 1,384 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
-  **86/86 pass** across the generation sequence: 85 passed initially; the
-  vector-alignment check was rerun successfully after vector generation.
+  **95/95 pass**: 47 authoring/runtime/foundation/fauna/cartography checks,
+  then 48 population checks after vector generation, including exact
+  candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **302-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996137**,
-  Recall@20 **0.997792**, gate PASS.
+- **312-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996261**,
+  Recall@20 **0.997863**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -62,7 +63,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`a680ccbcafbf767b6dbe952c978a45c877dfe5df` (run 33962798929).
+`84acd1209b6eceeb192eb578630d990862e22da2` (run 33964861611).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -82,8 +83,9 @@ checkpoint push, not reported green. The B10 candidate checkpoint
 `f164358f3b451d4d03904f0e41ee0fc1f616215f` had run 33959027728 cancelled by a later push.
 The 1,330-claim integration passed its focused checks; run 33959687474
 was cancelled, not green. The 1,365-claim place-first integration passed
-full CI at a680ccbc. The 1,374-claim integration passes the local checks
-above, but its final exact-HEAD CI is still required; an earlier green checkpoint does not certify a later
+full CI at a680ccbc. The 1,374-claim integration passed full CI at 84acd120.
+The 1,384-claim integration passes the local checks above; its exact-HEAD CI
+is tracked separately on the PR. An earlier green checkpoint does not certify a later
 candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
@@ -320,13 +322,21 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-104 bounded supported and 63 partial on the 1,374-claim corpus.
+109 bounded supported and 58 partial on the 1,384-claim corpus.
 Twelve stale residuals were resolved against existing full-text premises
 and independently checked by /root/place_scene_b; the drying/heat facet
 now links the separately approved process premises. Partial facets retain
 specific remaining relations; an approved link alone did not close them.
 These are provisional mapping assessments, not a place-completeness verdict.
 The map remains open to new families and cross-place composition.
+
+A subsequent independent full-text review by `/root/place02_publish`
+confirmed five more bounded closures using existing premises: wharf work
+signals, lake-shore use/traces, hay drying, dwelling warmth/damp and indoor
+biota. It rejected closing the whole winter-perception facet: drift,
+visibility, twilight and overwritten tracks are linked, but qualitative
+snow-surface sound and visible cold-breath cues remain a narrow P2 need.
+No new claim, exact threshold or scene state was invented for these closures.
 
 The independent content review found that a courtyard does not cover a
 dwelling interior, and a churchyard does not cover an interior. Root also
@@ -409,3 +419,42 @@ hypothetical input props from historical prevalence. Counts do not excuse
 unsupported scene statements. This second hundred is diagnostic: new
 substantial leads leave the clean unseen streak at **0/3**. No live gameplay
 or gameplay-owner repair was performed.
+
+## Orchard, peat, milk and dye follow-up
+
+Ten useful process premises were independently approved by
+`/root/place02_publish`: six milk/dye claims frozen at
+`5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c`, and four orchard/peat claims at
+`355305bb4707f744e7e9e1a51777ae506c88c6a6`. Authors were
+`/root/place03_milk_dye` and `/root/place03_plants_peat`, with root editorial
+integration. Existing verification notes and bindings record source access,
+qualifiers and limits; the peat reviewer read the official indexed USGS
+excerpt after the full PDF fetch failed. No additional approval mechanism
+was introduced.
+
+The additions explain acid/enzyme curd formation, curd–whey separation and
+permeable straining; preparation, bath-to-fibre transfer and distributed
+contact in dyeing; branch-collar protection, conditional pruning windows
+and staged canopy renovation; and exposing already-cut peat by turning or
+loose stacking during drying. Tautological state/weather claims and a
+duplicate cooling disclaimer were removed before candidate freeze.
+The material and process qualifiers do not establish a local peat industry,
+a medieval chemical recipe, a universal seasonal calendar or a safe outcome.
+
+Independent WK-only known-case replay by `/root/place02_scene_a` found the
+four retained batch-02 needs composable on the 1,384-claim bundle:
+006 uses the three orchard premises; 015 combines the peat-drying premise
+with hydric-soil and wet-ground trafficability; 024 composes the three milk
+premises; 055 combines dye application with transfer, preparation and
+distributed contact. The original 96/4 unseen results are unchanged.
+This is regression evidence, not another unseen hundred: the streak stays 0/3.
+
+Two new independent generators prepared `place-batch-03-core.json` (75:
+60 practical, 15 social) and `place-batch-03-free.json` (25 blind free).
+Inputs are committed with this integration before WK-only review.
+Before freeze, axis validation caught nested core fields and insufficient
+means/wealth detail; the original generators completed those fields without
+reading WK or changing situations to match answers. Core strata have 75
+open labels, 12 overlapping the preceding core's labels; labels are not a
+completeness measure. The free set remains unclassified and all 100 answers
+remain pending. No clean acceptance result is claimed for these inputs.

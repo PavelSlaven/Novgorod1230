@@ -298,6 +298,8 @@
     }
   ],
   "source_inventory": [
+    {"id":"place-milk-dye-processes-v1","source_path":"place-milk-dye-processes-v1.json","domains":["chemistry_process","craft_technology"],"location_applicability":"Universal bounded process relations or explicit Novgorod 1200–1300 editorial reconstruction; no local industry or scene presence.","applicability":{"resource":"already established material only","material":"milk, textile, living tree or cut peat as applicable","process":"qualitative transformation, care and drying","npc":"work context, not competence or outcome"},"coverage":"6 independently reviewed process premises; not completeness."},
+    {"id":"place-orchard-peat-processes-v1","source_path":"place-orchard-peat-processes-v1.json","domains":["biology_physiology","craft_technology"],"location_applicability":"Universal bounded process relations or explicit Novgorod 1200–1300 editorial reconstruction; no local industry or scene presence.","applicability":{"resource":"already established material only","material":"milk, textile, living tree or cut peat as applicable","process":"qualitative transformation, care and drying","npc":"work context, not competence or outcome"},"coverage":"4 independently reviewed process premises; not completeness."},
     {"id":"place-thermal-processes-v1","source_path":"place-thermal-processes-v1.json","domains":["craft_technology"],"location_applicability":"Universal process premises or explicitly qualified Novgorod reconstruction; no current worksite, resource or outcome.","applicability":{"resource":"existing contextual source only","material":"hide, fish, bark and grain when established","process":"wet-work separation, preservation and controlled heating","npc":"work options, not guaranteed competence or decisions"},"coverage":"4 bounded process premises; not environmental completeness."},
     {"id":"place-wet-food-processes-v1","source_path":"place-wet-food-processes-v1.json","domains":["architecture_settlement","biology_physiology","chemistry_process"],"location_applicability":"Universal process premises or explicitly qualified Novgorod reconstruction; no current worksite, resource or outcome.","applicability":{"resource":"existing contextual source only","material":"hide, fish, bark and grain when established","process":"wet-work separation, preservation and controlled heating","npc":"work options, not guaranteed competence or decisions"},"coverage":"5 bounded process premises; not environmental completeness."},
     {"id":"reconstructed-place-outdoors-v1","source_path":"reconstructed-place-outdoors-v1.json","domains":["environment"],"location_applicability":"Potential place-first environments; no actual place, inhabitants, objects or conditions created.","applicability":{"resource":"existing contextual source only","material":"conditional environmental composition","process":"ordinary work, perception and maintenance","npc":"qualitative options, not decisions or authority"},"coverage":"10 independently reviewed editorial premises; not local attestation or environmental completeness."},
@@ -1555,8 +1557,8 @@
     {"id":"reconstructed-net-drying-and-repair","domain":"craft_technology","subdomain":"ordinary_fishing_gear_maintenance","family":"Net drying, repair and workspace context","location_applicability":"Fishing and drying workspaces when gear is separately established","applicability":{"resource":"time and drying conditions only when established","material":"net and repair means only when present","process":"qualitative maintenance","npc":"fishing-work context only"},"coverage":"partial: no net, damage, repair result, timer or workspace state.","claim_refs":["claim:practical-net-dry","claim:practical-net-repair","claim:practical-net-space"]},
     {"id":"reconstructed-dwelling-upkeep","domain":"architecture_settlement","subdomain":"ordinary_dwelling_maintenance","family":"Roof, weather, smoke, draft and fuel upkeep context","location_applicability":"Dwellings only when separately established","applicability":{"resource":"fuel only when present","material":"roof and dwelling fabric","process":"qualitative upkeep and heating","npc":"household context only"},"coverage":"partial: no dwelling, weather state, smoke state, fuel stock or repair result.","claim_refs":["claim:practical-dwelling-roof","claim:practical-dwelling-rain-snow","claim:practical-dwelling-smoke-draft","claim:practical-dwelling-fuel","claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually","claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"]},
     {"id":"reconstructed-food-provisioning-and-animal-care","domain":"npc_daily_life","subdomain":"ordinary_food_and_animal_care","family":"Provisions, fodder, livestock care and seasonal work context","location_applicability":"Household, farm and travel contexts when resources and actors are established","applicability":{"resource":"food, fodder and animals only when present","material":"provisions and care equipment only when present","process":"feeding, care and seasonal work context","npc":"non-deterministic household routine context"},"coverage":"partial: no stock, animal, season, schedule, care action or outcome.","claim_refs":["claim:practical-food-provisions","claim:practical-fodder-hay","claim:practical-livestock-care","claim:practical-season-work","claim:practical-work-tradeoff","claim:place-outdoors-season-work-space-reallocation"]},
-    {"id":"reconstructed-food-handling","domain":"craft_technology","subdomain":"ordinary_food_handling","family":"Milk, preservation, cooking and grain-storage context","location_applicability":"Household, storage and cooking contexts when food and facilities are established","applicability":{"resource":"food and fuel only when present","material":"provisions and storage only when present","process":"qualitative cooking and preservation","npc":"household-work context only"},"coverage":"partial: no food, spoilage, fuel, storage condition or output.","claim_refs":["claim:practical-food-milk","claim:practical-food-preserve","claim:practical-food-cooking","claim:practical-food-grain-storage"]},
-    {"id":"reconstructed-textile-and-leather-repair","domain":"craft_technology","subdomain":"ordinary_textile_and_leather_work","family":"Spinning, weaving, cutting, sewing and leather repair context","location_applicability":"Household and workshop contexts when materials and tools are established","applicability":{"resource":"fibre and leather only when present","material":"textiles, leather and footwear","process":"qualitative making and repair","npc":"craft-role context only"},"coverage":"partial: no tool, material, item, repair result or recipe admission.","claim_refs":["claim:practical-textile-spin","claim:practical-textile-weave","claim:practical-textile-cut","claim:practical-textile-sew","claim:practical-textile-repair","claim:practical-leather-cut","claim:practical-leather-stitch","claim:practical-leather-patch","claim:practical-leather-shoe"]},
+    {"id":"reconstructed-food-handling","domain":"craft_technology","subdomain":"ordinary_food_handling","family":"Milk, preservation, cooking and grain-storage context","location_applicability":"Household, storage and cooking contexts when food and facilities are established","applicability":{"resource":"food and fuel only when present","material":"provisions and storage only when present","process":"qualitative cooking and preservation","npc":"household-work context only"},"coverage":"partial: no food, spoilage, fuel, storage condition or output.","claim_refs":["claim:practical-food-milk","claim:practical-food-preserve","claim:practical-food-cooking","claim:practical-food-grain-storage","claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"]},
+    {"id":"reconstructed-textile-and-leather-repair","domain":"craft_technology","subdomain":"ordinary_textile_and_leather_work","family":"Spinning, weaving, dyeing, cutting, sewing and leather repair context","location_applicability":"Household and workshop contexts when materials and tools are established","applicability":{"resource":"fibre and leather only when present","material":"textiles, leather and footwear","process":"qualitative making and repair","npc":"craft-role context only"},"coverage":"partial: no tool, material, item, repair result or recipe admission.","claim_refs":["claim:practical-textile-spin","claim:practical-textile-weave","claim:practical-textile-cut","claim:practical-textile-sew","claim:practical-textile-repair","claim:practical-leather-cut","claim:practical-leather-stitch","claim:practical-leather-patch","claim:practical-leather-shoe","claim:place-dye-moving-submerged-textile-can-support-even-contact"]},
     {
       "id": "biology-animal-body-condition-and-insulation",
       "domain": "biology_physiology",
@@ -1844,7 +1846,10 @@
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:foundations-life-40-photosynthesis",
-        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
+        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+        "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+        "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
       ]
     },
     {
@@ -2346,7 +2351,7 @@
       "id": "craft-rural-processing",
       "domain": "craft_technology",
       "subdomain": "rural_processing",
-      "family": "grain_cleaning_hunting_terminology_and_tree_beekeeping",
+      "family": "grain_cleaning_hunting_tree_beekeeping_and_cut_peat_drying",
       "location_applicability": "field, woodland hunting ground or tree-bort setting",
       "applicability": {
         "resource": "partial",
@@ -2365,7 +2370,8 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
-        "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
+        "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+        "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying"
       ]
     },
     {
@@ -3837,7 +3843,9 @@
         "claim:food-preservation-qualitative",
         "claim:fermentation-conditions",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
-        "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
+        "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+        "claim:place-milk-fresh-curd-can-progressively-separate-from-whey"
       ]
     },
     {
@@ -3907,7 +3915,9 @@
         "claim:textile-dye-mordant-fixation",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:vegetable-tanning-prepared-hide",
-        "claim:vegetable-tanning-collagen-stabilization"
+        "claim:vegetable-tanning-collagen-stabilization",
+        "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions"
       ]
     },
     {
@@ -7267,6 +7277,8 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"place-milk-dye-processes-v1.json","claim_count":6,"family_refs":["process-food-preservation-and-fermentation","reconstructed-food-handling","process-textile-dye-and-collagen-tanning","reconstructed-textile-and-leather-repair"],"location_refs":["potential:household","potential:workshop","potential:orchard","potential:peat_worksite"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No recipe, fixed calendar, historic industry, stock, safe threshold or guaranteed result."},
+      {"source_path":"place-orchard-peat-processes-v1.json","claim_count":4,"family_refs":["biology-plant-growth-and-physiology","craft-rural-processing"],"location_refs":["potential:household","potential:workshop","potential:orchard","potential:peat_worksite"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No recipe, fixed calendar, historic industry, stock, safe threshold or guaranteed result."},
       {"source_path":"place-thermal-processes-v1.json","claim_count":4,"family_refs":["craft-material-classes","craft-rural-processing"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern process evidence and explicit analogy/editorial reconstruction; no historical local attestation or current scene state."},
       {"source_path":"place-wet-food-processes-v1.json","claim_count":5,"family_refs":["biology-skin-fur-and-hide-preservation","built-river-workspace","process-food-preservation-and-fermentation"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Modern process evidence and explicit analogy/editorial reconstruction; no historical local attestation or current scene state."},
       {"source_path":"reconstructed-place-outdoors-v1.json","claim_count":10,"family_refs":["environment-historical-landscape","environment-celestial-light-and-orientation","environment-terrain","residual-trace-primitives","reconstructed-household-space-and-maintenance","reconstructed-food-provisioning-and-animal-care","built-landing-and-shore","built-public-civic-space","environment-plant-resources"],"location_refs":["potential:place-first-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Editorial reconstruction, not whole-environment acceptance; remaining needs are in place-first-cartography.json."},

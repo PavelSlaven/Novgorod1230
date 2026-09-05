@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,374-claim corpus. The later direct-attestation-only residual
+current 1,384-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -157,13 +157,21 @@ whitelist or a second materializer. A blind author first mapped 37 settings;
 independent/root review added dwelling and church interiors, an ordinary
 workshop and a grain-drying shed distinct from the threshing floor.
 The present map has **41 environmental families and 167 facets**:
-104 bounded supported and 63 partial on the 1,374-claim corpus.
+109 bounded supported and 58 partial on the 1,384-claim corpus.
 Twelve stale residuals were resolved against existing full-text premises
 and independently checked by /root/place_scene_b; the drying/heat facet
 now links the separately approved process premises. Partial facets retain
 specific remaining relations; an approved link alone did not close them.
 These are provisional mapping assessments, not a place-completeness verdict.
 The map remains open to new families and cross-place composition.
+
+A subsequent independent full-text review by `/root/place02_publish`
+confirmed five more bounded closures using existing premises: wharf work
+signals, lake-shore use/traces, hay drying, dwelling warmth/damp and indoor
+biota. It rejected closing the whole winter-perception facet: drift,
+visibility, twilight and overwritten tracks are linked, but qualitative
+snow-surface sound and visible cold-breath cues remain a narrow P2 need.
+No new claim, exact threshold or scene state was invented for these closures.
 
 The independent content review found that a courtyard does not cover a
 dwelling interior, and a churchyard does not cover an interior. Root also
@@ -246,3 +254,42 @@ hypothetical input props from historical prevalence. Counts do not excuse
 unsupported scene statements. This second hundred is diagnostic: new
 substantial leads leave the clean unseen streak at **0/3**. No live gameplay
 or gameplay-owner repair was performed.
+
+## Orchard, peat, milk and dye follow-up
+
+Ten useful process premises were independently approved by
+`/root/place02_publish`: six milk/dye claims frozen at
+`5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c`, and four orchard/peat claims at
+`355305bb4707f744e7e9e1a51777ae506c88c6a6`. Authors were
+`/root/place03_milk_dye` and `/root/place03_plants_peat`, with root editorial
+integration. Existing verification notes and bindings record source access,
+qualifiers and limits; the peat reviewer read the official indexed USGS
+excerpt after the full PDF fetch failed. No additional approval mechanism
+was introduced.
+
+The additions explain acid/enzyme curd formation, curd–whey separation and
+permeable straining; preparation, bath-to-fibre transfer and distributed
+contact in dyeing; branch-collar protection, conditional pruning windows
+and staged canopy renovation; and exposing already-cut peat by turning or
+loose stacking during drying. Tautological state/weather claims and a
+duplicate cooling disclaimer were removed before candidate freeze.
+The material and process qualifiers do not establish a local peat industry,
+a medieval chemical recipe, a universal seasonal calendar or a safe outcome.
+
+Independent WK-only known-case replay by `/root/place02_scene_a` found the
+four retained batch-02 needs composable on the 1,384-claim bundle:
+006 uses the three orchard premises; 015 combines the peat-drying premise
+with hydric-soil and wet-ground trafficability; 024 composes the three milk
+premises; 055 combines dye application with transfer, preparation and
+distributed contact. The original 96/4 unseen results are unchanged.
+This is regression evidence, not another unseen hundred: the streak stays 0/3.
+
+Two new independent generators prepared `place-batch-03-core.json` (75:
+60 practical, 15 social) and `place-batch-03-free.json` (25 blind free).
+Inputs are committed with this integration before WK-only review.
+Before freeze, axis validation caught nested core fields and insufficient
+means/wealth detail; the original generators completed those fields without
+reading WK or changing situations to match answers. Core strata have 75
+open labels, 12 overlapping the preceding core's labels; labels are not a
+completeness measure. The free set remains unclassified and all 100 answers
+remain pending. No clean acceptance result is claimed for these inputs.

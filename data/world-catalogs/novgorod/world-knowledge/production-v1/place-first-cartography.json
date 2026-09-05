@@ -1,0 +1,3254 @@
+{
+  "schema": "world_knowledge_place_first_cartography_v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "purpose": "Open place-first game-need map with links to approved WK premises and explicit residual needs. A bounded supported facet is not a complete world, runtime authority, object whitelist, or proof of current presence.",
+  "sampling_axes": [
+    "place",
+    "season",
+    "weather",
+    "time_of_day",
+    "person",
+    "activity",
+    "means",
+    "maintenance"
+  ],
+  "environment_families": [
+    {
+      "id": "town_street",
+      "description": "Street between dense urban plots and public movement.",
+      "composes_with": [
+        "market_square",
+        "town_courtyard",
+        "town_wall_edge",
+        "river_wharf"
+      ],
+      "facets": [
+        {
+          "facet": "paving_and_drainage",
+          "needs": [
+            "Какие покрытия, колеи, грязь, стоки и подсыпки меняют проход пешком, верхом и с телегой?",
+            "Что дождь, оттепель и ремонт делают с твёрдостью, лужами и краями улицы?"
+          ],
+          "claim_refs": [
+            "claim:urban-pavements",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+          ],
+          "coverage": "partial",
+          "limits": "Не выводить мостовую, ширину или состояние без места и времени.",
+          "residual_needs": [
+            "Связь осадков, стока, грязи и ремонтного покрытия с проходимостью улицы."
+          ]
+        },
+        {
+          "facet": "frontage_and_traffic",
+          "needs": [
+            "Какие ворота, лавочные фасады, навесы, телеги, носильщики и животные сужают или открывают путь?",
+            "Как различаются утренняя доставка, торг, ночная тишина и праздничная толпа?"
+          ],
+          "claim_refs": [
+            "claim:settlement-cart-transport",
+            "claim:settlement-workshop-street"
+          ],
+          "coverage": "supported",
+          "limits": "Не превращать тип улицы в список обязательных построек.",
+          "residual_needs": []
+        },
+        {
+          "facet": "senses_and_traces",
+          "needs": [
+            "Какие запахи, шумы, дым, свет и линии обзора дают деятельность соседей?",
+            "Какие следы уборки, навоза, разгрузки, пожара или недавнего проезда требуют различения?"
+          ],
+          "claim_refs": [
+            "claim:work-waste-context",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные сигналы, освещение и следы принадлежат состоянию сцены; след не доказывает скрытый факт.",
+          "residual_needs": [
+            "Связь ordinary городской деятельности с шумом, запахом, дымом, освещением и обзором."
+          ]
+        },
+        {
+          "facet": "use_and_risk",
+          "needs": [
+            "Какие обычные работы, встречи, доставка и обходы возможны для ребёнка, торговца, стражи и приезжего?",
+            "Какие риски дают теснота, скользкость, пожар, лошади и плохая видимость?"
+          ],
+          "claim_refs": [
+            "claim:settlement-cart-transport",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
+          ],
+          "coverage": "supported",
+          "limits": "Не приписывать право доступа или охрану без owner/policy.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "market_square",
+      "description": "Open trading and assembly ground with changing density.",
+      "composes_with": [
+        "town_street",
+        "river_wharf",
+        "churchyard",
+        "town_courtyard"
+      ],
+      "facets": [
+        {
+          "facet": "ground_and_stalls",
+          "needs": [
+            "Как открытый грунт, настилы, временные прилавки, навесы и отходы делят площадь?",
+            "Как сезонный торг, дождь и уборка меняют проход, сухие места и нагрузку?"
+          ],
+          "claim_refs": [
+            "claim:civic-public-market",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:place-outdoors-market-activity-and-empty-intervals"
+          ],
+          "coverage": "partial",
+          "limits": "Торговые позиции и товары не materialize без causal basis.",
+          "residual_needs": [
+            "Связь открытого рыночного грунта, временных конструкций и осадков с проходом и стоком."
+          ]
+        },
+        {
+          "facet": "goods_people_animals",
+          "needs": [
+            "Какие ordinary грузы, упряжь, вьючные животные и тара нужны для правдоподобного движения товаров?",
+            "Какие отношения покупателя, продавца, посредника и возницы важны для действий без фиксированного roster?"
+          ],
+          "claim_refs": [
+            "claim:domestic-animal-context",
+            "claim:rp-market-purchase-relates-proof-participant",
+            "claim:place-outdoors-market-activity-and-empty-intervals"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать значимых продавцов или официальный товарный статус.",
+          "residual_needs": []
+        },
+        {
+          "facet": "noise_smell_visibility",
+          "needs": [
+            "Какие крики, звон, запахи пищи, шерсти, дыма и грязи меняют слышимость речи и обзор?",
+            "Что остаётся после закрытия рынка и что исчезает к следующему дню?"
+          ],
+          "claim_refs": [
+            "claim:work-waste-context",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:place-outdoors-market-activity-and-empty-intervals"
+          ],
+          "coverage": "partial",
+          "limits": "Текущий чувственный профиль и сохранность остатков принадлежат состоянию сцены; наблюдаемое не даёт знания о сделках вне восприятия.",
+          "residual_needs": [
+            "Связь торговой деятельности с шумом, запахом, дымом, светом и их затуханием."
+          ]
+        },
+        {
+          "facet": "commerce_and_hazards",
+          "needs": [
+            "Какие обычные действия: разгрузка, торг, поиск, укрытие, проход, кормление животных — требуют среды?",
+            "Какие риски дают давка, кража, спор, огонь, испорченная пища и непогода?"
+          ],
+          "claim_refs": [
+            "claim:civic-public-market",
+            "claim:domestic-animal-context",
+            "claim:place-outdoors-market-activity-and-empty-intervals"
+          ],
+          "coverage": "supported",
+          "limits": "Не моделировать право торговли или цены без отдельного owner.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "river_wharf",
+      "description": "Urban water-edge for landing, loading and waiting.",
+      "composes_with": [
+        "river_channel",
+        "town_street",
+        "ferry_landing",
+        "riverbank"
+      ],
+      "facets": [
+        {
+          "facet": "edge_and_mooring",
+          "needs": [
+            "Какие берега, сходни, сваи, настилы, канаты и глубины определяют посадку, разгрузку и падение в воду?",
+            "Как уровень воды, ледоход и ремонт меняют пригодность края?"
+          ],
+          "claim_refs": [
+            "claim:river-landing-category",
+            "claim:river-landing-surfacing-allocation",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не утверждать судоходные характеристики конкретной точки.",
+          "residual_needs": []
+        },
+        {
+          "facet": "cargo_and_labor",
+          "needs": [
+            "Какие виды тары, волочения, носилок, телег и ручного труда нужны для разных грузов?",
+            "Как различаются работа грузчика, лодочника, рыбака, покупателя и случайного прохожего?"
+          ],
+          "claim_refs": [
+            "claim:river-landing-market-approaches",
+            "claim:population-river-work",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Груз и владелец требуют существующего source.",
+          "residual_needs": []
+        },
+        {
+          "facet": "water_senses_and_marks",
+          "needs": [
+            "Какие плеск, скрип, запах тины, рыбы и смолы, туман и отражённый свет влияют на восприятие?",
+            "Какие мокрые следы, мусор, зарубки, потёртости и следы швартовки остаются?"
+          ],
+          "claim_refs": [
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "partial",
+          "limits": "След не доказывает конкретное судно или лицо.",
+          "residual_needs": [
+            "Связь обычной швартовки и береговой работы с мокрыми следами, звуком, запахом и их смывом."
+          ]
+        },
+        {
+          "facet": "waterfront_risks",
+          "needs": [
+            "Какие риски дают скользкие доски, течение, груз, ледяная вода, ночная темнота и толпа?",
+            "Какие сезонные режимы: паводок, мелководье, лёд, навигация — нужны вместо вечной статики?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не добавлять постоянный режим работы без binding.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "town_courtyard",
+      "description": "Semi-private urban yard behind or between occupied plots.",
+      "composes_with": [
+        "town_street",
+        "outbuildings",
+        "cellar_granary",
+        "bathhouse",
+        "smithy"
+      ],
+      "facets": [
+        {
+          "facet": "yard_surface_and_boundaries",
+          "needs": [
+            "Какие земля, доски, мусор, дрова, заборы, ворота и проходы формируют доступ и работу?",
+            "Как снег, дождь и расчистка меняют двор?"
+          ],
+          "claim_refs": [
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные поверхность, ограды, проходы и их состояние принадлежат сцене; граница двора не заменяет ownership/access check.",
+          "residual_needs": [
+            "Связь дворового покрытия, осадков, стока и расчистки с проходимостью."
+          ]
+        },
+        {
+          "facet": "household_life",
+          "needs": [
+            "Какие хозяйственные занятия, сушка, перенос воды, кормление, починка и хранение могут происходить?",
+            "Как различаются жильцы, гости, работники и животные в пределах одного двора?"
+          ],
+          "claim_refs": [
+            "claim:ordinary-life-household-needs-heat-food-storage",
+            "claim:domestic-animal-context",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "supported",
+          "limits": "Не выводить состав семьи или имущество автоматически.",
+          "residual_needs": []
+        },
+        {
+          "facet": "odors_sounds_traces",
+          "needs": [
+            "Какие дым, пища, навоз, зола, стук и разговоры говорят о текущей работе?",
+            "Какие следы выметания, рубки, пролива, ремонта или пребывания животных различимы?"
+          ],
+          "claim_refs": [
+            "claim:domestic-animal-context",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "partial",
+          "limits": "Не превращать бытовой след в hidden evidence.",
+          "residual_needs": [
+            "Связь ordinary household work с запахами, звуками, золой и различимыми следами."
+          ]
+        },
+        {
+          "facet": "domestic_safety",
+          "needs": [
+            "Какие опасности создают открытый огонь, ямы, скользкий лёд, агрессивные животные и теснота?",
+            "Какая upkeep: подсыпка, чистка, латание, вывоз — удерживает двор пригодным?"
+          ],
+          "claim_refs": [
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:ordinary-life-household-repairs-compete-with-new-goods"
+          ],
+          "coverage": "supported",
+          "limits": "Maintenance — вопрос состояния, не готовое событие.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "town_wall_edge",
+      "description": "Urban perimeter beside defensive earthworks, gates or open approaches.",
+      "composes_with": [
+        "town_street",
+        "road",
+        "field_margin",
+        "riverbank"
+      ],
+      "facets": [
+        {
+          "facet": "earthwork_and_approach",
+          "needs": [
+            "Какие откосы, рвы, дорожки, древесина и размывы важны для прохода и обзора?",
+            "Как дождь, промерзание и ремонт меняют устойчивость и доступ?"
+          ],
+          "claim_refs": [
+            "claim:civic-wood-earth-wall",
+            "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+          ],
+          "coverage": "supported",
+          "limits": "Не заявлять фортификационные детали конкретного города.",
+          "residual_needs": []
+        },
+        {
+          "facet": "threshold_traffic",
+          "needs": [
+            "Какие потоки людей, животных, возов и дров пересекают край в разное время?",
+            "Как различаются местный житель, путник, стража и ремонтный работник?"
+          ],
+          "claim_refs": [
+            "claim:settlement-cart-transport"
+          ],
+          "coverage": "supported",
+          "limits": "Контроль входа остаётся policy-owned.",
+          "residual_needs": []
+        },
+        {
+          "facet": "open_edge_perception",
+          "needs": [
+            "Какие ветер, пыль, запахи полей, дальний звук и линии видимости отличают край от улицы?",
+            "Какие следы прохода, выпаса, ремонта и стока читаются на грунте?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные ветер, пыль, обзор и следы принадлежат состоянию сцены.",
+          "residual_needs": [
+            "Связь открытого края с ветром, пылью, дальним звуком, обзором и сохранностью человеческих следов."
+          ]
+        },
+        {
+          "facet": "edge_risks_and_upkeep",
+          "needs": [
+            "Какие риски: обрыв, размокший склон, ночная изоляция, пожар у дерева — нужно различать?",
+            "Какая сезонная upkeep нужна, чтобы край не считать неизменным?"
+          ],
+          "claim_refs": [
+            "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать угрозу без causal trigger.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "riverbank",
+      "description": "Natural or lightly used bank away from fixed urban wharf.",
+      "composes_with": [
+        "river_channel",
+        "floodplain_meadow",
+        "ferry_landing",
+        "forest_edge"
+      ],
+      "facets": [
+        {
+          "facet": "bank_material_and_water",
+          "needs": [
+            "Какие песок, глина, камень, корни, уступы и глубина у кромки допускают подход и забор воды?",
+            "Как течение, паводок, размыв и ледостав меняют берег?"
+          ],
+          "claim_refs": [
+            "claim:river-flow-affects-sediment-transport-deposition",
+            "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion"
+          ],
+          "coverage": "supported",
+          "limits": "Не выводить качество воды без источника.",
+          "residual_needs": []
+        },
+        {
+          "facet": "riparian_life",
+          "needs": [
+            "Какие прибрежные растения, насекомые, птицы, рыба и следы животных требуют вероятностной среды?",
+            "Какие различия дня, сезона и погоды меняют их заметность?"
+          ],
+          "claim_refs": [
+            "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+            "claim:water-temperature-affects-aquatic-organism-range",
+            "claim:fauna-animal-partial-migration"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные растения и животные принадлежат состоянию/контексту; не превращать fauna в гарантированную добычу.",
+          "residual_needs": [
+            "Связь прибрежной растительности с проходимостью и укрытием, а света суток — с наблюдаемостью животных."
+          ]
+        },
+        {
+          "facet": "shore_use_and_marks",
+          "needs": [
+            "Какие стирка, водопой, рыбная работа, ночёвка, сбор и проход могут оставлять следы?",
+            "Какие отпечатки, кострища, срезы, остатки наживки или вытаптывание требуют происхождения?"
+          ],
+          "claim_refs": [
+            "claim:population-river-work",
+            "claim:residual-traces-animal-trace-types",
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "supported",
+          "limits": "Следы не должны фабриковать людей или события.",
+          "residual_needs": []
+        },
+        {
+          "facet": "shore_hazards",
+          "needs": [
+            "Какие риски: обвал, трясина у кромки, холод, течение, пиявки, лёд — зависят от конкретных условий?",
+            "Какие средства: шест, лодка, обувь, помощь — меняют попытку без гарантии успеха?"
+          ],
+          "claim_refs": [
+            "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Exact checks принадлежат mechanics owner.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "river_channel",
+      "description": "Moving water as route, barrier and ecological process.",
+      "composes_with": [
+        "riverbank",
+        "river_wharf",
+        "ferry_landing",
+        "winter_ice_crossing"
+      ],
+      "facets": [
+        {
+          "facet": "flow_depth_and_ice",
+          "needs": [
+            "Какие течение, глубина, перекаты, заторы, береговые завихрения и лёд нужны для попыток пересечения?",
+            "Как сезон, ветер, дождь и таяние меняют воду в пределах суток?"
+          ],
+          "claim_refs": [
+            "claim:river-flow-affects-sediment-transport-deposition",
+            "claim:foundations-earth2-11-river-ice-jam-flow-obstruction"
+          ],
+          "coverage": "supported",
+          "limits": "Не давать точные гидрологические числа без authoritative data.",
+          "residual_needs": []
+        },
+        {
+          "facet": "watercraft_and_use",
+          "needs": [
+            "Какие лодки, вёсла, шесты, сети, грузы и навыки уместны как means, а не обязательные объекты?",
+            "Как различаются переправа, лов, перевозка, разведка и спасение?"
+          ],
+          "claim_refs": [
+            "claim:population-river-work",
+            "claim:river-landing-category",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Наличие плавсредства должно быть materialized причинно.",
+          "residual_needs": []
+        },
+        {
+          "facet": "water_signals",
+          "needs": [
+            "Какие цвет воды, шум, дрейф, туман, птицы и мусор подсказывают условия наблюдателю?",
+            "Какие следы работы сохраняются или уносятся течением?"
+          ],
+          "claim_refs": [
+            "claim:river-flow-affects-sediment-transport-deposition",
+            "claim:research-flood-can-leave-high-water-mark-types"
+          ],
+          "coverage": "partial",
+          "limits": "Наблюдение не заменяет проверку реального состояния.",
+          "residual_needs": [
+            "Связь течения и погоды с обычными наблюдаемыми сигналами воды и следами береговой работы."
+          ]
+        },
+        {
+          "facet": "channel_danger",
+          "needs": [
+            "Какие опасности: переохлаждение, опрокидывание, льдины, гроза, потеря груза — нужны для реалистичного partial result?",
+            "Какая upkeep судна и сезонная осторожность меняют риск?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+            "claim:residual-nature-ice-current-thin-areas"
+          ],
+          "coverage": "supported",
+          "limits": "Не симулировать навигацию как фиксированный маршрут.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "floodplain_meadow",
+      "description": "Low riverside grassland periodically shaped by water.",
+      "composes_with": [
+        "riverbank",
+        "hay_meadow",
+        "marshy_stream",
+        "field_margin"
+      ],
+      "facets": [
+        {
+          "facet": "wet_ground_and_growth",
+          "needs": [
+            "Какие наносы, влажные ложбины, трава, кусты и кочки меняют путь и сбор?",
+            "Как половодье, сенокос, засуха и утренний иней меняют поверхность?"
+          ],
+          "claim_refs": [
+            "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не приписывать конкретные растения без контекста.",
+          "residual_needs": []
+        },
+        {
+          "facet": "grazing_and_wildlife",
+          "needs": [
+            "Какие выпас, птицы, насекомые, мелкие звери и водные следы могут пересекаться?",
+            "Как человек с косой, пастух, ребёнок и путник пользуются разными частями луга?"
+          ],
+          "claim_refs": [
+            "claim:domestic-animal-context",
+            "claim:household-scythe-cutting"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать стадо или охотничью цель из вопросника.",
+          "residual_needs": []
+        },
+        {
+          "facet": "sight_sound_and_traces",
+          "needs": [
+            "Как открытый горизонт, ветер в траве, комары, запах сырости и дальние звуки меняют восприятие?",
+            "Какие тропы, покос, помёт, волочение и следы воды остаются?"
+          ],
+          "claim_refs": [
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "partial",
+          "limits": "Следы требуют различимой давности и причины.",
+          "residual_needs": [
+            "Связь открытого луга с ветром, звуком, запахом сырости и сохранностью человеческих следов."
+          ]
+        },
+        {
+          "facet": "floodplain_risk",
+          "needs": [
+            "Какие скрытые ямы, высокая вода, клещи, мокрая одежда и потеря ориентира актуальны?",
+            "Какие сезонные способы ухода: покос, выпас, прокладка тропы — меняют среду?"
+          ],
+          "claim_refs": [
+            "claim:research-flood-can-leave-high-water-mark-types",
+            "claim:household-scythe-cutting"
+          ],
+          "coverage": "supported",
+          "limits": "Не считать уход постоянным без actor/process.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "lake_shore",
+      "description": "Still-water shore with shallow margins and local use.",
+      "composes_with": [
+        "marshy_stream",
+        "forest_edge",
+        "fishing_camp",
+        "winter_ice_crossing"
+      ],
+      "facets": [
+        {
+          "facet": "shallows_and_bottom",
+          "needs": [
+            "Какие тростник, ил, песок, камень и перепад глубины определяют вход в воду и лодочный подход?",
+            "Как ветер, сезонный уровень и лёд меняют кромку?"
+          ],
+          "claim_refs": [
+            "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+            "claim:candidate-v2-ice-strength-depends-on-physical-conditions"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные тростник, дно, глубина, уровень и доступ принадлежат состоянию сцены; не считать каждое озеро одинаковым.",
+          "residual_needs": [
+            "Связь волнения и сезонного уровня воды с пригодностью кромки для подхода."
+          ]
+        },
+        {
+          "facet": "shore_ecology",
+          "needs": [
+            "Какие водоплавающие птицы, рыба, насекомые, растения и звериные водопои могут быть замечены?",
+            "Как рассвет, сумерки, холод и цветение меняют звук и доступность?"
+          ],
+          "claim_refs": [
+            "claim:fauna-mallard-wetland-diet",
+            "claim:water-temperature-affects-aquatic-organism-range",
+            "claim:fauna-animal-partial-migration",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретная ecology и доступность принадлежат состоянию сцены; не давать добычу без checks/source.",
+          "residual_needs": [
+            "Связь рассвета и сумерек с наблюдаемостью и звуком прибрежной фауны."
+          ]
+        },
+        {
+          "facet": "quiet_water_use",
+          "needs": [
+            "Какие лов, забор воды, стирка, стоянка, сбор камыша и обход берега требуют разных means?",
+            "Какие следы сетей, костра, причала или вытаптывания могут сохраняться?"
+          ],
+          "claim_refs": [
+            "claim:population-river-work",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "partial",
+          "limits": "Не создавать постоянную стоянку без causal basis.",
+          "residual_needs": [
+            "Связь обычного берегового пользования с остаточными следами, смываемыми водой."
+          ]
+        },
+        {
+          "facet": "lake_hazards",
+          "needs": [
+            "Какие туман, холодная вода, тонкий лёд, глубина и вязкий ил опасны разным людям?",
+            "Какая сезонная maintenance лодок, троп и берега нужна?"
+          ],
+          "claim_refs": [
+            "claim:residual-nature-ice-current-thin-areas",
+            "claim:candidate-v2-ice-strength-depends-on-physical-conditions"
+          ],
+          "coverage": "supported",
+          "limits": "Риск зависит от фактической погоды.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "arable_field",
+      "description": "Worked open ground whose condition follows agricultural cycle.",
+      "composes_with": [
+        "field_margin",
+        "village_lane",
+        "hay_meadow",
+        "peasant_homestead"
+      ],
+      "facets": [
+        {
+          "facet": "soil_crop_and_tools",
+          "needs": [
+            "Какие почва, борозды, стерня, всходы, камни и остатки работ определяют движение и труд?",
+            "Как пашня, посев, прополка, жатва и залежь меняют поверхность?"
+          ],
+          "claim_refs": [
+            "claim:regional-agriculture-practice",
+            "claim:rural-agriculture-crop-context",
+            "claim:household-ploughshare-tillage",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Культура и урожай не предполагаются без профиля.",
+          "residual_needs": []
+        },
+        {
+          "facet": "labor_and_animals",
+          "needs": [
+            "Какие упряжь, плуг, серп, корзины, рабочие животные и помощь нужны разным работам?",
+            "Как различаются земледелец, пастух, путник и ребёнок в поле?"
+          ],
+          "claim_refs": [
+            "claim:regional-agriculture-practice",
+            "claim:domestic-animal-context",
+            "claim:harvest-sickle-crops-grasses"
+          ],
+          "coverage": "supported",
+          "limits": "Орудия и животные имеют owner/source.",
+          "residual_needs": []
+        },
+        {
+          "facet": "exposure_and_marks",
+          "needs": [
+            "Как ветер, пыль, запах земли, открытый обзор, жаворонки и дальние звуки меняют опыт?",
+            "Какие следы колёс, копыт, уборки, вредителей и дождя требуют различения?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-types",
+            "claim:residual-traces-animal-trace-weather-decay"
+          ],
+          "coverage": "partial",
+          "limits": "Не выводить виновника по одному следу.",
+          "residual_needs": [
+            "Связь открытого поля с ветром, пылью, обзором и читаемостью человеческих/колёсных следов."
+          ]
+        },
+        {
+          "facet": "seasonal_pressure",
+          "needs": [
+            "Какие риски дают град, засуха, грязь, ранний мороз, животные и усталость?",
+            "Какие работы по межам, дренажу, изгороди и сбору меняют поле со временем?"
+          ],
+          "claim_refs": [
+            "claim:rural-agriculture-crop-context"
+          ],
+          "coverage": "partial",
+          "limits": "Не симулировать агрокалендарь без committed process.",
+          "residual_needs": [
+            "Общие отношения культурных растений с засухой, градом, ранним морозом, животными и сезонным уходом."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hay_meadow",
+      "description": "Managed grassland for cutting, drying and carrying fodder.",
+      "composes_with": [
+        "floodplain_meadow",
+        "village_lane",
+        "peasant_homestead",
+        "field_margin"
+      ],
+      "facets": [
+        {
+          "facet": "grass_cut_and_drying",
+          "needs": [
+            "Какая высота травы, влажность, валки, копны и ровность земли важны для косьбы и прохода?",
+            "Как дождь, роса, ветер и сезон делают сено пригодным или мокрым?"
+          ],
+          "claim_refs": [
+            "claim:household-scythe-cutting",
+            "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
+          ],
+          "coverage": "partial",
+          "limits": "Не считать сенокос уже проведённым.",
+          "residual_needs": [
+            "Связь скошенной травы, росы, осадков и воздушного движения с сушкой сена."
+          ]
+        },
+        {
+          "facet": "workers_means_and_carrying",
+          "needs": [
+            "Какие косы, грабли, вилы, верёвки, носилки и телеги нужны разным масштабам работы?",
+            "Как координация людей, детей и животных меняет темп и опасность?"
+          ],
+          "claim_refs": [
+            "claim:household-scythe-cutting",
+            "claim:settlement-cart-transport",
+            "claim:domestic-animal-context"
+          ],
+          "coverage": "supported",
+          "limits": "Инструменты/труд не возникают без причины.",
+          "residual_needs": []
+        },
+        {
+          "facet": "meadow_signals",
+          "needs": [
+            "Какие запах срезанной травы, стрёкот, пыльца, открытый свет и следы волочения различимы?",
+            "Как вчерашний покос, ночной дождь или выпас меняют читаемые следы?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
+          ],
+          "coverage": "partial",
+          "limits": "Не приписывать недавнюю работу конкретному actor.",
+          "residual_needs": [
+            "Связь покоса, дождя и выпаса с сенокосными следами, запахом и насекомыми."
+          ]
+        },
+        {
+          "facet": "fodder_risk_and_storage_link",
+          "needs": [
+            "Какие пожароопасность сухого сена, гроза, порча от воды и усталость требуют последствий?",
+            "Как вывоз, укладка и защита от дождя связывают луг с дорогой и амбаром?"
+          ],
+          "claim_refs": [
+            "claim:ordinary-life-household-needs-heat-food-storage",
+            "claim:settlement-cart-transport"
+          ],
+          "coverage": "partial",
+          "limits": "Не считать объём заготовки без quantity owner.",
+          "residual_needs": [
+            "Связь сухого сена с пожарным риском и порчей от воды."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "broadleaf_woodland",
+      "description": "Deciduous woodland with layered ground, canopy and seasonal change.",
+      "composes_with": [
+        "forest_edge",
+        "mixed_woodland",
+        "hunting_ground",
+        "forest_track"
+      ],
+      "facets": [
+        {
+          "facet": "trees_ground_and_passage",
+          "needs": [
+            "Какие лиственные стволы, кустарник, листовой опад, корни, валежник и склоны меняют путь?",
+            "Как листва, грязь, снег и бурелом меняют обзор и скорость?"
+          ],
+          "claim_refs": [
+            "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+            "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не перечислять породы как закрытый набор.",
+          "residual_needs": []
+        },
+        {
+          "facet": "forest_life_and_material",
+          "needs": [
+            "Какие грибы, ягоды, насекомые, птицы, звери и древесный материал могут быть уместны по сезону?",
+            "Какие действия: сбор, рубка, поиск, укрытие, охота — требуют реального доступа и средств?"
+          ],
+          "claim_refs": [
+            "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+            "claim:agriculture-fauna-hunting-economic-context",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "supported",
+          "limits": "Никакой ресурс не free loot без source transition.",
+          "residual_needs": []
+        },
+        {
+          "facet": "woodland_perception",
+          "needs": [
+            "Как шелест, капли, запах перегноя, дым издали, пятнистый свет и эхо меняют слышимость и ориентацию?",
+            "Какие следы тропы, среза, зверя, костра и волочения читаемы на разных грунтах?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-types",
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "partial",
+          "limits": "Не делать следы точной идентификацией.",
+          "residual_needs": [
+            "Связь лиственного полога и лесного грунта со светом, звуком, запахом и читаемостью следов."
+          ]
+        },
+        {
+          "facet": "woodland_hazards_and_care",
+          "needs": [
+            "Какие риски: потеря пути, падающее дерево, клещи, огонь, ночной холод — зависят от сезона?",
+            "Какая maintenance троп, делянок, кострищ или заготовок может быть причинно видима?"
+          ],
+          "claim_refs": [
+            "claim:practical-season-work",
+            "claim:work-waste-context",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные hazards и history management принадлежат состоянию; не объявлять лес managed без owner.",
+          "residual_needs": [
+            "Связь валежника, огня, ночного холода и расчистки с проходимостью и риском."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conifer_woodland",
+      "description": "Needle-leaved woodland with resinous cover and year-round shade.",
+      "composes_with": [
+        "mixed_woodland",
+        "bog",
+        "forest_track",
+        "winter_ice_crossing"
+      ],
+      "facets": [
+        {
+          "facet": "needles_roots_and_snow",
+          "needs": [
+            "Как хвоя, смола, сухие ветви, корни, мох и снежный покров меняют опору, огонь и путь?",
+            "Как ветер, оттепель и ледяной дождь меняют крону и опасность ветровала?"
+          ],
+          "claim_refs": [
+            "claim:residual-tree-picea-abies-evergreen-needles",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "partial",
+          "limits": "Не утверждать лесной состав конкретной локации.",
+          "residual_needs": [
+            "Связь хвойной подстилки, корней, снежного покрова и ветра с опорой, проходимостью и ветровалом."
+          ]
+        },
+        {
+          "facet": "shelter_material_and_life",
+          "needs": [
+            "Какие укрытие, смолистое топливо, шишки, звериные убежища и птицы требуют сезонной оценки?",
+            "Какие способы рубки, переноски, ночёвки и ориентирования зависят от means?"
+          ],
+          "claim_refs": [
+            "claim:residual-tree-picea-abies-cones-brown-at-maturity",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "partial",
+          "limits": "Использование дерева требует прав и conservation.",
+          "residual_needs": [
+            "Связь хвойного леса с укрытием, топливом и сезонной обычной фауной."
+          ]
+        },
+        {
+          "facet": "shade_sound_and_tracks",
+          "needs": [
+            "Как постоянная тень, запах смолы, глухой настил и капли влияют на видимость и звук?",
+            "Какие следы на хвое, снегу и мху быстро исчезают или сохраняются?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-weather-decay",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "partial",
+          "limits": "Давность следа не угадывать без основания.",
+          "residual_needs": [
+            "Связь хвойного полога, подстилки и снега с тенью, звуком, следами и их сохранностью."
+          ]
+        },
+        {
+          "facet": "coniferous_risks",
+          "needs": [
+            "Какие риски: пожар от сухостоя, снежные ветви, темнота, смоляной дым, заблудиться — нужны?",
+            "Какая расчистка или выбор тропы делает это место доступнее?"
+          ],
+          "claim_refs": [
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:work-waste-context",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретные hazards, тропа и upkeep принадлежат состоянию; не создавать тропу ради удобства игрока.",
+          "residual_needs": [
+            "Связь сухостоя и хвойной подстилки с пожарным риском, а снеговой нагрузки — с ветвями."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mixed_woodland",
+      "description": "Transition woodland where tree cover and ground conditions vary over short distances.",
+      "composes_with": [
+        "broadleaf_woodland",
+        "conifer_woodland",
+        "forest_edge",
+        "marshy_stream"
+      ],
+      "facets": [
+        {
+          "facet": "patchwork_ground",
+          "needs": [
+            "Какие чередования сухих бугров, сырого мха, листвы, хвои и кустарника меняют локальный маршрут?",
+            "Как сезон делает один участок проходимым, другой вязким или скрытым?"
+          ],
+          "claim_refs": [
+            "claim:wetland-hydric-soil-depends-on-saturation",
+            "claim:foundations-earth-07-soil-water-states",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "No local substrate or route follows.",
+          "residual_needs": [
+            "fine-scale woodland mosaic and seasonal route change"
+          ]
+        },
+        {
+          "facet": "foraging_and_movement",
+          "needs": [
+            "Какие разные материалы, корм, укрытия и звериные пути могут пересекаться без inventory whitelist?",
+            "Как охотник, сборщик, дровосек и путник читают разные признаки?"
+          ],
+          "claim_refs": [
+            "claim:fauna-mammals-brown-bear-food-driven-movement",
+            "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
+            "claim:ordinary-life-carpenter-works-wood-with-tools",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "partial",
+          "limits": "Co-occurrence, resource, animal, occupation and access in a specific transition are scene state, not WK facts.",
+          "residual_needs": [
+            "how ordinary woodland work changes or maintains a traversed opening"
+          ]
+        },
+        {
+          "facet": "changing_signals",
+          "needs": [
+            "Как смена кроны меняет ветер, свет, запах, звук и дальность зрения?",
+            "Какие следы животных и людей обрываются на смене грунта?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth-27-fog-visibility",
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "partial",
+          "limits": "Signals do not identify an actor or direction.",
+          "residual_needs": [
+            "canopy-specific light, sound and scent effects"
+          ]
+        },
+        {
+          "facet": "transition_hazards",
+          "needs": [
+            "Какие скрытые сырые места, заросли, бурелом и лесной пожар важны на стыках?",
+            "Какие maintenance действия могут удерживать лесную тропу, не создавая её по умолчанию?"
+          ],
+          "claim_refs": [
+            "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+            "claim:population-material-wood-decay",
+            "claim:population-material-wood-combustion",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "partial",
+          "limits": "No hazard or maintained path is assumed.",
+          "residual_needs": [
+            "forest-fire spread and trail-maintenance causal premises"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "forest_edge",
+      "description": "Boundary between woodland and open worked or watery land.",
+      "composes_with": [
+        "arable_field",
+        "hay_meadow",
+        "riverbank",
+        "forest_track",
+        "village_lane"
+      ],
+      "facets": [
+        {
+          "facet": "edge_structure",
+          "needs": [
+            "Какие кусты, молодая поросль, канавы, межи, валежник и просветы создают проходимость?",
+            "Как расчистка, выпас, пожар и сезонная поросль меняют границу?"
+          ],
+          "claim_refs": [
+            "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "No fixed edge line.",
+          "residual_needs": [
+            "edge regrowth, grazing and clearance effects"
+          ]
+        },
+        {
+          "facet": "meeting_of_uses",
+          "needs": [
+            "Какие сбор, выпас, заготовка, наблюдение, укрытие и переход между средами возможны?",
+            "Как различаются потребности поля, дороги, лесника, охотника и домашних животных?"
+          ],
+          "claim_refs": [
+            "claim:agriculture-fauna-hunting-economic-context",
+            "claim:fauna-mammals-ruminant-grazing-selectivity",
+            "claim:ordinary-life-fisher-needs-water-and-gear",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "partial",
+          "limits": "Actual users, shared use, conflict and access are scene/social state.",
+          "residual_needs": [
+            "general work traces left by clearance, grazing and gathering"
+          ]
+        },
+        {
+          "facet": "visibility_and_sign",
+          "needs": [
+            "Как свет из поля, тень леса, ветер, запахи и птичьи голоса меняют раннее предупреждение?",
+            "Какие следы зверя, колёс, рубки и выпаса переходят между субстратами?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth-27-fog-visibility",
+            "claim:residual-traces-animal-trace-types",
+            "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
+          ],
+          "coverage": "partial",
+          "limits": "No certain direction or identity.",
+          "residual_needs": [
+            "edge-specific wheel, cutting and grazing trace interpretation"
+          ]
+        },
+        {
+          "facet": "edge_risks",
+          "needs": [
+            "Какие риски: внезапный ветер, огонь, засада, потеря вещи в кустах, клещи — требуют contextual resolution?",
+            "Какая обрезка, изгородь или тропа меняет край и оставляет work traces?"
+          ],
+          "claim_refs": [
+            "claim:fauna-tick-questing",
+            "claim:population-material-wood-combustion",
+            "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "partial",
+          "limits": "No threat or fence is created.",
+          "residual_needs": [
+            "pruning/fence work traces and fire spread"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bog",
+      "description": "Peaty wetland with unstable footing and slow water.",
+      "composes_with": [
+        "marshy_stream",
+        "conifer_woodland",
+        "lake_shore",
+        "forest_track"
+      ],
+      "facets": [
+        {
+          "facet": "peat_water_and_footing",
+          "needs": [
+            "Какие торф, мох, кочки, открытая вода, сплавина и вязкая почва меняют вес, шаг и маршрут?",
+            "Как засуха, дождь, заморозок и снег делают риск иначе?"
+          ],
+          "claim_refs": [
+            "claim:wetland-hydric-soil-depends-on-saturation",
+            "claim:foundations-earth-07-soil-water-states",
+            "claim:residual-nature-snow-grain-compaction",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "Bog is not automatically impassable.",
+          "residual_needs": [
+            "peat, hummock, floating-mat and seasonal freeze-thaw behaviour"
+          ]
+        },
+        {
+          "facet": "wetland_life_and_material",
+          "needs": [
+            "Какие мхи, ягоды, насекомые, птицы, лягушки и сырой древесный материал могут быть релевантны?",
+            "Какие сбор, обход, охота или поиск требуют средств и времени?"
+          ],
+          "claim_refs": [
+            "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
+            "claim:fauna-dragonfly-foodweb",
+            "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia"
+          ],
+          "coverage": "partial",
+          "limits": "No taxon or resource presence.",
+          "residual_needs": [
+            "bog-specific moss, amphibian, bird and wet-wood relations"
+          ]
+        },
+        {
+          "facet": "bog_perception",
+          "needs": [
+            "Как туман, запах торфа, комары, приглушённый звук и однообразный горизонт меняют ориентацию?",
+            "Какие следы быстро заливает вода, а какие остаются на кочках?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth-27-fog-visibility",
+            "claim:residual-nature-stars-horizon-navigation",
+            "claim:research-footprint-track-interpretation-can-depend-on-substrate"
+          ],
+          "coverage": "partial",
+          "limits": "Atmosphere is not danger proof.",
+          "residual_needs": [
+            "water-overwriting of traces and bog acoustics"
+          ]
+        },
+        {
+          "facet": "wetland_hazards_and_routes",
+          "needs": [
+            "Какие утопание, переохлаждение, потеря груза, дым от огня и отсутствие опор опасны?",
+            "Какие жерди, настилы, проводник и upkeep перехода могут снижать риск?"
+          ],
+          "claim_refs": [
+            "claim:research-cold-water-immersion-can-impair-muscle-control",
+            "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+            "claim:force-contact-geometry"
+          ],
+          "coverage": "partial",
+          "limits": "Actual pole, boardwalk, guide, route condition and crossing safety are scene state.",
+          "residual_needs": [
+            "general consequences of repeated wetland crossing on simple temporary supports"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "marshy_stream",
+      "description": "Narrow wet drainage corridor joining woods, meadow or lake.",
+      "composes_with": [
+        "bog",
+        "floodplain_meadow",
+        "lake_shore",
+        "mixed_woodland"
+      ],
+      "facets": [
+        {
+          "facet": "channel_and_margins",
+          "needs": [
+            "Какие ручей, промоины, камни, ил, ольшаник и мокрые берега прерывают путь?",
+            "Как ливень, замерзание и бобровая деятельность при наличии меняют поток?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+            "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+          ],
+          "coverage": "partial",
+          "limits": "Actual channel morphology, water level, beaver and margin are scene state.",
+          "residual_needs": [
+            "general small-channel obstruction and bank-change relations"
+          ]
+        },
+        {
+          "facet": "water_edge_use",
+          "needs": [
+            "Какие забор воды, переправа, поиск корма, лов мелочи и прокладка тропы возможны?",
+            "Какие средства: камни, жердь, сапоги, мосток — требуют физической проверки?"
+          ],
+          "claim_refs": [
+            "claim:force-contact-geometry",
+            "claim:foundations-phys-04-fluid-viscous-resistance",
+            "claim:ordinary-life-fisher-needs-water-and-gear",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "No bridge or safe crossing.",
+          "residual_needs": [
+            "small-stream crossing and water-collection practice"
+          ]
+        },
+        {
+          "facet": "small_corridor_signals",
+          "needs": [
+            "Как журчание, сырость, густая растительность, тень и следы у воды меняют слышимость/обзор?",
+            "Какие выдры, птицы, насекомые или следы копыт следует рассматривать только как условия?"
+          ],
+          "claim_refs": [
+            "claim:foundations-earth-27-fog-visibility",
+            "claim:fauna-mammals-european-otter-solitary-crepuscular",
+            "claim:fauna-tick-questing"
+          ],
+          "coverage": "partial",
+          "limits": "No animal presence.",
+          "residual_needs": [
+            "corridor sound/cover and context-specific traces"
+          ]
+        },
+        {
+          "facet": "stream_risk_and_care",
+          "needs": [
+            "Какие скольжение, быстрый подъём воды, подмыв и насекомые создают hazards?",
+            "Какая расчистка, настил и обход требуют maintenance history?"
+          ],
+          "claim_refs": [
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:foundations-haz-05-slope-water-triggers",
+            "claim:research-cold-water-immersion-can-impair-muscle-control",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "partial",
+          "limits": "No maintained path.",
+          "residual_needs": [
+            "drainage clearing and crossing upkeep"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "village_lane",
+      "description": "Rural lane connecting yards, fields and road.",
+      "composes_with": [
+        "peasant_homestead",
+        "road",
+        "arable_field",
+        "bridge_crossing"
+      ],
+      "facets": [
+        {
+          "facet": "rut_and_verge",
+          "needs": [
+            "Какие колеи, глина, песок, лужи, трава по краям и канавы определяют ходьбу и воз?",
+            "Как сезонные перевозки, дождь, мороз и подсыпка меняют покрытие?"
+          ],
+          "claim_refs": [
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+          ],
+          "coverage": "partial",
+          "limits": "No width or current quality.",
+          "residual_needs": [
+            "lane drainage, surfacing and seasonal maintenance"
+          ]
+        },
+        {
+          "facet": "daily_traffic",
+          "needs": [
+            "Какие люди, скот, телеги, дрова, вода и хозяйственные грузы встречаются в разное время?",
+            "Как ребёнок, старик, всадник и возница проходят один и тот же узкий участок?"
+          ],
+          "claim_refs": [
+            "claim:environment-p1-horse-transport",
+            "claim:settlement-cart-transport",
+            "claim:ordinary-life-fisher-needs-water-and-gear"
+          ],
+          "coverage": "partial",
+          "limits": "Roster, schedule and current traffic are scene state.",
+          "residual_needs": [
+            "general material traces of repeated cart, hoof and pedestrian passage"
+          ]
+        },
+        {
+          "facet": "lane_senses_and_marks",
+          "needs": [
+            "Какие лай собак, дым, навоз, голоса, пыль и огни дворов слышны/видны?",
+            "Какие следы колёс, копыт, босых ног, выгула и чистки требуют различения?"
+          ],
+          "claim_refs": [
+            "claim:residual-traces-animal-trace-types",
+            "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "partial",
+          "limits": "Traces do not reveal private life.",
+          "residual_needs": [
+            "wheel/hoof/household-trace differentiation"
+          ]
+        },
+        {
+          "facet": "lane_hazards_upkeep",
+          "needs": [
+            "Какие грязь, лёд, выбоины, бегущий скот и ночная темнота создают hazards?",
+            "Какие расчистка, канавы, подсыпка и ремонт дают maintenance variation?"
+          ],
+          "claim_refs": [
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+          ],
+          "coverage": "partial",
+          "limits": "No upkeep completion.",
+          "residual_needs": [
+            "ditch, filling and repair work consequences"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "peasant_homestead",
+      "description": "Rural domestic plot as connected dwelling, work and animal space.",
+      "composes_with": [
+        "village_lane",
+        "outbuildings",
+        "cellar_granary",
+        "orchard_garden",
+        "pasture"
+      ],
+      "facets": [
+        {
+          "facet": "plot_and_utility",
+          "needs": [
+            "Какие двор, ограда, колодец, поленница, огород, навозная куча и проходы разделяют работы?",
+            "Как сезонные запасы, дождь, снег и уборка меняют пространство?"
+          ],
+          "claim_refs": [
+            "claim:settlement-log-building-form",
+            "claim:settlement-underfloor-storage",
+            "claim:agriculture-fauna-tow-log-gaps"
+          ],
+          "coverage": "partial",
+          "limits": "Plot layout, current drainage, manure, stock and wealth are scene state.",
+          "residual_needs": [
+            "general relation of repeated wet work to household drainage and walking surfaces"
+          ]
+        },
+        {
+          "facet": "household_cycles",
+          "needs": [
+            "Какие готовка, вода, кормление, починка, прядение, заготовка и уход за детьми требуют среды?",
+            "Как роли жильца, гостя, работника и животного дают разные видимые маршруты?"
+          ],
+          "claim_refs": [
+            "claim:food-practices-rye-flour-bread",
+            "claim:ordinary-life-apprentice-learns-and-assists",
+            "claim:animal-care-needs-presence",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "Household members, cycles, child care and work allocation are scene state.",
+          "residual_needs": [
+            "general conflict/coordination effects of shared work surfaces and sequential wet/dry tasks"
+          ]
+        },
+        {
+          "facet": "domestic_signals",
+          "needs": [
+            "Какие дым, пар, пища, навоз, стук, животные и свет из окон меняются днём/ночью?",
+            "Какие следы колки дров, стирки, выноса золы и ремонта можно наблюдать?"
+          ],
+          "claim_refs": [
+            "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+            "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+            "claim:population-material-wood-combustion",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "partial",
+          "limits": "No intent from traces.",
+          "residual_needs": [
+            "ordinary domestic sound/smell/trace causality"
+          ]
+        },
+        {
+          "facet": "homestead_risk_and_care",
+          "needs": [
+            "Какие пожар, падение в колодец, скользкий двор, хищник для птицы и порча запасов требуют context?",
+            "Какая maintenance ограды, крыши, дренажа и чистоты должна влиять на состояние?"
+          ],
+          "claim_refs": [
+            "claim:household-roof-local-condition-guides-repair",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "Access and property stay code-owned.",
+          "residual_needs": [
+            "well, poultry-predator and yard sanitation risks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outbuildings",
+      "description": "Working outbuildings around household or town yard.",
+      "composes_with": [
+        "peasant_homestead",
+        "town_courtyard",
+        "cellar_granary",
+        "threshing_barn",
+        "bathhouse"
+      ],
+      "facets": [
+        {
+          "facet": "structure_and_storage",
+          "needs": [
+            "Какие стены, пол, порог, крыша, стойла, полки и запоры меняют доступ, сухость и вместимость?",
+            "Как сырость, снег, вредители и починка влияют на их состояние?"
+          ],
+          "claim_refs": [
+            "claim:settlement-wood-building",
+            "claim:foundations-mat-07-wood-storage-biological-damage",
+            "claim:household-roof-layers-shed-water",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+          ],
+          "coverage": "partial",
+          "limits": "Actual threshold, stall, shelf, lock, inventory and stock are scene state.",
+          "residual_needs": [
+            "general enclosed wood moisture/ventilation interaction"
+          ]
+        },
+        {
+          "facet": "animal_and_work_use",
+          "needs": [
+            "Какие стойловое содержание, доение, кормление, перенос, сушка или хранение уместны в разных строениях?",
+            "Как человек и животное взаимно ограничивают место и время работы?"
+          ],
+          "claim_refs": [
+            "claim:animal-care-needs-presence",
+            "claim:practical-fodder-hay",
+            "claim:ordinary-life-carpenter-works-wood-with-tools"
+          ],
+          "coverage": "partial",
+          "limits": "No animal presence.",
+          "residual_needs": [
+            "building-specific animal use and work timing"
+          ]
+        },
+        {
+          "facet": "enclosed_senses_and_traces",
+          "needs": [
+            "Какие сено, навоз, дерево, плесень, писк, дыхание и слабый свет меняют восприятие?",
+            "Какие следы когтей, кормления, пролива, ремонта и вредителей сохраняются?"
+          ],
+          "claim_refs": [
+            "claim:population-material-wood-decay",
+            "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+            "claim:residual-traces-animal-trace-types"
+          ],
+          "coverage": "partial",
+          "limits": "No hidden contents.",
+          "residual_needs": [
+            "pest and enclosed-space trace interpretation"
+          ]
+        },
+        {
+          "facet": "confined_risk_and_upkeep",
+          "needs": [
+            "Какие огонь, пыль, обрушение, укусы, запертость и скользкий пол опасны?",
+            "Какая чистка, подстилка, проветривание и латание меняют пригодность?"
+          ],
+          "claim_refs": [
+            "claim:population-material-wood-combustion",
+            "claim:research-carbon-monoxide-can-accumulate-indoors",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+          ],
+          "coverage": "partial",
+          "limits": "Maintenance is not state.",
+          "residual_needs": [
+            "dust, bite, collapse and cleaning effects"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cellar_granary",
+      "description": "Cool or dry storage enclosure with preservation constraints.",
+      "composes_with": [
+        "peasant_homestead",
+        "town_courtyard",
+        "outbuildings",
+        "market_square"
+      ],
+      "facets": [
+        {
+          "facet": "temperature_dryness_and_containers",
+          "needs": [
+            "Какие земляной холод, вентиляция, полки, бочки, мешки и защита от влаги определяют хранение?",
+            "Как сезон, протечка и проветривание меняют сохранность?"
+          ],
+          "claim_refs": [
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:stored-grain-airflow-can-reduce-temperature-differences",
+            "claim:stored-grain-temperature-gradient-can-migrate-moisture"
+          ],
+          "coverage": "supported",
+          "limits": "Inventory remains authoritative. container and cellar-specific thermal variation",
+          "residual_needs": []
+        },
+        {
+          "facet": "handling_and_access",
+          "needs": [
+            "Какие перенос, взвешивание, перебор, закладка и выдача требуют света, тары и людей?",
+            "Как различаются хозяин, работник, гость и вредитель как источник риска?"
+          ],
+          "claim_refs": [
+            "claim:measurement-grain-mass-volume-density",
+            "claim:practical-food-grain-storage",
+            "claim:settlement-underfloor-storage"
+          ],
+          "coverage": "partial",
+          "limits": "Actual light, tare, owner, access and contents are scene state.",
+          "residual_needs": [
+            "pest-access and food-spillage relations for stored dry goods"
+          ]
+        },
+        {
+          "facet": "storage_signals",
+          "needs": [
+            "Какие запах зерна, дыма, плесени, кислого, прохлада, шорох и темнота наблюдаемы?",
+            "Какие следы мышей, просыпи, воды, перетаскивания и ремонта требуют оценки?"
+          ],
+          "claim_refs": [
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+          ],
+          "coverage": "partial",
+          "limits": "No spoilage asserted.",
+          "residual_needs": [
+            "mould, rodent and odour diagnostic signals"
+          ]
+        },
+        {
+          "facet": "preservation_hazards",
+          "needs": [
+            "Какие пожар, сырость, плесень, вредители, падение с лестницы и запертый воздух требуют outcomes?",
+            "Какая maintenance: просушка, чистка, починка тары — предотвращает, но не отменяет риски?"
+          ],
+          "claim_refs": [
+            "claim:food-preservation-qualitative",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:household-roof-local-condition-guides-repair",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+          ],
+          "coverage": "partial",
+          "limits": "No decorative stock.",
+          "residual_needs": [
+            "stored-food pests and mould controls"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bathhouse",
+      "description": "Heated washing space with fire, water and privacy constraints.",
+      "composes_with": [
+        "peasant_homestead",
+        "town_courtyard",
+        "riverbank",
+        "forest_edge"
+      ],
+      "facets": [
+        {
+          "facet": "heat_water_and_material",
+          "needs": [
+            "Какие печь, камни, вода, пол, пар, веники и дрова определяют работу помещения?",
+            "Как топка, проветривание, мороз и сырость меняют температуру и скольжение?"
+          ],
+          "claim_refs": [
+            "claim:bathing-house-heating-before-washing",
+            "claim:bathing-washing-water",
+            "claim:population-material-wood-combustion"
+          ],
+          "coverage": "supported",
+          "limits": "Generic heat, water, combustion and ventilation premises compose the qualitative steam/floor context; actual bathhouse, heating, water and surface state are scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "washing_and_labor",
+          "needs": [
+            "Какие мытьё, перенос воды, топка, стирка, отдых и уборка требуют места и времени?",
+            "Как различаются пользователь, топящий и человек с ограниченной подвижностью?"
+          ],
+          "claim_refs": [
+            "claim:bathing-washing-water",
+            "claim:bathing-house-heating-before-washing",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "No absolute privacy.",
+          "residual_needs": [
+            "water carrying, cleaning and mobility context"
+          ]
+        },
+        {
+          "facet": "steam_and_marks",
+          "needs": [
+            "Как пар, треск дров, запах дыма/мыла, слабый свет и конденсат меняют обзор и звук?",
+            "Какие мокрые следы, зола, расход дров и следы чистки остаются?"
+          ],
+          "claim_refs": [
+            "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+            "claim:research-increased-ventilation-can-help-reduce-condensation",
+            "claim:foundations-physical-b2-snd-01-sound-source-vibration"
+          ],
+          "coverage": "supported",
+          "limits": "Generic steam, condensation and sound premises compose this context; observed traces do not identify a person or conversation.",
+          "residual_needs": []
+        },
+        {
+          "facet": "bathhouse_hazards",
+          "needs": [
+            "Какие ожоги, дым, угар, поскальзывание, пожар и холод после выхода требуют реалистичной попытки?",
+            "Какая maintenance печи, дымохода, пола и воды влияет на риск?"
+          ],
+          "claim_refs": [
+            "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+            "claim:research-carbon-monoxide-can-accumulate-indoors",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame"
+          ],
+          "coverage": "partial",
+          "limits": "Exact health mechanics elsewhere.",
+          "residual_needs": [
+            "wet-floor slip and post-exit cold interaction"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "smithy",
+      "description": "Hot craft workspace where material, tools and fire constrain work.",
+      "composes_with": [
+        "town_courtyard",
+        "market_square",
+        "road",
+        "outbuildings"
+      ],
+      "facets": [
+        {
+          "facet": "forge_material_and_layout",
+          "needs": [
+            "Какие горн, наковальня, меха, уголь, вода, металл, верстак и проходы нужны для разных работ?",
+            "Как топливо, износ и ремонт меняют возможность процесса?"
+          ],
+          "claim_refs": [
+            "claim:ordinary-life-smith-anvil-hammer-tongs",
+            "claim:fuel-charcoal-metallurgy-fuel",
+            "claim:static-forge-welding-requires-heated-pressed-interface",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
+          ],
+          "coverage": "supported",
+          "limits": "No tools or metal without source.",
+          "residual_needs": []
+        },
+        {
+          "facet": "craft_labor_and_flow",
+          "needs": [
+            "Какие ковка, нагрев, охлаждение, правка, перенос и ожидание требуют времени и навыка?",
+            "Как кузнец, помощник, заказчик и животные по-разному взаимодействуют с пространством?"
+          ],
+          "claim_refs": [
+            "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
+            "claim:metal-properties-depend-on-state",
+            "claim:ordinary-life-smith-anvil-hammer-tongs",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
+          ],
+          "coverage": "partial",
+          "limits": "Mechanics owner remains primary.",
+          "residual_needs": [
+            "time/skill/workflow relations"
+          ]
+        },
+        {
+          "facet": "fire_sounds_and_residue",
+          "needs": [
+            "Какие звон, меха, дым, жар, угольная пыль и искры влияют на восприятие?",
+            "Какие окалина, зола, обрезки, следы волочения и копоти могут остаться?"
+          ],
+          "claim_refs": [
+            "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+            "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+            "claim:population-material-wood-combustion",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
+          ],
+          "coverage": "supported",
+          "limits": "Residue proves no product.",
+          "residual_needs": []
+        },
+        {
+          "facet": "forge_hazards_and_upkeep",
+          "needs": [
+            "Какие ожоги, пожар, дым, тяжёлый груз, шум и осколки требуют consequences?",
+            "Какая upkeep горна, крыши, воды и инструмента меняет безопасность?"
+          ],
+          "claim_refs": [
+            "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+            "claim:research-carbon-monoxide-can-accumulate-indoors",
+            "claim:population-material-wood-combustion",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
+          ],
+          "coverage": "partial",
+          "limits": "No throughput model.",
+          "residual_needs": [
+            "heavy-load, noise and forge-upkeep risk"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mill",
+      "description": "Water- or wind-driven grain-processing setting with moving machinery.",
+      "composes_with": [
+        "river_channel",
+        "marshy_stream",
+        "village_lane",
+        "arable_field"
+      ],
+      "facets": [
+        {
+          "facet": "power_water_and_mechanism",
+          "needs": [
+            "Какие поток/ветер, колесо, жернова, лотки, помост и мука определяют работу и подход?",
+            "Как уровень воды, мороз, штиль и ремонт меняют доступность?"
+          ],
+          "claim_refs": [
+            "claim:milling-grain-compression-shear-fracture",
+            "claim:foundations-phys-04-fluid-viscous-resistance",
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+          ],
+          "coverage": "partial",
+          "limits": "No drive type.",
+          "residual_needs": [
+            "water/wind mill mechanism, frost and maintenance"
+          ]
+        },
+        {
+          "facet": "milling_labor_and_queue",
+          "needs": [
+            "Какие зерно, мешки, измерение, перенос, ожидание и работа мельника образуют ordinary flow?",
+            "Как заказчик, работник, животное и ребёнок сталкиваются с движущимися частями?"
+          ],
+          "claim_refs": [
+            "claim:measurement-grain-mass-volume-density",
+            "claim:milling-plate-gap-pressure-fineness",
+            "claim:occupation-directed-grain-procurement",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+          ],
+          "coverage": "partial",
+          "limits": "No tariff/right.",
+          "residual_needs": [
+            "queue, carrying and moving-part access"
+          ]
+        },
+        {
+          "facet": "mill_senses_and_traces",
+          "needs": [
+            "Какие гул, скрип, мучная пыль, влажность, запах зерна и вибрация меняют ощущение места?",
+            "Какие просыпи, следы мешков, вода и следы обслуживания читаемы?"
+          ],
+          "claim_refs": [
+            "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+            "claim:grain-processing-bread-ground-plant-base",
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+          ],
+          "coverage": "supported",
+          "limits": "Generic sound, grain and moisture premises compose perception; actual vibration, dust, volume and maintenance traces are scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "mill_hazards",
+          "needs": [
+            "Какие захват одеждой, падение в воду, пыль, тяжесть камня и пожар опасны?",
+            "Какая maintenance желобов, колеса, крыши и жерновов влияет на риск?"
+          ],
+          "claim_refs": [
+            "claim:force-contact-geometry",
+            "claim:population-physics-load-deformation",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+          ],
+          "coverage": "partial",
+          "limits": "Exact mechanism owner.",
+          "residual_needs": [
+            "entanglement, water-fall and dust hazards"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "threshing_barn",
+      "description": "Seasonal grain-handling and drying work space.",
+      "composes_with": [
+        "arable_field",
+        "cellar_granary",
+        "peasant_homestead",
+        "village_lane"
+      ],
+      "facets": [
+        {
+          "facet": "floor_crop_and_air",
+          "needs": [
+            "Какие ток, снопы, солома, пыль, щели и проветривание определяют работу и сохранность?",
+            "Как дождь, мороз, жара и влажность меняют пригодность?"
+          ],
+          "claim_refs": [
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:stored-grain-airflow-can-reduce-temperature-differences",
+            "claim:practical-fodder-hay",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "partial",
+          "limits": "No stored harvest.",
+          "residual_needs": [
+            "barn floor/crop/air relations"
+          ]
+        },
+        {
+          "facet": "processing_and_carrying",
+          "needs": [
+            "Какие цепы, веяние, перенос, укладка и животная тяга требуют пространства и ритма?",
+            "Как мастерство, усталость и число работников меняют результат?"
+          ],
+          "claim_refs": [
+            "claim:milling-grain-compression-shear-fracture",
+            "claim:milling-moisture-changes-grain-deformation",
+            "claim:measurement-grain-mass-volume-density",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "partial",
+          "limits": "No yield.",
+          "residual_needs": [
+            "threshing, winnowing and team rhythm"
+          ]
+        },
+        {
+          "facet": "dust_sound_and_chaff",
+          "needs": [
+            "Как грохот, пыль, солома, мышиный шорох, слабый свет и запах зерна влияют на восприятие?",
+            "Какие остатки мякины, следы волочения и ремонта остаются?"
+          ],
+          "claim_refs": [
+            "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+            "claim:grain-processing-bread-ground-plant-base",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "partial",
+          "limits": "Actual residue, pest and work volume are scene state.",
+          "residual_needs": [
+            "chaff/dust exposure and rodent-sign interpretation"
+          ]
+        },
+        {
+          "facet": "barn_risk_and_care",
+          "needs": [
+            "Какие пожар, пыль, обрушение, скольжение и порча от сырости требуют consideration?",
+            "Какие проветривание, уборка, латание крыши и защита от вредителей меняют состояние?"
+          ],
+          "claim_refs": [
+            "claim:population-material-wood-combustion",
+            "claim:household-roof-local-condition-guides-repair",
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "partial",
+          "limits": "No upkeep completion.",
+          "residual_needs": [
+            "dust fire, collapse, pest and maintenance effects"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "churchyard",
+      "description": "Religious precinct exterior with paths, gathering and quiet boundaries.",
+      "composes_with": [
+        "town_street",
+        "market_square",
+        "monastery_yard",
+        "village_lane"
+      ],
+      "facets": [
+        {
+          "facet": "ground_paths_and_enclosure",
+          "needs": [
+            "Какие дорожки, трава, ограда, ворота, ступени, деревья и влажный грунт требуют spatial attention?",
+            "Как дождь, праздник, уход и сезон меняют проход?"
+          ],
+          "claim_refs": [
+            "claim:urban-pavements",
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "Actual paths, enclosure and access are scene state.",
+          "residual_needs": [
+            "Общая связь церковного двора с путями, оградой и доступом."
+          ]
+        },
+        {
+          "facet": "people_and_ordinary_use",
+          "needs": [
+            "Какие приход, ожидание, встреча, уход за территорией и проход мимо могут происходить?",
+            "Как различаются посетитель, служитель, ребёнок и путник без заданного roster?"
+          ],
+          "claim_refs": [
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "Статус и допуск не угадываются.",
+          "residual_needs": [
+            "Обычные uses, roles и граница secular activity церковного двора."
+          ]
+        },
+        {
+          "facet": "quiet_senses_and_traces",
+          "needs": [
+            "Какие звон, пение, дым, воск, сырость, тень и открытый свет влияют на восприятие?",
+            "Какие следы свечей, обуви, уборки, дождя и процессии могут быть видны?"
+          ],
+          "claim_refs": [
+            "claim:work-waste-context",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "supported",
+          "limits": "Не выводить ritual/event из следа.",
+          "residual_needs": []
+        },
+        {
+          "facet": "precinct_care_and_risk",
+          "needs": [
+            "Какие скользкие ступени, огонь свечи, теснота и ночная темнота требуют context?",
+            "Какая уборка, ремонт дорожек, уход за зеленью меняют ordinary state?"
+          ],
+          "claim_refs": [
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+          ],
+          "coverage": "partial",
+          "limits": "Не создавать church policy.",
+          "residual_needs": [
+            "Caretaking, surface hazards and authority for maintenance."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monastery_yard",
+      "description": "Working religious compound exterior with mixed domestic and communal rhythms.",
+      "composes_with": [
+        "churchyard",
+        "orchard_garden",
+        "outbuildings",
+        "road"
+      ],
+      "facets": [
+        {
+          "facet": "compound_layout_and_water",
+          "needs": [
+            "Какие дворы, ограды, дорожки, хозяйственные зоны, колодцы и посадки могут разделять поток?",
+            "Как сезонная чистка, снег и дожди меняют связность?"
+          ],
+          "claim_refs": [
+            "claim:water-permeability-connected-pores",
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+          ],
+          "coverage": "supported",
+          "limits": "Не утверждать конкретный монастырь или его устройство.",
+          "residual_needs": []
+        },
+        {
+          "facet": "communal_work",
+          "needs": [
+            "Какие готовка, сад, приём, перенос, мастерская и уход за животными могут сосуществовать?",
+            "Как посетитель, брат, работник и поставщик видят разные части среды?"
+          ],
+          "claim_refs": [
+            "claim:construction-auxiliary-construction-work",
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+          ],
+          "coverage": "supported",
+          "limits": "Роли/доступ требуют authoritative context.",
+          "residual_needs": []
+        },
+        {
+          "facet": "compound_senses",
+          "needs": [
+            "Какие звон, молитва, дым кухни, садовые запахи, шаги и закрытые ворота меняют восприятие?",
+            "Какие следы ухода, доставки, воды и работ дают ordinary evidence?"
+          ],
+          "claim_refs": [
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+          ],
+          "coverage": "supported",
+          "limits": "Не превращать атмосферу в theological claim.",
+          "residual_needs": []
+        },
+        {
+          "facet": "order_and_hazards",
+          "needs": [
+            "Какие пожар, скользкие дорожки, рабочие животные и тесные проходы требуют resolution?",
+            "Какая maintenance стен, крыш, сада и воды формирует меняющееся место?"
+          ],
+          "claim_refs": [
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать порядок/правила обители.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "road",
+      "description": "Long-distance or inter-settlement route with variable surface and services.",
+      "composes_with": [
+        "village_lane",
+        "bridge_crossing",
+        "ferry_landing",
+        "forest_track",
+        "field_margin"
+      ],
+      "facets": [
+        {
+          "facet": "route_surface_and_weather",
+          "needs": [
+            "Какие колеи, песок, глина, камни, лужи, снег и уклоны меняют скорость людей, коней и повозок?",
+            "Как сезонная maintenance, дождь и мороз дают различную проходимость?"
+          ],
+          "claim_refs": [
+            "claim:terrain-background",
+            "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+          ],
+          "coverage": "supported",
+          "limits": "Не устанавливать маршрут или расстояние.",
+          "residual_needs": []
+        },
+        {
+          "facet": "travel_and_support",
+          "needs": [
+            "Какие груз, упряжь, пеший ход, привалы, ремонт и ориентирование требуют means?",
+            "Как различаются купец, крестьянин, гонец, семья и одиночный путник?"
+          ],
+          "claim_refs": [
+            "claim:transport-horse-sledge-equipment",
+            "claim:transport-sledge-summer-cargo"
+          ],
+          "coverage": "supported",
+          "limits": "Не присваивать цели путешествия.",
+          "residual_needs": []
+        },
+        {
+          "facet": "road_signals",
+          "needs": [
+            "Как пыль, скрип, копыта, птичьи голоса, дым вдали, сумерки и открытый обзор влияют на perception?",
+            "Какие следы колёс, костров, подков, поломки и ремонта требуют time sensitivity?"
+          ],
+          "claim_refs": [
+            "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts"
+          ],
+          "coverage": "supported",
+          "limits": "Следы не являются tracking guarantee.",
+          "residual_needs": []
+        },
+        {
+          "facet": "road_risk_and_repair",
+          "needs": [
+            "Какие усталость, разбойная опасность как контекстная возможность, слом оси, переохлаждение и потеря пути важны?",
+            "Какие объезды, гати, мосты и подсыпка требуют maintenance/source?"
+          ],
+          "claim_refs": [
+            "claim:force-contact-geometry",
+            "claim:work-intensity-duration"
+          ],
+          "coverage": "supported",
+          "limits": "Не создаёт угрозы или инфраструктуру автоматически.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "bridge_crossing",
+      "description": "Built crossing concentrated around load, water and bottleneck movement.",
+      "composes_with": [
+        "road",
+        "village_lane",
+        "riverbank",
+        "marshy_stream"
+      ],
+      "facets": [
+        {
+          "facet": "span_support_and_load",
+          "needs": [
+            "Какие настил, брёвна, опоры, перила, лёд, подмыв и ширина влияют на перенос веса?",
+            "Как вода, мороз, гниль и ремонт меняют допустимый проход?"
+          ],
+          "claim_refs": [
+            "claim:force-contact-geometry",
+            "claim:wood-liquid-moisture-change"
+          ],
+          "coverage": "supported",
+          "limits": "Не утверждать конструкцию конкретного моста.",
+          "residual_needs": []
+        },
+        {
+          "facet": "crossing_flow",
+          "needs": [
+            "Как пешие, животные, телеги, носильщики и встречный поток делят узкий проход?",
+            "Какие манёвры, ожидание и помощь нужны при грузе или плохой погоде?"
+          ],
+          "claim_refs": [
+            "claim:force-contact-geometry"
+          ],
+          "coverage": "supported",
+          "limits": "Не делать мост neutral access zone.",
+          "residual_needs": []
+        },
+        {
+          "facet": "bridge_signals",
+          "needs": [
+            "Какие скрип, плеск, ветер, вибрация, открытая видимость и следы колёс говорят о состоянии?",
+            "Какие трещины, свежие доски, грязь и водяные отметки требуют осторожного чтения?"
+          ],
+          "claim_refs": [
+            "claim:wood-liquid-directional-uptake"
+          ],
+          "coverage": "supported",
+          "limits": "Не ставить диагноз конструкции из атмосферы.",
+          "residual_needs": []
+        },
+        {
+          "facet": "crossing_hazard_and_upkeep",
+          "needs": [
+            "Какие падение, обрушение, ледяная скользкость, паника животного и затор создают outcomes?",
+            "Какие ремонт, очистка, подпорка и сезонное закрытие нуждаются в history?"
+          ],
+          "claim_refs": [
+            "claim:household-trauma-unnecessary-movement-can-worsen"
+          ],
+          "coverage": "supported",
+          "limits": "Не считать maintenance выполненной.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "ferry_landing",
+      "description": "Informal or organized landing where crossing waits on water and means.",
+      "composes_with": [
+        "river_channel",
+        "riverbank",
+        "road",
+        "river_wharf"
+      ],
+      "facets": [
+        {
+          "facet": "landing_ground_and_wait",
+          "needs": [
+            "Какие отмель, сходня, грязь, привязи, очередь и укрытие от ветра определяют ожидание?",
+            "Как уровень воды, лёд и погода меняют саму точку посадки?"
+          ],
+          "claim_refs": [
+            "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не утверждать паромное сообщение или расписание.",
+          "residual_needs": []
+        },
+        {
+          "facet": "crossing_means_and_people",
+          "needs": [
+            "Какие лодка, канат, шест, гребля, груз и помощь нужны разным попыткам переправы?",
+            "Как различаются лодочник, пассажир, возница, животное и ожидающий?"
+          ],
+          "claim_refs": [
+            "claim:transport-hired-boatman",
+            "claim:transport-private-boat-arrangement",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Плавсредство и услуга требуют source/owner.",
+          "residual_needs": []
+        },
+        {
+          "facet": "waterfront_waiting_signals",
+          "needs": [
+            "Какие туман, ветер, плеск, скрип, мокрые следы, костёр ожидания и мусор различимы?",
+            "Какие следы посадки быстро исчезают из-за воды и дождя?"
+          ],
+          "claim_refs": [
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не выводить поездку конкретного лица.",
+          "residual_needs": []
+        },
+        {
+          "facet": "ferry_risk",
+          "needs": [
+            "Какие опрокидывание, течения, испуг животных, тяжёлый груз, лёд и ночная темнота важны?",
+            "Какая upkeep берега, каната и лодки меняет риск?"
+          ],
+          "claim_refs": [
+            "claim:buoyancy-pressure-phase-change",
+            "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Exact resolution у physical owners.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "forest_track",
+      "description": "Narrow maintained or improvised path through wooded ground.",
+      "composes_with": [
+        "broadleaf_woodland",
+        "conifer_woodland",
+        "mixed_woodland",
+        "road",
+        "hunting_ground"
+      ],
+      "facets": [
+        {
+          "facet": "track_legibility",
+          "needs": [
+            "Какие вытаптывание, зарубки, колеи, настил, ветви и корни делают путь читаемым или исчезающим?",
+            "Как листопад, снег, дождь и отсутствие ухода меняют его?"
+          ],
+          "claim_refs": [
+            "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Наличие, давность и направление конкретной тропы — scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "travel_and_clearance",
+          "needs": [
+            "Какие пеший ход, лошадь, волочение, перенос груза и проводник требуют ширины/очистки?",
+            "Как различаются охотник, дровосек, семья и потерявшийся путник?"
+          ],
+          "claim_refs": [
+            "claim:work-intensity-duration",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
+          ],
+          "coverage": "supported",
+          "limits": "Не гарантировать проход на основании названия.",
+          "residual_needs": []
+        },
+        {
+          "facet": "track_perception_and_marks",
+          "needs": [
+            "Как кроны, тишина, ветер, запах дыма, близкие звуки и ограниченный обзор меняют orientation?",
+            "Какие следы обуви, копыт, зверя, рубки и волочения пересекают путь?"
+          ],
+          "claim_refs": [
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
+          ],
+          "coverage": "supported",
+          "limits": "Не превращать следы в precise tracking.",
+          "residual_needs": []
+        },
+        {
+          "facet": "track_hazard_and_maintenance",
+          "needs": [
+            "Какие бурелом, грязь, снег, потеря направления, падение ветви и огонь важны?",
+            "Какая расчистка, отметка, мосток и обход требуют actor-maintenance?"
+          ],
+          "claim_refs": [
+            "claim:research-extreme-cold-can-cause-cold-stress",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "supported",
+          "limits": "Не materialize helpful upkeep.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "hunting_ground",
+      "description": "Use-overlay for observing, pursuing and processing wild animals across terrain.",
+      "composes_with": [
+        "broadleaf_woodland",
+        "mixed_woodland",
+        "forest_edge",
+        "floodplain_meadow",
+        "lake_shore"
+      ],
+      "facets": [
+        {
+          "facet": "terrain_and_sign",
+          "needs": [
+            "Какие ветер, укрытия, кормовые места, грунт, следы и линии обзора важны для поиска?",
+            "Как дождь, снег, листопад и время суток меняют возможность чтения sign?"
+          ],
+          "claim_refs": [
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-microterrain-patches",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Не утверждать наличие конкретной добычи.",
+          "residual_needs": []
+        },
+        {
+          "facet": "pursuit_means_and_roles",
+          "needs": [
+            "Какие следование, ожидание, ловушка, собака, оружие, перенос и разделка требуют means и access?",
+            "Как одиночный охотник, группа, проводник и случайный путник меняют disturbance?"
+          ],
+          "claim_refs": [
+            "claim:agriculture-fauna-ash-hunting-bow",
+            "claim:wild-food-and-fur-evidence",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "supported",
+          "limits": "Combat/animal mechanics остаются code-owned.",
+          "residual_needs": []
+        },
+        {
+          "facet": "animal_senses_and_human_trace",
+          "needs": [
+            "Какие запахи, шум, ветер, дым, следы и тревожные птицы могут раскрывать или скрывать человека?",
+            "Какие footprints, шерсть, помёт, сломанные ветви и кровь требуют cautious interpretation?"
+          ],
+          "claim_refs": [
+            "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+            "claim:place-outdoors-forest-structure-and-season",
+            "claim:place-outdoors-clearing-and-trace-renewal",
+            "claim:place-outdoors-cover-opening-and-work-visibility"
+          ],
+          "coverage": "partial",
+          "limits": "Конкретный зверь, след и реакция — scene state.",
+          "residual_needs": [
+            "Общая связь ветра, шума и запаха с обнаружением животными человека."
+          ]
+        },
+        {
+          "facet": "hunt_risk_and_stewardship",
+          "needs": [
+            "Какие потеря пути, ранение, холод, огонь, конфликт за добычу и порча мяса требуют outcomes?",
+            "Какие тропы, разделочные места и сезонный покой требуют causal maintenance/policy?"
+          ],
+          "claim_refs": [
+            "claim:research-extreme-cold-can-cause-cold-stress",
+            "claim:wound-healing-time-dependent",
+            "claim:place-outdoors-forest-structure-and-season"
+          ],
+          "coverage": "supported",
+          "limits": "Не вводить hunting rules без authority.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "orchard_garden",
+      "description": "Cultivated small plot with seasonal plants and close tending.",
+      "composes_with": [
+        "peasant_homestead",
+        "monastery_yard",
+        "town_courtyard",
+        "field_margin"
+      ],
+      "facets": [
+        {
+          "facet": "beds_trees_and_soil",
+          "needs": [
+            "Какие гряды, плодовые деревья, кусты, компост, ограда и полив формируют доступ и работу?",
+            "Как посадка, цветение, плодоношение, обрезка и мороз меняют вид?"
+          ],
+          "claim_refs": [
+            "claim:static-root-loss-can-cause-transplant-shock",
+            "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species"
+          ],
+          "coverage": "supported",
+          "limits": "Не фиксировать культуры или урожай.",
+          "residual_needs": []
+        },
+        {
+          "facet": "tending_and_harvest",
+          "needs": [
+            "Какие прополка, полив, подвязка, сбор, защита и перенос требуют means и времени?",
+            "Как различаются хозяин, помощник, ребёнок, птицы и домашние животные?"
+          ],
+          "claim_refs": [
+            "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water"
+          ],
+          "coverage": "supported",
+          "limits": "Сбор уменьшает finite source.",
+          "residual_needs": []
+        },
+        {
+          "facet": "garden_signals",
+          "needs": [
+            "Какие запах земли, цветения, насекомые, полив, птицы и тень меняют sensing?",
+            "Какие следы рыхления, обрезки, вредителей, упавших плодов и дождя видны?"
+          ],
+          "claim_refs": [
+            "claim:animal-pollination-affects-flowering-plant-reproduction",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Не выводить время работ с точностью без basis.",
+          "residual_needs": []
+        },
+        {
+          "facet": "garden_risk_and_care",
+          "needs": [
+            "Какие заморозок, засуха, вредители, слом ветвей, скольжение и конфликт с животными важны?",
+            "Какая поливная, оградная и почвенная maintenance меняет состояние?"
+          ],
+          "claim_refs": [
+            "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Не заменять растениеводство декоративной статикой.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "pasture",
+      "description": "Grazing ground shaped by animals, herding and boundaries.",
+      "composes_with": [
+        "hay_meadow",
+        "floodplain_meadow",
+        "forest_edge",
+        "peasant_homestead"
+      ],
+      "facets": [
+        {
+          "facet": "forage_ground_and_fence",
+          "needs": [
+            "Какие трава, выеденные участки, вода, солонцы, кочки и изгороди определяют выпас?",
+            "Как сезон, дождь, засуха и перегон меняют корм и опору?"
+          ],
+          "claim_refs": [
+            "claim:practical-fodder-hay",
+            "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не заявлять стадо или ownership земли.",
+          "residual_needs": []
+        },
+        {
+          "facet": "herding_and_animal_movement",
+          "needs": [
+            "Какие пастух, собака, привязь, загон, водопой и поиск отбившегося животного требуют среды?",
+            "Как animal temperament и число людей меняют movement hazards?"
+          ],
+          "claim_refs": [
+            "claim:practical-livestock-care",
+            "claim:animal-care-needs-presence"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать животных из общего класса.",
+          "residual_needs": []
+        },
+        {
+          "facet": "pasture_senses_and_marks",
+          "needs": [
+            "Какие звон, мычание, запах, мухи, ветер и открытый обзор меняют perception?",
+            "Какие помёт, вытаптывание, шерсть, следы хищника и прохода различимы по погоде?"
+          ],
+          "claim_refs": [
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features"
+          ],
+          "coverage": "supported",
+          "limits": "Следы не дают certainty о нападении.",
+          "residual_needs": []
+        },
+        {
+          "facet": "grazing_risk_and_upkeep",
+          "needs": [
+            "Какие ядовитые/опасные участки как проверяемая возможность, болото, хищник, потеря животного и гроза актуальны?",
+            "Какая починка изгороди, перегон и расчистка водопоя создают maintenance variation?"
+          ],
+          "claim_refs": [
+            "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Не заводить species blacklist без model.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "winter_ice_crossing",
+      "description": "Seasonal overlay for frozen water and packed snow travel.",
+      "composes_with": [
+        "river_channel",
+        "lake_shore",
+        "road",
+        "conifer_woodland",
+        "ferry_landing"
+      ],
+      "facets": [
+        {
+          "facet": "ice_snow_and_load",
+          "needs": [
+            "Какие толщина льда, снег, наледь, трещины, промоины и береговой сход меняют нагрузку и путь?",
+            "Как оттепель, ветер, течение и дневное тепло меняют условия?"
+          ],
+          "claim_refs": [
+            "claim:buoyancy-pressure-phase-change",
+            "claim:candidate-v2-near-melting-ice-has-less-strength",
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
+          ],
+          "coverage": "supported",
+          "limits": "Thickness, current, thaw, shore transition and load are scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "winter_travel_means",
+          "needs": [
+            "Какие пеший ход, сани, шест, верёвка, тёплая одежда и совместный переход меняют попытку?",
+            "Как различаются ребёнок, нагруженная повозка, всадник и опытный местный?"
+          ],
+          "claim_refs": [
+            "claim:transport-winter-sledge-1220",
+            "claim:transport-horse-sledge-equipment"
+          ],
+          "coverage": "supported",
+          "limits": "Equipment needs existing inventory.",
+          "residual_needs": []
+        },
+        {
+          "facet": "winter_perception_and_trace",
+          "needs": [
+            "Как белизна, метель, скрип снега, дальний звук, пар дыхания и ранние сумерки влияют на orientation?",
+            "Какие следы саней, ног, полозьев, воды и животных сохраняются/заносатся?"
+          ],
+          "claim_refs": [
+            "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+            "claim:research-extreme-cold-can-cause-cold-stress"
+          ],
+          "coverage": "partial",
+          "limits": "Метель, свет и конкретные следы — scene state.",
+          "residual_needs": [
+            "Общая связь снежного покрова с видимостью и сохранностью или заносом следов."
+          ]
+        },
+        {
+          "facet": "ice_hazard_and_marking",
+          "needs": [
+            "Какие провал, обморожение, потеря пути, ледяной ветер и тяжёлый груз требуют outcomes?",
+            "Какие вешки, расчистка, проверка и сезонное закрытие требуют human maintenance?"
+          ],
+          "claim_refs": [
+            "claim:research-extreme-cold-can-cause-cold-stress",
+            "claim:candidate-physiology-v3-drowning-respiratory-impairment"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать безопасный зимник без cause.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "field_margin",
+      "description": "Narrow boundary of fields, ditches, hedges and paths.",
+      "composes_with": [
+        "arable_field",
+        "hay_meadow",
+        "road",
+        "forest_edge",
+        "floodplain_meadow"
+      ],
+      "facets": [
+        {
+          "facet": "margin_form_and_drainage",
+          "needs": [
+            "Какие межа, канава, куст, камни, трава и колея создают тонкую полосу прохода?",
+            "Как распашка, покос, дожди и repair меняют её читаемость?"
+          ],
+          "claim_refs": [
+            "claim:terrain-parent-material-assemblage",
+            "claim:water-permeability-connected-pores",
+            "claim:place-outdoors-traffic-wet-ground-and-ruts",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Не считать границу legal fact.",
+          "residual_needs": []
+        },
+        {
+          "facet": "edge_use_and_material",
+          "needs": [
+            "Какие обход, сбор, короткий путь, дренажная работа, выпас и укрытие могут происходить?",
+            "Какие растения, насекомые, грызуны и птицы зависят от adjacent environments?"
+          ],
+          "claim_refs": [
+            "claim:agriculture-fauna-flax-hemp-cultivation"
+          ],
+          "coverage": "supported",
+          "limits": "Не создавать resource/animal automatically.",
+          "residual_needs": []
+        },
+        {
+          "facet": "margin_signals",
+          "needs": [
+            "Как ветер, открытый свет, запах земли, тень кустов и дальние звуки меняют perception?",
+            "Какие следы колес, сапог, зверя, стока и прополки пересекаются здесь?"
+          ],
+          "claim_refs": [
+            "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Не назначать автора следов.",
+          "residual_needs": []
+        },
+        {
+          "facet": "margin_hazard_and_care",
+          "needs": [
+            "Какие падение в канаву, колючки, мокрая трава, скрытая нора и потеря груза актуальны?",
+            "Какие очистка канавы, обрезка и подсыпка меняют edge?"
+          ],
+          "claim_refs": [
+            "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+            "claim:place-outdoors-clearing-and-trace-renewal"
+          ],
+          "coverage": "supported",
+          "limits": "Maintenance требует committed work.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "fishing_camp",
+      "description": "Temporary or recurring working spot for catch, repair and shelter.",
+      "composes_with": [
+        "lake_shore",
+        "riverbank",
+        "river_channel",
+        "forest_edge"
+      ],
+      "facets": [
+        {
+          "facet": "shore_setup_and_material",
+          "needs": [
+            "Какие место сушки, костёр, сети, лодка, колья, разделочная поверхность и дрова могут быть нужны?",
+            "Как вода, ветер, дождь и сезон меняют возможность развернуть work?"
+          ],
+          "claim_refs": [
+            "claim:population-fishing-workspace",
+            "claim:population-river-work",
+            "claim:practical-net-space",
+            "claim:place-outdoors-shore-working-edge-composition",
+            "claim:place-outdoors-microterrain-patches"
+          ],
+          "coverage": "supported",
+          "limits": "Camp, shore form, gear and fuel are scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "catch_work_and_preservation",
+          "needs": [
+            "Какие лов, сортировка, починка сети, перенос, копчение/сушка как возможные процессы требуют средств?",
+            "Как один рыбак, группа, покупатель и животное вмешиваются в flow?"
+          ],
+          "claim_refs": [
+            "claim:population-net-work",
+            "claim:practical-net-repair",
+            "claim:population-fish-dried-form",
+            "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
+          ],
+          "coverage": "supported",
+          "limits": "Catch, workers, means and processing state need valid sources.",
+          "residual_needs": []
+        },
+        {
+          "facet": "camp_senses_and_traces",
+          "needs": [
+            "Какие дым, рыба, мокрая верёвка, чайки, плеск и огонь заметны в разное время?",
+            "Какие чешуя, угли, следы сетей, лодки и мусор могут оставаться или смываться?"
+          ],
+          "claim_refs": [
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:work-waste-context",
+            "claim:practical-net-dry",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "supported",
+          "limits": "Current smoke, residue and their age are scene state.",
+          "residual_needs": []
+        },
+        {
+          "facet": "waterwork_hazards",
+          "needs": [
+            "Какие крючки, ножи, холод, огонь, течение, порча улова и ночные риски требуют resolution?",
+            "Какая maintenance сетей, лодки, очага и берега меняет работу?"
+          ],
+          "claim_refs": [
+            "claim:practical-boat-leak",
+            "claim:practical-boat-shore-transfer",
+            "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk"
+          ],
+          "coverage": "supported",
+          "limits": "Water, knife, cold and boat risks depend on scene conditions.",
+          "residual_needs": []
+        }
+      ]
+    },
+    {
+      "id": "dwelling_interior",
+      "description": "Inhabited interior that composes with town courtyard or homestead and varies by occupants, means, season, weather and upkeep.",
+      "composes_with": [
+        "town_courtyard",
+        "peasant_homestead",
+        "cellar_granary",
+        "bathhouse"
+      ],
+      "facets": [
+        {
+          "facet": "hearth_smoke_and_air",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:practical-dwelling-smoke-draft",
+            "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+            "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+            "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+          ],
+          "residual_needs": [],
+          "limits": "No hearth, smoke level, fuel, occupant exposure or safe indoor condition is established. How a particular room's opening, fuel and current fire state combine remains materialized state, not an assumed ventilation result.",
+          "needs": [
+            "Как источник огня, топливо, проёмы и движение воздуха меняют дым, тепло, работу и риск внутри жилья?"
+          ]
+        },
+        {
+          "facet": "warmth_damp_and_weather_enclosure",
+          "coverage": "partial",
+          "claim_refs": [
+            "claim:practical-dwelling-rain-snow",
+            "claim:household-roof-layers-shed-water",
+            "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+            "claim:research-increased-ventilation-can-help-reduce-condensation",
+            "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+          ],
+          "residual_needs": [
+            "Qualitative relation among wall/floor moisture, drafts, bedding and ordinary indoor comfort; no fixed room-type or comfort threshold is needed."
+          ],
+          "limits": "No actual leak, roof condition, room temperature, bedding state or successful repair follows.",
+          "needs": [
+            "Как крыша, стены, пол, щели, влажные вещи и уход влияют на укрытие от холода и сырости?"
+          ]
+        },
+        {
+          "facet": "sleep_care_and_means_variation",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:human-life-reception-depends-on-trust-ties-means",
+            "claim:human-life-visitors-add-resource-demands",
+            "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+            "claim:candidate-v5-sleep-is-basic-human-need",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+            "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+          ],
+          "residual_needs": [],
+          "limits": "No family, guest, bed, privacy norm, available space or duty is materialized.",
+          "needs": [
+            "Как сон, уход, готовка, работа и хранение делят жилое пространство при разном достатке, составе людей и погоде?"
+          ]
+        },
+        {
+          "facet": "household_biota_food_and_storage",
+          "coverage": "partial",
+          "claim_refs": [
+            "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
+            "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
+            "claim:food-drying-depends-on-humidity-airflow",
+            "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
+          ],
+          "residual_needs": [
+            "Other ordinary indoor insects and their seasonal relation to food, bedding and refuse; this is a factual need, not a guarantee of infestation."
+          ],
+          "limits": "No rodent, food stock, contamination, disease, cleanliness or successful exclusion is inferred.",
+          "needs": [
+            "Какие условия пищи, подстилки, щелей, влажности и уборки привлекают либо ограничивают обычную домашнюю биоту?"
+          ]
+        },
+        {
+          "facet": "light_sound_trace_and_upkeep",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:residual-nature-twilight-solar-afterglow",
+            "claim:sound-background-noise-masks-speech",
+            "claim:practical-dwelling-roof",
+            "claim:practical-dwelling-fuel",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+          ],
+          "residual_needs": [],
+          "limits": "No lamp, window, sound source, observed trace, maintenance work or exact time of day is created.",
+          "needs": [
+            "Как проёмы, огонь, мебель, поверхности, ходьба и уборка меняют освещение, слышимость и бытовые следы?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "church_interior",
+      "description": "Religious interior that composes with churchyard or monastery yard; it is not a universal institutional-room surrogate.",
+      "composes_with": [
+        "churchyard",
+        "monastery_yard",
+        "town_street"
+      ],
+      "facets": [
+        {
+          "facet": "threshold_light_and_ordinary_objects",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:candle-wax-material",
+            "claim:candle-thread-wick",
+            "claim:fuel-iron-candlestick-form",
+            "claim:residual-nature-twilight-solar-afterglow",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
+          ],
+          "residual_needs": [],
+          "limits": "No church, candle, candlestick, furnishing, access or actual illumination is materialized.",
+          "needs": [
+            "Как порог, проёмы, свечной свет, поверхности и обычная обстановка церковного интерьера задают обзор и движение?"
+          ]
+        },
+        {
+          "facet": "voice_sound_and_formal_interaction",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:public-world-church-and-official-speech-can-be-marked",
+            "claim:sound-background-noise-masks-speech",
+            "claim:sound-reflections-arrive-after-direct-path",
+            "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+            "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
+          ],
+          "residual_needs": [],
+          "limits": "No speaker, congregation, ritual, message, authority or hearing outcome follows. No fixed liturgy or universal acoustic design is required; scene-specific audibility still needs actual geometry and attendance.",
+          "needs": [
+            "Как голоса, отражения звука, служба, толпа и положение внутри меняют слышимость и обычное взаимодействие?"
+          ]
+        },
+        {
+          "facet": "smoke_wax_fire_and_air",
+          "coverage": "partial",
+          "claim_refs": [
+            "claim:agriculture-fauna-borts-wax",
+            "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+            "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces"
+          ],
+          "residual_needs": [
+            "Interior-specific relation of candle/incense-like smoke, airflow, soot and maintenance, without treating all church haze as the same process."
+          ],
+          "limits": "No lit flame, incense, soot, fire, smoke dose, injury or suppression result is established.",
+          "needs": [
+            "Как горение свечей, дым, воск, движение воздуха и уход влияют на видимость, следы и пожарные риски?"
+          ]
+        },
+        {
+          "facet": "people_roles_and_care",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:religion-olenin-church-people",
+            "claim:social-priest-fragment-relates-office-address",
+            "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+            "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+            "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
+          ],
+          "residual_needs": [],
+          "limits": "No named cleric, schedule, feast, jurisdiction, rule, entry right or current activity follows.",
+          "needs": [
+            "Как посетители, служители и работники используют вход, проходы и места ожидания при разных работах, сезонах и степени ухода?"
+          ]
+        },
+        {
+          "facet": "surfaces_traces_weather_and_upkeep",
+          "coverage": "supported",
+          "claim_refs": [
+            "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+            "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+            "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces"
+          ],
+          "residual_needs": [],
+          "limits": "The lack of this relation does not permit inventing floor material, upkeep, crowding, slip result or building state.",
+          "needs": [
+            "Как грязь, снег, мокрая обувь, капли воска, износ и уборка меняют опору ног и наблюдаемые следы в помещении?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordinary_workshop",
+      "description": "Ordinary craft workspace with operation-dependent light, support, movement, materials and waste; not a fixed trade inventory.",
+      "composes_with": [
+        "town_courtyard",
+        "peasant_homestead",
+        "dwelling_interior",
+        "smithy"
+      ],
+      "facets": [
+        {
+          "facet": "work_bay_and_access",
+          "claim_refs": [
+            "claim:settlement-workshop-street",
+            "claim:ordinary-life-smith-fire-needs-managed-space",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Specific trade, room, owner and access are scene state.",
+          "needs": [
+            "Как форма и размах работы определяют свободное место, опору, подход к материалу и перенос груза в разных ремёслах?"
+          ]
+        },
+        {
+          "facet": "tools_material_and_waste",
+          "claim_refs": [
+            "claim:ordinary-life-household-repairs-compete-with-new-goods",
+            "claim:work-waste-context",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Tools, stock and waste quantities require sources.",
+          "needs": [
+            "Какие связи между инструментом, материалом, сырьём, заготовками, готовой вещью и отходами формируют рабочую среду?"
+          ]
+        },
+        {
+          "facet": "work_rhythm_and_assistance",
+          "claim_refs": [
+            "claim:ordinary-life-apprentice-learns-and-assists",
+            "claim:work-intensity-duration",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Workers, roles and current job are scene state.",
+          "needs": [
+            "Как операции, помощники, перерывы, усталость и разделение работы меняют использование мастерской?"
+          ]
+        },
+        {
+          "facet": "light_smoke_sound_and_trace",
+          "claim_refs": [
+            "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+            "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+            "claim:work-waste-context",
+            "claim:place-outdoors-cover-opening-and-work-visibility",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Current emissions, noise and traces are scene state.",
+          "needs": [
+            "Как работа и материалы создают свет, шум, дым, пыль, запахи и остатки; как день, погода и уборка их меняют?"
+          ]
+        },
+        {
+          "facet": "fire_injury_and_maintenance",
+          "claim_refs": [
+            "claim:ordinary-life-smith-fire-needs-managed-space",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:ordinary-life-household-repairs-compete-with-new-goods",
+            "claim:place-outdoors-means-upkeep-and-environment",
+            "claim:place-outdoors-season-work-space-reallocation",
+            "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Actual fire, hazards and repair history are scene state.",
+          "needs": [
+            "Какие опасности горячих, движущихся, режущих и тяжёлых предметов требуют места и ухода без заданного сценария травмы?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grain_drying_shed_ovin",
+      "description": "Sheltered grain or sheaf drying workspace, distinct from threshing and long-term storage.",
+      "composes_with": [
+        "threshing_barn",
+        "cellar_granary",
+        "peasant_homestead",
+        "arable_field"
+      ],
+      "facets": [
+        {
+          "facet": "drying_space_air_and_grain",
+          "claim_refs": [
+            "claim:food-drying-depends-on-humidity-airflow",
+            "claim:stored-grain-condition-depends-on-temperature-moisture",
+            "claim:stored-grain-airflow-can-reduce-temperature-differences",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Building, grain, airflow and weather are scene state.",
+          "needs": [
+            "Как снопы или зерно, опоры, воздушные пути и укрытие образуют пространство сушки, отличное от хранения и обмолота?"
+          ]
+        },
+        {
+          "facet": "heat_smoke_and_fire_control",
+          "claim_refs": [
+            "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+            "claim:research-increased-ventilation-can-help-reduce-condensation",
+            "claim:water-can-cool-class-a-fire-fuel-and-flame",
+            "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+            "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "partial",
+          "residual_needs": [
+            "Общее отношение между сушкой зерна нагревом, дымом и управлением пожарным риском."
+          ],
+          "limits": "Fire, flue, heat level and outcome are scene state.",
+          "needs": [
+            "Как источник тепла и расположение сухого материала меняют сушку, дым и опасность загорания в овине?"
+          ]
+        },
+        {
+          "facet": "handling_and_residue",
+          "claim_refs": [
+            "claim:food-practices-threshing-chaff",
+            "claim:measurement-grain-mass-volume-density",
+            "claim:work-waste-context",
+            "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+            "claim:place-outdoors-activity-sensory-pulses",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Quantity, tools and current work remain scene state.",
+          "needs": [
+            "Как перенос, укладка и уборка при сушке отличаются от работы на току и оставляют мякину, солому, пыль и просыпи?"
+          ]
+        },
+        {
+          "facet": "moisture_pest_and_repair",
+          "claim_refs": [
+            "claim:drying-reduces-microbial-growth-conditions",
+            "claim:practical-food-grain-storage",
+            "claim:ordinary-life-household-repairs-compete-with-new-goods",
+            "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+            "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
+          ],
+          "coverage": "supported",
+          "residual_needs": [],
+          "limits": "Pests, damage and maintenance history are scene state.",
+          "needs": [
+            "Как сырость, протечки, вентиляция, вредители и сезонное обслуживание влияют на пригодность сушильного помещения?"
+          ]
+        }
+      ]
+    }
+  ]
+}

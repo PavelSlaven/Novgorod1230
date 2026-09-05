@@ -129,6 +129,12 @@ ordinary-детали не требуется. `editorial_reconstruction` — р
 
 The obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.
 
+World Knowledge §0.4 adds an open place-first authoring need-map:
+environment envelopes, linked approved premises, explicit gaps and
+place-by-conditions reconstruction checks. It does not create location
+presence, an object whitelist, a materializer or gameplay activation.
+Structural map validation is not evidence of environmental completeness.
+
 ## 7. Domain guides and legacy/supporting documents
 
 The following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.

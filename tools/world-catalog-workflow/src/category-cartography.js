@@ -111,4 +111,38 @@ function validateFamilies(entry, families, domain, errors) {
   }
 }
 
+// Authoring consistency only: unlike category/profile mapping, this open need
+// map has no all-claim coverage, activation, presence, or readiness gate.
+export function validatePlaceFirstCartography({ cartography, pack } = {}) {
+  const errors = [];
+  if (cartography?.schema !== 'world_knowledge_place_first_cartography_v1') return ['PLACE_CARTOGRAPHY_SCHEMA_INVALID'];
+  if (cartography.pack_ref !== pack?.manifest?.pack_ref) errors.push('PLACE_CARTOGRAPHY_PACK_MISMATCH');
+  const axes = cartography.sampling_axes;
+  if (!Array.isArray(axes) || !['place', 'season', 'weather', 'time_of_day', 'person', 'activity', 'means', 'maintenance'].every(axis => axes.includes(axis))) errors.push('PLACE_CARTOGRAPHY_SAMPLING_AXES_MISSING');
+  const families = cartography.environment_families;
+  if (!Array.isArray(families) || families.length === 0) return [...errors, 'PLACE_CARTOGRAPHY_FAMILIES_MISSING'];
+  const ids = new Set(families.map(family => family?.id));
+  const claims = new Set((pack?.claims ?? []).map(claim => claim.claim_ref));
+  if (ids.size !== families.length) errors.push('PLACE_CARTOGRAPHY_FAMILY_DUPLICATE');
+  for (const family of families) {
+    if (!text(family?.id) || !text(family?.description)) { errors.push('PLACE_CARTOGRAPHY_FAMILY_INVALID'); continue; }
+    if (!Array.isArray(family.composes_with)) errors.push('PLACE_CARTOGRAPHY_COMPOSITION_INVALID');
+    else for (const id of family.composes_with) if (!ids.has(id)) errors.push('PLACE_CARTOGRAPHY_COMPOSITION_UNMAPPED:' + id);
+    if (!Array.isArray(family.facets) || family.facets.length === 0) { errors.push('PLACE_CARTOGRAPHY_FACETS_MISSING:' + family.id); continue; }
+    const facets = new Set();
+    for (const facet of family.facets) {
+      if (!text(facet?.facet) || facets.has(facet.facet)
+          || !Array.isArray(facet.needs) || facet.needs.length === 0 || !facet.needs.every(text)
+          || !text(facet.limits) || !['unassessed', 'missing', 'partial', 'supported'].includes(facet.coverage)) {
+        errors.push('PLACE_CARTOGRAPHY_FACET_INVALID:' + family.id);
+      }
+      facets.add(facet?.facet);
+      if (!Array.isArray(facet?.claim_refs)) { errors.push('PLACE_CARTOGRAPHY_REFS_INVALID'); continue; }
+      if (['partial', 'supported'].includes(facet.coverage) && facet.claim_refs.length === 0) errors.push('PLACE_CARTOGRAPHY_SUPPORT_MISSING:' + family.id);
+      for (const ref of facet.claim_refs) if (!claims.has(ref)) errors.push('PLACE_CARTOGRAPHY_CLAIM_UNMAPPED:' + ref);
+    }
+  }
+  return Object.freeze(errors.sort());
+}
+
 function text(value) { return typeof value === 'string' && value.trim() !== ''; }

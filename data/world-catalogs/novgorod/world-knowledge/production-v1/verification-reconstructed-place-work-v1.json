@@ -1,0 +1,125 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "claim_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "claim_digest": "d13c25269d3717734e1d5d95c45831d05ad9b81bf07c9d2b254410d0e486c535",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-surface"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No shared surface, material, procedure, or current work state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "claim_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "claim_digest": "83a374baf5bc7a7ccc3ce39cb8d8845e38540c73d74cbc498fa62eb00ca93143",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-traces"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No residue, maker, finished product, or process is identified. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "claim_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "claim_digest": "61866bae2eb2ee7a7d286c102c22ed6bd58d4c0064fd65836b0bb6d879f56436",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-traces"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No spill, stock, pest, infestation, or harm is established. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "claim_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "claim_digest": "e63a6d286ad062ff56e0419a9d4efe9cf5ed165a9eb42406eb82d9ef0f1f9dae",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-clearance"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No layout, machine, guard, route, or safety outcome is prescribed. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "claim_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "claim_digest": "2c390b95a683bd4a103a964e43b4afe14513bf8b1dd812be1e13d625ad451eab",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-smith-mill"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional on established smithing; no workshop inventory, recipe, tool, water, or universal treatment. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "claim_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "claim_digest": "05a9b2a8ce29712f06097d44803245aa72a4b6683a24abf00e9904a82777ff57",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-smith-mill"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Entanglement risk and a practical reason to stop motion only; no universal historical rule, drive type, lock procedure, mill, or safety guarantee. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "claim_digest": "a8ddde4d63f93cce8a565cbb0f5439bc14f58d075aa70b71f48875c03c8d5e02",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-grain-vegetation"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No oven, threshing floor, crop, fuel, process, or fire state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "claim_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "claim_digest": "7df349dd836171966375201e6b0099fe6192de78308f285881f5c9d117c60893",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-work-v1.json#claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-work-grain-vegetation"
+      ],
+      "review_ref": "verification/reconstructed-place-work-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No vegetation, line, load, clearance, route, or completed work. Editorial reconstruction, not direct historical attestation or current world state."
+    }
+  ]
+}

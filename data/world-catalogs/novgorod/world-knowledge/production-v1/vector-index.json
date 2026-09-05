@@ -11280,6 +11280,146 @@
       "retrieval_text": "Сосновое пековое покрытие Пековое покрытие, идентифицированное в источнике; не любая сосновая смола, канифоль или уже обработанный предмет. В описанной Odegaard и соавторами традиции юго-запада Северной Америки нагретое сосновое пековое покрытие на плетёной корзине делало именно эту систему водонепроницаемой. Это наблюдение о сочетании определённого пека, плетёной основы и нанесённого покрытия, не общее свойство всякой смолы, доски, шва, лодки или тары. Оно не задаёт сцепление с древесиной, долговечность, рецепт, наличие материалов или новгородскую практику."
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-activity-sensory-pulses:en",
+      "target_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. Current work gives a place a changing sensory background: chopping and forging produce impacts, loading produces voices and creaks, and handling food, fish, fuel or manure produces different smells. Noise may subside quickly after work stops while smells and residues persist; these are plausible relations, not proof of a particular activity or actor. environment place season upkeep smell sound yard market wharf"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-activity-sensory-pulses:ru",
+      "target_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Текущая работа задаёт изменчивый чувственный фон места: рубка и ковка дают удары, погрузка — голоса и скрип, обращение с пищей, рыбой, топливом или навозом — разные запахи. После остановки работы шум может быстро стихнуть, а запахи и остатки сохраняться; это вероятная связь, не доказательство конкретного занятия или виновника. среда место сезон уход запах звук двор торг пристань"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-clearing-and-trace-renewal:en",
+      "target_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. Clearing, trampling, grazing and gathering alter vegetation and leave different combinations of cuts, broken material, flattened stems and bare ground. New growth, snow, water and later traffic may conceal or overwrite them; a single trace does not reliably identify an actor, exact age or purpose. environment place season upkeep clearance trace grazing path gathering"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-clearing-and-trace-renewal:ru",
+      "target_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Расчистка прохода, вытаптывание, выпас и сбор меняют растительность и оставляют разные сочетания срезов, обломков, примятых стеблей и оголённой земли. Новый рост, снег, вода и последующее движение могут скрывать или перекрывать эти следы; по одному следу нельзя надёжно установить человека, точную давность или цель. среда место сезон уход расчистка след выпас тропа сбор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-cover-opening-and-work-visibility:en",
+      "target_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. An open square or field offers views along unobstructed directions but less shelter from wind and precipitation. Walls, canopies and dense undergrowth create shaded and screened patches; an opening or shelter edge can provide light for close work without making the whole room or wood equally bright. environment place season upkeep visibility shade forest edge light shelter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-cover-opening-and-work-visibility:ru",
+      "target_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. На открытой площади или поле проще обозревать незагороженные направления, но меньше укрытия от ветра и осадков. Стены, кроны и густой подлесок создают затенённые и закрытые участки; у проёма или края укрытия можно искать свет для мелкой работы, не считая всё помещение или лес одинаково светлым. среда место сезон уход обзор тень опушка свет укрытие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-forest-structure-and-season:en",
+      "target_ref": "claim:place-outdoors-forest-structure-and-season",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. A woodland setting combines tree type, age and density, undergrowth, litter, deadwood and moisture. Leaf fall may open formerly screened directions, dense young branches may hinder long loads, and gaps and edges differ in light and vegetation. Coniferous, deciduous and mixed woods therefore need local combinations of traits rather than identical object sets. environment place season upkeep conifer wood deciduous wood undergrowth deadwood leaf fall"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-forest-structure-and-season:ru",
+      "target_ref": "claim:place-outdoors-forest-structure-and-season",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Лесной фон складывается из деревьев, возраста и густоты насаждения, подлеска, подстилки, валежника и влажности. Листопад может открывать прежде закрытые направления, густые молодые ветви затруднять проход с длинным грузом, а просветы и опушки отличаться по освещению и растениям. Хвойный, лиственный и смешанный лес поэтому требуют локального сочетания признаков, а не одинакового набора вещей. среда место сезон уход хвойный лес лиственный лес подлесок валежник листопад"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-market-activity-and-empty-intervals:en",
+      "target_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. When trading is active, temporary displays, containers, deliveries and waiting people can narrow passages and block views. When trading work stops, some people and objects leave while litter, trampled ground and unloading traces may remain. This describes changing use, not a mandatory market timetable, stock or night watch. environment place season upkeep market stall unloading night crowd"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-market-activity-and-empty-intervals:ru",
+      "target_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. При действующей торговле временная выкладка, тара, подвоз и ожидающие люди могут сужать проход и перекрывать обзор. Когда торговая работа прекращается, часть вещей и людей уходит, а мусор, примятая земля и следы разгрузки могут остаться. Это изменчивое использование места, не обязательный распорядок рынка, ассортимент или ночной караул. среда место сезон уход торг прилавок разгрузка ночь толпа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-means-upkeep-and-environment:en",
+      "target_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. Greater means can allow more covered space, convenient containers, dry fuel reserves, spare clothing and hired help, but do not prove cleanliness or good repair. A modest well-kept place and a wealthy neglected one are distinct plausible reconstructions; repairs, clearance and storage arrangements indicate upkeep more directly than status alone. environment place season upkeep means neglect yard repair"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-means-upkeep-and-environment:ru",
+      "target_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Больший достаток может позволять больше крытого места, удобную тару, запас сухого топлива, сменную одежду и наёмную помощь, но сам по себе не доказывает чистоту и исправность хозяйства. Бедное, но ухоженное место и богатое запущенное место — допустимые разные реконструкции; свежие починки, расчистка и способ хранения показывают уход надёжнее одного статуса хозяина. среда место сезон уход достаток запущенность двор ремонт"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-microterrain-patches:en",
+      "target_ref": "claim:place-outdoors-microterrain-patches",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. A place type does not make every surface alike: a bank, meadow or wood can combine drier rises, wet hollows, roots, dense vegetation and open patches. Choosing a resting, carrying or working position depends on those local combinations rather than the environment name alone. environment place season upkeep hummock hollow meadow bank wood ground"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-microterrain-patches:ru",
+      "target_ref": "claim:place-outdoors-microterrain-patches",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Тип места не делает всю поверхность одинаковой: на берегу, лугу или в лесу сухие возвышения могут соседствовать с влажными понижениями, корнями, густой растительностью и открытыми пятнами. Выбор места для стоянки, переноса груза или работы зависит от этих локальных сочетаний, а не одного названия среды. среда место сезон уход кочка низина луг берег лес грунт"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-season-work-space-reallocation:en",
+      "target_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. A household reallocates space with work and conditions: harvest and provisioning need room for carrying, drying and storage, wet weather calls for material protection, and cold for fuel and shelter care. The same yard, canopy or passage can become crowded and acquire different sounds and traces without implying a fixed calendar or stock. environment place season upkeep harvest drying winter household"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-season-work-space-reallocation:ru",
+      "target_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Пространство хозяйства меняет использование по работе и условиям: урожай и заготовки требуют места для переноски, сушки и хранения, сырость — защиты материала, холод — топлива и ухода за укрытиями. Одни и те же двор, навес или проход могут становиться теснее и менять звуки и следы; точный календарь и запас из этого не следуют. среда место сезон уход урожай сушка зима хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-shore-working-edge-composition:en",
+      "target_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. At a worked shore, water access, footing, cargo space and the onward carrying path are connected. Washing, watering animals, fish work and loading may leave wet, trampled or dirty patches and interfere with one another; distinguish working zones rather than treating every edge as a convenient landing or clean-water source. environment place season upkeep shore loading washing watering passage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-shore-working-edge-composition:ru",
+      "target_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. На используемом берегу подход к воде, место опоры ног, пространство для груза и путь его дальнейшего переноса связаны между собой. Стирка, водопой, рыбная работа и погрузка могут оставлять мокрые, вытоптанные или загрязнённые участки и мешать друг другу; это повод различать рабочие зоны, а не считать любую кромку удобной пристанью или источником чистой воды. среда место сезон уход берег погрузка стирка водопой проход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-traffic-wet-ground-and-ruts:en",
+      "target_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. Repeated feet, hooves and wheels alter the used strip of ground by flattening vegetation and leaving impressions or ruts in suitably wet ground. Depressions may retain water; filling, drainage and detours change passage without automatically providing a firm road. environment place season upkeep rut mud street road rain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-outdoors-traffic-wet-ground-and-ruts:ru",
+      "target_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. Повторный проход людей, копыт и колёс меняет используемую полосу земли: приминает растительность, оставляет отпечатки и при подходящем влажном грунте колеи. В углублениях может задерживаться вода; подсыпка, отвод стока и обход меняют удобство прохода, но не обеспечивают автоматически твёрдую дорогу. среда место сезон уход колея грязь улица дорога дождь"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:plant-development-responds-to-light:en",
       "target_ref": "claim:plant-development-responds-to-light",
       "domain": "biology_physiology",
@@ -13840,6 +13980,258 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Независимые случайные испытания Если испытания действительно независимы, предыдущий исход не меняет вероятности следующего. В модели независимых честных бросков повторения допустимы и не делают противоположный исход обязательным; это не доказывает честность реальной кости."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths:en",
+      "target_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Church interior and yard Qualitative links among threshold, perception, people, weather, and care in church space. During an already ongoing service or ordinary visit, an arrival may wait at the entrance, seek someone known, light a candle, listen, or move farther only when fitting; cleric and worker move differently while attending to space, light, or order. The flow creates pauses, yielding passage, and uneven audibility, but sets no mandatory rite or entry right. inside church churchyard wax traces church visitor cleric church work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths:ru",
+      "target_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Церковный интерьер и двор Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве. При уже идущей службе или обычном посещении пришедший может ждать у входа, искать знакомого, ставить свечу, слушать или проходить дальше лишь когда это уместно; служитель и работник двигаются иначе, следя за пространством, светом или порядком. Поток людей создаёт паузы, уступание прохода и разную слышимость, но не задаёт обязательный чин или право входа. церковь внутри церковный двор воск и следы посетитель церкви служитель работа в церкви"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception:en",
+      "target_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Church interior and yard Qualitative links among threshold, perception, people, weather, and care in church space. At a church threshold, a bright yard and darker interior take time for the eyes to adjust; light from openings and candles picks out particular areas, while voices and footsteps change under a vault and among people. Wet weather brings dirt to the entrance, and cleaning, open doors, and service time alter light, sound, and clear passage. inside church churchyard wax traces church light church sound"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception:ru",
+      "target_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Церковный интерьер и двор Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве. У церковного порога яркий двор и более тёмный интерьер требуют времени глазам; свет из проёмов и свечи выделяют отдельные места, а голоса и шаги меняются под сводом и среди людей. Мокрая погода приносит грязь к входу, а уборка, открытые двери и время службы меняют свет, звук и свободный проход. церковь внутри церковный двор воск и следы внутри церкви свет в церкви звук в церкви"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces:en",
+      "target_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Church interior and yard Qualitative links among threshold, perception, people, weather, and care in church space. Rain, thawing snow, and repeated steps soften earthen paths, while making steps wet and slippery; wet marks, wax, or litter remain by an entrance until washed away, covered, or cleared. A dry day, added surface material, and clearing create a different route and footing, so the yard should not be narrated as one unchanging square. inside church churchyard wax traces churchyard traces wet steps cleaning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces:ru",
+      "target_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Церковный интерьер и двор Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве. Дождь, тающий снег и частые шаги размягчают земляные дорожки, а ступени делают мокрыми и скользкими; у входа остаются мокрые следы, воск или мусор, пока их не смоет, не заметёт или не уберут. Сухой день, подсыпка и расчистка дают другой путь и другую опору, поэтому двор не стоит описывать вечной одинаковой площадкой. церковь внутри церковный двор воск и следы следы в церковном дворе мокрые ступени уборка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel:en",
+      "target_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. By day, light comes through a door, window, or other opening, leaving farther corners darker; in the evening a hearth and available small flame provide it. An opening lets smoke out but also admits cold and rain: damp fuel and still air can make work, sleep, or conversation shift away from the hearth or pause. inside house hearth smoke damp floor dark room house smoke draft"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel:ru",
+      "target_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. Днём свет идёт от двери, окна или другого проёма, оставляя дальние углы темнее; вечером его дают очаг и доступный огонёк. Открытый проём выпускает дым, но вместе с ним впускает холод и дождь: при сыром топливе и тихом воздухе работа у очага, сон и разговор могут потребовать другого места или паузы. дом внутри очаг и дым сырой пол темно в доме дым в избе сквозняк"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually:en",
+      "target_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. A living room can keep benches or platforms with bedding by the walls; a stove or hearth takes part of the room, with work space and passage left around it. Containers, bundles, or movable goods may stand nearby. In crowding, work can move to the yard, wait for light, or be done in turns; a better-resourced household may divide activity more easily, but no single layout is required. inside house hearth smoke damp floor crowded house work indoors sleeping space"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually:ru",
+      "target_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. Жилая комната может держать у стен лавки или настилы с подстилкой; часть места занимает печь или очаг, вокруг которых оставляют рабочую зону и проход. Рядом могут стоять тара, свёртки или переносимые вещи. В тесноте часть дела уносят во двор, откладывают до света или делают по очереди; более обеспеченный дом может разделять занятия лучше, но единой планировки нет. дом внутри очаг и дым сырой пол тесный дом работа дома место для сна"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention:en",
+      "target_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. The hearth corner suits warming food, drying a small item, or sitting with someone unwell, but it is also needed by the fire-tender and may be smoky. Spinning, mending, sorting stores, or conversation can move toward light, a bench, the doorway, or the yard; limited space and privacy make turns and mutual accommodation part of ordinary life. inside house hearth smoke damp floor hearth work crowding care indoors"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention:ru",
+      "target_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. У очага удобнее греть пищу, сушить малую вещь или сидеть с больным, но тот же угол нужен топящему и может быть дымным. Прядение, починка, перебор припасов или разговор переносят к свету, на лавку, к двери либо во двор; нехватка места и приватности делает очередность и взаимную уступку частью обычного быта. дом внутри очаг и дым сырой пол дела у очага теснота уход дома"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces:en",
+      "target_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. After rain or snow, wet footwear and carried water make the entrance dirtier and the floor by the threshold more slippery; wet marks and drops remain separately, while straw, ash, or a cloth can catch some dirt. Sweeping, warming things dry, and frequent traffic quickly alter the picture, so a trace shows a recent condition rather than a house's hidden story. inside house hearth smoke damp floor wet marks cleaning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces:ru",
+      "target_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. После дождя или снега мокрая обувь и принесённая вода делают вход грязнее и пол у порога более скользким; мокрые следы и капли остаются отдельно, а солома, зола или тряпка могут задержать часть грязи. Выметание, просушка у тепла и частая ходьба быстро меняют картину, поэтому след показывает недавнее условие, а не тайную историю дома. дом внутри очаг и дым сырой пол мокрые следы уборка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity:en",
+      "target_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. Crumbs, open containers, a damp corner, and gaps give small animals or insects more reason to stay near a dwelling; dry storage, cleaning, and closed openings reduce those opportunities. Season and nearby household work change likelihood, but do not make every house vermin-ridden. inside house hearth smoke damp floor mice indoors insects in house food scraps"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity:ru",
+      "target_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. Крошки, открытая тара, сырой угол и щели дают мелким животным или насекомым больше поводов держаться около жилья; сухое хранение, уборка и закрытые проёмы уменьшают такие возможности. Сезон и соседняя хозяйственная работа меняют вероятность, но не превращают любой дом в место с вредителями. дом внутри очаг и дым сырой пол мыши дома насекомые в жилье остатки пищи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually:en",
+      "target_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Shared-yard upkeep Qualitative links among seasonal care, work, and available means in a shared yard. In a monastery yard, paths can link water, kitchen, garden, work areas, and gate: water-carriers, people at a fire, roof repairers, and arrivals cross without becoming one shared task. Spring mud, winter snow, summer garden work, and available hands change which routes are clear and what must be done first. monastery yard yard cleaning repair after rain shared work garden water"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually:ru",
+      "target_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Уход за общим двором Качественные связи сезонного ухода, работы и доступных средств в общем дворе. В монастырском дворе дорожки могут связывать воду, кухню, сад, хозяйственные места и ворота: несущие воду, работающие у огня, чинящие крышу и пришедшие пересекаются, не становясь одним общим делом. Весенняя грязь, зимний снег, летняя работа в саду и доступные руки меняют, какие проходы свободны и что надо сделать прежде. монастырский двор уборка двора ремонт после дождя общая работа сад и вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means:en",
+      "target_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Shared-yard upkeep Qualitative links among seasonal care, work, and available means in a shared yard. After rain, people may first clear a drain and a dangerous path, while roof patching, adding surface material, or yard cleaning wait for hands, material, and a dry interval. In another season the same yard needs snow cleared from a threshold, drying, fuel preparation, or garden care; upkeep changes the environment but is never automatically complete. monastery yard yard cleaning repair after rain place upkeep few workers"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means:ru",
+      "target_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Уход за общим двором Качественные связи сезонного ухода, работы и доступных средств в общем дворе. После дождя сначала могут расчистить сток и опасный проход, а латание крыши, подсыпка дорожки или уборка двора ждут рук, материала и сухого окна. В другой сезон тот же двор требует снега с порога, просушки, заготовки топлива или ухода за садом; уход меняет среду, но не бывает автоматически завершённым. монастырский двор уборка двора ремонт после дождя уход за местом починка после дождя нехватка работников"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts:en",
+      "target_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Dust and chaff need swing space; fire and dry fuel are not the same condition. workshop mill threshing grain drying threshing floor"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts:ru",
+      "target_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Пыль и мякина требуют пространства для взмахов; огонь и сухое топливо здесь не одно и то же условие. мастерская работа мельница овин ток сушка зерна"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance:en",
+      "target_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Work space and traces Qualitative limits of work space, traces and obstructions. Hot, heavy, or moving work needs clear handling paths: obstruction hinders carrying, and cloth or a hand can be caught in a moving part. This fixes neither layout nor a specific guard. clearance work traces spill heavy work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance:ru",
+      "target_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. У горячей, тяжёлой или движущейся работы нужен свободный ход: загромождённый путь мешает переносу, а в движущемся узле ткань или рука могут быть захвачены. Это не фиксирует планировку или конкретную защиту. проход стружка расчистка свободный проход тяжёлая работа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing:en",
+      "target_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. In a grain mill, the drive transmits motion to the mechanism and millstones. Work near moving parts can expose clothing or hands to entanglement; inspection or servicing gives a practical reason to stop motion. This is not a universal historical practice, drive type, or guarantee of safe access after stopping. workshop mill threshing drive servicing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing:ru",
+      "target_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. В мукомольной мельнице привод передаёт движение механизму и жерновам. Работа рядом с движущимися частями может подставлять одежду или руки под захват; необходимость осмотра или обслуживания даёт практическую причину остановить движение. Это не всеобщий исторический распорядок, не тип привода и не гарантия безопасного доступа после остановки. мастерская работа мельница овин привод обслуживание"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-process-residue-can-differ-by-material-work:en",
+      "target_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. Shavings, leather scraps, chaff, and spills can leave different work traces without naming a finished product. workshop mill threshing shavings scraps chaff"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-process-residue-can-differ-by-material-work:ru",
+      "target_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Стружка, кожаные обрезки, мякина и просыпи могут оставлять разные рабочие следы, но не называют готовую вещь. мастерская работа мельница овин стружка обрезки мякина"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench:en",
+      "target_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. Where smithing is already established, a forge heats a piece, bellows supply air, and a hammer works it on an anvil; water can cool it when that process needs cooling. This is neither mandatory workshop inventory nor universal heat treatment. workshop mill threshing forge bellows anvil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench:ru",
+      "target_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Там, где кузнечная работа уже установлена, горн нагревает деталь, меха подают воздух, а молоток работает по ней на наковальне; вода может охлаждать деталь, когда этого требует процесс. Это не обязательный набор каждой мастерской и не универсальная термообработка. мастерская работа мельница овин горн меха наковальня"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access:en",
+      "target_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Work space and traces Qualitative limits of work space, traces and obstructions. Spilled dry goods at floor level can become more accessible to ordinary pests. clearance work traces spill spillage pests"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access:ru",
+      "target_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. Просыпанный сухой запас на полу может стать доступнее обычным вредителям. проход стружка расчистка просыпь вредители"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads:en",
+      "target_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Work space and traces Qualitative limits of work space, traces and obstructions. Dense vegetation can snag flexible lines or projecting loads; clearance changes this only when performed. clearance work traces spill snag line"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads:ru",
+      "target_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. Густая растительность может цеплять гибкие линии или выступающий груз; расчистка меняет это условие, если она была сделана. проход стружка расчистка зацепить верёвку"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing:en",
+      "target_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. Wet work can dampen nearby dry cloth or grain, while hot work needs easy fuel moved away from heat. Those tasks can therefore need sequencing on a shared surface; this establishes no procedure or place state. workshop mill threshing wet work hot work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing:ru",
+      "target_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Мокрая работа может увлажнить оставленные рядом сухие ткань или зерно, а горячая обработка требует убрать от жара легко воспламеняющийся мусор. Поэтому на общей поверхности такие дела разумно разводить по очереди; это не задаёт процедуру или состояние места. мастерская работа мельница овин мокрая работа горячая работа"
     },
     {
       "entry_ref": "wk-retrieval:claim:reduced-atp-reserves-can-cause-muscle-fatigue:en",
@@ -16936,6 +17328,48 @@
       "retrieval_text": "Контакт выступов и износ Локальный контакт шероховатостей через смазочную плёнку. Контакт выступов через смазочную плёнку может создать высокие локальные напряжения и износ либо пластическую деформацию. Скорость и степень не заданы."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish:en",
+      "target_ref": "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal bait and target-fish fit Qualitative relations among target fish, animal or invertebrate bait, and benthic prey. Animal or invertebrate bait attractiveness can vary by target fish type. This establishes no fish species, catch, dose, bait condition, water state, or local availability. fishing bait worm bait crayfish bait mollusc prey bottom fishing which bait fish bait response worm bait fish"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish:ru",
+      "target_ref": "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Животная наживка и соответствие целевой рыбе Качественные связи между видом рыбы, животной или беспозвоночной наживкой и придонным кормом. Привлекательность животной или беспозвоночной наживки может различаться для разных типов целевой рыбы. Это не устанавливает вид рыбы, улов, дозу, состояние наживки, воду или местную доступность. наживка червь на рыбу рак наживка моллюск рыба донная ловля какая наживка рыба берёт наживку червь для рыбы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts:en",
+      "target_ref": "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal bait and target-fish fit Qualitative relations among target fish, animal or invertebrate bait, and benthic prey. Mollusc soft tissue can be bait in some freshwater-angling contexts. This does not make any shell bait or establish a mollusc, legality, target fish, method, or catch. fishing bait worm bait crayfish bait mollusc prey bottom fishing mollusc bait mollusc soft tissue shell bait"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts:ru",
+      "target_ref": "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Животная наживка и соответствие целевой рыбе Качественные связи между видом рыбы, животной или беспозвоночной наживкой и придонным кормом. Мягкая ткань моллюска может использоваться как наживка в некоторых пресноводных рыболовных контекстах. Это не делает любую раковину наживкой, не устанавливает моллюска, право, целевую рыбу, способ или улов. наживка червь на рыбу рак наживка моллюск рыба донная ловля моллюск наживка мягкая ткань моллюска раковина наживка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish:en",
+      "target_ref": "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal bait and target-fish fit Qualitative relations among target fish, animal or invertebrate bait, and benthic prey. Natural freshwater animal bait can include worms, minnows, or crayfish, with differing target-fish associations. This creates no bait, tackle, historical practice, or catch result. fishing bait worm bait crayfish bait mollusc prey bottom fishing minnow bait"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish:ru",
+      "target_ref": "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Животная наживка и соответствие целевой рыбе Качественные связи между видом рыбы, животной или беспозвоночной наживкой и придонным кормом. К естественной пресноводной животной наживке могут относиться черви, мелкая рыба или раки, причём их связь с целевой рыбой различается. Это не создаёт наживку, снасть, историческую практику или результат ловли. наживка червь на рыбу рак наживка моллюск рыба донная ловля червь наживка малёк наживка"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust:en",
       "target_ref": "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
       "domain": "physics_material_science",
@@ -17592,6 +18026,62 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Нарушение корней при пересадке Риск шока от потери корней при пересадке. Потеря корней может вызвать шок при пересадке; полив нарушенной почвы может осадить её и поддержать влагу для новых корней. Это не доказывает вид, потерю корней, сезон, состояние растения, вероятность выживания или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat:en",
+      "target_ref": "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ruminant frothy-bloat and forage risk Qualitative link among legume forage, fermentation, stable foam, and trapped rumen gas in ruminants. Legume or legume-dominant forage can support rapid fermentation with stable foam that traps gas in a ruminant rumen. This does not establish frothy bloat from every clover exposure, ruminant, or distension, nor amount eaten, timing, severity, or outcome. cow bloat clover frothy bloat rumen foam cattle distension breathing clover bloat foam traps rumen gas rumen fermentation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat:ru",
+      "target_ref": "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пенистое вздутие жвачных и кормовой риск Качественная связь бобового корма, брожения, устойчивой пены и задержки газа у жвачных. Бобовый или бобово-доминирующий корм может поддержать быстрое брожение с устойчивой пеной, удерживающей газ в рубце жвачного. Это не означает, что всякий клевер, жвачное или вздутие доказывают пенистое вздутие, количество съеденного, срок, тяжесть или исход. вздутие коровы клевер и вздутие пена в рубце тяжело дышит корова клевер вызывает вздутие пена удерживает газ брожение рубца"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment:en",
+      "target_ref": "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ruminant frothy-bloat and forage risk Qualitative link among legume forage, fermentation, stable foam, and trapped rumen gas in ruminants. Marked ruminant distension with respiratory distress can be urgent and warrants prompt qualified animal-care assessment without establishing a diagnosis. This is not a procedure, drug, dose, puncture, surgery, outcome time, or available help in the scene. cow bloat clover frothy bloat rumen foam cattle distension breathing ruminant bloat breathing emergency cattle respiratory distress qualified animal assessment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment:ru",
+      "target_ref": "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пенистое вздутие жвачных и кормовой риск Качественная связь бобового корма, брожения, устойчивой пены и задержки газа у жвачных. Выраженное вздутие жвачного вместе с выраженным затруднением дыхания может быть срочным состоянием и требует быстрого обращения к квалифицированному специалисту по животным, но не устанавливает диагноз. Это не процедура, лекарство, доза, прокол, операция, время исхода или способность помощи в сцене. вздутие коровы клевер и вздутие пена в рубце тяжело дышит корова вздутие и тяжёлое дыхание срочно корова помощь животному"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects:en",
+      "target_ref": "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Moldy feed and mycotoxin inference limits Qualitative link between some feed molds, mycotoxins, and limits of visual assessment. Some feed molds can produce mycotoxins that can affect animal health or performance, with effects depending on toxin and animal factors. This does not establish mold, toxin, dose, illness, or outcome in a particular feed or animal, including livestock or poultry. moldy feed mycotoxin moldy grain feed safety mold produces mycotoxins livestock mycotoxins poultry mycotoxins"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects:ru",
+      "target_ref": "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Плесневый корм и пределы вывода о микотоксинах Качественная связь некоторых плесеней корма, микотоксинов и ограничений видимой оценки. Некоторые плесени в корме могут производить микотоксины, способные влиять на здоровье или продуктивность животных; эффект зависит от токсина и животного. Это не доказывает плесень, токсин, дозу, болезнь или исход в конкретном корме либо у конкретного скота или птицы. плесневый корм микотоксины плесень в зерне безопасность корма плесень производит микотоксины микотоксины скот микотоксины птица"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level:en",
+      "target_ref": "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Moldy feed and mycotoxin inference limits Qualitative link between some feed molds, mycotoxins, and limits of visual assessment. Visible mold does not establish mycotoxin presence or level in feed. It does not establish safety, danger, clean-feed availability, replacement outcome, a test method, or a threshold for a particular animal. moldy feed mycotoxin moldy grain feed safety visible mold not toxin level mycotoxin level test moldy feed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level:ru",
+      "target_ref": "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Плесневый корм и пределы вывода о микотоксинах Качественная связь некоторых плесеней корма, микотоксинов и ограничений видимой оценки. Видимая плесень не устанавливает наличие или уровень микотоксина в корме. Она не доказывает безопасность, опасность, доступность чистого корма, результат замены, метод проверки или порог для конкретного животного. плесневый корм микотоксины плесень в зерне безопасность корма видимая плесень не равна токсину уровень микотоксина проверить плесневый корм"
     },
     {
       "entry_ref": "wk-retrieval:claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap:en",
@@ -18922,6 +19412,48 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Частокол Частокол: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-church-interior-yard-context:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Church interior and yard Qualitative links among threshold, perception, people, weather, and care in church space. inside church churchyard wax traces"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-church-interior-yard-context:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Церковный интерьер и двор Качественные связи порога, восприятия, людей, погоды и ухода в церковном пространстве. церковь внутри церковный двор воск и следы"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-dwelling-interior-context:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Dwelling interior and changing conditions Qualitative links among shared living, light, air, upkeep, and traces in an inhabited interior. inside house hearth smoke damp floor"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-dwelling-interior-context:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. дом внутри очаг и дым сырой пол"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-place-work-space:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Work space and traces Qualitative limits of work space, traces and obstructions. clearance work traces spill"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-place-work-space:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. проход стружка расчистка"
     },
     {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-practical-dwelling-upkeep:en",
@@ -21906,6 +22438,20 @@
       "retrieval_text": "Контекст нагрузки и тревоги рабочей лошади Качественный контекст тепла, нагрузки и реакции бегства у лошади без диагноза состояния. рабочая лошадь жара усталость тревога лошади"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-bait-b11-animal-material-target-fit:en",
+      "target_ref": "wk:biology_physiology:static-bait-b11-animal-material-target-fit",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal bait and target-fish fit Qualitative relations among target fish, animal or invertebrate bait, and benthic prey. fishing bait worm bait crayfish bait mollusc prey bottom fishing"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-bait-b11-animal-material-target-fit:ru",
+      "target_ref": "wk:biology_physiology:static-bait-b11-animal-material-target-fit",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Животная наживка и соответствие целевой рыбе Качественные связи между видом рыбы, животной или беспозвоночной наживкой и придонным кормом. наживка червь на рыбу рак наживка моллюск рыба донная ловля"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-bee-smoke-b09-colony-defense-context:en",
       "target_ref": "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
       "domain": "biology_physiology",
@@ -22072,6 +22618,34 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Контакт с соком лютиковых Общая предпосылка о раздражающем свежем соке Ranunculaceae."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk:en",
+      "target_ref": "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ruminant frothy-bloat and forage risk Qualitative link among legume forage, fermentation, stable foam, and trapped rumen gas in ruminants. cow bloat clover frothy bloat rumen foam cattle distension breathing"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk:ru",
+      "target_ref": "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пенистое вздутие жвачных и кормовой риск Качественная связь бобового корма, брожения, устойчивой пены и задержки газа у жвачных. вздутие коровы клевер и вздутие пена в рубце тяжело дышит корова"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits:en",
+      "target_ref": "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Moldy feed and mycotoxin inference limits Qualitative link between some feed molds, mycotoxins, and limits of visual assessment. moldy feed mycotoxin moldy grain feed safety"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits:ru",
+      "target_ref": "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Плесневый корм и пределы вывода о микотоксинах Качественная связь некоторых плесеней корма, микотоксинов и ограничений видимой оценки. плесневый корм микотоксины плесень в зерне безопасность корма"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-skin-friction-context-b06:en",
@@ -23376,6 +23950,20 @@
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-place-work-flow:en",
+      "target_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Place work flow Qualitative links between ordinary work stages and space. workshop mill threshing"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-place-work-flow:ru",
+      "target_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. мастерская работа мельница овин"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-practical-cloth-leather-work:en",
       "target_ref": "wk:craft_technology:reconstructed-practical-cloth-leather-work",
       "domain": "craft_technology",
@@ -24354,6 +24942,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Радиационный туман Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-place-outdoors:en",
+      "target_ref": "wk:environment:reconstructed-place-outdoors",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Outdoor environment composition Editorial relations between surfaces, activity and local conditions. environment place season upkeep"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-place-outdoors:ru",
+      "target_ref": "wk:environment:reconstructed-place-outdoors",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Композиция открытых сред Редакторские связи поверхности, деятельности и условий места. среда место сезон уход"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:regional-agriculture-practice:en",
@@ -27266,6 +27868,20 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Посадник: контекст деятельности Именованные летописные эпизоды деятельности посадников посадник военная деятельность"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-compound-upkeep-context:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Shared-yard upkeep Qualitative links among seasonal care, work, and available means in a shared yard. monastery yard yard cleaning repair after rain"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-compound-upkeep-context:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Уход за общим двором Качественные связи сезонного ухода, работы и доступных средств в общем дворе. монастырский двор уборка двора ремонт после дождя"
     },
     {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-healer-practice:en",

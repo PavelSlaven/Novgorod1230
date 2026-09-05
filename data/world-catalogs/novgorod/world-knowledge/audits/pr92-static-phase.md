@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,330 approved claims, 877 concepts,
-476 sources and 951 evidence records**. This includes 121 independently
+The integrated corpus contains **1,365 approved claims, 886 concepts,
+484 sources and 977 evidence records**. This includes 149 independently
 reviewed editorial premises for ordinary, human, practical and public life.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -27,25 +27,26 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,414 x 1,024 float32 entries (18,079,744 bytes)** and
+package contains **4,502 x 1,024 float32 entries (18,440,192 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on this integrated corpus
+## Checks actually completed on the 1,365-claim corpus
 
-- Compiler: all 1,330 claims and independent approval bindings validate.
-- Category-cartography validation passes on all included fragments and
-  claims, with existing profiles and potential-consumer boundaries.
-- Focused authoring, runtime, population, foundation and cartography tests:
-  **85/85 pass**, including independent bindings and runtime/vector alignment.
-- **278-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995803**,
-  Recall@20 **0.997602**, gate PASS.
-- Unchanged **133-case** baseline on the expanded corpus: hybrid
-  Recall@10/20 **0.969925**, gate PASS.
+- Compiler: all 1,365 claims and independent approval bindings validate.
+- Category-cartography and open place-first structural validation pass.
+  Structure is not evidence of environmental completeness.
+- Focused authoring/runtime/population/foundation/cartography tests:
+  **86/86 pass**. Knowledge-source/RAG tests: **26/26 pass**.
+- **294-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996032**,
+  Recall@20 **0.997732**, gate PASS.
+- Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
-  Existing gates were not weakened. Documentation, knowledge-source and
-  architecture checks also pass. All 85 focused tests were run after the
-  aligned 4,414-entry index was written. No gate was changed.
+  No gate, model, dependency or runtime owner changed.
+- Knowledge-source generation/check and documentation/activation checks pass
+  after synchronizing the changed contract/index and existing retrieval-policy pin.
+- Category/place-first tests were rerun after the 41-environment map merge.
+  The final published integration still needs exact-HEAD CI.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -58,7 +59,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`6179c39e93b9af4bd0129a31997216476af8e0ae` (run 33957493074).
+`e9ea5d9cfa479337e24699b1fd0350a4d333133e` (run 33959896036).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -75,10 +76,10 @@ reported skips; full CI passed on exact checkpoint 6179c39e. The subsequent
 1,322-claim integration passed the 85 focused tests, 11 bridge tests and
 both retrieval benchmarks. Its run 33958500338 was cancelled by the next
 checkpoint push, not reported green. The B10 candidate checkpoint
-`f164358f3b451d4d03904f0e41ee0fc1f616215f` has run 33959027728 in progress.
-The 1,330-claim integration passes 85 focused tests, cartography, both
-retrieval benchmarks and docs/activation checks. Its final exact-HEAD CI
-is still required; an earlier green checkpoint does not certify a later
+`f164358f3b451d4d03904f0e41ee0fc1f616215f` had run 33959027728 cancelled by a later push.
+The 1,330-claim integration passed its focused checks; run 33959687474
+was cancelled, not green. The 1,365-claim integration passes the checks
+above, but its final exact-HEAD CI is still required; an earlier green checkpoint does not certify a later
 candidate or merge readiness.
 
 ## Offline context acceptance — not live gameplay
@@ -307,3 +308,53 @@ are superseded; their history remains in Git.
   handoff, not World Knowledge or retrieval.
 - Disposition: retain for a separately authorized gameplay-testing task;
   do not repair or replay it within this static phase.
+
+## Place-first static pass — open, not accepted
+
+Contract §0.4 adds an independent place-first need-map rather than an object
+whitelist or a second materializer. A blind author first mapped 37 settings;
+independent/root review added dwelling and church interiors, an ordinary
+workshop and a grain-drying shed distinct from the threshing floor.
+The present map has **41 environmental families and 167 facets**:
+91 bounded supported and 76 partial after linking the 28 approved
+place-first premises into the 1,365-claim corpus. Partial facets retain
+specific remaining relations; an approved link alone did not close them.
+These are provisional mapping assessments, not a place-completeness verdict.
+The map remains open to new families and cross-place composition.
+
+The independent content review found that a courtyard does not cover a
+dwelling interior, and a churchyard does not cover an interior. Root also
+rejected premature support from generic waste/paving refs and removed
+current people, stocks, depths, access and maintenance history from factual
+gap requirements. Remaining gaps concern general environmental relations;
+scene-state limits do not excuse missing knowledge of how a place works.
+
+Candidate `818d85f72e350624a91162a30cd3ad78d5c26663` supplied 28 explicitly
+editorial premises for outdoor conditions, interiors and work environments.
+Independent reviewer `/root/place_premise_verifier` approved all 28.
+Compiler validation then caught four interior domain/applicability mismatches;
+metadata-only candidate `fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f` corrected
+them and received the same reviewer's separate narrow approval. No claim
+text or evidence changed during that correction. All 28 bindings now pass
+on the assembled production input and are included in the 1,365 count.
+
+Two blind generators froze 75 controlled inputs (71 labelled practical)
+and 25 free inputs in `60b12063f93411b5308e741498e9d9b6cd2ccdec`. Four WK-only
+reads now cover all 100 IDs: 96 covered and four retained knowledge leads.
+The free domains were recorded after generation and before corpus lookup.
+This is a diagnostic batch, not a clean acceptance hundred; the streak is
+still 0/3. Root rejected advice-only/givens-only coverage and requested
+fuller environment grounding. A reported mill gap was resolved against
+existing approved relations, with its initial finding retained.
+
+Retained leads: `place01-core-010` hide washing/working effluent;
+`place01-core-015` birch-tar pit process/environment;
+`place01-core-055` drying-shed heat, sheaf placement and air path;
+`place01-core-061` smoking fish versus drying/heating/salting.
+Exact recipes, fixed layouts and present stocks are not required to close
+these relations. A poorly worded threshing/dust sentence is also noted in
+the core-C review for editorial correction, not gameplay-owner repair.
+Inputs with questionable specific props retain frame caveats rather than
+silently becoming historical availability evidence. Earlier general batches
+and the unfinished general B12 work do not replace this place-first pass.
+No live gameplay was run.

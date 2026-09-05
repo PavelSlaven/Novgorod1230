@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { loadWorldKnowledgeAuthoringInput } from '../src/world-knowledge-authoring-loader.js';
-import { validateCategoryCartography } from '../src/category-cartography.js';
+import { validateCategoryCartography, validatePlaceFirstCartography } from '../src/category-cartography.js';
 
 const CARTOGRAPHY = new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json', import.meta.url);
 const AUTHORING = new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/authoring.json', import.meta.url);
@@ -18,6 +18,30 @@ const ACTIVE_CONSUMER_PATHS = [
 ];
 
 async function json(url) { return JSON.parse(await readFile(url, 'utf8')); }
+
+test('place-first need map validates open composition and support, not readiness or presence', async () => {
+  const cartography = await json(new URL('place-first-cartography.json', AUTHORING));
+  const pack = await loadWorldKnowledgeAuthoringInput(fileURLToPath(AUTHORING));
+  assert.deepEqual(validatePlaceFirstCartography({ cartography, pack }), []);
+  const expanded = structuredClone(cartography);
+  expanded.environment_families.push({
+    ...structuredClone(expanded.environment_families[0]),
+    id: 'unseen-environment-combination',
+    composes_with: [expanded.environment_families[0].id]
+  });
+  assert.deepEqual(validatePlaceFirstCartography({ cartography: expanded, pack }), []);
+  const unsupported = structuredClone(cartography);
+  unsupported.environment_families[0].facets[0].coverage = 'supported';
+  unsupported.environment_families[0].facets[0].claim_refs = [];
+  assert.ok(validatePlaceFirstCartography({ cartography: unsupported, pack })
+    .some(error => error.startsWith('PLACE_CARTOGRAPHY_SUPPORT_MISSING:')));
+  unsupported.environment_families[0].facets[0].claim_refs = ['claim:nonexistent'];
+  unsupported.environment_families[0].composes_with = ['nonexistent-environment'];
+  assert.ok(validatePlaceFirstCartography({ cartography: unsupported, pack })
+    .includes('PLACE_CARTOGRAPHY_CLAIM_UNMAPPED:claim:nonexistent'));
+  assert.ok(validatePlaceFirstCartography({ cartography: unsupported, pack })
+    .includes('PLACE_CARTOGRAPHY_COMPOSITION_UNMAPPED:nonexistent-environment'));
+});
 
 test('production category cartography covers real profiles, locations, and claims without declaring completeness', async () => {
   const [cartography, pack, locations] = await Promise.all([

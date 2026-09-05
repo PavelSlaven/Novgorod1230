@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,330-claim corpus. The later direct-attestation-only residual
+current 1,365-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -70,7 +70,8 @@ Batch 11 adds another 75/25 split with changed core strata and blind free
 generation. All 100 frozen situations are reviewed: 97 covered and three
 retained needs (ruminant bloat, mouldy feed, animal-material bait).
 Ten false absence/unique-procedure leads were resolved against existing
-premises with initial findings preserved. Candidate source work continues.
+premises with initial findings preserved. Seven independently verified
+ruminant/feed/bait premises now address those needs in the 1,337-claim corpus.
 The mixed clean streak remains 0/3, not static completeness.
 No corpus knowledge is discarded.
 Batch 03's declared 20-by-five distribution passed structural checks, but
@@ -148,3 +149,53 @@ claimed 1019–1270 applicability was unsupported. Permitting reconstruction
 does not retroactively make that former attestation valid. Any replacement
 must carry its own honest qualifiers and independent review. Earlier
 reports and rejected candidates remain available in Git history.
+
+## Place-first static pass — open, not accepted
+
+Contract §0.4 adds an independent place-first need-map rather than an object
+whitelist or a second materializer. A blind author first mapped 37 settings;
+independent/root review added dwelling and church interiors, an ordinary
+workshop and a grain-drying shed distinct from the threshing floor.
+The present map has **41 environmental families and 167 facets**:
+91 bounded supported and 76 partial after linking the 28 approved
+place-first premises into the 1,365-claim corpus. Partial facets retain
+specific remaining relations; an approved link alone did not close them.
+These are provisional mapping assessments, not a place-completeness verdict.
+The map remains open to new families and cross-place composition.
+
+The independent content review found that a courtyard does not cover a
+dwelling interior, and a churchyard does not cover an interior. Root also
+rejected premature support from generic waste/paving refs and removed
+current people, stocks, depths, access and maintenance history from factual
+gap requirements. Remaining gaps concern general environmental relations;
+scene-state limits do not excuse missing knowledge of how a place works.
+
+Candidate `818d85f72e350624a91162a30cd3ad78d5c26663` supplied 28 explicitly
+editorial premises for outdoor conditions, interiors and work environments.
+Independent reviewer `/root/place_premise_verifier` approved all 28.
+Compiler validation then caught four interior domain/applicability mismatches;
+metadata-only candidate `fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f` corrected
+them and received the same reviewer's separate narrow approval. No claim
+text or evidence changed during that correction. All 28 bindings now pass
+on the assembled production input and are included in the 1,365 count.
+
+Two blind generators froze 75 controlled inputs (71 labelled practical)
+and 25 free inputs in `60b12063f93411b5308e741498e9d9b6cd2ccdec`. Four WK-only
+reads now cover all 100 IDs: 96 covered and four retained knowledge leads.
+The free domains were recorded after generation and before corpus lookup.
+This is a diagnostic batch, not a clean acceptance hundred; the streak is
+still 0/3. Root rejected advice-only/givens-only coverage and requested
+fuller environment grounding. A reported mill gap was resolved against
+existing approved relations, with its initial finding retained.
+
+Retained leads: `place01-core-010` hide washing/working effluent;
+`place01-core-015` birch-tar pit process/environment;
+`place01-core-055` drying-shed heat, sheaf placement and air path;
+`place01-core-061` smoking fish versus drying/heating/salting.
+Exact recipes, fixed layouts and present stocks are not required to close
+these relations. A poorly worded threshing/dust sentence is also noted in
+the core-C review for editorial correction, not gameplay-owner repair.
+Inputs with questionable specific props retain frame caveats rather than
+silently becoming historical availability evidence. Earlier general batches
+and the unfinished general B12 work do not replace this place-first pass.
+No live gameplay was run.

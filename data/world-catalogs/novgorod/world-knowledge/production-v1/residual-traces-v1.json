@@ -97,7 +97,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil. The kind of sign can guide inspection but does not by itself identify a particular animal."
+        "value": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil."
       },
       "polarity": "support",
       "applicability": {
@@ -127,7 +127,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Dead wood can house insects, and birds feeding on them can leave signs on the tree. Damage to the wood should be compared with other evidence; it does not establish a bird's current presence."
+        "value": "Dead wood can house insects, and birds feeding on them can leave signs on the tree."
       },
       "polarity": "support",
       "applicability": {
@@ -157,7 +157,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose. Preservation alone cannot assign an exact age without local conditions."
+        "value": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose."
       },
       "polarity": "support",
       "applicability": {
@@ -245,7 +245,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-animal-trace-types",
       "locale": "ru",
-      "runtime_text": "Следами деятельности животных могут быть отпечатки лап, помёт, погрызенные листья, царапины, норы и нарушенный слой листьев или почвы. Вид признака помогает выбрать направление осмотра, но сам по себе не устанавливает конкретное животное.",
+      "runtime_text": "Следами деятельности животных могут быть отпечатки лап, помёт, погрызенные листья, царапины, норы и нарушенный слой листьев или почвы.",
       "search_aliases": [
         "следы животных",
         "помёт",
@@ -258,7 +258,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-animal-trace-types",
       "locale": "en",
-      "runtime_text": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil. The kind of sign can guide inspection but does not by itself identify a particular animal.",
+      "runtime_text": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil.",
       "search_aliases": [
         "animal signs",
         "scat",
@@ -271,7 +271,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
       "locale": "ru",
-      "runtime_text": "Мёртвая древесина может служить местом жизни насекомых, а кормящиеся ими птицы могут оставлять следы на дереве. Повреждение древесины следует сопоставлять с другими признаками; оно не доказывает нынешнее присутствие птицы.",
+      "runtime_text": "Мёртвая древесина может служить местом жизни насекомых, а кормящиеся ими птицы могут оставлять следы на дереве.",
       "search_aliases": [
         "мёртвая древесина",
         "дупло",
@@ -283,7 +283,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
       "locale": "en",
-      "runtime_text": "Dead wood can house insects, and birds feeding on them can leave signs on the tree. Damage to the wood should be compared with other evidence; it does not establish a bird's current presence.",
+      "runtime_text": "Dead wood can house insects, and birds feeding on them can leave signs on the tree.",
       "search_aliases": [
         "dead wood",
         "holes",
@@ -295,7 +295,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
       "locale": "ru",
-      "runtime_text": "Следы сохраняются неодинаково: ветер уносит перья, погода и движение по поверхности стирают отпечатки, помёт постепенно разлагается. По одной сохранности признака нельзя назначать точное время его появления без местных условий.",
+      "runtime_text": "Следы сохраняются неодинаково: ветер уносит перья, погода и движение по поверхности стирают отпечатки, помёт постепенно разлагается.",
       "search_aliases": [
         "давность следа",
         "сохранность следов",
@@ -308,7 +308,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
       "locale": "en",
-      "runtime_text": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose. Preservation alone cannot assign an exact age without local conditions.",
+      "runtime_text": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose.",
       "search_aliases": [
         "track age",
         "sign preservation",

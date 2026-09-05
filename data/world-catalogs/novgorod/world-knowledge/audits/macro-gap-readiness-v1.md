@@ -1,10 +1,10 @@
 # Macro-gap static readiness — PR92
 
-## Current verdict: batch-05 practical gaps under investigation
+## Current verdict: batch-05 additions verified; new sampling pending
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,278-claim corpus. The later direct-attestation-only residual
+current 1,295-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -103,11 +103,13 @@ The subsequent batch-05 probe found practical needs beyond that bounded
 residual reassessment: wet-ground support, equine digestive distress,
 large-ungulate track differentiation and plant-material/contact context.
 The earlier no-confirmed-gap result must not be read as a blanket current
-P1-free verdict. Source investigation is in progress; no new claims have
-yet been promoted. After real gaps are filled and independently reviewed,
-three further diverse unseen hundreds without a substantial new gap are
-required, along with final exact-HEAD checks. No runtime owner or live
-campaign is introduced by this work.
+P1-free verdict. Seventeen source-backed additions have now passed separate
+verification and entered the 1,295-claim bundle, with two initially overbroad
+ground/material formulations corrected first. Batch 06 reviews this frozen
+corpus; its inputs were not used to author the additions. Three further
+diverse unseen hundreds without a substantial new gap remain required,
+along with final exact-HEAD checks. No runtime owner or live campaign is
+introduced by this work.
 
 ## Historical correction retained
 

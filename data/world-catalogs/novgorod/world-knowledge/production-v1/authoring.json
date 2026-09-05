@@ -142,6 +142,12 @@
     "static-household-care-gap-v1.json",
     "verification-static-household-care-gap-v1.json",
     "static-soap-cleaning-v1.json",
-    "verification-static-soap-cleaning-v1.json"
+    "verification-static-soap-cleaning-v1.json",
+    "static-animal-care-traces-b05.json",
+    "verification-static-animal-care-traces-b05.json",
+    "static-ground-material-b05.json",
+    "verification-static-ground-material-b05.json",
+    "static-plant-contact-b05.json",
+    "verification-static-plant-contact-b05.json"
   ]
 }

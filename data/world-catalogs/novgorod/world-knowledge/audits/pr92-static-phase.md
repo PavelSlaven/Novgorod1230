@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,278 approved claims, 846 concepts,
-427 sources and 896 evidence records**. This includes 121 independently
+The integrated corpus contains **1,295 approved claims, 856 concepts,
+442 sources and 913 evidence records**. This includes 121 independently
 reviewed editorial premises for ordinary, human, practical and public life.
 Their committed candidates are `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -27,24 +27,26 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,248 x 1,024 float32 entries (17,399,808 bytes)** and
+package contains **4,302 x 1,024 float32 entries (17,620,992 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
 ## Checks actually completed on this integrated corpus
 
-- Compiler: all 1,278 claims and independent approval bindings validate.
+- Compiler: all 1,295 claims and independent approval bindings validate.
 - Category-cartography validation passes on all included fragments and
   claims, with existing profiles and potential-consumer boundaries.
 - Focused authoring, runtime, population, foundation and cartography tests:
   **85/85 pass**, including independent bindings and runtime/vector alignment.
-- **241-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995159**,
-  Recall@20 **0.997234**, gate PASS.
+- **253-case** gameplay retrieval benchmark: hybrid Recall@10 **0.995389**,
+  Recall@20 **0.997365**, gate PASS.
 - Unchanged **133-case** baseline on the expanded corpus: hybrid
   Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   Existing gates were not weakened. Documentation, knowledge-source and
-  architecture checks also pass.
+  architecture checks also pass. A focused run started before the vector
+  rebuild completed caught the expected old-index mismatch; after the aligned
+  4,302-entry index was written, all 85 tests passed. No gate was changed.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -141,10 +143,25 @@ that initially described the wrong input circumstances and rejected several
 false absence findings by looking up existing general premises. Genuine
 remaining needs include wet-ground support, equine digestive distress,
 large-ungulate track differentiation and plant-material/contact context.
-Source investigation produced 17 candidate premises in three fragments;
-they are not yet included in the authoring descriptor or runtime. Independent
-source/domain verification is pending. Raw leads do not automatically become
-new claims. **Batch 05 is diagnostic and resets the clean streak to 0.**
+Source investigation produced 17 premises in three fragments, now separately
+verified and included in the descriptor/runtime. Candidates are `a2548c2`
+(animal/plant) and `5a9d969` (corrected ground/material). The independent
+review rejected two initially overbroad compound claims: birch chemistry
+is now limited to studied Betula pendula material, and fibre/alkali behaviour
+to the comparative study, not an assertion of safe cleaning.
+
+The final eight raw case leads cover wet-ground passage and flooded ground,
+groundwater in an excavation, bark/fuel context, alkaline textile response,
+hoof-trace comparison, equine digestive distress and plant contact/bedding.
+The new general premises supply those missing relationships. Observation
+of a vanished channel, a guaranteed safe route or a fixed fresh-bark ignition
+result still cannot be inferred from an underspecified scene; these are not
+new recipes or local facts. **Batch 05 is diagnostic and resets the streak
+to 0**, not acceptance after its gaps were used to fill the corpus.
+
+Batch 06's two generators were blind to the corpus and previous samples.
+Their new 100 inputs were not used to author the 17 additions. Independent
+WK-only reviews now use the frozen 1,295-claim bundle.
 
 The current clean streak is **0 of 3**. Contract §0.3 requires
 three consecutive diverse independent batches of at least 100 cases with

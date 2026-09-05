@@ -298,6 +298,9 @@
     }
   ],
   "source_inventory": [
+    {"id":"static-plant-contact-b05","source_path":"static-plant-contact-b05.json","domains":["biology_physiology","physics_material_science","environment"],"location_applicability":"Qualified general premises for potential outdoor work, animal care and household material contexts; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"5 independently reviewed premises; existing family limits retained."},
+    {"id":"static-ground-material-b05","source_path":"static-ground-material-b05.json","domains":["physics_material_science","chemistry_process"],"location_applicability":"Qualified general premises for potential outdoor work, animal care and household material contexts; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"4 independently reviewed premises; existing family limits retained."},
+    {"id":"static-animal-care-traces-b05","source_path":"static-animal-care-traces-b05.json","domains":["environment","biology_physiology"],"location_applicability":"Qualified general premises for potential outdoor work, animal care and household material contexts; no local presence.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative causal context","npc":"no expertise or action assigned"},"coverage":"8 independently reviewed premises; existing family limits retained."},
     {"id":"static-soap-cleaning-v1","source_path":"static-soap-cleaning-v1.json","domains":["chemistry_process"],"location_applicability":"Potential washing, greasy contamination and chemical transformation contexts.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative chemistry","npc":"no action or knowledge assigned"},"coverage":"Two independently reviewed general mechanisms, not a recipe or historical availability."},
     {"id":"static-household-care-gap-v1","source_path":"static-household-care-gap-v1.json","domains":["architecture_settlement","craft_technology","biology_physiology"],"location_applicability":"Qualified physical, care and conservation mechanisms or explicit material analogies; no period-specific attestation.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative relation","npc":"no action or expertise assigned"},"coverage":"8 independently reviewed premises; not whole-family completeness"},
     {"id":"static-practical-residual-v1","source_path":"static-practical-residual-v1.json","domains":["physics_material_science","chemistry_process"],"location_applicability":"Qualified physical, care and conservation mechanisms or explicit material analogies; no period-specific attestation.","applicability":{"resource":"conditional","material":"conditional","process":"source-backed qualitative relation","npc":"no action or expertise assigned"},"coverage":"8 independently reviewed premises; not whole-family completeness"},
@@ -1514,7 +1517,8 @@
   "families": [
     {"id":"chemistry-fat-hydrolysis-and-cleaning","domain":"chemistry_process","subdomain":"cleaning_and_fat_transformation","family":"saponification_and_amphiphilic_cleaning","location_applicability":"Potential ordinary washing and material transformation where actual substances are known.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative chemistry","npc":"conditional handling"},"coverage":"bounded mechanisms, not complete chemical or textile practice","claim_refs":["claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap","claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water"]},
     {"id":"built-water-shedding-and-finish-repair","domain":"architecture_settlement","subdomain":"material_handling_and_maintenance","family":"built_water_shedding_and_finish_repair","location_applicability":"Potential ordinary craft, construction and maintenance contexts; material applicability must be checked.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation or marked analogy","npc":"conditional observation"},"coverage":"bounded practical premises, not exhaustive coverage","claim_refs":["claim:household-roof-layers-shed-water","claim:household-roof-local-condition-guides-repair","claim:household-clay-drying-and-incompatible-movement","claim:household-clay-key-and-compatible-patch"]},
-    {"id":"materials-bark-moisture-and-form","domain":"physics_material_science","subdomain":"material_handling_and_maintenance","family":"materials_bark_moisture_and_form","location_applicability":"Potential ordinary craft, construction and maintenance contexts; material applicability must be checked.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation or marked analogy","npc":"conditional observation"},"coverage":"bounded practical premises, not exhaustive coverage","claim_refs":["claim:static-birch-bark-water-can-deform-layers","claim:static-birch-bark-form-can-be-held-during-humidification-drying"]},
+    {"id":"materials-bark-moisture-and-form","domain":"physics_material_science","subdomain":"material_handling_and_maintenance","family":"materials_bark_moisture_and_form","location_applicability":"Potential ordinary craft, construction and maintenance contexts; material applicability must be checked.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation or marked analogy","npc":"conditional observation"},"coverage":"bounded practical premises, not exhaustive coverage","claim_refs":[
+        "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition","claim:static-birch-bark-water-can-deform-layers","claim:static-birch-bark-form-can-be-held-during-humidification-drying"]},
     {"id":"physics-independent-trial-models","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"physics_independent_trial_models","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:random-independent-trials-do-not-owe-reversal"]},
     {"id":"mechanics-granular-comminution","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"mechanics_granular_comminution","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:milling-grain-compression-shear-fracture","claim:milling-moisture-changes-grain-deformation","claim:milling-plate-gap-pressure-fineness"]},
     {"id":"measurement-mass-volume-and-tare","domain":"physics_material_science","subdomain":"measurement_and_physical_processes","family":"measurement_mass_volume_and_tare","location_applicability":"Potential storage, trade, work or experimental contexts; no present equipment or exact outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative physical relation","npc":"conditional observation"},"coverage":"bounded general premises, not exhaustive coverage","claim_refs":["claim:measurement-net-excludes-tare","claim:measurement-grain-mass-volume-density","claim:measurement-units-must-be-identified"]},
@@ -1554,6 +1558,10 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
+        "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
+        "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+        "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:endotherm-insulation-reduces-heat-loss",
         "claim:animal-homeostasis-responds-to-internal-external-change",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour"
@@ -1599,6 +1607,8 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-horses-are-hindgut-fermenters",
+        "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:livestock-ruminant-membership",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-swine-membership",
@@ -2489,6 +2499,8 @@
       },
       "coverage": "grounded",
       "claim_refs": [
+        "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
+        "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
         "claim:agriculture-fauna-flax-hemp-cultivation",
         "claim:agriculture-fauna-hunting-economic-context",
         "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
@@ -2879,6 +2891,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
         "claim:buoyancy-pressure-phase-change",
         "claim:population-physics-immersion-buoyancy",
         "claim:population-physics-floating-shape",
@@ -3277,6 +3290,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
@@ -3405,6 +3419,7 @@
       "coverage": "partial: two bounded mechanism claims; not material-state, local-presence, drainage, moulding, or outcome closure",
       "evidence_boundary": "Source claims support conditional material mechanisms. They do not establish local material or water presence, saturation, grain size, strength, connected path, quantity/rate, access, or action outcome.",
       "claim_refs": [
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration"
       ]
@@ -3813,6 +3828,7 @@
       "coverage": "grounded",
       "evidence_boundary": "Source claims support a general mechanism, category, or taxon. They do not establish local place/actor/material presence, stock, access, or hidden state.",
       "claim_refs": [
+        "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:oil-tanning-crosslinking-fibres",
@@ -4413,6 +4429,9 @@
       "coverage": "grounded footprint/substrate relation",
       "evidence_boundary": "Footprint interpretation only; no taxon, trace age, route or encounter.",
       "claim_refs": [
+        "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
+        "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+        "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate"
       ]
     },
@@ -4452,6 +4471,7 @@
       "coverage": "grounded named taxa and parts, not an exhaustive flora",
       "evidence_boundary": "No local plant, identity from resemblance, ripeness, stock, exposure or safe consumption.",
       "claim_refs": [
+        "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
@@ -7168,6 +7188,9 @@
     "potential_consumer_policy": "potential: references are design applicability, never existing exports, active bindings, runtime permission or scene presence. Lack of a current consumer does not exclude a plausible open-RPG factual need from static research.",
     "phase": "static source-backed coverage; live exploration, owner repair, replay and saturation belong to a separately authorized future gameplay-testing phase",
     "fragments": [
+      {"source_path":"static-plant-contact-b05.json","claim_count":5,"family_refs":["biology-animal-body-condition-and-insulation","materials-fibre-leather-water-response","plant-food-and-contact-properties","environment-plant-resources"],"location_refs":["potential:household","potential:animal-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no safe load, exact route, specimen identity, diagnosis, treatment, local availability or outcome."},
+      {"source_path":"static-ground-material-b05.json","claim_count":4,"family_refs":["materials-wet-granular-cohesion-and-deformation","fluids-buoyancy-flow-porosity","materials-bark-moisture-and-form","process-textile-dye-and-collagen-tanning"],"location_refs":["potential:household","potential:animal-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no safe load, exact route, specimen identity, diagnosis, treatment, local availability or outcome."},
+      {"source_path":"static-animal-care-traces-b05.json","claim_count":8,"family_refs":["environment-footprint-trace-interpretation","biology-domestic-animal-digestion-and-forage","biology-animal-body-condition-and-insulation"],"location_refs":["potential:household","potential:animal-care","potential:outdoor-environment"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"Static grounding only; no safe load, exact route, specimen identity, diagnosis, treatment, local availability or outcome."},
       {"source_path":"static-soap-cleaning-v1.json","claim_count":2,"family_refs":["chemistry-fat-hydrolysis-and-cleaning"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact composition, concentration, process rate, guaranteed cleaning or period availability."},
       {"source_path":"static-household-care-gap-v1.json","claim_count":8,"family_refs":["built-water-shedding-and-finish-repair","process-bread-dough-and-baking","body-injury-repair-and-barrier"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact recipe, repair guarantee, treatment protocol, local object or historical authority."},
       {"source_path":"static-practical-residual-v1.json","claim_count":8,"family_refs":["materials-bark-moisture-and-form","materials-fibre-leather-water-response","mechanics-impact-friction-fracture","chemistry-solution-equilibrium-and-solubility","chemistry-exposure-and-routes"],"location_refs":["potential:household","potential:workshop"],"consumer_refs":["potential:ordinary-context-grounding"],"limits":"No exact recipe, repair guarantee, treatment protocol, local object or historical authority."},

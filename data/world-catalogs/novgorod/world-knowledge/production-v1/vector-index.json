@@ -16782,6 +16782,20 @@
       "retrieval_text": "Распространение звука Градиенты ветра и температуры преломляют звук в воздухе: при некоторых условиях по ветру он изгибается к земле, против ветра — от неё. Слышимость зависит от условий распространения, а не только громкости голоса."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-abrupt-equine-diet-change-can-increase-colic-risk:en",
+      "target_ref": "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. An abrupt change in a horse's hay, concentrates, or pasture access can increase colic risk while gut microbes adjust. This establishes no inevitability, cause, diagnosis, or outcome for a concrete horse. horse hindgut fermentation colic abrupt feed change pasture"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-abrupt-equine-diet-change-can-increase-colic-risk:ru",
+      "target_ref": "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Резкая смена сена, концентратов или доступа лошади к пастбищу может повышать риск колик, пока кишечные микроорганизмы приспосабливаются. Это не устанавливает неизбежность, причину, диагноз или исход конкретной лошади. лошадь задняя кишка ферментация колики резкая смена корма пастбище"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-asperity-contact-can-cause-local-stress-and-wear:en",
       "target_ref": "claim:static-asperity-contact-can-cause-local-stress-and-wear",
       "domain": "physics_material_science",
@@ -16794,6 +16808,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Контакт выступов и износ Локальный контакт шероховатостей через смазочную плёнку. Контакт выступов через смазочную плёнку может создать высокие локальные напряжения и износ либо пластическую деформацию. Скорость и степень не заданы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust:en",
+      "target_ref": "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Bedding material condition General bedding-material conditions without asserting a particular material or scene. Bedding material selection can depend on dryness, non-irritation, and dust. This is a medium-confidence transfer from a modern horse-bedding context; it does not make any grass, reed, or straw safe or suitable for human bedding."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust:ru",
+      "target_ref": "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Условия материала подстилки Общие условия материала подстилки без утверждения о конкретном материале или сцене. Выбор материала подстилки может зависеть от сухости, нераздражающих свойств и пыли. Это перенос современного horse-bedding context со средней уверенностью; он не делает любую траву, тростник или солому безопасной либо пригодной для человеческой подстилки."
     },
     {
       "entry_ref": "wk-retrieval:claim:static-belt-friction-can-resist-relative-slip:en",
@@ -16852,6 +16880,76 @@
       "retrieval_text": "Влага и деформация бересты Влияние влаги на форму бересты. Влага может вызывать в бересте набухание, усадку, изгиб или сворачивание из-за неодинаковой реакции её слоёв."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded:en",
+      "target_ref": "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Cautious cloven-hoof trace comparison Qualitative features and limits for comparing split-hoof traces. A cattle hoof print can show two cloven digits in a blocky outline with rounded tips. This establishes no species identification, breed, age, concrete animal, or local trace. hoof track cloven hoof moose cattle cow track rounded track"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded:ru",
+      "target_ref": "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. Отпечаток копыта крупного рогатого скота может показывать два раздвоенных пальца, более угловатый контур и округлые кончики. Это не устанавливает вид, породу, возраст, конкретное животное или местный след. след копыта раздвоенное копыто лось крупный рогатый скот след коровы округлый след"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features:en",
+      "target_ref": "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Cautious cloven-hoof trace comparison Qualitative features and limits for comparing split-hoof traces. A cloven-hoof trace comparison can weigh print shape and dimensions, registered secondary marks, and trackway pattern together, while retaining uncertainty when the print is incomplete or altered. This establishes no species, freshness, animal count, route, or encounter. hoof track cloven hoof moose cattle track comparison track size trackway uncertainty"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features:ru",
+      "target_ref": "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. При сравнении следа раздвоенного копыта можно вместе учитывать форму и размеры отпечатка, отметины вторичных пальцев и рисунок цепочки следов, сохраняя неопределённость при неполном или изменённом отпечатке. Это не определяет вид, свежесть, число животных, маршрут или встречу. след копыта раздвоенное копыто лось крупный рогатый скот сравнение следов размер следа цепочка следов неопределённость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-abdominal-distension-is-not-specific-diagnosis:en",
+      "target_ref": "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. Visible abdominal distension is not by itself a specific diagnosis of bloat, gas colic, obstruction, or another cause. It establishes no concrete horse's condition, severity, or outcome. horse hindgut fermentation colic distended abdomen bloat not diagnosis"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-abdominal-distension-is-not-specific-diagnosis:ru",
+      "target_ref": "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Видимое вздутие живота само по себе не является специфичным диагнозом вздутия, газовых колик, непроходимости или иной причины. Оно не устанавливает состояние конкретной лошади, тяжесть или исход. лошадь задняя кишка ферментация колики вздутый живот вздутие не диагноз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment:en",
+      "target_ref": "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. Observed equine abdominal-pain signs warrant pausing normal exertion and seeking qualified animal-care assessment. This is not a treatment protocol, medication, feeding instruction, or dose. horse hindgut fermentation colic horse abdominal pain stop work veterinarian qualified care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment:ru",
+      "target_ref": "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Наблюдаемые у лошади признаки абдоминальной боли требуют приостановить обычную нагрузку и обратиться за оценкой к квалифицированному специалисту по уходу за животными. Это не протокол лечения, не назначение лекарства, кормления или дозы. лошадь задняя кишка ферментация колики лошадь болит живот прекратить работу ветеринар квалифицированная помощь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-colic-is-abdominal-pain-with-variable-signs:en",
+      "target_ref": "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. Equine colic is abdominal pain or discomfort and can include reduced appetite, lethargy, repeated lying or rolling, flank watching, abdominal kicking, and reduced fecal output. This establishes no cause, severity, diagnosis, or treatment. horse hindgut fermentation colic abdominal pain rolling reduced manure"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-equine-colic-is-abdominal-pain-with-variable-signs:ru",
+      "target_ref": "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Колики у лошади — это абдоминальная боль или дискомфорт; возможны сниженный аппетит, вялость, повторное ложение или катание, взгляд на бок, удары по животу и уменьшение кала. Это не устанавливает причину, тяжесть, диагноз или лечение. лошадь задняя кишка ферментация колики боль в животе катается мало кала"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-forge-welding-pressure-depends-on-temperature-and-material:en",
       "target_ref": "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
       "domain": "physics_material_science",
@@ -16894,6 +16992,90 @@
       "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности. Поверхностный оксид может ухудшить кузнечный шов. Это не устанавливает оксид, флюс или результат конкретного соединения."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-fresh-ranunculaceae-sap-can-irritate-skin:en",
+      "target_ref": "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ranunculaceae sap contact General premise about irritating fresh Ranunculaceae sap. Fresh Ranunculaceae sap can redden, swell, or blister skin. This establishes no species, specimen, contact, exposure amount, injury, allergy, ingestion, treatment, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-fresh-ranunculaceae-sap-can-irritate-skin:ru",
+      "target_ref": "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контакт с соком лютиковых Общая предпосылка о раздражающем свежем соке Ranunculaceae. Свежий сок Ranunculaceae может вызвать покраснение, отёк или волдыри на коже. Это не устанавливает вид, экземпляр, контакт, количество воздействия, повреждение, аллергию, проглатывание, лечение или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning:en",
+      "target_ref": "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Alkali and fibre classes Different responses of cellulosic and protein fibres to alkaline cleaning conditions. In the cited comparative study, alkaline treatment transformed cellulosic fabric crystalline form and dissolved protein fabrics. This supplies no safe concentration, duration, temperature, textile, dye, cleaning result, or treatment recipe."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning:ru",
+      "target_ref": "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Щёлочь и классы волокон Различная реакция целлюлозных и белковых волокон на щелочные условия очистки. В сравнительном исследовании щелочная обработка изменила кристаллическую форму целлюлозных тканей и растворила белковые ткани. Это не задаёт безопасную концентрацию, длительность, температуру, ткань, краситель, результат очистки или рецепт обработки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-groundwater-seepage-can-enter-excavation:en",
+      "target_ref": "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Groundwater in excavation Qualitative relation between groundwater, seepage, and excavation. Groundwater seepage can emerge from the slopes or bottom of an excavation. This establishes no water table, soil, inflow, excavation geometry, drainage method, or safe depth in a concrete scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-groundwater-seepage-can-enter-excavation:ru",
+      "target_ref": "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Грунтовая вода в выемке Качественная связь грунтовой воды, фильтрации и выемки. Грунтовая вода может выходить фильтрацией через откосы или дно выемки. Это не устанавливает уровень воды, грунт, приток, геометрию выемки, способ водоотвода или безопасную глубину в конкретной сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition:en",
+      "target_ref": "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Outer birch-bark composition Material composition of outer birch bark. The cited study's analysed Betula pendula bark contained suberin and lignin. This establishes no composition for all birch bark, concrete sheet, freshness, ignition, wet-fuel performance, smoke, heat output, or historical availability."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition:ru",
+      "target_ref": "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состав наружной бересты Материальный состав наружной бересты берёзы. В исследованной авторами коре Betula pendula обнаружены суберин и лигнин. Это не устанавливает состав любой бересты, конкретный лист, свежесть, горение, пригодность мокрого топлива, дым, теплоотдачу или историческую доступность."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load:en",
+      "target_ref": "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wet soil and trafficability Qualitative relation between soil moisture, load support, and rutting. Increased soil moisture can reduce trafficability and permit rutting under load. This establishes no soil, moisture level, load, route, rut depth, or condition of a concrete place."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load:ru",
+      "target_ref": "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влажный грунт и проходимость Качественная связь влажности грунта, опоры под нагрузкой и колейности. Повышенная влажность грунта может уменьшать проходимость и допускать образование колеи под нагрузкой. Это не устанавливает грунт, влажность, нагрузку, маршрут, глубину колеи или состояние конкретного места."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-horses-are-hindgut-fermenters:en",
+      "target_ref": "claim:static-horses-are-hindgut-fermenters",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. Horses are hindgut fermenters whose cecum and large colon contain microbes that ferment fibre. This establishes no ration, feed quantity, digestive state, diagnosis, or outcome for a concrete horse. horse hindgut fermentation colic cecum fibre fermentation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-horses-are-hindgut-fermenters:ru",
+      "target_ref": "claim:static-horses-are-hindgut-fermenters",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. Лошади — ферментаторы задней кишки: в слепой и большой ободочной кишке микроорганизмы ферментируют клетчатку. Это не устанавливает рацион, количество корма, состояние пищеварения, диагноз или исход конкретной лошади. лошадь задняя кишка ферментация колики слепая кишка ферментация клетчатки"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-hydraulic-lime-can-initially-set-with-water:en",
       "target_ref": "claim:static-hydraulic-lime-can-initially-set-with-water",
       "domain": "chemistry_process",
@@ -16922,6 +17104,20 @@
       "retrieval_text": "Смазочная плёнка Плёнка смазки между движущимися поверхностями. Смазочная плёнка может разделять движущиеся поверхности. Это не утверждает наличие смазки или низкое трение конкретной опоры."
     },
     {
+      "entry_ref": "wk-retrieval:claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws:en",
+      "target_ref": "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Cautious cloven-hoof trace comparison Qualitative features and limits for comparing split-hoof traces. A moose track reference can show two crescent-shaped hoof halves and dewclaw marks. This is an Alaska-source analogy, not a key to species, breed, age, place, or a concrete animal. hoof track cloven hoof moose cattle moose track crescent hoof dewclaw"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws:ru",
+      "target_ref": "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. В справочном описании след лося может иметь две серповидные половины копыта и отметины прибылых пальцев. Это аналогия по аляскинскому источнику, не ключ вида, породы, возраста, места или конкретного животного. след копыта раздвоенное копыто лось крупный рогатый скот след лося серповидное копыто прибылые пальцы"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:static-nonhydraulic-lime-can-harden-by-carbonation:en",
       "target_ref": "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
       "domain": "chemistry_process",
@@ -16934,6 +17130,34 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Карбонизация негидравлической извести Твердение извести реакцией с углекислым газом воздуха. Негидравлическая известь может твердеть, поглощая углекислый газ воздуха и превращаясь в карбонат кальция. Состав и исход кладки не устанавливаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia:en",
+      "target_ref": "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland plant regional compatibility Modern native range as compatibility context, not evidence of local presence. The modern native range of Phragmites australis includes Central, North, and Northwest European Russia. This is compatibility context, not evidence of medieval local presence, a stand, stock, access, harvest, or use."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia:ru",
+      "target_ref": "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Региональная совместимость болотных растений Современный нативный ареал как контекст совместимости, не доказательство местного присутствия. Современный нативный ареал Phragmites australis включает Центральную, Северную и Северо-Западную Европейскую Россию. Это контекст совместимости, не доказательство средневекового местного присутствия, зарослей, запаса, доступа, сбора или использования."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia:en",
+      "target_ref": "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland plant regional compatibility Modern native range as compatibility context, not evidence of local presence. The modern native range of Ranunculus sceleratus includes North and Northwest European Russia. This is compatibility context, not evidence of medieval local presence, specimen identity, contact, or hazard in a scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia:ru",
+      "target_ref": "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Региональная совместимость болотных растений Современный нативный ареал как контекст совместимости, не доказательство местного присутствия. Современный нативный ареал Ranunculus sceleratus включает Северную и Северо-Западную Европейскую Россию. Это контекст совместимости, не доказательство средневекового местного присутствия, определения экземпляра, контакта или опасности в сцене."
     },
     {
       "entry_ref": "wk-retrieval:claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap:en",
@@ -16962,6 +17186,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Омыление и очистка мылом Общие химические механизмы образования и действия мыла. Амфифильное очищающее вещество может окружать масло или жир гидрофобными хвостами внутрь и гидрофильными головками наружу, диспергируя его в воде для удаления."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-straw-is-a-traditional-horse-bedding-source:en",
+      "target_ref": "claim:static-straw-is-a-traditional-horse-bedding-source",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Straw horse bedding Modern general premise about straw as horse bedding. Straw is a traditional bedding source for horses. This establishes no historical practice, human sleeping suitability, local straw, quantity, condition, access, or scene use."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:static-straw-is-a-traditional-horse-bedding-source:ru",
+      "target_ref": "claim:static-straw-is-a-traditional-horse-bedding-source",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Соломенная подстилка для лошадей Современная общая предпосылка о соломе как подстилке для лошадей. Солома — традиционный материал подстилки для лошадей. Это не устанавливает историческую практику, пригодность для сна человека, местную солому, её количество, состояние, доступ или использование в сцене."
     },
     {
       "entry_ref": "wk-retrieval:claim:static-wood-ash-can-irritate-skin-and-eyes:en",
@@ -21136,6 +21374,20 @@
       "retrieval_text": "Кожный барьер Неповреждённая кожа служит барьером для патогенов."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-equine-hindgut-and-colic-context:en",
+      "target_ref": "wk:biology_physiology:static-equine-hindgut-and-colic-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hindgut fermentation and colic context Qualitative hindgut physiology and cautious limits of equine abdominal-pain signs. horse hindgut fermentation colic"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-equine-hindgut-and-colic-context:ru",
+      "target_ref": "wk:biology_physiology:static-equine-hindgut-and-colic-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Заднекишечная ферментация и контекст колик у лошадей Качественная физиология задней кишки и осторожные пределы признаков абдоминальной боли у лошадей. лошадь задняя кишка ферментация колики"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:static-household-trauma-movement:en",
       "target_ref": "wk:biology_physiology:static-household-trauma-movement",
       "domain": "biology_physiology",
@@ -21148,6 +21400,34 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Ограничения перемещения при травме"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ranunculaceae-sap-contact:en",
+      "target_ref": "wk:biology_physiology:static-ranunculaceae-sap-contact",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ranunculaceae sap contact General premise about irritating fresh Ranunculaceae sap."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-ranunculaceae-sap-contact:ru",
+      "target_ref": "wk:biology_physiology:static-ranunculaceae-sap-contact",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Контакт с соком лютиковых Общая предпосылка о раздражающем свежем соке Ranunculaceae."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-straw-horse-bedding:en",
+      "target_ref": "wk:biology_physiology:static-straw-horse-bedding",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Straw horse bedding Modern general premise about straw as horse bedding."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:static-straw-horse-bedding:ru",
+      "target_ref": "wk:biology_physiology:static-straw-horse-bedding",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Соломенная подстилка для лошадей Современная общая предпосылка о соломе как подстилке для лошадей."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:stomatal-opening-tradeoff:en",
@@ -21820,6 +22100,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "solute solvation При растворении частицы растворённого вещества взаимодействуют с молекулами растворителя; в воде это гидратация."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-ground-b05-fibre-alkali-response:en",
+      "target_ref": "wk:chemistry_process:static-ground-b05-fibre-alkali-response",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Alkali and fibre classes Different responses of cellulosic and protein fibres to alkaline cleaning conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:static-ground-b05-fibre-alkali-response:ru",
+      "target_ref": "wk:chemistry_process:static-ground-b05-fibre-alkali-response",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Щёлочь и классы волокон Различная реакция целлюлозных и белковых волокон на щелочные условия очистки."
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:static-hydraulic-lime-water-setting:en",
@@ -23738,6 +24032,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Южный лиственный лес и собираемые растения Вероятный источник отдельных собранных растений."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-cloven-hoof-trace-comparison:en",
+      "target_ref": "wk:environment:static-cloven-hoof-trace-comparison",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Cautious cloven-hoof trace comparison Qualitative features and limits for comparing split-hoof traces. hoof track cloven hoof moose cattle"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-cloven-hoof-trace-comparison:ru",
+      "target_ref": "wk:environment:static-cloven-hoof-trace-comparison",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Осторожное сравнение следов парнокопытных Качественные признаки и пределы сравнения следов с раздвоенным копытом. след копыта раздвоенное копыто лось крупный рогатый скот"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-wetland-plant-regional-compatibility:en",
+      "target_ref": "wk:environment:static-wetland-plant-regional-compatibility",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland plant regional compatibility Modern native range as compatibility context, not evidence of local presence."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:static-wetland-plant-regional-compatibility:ru",
+      "target_ref": "wk:environment:static-wetland-plant-regional-compatibility",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Региональная совместимость болотных растений Современный нативный ареал как контекст совместимости, не доказательство местного присутствия."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:troitsky-local-plant-remains:en",
@@ -27268,6 +27590,20 @@
       "retrieval_text": "Контакт выступов и износ Локальный контакт шероховатостей через смазочную плёнку."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-bedding-material-condition:en",
+      "target_ref": "wk:physics_material_science:static-bedding-material-condition",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Bedding material condition General bedding-material conditions without asserting a particular material or scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-bedding-material-condition:ru",
+      "target_ref": "wk:physics_material_science:static-bedding-material-condition",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Условия материала подстилки Общие условия материала подстилки без утверждения о конкретном материале или сцене."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:static-belt-friction:en",
       "target_ref": "wk:physics_material_science:static-belt-friction",
       "domain": "physics_material_science",
@@ -27350,6 +27686,48 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Поверхностный оксид при кузнечной сварке Влияние оксида на соединяемые поверхности."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-birch-bark-composition:en",
+      "target_ref": "wk:physics_material_science:static-ground-b05-birch-bark-composition",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Outer birch-bark composition Material composition of outer birch bark."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-birch-bark-composition:ru",
+      "target_ref": "wk:physics_material_science:static-ground-b05-birch-bark-composition",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Состав наружной бересты Материальный состав наружной бересты берёзы."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-excavation-groundwater:en",
+      "target_ref": "wk:physics_material_science:static-ground-b05-excavation-groundwater",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Groundwater in excavation Qualitative relation between groundwater, seepage, and excavation."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-excavation-groundwater:ru",
+      "target_ref": "wk:physics_material_science:static-ground-b05-excavation-groundwater",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Грунтовая вода в выемке Качественная связь грунтовой воды, фильтрации и выемки."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-wet-soil-trafficability:en",
+      "target_ref": "wk:physics_material_science:static-ground-b05-wet-soil-trafficability",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Wet soil and trafficability Qualitative relation between soil moisture, load support, and rutting."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:static-ground-b05-wet-soil-trafficability:ru",
+      "target_ref": "wk:physics_material_science:static-ground-b05-wet-soil-trafficability",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Влажный грунт и проходимость Качественная связь влажности грунта, опоры под нагрузкой и колейности."
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:static-lubrication-film:en",

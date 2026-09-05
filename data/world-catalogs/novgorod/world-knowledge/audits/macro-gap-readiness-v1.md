@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,392-claim corpus. The later direct-attestation-only residual
+current 1,396-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -343,3 +343,39 @@ normalized IDs and changed maintenance advice/actions into descriptions of
 actual upkeep, without reading WK or adapting situations to answers. These
 inputs are frozen with this checkpoint; classification of the free set and
 all new WK-only reconstructions follow separately. No clean result is claimed.
+
+## Fourth place-first unseen batch — diagnostic
+
+Inputs were frozen at `5a1f21dfcb05b99e4e6601831d615951cd117179` before
+review against the unchanged 1,392-claim bundle. The controlled component
+contains 63 practical/natural/physical cases and 12 social/institutional
+cases; the separate blind free component was classified before lookup as
+23 practical and two mainly social space/access cases. These are open
+sampling labels, not an exhaustive taxonomy or imposed free quota.
+
+Three independent agents reconstructed the controlled scenes; root read
+the separately generated free cases. The four concrete review files retain
+**97 covered and three qualitative leads**: 027 plant cold exposure and
+temporary cover, 055 aqueous animal-glue setting/drying, and 057 soaking
+and separation of woody bast. Existing WK resolved initial false absences
+for navigation, shared-resource coordination, balance mechanics and convoy
+inspection; the initial findings remain recorded. Root retained 027 after
+the corrected response still could not explain the central protective
+relation, rather than treating a restatement of the input attempt as coverage.
+
+The narrow corn/soy frost claim was not generalized to cabbage, and raw
+hide, wool, soil, flour and wooden surfaces were not silently equated when
+correcting citations. The new leads are about useful general relations,
+not species-specific recipes, exact thresholds or guaranteed outcomes.
+The original 97/3 result remains diagnostic; the unseen clean streak is 0/3.
+Follow-up candidates are not production until independently approved and
+compiled. No live gameplay or repairs of other owners occurred.
+
+The subsequent four independently approved premises are now compiled in
+the 1,396-claim corpus. A separate known-case replay covers 027/055/057,
+conditionally for animal glue and linden bast; it does not change the
+original diagnostic or the 0/3 unseen streak. Both maps, 4,598 vectors,
+95 focused tests, and passing 324/133 retrieval suites are aligned; see
+the current checkpoint above for measured results and source limits.
+The next blind 75+25 inputs are prepared in `place-batch-05-{core,free}.json`;
+their WK-only review remains pending, not an acceptance claim.

@@ -2647,12 +2647,14 @@
           "claim_refs": [
             "claim:place-outdoors-clearing-and-trace-renewal",
             "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
-            "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth"
+            "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+            "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+            "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection"
           ],
           "coverage": "partial",
-          "limits": "Не заменять растениеводство декоративной статикой.",
+          "limits": "Не заменять растениеводство декоративной статикой. Укрытие не гарантирует защиту, а уязвимость к замерзанию зависит от растения и стадии развития.",
           "residual_needs": [
-            "P2: plant-specific response of ordinary garden or orchard growth to frost, drought and animal damage; corn/soy seedling evidence does not transfer to other plants."
+            "P2: plant-specific response of ordinary garden or orchard growth to drought and animal damage; freezing susceptibility and temporary-cover context are bounded by plant kind, developmental stage, cover properties and placement."
           ]
         }
       ]
@@ -3196,11 +3198,13 @@
             "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
             "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
             "claim:place-dye-moving-submerged-textile-can-support-even-contact",
-            "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
+            "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+            "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+            "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling"
           ],
           "coverage": "supported",
           "residual_needs": [],
-          "limits": "Tools, stock and waste quantities require sources.",
+          "limits": "Tools, stock and waste quantities require sources. Animal glue applies only when its aqueous collagen/gelatin preparation is established; linden-bast handling is editorial and not universal plant-fibre practice.",
           "needs": [
             "Какие связи между инструментом, материалом, сырьём, заготовками, готовой вещью и отходами формируют рабочую среду?"
           ]

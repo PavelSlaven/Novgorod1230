@@ -8,9 +8,9 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,392 approved claims, 899 concepts,
-505 sources and 1,007 evidence records**. This includes 156 independently
-reviewed premises using editorial-reconstruction sources; 166 claims have
+The integrated corpus contains **1,396 approved claims, 903 concepts,
+512 sources and 1,014 evidence records**. This includes 156 independently
+reviewed premises using editorial-reconstruction sources; 167 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
 (practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,582 x 1,024 float32 entries (18,767,872 bytes)** and
+package contains **4,598 x 1,024 float32 entries (18,833,408 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,392-claim corpus
+## Checks actually completed on the 1,396-claim corpus
 
-- Compiler: all 1,392 claims and independent approval bindings validate.
+- Compiler: all 1,396 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,8 +42,8 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **320-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996354**,
-  Recall@20 **0.997917**, gate PASS.
+- **324-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996399**,
+  Recall@20 **0.997942**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -64,7 +64,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`5f04867590c5b463f0eaa02e654672f910d67964` (run 33966291360).
+`5a1f21dfcb05b99e4e6601831d615951cd117179` (run 33968958463).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -85,8 +85,9 @@ checkpoint push, not reported green. The B10 candidate checkpoint
 The 1,330-claim integration passed its focused checks; run 33959687474
 was cancelled, not green. The 1,365-claim place-first integration passed
 full CI at a680ccbc. The 1,374-claim integration passed full CI at 84acd120.
-The 1,384-claim integration passed full CI at 5f048675. The later 1,392-claim
-integration has the same exact-HEAD CI requirement, tracked separately on the PR.
+The 1,384-claim integration passed full CI at 5f048675. The 1,392-claim
+integration passed full CI at 5a1f21df. Later changes have the same exact-HEAD
+CI requirement, tracked separately on the PR.
 An earlier green checkpoint does not certify a later
 candidate or merge readiness.
 
@@ -510,3 +511,54 @@ normalized IDs and changed maintenance advice/actions into descriptions of
 actual upkeep, without reading WK or adapting situations to answers. These
 inputs are frozen with this checkpoint; classification of the free set and
 all new WK-only reconstructions follow separately. No clean result is claimed.
+
+## Fourth place-first unseen batch — diagnostic
+
+Inputs were frozen at `5a1f21dfcb05b99e4e6601831d615951cd117179` before
+review against the unchanged 1,392-claim bundle. The controlled component
+contains 63 practical/natural/physical cases and 12 social/institutional
+cases; the separate blind free component was classified before lookup as
+23 practical and two mainly social space/access cases. These are open
+sampling labels, not an exhaustive taxonomy or imposed free quota.
+
+Three independent agents reconstructed the controlled scenes; root read
+the separately generated free cases. The four concrete review files retain
+**97 covered and three qualitative leads**: 027 plant cold exposure and
+temporary cover, 055 aqueous animal-glue setting/drying, and 057 soaking
+and separation of woody bast. Existing WK resolved initial false absences
+for navigation, shared-resource coordination, balance mechanics and convoy
+inspection; the initial findings remain recorded. Root retained 027 after
+the corrected response still could not explain the central protective
+relation, rather than treating a restatement of the input attempt as coverage.
+
+The narrow corn/soy frost claim was not generalized to cabbage, and raw
+hide, wool, soil, flour and wooden surfaces were not silently equated when
+correcting citations. The new leads are about useful general relations,
+not species-specific recipes, exact thresholds or guaranteed outcomes.
+The original 97/3 result remains diagnostic; the unseen clean streak is 0/3.
+Follow-up candidates are not production until independently approved and
+compiled. No live gameplay or repairs of other owners occurred.
+
+### Fourth-batch gap follow-up and next frozen inputs
+
+Four premises from candidate commit `5d9f27e3d600d31e2897a4eefe2a286108ae1273`
+received independent APPROVE verdicts: plant freezing susceptibility,
+temporary-cover heat retention, aqueous collagen/gelatin glue cooling and
+drying, and an explicitly reconstructed linden-bast soaking relation.
+The existing approval/compiler path integrated them into the 1,396-claim
+bundle. Material conditions and source-access limits remain explicit;
+neither generic glue nor unspecified bast silently acquires a material identity.
+
+The separate WK-only `place-batch-04-known-gap-replay.json` covers all three
+known cases through those conditional premises. This is a known-case replay,
+not an unseen hundred: the original 97/3 diagnostic and 0/3 streak remain.
+Both cartographies link the new support without declaring entire families
+complete. Four retrieval probes were added; the unchanged gates pass on
+the rebuilt vectors and both benchmark suites.
+
+Two blind generators prepared `place-batch-05-core.json` (75) and
+`place-batch-05-free.json` (25), without seeing WK, cartography or prior
+answers. Input-axis and obvious input-fact corrections precede freeze;
+free classification and all WK-only answers follow separately. These are
+not yet acceptance results. No runtime owner, model, gate or gameplay
+subsystem was changed.

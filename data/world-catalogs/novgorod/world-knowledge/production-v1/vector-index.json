@@ -11280,6 +11280,34 @@
       "retrieval_text": "Сосновое пековое покрытие Пековое покрытие, идентифицированное в источнике; не любая сосновая смола, канифоль или уже обработанный предмет. В описанной Odegaard и соавторами традиции юго-запада Северной Америки нагретое сосновое пековое покрытие на плетёной корзине делало именно эту систему водонепроницаемой. Это наблюдение о сочетании определённого пека, плетёной основы и нанесённого покрытия, не общее свойство всякой смолы, доски, шва, лодки или тары. Оно не задаёт сцепление с древесиной, долговечность, рецепт, наличие материалов или новгородскую практику."
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining:en",
+      "target_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Aqueous animal-glue setting and drying Qualitative relation of cooling gelatin glue, gelling, and joint drying. Where an aqueous collagen/gelatin animal glue is already present, cooling can make it gel more viscously, and an assembled joint can be left to dry. This does not apply to every glue and supplies no recipe, temperature, duration, clamping, strength, or successful bond. animal glue gelatin glue glue cooling glue drying glue set binding dries"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining:ru",
+      "target_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Схватывание и высыхание водного животного клея Качественная связь охлаждения желатинового клея, гелеобразования и высыхания соединения. Если уже есть водный животный клей на основе коллагена/желатина, при остывании он может перейти в более вязкое гелевое состояние, а собранное соединение может оставаться для высыхания. Это не относится ко всем клеям и не задаёт рецепт, температуру, длительность, прижим, прочность или успех склейки. животный клей желатиновый клей клей остыл клей сохнет клей застыл сохнет переплёт"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling:en",
+      "target_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Linden-bast soaking and separation Relation of soaking Tilia americana inner bark to bast-fibre separation. Where linden bast is already established, water soaking can support practical fibre separation and flexible further handling, such as twisting. This is editorial reconstruction for Novgorod Land 1200–1300, not evidence of a local tree or bark, fixed method, duration, tool, yield, or finished item; it does not make the same process a law for nettle or all bast plants. linden bast basswood inner bark soak bark separate bast soak bast separate fibres twist cordage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling:ru",
+      "target_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Замачивание и отделение луба липы Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон. Если липовое лыко уже установлено, замачивание в воде может поддержать практическое отделение волокон и их гибкую дальнейшую обработку, например скручивание. Это editorial reconstruction для Новгородской земли 1200–1300, не доказательство местного дерева или коры, не фиксированный способ, срок, инструмент, выход или готовое изделие; она не объявляет тот же приём законом для крапивы либо всех лубяных растений. луб липы лыко мочить кору отделить луб замочить лыко отделить волокна крутить шнур"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage:en",
       "target_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
       "domain": "social_law_economy",
@@ -11656,6 +11684,34 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Резной торф и сушка Качественные связи свежесрезанного торфа, сушки и погоды. Если резной торф уже оставлен для воздушной сушки, переворачивание или рыхлая укладка могут открыть материал для дальнейшей потери воды. Это editorial reconstruction, не обязательный рецепт, местный способ, объём, топливо или готовность к использованию. торф резка торфа сушка переворачивание торфа укладка торфа"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development:en",
+      "target_ref": "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Plant freezing-injury context Qualitative dependence of plant freezing susceptibility on kind and developmental stage. Plant susceptibility to freezing injury can depend on plant kind, variety, and developmental stage. This does not transfer data from one crop to another or fix a threshold, injury, survival, yield, or recovery in a scene. frost freeze plant cold injury plant frost damage freeze injury"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development:ru",
+      "target_ref": "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия холодового повреждения растений Качественная зависимость уязвимости растений к замерзанию от вида и стадии развития. Уязвимость растения к повреждению от замерзания может зависеть от его вида, сорта и стадии развития. Это не переносит данные одной культуры на другую и не задаёт порог, повреждение, выживание, урожай или восстановление в сцене. заморозок мороз холодовое повреждение растений заморозок растений мороз повредил растения"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection:en",
+      "target_ref": "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Temporary cold cover for plants Bounded qualitative relation of covering, local heat retention, and non-guaranteed protection. A temporary plant cover can retain local heat before freezing conditions, but protection depends on cover properties and placement and does not guarantee no injury. This establishes no historical use of matting, its presence, suitable method, temperature, or result for a particular bed. plant cover frost cover cold protection cover plants matting"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection:ru",
+      "target_ref": "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Временное укрытие растений от холода Ограниченная качественная связь покрытия, удержания местного тепла и негарантированной защиты. Временное укрытие растения до замерзания может удерживать местное тепло, но защита зависит от свойств и укладки покрытия и не гарантирует отсутствия повреждения. Это не доказывает историческое применение именно рогожи, её наличие, подходящий способ, температуру или исход для конкретной гряды. укрытие растений накрыть гряду рогожа заморозок накрыть растения укрыть от заморозка"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair:en",
@@ -22340,6 +22396,34 @@
       "retrieval_text": "Ноцицепция и боль различаются Ноцицепция и боль различаются; переживание боли нельзя свести к единой объективной шкале повреждения или вывести без состояния actor."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-plant-freezing-injury-context:en",
+      "target_ref": "wk:biology_physiology:place-plant-freezing-injury-context",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Plant freezing-injury context Qualitative dependence of plant freezing susceptibility on kind and developmental stage. frost freeze plant cold injury"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-plant-freezing-injury-context:ru",
+      "target_ref": "wk:biology_physiology:place-plant-freezing-injury-context",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия холодового повреждения растений Качественная зависимость уязвимости растений к замерзанию от вида и стадии развития. заморозок мороз холодовое повреждение растений"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-plant-temporary-cold-cover:en",
+      "target_ref": "wk:biology_physiology:place-plant-temporary-cold-cover",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Temporary cold cover for plants Bounded qualitative relation of covering, local heat retention, and non-guaranteed protection. plant cover frost cover cold protection"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:place-plant-temporary-cold-cover:ru",
+      "target_ref": "wk:biology_physiology:place-plant-temporary-cold-cover",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Временное укрытие растений от холода Ограниченная качественная связь покрытия, удержания местного тепла и негарантированной защиты. укрытие растений накрыть гряду рогожа заморозок"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:plant-growth-requirements:en",
       "target_ref": "wk:biology_physiology:plant-growth-requirements",
       "domain": "biology_physiology",
@@ -24326,6 +24410,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Обработка кожи"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:linden-bast-soaking-and-separation:en",
+      "target_ref": "wk:craft_technology:linden-bast-soaking-and-separation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Linden-bast soaking and separation Relation of soaking Tilia americana inner bark to bast-fibre separation. linden bast basswood inner bark soak bark separate bast"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:linden-bast-soaking-and-separation:ru",
+      "target_ref": "wk:craft_technology:linden-bast-soaking-and-separation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Замачивание и отделение луба липы Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон. луб липы лыко мочить кору отделить луб"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:metalworking-broad-context:en",
@@ -28568,6 +28666,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Замачивание оленьего рога с открытой губчатой костью В эксперименте замачивание открытой губчатой кости оленьего рога улучшало обрабатываемость."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:aqueous-animal-glue-setting-and-drying:en",
+      "target_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Aqueous animal-glue setting and drying Qualitative relation of cooling gelatin glue, gelling, and joint drying. animal glue gelatin glue glue cooling glue drying"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:aqueous-animal-glue-setting-and-drying:ru",
+      "target_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Схватывание и высыхание водного животного клея Качественная связь охлаждения желатинового клея, гелеобразования и высыхания соединения. животный клей желатиновый клей клей остыл клей сохнет"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:bone-organic-inorganic-structure:en",

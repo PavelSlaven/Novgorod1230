@@ -1,6 +1,10 @@
 {
   "schema": "world_knowledge_authoring_descriptor_v1",
   "includes": [
+    "place-adhesive-bast-processes-v1.json",
+    "verification-place-adhesive-bast-processes-v1.json",
+    "place-plant-frost-context-v1.json",
+    "verification-place-plant-frost-context-v1.json",
     "place-practical-processes-v1.json",
     "verification-place-practical-processes-v1.json",
     "place-community-environments-v1.json",

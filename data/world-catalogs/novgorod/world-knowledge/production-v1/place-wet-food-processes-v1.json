@@ -4,6 +4,22 @@
   "sources": [
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:epa-leather-tanning-development",
+      "title": "Leather tanning and finishing development document",
+      "authors": [
+        "United States Environmental Protection Agency"
+      ],
+      "publication": "EPA leather tanning and finishing process and effluent guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=00000W73.TXT",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:unido-tannery-effluent",
       "title": "Introduction to treatment of tannery effluents",
       "authors": [
@@ -68,6 +84,16 @@
     }
   ],
   "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:epa-hide-washing-and-fleshing",
+      "source_ref": "source:epa-leather-tanning-development",
+      "anchor": {
+        "section": "Process description: soaking/washing and fleshing"
+      },
+      "note": "EPA describes soaking/washing followed, when not already performed, by fleshing that removes adhering flesh, fat and muscle; fleshings are generally isolated solid waste. Universal process relation only, not a medieval recipe or particular workshop.",
+      "review_status": "approved"
+    },
     {
       "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:wet-hide-process",
@@ -155,7 +181,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:wet-hide-process"
+        "evidence:epa-hide-washing-and-fleshing"
       ],
       "review_status": "approved",
       "conflict_group_ref": null

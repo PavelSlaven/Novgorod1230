@@ -108,6 +108,18 @@
     "residual-language-education-v1.json",
     "verification-residual-language-education-v1.json",
     "residual-language-education-v2.json",
-    "verification-residual-language-education-v2.json"
+    "verification-residual-language-education-v2.json",
+    "residual-traces-v1.json",
+    "verification-residual-traces-v1.json",
+    "residual-government-law-v1.json",
+    "verification-residual-government-law-v1.json",
+    "residual-government-law-v2.json",
+    "verification-residual-government-law-v2.json",
+    "residual-law-norms-v1.json",
+    "verification-residual-law-norms-v1.json",
+    "residual-postpartum-v1.json",
+    "verification-residual-postpartum-v1.json",
+    "residual-tree-properties-v1.json",
+    "verification-residual-tree-properties-v1.json"
   ]
 }

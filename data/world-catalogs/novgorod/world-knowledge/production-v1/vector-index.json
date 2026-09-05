@@ -12554,6 +12554,454 @@
       "retrieval_text": "Ветровой перепад давления и дождь у проёма Условная связь ветрового перепада давления, дождя и прохода воды через проём или дефект ограждения. Перепад давления, создаваемый ветром, может проталкивать дождевую воду через проём или дефект ограждения постройки. Это не устанавливает постройку, крышу, стену, проём, дождь, ветер, течь, количество воды, ущерб, влажность внутри, способ ремонта, историческую практику или исход конкретной сцены. косой дождь ветровой дождь проём протекание дождь в доме ветер загоняет дождь протекает проём"
     },
     {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends:en",
+      "target_ref": "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated territorial and external episodes Chronicle names for city districts and external events. The chronicle's 1220–1234 entries name the Prussian, Lyudin and Nerev ends and Kuzmodemyanskaya Street. These mentions do not establish the number of ends, their foundation dates, assemblies or jurisdiction."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends:ru",
+      "target_ref": "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные территориальные и внешние эпизоды Летописные названия частей города и внешние события. Летопись 1220–1234 годов называет Прусский, Людин и Неревский концы, а также Кузьмодемьянскую улицу. Эти записи не доказывают число концов, их дату, собрания или юрисдикцию. конец улица волость посол немцы Прусский конец Людин конец Неревский конец Кузьмодемьянская улица"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1227-records-accusation-and-burning-episode:en",
+      "target_ref": "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Limits of accusation and state terminology Limits on inference from recorded accusations and later political concepts. Under 1227 the Novgorod First Chronicle reports the burning of four people accused of sorcery at Yaroslav's Court. This records accusation and violence, not proof of guilt, a lawful trial or an ordinary sanction."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1227-records-accusation-and-burning-episode:ru",
+      "target_ref": "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Пределы обвинения и государственного языка Границы вывода из сообщения об обвинении и поздних политических понятий. Под 1227 годом НПЛ сообщает, что четырёх обвинённых в волхвовании сожгли на Ярославовом дворе. Это запись об обвинении и насилии, не доказательство вины, законного суда или обычной санкции. обвинение колдовство суд земля волхвы сожжение Ярославов двор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri:en",
+      "target_ref": "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated territorial and external episodes Chronicle names for city districts and external events. Under 1229 the Novgorod First Chronicle reports that the city gathered the whole volost and sent envoys to Yuri. This is one external episode, not a permanent representative institution or territorial sovereignty."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri:ru",
+      "target_ref": "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные территориальные и внешние эпизоды Летописные названия частей города и внешние события. Под 1229 годом НПЛ сообщает, что город собрал всю волость и послал послов к Юрию. Это один внешний эпизод, не постоянный представительный институт или суверенитет территории. конец улица волость посол немцы послы Юрий 1229"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky:en",
+      "target_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated Novgorod offices and assembly Chronicle episodes involving officeholders, the veche and a prince. The chronicle's 1230 crisis narrative names Archbishop Spiridon, Posadnik Vodovik, then Posadnik Stepan Tverdislavich and Tysyatsky Nikita Petrilovich. This is a dated sequence of offices, not a rule for selection, powers or current officeholders."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky:ru",
+      "target_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные новгородские должности и вече Летописные эпизоды с должностями, вечем и князем. Летопись в кризисе 1230 года называет архиепископа Спиридона, посадника Водовика, а затем посадника Стефана Твердиславича и тысяцкого Никиту Петриловича. Это датированный ряд должностей, не правило их выбора, полномочий или текущие лица. вече посадник тысяцкий владыка князь Спиридон Водовик Стефан Никита"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode:en",
+      "target_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated Novgorod offices and assembly Chronicle episodes involving officeholders, the veche and a prince. Under 1230 the Novgorod First Chronicle reports a veche at Yaroslav's Court and Prince Yaroslav's oath on all Yaroslav's charters and the entire Novgorodian will. This is one crisis episode, not a constitutional scheme."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode:ru",
+      "target_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные новгородские должности и вече Летописные эпизоды с должностями, вечем и князем. Под 1230 годом НПЛ сообщает о вече на Ярославовом дворе и о клятве князя Ярослава на всех Ярославлих грамотах и всей воле новгородской. Это один кризисный эпизод, не конституционная схема. вече посадник тысяцкий владыка князь Ярославов двор грамоты клятва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans:en",
+      "target_ref": "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated territorial and external episodes Chronicle names for city districts and external events. Under 1234 the Novgorod First Chronicle describes Yaroslav and the Novgorodians campaigning against the Germans and concluding peace on their terms of right. This is one campaign and agreement, not a standing foreign policy or current boundary."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans:ru",
+      "target_ref": "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные территориальные и внешние эпизоды Летописные названия частей города и внешние события. Под 1234 годом НПЛ описывает поход Ярослава и новгородцев против немцев и мир «на всей правде своей». Это один поход и соглашение, не постоянная внешняя политика или текущая граница. конец улица волость посол немцы мир 1234 Ярослав"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-halperin-limits-sovereign-land-projection:en",
+      "target_ref": "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Limits of accusation and state terminology Limits on inference from recorded accusations and later political concepts. Charles Halperin's study cautions against projecting a modern sovereign state onto the chronicle expression Novgorodian land: the expression is rare and does not name a party to war or treaty in the chronicles. This is an interpretive limit, not a description of current politics."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v1-halperin-limits-sovereign-land-projection:ru",
+      "target_ref": "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Пределы обвинения и государственного языка Границы вывода из сообщения об обвинении и поздних политических понятий. Исследование Чарльза Халперина предостерегает от проекции современного суверенного государства на летописную «Новгородскую землю»: этот термин редок и не служит в летописях именем стороны войны или договора. Это интерпретационное ограничение, не описание текущей политики. обвинение колдовство суд земля Новгородская земля суверенитет Халперин"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince:en",
+      "target_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds. In 1215 the posadnik and tysyatsky travelled together from Novgorod to invite Yaroslav Vsevolodovich to rule as prince. This is one dated joint mission, not a permanent power or a current delegation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince:ru",
+      "target_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. В 1215 году посадник и тысяцкий вместе ездили от Новгорода приглашать Ярослава Всеволодовича на княжение. Это один датированный совместный выезд, не постоянное полномочие или текущая делегация. князь посадник тысяцкий вече сотня 1215 Ярослав посольство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky:en",
+      "target_ref": "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds. In the 1218–1219 episode the source distinguishes the prince's own tysyatsky from Novgorodian officials. This is a bounded distinction in a conflict, not a universal office structure."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky:ru",
+      "target_ref": "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. В эпизоде 1218–1219 годов источник различает «своего тысяцкого» князя и новгородских должностных лиц. Это ограниченное различение в конфликте, не универсальная должностная схема. князь посадник тысяцкий вече сотня княжеский тысяцкий 1219"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky:en",
+      "target_ref": "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds. In the 1228–1229 chronicle episode the whole city, acting from the veche, deprived Vyacheslav of the tysyatsky's office, which went to Boris Negochevich. This was a violent crisis removal, not an ordinary procedure."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky:ru",
+      "target_ref": "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. В 1228–1229 годах летописный эпизод сообщает, что весь город с веча лишил Вячеслава тысяцкого, а должность получил Борис Негочевич. Это кризисное и насильственное смещение, не обычная процедура. князь посадник тысяцкий вече сотня Вячеслав Борис Негочевич"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division:en",
+      "target_ref": "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds. In the 1230 account a deposed posadnik's property is divided po stom (by hundreds). This is a term used in one crisis distribution, not a map of hundreds or their jurisdiction."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division:ru",
+      "target_ref": "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. В сообщении 1230 года имущество свергнутого посадника делится «по стом». Это употребление термина в одном кризисном разделе, не карта сотен или их юрисдикция. князь посадник тысяцкий вече сотня по стом Водовик 1230"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker:en",
+      "target_ref": "claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Limits of reading institutional sources Cautions against projecting offices and titles into an unspecified scene. Yanin's source-critical caution says that Novgorodian bishop and archbishop titles after 1165 are not a simple dating indicator. This supplies neither an archbishop's power nor a current cleric."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker:ru",
+      "target_ref": "claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Пределы чтения институциональных источников Оговорки против переноса должностей и титулов в неуказанную сцену. По источниковедческой оговорке Янина титулы новгородского епископа и архиепископа после 1165 года не служат простым датировочным признаком. Это не полномочие владыки и не текущий клирик. архиепископ епископ суд владыка 1165"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-mid-xii-mixed-court-comparator:en",
+      "target_ref": "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds. Yanin describes an early mixed-court comparator: the posadnik appears after the formally prior prince, who sealed judicial acts. This is mid-twelfth-century material, not a court of 1230."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-government-law-v2-mid-xii-mixed-court-comparator:ru",
+      "target_ref": "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. Янин описывает ранний смешанный судебный comparator: посадник фигурирует после формально приоритетного князя, который скреплял судебные акты печатью. Это материал середины XII века, не суд 1230 года. князь посадник тысяцкий вече сотня суд печать"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-arson-remedy-and-sanction:en",
+      "target_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. For burning a threshing barn or household yard, article 79 of the Expanded Pravda combines making good the loss with potok and razgrablenie, placing compensation before further princely action. The text distinguishes the victim’s loss from the ensuing sanction. arson threshing barn compensation sanction"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-arson-remedy-and-sanction:ru",
+      "target_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Для поджога гумна или двора статья 79 Пространной Правды соединяет возмещение потери с потоком и разграблением; возмещение поставлено раньше дальнейшего распоряжения князя. Текст различает потерю пострадавшего и последующую санкцию. поджог гумно возмещение поток"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-boundaries-and-marked-trees:en",
+      "target_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Articles 64–66 of the Expanded Pravda distinguish altering bee-tree marks, violating boundaries, and cutting a marked or boundary oak, prescribing payments for these acts. Marks and boundary trees have legal significance in the text. boundary bee tree mark boundary oak"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-boundaries-and-marked-trees:ru",
+      "target_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статьи 64–66 Пространной Правды различают изменение бортиных знаков, нарушение межи и подрубку отмеченного или межевого дуба; за такие вмешательства предусмотрены платежи. Знаки и межевые деревья имеют правовое значение в тексте. межа борть знак межевой дуб"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-creditor-priority:en",
+      "target_ref": "claim:residual-law-creditor-priority",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. For multiple debts, article 51 of the Expanded Pravda distinguishes an uninformed visiting trader, local creditors, and princely money. It specifies repayment priority from selling the debtor and excludes one who has taken much interest; it is not an equal division among all creditors. multiple creditors priority princely money"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-creditor-priority:ru",
+      "target_ref": "claim:residual-law-creditor-priority",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. В случае множества долгов статья 51 Пространной Правды выделяет неосведомлённого приезжего торговца, местных кредиторов и княжьи деньги. Текст задаёт очередность получения из выручки от продажи должника и исключает получавшего много реза; это не равный раздел между всеми кредиторами. несколько кредиторов очередность княжьи деньги"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-daughters-and-status-inheritance:en",
+      "target_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 86 of the Expanded Pravda singles out the estates of boyars and the druzhina: they do not pass to the prince, and daughters receive them if there are no sons. This is a status-conditioned textual rule, not a universal exclusion of daughters from inheritance. daughter inheritance boyars druzhina"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-daughters-and-status-inheritance:ru",
+      "target_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 86 Пространной Правды выделяет наследство бояр и дружины: оно не отходит князю, а при отсутствии сыновей его получают дочери. Это статусно обусловленная норма текста, не универсальное исключение дочерей из наследования. дочь наследство бояре дружина"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-debt-denial-witness-oath:en",
+      "target_ref": "claim:residual-law-debt-denial-witness-oath",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. For a denied monetary debt, article 43 of the Expanded Pravda describes producing witnesses and their oath as a route to recovering the money. A creditor’s assertion and that supporting procedure are distinct. debt denial witnesses oath"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-debt-denial-witness-oath:ru",
+      "target_ref": "claim:residual-law-debt-denial-witness-oath",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. При отрицании денежного долга статья 43 Пространной Правды описывает предъявление послухов и их роту как путь к получению требуемых денег. Заявление кредитора и такое подтверждение различаются. долг отрицание послухи рота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-dependency-and-agreement:en",
+      "target_ref": "claim:residual-law-dependency-and-agreement",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Articles 102–105 of the Expanded Pravda distinguish grounds for full slavery from agreed terms: marriage to an enslaved woman, service as a tiun, or taking the key without an agreement are contrasted with stipulated terms. Receiving food or an advance is separately not equated with slavery. agreement tiun service key slavery"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-dependency-and-agreement:ru",
+      "target_ref": "claim:residual-law-dependency-and-agreement",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статьи 102–105 Пространной Правды различают основания обельного холопства и условия ряда: брак с робой, тиунство или принятие ключа без ряда противопоставлены оговорённым условиям. Получение хлеба или дачи отдельно не приравнено к холопству. ряд тиунство ключ холопство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-detained-thief-and-princely-court:en",
+      "target_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 36 of the Expanded Pravda distinguishes killing a thief at the theft site from a thief held until daylight, whom it directs to the princely court. Killing a person whom others have already seen bound incurs a separate textual payment. thief bound princely court daylight"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-detained-thief-and-princely-court:ru",
+      "target_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 36 Пространной Правды различает убийство вора у места кражи и вора, удержанного до рассвета: последнего предписано вести на княжий двор. Убийство уже связанного человека, которого видели связанным другие, влечёт отдельный платёж по тексту. вор связанный княжий двор рассвет"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-injury-and-treatment-payments:en",
+      "target_ref": "claim:residual-law-injury-and-treatment-payments",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Articles 21–24 of the Expanded Pravda distinguish bodily injuries; article 24 separates a fine, payment to the injured person, and a wound-treatment payment. These are distinct textual demands, not one modern damages assessment. wound treatment payment compensation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-injury-and-treatment-payments:ru",
+      "target_ref": "claim:residual-law-injury-and-treatment-payments",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статьи 21–24 Пространной Правды различают телесные повреждения; статья 24 отделяет продажу, выплату пострадавшему и лечебное за рану. Это разные требования текста, а не единая современная оценка ущерба. рана лечебное возмещение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-interest-agreement-and-witnesses:en",
+      "target_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 46 of the Expanded Pravda describes money lent at rez, honey at nastav, and grain at prisop. It calls for witnesses to such terms and links recovery to what the parties agreed. interest grain honey agreement"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-interest-agreement-and-witnesses:ru",
+      "target_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 46 Пространной Правды описывает отдачу денег в рез, мёда в настав и зерна в присоп. Для таких условий названы послухи; получение связывается с тем, о чём стороны договорились. рез проценты зерно договор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-merchant-entrustment-proof-exception:en",
+      "target_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 44 of the Expanded Pravda singles out one merchant entrusting money to another for trade: prior witnesses are not required, and denial is addressed through the merchant’s own oath. This is a special trading case, not removal of witnesses for every loan. merchant entrusted money trade oath"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-merchant-entrustment-proof-exception:ru",
+      "target_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 44 Пространной Правды выделяет передачу денег одним купцом другому для торговли: предварительные послухи не требуются, а при отрицании назван путь собственной роты купца. Это специальный торговый случай, не отмена свидетелей для всех займов. купец доверенные деньги торговля рота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-monthly-and-longer-interest:en",
+      "target_ref": "claim:residual-law-monthly-and-longer-interest",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 47 of the Expanded Pravda distinguishes monthly interest for a short term from a different reckoning when the money remains until the year; it also links proof of debt to witnesses and the amount. Monthly interest is not presented as one indefinitely accumulating tariff. monthly interest term debt witnesses"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-monthly-and-longer-interest:ru",
+      "target_ref": "claim:residual-law-monthly-and-longer-interest",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 47 Пространной Правды различает месячный рез при коротком сроке и иной расчёт, когда деньги остаются до года; она также связывает путь подтверждения долга с наличием послухов и величиной суммы. Месячный рез не описан как бесконечно нарастающий единый тариф. месячный рез срок долг свидетели"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-status-and-witness-exceptions:en",
+      "target_ref": "claim:residual-law-status-and-witness-exceptions",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 59 of the Expanded Pravda restricts an enslaved person’s witness role but allows a boyar’s tiun in necessity and a zakup in a minor dispute. These status categories are not interchangeable. witness role enslaved person tiun zakup"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-status-and-witness-exceptions:ru",
+      "target_ref": "claim:residual-law-status-and-witness-exceptions",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 59 Пространной Правды ограничивает послушество холопа, но при нужде отдельно допускает боярского тиуна, а в малой тяжбе — закупа. Статусные категории здесь не взаимозаменяемы. послушество холоп тиун закуп"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-stepchildren-paternal-inheritance:en",
+      "target_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. For children of one mother by two husbands, article 97 of the Expanded Pravda separates paternal estates: each group receives its own father’s estate. Sharing a mother does not merge these estates into one pool. children of two husbands paternal estate inheritance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-stepchildren-paternal-inheritance:ru",
+      "target_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Для детей одной матери от двух мужей статья 97 Пространной Правды разделяет отцовские наследства: каждая группа получает наследство своего отца. Общая мать не объединяет эти наследства в одну массу. единоутробные дети дети двух мужей наследство отца"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-unauthorized-horse-use:en",
+      "target_ref": "claim:residual-law-unauthorized-horse-use",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 27 of the Expanded Pravda separately specifies a payment for mounting another person’s horse without asking. Such use is not identical to the horse-theft case in neighbouring articles. another person horse permission use"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-unauthorized-horse-use:ru",
+      "target_ref": "claim:residual-law-unauthorized-horse-use",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 27 Пространной Правды отдельно предусматривает платёж за то, что человек сел на чужого коня без спроса. Такое пользование не тождественно описанию кражи коня в соседних статьях. чужой конь без спроса пользование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-visible-injury-and-witness:en",
+      "target_ref": "claim:residual-law-visible-injury-and-witness",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 23 of the Expanded Pravda distinguishes a person bearing blood or bruises from one without visible marks, requiring a witness in the latter case. Evidence about who began the encounter can change the case even when injuries are visible. bruises witness blood initiator"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-visible-injury-and-witness:ru",
+      "target_ref": "claim:residual-law-visible-injury-and-witness",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 23 Пространной Правды различает явившегося с кровью или побоями и человека без видимых следов: во втором случае требует видока. Свидетельство о том, кто начал столкновение, может изменить разбор даже при наличии повреждений. побои видок кровь зачинщик"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-widow-separate-property:en",
+      "target_ref": "claim:residual-law-widow-separate-property",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 88 of the Expanded Pravda distinguishes a widow’s portion and property granted to her by her husband from his estate; it also distinguishes children’s claim to their mother’s property. A household is not depicted as undivided property of one spouse. widow portion maternal property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-widow-separate-property:ru",
+      "target_ref": "claim:residual-law-widow-separate-property",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 88 Пространной Правды выделяет долю вдовы и то, что муж ей передал, отдельно от мужнего наследства; она также отдельно оговаривает имущество матери, причитающееся её детям. Семейное хозяйство не описано как нераздельная собственность одного супруга. вдова доля материнское имущество"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-complaint-not-escape:en",
+      "target_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 52 of the Expanded Pravda distinguishes a zakup’s flight from openly leaving to seek money or approaching the prince or judges over the master’s wrong. For the latter cases it bars reduction to full slavery and says that the zakup is to receive pravda (justice or redress). zakup complaint master freedom"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-complaint-not-escape:ru",
+      "target_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 52 Пространной Правды различает бегство закупа и открытый уход искать деньги либо обращение к князю или судьям из-за обиды господина. За последние случаи текст запрещает обращать закупа в обельное холопство и предписывает «дати ему правду» — предоставить правду, то есть справедливость или защиту. закуп жалоба господин свобода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-illegal-sale:en",
+      "target_ref": "claim:residual-law-zakup-illegal-sale",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Article 55 of the Expanded Pravda does not equate a zakup with a fully enslaved person: a master’s sale of the zakup into full slavery leads in the text to the sold person’s freedom and a fine on the master. zakup sale into slavery release"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-illegal-sale:ru",
+      "target_ref": "claim:residual-law-zakup-illegal-sale",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статья 55 Пространной Правды не приравнивает закупа к обельному холопу: продажа его господином в обельное холопство по тексту ведёт к свободе проданного и продаже с господина. закуп продажа в холопство освобождение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-loss-context:en",
+      "target_ref": "claim:residual-law-zakup-loss-context",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state. Articles 53–54 of the Expanded Pravda distinguish property lost while the zakup is on the master’s business, theft from a shed, and livestock lost after not being driven in and secured as ordered. Textual liability depends on circumstances, not just a shortfall. zakup livestock loss assignment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-law-zakup-loss-context:ru",
+      "target_ref": "claim:residual-law-zakup-loss-context",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа. Статьи 53–54 Пространной Правды различают утрату имущества по хозяйственному поручению, кражу из хлева и потерю скота, которого закуп не загнал и не запер как велено. Ответственность закупа в тексте зависит от обстоятельств утраты, а не только от самого недостачного имущества. закуп скот утрата поручение"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:residual-nature-celestial-pole-daily-circles:en",
       "target_ref": "claim:residual-nature-celestial-pole-daily-circles",
       "domain": "environment",
@@ -12748,6 +13196,370 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Естественное освещение и небесные ориентиры Качественные природные связи; конкретные условия задаёт состояние мира. После захода Солнца сумеречное свечение не исчезает сразу: при углублении Солнца под горизонт оно ослабевает, становятся заметны более слабые звёзды. Облачность и закрытый горизонт могут мешать наблюдению. сумерки Луна звёзды ориентирование закат темнота видимость"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods:en",
+      "target_ref": "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Newborn physiology General early needs and vulnerabilities without diagnosing an individual infant. The period around birth and the first week of life are important for newborn survival and well-being; this establishes no age, health state, care or outcome for a particular infant. newborn infant first day first week birth"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods:ru",
+      "target_ref": "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физиология новорождённого Общие ранние потребности и уязвимости младенца без диагноза конкретного ребёнка. Период вокруг рождения и первая неделя жизни важны для выживания и благополучия новорождённого; это не устанавливает возраст, здоровье, помощь или исход конкретного младенца. новорождённый младенец первый день первую неделю роды первая неделя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors:en",
+      "target_ref": "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Newborn physiology General early needs and vulnerabilities without diagnosing an individual infant. Breast milk contains bioactive and anti-infective factors that augment an infant's immature immune system; this establishes no exposure, infection, immunity or outcome. newborn infant first day first week breast milk immunity infection"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors:ru",
+      "target_ref": "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физиология новорождённого Общие ранние потребности и уязвимости младенца без диагноза конкретного ребёнка. Грудное молоко содержит биоактивные и противоинфекционные факторы, поддерживающие незрелую иммунную систему младенца; это не устанавливает контакт, инфекцию, иммунитет или исход. новорождённый младенец первый день первую неделю грудное молоко иммунитет инфекция"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-breastfeeding-protects-against-infectious-disease:en",
+      "target_ref": "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Newborn physiology General early needs and vulnerabilities without diagnosing an individual infant. Early, exclusive and continued breastfeeding protects infants and children from infectious diseases; this establishes no feeding history, illness or outcome for a particular child. newborn infant first day first week breastfeeding infection"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-breastfeeding-protects-against-infectious-disease:ru",
+      "target_ref": "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физиология новорождённого Общие ранние потребности и уязвимости младенца без диагноза конкретного ребёнка. Раннее, исключительно грудное и продолжающееся грудное вскармливание защищает младенцев и детей от инфекционных болезней; это не устанавливает историю кормления, болезнь или исход конкретного ребёнка. новорождённый младенец первый день первую неделю грудное вскармливание инфекция"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk:en",
+      "target_ref": "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum lactation General physiological relations of breast-milk production and ejection. Colostrum is early postpartum milk, typically produced in a small amount and rich in immune factors; this establishes no milk, timing or state for a particular infant. lactation breast milk colostrum breastfeeding first days"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk:ru",
+      "target_ref": "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лактация после родов Общие физиологические связи образования и выделения грудного молока. Молозиво — раннее послеродовое молоко, обычно образующееся в малом количестве и богатое иммунными факторами; это не устанавливает молоко, срок или состояние конкретного младенца. лактация грудное молоко молозиво кормление грудью первые дни"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-early-child-nutrition-supports-growth-and-development:en",
+      "target_ref": "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Newborn physiology General early needs and vulnerabilities without diagnosing an individual infant. Optimal nutrition in the first two years supports growth and development and lowers morbidity and mortality; this establishes no diet, growth, disease or outcome for a particular child. newborn infant first day first week nutrition growth development"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-early-child-nutrition-supports-growth-and-development:ru",
+      "target_ref": "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физиология новорождённого Общие ранние потребности и уязвимости младенца без диагноза конкретного ребёнка. Оптимальное питание в первые два года поддерживает рост и развитие и снижает заболеваемость и смертность; это не устанавливает рацион, рост, болезнь или исход конкретного ребёнка. новорождённый младенец первый день первую неделю питание рост развитие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth:en",
+      "target_ref": "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum recovery General physiological relations after childbirth, without inferring an individual's state. Maternal and newborn health are closely linked after childbirth; this establishes no condition, available care or outcome for a particular pair. after birth postpartum bleeding uterus mother newborn"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth:ru",
+      "target_ref": "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовое восстановление Общие физиологические связи после родов, без вывода о состоянии конкретного человека. Здоровье матери и новорождённого после родов тесно связано; это не устанавливает состояние, доступную помощь или исход конкретной пары. после родов послеродовой период кровотечение матка мать новорождённый"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery:en",
+      "target_ref": "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum recovery General physiological relations after childbirth, without inferring an individual's state. After delivery, oxytocin can cause uterine contractions and help reduce bleeding; this establishes no individual's recovery. after birth postpartum bleeding uterus oxytocin contractions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery:ru",
+      "target_ref": "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовое восстановление Общие физиологические связи после родов, без вывода о состоянии конкретного человека. После родов окситоцин может вызывать сокращения матки и способствовать уменьшению кровотечения; это не устанавливает восстановление конкретного человека. после родов послеродовой период кровотечение матка окситоцин сокращения"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts:en",
+      "target_ref": "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum lactation General physiological relations of breast-milk production and ejection. Oxytocin can contract cells around alveoli and move collected milk into ducts; this establishes no current feeding state or outcome. lactation breast milk colostrum breastfeeding oxytocin milk ducts"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts:ru",
+      "target_ref": "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лактация после родов Общие физиологические связи образования и выделения грудного молока. Окситоцин может сокращать клетки вокруг альвеол и продвигать собранное молоко в протоки; это не устанавливает текущее кормление или его исход. лактация грудное молоко молозиво кормление грудью окситоцин молоко протоки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts:en",
+      "target_ref": "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum recovery General physiological relations after childbirth, without inferring an individual's state. Severe bleeding and infection are serious complications that can occur after childbirth; this establishes neither their presence, severity nor outcome for an individual. after birth postpartum bleeding uterus infection"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts:ru",
+      "target_ref": "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовое восстановление Общие физиологические связи после родов, без вывода о состоянии конкретного человека. Сильное кровотечение и инфекция относятся к серьёзным осложнениям, которые могут возникать после родов; это не устанавливает их наличие, тяжесть или исход у конкретного человека. после родов послеродовой период кровотечение матка инфекция"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment:en",
+      "target_ref": "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum lactation General physiological relations of breast-milk production and ejection. In early lactation, suckling can raise prolactin and milk production; this establishes no milk supply or feeding success for a particular pair. lactation breast milk colostrum breastfeeding suckling prolactin milk production"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment:ru",
+      "target_ref": "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лактация после родов Общие физиологические связи образования и выделения грудного молока. В первые недели лактации сосание может повышать пролактин и образование молока; это не устанавливает запас молока или успешность кормления у конкретной пары. лактация грудное молоко молозиво кормление грудью сосание пролактин образование молока"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-sign-absence-limit:en",
+      "target_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal sign formation and preservation Biological sign types and limits of observation. An absence of surviving signs does not prove that an animal never passed through: signs can decay or be displaced. Possible loss of signs is not itself evidence that an animal was present. tracks scat feeding signs no tracks animal passage lost traces"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-sign-absence-limit:ru",
+      "target_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Образование и сохранность следов животных Типы биологических следов и ограничения наблюдения. Отсутствие сохранившихся следов не доказывает, что животное раньше не проходило здесь: признаки могут разрушиться или быть снесены. Но и возможная утрата следов не является доказательством присутствия животного. следы помёт погрызы нет следов животное прошло следы исчезли"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-trace-types:en",
+      "target_ref": "claim:residual-traces-animal-trace-types",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal sign formation and preservation Biological sign types and limits of observation. Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil. tracks scat feeding signs animal signs scratches disturbed soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-trace-types:ru",
+      "target_ref": "claim:residual-traces-animal-trace-types",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Образование и сохранность следов животных Типы биологических следов и ограничения наблюдения. Следами деятельности животных могут быть отпечатки лап, помёт, погрызенные листья, царапины, норы и нарушенный слой листьев или почвы. следы помёт погрызы следы животных царапины нарушенная почва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-trace-weather-decay:en",
+      "target_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal sign formation and preservation Biological sign types and limits of observation. Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose. tracks scat feeding signs track age sign preservation wind weather scat decomposition"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-animal-trace-weather-decay:ru",
+      "target_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Образование и сохранность следов животных Типы биологических следов и ограничения наблюдения. Следы сохраняются неодинаково: ветер уносит перья, погода и движение по поверхности стирают отпечатки, помёт постепенно разлагается. следы помёт погрызы давность следа сохранность следов ветер погода разложение помёта"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-deadwood-feeding-signs:en",
+      "target_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal sign formation and preservation Biological sign types and limits of observation. Dead wood can house insects, and birds feeding on them can leave signs on the tree. tracks scat feeding signs dead wood holes insects"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-traces-deadwood-feeding-signs:ru",
+      "target_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Образование и сохранность следов животных Типы биологических следов и ограничения наблюдения. Мёртвая древесина может служить местом жизни насекомых, а кормящиеся ими птицы могут оставлять следы на дереве. следы помёт погрызы мёртвая древесина дупло насекомые кормовые следы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-catkins-nutlets:en",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Alnus glutinosa properties Species-specific botanical properties of black alder. Alnus glutinosa has catkins and nutlet fruit; this is a species property, not a seasonal calendar or a scene object. black alder Alnus glutinosa alder catkins alder fruit"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-catkins-nutlets:ru",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Alnus glutinosa Видовые ботанические свойства ольхи чёрной. У Alnus glutinosa есть серёжки и плоды-орешки; это свойство вида, не сезонный календарь или объект сцены. ольха чёрная Alnus glutinosa серёжки ольхи плоды ольхи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves:en",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Alnus glutinosa properties Species-specific botanical properties of black alder. Alnus glutinosa is deciduous with simple alternate leaves; this is a species property, not alder presence. black alder Alnus glutinosa alder leaves"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves:ru",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Alnus glutinosa Видовые ботанические свойства ольхи чёрной. Alnus glutinosa — листопадное дерево с простыми очередными листьями; это свойство вида, не наличие ольхи. ольха чёрная Alnus glutinosa ольха листья"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-moist-soil:en",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-moist-soil",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Alnus glutinosa properties Species-specific botanical properties of black alder. Alnus glutinosa prefers moist soil; this does not assert alder or wet soil at a place. black alder Alnus glutinosa alder moist soil alder soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-alnus-glutinosa-moist-soil:ru",
+      "target_ref": "claim:residual-tree-alnus-glutinosa-moist-soil",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Alnus glutinosa Видовые ботанические свойства ольхи чёрной. Alnus glutinosa предпочитает влажную почву; это не утверждение о наличии ольхи или влажной почвы в месте. ольха чёрная Alnus glutinosa ольха влажная почва почва ольхи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-deciduous:en",
+      "target_ref": "claim:residual-tree-betula-pendula-deciduous",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Betula pendula properties Species-specific botanical properties of silver birch. Betula pendula is deciduous; this is a species property, not birch presence at a place or in a scene. silver birch Betula pendula deciduous birch"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-deciduous:ru",
+      "target_ref": "claim:residual-tree-betula-pendula-deciduous",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Betula pendula Видовые ботанические свойства берёзы повислой. Betula pendula — листопадное дерево; это свойство вида, не наличие берёзы в месте или сцене. берёза повислая Betula pendula берёза листопадная"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-male-female-catkins:en",
+      "target_ref": "claim:residual-tree-betula-pendula-male-female-catkins",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Betula pendula properties Species-specific botanical properties of silver birch. Betula pendula has male and female catkins; this is a species property, not a seasonal calendar or a scene object. silver birch Betula pendula birch catkins male female catkins"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-male-female-catkins:ru",
+      "target_ref": "claim:residual-tree-betula-pendula-male-female-catkins",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Betula pendula Видовые ботанические свойства берёзы повислой. У Betula pendula есть мужские и женские серёжки; это свойство вида, не сезонный календарь или объект сцены. берёза повислая Betula pendula серёжки берёзы мужские женские серёжки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-moist-soil:en",
+      "target_ref": "claim:residual-tree-betula-pendula-moist-soil",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Betula pendula properties Species-specific botanical properties of silver birch. Betula pendula needs moist soil for good growth; this does not assert soil at a particular place. silver birch Betula pendula birch moist soil birch soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-moist-soil:ru",
+      "target_ref": "claim:residual-tree-betula-pendula-moist-soil",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Betula pendula Видовые ботанические свойства берёзы повислой. Для хорошего роста Betula pendula нужна влажная почва; это не утверждение о почве конкретного места. берёза повислая Betula pendula берёза влажная почва почва берёзы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-simple-leaves:en",
+      "target_ref": "claim:residual-tree-betula-pendula-simple-leaves",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Betula pendula properties Species-specific botanical properties of silver birch. Betula pendula has alternate simple leaves; this does not describe a particular tree. silver birch Betula pendula birch leaves simple leaves"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-betula-pendula-simple-leaves:ru",
+      "target_ref": "claim:residual-tree-betula-pendula-simple-leaves",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Betula pendula Видовые ботанические свойства берёзы повислой. У Betula pendula очередные простые листья; это не описание конкретного дерева. берёза повислая Betula pendula листья берёзы простые листья"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-picea-abies-cones-brown-at-maturity:en",
+      "target_ref": "claim:residual-tree-picea-abies-cones-brown-at-maturity",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Picea abies properties Species-specific botanical properties of Norway spruce. Picea abies cones change from light green to medium brown at maturity; this is not a scene object. Norway spruce Picea abies spruce cones mature spruce cones"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-picea-abies-cones-brown-at-maturity:ru",
+      "target_ref": "claim:residual-tree-picea-abies-cones-brown-at-maturity",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Picea abies Видовые ботанические свойства ели европейской. Шишки Picea abies при зрелости меняют светло-зелёную окраску на средне-коричневую; это не объект сцены. ель европейская Picea abies шишки ели зрелые шишки ели"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-picea-abies-evergreen-needles:en",
+      "target_ref": "claim:residual-tree-picea-abies-evergreen-needles",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Picea abies properties Species-specific botanical properties of Norway spruce. Picea abies is evergreen with persistent stiff pointed needles; this is a species property. Norway spruce Picea abies spruce needles"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-picea-abies-evergreen-needles:ru",
+      "target_ref": "claim:residual-tree-picea-abies-evergreen-needles",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Picea abies Видовые ботанические свойства ели европейской. Picea abies — вечнозелёное дерево с сохраняющейся жёсткой заострённой хвоей; это свойство вида. ель европейская Picea abies ель хвоя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity:en",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Pinus sylvestris properties Species-specific botanical properties of Scots pine. Pinus sylvestris cones fall from the tree at maturity; this does not establish cones in a scene. Scots pine Pinus sylvestris pine cones mature cones"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity:ru",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Pinus sylvestris Видовые ботанические свойства сосны обыкновенной. Шишки Pinus sylvestris падают с дерева при зрелости; это не наличие шишек в сцене. сосна обыкновенная Pinus sylvestris шишки сосны зрелые шишки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-dry-infertile-soils:en",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Pinus sylvestris properties Species-specific botanical properties of Scots pine. Pinus sylvestris prefers well-drained acidic soil and tolerates infertile and dry soils; this is not a local soil map. Scots pine Pinus sylvestris pine dry soil pine acidic soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-dry-infertile-soils:ru",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Pinus sylvestris Видовые ботанические свойства сосны обыкновенной. Pinus sylvestris предпочитает хорошо дренированную кислую почву и переносит бедные сухие почвы; это не местная почвенная карта. сосна обыкновенная Pinus sylvestris сосна сухая почва сосна кислая почва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-evergreen-needles:en",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-evergreen-needles",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Pinus sylvestris properties Species-specific botanical properties of Scots pine. Pinus sylvestris is evergreen with needles in fascicles of two; this is a species property, not pine presence. Scots pine Pinus sylvestris Scots pine needles"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:residual-tree-pinus-sylvestris-evergreen-needles:ru",
+      "target_ref": "claim:residual-tree-pinus-sylvestris-evergreen-needles",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Pinus sylvestris Видовые ботанические свойства сосны обыкновенной. Pinus sylvestris — вечнозелёное дерево с хвоей в пучках по две; это свойство вида, не наличие сосны. сосна обыкновенная Pinus sylvestris сосна хвоя"
     },
     {
       "entry_ref": "wk-retrieval:claim:residual-v1-birch-letter-etiquette-formulas-aid-dating:en",
@@ -17692,6 +18504,48 @@
       "retrieval_text": "Части плода яблони лесной Узкая предпосылка о различии плода и семян Malus sylvestris."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-lactation:en",
+      "target_ref": "wk:biology_physiology:residual-postpartum-lactation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum lactation General physiological relations of breast-milk production and ejection. lactation breast milk colostrum breastfeeding"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-lactation:ru",
+      "target_ref": "wk:biology_physiology:residual-postpartum-lactation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Лактация после родов Общие физиологические связи образования и выделения грудного молока. лактация грудное молоко молозиво кормление грудью"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-maternal-recovery:en",
+      "target_ref": "wk:biology_physiology:residual-postpartum-maternal-recovery",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postpartum recovery General physiological relations after childbirth, without inferring an individual's state. after birth postpartum bleeding uterus"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-maternal-recovery:ru",
+      "target_ref": "wk:biology_physiology:residual-postpartum-maternal-recovery",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовое восстановление Общие физиологические связи после родов, без вывода о состоянии конкретного человека. после родов послеродовой период кровотечение матка"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-newborn-physiology:en",
+      "target_ref": "wk:biology_physiology:residual-postpartum-newborn-physiology",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Newborn physiology General early needs and vulnerabilities without diagnosing an individual infant. newborn infant first day first week"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:residual-postpartum-newborn-physiology:ru",
+      "target_ref": "wk:biology_physiology:residual-postpartum-newborn-physiology",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Физиология новорождённого Общие ранние потребности и уязвимости младенца без диагноза конкретного ребёнка. новорождённый младенец первый день первую неделю"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:ruminant-digestion:en",
       "target_ref": "wk:biology_physiology:ruminant-digestion",
       "domain": "biology_physiology",
@@ -19064,6 +19918,20 @@
       "retrieval_text": "Адвекционный туман Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:alnus-glutinosa-properties:en",
+      "target_ref": "wk:environment:alnus-glutinosa-properties",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Alnus glutinosa properties Species-specific botanical properties of black alder. black alder Alnus glutinosa"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:alnus-glutinosa-properties:ru",
+      "target_ref": "wk:environment:alnus-glutinosa-properties",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Alnus glutinosa Видовые ботанические свойства ольхи чёрной. ольха чёрная Alnus glutinosa"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:animal-pollination:en",
       "target_ref": "wk:environment:animal-pollination",
       "domain": "environment",
@@ -19090,6 +19958,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Водоносные горизонты и поровое течение Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:betula-pendula-properties:en",
+      "target_ref": "wk:environment:betula-pendula-properties",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Betula pendula properties Species-specific botanical properties of silver birch. silver birch Betula pendula"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:betula-pendula-properties:ru",
+      "target_ref": "wk:environment:betula-pendula-properties",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Betula pendula Видовые ботанические свойства берёзы повислой. берёза повислая Betula pendula"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:bird-utilization:en",
@@ -19610,6 +20492,34 @@
       "retrieval_text": "Новгородский контекст низинной растительности Палинологическая реконструкция переувлажнённых низин у Рюрикова городища Растительность низин Ильменя Хвощ сфагновые мхи"
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:picea-abies-properties:en",
+      "target_ref": "wk:environment:picea-abies-properties",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Picea abies properties Species-specific botanical properties of Norway spruce. Norway spruce Picea abies"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:picea-abies-properties:ru",
+      "target_ref": "wk:environment:picea-abies-properties",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Picea abies Видовые ботанические свойства ели европейской. ель европейская Picea abies"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:pinus-sylvestris-properties:en",
+      "target_ref": "wk:environment:pinus-sylvestris-properties",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Pinus sylvestris properties Species-specific botanical properties of Scots pine. Scots pine Pinus sylvestris"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:pinus-sylvestris-properties:ru",
+      "target_ref": "wk:environment:pinus-sylvestris-properties",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Свойства Pinus sylvestris Видовые ботанические свойства сосны обыкновенной. сосна обыкновенная Pinus sylvestris"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:poozerie-cereal-millet-source:en",
       "target_ref": "wk:environment:poozerie-cereal-millet-source",
       "domain": "environment",
@@ -19776,6 +20686,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Снег, лёд и зимние поверхности Качественные природные связи; конкретные условия задаёт состояние мира. снег лёд наст крыша"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:residual-trace-formation-and-preservation:en",
+      "target_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal sign formation and preservation Biological sign types and limits of observation. tracks scat feeding signs"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:residual-trace-formation-and-preservation:ru",
+      "target_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Образование и сохранность следов животных Типы биологических следов и ограничения наблюдения. следы помёт погрызы"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:rising-air-cooling-cloud-condensation:en",
@@ -25418,6 +26342,118 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Адрес с религиозной должностью"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits:en",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Limits of accusation and state terminology Limits on inference from recorded accusations and later political concepts."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits:ru",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Пределы обвинения и государственного языка Границы вывода из сообщения об обвинении и поздних политических понятий. обвинение колдовство суд земля"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-dated-novgorod-offices-and-assembly:en",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-dated-novgorod-offices-and-assembly",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated Novgorod offices and assembly Chronicle episodes involving officeholders, the veche and a prince."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-dated-novgorod-offices-and-assembly:ru",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-dated-novgorod-offices-and-assembly",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные новгородские должности и вече Летописные эпизоды с должностями, вечем и князем. вече посадник тысяцкий владыка князь"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-dated-territory-and-external-episodes:en",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-dated-territory-and-external-episodes",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated territorial and external episodes Chronicle names for city districts and external events."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v1-dated-territory-and-external-episodes:ru",
+      "target_ref": "wk:social_law_economy:residual-government-law-v1-dated-territory-and-external-episodes",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные территориальные и внешние эпизоды Летописные названия частей города и внешние события. конец улица волость посол немцы"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v2-dated-office-relations:en",
+      "target_ref": "wk:social_law_economy:residual-government-law-v2-dated-office-relations",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dated relations between Novgorod offices Bounded historical episodes involving the prince, posadnik, tysyatsky, veche and hundreds."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v2-dated-office-relations:ru",
+      "target_ref": "wk:social_law_economy:residual-government-law-v2-dated-office-relations",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Датированные отношения новгородских должностей Узкие исторические эпизоды взаимодействия князя, посадника, тысяцкого, веча и сотен. князь посадник тысяцкий вече сотня"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v2-institutional-reading-limits:en",
+      "target_ref": "wk:social_law_economy:residual-government-law-v2-institutional-reading-limits",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Limits of reading institutional sources Cautions against projecting offices and titles into an unspecified scene."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-government-law-v2-institutional-reading-limits:ru",
+      "target_ref": "wk:social_law_economy:residual-government-law-v2-institutional-reading-limits",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Пределы чтения институциональных источников Оговорки против переноса должностей и титулов в неуказанную сцену. архиепископ епископ суд"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-credit:en",
+      "target_ref": "wk:social_law_economy:residual-law-credit",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Debt and trading trust in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-credit:ru",
+      "target_ref": "wk:social_law_economy:residual-law-credit",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Долг и торговое доверие в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-offense:en",
+      "target_ref": "wk:social_law_economy:residual-law-offense",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Offense, proof and compensation in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-offense:ru",
+      "target_ref": "wk:social_law_economy:residual-law-offense",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Правонарушение, подтверждение и возмещение в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-status:en",
+      "target_ref": "wk:social_law_economy:residual-law-status",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Dependent status and family property in the Expanded Pravda Comparative documentary premises for Rus around 1230; not automatically enacted local law or actor state."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:residual-law-status:ru",
+      "target_ref": "wk:social_law_economy:residual-law-status",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Зависимый статус и семейное имущество в Пространной Правде Сравнительные документальные нормы для Руси около 1230 года; не автоматически действующее местное право и не состояние персонажа."
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:residual-v1-document-register-boundaries:en",

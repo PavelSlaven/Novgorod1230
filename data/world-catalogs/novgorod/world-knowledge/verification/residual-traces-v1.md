@@ -2,6 +2,8 @@
 
 Candidate: `git:e1a3c6363a595c923a70a3269e280812e71c2aa6:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json`.
 
+New narrowed-claim verification digests are bound to the assembled production pack so shared predicate definitions and source records are included; this changes signatures only, not reviewed claims, evidence, candidate refs or verdicts.
+
 Reviewed live pages: University of New Hampshire, [Finding Animal Signs](https://extension.unh.edu/resource/finding-animal-signs-4-h-activity), and University of Maine, [Activity 6: Crime Scene Scientists](https://extension.umaine.edu/4h/stem-toolkits/sustainable-fishing/activity-6-crime-scene-scientists/). Current RU/EN wording, cited anchors, evidence refs, predicates and applicability were reconciled independently. No new primary source was added.
 
 ## Approved nonpermanent traces limit

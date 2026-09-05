@@ -1,6 +1,6 @@
 # Independent verification — residual government and law v1
 
-Candidate `bfc88ad56a81eadc8b12650ab2f8ea9bc2f5906c` reviewed independently against live NPL 1220–1229 and 1230–1243 pages, plus Halperin 1999.
+Candidate `aa9f0113d3eade9cb94bea0babd32c2184f08ec1` reviewed independently against live NPL 1220–1229 and 1230–1243 pages, plus Halperin 1999. The added EN concept labels and runtime text were reconciled against unchanged RU wording and source-bounded facts; they introduce no new source assertion. Verification digests now bind the assembled production pack, including shared predicate and source records.
 
 ## Approved dated NPL episodes
 

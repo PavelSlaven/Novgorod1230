@@ -28,7 +28,33 @@ superseded acceptance baseline only.
 
 ### Residual integration checkpoint — not final readiness
 
-The current descriptor contains 1,049 claims: 26 independently approved
+Current integrated snapshot: 1,107 approved claims, 797 concepts, 388 sources
+and 782 evidence records. The six residual shards add 58 premises covering
+animal traces, dated government episodes, comparative legal norms,
+postpartum/newborn relations and four tree taxa. Government RU/EN surfaces
+were reconciled independently; approval bindings use the full assembled
+predicate/source context. The compiler validates all approvals. This is
+integration, not a claim that these historical episodes alone constitute a
+complete institutional or ordinary-life model.
+
+Cartography contains 155 supported families and 49 explicit partial needs.
+The aligned index has 3,808 bilingual entries (15,597,568 float32 bytes).
+All 52 population/foundation/cartography tests passed after vector generation;
+an earlier alignment check failed while vectors were still stale. The updated
+193-case gameplay retrieval benchmark passes (hybrid Recall@10 0.997409,
+Recall@20 1.0), as does the unchanged 133-case baseline (0.969925 at both
+cutoffs). Both retain hard-constraint recall and applicability precision 1.0.
+No test assertion or benchmark gate was weakened.
+
+The independent playable macro assessment still identified missing broad
+premises for warfare, ordinary justice/status, speech/naming/register and
+social/practical illness support. Reconstruction candidates are being
+reviewed separately and are not included in these numbers. The three
+100-situation offline acceptance batches and final exact-HEAD CI are pending.
+
+#### Previous 1,049-claim integration
+
+The previous descriptor contained 1,049 claims: 26 independently approved
 snow/sky and birch-writing/name premises added, and one unsupported
 five-ends applicability claim removed. Its 1019–1270 interval was not
 established by the cited paragraph; its production verdict and two dependent

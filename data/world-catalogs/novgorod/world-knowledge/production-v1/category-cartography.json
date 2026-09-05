@@ -1450,6 +1450,54 @@
         "npc": "no present actor state"
       },
       "coverage": "3 independently approved premises; family completeness remains separately open"
+    },
+    {
+      "id": "residual-traces-v1",
+      "source_path": "residual-traces-v1.json",
+      "domains": ["environment"],
+      "location_applicability": "Potential animal traces in regional outdoor contexts; no animal, route or encounter is established.",
+      "applicability": {"resource":"none","material":"conditional trace substrate","process":"trace formation and decay","npc":"observation context"},
+      "coverage": "4 independently reviewed trace premises; interpretation remains conditional."
+    },
+    {
+      "id": "residual-government-law-v1",
+      "source_path": "residual-government-law-v1.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Dated Novgorod institutional and external-relation records; no current officeholder or event.",
+      "applicability": {"resource":"conditional","material":"conditional records","process":"bounded institutional relation","npc":"role context only"},
+      "coverage": "7 independently reviewed dated institutional premises; not a complete government simulator."
+    },
+    {
+      "id": "residual-government-law-v2",
+      "source_path": "residual-government-law-v2.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Dated Novgorod institutional comparators; no current officeholder or event.",
+      "applicability": {"resource":"conditional","material":"conditional records","process":"bounded institutional relation","npc":"role context only"},
+      "coverage": "6 independently reviewed dated institutional premises; not a complete government simulator."
+    },
+    {
+      "id": "residual-law-norms-v1",
+      "source_path": "residual-law-norms-v1.json",
+      "domains": ["social_law_economy"],
+      "location_applicability": "Documentary normative comparator context; no operative court, guilt or outcome.",
+      "applicability": {"resource":"conditional disputed goods","material":"conditional record","process":"bounded procedure/remedy context","npc":"party/witness/authority context"},
+      "coverage": "19 independently reviewed normative premises with documentary limits."
+    },
+    {
+      "id": "residual-postpartum-v1",
+      "source_path": "residual-postpartum-v1.json",
+      "domains": ["biology_physiology"],
+      "location_applicability": "General postpartum, lactation and newborn physiology; no individual diagnosis or outcome.",
+      "applicability": {"resource":"conditional care resources","material":"none","process":"qualitative physiology","npc":"care/dependency context"},
+      "coverage": "10 independently reviewed physiological premises; body/time retain individual state."
+    },
+    {
+      "id": "residual-tree-properties-v1",
+      "source_path": "residual-tree-properties-v1.json",
+      "domains": ["environment"],
+      "location_applicability": "General birch, pine, spruce and alder properties; no 1230 local tree or stock.",
+      "applicability": {"resource":"conditional","material":"conditional wood/plant part","process":"seasonal/taxon property","npc":"none"},
+      "coverage": "12 independently reviewed taxon-property premises; local presence and yield remain contextual."
     }
   ],
   "families": [
@@ -4768,7 +4816,14 @@
         "claim:residual-nature-moonlight-reflected-sunlight",
         "claim:residual-nature-moon-phase-time-of-visibility"
       ]
-    }
+    },
+    {"id":"residual-trace-primitives","domain":"environment","subdomain":"biological_traces","family":"trace_types_feeding_signs_and_weather_decay","location_applicability":"Potential outdoor traces; never a present animal or route.","applicability":{"resource":"none","material":"conditional substrate","process":"trace formation/decay","npc":"observation context"},"coverage":"bounded factual trace premises","claim_refs":["claim:residual-traces-animal-trace-types","claim:residual-traces-deadwood-feeding-signs","claim:residual-traces-animal-trace-weather-decay","claim:residual-traces-animal-sign-absence-limit"]},
+    {"id":"residual-government-dated-relations","domain":"social_law_economy","subdomain":"government_and_authority","family":"dated_offices_assembly_territory_and_external_relations","location_applicability":"Dated Novgorod political records; no current officeholder or event.","applicability":{"resource":"conditional","material":"conditional records","process":"bounded institution relation","npc":"role context"},"coverage":"bounded dated institutional premises","claim_refs":["claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky","claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode","claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends","claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans","claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri","claim:residual-government-law-v1-1227-records-accusation-and-burning-episode","claim:residual-government-law-v1-halperin-limits-sovereign-land-projection","claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince","claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky","claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky","claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division","claim:residual-government-law-v2-mid-xii-mixed-court-comparator","claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker"]},
+    {"id":"residual-law-offence-testimony","domain":"social_law_economy","subdomain":"law_practice","family":"injury_theft_boundary_and_arson_normative_context","location_applicability":"Documentary normative comparator, not operative adjudication.","applicability":{"resource":"conditional disputed goods","material":"conditional evidence","process":"bounded procedure/remedy","npc":"party/witness/authority context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-visible-injury-and-witness","claim:residual-law-injury-and-treatment-payments","claim:residual-law-unauthorized-horse-use","claim:residual-law-detained-thief-and-princely-court","claim:residual-law-boundaries-and-marked-trees","claim:residual-law-arson-remedy-and-sanction"]},
+    {"id":"residual-law-credit-property","domain":"social_law_economy","subdomain":"transactions","family":"debt_entrustment_interest_and_creditor_priority","location_applicability":"Documentary credit and property comparator context.","applicability":{"resource":"conditional","material":"conditional records","process":"bounded proof/priority context","npc":"party/witness context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-debt-denial-witness-oath","claim:residual-law-merchant-entrustment-proof-exception","claim:residual-law-interest-agreement-and-witnesses","claim:residual-law-monthly-and-longer-interest","claim:residual-law-creditor-priority"]},
+    {"id":"residual-law-status-family","domain":"social_law_economy","subdomain":"status_and_succession","family":"dependency_status_widow_and_child_inheritance","location_applicability":"Documentary status and household-succession comparator context.","applicability":{"resource":"conditional household property","material":"conditional records","process":"bounded status/succession context","npc":"role context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-zakup-complaint-not-escape","claim:residual-law-zakup-loss-context","claim:residual-law-zakup-illegal-sale","claim:residual-law-status-and-witness-exceptions","claim:residual-law-daughters-and-status-inheritance","claim:residual-law-widow-separate-property","claim:residual-law-stepchildren-paternal-inheritance","claim:residual-law-dependency-and-agreement"]},
+    {"id":"residual-postpartum-newborn-primitives","domain":"biology_physiology","subdomain":"human_reproduction","family":"postpartum_lactation_and_early_newborn_physiology","location_applicability":"General physiology, not individual diagnosis or outcome.","applicability":{"resource":"conditional care","material":"none","process":"qualitative physiology","npc":"care/dependency context"},"coverage":"bounded postpartum/newborn premises","claim_refs":["claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts","claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth","claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery","claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment","claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts","claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk","claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors","claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods","claim:residual-postpartum-breastfeeding-protects-against-infectious-disease","claim:residual-postpartum-early-child-nutrition-supports-growth-and-development"]},
+    {"id":"residual-tree-taxon-properties","domain":"environment","subdomain":"flora","family":"birch_pine_spruce_and_alder_properties","location_applicability":"General taxon properties; no local tree, yield or stock.","applicability":{"resource":"conditional","material":"conditional plant/wood","process":"seasonal/taxon property","npc":"none"},"coverage":"bounded taxon-property premises","claim_refs":["claim:residual-tree-betula-pendula-deciduous","claim:residual-tree-betula-pendula-simple-leaves","claim:residual-tree-betula-pendula-male-female-catkins","claim:residual-tree-betula-pendula-moist-soil","claim:residual-tree-pinus-sylvestris-evergreen-needles","claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity","claim:residual-tree-pinus-sylvestris-dry-infertile-soils","claim:residual-tree-picea-abies-evergreen-needles","claim:residual-tree-picea-abies-cones-brown-at-maturity","claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves","claim:residual-tree-alnus-glutinosa-catkins-nutlets","claim:residual-tree-alnus-glutinosa-moist-soil"]}
   ],
   "missing_families": [
     {
@@ -4792,7 +4847,11 @@
       "supporting_claim_refs": [
         "claim:fauna-tawny-owl-pellets",
         "claim:fauna-dragonfly-emergence",
-        "claim:research-footprint-track-interpretation-can-depend-on-substrate"
+        "claim:research-footprint-track-interpretation-can-depend-on-substrate",
+        "claim:residual-traces-animal-trace-types",
+        "claim:residual-traces-deadwood-feeding-signs",
+        "claim:residual-traces-animal-trace-weather-decay",
+        "claim:residual-traces-animal-sign-absence-limit"
       ]
     },
     {
@@ -5536,13 +5595,18 @@
         "fishing_camp"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна хотя бы основная региональная древесная flora: seasonality, fruiting, части растения, основные бытовые/экологические свойства, с аккуратными границами. Current support and limits: Tree flower/leaf sequence is now grounded. Remaining bounded need: taxon-specific local calendar, fruiting/yield and scene state are not supplied by that universal premise.",
+      "reason": "OPEN P1: reviewed birch, pine, spruce and alder properties add useful primitives, but a broad regional tree envelope still needs more taxa, parts, phenology and bounded uses. Further static assessment must test whether ordinary woodland answers remain unsupported; local presence, yield and stock remain contextual.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "environment-plant-resources",
         "material-fishing-hunting"
       ],
-      "supporting_claim_refs": []
+      "supporting_claim_refs": [
+        "claim:residual-tree-betula-pendula-deciduous", "claim:residual-tree-betula-pendula-simple-leaves", "claim:residual-tree-betula-pendula-male-female-catkins", "claim:residual-tree-betula-pendula-moist-soil",
+        "claim:residual-tree-pinus-sylvestris-evergreen-needles", "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity", "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
+        "claim:residual-tree-picea-abies-evergreen-needles", "claim:residual-tree-picea-abies-cones-brown-at-maturity",
+        "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves", "claim:residual-tree-alnus-glutinosa-catkins-nutlets", "claim:residual-tree-alnus-glutinosa-moist-soil"
+      ]
     },
     {
       "id": "flora-toxic-and-food-plants",
@@ -5872,7 +5936,7 @@
         "potential:household"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть базовые postpartum/newborn physiological and care relations. Конкретная беременность, осложнение, тайминг и outcome — body state. Current support and limits: General pregnancy, staged labor, newborn adjustment and lactation relations are grounded. Postpartum recovery, newborn care and all individual state, timing, complications and outcomes remain uncovered or owned by body/time.",
+      "reason": "OPEN P1: postpartum bleeding/infection risk, uterine contraction, lactation and early-newborn nutrition add useful primitives, but useful ordinary care/recovery answers still require offline assessment beyond these relations. Individual pregnancy, complication, timing and outcome remain body/time state.",
       "supporting_family_ids": [
         "biology-reproduction-and-development",
         "social-family-care",
@@ -5883,7 +5947,8 @@
         "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
-        "claim:candidate-v2-lactation-is-milk-production-and-secretion"
+        "claim:candidate-v2-lactation-is-milk-production-and-secretion",
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts", "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth", "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery", "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment", "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts", "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk", "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors", "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods", "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease", "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development"
       ]
     },
     {
@@ -6013,7 +6078,7 @@
         "potential:administration"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Именно institution map и нужен: offices, assemblies, territorial units, типы компетенций и relations, с uncertainty/applicability. Current officeholder остаётся state. Current support and limits: Market/assembly space and bounded chronicle records of mediation, posadnik succession and Yuri's grant now combine with broad veche/prince context (the undated five-ends claim was withdrawn). Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1: dated records add offices, veche/oath, ends, hundred terminology and office relations, but useful institutional-competence answers require offline assessment beyond 14 episodes. Current officeholder, jurisdiction, levy and decision remain state/context.",
       "supporting_family_ids": [
         "npc-political-roles",
         "social-administration",
@@ -6027,7 +6092,8 @@
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
         "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
-        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"
+        "claim:candidate-v9-veche-elected-prince-chiefly-military-commander",
+        "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky", "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode", "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends", "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri", "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince", "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky", "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky", "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division", "claim:residual-government-law-v2-mid-xii-mixed-court-comparator", "claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker"
       ]
     },
     {
@@ -6048,7 +6114,7 @@
         "potential:warfare"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные формы envoys/tribute/trade/conflict/peace и ключевые внешние направления в рамках period evidence. Current support and limits: The Yugra and Khotynians comparators are supplemented by the 1222 Novgorod delegation to Yuri in Vladimir. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1: dated embassy, volost/envoy, campaign and peace records add useful external-relation primitives, but useful diplomacy/tribute/travel answers require offline assessment beyond these episodes. They never establish a current mission, treaty, route access, provisions or foreign disposition.",
       "supporting_family_ids": [
         "npc-political-roles",
         "social-administration",
@@ -6059,7 +6125,8 @@
       "supporting_claim_refs": [
         "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-v5-gramota600-reports-khotynians-context",
-        "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir"
+        "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+        "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends", "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans", "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri"
       ]
     },
     {
@@ -6080,7 +6147,7 @@
         "potential:public_safety"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен bounded map offense → applicable authority/procedure/remedy/sanction evidence. Нельзя выводить guilt/outcome. Current support and limits: Theft inquiry addressed to a posadnik and the existing Gramota 112 settle-or-court demand supplement bounded obligations, accusation and compensation fragments. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "OPEN P1: reviewed normative premises now cover injury/witnesses, debt, dependency, boundaries, arson and inheritance, but useful offense-to-procedure/remedy answers require offline assessment beyond documentary comparators. They never establish present guilt, operative court, exact sanction or outcome.",
       "supporting_family_ids": [
         "social-law-practice",
         "social-property-and-market",
@@ -6090,7 +6157,9 @@
       "supporting_claim_refs": [
         "claim:candidate-gramota213-official-obligations-document",
         "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
-        "claim:social-settlement-demand-reports-court-choice"
+        "claim:social-settlement-demand-reports-court-choice",
+        "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
+        "claim:residual-law-visible-injury-and-witness", "claim:residual-law-injury-and-treatment-payments", "claim:residual-law-unauthorized-horse-use", "claim:residual-law-detained-thief-and-princely-court", "claim:residual-law-debt-denial-witness-oath", "claim:residual-law-merchant-entrustment-proof-exception", "claim:residual-law-interest-agreement-and-witnesses", "claim:residual-law-monthly-and-longer-interest", "claim:residual-law-creditor-priority", "claim:residual-law-zakup-complaint-not-escape", "claim:residual-law-zakup-loss-context", "claim:residual-law-zakup-illegal-sale", "claim:residual-law-status-and-witness-exceptions", "claim:residual-law-boundaries-and-marked-trees", "claim:residual-law-arson-remedy-and-sanction", "claim:residual-law-daughters-and-status-inheritance", "claim:residual-law-widow-separate-property", "claim:residual-law-stepchildren-paternal-inheritance", "claim:residual-law-dependency-and-agreement"
       ]
     },
     {

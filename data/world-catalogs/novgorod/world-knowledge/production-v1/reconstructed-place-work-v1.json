@@ -69,6 +69,16 @@
       },
       "note": "Editorial: grain drying and threshing have distinct work relations; vegetation can snag flexible loads; no place state follows.",
       "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-grain-drying-threshing",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: grain drying and threshing have distinct work relations; threshing needs movement space and leaves dust and chaff; no place state follows.",
+      "review_status": "approved"
     }
   ],
   "concepts": [
@@ -367,7 +377,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:place-work-grain-vegetation"
+        "evidence:place-work-grain-drying-threshing"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -603,7 +613,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
       "locale": "ru",
-      "runtime_text": "Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Пыль и мякина требуют пространства для взмахов; огонь и сухое топливо здесь не одно и то же условие.",
+      "runtime_text": "Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Для взмахов при обмолоте нужно пространство, а пыль и мякина остаются следствием операции; огонь и сухое топливо здесь не одно и то же условие.",
       "search_aliases": [
         "овин",
         "ток",
@@ -614,7 +624,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
       "locale": "en",
-      "runtime_text": "A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Dust and chaff need swing space; fire and dry fuel are not the same condition.",
+      "runtime_text": "A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Threshing needs swing space, while dust and chaff are traces of that operation; fire and dry fuel are not the same condition.",
       "search_aliases": [
         "grain drying",
         "threshing floor"

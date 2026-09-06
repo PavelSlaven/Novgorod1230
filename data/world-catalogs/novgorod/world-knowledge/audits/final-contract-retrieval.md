@@ -377,3 +377,27 @@ G-05 inference already accepted and does not assert current damage/outcome.
 The earlier P1 classification was inconsistent and is superseded. The P2
 uncited-use/noisy-inventory observations are recorded in
 `final-grounding.md`; no current hybrid P1 was found.
+
+## Final independent contract acceptance — exact HEAD `fc3ac52982890051f473d3ba9cb47b5e87e3851c`
+
+Contract verdict: PASS
+
+P0: 0.
+
+P1: 0.
+
+P2: 0 contract findings. The 14 retained P2 cartography limits are bounded
+corpus breadth/depth limits, not contract failures or static-phase blockers.
+
+Checks: active contract/index status agrees with the actual
+`validated_candidate_not_active` release binding; Core is pure/read-only and
+does not become a second planner or materializer; compiler requires one
+independent `verification_ref` per production claim; compiled bundle is
+byte-identical on a fresh compile; 1,579 claims / 977 concepts /
+1,139 evidence records have 1,579 verification refs; vector metadata is
+aligned at 5,112 bilingual entries; focused WK, grounding, compiler,
+cartography and population tests pass 96/96; `git diff --check` passes.
+
+Limits: this accepts the static PR92 contract only. It neither activates the
+candidate runtime nor claims exhaustive world knowledge, live gameplay
+coverage, or gameplay saturation; those remain correctly deferred.

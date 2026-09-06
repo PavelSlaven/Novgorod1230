@@ -885,3 +885,20 @@ was repaired. The existing runtime still uses the local pinned
 `wk-embedding:giga-480m-0826:v1` query encoder for hybrid retrieval and has a
 structured lexical fallback if that encoder is unavailable; vectors are not
 silently produced by ordinary application code.
+
+## Current final static status — supersedes earlier counts and phase status
+
+Basis: pushed data/runtime snapshot `fc3ac52982890051f473d3ba9cb47b5e87e3851c`.
+
+- 1,579 approved claims; 977 concepts; 598 sources; 1,139 evidence records; 248 supported families.
+- 14 independently bounded P2 breadth/depth limits remain; open P0/P1 = 0.
+- Final closure: 54/54 claims independently verified and runtime-sliced.
+- Pinned Giga vectors: 5,112 × 1,024.
+- Retrieval: 174 PASS, hybrid R@10/R@20 `0.9221264368`/`0.9221264368`; gameplay coverage: 389 PASS, `0.9618252`/`0.9623393`.
+- Trade/economy batch 02: 75+25 independently generated probes, 100/100 reviewed, 29 cross-triage citation corrections, 0 gaps.
+
+PR92 static phase is ready, not a proof of exhaustive world coverage or
+gameplay saturation. Live gameplay campaigns, the Gameplay Gap Auditor and
+saturation testing remain future work. Residual P2 limits are bounded and do
+not block static readiness. The exact final report-containing commit must pass
+CI before merge; this section intentionally does not invent its SHA.

@@ -947,3 +947,14 @@ an unsupported fact. `ordinary_restraint_grounded_geometry_en` and
 details. Their substantive conclusions are grounded; the inventories are
 unnecessary and violate the intended concision/no-inventory style, but add no
 new factual premise. No further P1 was found in the remaining hybrid outputs.
+
+## Final independent Grounding / Verification / Open-world audit — `fc3ac52982890051f473d3ba9cb47b5e87e3851c`
+
+Scope is the static PR92 pack and its active runtime wiring, not a claim of
+world completeness or a live-gameplay campaign.
+
+- **Grounding: PASS.** `@rus/turn` validates the bounded planner output, resolves it only through the read-only Core, and `apps/game-server` injects that bounded slice with the explicit no-model-memory closure. The current-state boundary remains explicit: compatibility does not establish presence, ownership, price, legal outcome, quantity, access, hidden facts, mechanics, or mutations. `partial`/`unresolved` resolves as a gap rather than an invented fact.
+- **Verification: PASS.** Recompiled authoring and the committed runtime both contain **1,579** approved claims. The authoring pack contains **1,579** verification records and the runtime has **1,579** unique `verification_ref`s. Every claim has exactly one matching `APPROVE` record with a current digest, matching checked evidence, independent reviewer/candidate fields, and the runtime bundle equals deterministic compiler output.
+- **Open-world: PASS.** The Knowledge Core is a pure bounded factual retriever, not a materializer, state owner, object/place whitelist, price/law/outcome generator, or action resolver. Missing factual support is `unresolved`; ordinary semantic paths remain with the existing turn/materialization owners. The reviewed static-phase contract keeps Gameplay Gap Auditor/live campaigns outside this phase.
+
+Findings in this final scope: **P0 0, P1 0, P2 0**. Checked evidence: §100–102 of the active WK contract; `packages/world-knowledge/test/*.test.js`; `tools/world-catalog-workflow/test/world-knowledge-{pack,population}.test.js`; `apps/game-server/test/{world-knowledge-grounding,lower-dvina-trace-world-knowledge-bridge}.test.js` — **104/104 PASS**.

@@ -532,3 +532,21 @@ All seven premises received independent APPROVE verdicts; a known-case replay
 then covered **10/10**. The replay is closure regression evidence, not unseen
 acceptance, and no premise asserts a present price, stock, ownership, rule,
 consent or transaction outcome.
+
+## Current final static status — supersedes earlier counts and readiness wording
+
+Basis: pushed data/runtime snapshot `fc3ac52982890051f473d3ba9cb47b5e87e3851c`.
+
+- 1,579 approved claims; 977 concepts; 598 sources; 1,139 evidence records.
+- 248 supported families; 14 retained independently bounded P2 breadth/depth limits; 0 open P0/P1 blockers.
+- Final closure claims: 54/54 independently verified and 54/54 runtime-sliced.
+- Vectors: 5,112 × 1,024, pinned Giga embedding profile.
+- Retrieval: 174 PASS; hybrid R@10/R@20 `0.9221264368`/`0.9221264368`.
+- Gameplay coverage: 389 PASS; hybrid R@10/R@20 `0.9618252`/`0.9623393`.
+- Trade/economy batch 02: 75+25 independently generated probes, 100/100 reviewed, 29 citation corrections in cross-triage, 0 gaps.
+
+Verdict: static readiness satisfied. This is not proof of an exhaustive world or
+gameplay saturation. Live gameplay exploration and its Gap Auditor remain a
+future phase. The 14 P2 items are bounded residual breadth/depth limits, not
+open release blockers. The exact final report-containing commit is gated by CI
+before merge; no SHA is asserted here.

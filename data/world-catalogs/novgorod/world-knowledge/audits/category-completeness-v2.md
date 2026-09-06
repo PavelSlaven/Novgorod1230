@@ -262,3 +262,45 @@ code-owned merely because exact fire execution belongs to code.
 This is bounded gameplay cartography acceptance, not full factual completeness
 or merge approval. The exact-commit PR acceptance comment records final HEAD,
 full CI and these scoped independent verdicts together after commit.
+
+---
+
+## Final completeness audit — exact HEAD `fc3ac52982890051f473d3ba9cb47b5e87e3851c`
+
+Completeness verdict: PASS
+
+Scope is static World Knowledge readiness for an open RPG, not mathematical
+completeness of the world and not gameplay saturation. Reconstruction and
+common-sense composition are accepted where their limits do not create state,
+authority, prices, rules, identities or outcomes.
+
+- P0: 0; P1: 0; retained bounded P2: 14. All 248 semantic families have one
+  or more mapped production claims; no approved runtime claim is unmapped.
+- The nine former blind areas are compositionally covered: language/literacy,
+  military material culture and context, marriage/kinship/status, lifecycle,
+  sickness/care, government, crime, education, and recreation. Their rare,
+  formal or high-detail variants remain in the explicitly bounded P2 list.
+- Place/environment, fauna/flora, winter/sky, food/travel and trade/economy
+  have independent family coverage. The 54 final gap-closure claims are all
+  approved, appear in the compiled runtime, and each has an independent
+  `APPROVE` verification reference.
+- Trade/economy-first batch 02 contains 100 unique probes (75 stratified,
+  25 free/adversarial). Cross-triage corrected 29 disputed citations and
+  accepted all 100 as composable; partial, genuine-gap and out-of-scope-state
+  counts are all 0. It does not infer current price, title, stock, law or deal
+  outcome.
+
+Retained P2 limits: legal locality/status; reputation; detailed
+literacy/accounting; large warfare; marriage/affinity disputes;
+gender-age-stratification; rare lifecycle/frailty; multi-symptom or chronic
+care; diplomacy; serious crime/sanctions; formal apprenticeship; named games
+or repertoire; detailed food/dairy/veterinary practice; obligation-heavy
+hospitality. These are declared limits, not open P0/P1 gaps; ordinary
+context remains composable without asserting the omitted fact.
+
+Checks: exact HEAD; `category-cartography.json`; compiled runtime (1,579
+claims); 248 family claim mappings; 14 `missing_families` records; all three
+final closure shards and their 54 verification records; trade/economy batch-02
+core, free, two WK-only reviews and corrected cross-triage; focused
+cartography test passed. This verdict does not test live gameplay, materialize
+world state, or certify future Gameplay Gap Auditor saturation.

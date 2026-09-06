@@ -5304,6 +5304,103 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-ant-brood-relocation-ucipm",
+      "title": "Biology and Life Cycle: Colony Establishment",
+      "authors": [
+        "University of California Statewide IPM Program"
+      ],
+      "publication": "UC IPM, 2017",
+      "source_kind": "official_documentation",
+      "citation": "https://ipm.ucanr.edu/TOOLS/ANTKEY/biolcol.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-ant-life-cycle-csu",
+      "title": "Ants in the Home",
+      "authors": [
+        "W. S. Cranshaw"
+      ],
+      "publication": "Colorado State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.colostate.edu/resource/ants-in-the-home/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-cat-hiding-osu",
+      "title": "Hiding Instinct",
+      "authors": [
+        "Ohio State University College of Veterinary Medicine"
+      ],
+      "publication": "Ohio State University Indoor Pet Initiative",
+      "source_kind": "official_documentation",
+      "citation": "https://indoorpet.osu.edu/cats/understanding-cats/hiding-instinct",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-cat-hiding-purdue",
+      "title": "Cat Well-Being",
+      "authors": [
+        "Jacquelyn Jacobs",
+        "Marisa Erasmus"
+      ],
+      "publication": "Purdue University Extension / Michigan State University, AS-660-W, 2019",
+      "source_kind": "official_documentation",
+      "citation": "https://www.extension.purdue.edu/extmedia/AS/AS-660-W.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-equine-hoof-debris-uga",
+      "title": "The Tack Room: Hoof Care Essential Tools",
+      "authors": [
+        "Ashley Best"
+      ],
+      "publication": "University of Georgia Cooperative Extension, 2022",
+      "source_kind": "official_documentation",
+      "citation": "https://elevatedequine.uga.edu/2022/04/the-tack-room-hoof-care-essential-tools/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-animal-equine-hoof-functions-nmsu",
+      "title": "Evaluation of Equine Hoof Care",
+      "authors": [
+        "Jason L. Turner"
+      ],
+      "publication": "New Mexico State University Extension Guide B-707, revised 2023",
+      "source_kind": "official_documentation",
+      "citation": "https://pubs.nmsu.edu/_b/B707/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:place-community-environments-editorial",
       "title": "Place community environments v1 editorial rationale",
       "authors": [
@@ -15395,6 +15492,76 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-ant-brood-relocation",
+      "source_ref": "source:place-animal-ant-brood-relocation-ucipm",
+      "anchor": {
+        "section": "Some colonies are established through budding"
+      },
+      "note": "UC IPM says workers of some ant species carry immature stages—eggs, larvae, and pupae—to another nest site during budding and rear some there. It supports a conditional some-species relocation relation, not a cause, direction, temperature explanation, or present colony change.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-ant-cocoon-life-cycle",
+      "source_ref": "source:place-animal-ant-life-cycle-csu",
+      "anchor": {
+        "section": "Life History and Habits"
+      },
+      "note": "Colorado State University Extension says workers tend eggs, feed and protect larvae, and that full-grown larvae make a smooth silken cocoon before pupating. It supports a lifecycle relation for ants with such cocoons, not identification of a particular white object, taxon, nest, season, or reason for a worker's movement.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-cat-elevated-hiding",
+      "source_ref": "source:place-animal-cat-hiding-osu",
+      "anchor": {
+        "section": "Hiding Instinct"
+      },
+      "note": "Ohio State University's Indoor Pet Initiative says cats try to hide when anxious or threatened and especially like high places that permit a clear view. It supports a general hiding-place relation, not an inference about a particular cat's reason for hiding, location, state, or response to a person.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-cat-secluded-hiding",
+      "source_ref": "source:place-animal-cat-hiding-purdue",
+      "anchor": {
+        "section": "Caring for cats"
+      },
+      "note": "Purdue Extension recommends quiet secluded places that a cat can use to hide, multiple hiding places, and climbing opportunities at different heights. It supports possible use of cover or elevation, not a particular cat's location, condition, reason for absence, appetite, or response to a cue.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-equine-compacted-manure",
+      "source_ref": "source:place-animal-equine-hoof-functions-nmsu",
+      "anchor": {
+        "section": "Introduction"
+      },
+      "note": "NMSU Extension includes regular cleaning of feet to remove compacted manure among basic hoof-care components. It supports removal of that debris only, not a diagnosis, forceful handling, shoeing, or treatment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-equine-hoof-debris",
+      "source_ref": "source:place-animal-equine-hoof-debris-uga",
+      "anchor": {
+        "section": "Hoof Pick with Brush"
+      },
+      "note": "UGA Cooperative Extension says a hoof pick removes rocks, dirt, and debris trapped around the frog, while a brush can remove dirt and mud. It supports a bounded debris-removal purpose, not diagnosis, a forceful handling instruction, shoeing, wound identification, or treatment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-animal-equine-hoof-functions",
+      "source_ref": "source:place-animal-equine-hoof-functions-nmsu",
+      "anchor": {
+        "section": "Introduction"
+      },
+      "note": "NMSU Extension identifies the equine foot's primary functions as bearing weight, absorbing shock, and providing traction. It does not diagnose a gait, identify a sore foot, prescribe a procedure, or determine the condition of a particular horse.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:place-community-convoy-inspection",
       "source_ref": "source:place-community-environments-editorial",
       "anchor": {
@@ -21225,6 +21392,45 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+          "locale": "ru",
+          "labels": [
+            "Муравьи: расплод и перенос"
+          ],
+          "short_definition": "Качественная связь ухода рабочих муравьёв за расплодом, коконов и ограниченного переноса незрелых стадий.",
+          "search_aliases": [
+            "муравьи несут коконы",
+            "муравьиный расплод",
+            "муравьи переносят куколок"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+          "locale": "en",
+          "labels": [
+            "Ant brood care and relocation"
+          ],
+          "short_definition": "Qualitative relation of worker care, cocoons, and bounded movement of immature ant stages.",
+          "search_aliases": [
+            "ants carry cocoons",
+            "ant brood",
+            "ants move pupae"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -22436,6 +22642,45 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:cat-hiding-places",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:cat-hiding-places",
+          "locale": "ru",
+          "labels": [
+            "Кошки: укрытия"
+          ],
+          "short_definition": "Качественная связь кошек с тихими, скрытыми или возвышенными укрытиями.",
+          "search_aliases": [
+            "кошка спряталась",
+            "кошка на сеновале",
+            "где кошка"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:cat-hiding-places",
+          "locale": "en",
+          "labels": [
+            "Cat hiding places"
+          ],
+          "short_definition": "Qualitative relation of cats to quiet, secluded, or elevated hiding spaces.",
+          "search_aliases": [
+            "cat hiding",
+            "cat in hayloft",
+            "where is the cat"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:chemical-exposure-not-illness",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -22755,6 +23000,45 @@
           ],
           "short_definition": "Fur, fat, or feathers reduce heat loss in endotherms.",
           "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+          "locale": "ru",
+          "labels": [
+            "Копыто лошади: функции и загрязнение"
+          ],
+          "short_definition": "Качественная связь функций копыта с застрявшей грязью и её удалением при базовом уходе.",
+          "search_aliases": [
+            "грязь в копыте",
+            "чистить копыто",
+            "стрелка копыта"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+          "locale": "en",
+          "labels": [
+            "Equine hoof function and debris"
+          ],
+          "short_definition": "Qualitative relation of hoof functions to trapped debris and its removal in basic care.",
+          "search_aliases": [
+            "dirt in hoof",
+            "clean horse hoof",
+            "hoof frog debris"
+          ]
         }
       }
     },
@@ -92001,6 +92285,173 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ant_workers_tend_immature_stages_and_in_ant_species_with_silken_cocoons_full_grown_larvae_make_cocoons_before_pupation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-animal-ant-cocoon-life-cycle"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+          "locale": "ru",
+          "runtime_text": "Рабочие муравьи ухаживают за незрелыми стадиями; у видов с шёлковыми коконами выросшие личинки делают кокон перед окукливанием. Это не определяет, что белый предмет в конкретном гнезде — кокон, какой там вид, почему рабочие его несут или что происходит с колонией.",
+          "search_aliases": [
+            "муравьи несут белые коконы",
+            "муравьиный кокон",
+            "муравьиный расплод"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+          "locale": "en",
+          "runtime_text": "Ant workers tend immature stages; in species with silken cocoons, full-grown larvae make cocoons before pupation. This identifies neither a white object in a particular nest as a cocoon, its species, why workers carry it, nor what is happening to the colony.",
+          "search_aliases": [
+            "ants carry white cocoons",
+            "ant cocoon",
+            "ant brood"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place07-place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "basic_equine_hoof_cleaning_can_remove_rocks_dirt_mud_compacted_manure_and_other_debris_trapped_around_the_frog"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-animal-equine-hoof-debris",
+        "evidence:place-animal-equine-compacted-manure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+          "locale": "ru",
+          "runtime_text": "Базовая очистка копыта может удалить камни, грязь, навоз и иной мусор, застрявший вокруг стрелки; щётка может снять грязь и жидкую грязь. Это назначение очистки, а не диагноз, указание силой удерживать лошадь, доказательство раны, подковка или лечение.",
+          "search_aliases": [
+            "чистить грязь из копыта",
+            "камень у стрелки",
+            "грязь вокруг стрелки"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+          "locale": "en",
+          "runtime_text": "Basic hoof cleaning can remove rocks, dirt, manure, and other debris trapped around the frog; a brush can remove dirt and mud. This is a debris-removal purpose, not a diagnosis, a forceful-holding instruction, evidence of a wound, shoeing, or treatment.",
+          "search_aliases": [
+            "clean dirt from hoof",
+            "rock around frog",
+            "mud in hoof"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place07-place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:cat-hiding-places",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cats_can_use_quiet_secluded_or_elevated_places_as_hiding_spaces"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-animal-cat-secluded-hiding",
+        "evidence:place-animal-cat-elevated-hiding"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+          "locale": "ru",
+          "runtime_text": "Кошки могут использовать тихие скрытые или возвышенные места как укрытия. Отсутствие кошки у миски не устанавливает её местонахождение, причину отсутствия, состояние, аппетит или ответ на знакомый зов.",
+          "search_aliases": [
+            "кошка спряталась",
+            "кошка не у миски",
+            "кошка в сене"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+          "locale": "en",
+          "runtime_text": "Cats can use quiet, secluded, or elevated places as hiding spaces. A cat being absent from a bowl establishes neither its location, reason for absence, condition, appetite, nor response to a familiar call.",
+          "search_aliases": [
+            "cat hiding",
+            "cat not at bowl",
+            "cat in hay"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place07-place-cats-can-use-secluded-or-elevated-hiding-places"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
       "domain": "social_law_economy",
       "subject_ref": "wk:social_law_economy:reconstructed-community-environment",
@@ -92553,6 +93004,61 @@
         }
       },
       "verification_ref": "wk-verification:place03-place-dye-textile-preparation-can-affect-uptake-evenness"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "equine_feet_bear_weight_absorb_shock_and_provide_traction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-animal-equine-hoof-functions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+          "locale": "ru",
+          "runtime_text": "Копытная часть ноги лошади несёт вес, амортизирует удар и обеспечивает сцепление. Это не диагноз неровной постановки, не вывод о боли или травме и не предписание расчистки копыта, подковы либо лечения конкретной лошади.",
+          "search_aliases": [
+            "копыто несёт вес",
+            "сцепление копыта",
+            "лошадь неровно ставит ногу"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+          "locale": "en",
+          "runtime_text": "Equine feet bear weight, absorb shock, and provide traction. This is neither a diagnosis of uneven stance, an inference of pain or injury, nor an instruction to trim, shoe, or treat a particular horse.",
+          "search_aliases": [
+            "hoof bears weight",
+            "hoof traction",
+            "horse uneven stance"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place07-place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -94467,6 +94973,61 @@
         }
       },
       "verification_ref": "wk-verification:place07-place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "in_some_ant_species_workers_can_carry_eggs_larvae_or_pupae_to_another_nest_site_during_colony_budding"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-animal-ant-brood-relocation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+          "locale": "ru",
+          "runtime_text": "У некоторых видов муравьёв рабочие могут переносить яйца, личинок или куколок на другое место гнездования при отпочковании колонии. Это условная связь для части видов, не причина, направление, температурное объяснение или доказательство текущего переселения конкретной колонии.",
+          "search_aliases": [
+            "муравьи переносят куколок",
+            "муравьи переселяют расплод",
+            "муравьи несут яйца"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+          "locale": "en",
+          "runtime_text": "In some ant species, workers can carry eggs, larvae, or pupae to another nest site during colony budding. This is a conditional some-species relation, not a cause, direction, temperature explanation, or proof that a particular colony is relocating.",
+          "search_aliases": [
+            "ants move pupae",
+            "ants relocate brood",
+            "ants carry eggs"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:place07-place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -126758,6 +127319,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:ant-brood-care-and-relocation": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:aquatic-macrophyte-form-attachment": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
@@ -127073,6 +127643,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:cat-hiding-places": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:cat-hiding-places",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:chemical-exposure-not-illness": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:chemical-exposure-not-illness",
@@ -127157,6 +127736,15 @@
       "wk:biology_physiology:endotherm-insulation": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:endotherm-insulation",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:biology_physiology:equine-hoof-function-and-debris": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
         "domain": "biology_physiology",
         "broader_refs": [],
         "related_refs": [],
@@ -134935,6 +135523,10 @@
       "wk:biology_physiology:animal-homeostasis": [
         "claim:animal-homeostasis-responds-to-internal-external-change"
       ],
+      "wk:biology_physiology:ant-brood-care-and-relocation": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
+      ],
       "wk:biology_physiology:aquatic-macrophyte-form-attachment": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position"
       ],
@@ -135055,6 +135647,9 @@
       "wk:biology_physiology:candidate-vestibular-postural-correction": [
         "claim:candidate-physiology-v3-vestibular-postural-correction"
       ],
+      "wk:biology_physiology:cat-hiding-places": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
       "wk:biology_physiology:chemical-exposure-not-illness": [
         "claim:foundations-haz-02-exposure-not-illness"
       ],
@@ -135090,6 +135685,10 @@
       ],
       "wk:biology_physiology:endotherm-insulation": [
         "claim:endotherm-insulation-reduces-heat-loss"
+      ],
+      "wk:biology_physiology:equine-hoof-function-and-debris": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "wk:biology_physiology:exercise-heat-dissipation": [
         "claim:exercise-heat-dissipation"
@@ -138496,7 +139095,11 @@
         "claim:microbial-growth-depends-on-species-temperature-range",
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:pain-nociception-distinct",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
@@ -138508,6 +139111,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:plant-development-responds-to-light",
@@ -140598,6 +141202,9 @@
         "claim:pigment-wet-dry-techniques",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -140607,6 +141214,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -140639,6 +141247,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -142182,9 +142791,13 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -142205,6 +142818,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:plant-development-responds-to-light",
@@ -143921,6 +144535,9 @@
       "америки": [
         "claim:pine-pitch-woven-basket-coating"
       ],
+      "амортизирует": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
       "амфибиями": [
         "claim:fauna-mammals-european-otter-aquatic-prey-diet"
       ],
@@ -143975,6 +144592,7 @@
         "wk:biology_physiology:foundation-antibodies"
       ],
       "аппетит": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs"
       ],
       "ареал": [
@@ -144175,7 +144793,11 @@
         "wk:environment:medieval-novgorod-domestic-food-base"
       ],
       "базовая": [
-        "claim:candidate-v5-sleep-is-basic-human-need"
+        "claim:candidate-v5-sleep-is-basic-human-need",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
+      "базовом": [
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "бактериальный": [
         "claim:fur-skin-cooling-cleansing"
@@ -144492,7 +145114,11 @@
       "белковых": [
         "wk:chemistry_process:static-ground-b05-fibre-alkali-response"
       ],
+      "белые": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "белый": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:residual-nature-snow-conceals-ice-gaps"
       ],
       "беляк": [
@@ -144968,6 +145594,7 @@
       ],
       "боли": [
         "claim:pain-nociception-distinct",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "wk:biology_physiology:pain-nociception-distinct",
@@ -145946,7 +146573,8 @@
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations"
       ],
       "вес": [
-        "claim:material-water-textile-water-load"
+        "claim:material-water-textile-water-load",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "веса": [
         "claim:population-physics-floating-shape"
@@ -146404,6 +147032,7 @@
         "claim:fuel-pit-charcoal-burning-wood-input",
         "claim:grain-processing-bread-liquid",
         "claim:human-life-standing-can-affect-social-access",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:plant-development-responds-to-light",
         "claim:regional-fish-exploitation",
@@ -146515,6 +147144,8 @@
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
         "claim:fauna-dragonfly-male-territory",
         "claim:foundations-earth-08-ecological-competition",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context"
       ],
       "видового": [
@@ -147676,6 +148307,12 @@
       "возвышения": [
         "claim:place-outdoors-microterrain-patches"
       ],
+      "возвышенные": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
+      "возвышенными": [
+        "wk:biology_physiology:cat-hiding-places"
+      ],
       "воздействие": [
         "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
         "claim:candidate-physiology-v3-shivering-thermogenesis",
@@ -147961,6 +148598,7 @@
       "вокруг": [
         "claim:clothing-onuchi-wrap",
         "claim:household-dough-temperature-changes-proofing",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
@@ -148870,6 +149508,7 @@
         "claim:hard-stone-abrasive-shaping",
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:maslo-birchbark-718-account",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -149304,6 +149943,9 @@
       "вырос": [
         "claim:practical-dwelling-roof"
       ],
+      "выросшие": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "выручки": [
         "claim:residual-law-creditor-priority"
       ],
@@ -149726,6 +150368,7 @@
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:water-capillary-height",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:npc_daily_life:animal-care-needs-presence"
       ],
       "гелевое": [
@@ -150125,7 +150768,8 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food"
       ],
       "гнезде": [
-        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "гнездится": [
         "claim:fauna-mallard-brood",
@@ -150139,6 +150783,9 @@
       ],
       "гнёздова": [
         "claim:candle-wax-material"
+      ],
+      "гнездования": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "гнёздовские": [
         "claim:candle-rolled-plate"
@@ -151099,12 +151746,17 @@
         "claim:ordinary-life-apron-when-work-warrants"
       ],
       "грязь": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:population-joining-bond-contamination",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
-        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "wk:biology_physiology:equine-hoof-function-and-debris"
+      ],
+      "грязью": [
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "губчатая": [
         "claim:foundations-physical-material3-03-antler-water-workability"
@@ -151766,6 +152418,7 @@
       ],
       "делают": [
         "claim:fauna-toad-defence",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:practical-dwelling-rain-snow",
         "claim:practical-leather-shoe",
         "claim:random-independent-trials-do-not-owe-reversal",
@@ -152205,6 +152858,8 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
@@ -152526,6 +153181,7 @@
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:population-bark-float",
@@ -152930,7 +153586,9 @@
         "claim:novgorod-wetland-pollen-context",
         "claim:occupation-smith-specialisation",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-activity-sensory-pulses",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-net-work",
         "claim:probable-travel-chalice-communion",
@@ -153988,7 +154646,8 @@
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
       ],
       "другое": [
-        "claim:place-domestic-geese-can-move-as-a-flock-when-herded"
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "другой": [
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
@@ -154260,6 +154919,7 @@
         "claim:occupation-smith-tongs",
         "claim:occupation-wood-plane",
         "claim:ordinary-life-master-has-work-responsibility",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-outdoors-shore-working-edge-composition",
@@ -154416,6 +155076,7 @@
         "claim:fuel-iron-pan-lifter-use",
         "claim:grain-processing-bread-liquid",
         "claim:maslo-birchbark-718-account",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:population-material-wood-shrinkage",
@@ -154438,6 +155099,7 @@
         "claim:water-wetting-forces",
         "claim:wood-liquid-capillary-uptake",
         "claim:work-intensity-duration",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-common-toad",
         "wk:biology_physiology:fauna-cross-spider",
         "wk:biology_physiology:foundation-digestion",
@@ -155096,6 +155758,9 @@
       "жидкостях": [
         "wk:biology_physiology:fluid-osmotic-balance"
       ],
+      "жидкую": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
       "жизнедеятельности": [
         "claim:foundations-earth-10-mutualistic-dependence"
       ],
@@ -155250,6 +155915,7 @@
         "claim:healer-livelihood-and-household-support",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:ordinary-life-master-has-work-responsibility",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-outdoors-season-work-space-reallocation",
         "claim:population-processes-malt-context",
@@ -155270,6 +155936,7 @@
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:transport-hired-boatman",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-honeybee",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization",
         "wk:environment:static-animal-b06-bat-roost-disturbance",
@@ -155511,6 +156178,7 @@
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:chemistry_process:candidate-v6-food-cross-contamination",
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions"
@@ -156577,6 +157245,12 @@
       "застройки": [
         "claim:civic-public-assembly"
       ],
+      "застрявшей": [
+        "wk:biology_physiology:equine-hoof-function-and-debris"
+      ],
+      "застрявший": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
       "застыл": [
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining"
       ],
@@ -157221,6 +157895,7 @@
         "claim:healer-portable-and-household-kit"
       ],
       "знакомый": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
       ],
       "знакомых": [
@@ -157262,6 +157937,9 @@
       ],
       "значительно": [
         "claim:foundations-mat-04-wood-transverse-tension-weakness"
+      ],
+      "зов": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
       ],
       "зола": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -157544,6 +158222,7 @@
         "claim:material-water-plant-fibre-cellulose",
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:ordinary-life-craftsman-income-varies-with-orders",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-outdoors-forest-structure-and-season",
@@ -158393,6 +159072,9 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -158402,6 +159084,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -158431,6 +159114,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -158741,6 +159425,7 @@
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:consumer-assimilation",
         "wk:biology_physiology:consumer-energy-allocation",
         "wk:biology_physiology:ecological-competition",
@@ -159185,6 +159870,7 @@
       ],
       "иной": [
         "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:practical-fodder-hay",
         "claim:residual-law-monthly-and-longer-interest",
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis"
@@ -159518,6 +160204,7 @@
         "wk:environment:medieval-novgorod-wild-mammal-evidence"
       ],
       "использовать": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure"
@@ -160243,6 +160930,7 @@
         "claim:harvest-sickle-crops-grasses",
         "claim:later-novgorod-judicial-charter",
         "claim:oil-rawhide-moisture-resistance",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -160322,7 +161010,8 @@
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
       ],
       "какой": [
-        "claim:foundations-phys-01-air-drag-fall"
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "какую": [
         "claim:measurement-units-must-be-identified"
@@ -160399,6 +161088,7 @@
       ],
       "камень": [
         "claim:construction-rjaz-stone-fill",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:population-stone-weight",
         "claim:population-weight-bark",
         "claim:population-weight-stone",
@@ -160411,6 +161101,7 @@
         "wk:architecture_settlement:stone-filled-log-crib"
       ],
       "камни": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:population-stone-weight"
       ],
       "камня": [
@@ -160668,6 +161359,9 @@
         "claim:clay-firing-structural-transformation",
         "claim:milling-plate-gap-pressure-fineness",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
@@ -161576,7 +162270,18 @@
         "wk:environment:sheep-goat"
       ],
       "кокон": [
-        "claim:fauna-cross-spider-egg-sac"
+        "claim:fauna-cross-spider-egg-sac",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
+      "коконами": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
+      "коконов": [
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
+      "коконы": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "колдовство": [
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits"
@@ -161744,6 +162449,12 @@
       ],
       "колоды": [
         "claim:burial-hollowed-log-container"
+      ],
+      "колонией": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
+      "колонии": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "колониями": [
         "claim:fauna-mammals-eurasian-beaver-family-colony",
@@ -162077,12 +162788,14 @@
         "claim:material-water-alum-skin-water",
         "claim:occupation-wood-plane",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-material-wet-silk",
         "claim:population-material-wood-shrinkage",
@@ -162189,6 +162902,7 @@
         "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
         "claim:foundations-phys-05-flow-regime-speed",
         "claim:novgorod-urban-metalworking",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "wk:architecture_settlement:domestic-oven",
@@ -162815,14 +163529,23 @@
       ],
       "копыта": [
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:environment:static-cloven-hoof-trace-comparison",
         "wk:physics_material_science:horn-keratin-filament-structure"
       ],
       "копытами": [
         "claim:fauna-mammals-moose-defensive-antlers-hooves"
+      ],
+      "копыте": [
+        "wk:biology_physiology:equine-hoof-function-and-debris"
+      ],
+      "копытная": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "копытными": [
         "claim:fauna-mammals-eurasian-lynx-prey-spectrum"
@@ -162831,8 +163554,10 @@
         "claim:fauna-mammals-wolf-carnivorous-diet"
       ],
       "копыто": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:environment:static-cloven-hoof-trace-comparison"
       ],
       "копытом": [
@@ -163289,11 +164014,22 @@
       "кочка": [
         "claim:place-outdoors-microterrain-patches"
       ],
+      "кошек": [
+        "wk:biology_physiology:cat-hiding-places"
+      ],
       "кошелёк": [
         "wk:material_culture:leather-carrier"
       ],
       "кошельки": [
         "claim:population-leather-case"
+      ],
+      "кошка": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
+      ],
+      "кошки": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "коэффициент": [
         "claim:dry-friction",
@@ -163910,6 +164646,10 @@
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:fauna-dragonfly"
       ],
+      "куколок": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "кукурузы": [
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response"
@@ -164370,6 +165110,7 @@
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:research-extreme-cold-can-cause-cold-stress",
@@ -164390,6 +165131,7 @@
         "claim:healer-care-coordination-and-uncertainty",
         "claim:healer-experience-and-reputation",
         "claim:household-trauma-danger-or-airway-changes-position-choice",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
@@ -164426,6 +165168,7 @@
         "claim:maslo-birchbark-718-account",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
@@ -164694,6 +165437,7 @@
         "claim:fauna-culex-life-cycle",
         "claim:fauna-dragonfly-foodweb",
         "claim:fauna-pike-juvenile-predation",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
       "личинку": [
@@ -164702,6 +165446,7 @@
       ],
       "личинок": [
         "claim:fauna-toad-defence",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:fauna-common-toad"
       ],
       "личиночную": [
@@ -164943,6 +165688,7 @@
         "claim:fauna-mammals-domestic-horse-herd-sociality",
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:fodder-healthy-horse-forage",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
@@ -164951,6 +165697,7 @@
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-horses-are-hindgut-fermenters",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-domestic-horse",
         "wk:biology_physiology:horse-forage-feeding",
         "wk:biology_physiology:static-animal-b06-working-horse-context"
@@ -164958,6 +165705,8 @@
       "лошадь": [
         "claim:environment-p1-horse-transport",
         "claim:fodder-healthy-horse-forage",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:population-tack-context",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
@@ -166116,6 +166865,7 @@
         "claim:fauna-ewe-lambing-seclusion",
         "claim:food-practices-millet-cleaning-waste",
         "claim:human-life-visitors-add-resource-demands",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-activity-sensory-pulses",
@@ -166289,6 +167039,7 @@
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-drying-workspace",
         "claim:population-fishing-workspace",
         "claim:population-household-storage",
@@ -166316,6 +167067,9 @@
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:residual-traces-deadwood-feeding-signs",
         "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+      ],
+      "местонахождение": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
       ],
       "местообитание": [
         "claim:foundations-earth-02-ecological-tolerance",
@@ -166762,6 +167516,9 @@
       "мирян": [
         "claim:religion-olenin-adjudication"
       ],
+      "миски": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
       "митозе": [
         "claim:foundations-life-07-mitosis",
         "wk:biology_physiology:foundation-mitosis"
@@ -166993,6 +167750,7 @@
         "claim:ordinary-life-household-needs-heat-food-storage",
         "claim:ordinary-life-private-needs-shape-decisions",
         "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -167010,6 +167768,7 @@
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
@@ -167297,6 +168056,7 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
@@ -167897,7 +168657,21 @@
       "мукомольной": [
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
       ],
+      "муравьёв": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
+      "муравьи": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
+      "муравьиный": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "мусор": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
@@ -168149,6 +168923,7 @@
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
@@ -168168,6 +168943,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:plant-development-responds-to-light",
         "claim:population-boat-context",
@@ -168254,6 +169030,7 @@
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:animal-homeostasis",
         "wk:biology_physiology:bearberry-lingonberry-identification",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:fauna-bird-migration",
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:fauna-eurasian-perch",
@@ -168433,6 +169210,9 @@
       ],
       "навигация": [
         "claim:residual-nature-stars-horizon-navigation"
+      ],
+      "навоз": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "навозом": [
         "claim:place-outdoors-activity-sensory-pulses"
@@ -168739,6 +169519,7 @@
         "wk:environment:regional-agriculture-practice"
       ],
       "назначение": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:transport-private-boat-arrangement",
@@ -169197,6 +169978,7 @@
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
         "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
         "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-material-wood-moisture",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
@@ -170116,6 +170898,9 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -170125,6 +170910,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -170156,6 +170942,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -170908,6 +171695,12 @@
       "незрелую": [
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors"
       ],
+      "незрелыми": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
+      "незрелых": [
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "неизбежность": [
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
       ],
@@ -170973,6 +171766,7 @@
         "claim:foundations-life-29-virion-structure",
         "claim:foundations-ms3-10-ultimatum-expectations",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:sound-wind-temperature-gradients-refract",
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
@@ -171249,6 +172043,12 @@
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "wk:physics_material_science:glass-scattering-translucency"
       ],
+      "неровно": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
+      "неровной": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
       "неровные": [
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes"
       ],
@@ -171260,6 +172060,7 @@
         "claim:fauna-ewe-lamb-recognition"
       ],
       "несёт": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:public-world-foot-and-mounted-service-have-different-needs"
       ],
       "нескольким": [
@@ -171306,7 +172107,10 @@
         "wk:physics_material_science:static-fragile-wet-record-care-b10"
       ],
       "несут": [
-        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "несущие": [
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
@@ -171950,6 +172754,7 @@
         "wk:biology_physiology:fauna-cross-spider"
       ],
       "ноги": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "wk:material_culture:onuchi"
       ],
       "ногохвосток": [
@@ -171958,6 +172763,9 @@
       "ногти": [
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
         "wk:physics_material_science:horn-keratin-filament-structure"
+      ],
+      "ногу": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "ножа": [
         "claim:foundations-physical-material3-04-osseous-shaping-operations",
@@ -172300,6 +173108,7 @@
         "claim:fauna-mammals-brown-bear-maternal-care",
         "claim:foundations-life-25-reproduction",
         "claim:human-life-household-change-can-redistribute-labor-care",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "wk:biology_physiology:foundation-reproduction"
       ],
       "обеспечивается": [
@@ -173221,6 +174030,7 @@
         "claim:foundations-ms-20-attribution-alternatives",
         "claim:healer-belief-and-bodily-attention",
         "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
@@ -173675,6 +174485,9 @@
       ],
       "ограниченно": [
         "claim:hard-stone-abrasive-shaping"
+      ],
+      "ограниченного": [
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "ограниченное": [
         "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky"
@@ -174183,6 +174996,9 @@
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts"
       ],
+      "окукливанием": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "окуни": [
         "claim:fauna-perch-group-behavior"
       ],
@@ -174652,6 +175468,7 @@
         "claim:foundations-life-47-host-susceptibility",
         "claim:household-dough-yeast-gas-needs-retention",
         "claim:maslo-birchbark-718-account",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:population-joining-wax-soften",
         "claim:public-world-capacity-can-vary-day-to-day",
@@ -175646,6 +176463,7 @@
         "claim:foundations-life-36-immune-memory",
         "claim:foundations-ms-34-role-adjustment",
         "claim:human-life-travellers-may-seek-local-information",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-community-response-to-impairment-varies",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
@@ -176135,6 +176953,9 @@
       "отпечаток": [
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded"
       ],
+      "отпочковании": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
+      ],
       "отправка": [
         "claim:transport-boat-cargo-dispatch"
       ],
@@ -176222,6 +177043,7 @@
         "claim:household-clay-key-and-compatible-patch"
       ],
       "отсутствие": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-armed-loss-reaches-household",
         "claim:residual-traces-animal-sign-absence-limit"
       ],
@@ -176229,6 +177051,7 @@
         "claim:residual-law-daughters-and-status-inheritance"
       ],
       "отсутствия": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection"
       ],
       "отсутствует": [
@@ -176494,6 +177317,7 @@
         "claim:fibre-hackle-removes-shive",
         "claim:food-practices-millet-cleaning-waste",
         "claim:fur-skin-cooling-cleansing",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "wk:chemistry_process:static-soap-cleaning",
@@ -176502,6 +177326,7 @@
       ],
       "очистки": [
         "claim:food-practices-millet-cleaning-waste",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
@@ -176993,6 +177818,7 @@
       "перед": [
         "claim:bathing-house-heating-before-washing",
         "claim:grain-processing-bread-dough-before-baking",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind"
       ],
       "передаваться": [
@@ -177175,6 +178001,7 @@
         "claim:river-landing-market-approaches",
         "claim:rural-agriculture-crop-context",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:foundation-infection-chain",
         "wk:chemistry_process:diffusion-limited-heterogeneous-process",
         "wk:environment:animal-pollination",
@@ -177194,6 +178021,7 @@
         "claim:place-outdoors-microterrain-patches",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:foundation-pathogen-transport",
         "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:chemistry_process:research-fish-salting-diffusion",
@@ -177227,6 +178055,7 @@
         "claim:foundations-earth-26-runoff-contaminant-transport",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:material-water-textile-liquid-contaminants",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
@@ -177258,8 +178087,10 @@
         "wk:biology_physiology:foundation-cellular-atp"
       ],
       "переносят": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
-        "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water"
+        "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "переотложенном": [
         "claim:food-practices-millet-cleaning-waste"
@@ -177353,6 +178184,12 @@
       ],
       "пересекаются": [
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
+      ],
+      "переселения": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
+      ],
+      "переселяют": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "пересказ": [
         "claim:human-life-oral-retelling-varies-with-context"
@@ -179195,6 +180032,12 @@
       "подклетах": [
         "claim:settlement-underfloor-storage"
       ],
+      "подковка": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
+      "подковы": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
       "подкрадывается": [
         "claim:fauna-mammals-eurasian-lynx-ambush-hunting"
       ],
@@ -180818,6 +181661,9 @@
       "поставочные": [
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions"
       ],
+      "постановки": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
       "постепенно": [
         "claim:candidate-v3-aging-organs-gradually-lose-function",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
@@ -181254,6 +182100,9 @@
         "wk:environment:soil-phases",
         "wk:environment:soil-texture-infiltration",
         "wk:environment:soil-thermal-buffer"
+      ],
+      "почему": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "почестье": [
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
@@ -181709,6 +182558,7 @@
         "claim:candidate-v9-bare-iron-rust-humidity-salts",
         "claim:occupation-smith-hammer",
         "claim:occupation-wood-drawknife",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:population-fish-food",
         "claim:population-physics-conduction-gradient",
         "claim:population-physics-immersion-buoyancy",
@@ -181780,6 +182630,9 @@
       ],
       "предотвращение": [
         "claim:flayed-skin-processing-purpose"
+      ],
+      "предписание": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "предписаний": [
         "wk:social_behavior:foundations-ms-40-social-prescription"
@@ -182267,6 +183120,7 @@
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-bark-input",
@@ -182347,6 +183201,7 @@
         "wk:biology_physiology:candidate-threat-autonomic-arousal",
         "wk:biology_physiology:candidate-v3-aging-function",
         "wk:biology_physiology:candidate-v6-foodborne-observations",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-domestic-cattle",
         "wk:biology_physiology:fauna-domestic-goat",
         "wk:biology_physiology:fauna-domestic-pig",
@@ -183060,6 +183915,7 @@
       "причина": [
         "claim:candidate-v5-fever-is-not-itself-a-disease",
         "claim:fauna-fish-low-oxygen",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:fauna-fish-oxygen"
       ],
@@ -183087,6 +183943,7 @@
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:healer-belief-and-bodily-attention",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
@@ -183419,6 +184276,7 @@
       "происходит": [
         "claim:fauna-dragonfly-emergence",
         "claim:foundations-chm-03-heterogeneous-reaction-interface",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:wood-liquid-capillary-uptake"
       ],
@@ -184679,7 +185537,9 @@
       "рабочие": [
         "claim:fauna-bee-winter-cluster",
         "claim:fauna-bee-worker-tasks",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
         "wk:biology_physiology:fauna-honeybee"
       ],
@@ -184696,6 +185556,7 @@
         "claim:fauna-bee-swarming",
         "claim:milling-plate-gap-pressure-fineness",
         "claim:occupation-smith-heat-treatment",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:wet-hide-work-context"
       ],
       "рабочую": [
@@ -185567,6 +186428,7 @@
       "раны": [
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:orchard-tree-pruning-context",
         "wk:biology_physiology:wound-healing-time-dependent"
@@ -185668,8 +186530,14 @@
       "расплавленного": [
         "claim:foundations-earth-15-igneous-rock-formation"
       ],
+      "расплод": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "расплодом": [
         "claim:fauna-bee-worker-tasks",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-honeybee"
       ],
       "распознавания": [
@@ -186205,6 +187073,9 @@
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "wk:architecture_settlement:reconstructed-place-work-space"
+      ],
+      "расчистки": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "расширение": [
         "claim:civic-wood-earth-wall",
@@ -188679,6 +189550,7 @@
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:river-landing-market-approaches",
         "claim:rp-caretaker-principal-goods",
@@ -188689,8 +189561,11 @@
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:candidate-parasite-host-relation",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:research-circulatory-shock-perfusion",
@@ -189141,6 +190016,9 @@
         "claim:livestock-rumen-forage-digestion",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
       ],
+      "сене": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
       "сени": [
         "claim:settlement-vestibule-log",
         "wk:architecture_settlement:plank-vestibule"
@@ -189151,6 +190029,9 @@
         "claim:practical-fodder-hay",
         "wk:material_culture:hay",
         "wk:npc_daily_life:reconstructed-practical-seasonal-work"
+      ],
+      "сеновале": [
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "сенсорное": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
@@ -189359,6 +190240,7 @@
       ],
       "силой": [
         "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "wk:physics_material_science:stationary-charge-distance-force"
       ],
       "силу": [
@@ -189797,9 +190679,15 @@
         "claim:localized-improvement-context",
         "wk:architecture_settlement:localized-improvement-context"
       ],
+      "скрытые": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
       "скрытый": [
         "claim:work-waste-context",
         "wk:craft_technology:work-waste-context"
+      ],
+      "скрытыми": [
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "скрыться": [
         "claim:fauna-adder-defence"
@@ -190492,6 +191380,9 @@
       ],
       "снятой": [
         "wk:biology_physiology:flayed-skin-preservation"
+      ],
+      "снять": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "со": [
         "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
@@ -191624,6 +192515,7 @@
         "claim:occupation-smith-tongs",
         "claim:pine-pitch-severe-oxidation",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-joining-metal-melt",
@@ -192310,6 +193202,10 @@
       "спросить": [
         "claim:human-life-travellers-may-seek-local-information"
       ],
+      "спряталась": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
+      ],
       "спутник": [
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
       ],
@@ -192766,7 +193662,8 @@
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "ставит": [
-        "claim:bathing-house-heating-before-washing"
+        "claim:bathing-house-heating-before-washing",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "ставить": [
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
@@ -192803,6 +193700,9 @@
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response"
       ],
+      "стадий": [
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "стадийный": [
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response"
       ],
@@ -192812,6 +193712,9 @@
       "стадия": [
         "claim:fauna-mussel-fish-host",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue"
+      ],
+      "стадиями": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "стадного": [
         "wk:biology_physiology:place-domestic-waterfowl-group-handling"
@@ -193330,6 +194233,12 @@
       ],
       "стрел": [
         "claim:agriculture-fauna-ash-hunting-bow"
+      ],
+      "стрелка": [
+        "wk:biology_physiology:equine-hoof-function-and-debris"
+      ],
+      "стрелки": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "стремена": [
         "claim:population-tack-context"
@@ -194059,6 +194968,7 @@
       "сцепление": [
         "claim:household-clay-key-and-compatible-patch",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:physics_material_science:static-wool-felting",
         "wk:physics_material_science:static-yarn-twist-cohesion",
@@ -194341,6 +195251,7 @@
       "там": [
         "claim:animal-care-needs-presence",
         "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
@@ -194641,6 +195552,7 @@
         "claim:construction-forged-iron-nail-vessel-joint",
         "claim:fodder-hay-account",
         "claim:occupation-smith-specialisation",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:settlement-cart-transport",
         "claim:settlement-log-building-form",
         "claim:settlement-oak-shingle-roof",
@@ -194856,6 +195768,7 @@
         "claim:microbial-growth-depends-on-species-temperature-range"
       ],
       "температурное": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-joining-wax-soften"
       ],
       "температурной": [
@@ -195268,6 +196181,12 @@
       ],
       "тиунство": [
         "claim:residual-law-dependency-and-agreement"
+      ],
+      "тихие": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
+      "тихими": [
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "тихом": [
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
@@ -195872,6 +196791,7 @@
         "wk:biology_physiology:static-head-injury-warning-context-b06"
       ],
       "травме": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "wk:biology_physiology:static-household-trauma-movement"
       ],
       "травму": [
@@ -196659,7 +197579,8 @@
         "wk:biology_physiology:research-fish-gutting-gall-bladder"
       ],
       "удалением": [
-        "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue"
+        "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "удаления": [
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
@@ -196668,6 +197589,9 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
         "wk:chemistry_process:research-water-heating-contaminant-boundary"
+      ],
+      "удалить": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "удаляемые": [
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue"
@@ -196686,6 +197610,9 @@
       "удалять": [
         "claim:fibre-hackle-removes-shive",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
+      ],
+      "удар": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "удара": [
         "claim:brittle-fracture-defects",
@@ -196736,6 +197663,7 @@
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying"
       ],
       "удерживать": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:population-physics-static-friction",
@@ -196892,6 +197820,9 @@
       "узора": [
         "claim:clothing-nerev-coloured-wool"
       ],
+      "указание": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
       "указанная": [
         "wk:social_law_economy:accounting-amount"
       ],
@@ -196967,10 +197898,12 @@
         "claim:fauna-amphibian-moist-skin",
         "claim:fauna-mallard-residency",
         "claim:fauna-pike-ambush",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-outdoors-cover-opening-and-work-visibility",
         "claim:practical-dwelling-rain-snow",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-common-adder",
         "wk:biology_physiology:fauna-northern-pike",
@@ -196979,6 +197912,7 @@
       "укрытиями": [
         "claim:place-outdoors-season-work-space-reallocation",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits"
       ],
       "укрыть": [
@@ -197670,6 +198604,7 @@
         "claim:maslo-birchbark-718-account",
         "claim:oil-rawhide-moisture-resistance",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:research-cold-water-immersion-muscle-control",
@@ -197859,6 +198794,7 @@
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:oil-rawhide-moisture-resistance",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -198364,6 +199300,7 @@
       "ухаживают": [
         "claim:fauna-bee-worker-tasks",
         "claim:fauna-frog-calls-parental",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "wk:biology_physiology:fauna-honeybee"
       ],
       "ухо": [
@@ -198405,11 +199342,13 @@
         "claim:rp-caretaker-principal-goods",
         "wk:architecture_settlement:reconstructed-church-interior-yard-context",
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-red-squirrel",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context"
       ],
       "уходе": [
-        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "уходит": [
         "claim:fauna-salmon-anadromy",
@@ -199207,6 +200146,7 @@
         "claim:foundations-life-34-lymphoid-system",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "wk:biology_physiology:candidate-v3-aging-function",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-blood",
         "wk:biology_physiology:foundation-lymphoid-system",
         "wk:biology_physiology:foundation-regulation"
@@ -199218,6 +200158,7 @@
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "wk:biology_physiology:dietary-macronutrient-energy",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-organ-systems"
       ],
       "функциональная": [
@@ -200268,6 +201209,7 @@
         "claim:construction-bast-vessel-fastening",
         "claim:fauna-tawny-owl-pellets",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-joining-steel-temper",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
@@ -200403,6 +201345,7 @@
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:foundations-physical-b2-lgt-03-glass-absorption-transmission",
         "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
@@ -200756,7 +201699,9 @@
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task"
       ],
       "чистить": [
-        "wk:biology_physiology:domestic-chicken-behavior"
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "wk:biology_physiology:domestic-chicken-behavior",
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "чистка": [
         "claim:fauna-chicken-allopreening"
@@ -200861,6 +201806,7 @@
         "claim:healer-observation-and-questioning",
         "claim:livestock-swine-membership",
         "claim:occupation-smith-anvil",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
@@ -200994,6 +201940,9 @@
       ],
       "шёлковый": [
         "claim:fauna-cross-spider-egg-sac"
+      ],
+      "шёлковыми": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "шёлковых": [
         "claim:clothing-silk-shirt"
@@ -201333,6 +202282,9 @@
       ],
       "щепу": [
         "claim:human-life-learning-observation-practice-feedback"
+      ],
+      "щётка": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "щит": [
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs"
@@ -202068,6 +203020,8 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -202076,6 +203030,7 @@
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -202100,6 +203055,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
@@ -202621,6 +203577,7 @@
         "claim:fauna-cross-spider-egg-sac",
         "claim:fauna-culex-life-cycle",
         "claim:fauna-great-tit-incubation",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
@@ -204321,10 +205278,12 @@
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
       ],
       "absence": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-armed-loss-reaches-household",
         "claim:residual-traces-animal-sign-absence-limit"
       ],
       "absent": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-support-needs-available-person-and-resources"
       ],
       "absolute": [
@@ -204332,6 +205291,7 @@
       ],
       "absorb": [
         "claim:foundations-physical-b2-snd-05-sound-absorption-soft-material",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:population-ceramic-water",
         "wk:biology_physiology:plant-root-uptake",
@@ -205814,6 +206774,7 @@
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
         "claim:place-outdoors-clearing-and-trace-renewal",
@@ -206465,6 +207426,7 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
@@ -206472,6 +207434,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
@@ -206858,6 +207821,7 @@
         "wk:biology:candidate-plant-food-part-bound",
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:animal-homeostasis",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:bearberry-lingonberry-identification",
         "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
@@ -206876,6 +207840,7 @@
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:dietary-macronutrient-energy",
         "wk:biology_physiology:domestic-chicken-behavior",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:exercise-heat-dissipation",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-animal-communication",
@@ -207373,6 +208338,7 @@
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:posadnik-fedor-conflict-1224",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:religion-priest-child-baptism",
@@ -207393,6 +208359,11 @@
       ],
       "answer": [
         "claim:human-life-travellers-may-seek-local-information"
+      ],
+      "ant": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "anti": [
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors"
@@ -207421,6 +208392,11 @@
       ],
       "antlers": [
         "claim:fauna-mammals-moose-defensive-antlers-hooves"
+      ],
+      "ants": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "anvil": [
         "claim:occupation-smith-anvil",
@@ -207479,6 +208455,7 @@
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator"
       ],
       "appetite": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs"
       ],
       "apple": [
@@ -207926,6 +208903,7 @@
         "claim:clothing-onuchi-wrap",
         "claim:construction-compared-church-masonry",
         "claim:ordinary-life-apron-when-work-warrants",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
@@ -208095,6 +209073,8 @@
         "claim:ordinary-life-private-needs-shape-decisions",
         "claim:pigment-wet-dry-techniques",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
@@ -208404,6 +209384,7 @@
         "claim:milling-moisture-changes-grain-deformation",
         "claim:occupation-smith-anvil",
         "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
@@ -209109,6 +210090,8 @@
       "basic": [
         "claim:candidate-v5-sleep-is-basic-human-need",
         "claim:foundations-life-01-cell",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-cell"
       ],
       "basis": [
@@ -209331,6 +210314,7 @@
         "claim:fauna-mammals-brown-bear-cover-rest",
         "claim:fauna-mammals-brown-bear-maternal-care",
         "claim:fauna-mammals-brown-bear-seasonal-omnivory",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "wk:biology_physiology:fauna-brown-bear"
       ],
       "bearberry": [
@@ -209350,7 +210334,8 @@
       "bears": [
         "claim:fauna-brown-bear-winter-denning",
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
-        "claim:fauna-mammals-brown-bear-food-driven-movement"
+        "claim:fauna-mammals-brown-bear-food-driven-movement",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "beat": [
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"
@@ -209451,6 +210436,7 @@
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-learning-tasks-can-match-capacity-risk",
         "claim:milling-moisture-changes-grain-deformation",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:practical-dwelling-roof",
@@ -209532,6 +210518,7 @@
       "being": [
         "claim:candidate-v7-npl-1222-kesi-campaign",
         "claim:foundations-ms-28-ostracism-conditional",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:residual-law-zakup-loss-context",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
@@ -210209,6 +211196,7 @@
         "claim:population-household-storage",
         "claim:pottery-handmade-temper",
         "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
@@ -210223,6 +211211,7 @@
         "wk:material_culture:one-piece-ash-hunting-bow"
       ],
       "bowl": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:probable-travel-chalice-communion",
         "wk:material_culture:probable-travel-chalice"
       ],
@@ -210469,6 +211458,9 @@
       "brood": [
         "claim:fauna-bee-worker-tasks",
         "claim:fauna-mallard-brood",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-honeybee"
       ],
       "broody": [
@@ -210502,8 +211494,14 @@
         "claim:residual-law-visible-injury-and-witness",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
       ],
+      "brush": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
       "buckle": [
         "claim:clothing-male-shirt-belt"
+      ],
+      "budding": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "budjatin": [
         "claim:river-landing-named-list"
@@ -210888,6 +211886,9 @@
       "calibrated": [
         "claim:public-world-deference-can-be-calibrated-to-seniority-role"
       ],
+      "call": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
+      ],
       "called": [
         "claim:foundations-ms-32-social-role",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
@@ -211203,6 +212204,8 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -211237,6 +212240,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -211702,6 +212706,8 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
         "wk:architecture_settlement:reconstructed-church-interior-yard-context",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:reconstructed-health-support",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:npc_daily_life:animal-care-needs-presence",
@@ -211773,9 +212779,12 @@
         "claim:foundations-earth-26-runoff-contaminant-transport",
         "claim:harvest-sickle-wooden-handle",
         "claim:material-water-textile-liquid-contaminants",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:broad-clawed-crayfish-behavior"
       ],
       "carrying": [
@@ -211840,6 +212849,10 @@
       ],
       "castoreum": [
         "claim:fauna-mammals-eurasian-beaver-castoreum-territory"
+      ],
+      "cat": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "catalogue": [
         "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
@@ -211972,6 +212985,10 @@
         "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
         "claim:residual-tree-betula-pendula-male-female-catkins"
       ],
+      "cats": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
+      ],
       "cattle": [
         "claim:environment-p1-cattle",
         "claim:environment-p1-sheep-goat",
@@ -212024,6 +213041,7 @@
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift",
         "claim:material-water-vegetable-leather-water",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-joining-assembly-expansion",
         "claim:population-joining-metal-fatigue",
         "claim:population-material-clay-quartz",
@@ -212978,9 +213996,11 @@
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
         "claim:fauna-mussel-filtration",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-pearl-mussel"
       ],
       "cleaner": [
@@ -212990,6 +214010,7 @@
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:fibre-hackle-removes-shive",
         "claim:food-practices-millet-cleaning-waste",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
@@ -213247,6 +214268,13 @@
       "cockling": [
         "claim:static-parchment-or-vellum-should-not-be-wetted"
       ],
+      "cocoon": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
+      "cocoons": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
+      ],
       "code": [
         "claim:russkaya-pravda-comparative-only",
         "wk:social_law_economy:russkaya-pravda-comparative-only"
@@ -213398,6 +214426,8 @@
       ],
       "colony": [
         "claim:agriculture-fauna-rural-tree-borts",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
@@ -214231,6 +215261,7 @@
         "claim:occupation-smith-tongs",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:pine-pitch-severe-oxidation",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:population-leather-shoes",
@@ -214300,6 +215331,7 @@
         "claim:oil-rawhide-moisture-resistance",
         "claim:pine-pitch-severe-oxidation",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:research-pooled-work-social-loafing",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -216147,7 +217179,9 @@
       ],
       "debris": [
         "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:research-flood-can-leave-high-water-mark-types",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:environment:candidate-flood-woody-debris-transport-retention"
       ],
       "debt": [
@@ -216949,6 +217983,8 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
@@ -217234,6 +218270,7 @@
         "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
         "claim:foundations-thm-01-convective-heat-transfer",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-material-wood-moisture",
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-load-deformation",
@@ -217276,10 +218313,12 @@
       ],
       "dirt": [
         "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:population-joining-bond-contamination",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
-        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests"
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "wk:biology_physiology:equine-hoof-function-and-debris"
       ],
       "dirtier": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
@@ -218429,6 +219468,7 @@
         "claim:ordinary-life-apron-when-work-warrants",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-material-clay-plasticity",
         "claim:population-material-clay-quartz",
@@ -218847,6 +219887,7 @@
         "claim:fauna-great-tit-incubation",
         "claim:fauna-pike-juvenile-predation",
         "claim:fauna-pike-spawning",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
         "wk:biology_physiology:domestic-chicken-behavior"
       ],
@@ -218923,6 +219964,10 @@
         "wk:biology_physiology:fungal-decomposition",
         "wk:material_culture:novgorod-wooden-urban-elements",
         "wk:psychology_behavior:foundations-ms-06-visual-selection"
+      ],
+      "elevated": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "elevation": [
         "claim:research-porous-high-water-stain-can-require-corroboration"
@@ -219382,10 +220427,12 @@
         "wk:physics_material_science:static-force-equilibrium"
       ],
       "equine": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context"
       ],
       "equipment": [
@@ -219637,6 +220684,7 @@
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:oil-rawhide-moisture-resistance",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -219957,6 +221005,7 @@
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:occupation-smith-tongs",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:population-processes-weaving-textile",
         "claim:probable-travel-chalice-communion",
         "claim:residual-law-visible-injury-and-witness",
@@ -220371,6 +221420,7 @@
         "claim:foundations-ms-19-attribution-explanation",
         "claim:foundations-ms-20-attribution-alternatives",
         "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:public-world-unfamiliar-speech-allows-clarification",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:psychology_behavior:foundations-ms-13-movement-demonstration",
@@ -220770,6 +221820,7 @@
         "claim:foundations-ms-02-attention-novelty",
         "claim:healer-belief-and-bodily-attention",
         "claim:healer-portable-and-household-kit",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:residual-nature-stars-horizon-navigation",
         "wk:psychology_behavior:foundations-ms-02-attention-novelty"
@@ -221047,6 +222098,7 @@
         "wk:psychology_behavior:foundations-ms-21-attitude-definition"
       ],
       "feet": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-outdoors-traffic-wet-ground-and-ruts"
       ],
       "felled": [
@@ -222115,6 +223167,7 @@
         "claim:ordinary-life-work-clothes-protect-and-move",
         "claim:pigment-blue-lime-basis",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
@@ -222364,6 +223417,9 @@
       ],
       "forced": [
         "claim:research-pooled-work-social-loafing"
+      ],
+      "forceful": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "forces": [
         "claim:foundations-haz-04-slope-force-strength",
@@ -222779,6 +223835,8 @@
       "frog": [
         "claim:fauna-common-frog-aquatic-overwintering",
         "claim:fauna-tadpole-temperature",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-common-frog"
       ],
       "frogs": [
@@ -222872,6 +223930,8 @@
         "claim:pigment-red-lead-pigment",
         "claim:pigment-red-ochre",
         "claim:pigment-yellow-ochre",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-outdoors-cover-opening-and-work-visibility",
@@ -223110,6 +224170,7 @@
         "wk:physics_material_science:wick-fed-flame"
       ],
       "full": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:residual-law-dependency-and-agreement",
         "claim:residual-law-zakup-complaint-not-escape",
         "claim:residual-law-zakup-illegal-sale",
@@ -223134,6 +224195,7 @@
         "wk:architecture_settlement:contextual-evidence-classes",
         "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
         "wk:biology_physiology:candidate-v3-aging-function",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-lymphoid-system",
         "wk:craft_technology:woodworked-objects-and-waste"
       ],
@@ -223200,6 +224262,7 @@
         "claim:foundations-life-15-blood",
         "claim:foundations-life-16-regulation",
         "wk:biology_physiology:dietary-macronutrient-energy",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-blood",
         "wk:biology_physiology:foundation-organ-systems",
         "wk:biology_physiology:foundation-regulation"
@@ -224118,6 +225181,9 @@
         "wk:biology_physiology:fungal-mycelium-nutrition",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response"
       ],
+      "grown": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "grows": [
         "claim:practical-dwelling-roof"
       ],
@@ -224388,6 +225454,9 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
+      "happening": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "hard": [
         "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
         "claim:foundations-mat-08-abrasive-hardness-material-removal",
@@ -224524,10 +225593,14 @@
         "claim:fodder-hay-account",
         "claim:fodder-healthy-horse-forage",
         "claim:livestock-rumen-forage-digestion",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:practical-fodder-hay",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "wk:material_culture:hay",
         "wk:npc_daily_life:reconstructed-practical-seasonal-work"
+      ],
+      "hayloft": [
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "haymaking": [
         "claim:fodder-hay-account"
@@ -224936,6 +226009,10 @@
         "claim:population-shoe-input",
         "claim:transport-boat-cargo-dispatch"
       ],
+      "hiding": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
+      ],
       "hierarchy": [
         "claim:candidate-v9-late-xii-novgorod-otrok-administrative-collector",
         "claim:fauna-chicken-flock-hierarchy",
@@ -225175,6 +226252,7 @@
       ],
       "holding": [
         "claim:household-tar-pot",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying"
       ],
       "holds": [
@@ -225248,9 +226326,12 @@
         "claim:clothing-votola-cloak"
       ],
       "hoof": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:environment:static-cloven-hoof-trace-comparison"
       ],
       "hook": [
@@ -225312,6 +226393,7 @@
         "claim:environment-p1-horse-transport",
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:fodder-healthy-horse-forage",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:population-tack-context",
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:residual-law-unauthorized-horse-use",
@@ -225325,6 +226407,7 @@
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-horses-are-hindgut-fermenters",
         "claim:transport-horse-sledge-equipment",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-domestic-horse",
         "wk:biology_physiology:horse-forage-feeding",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
@@ -225747,6 +226830,7 @@
         "claim:environment-p1-horse-transport",
         "claim:maslo-birchbark-718-account",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:textile-dye-application"
       ],
@@ -225882,7 +226966,9 @@
         "claim:candidate-v7-museum-individual-toy-types"
       ],
       "immature": [
-        "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors"
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "immediate": [
         "claim:foundations-life-04-cellular-atp",
@@ -226360,6 +227446,9 @@
         "claim:pigment-yellow-ochre",
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -226371,6 +227460,7 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -226537,7 +227627,9 @@
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:architecture_settlement:wooden-bathhouse",
         "wk:biology_physiology:candidate-v3-disability-context",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:endotherm-insulation",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-animal-movement",
         "wk:biology_physiology:fauna-atlantic-salmon",
         "wk:biology_physiology:fauna-bird-migration",
@@ -226997,6 +228089,7 @@
         "claim:hard-stone-abrasive-shaping",
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:maslo-birchbark-718-account",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -227192,6 +228285,7 @@
         "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
         "claim:foundations-phys-02-impulse-momentum-change",
         "claim:household-trauma-unnecessary-movement-can-worsen",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:public-world-armed-loss-reaches-household",
@@ -227350,6 +228444,8 @@
         "claim:occupation-directed-grain-procurement",
         "claim:ordinary-life-apprentice-learns-and-assists",
         "claim:ordinary-life-master-has-work-responsibility",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:social-church-instruction-reports-demand",
@@ -228087,10 +229183,13 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
@@ -228101,6 +229200,7 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
@@ -228316,6 +229416,7 @@
         "wk:architecture_settlement:wooden-paving",
         "wk:architecture_settlement:workshop",
         "wk:architecture_settlement:yard",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-domestic-dog",
@@ -228457,6 +229558,7 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
@@ -228623,6 +229725,8 @@
         "claim:occupation-smith-tongs",
         "claim:occupation-wood-plane",
         "claim:ordinary-life-shoes-protect-feet",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
@@ -228653,6 +229757,7 @@
         "claim:textile-lac-dye-analysis",
         "claim:transport-private-boat-arrangement",
         "wk:biology_physiology:candidate-parasite-host-relation",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-acquired-immunity",
         "wk:biology_physiology:foundation-digestion",
         "wk:biology_physiology:foundation-respiration",
@@ -229199,6 +230304,8 @@
         "claim:fauna-dragonfly-foodweb",
         "claim:fauna-pike-juvenile-predation",
         "claim:fauna-toad-defence",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:fauna-common-toad",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
@@ -230317,6 +231424,7 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own"
       ],
       "location": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:residual-nature-moon-phase-time-of-visibility"
       ],
@@ -230701,6 +231809,7 @@
         "claim:livestock-swine-membership",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-outdoors-microterrain-patches",
         "claim:population-material-clay-plasticity",
         "claim:population-material-leather-dry",
@@ -230859,6 +231968,7 @@
         "claim:pottery-handmade-local-clay"
       ],
       "manure": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs"
       ],
@@ -232458,11 +233568,13 @@
         "claim:household-clay-drying-and-incompatible-movement",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:foundation-alveolar-exchange",
         "wk:environment:river-ice-jam-flow-obstruction",
         "wk:physics_material_science:conductor-insulator-charge-mobility"
@@ -232485,6 +233597,7 @@
         "claim:transport-winter-sledge-1220",
         "claim:water-percolation-openings",
         "claim:water-permeability-connected-pores",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-animal-movement",
         "wk:biology_physiology:foundation-muscle-movement",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling",
@@ -232541,6 +233654,7 @@
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
       ],
       "mud": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
@@ -233008,12 +234122,15 @@
         "claim:occupation-wood-drawknife",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
@@ -233062,7 +234179,9 @@
         "claim:fauna-bee-swarming",
         "claim:fauna-bee-worker-tasks",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "wk:biology_physiology:fauna-honeybee"
       ],
       "nesting": [
@@ -233633,12 +234752,15 @@
         "claim:occupation-wood-drawknife",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
@@ -234043,6 +235165,8 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -234061,6 +235185,7 @@
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
@@ -234908,6 +236033,7 @@
         "claim:material-water-new-linen-water",
         "claim:novgorod-wooden-urban-elements",
         "claim:pine-pitch-severe-oxidation",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-outdoors-forest-structure-and-season",
         "claim:population-fish-food",
         "claim:population-material-clay-drying",
@@ -235405,10 +236531,12 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -235573,6 +236701,7 @@
         "wk:architecture_settlement:reconstructed-place-work-space",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:bearberry-lingonberry-identification",
         "wk:biology_physiology:candidate-v2-postnatal-lactation",
@@ -235583,6 +236712,8 @@
         "wk:biology_physiology:candidate-v5-sleep-function",
         "wk:biology_physiology:candidate-v6-burns",
         "wk:biology_physiology:candidate-v6-foodborne-observations",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-animal-movement",
         "wk:biology_physiology:fauna-earthworm",
@@ -236730,11 +237861,14 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -236765,6 +237899,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -237108,6 +238243,7 @@
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:consumer-assimilation",
         "wk:biology_physiology:consumer-energy-allocation",
         "wk:biology_physiology:ecological-competition",
@@ -237520,6 +238656,7 @@
         "claim:foundations-phys-09-mechanical-energy-dissipation",
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:livestock-rumen-forage-digestion",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:population-tack-context",
         "claim:practical-fodder-hay",
@@ -238005,6 +239142,7 @@
         "claim:foundations-life-24-skin-sensation",
         "claim:foundations-ms-05-tactile-components",
         "claim:pain-nociception-distinct",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
@@ -238274,8 +239412,10 @@
         "claim:occupation-wood-plane",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:pine-pitch-severe-oxidation",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
@@ -238287,6 +239427,7 @@
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-fishing-workspace",
         "claim:population-material-wood-shrinkage",
@@ -239294,7 +240435,9 @@
       "places": [
         "claim:bathing-house-heating-before-washing",
         "claim:occupation-carpenter-role",
-        "claim:textile-lac-dye-analysis"
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "claim:textile-lac-dye-analysis",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "placing": [
         "claim:residual-law-arson-remedy-and-sanction"
@@ -241012,6 +242155,7 @@
         "claim:occupation-smith-specialisation",
         "claim:ordinary-life-private-needs-shape-decisions",
         "claim:place-outdoors-activity-sensory-pulses",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:population-material-wet-silk",
         "claim:population-net-work",
@@ -241259,6 +242403,7 @@
         "claim:construction-forged-iron-nail-vessel-joint",
         "claim:foundations-life-42-thermoreceptors",
         "claim:grain-processing-bread-ground-plant-base",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-outdoors-cover-opening-and-work-visibility",
         "claim:population-storage-vessels",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
@@ -241364,11 +242509,16 @@
       ],
       "pupae": [
         "claim:fauna-culex-life-cycle",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
       "pupal": [
         "claim:fauna-dragonfly-lifecycle",
         "wk:biology_physiology:fauna-dragonfly"
+      ],
+      "pupation": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "pupil": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -241407,6 +242557,7 @@
       ],
       "purpose": [
         "claim:flayed-skin-processing-purpose",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:public-world-arms-follow-means-role",
         "claim:public-world-ordinary-speech-tracks-relationship-setting"
@@ -241531,6 +242682,9 @@
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:architecture_settlement:reconstructed-place-work-space",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:orchard-tree-pruning-context",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-freezing-injury-context",
@@ -241700,6 +242854,10 @@
         "claim:population-material-clay-steam",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "wk:physics_material_science:thin-horn-water-softening"
+      ],
+      "quiet": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "quoted": [
         "claim:early-rus-hunting-ground-terms"
@@ -242068,6 +243226,7 @@
         "wk:biology_physiology:fauna-atlantic-salmon"
       ],
       "reason": [
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
       ],
@@ -242716,6 +243875,7 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -242724,8 +243884,11 @@
         "claim:textile-dye-application",
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology:candidate-plant-diagnostic-identity",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
         "wk:biology_physiology:candidate-parasite-host-relation",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:horse-forage-feeding",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
@@ -242891,10 +244054,15 @@
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo"
       ],
       "relocate": [
-        "claim:early-rus-hunting-ground-terms"
+        "claim:early-rus-hunting-ground-terms",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
+      ],
+      "relocating": [
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation"
       ],
       "relocation": [
-        "claim:household-trauma-danger-or-airway-changes-position-choice"
+        "claim:household-trauma-danger-or-airway-changes-position-choice",
+        "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "rely": [
         "claim:foundations-ms-11-practiced-action",
@@ -242987,12 +244155,14 @@
       "removal": [
         "claim:candidate-physiology-v3-emesis-reflex-response",
         "claim:foundations-life-12-respiration",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:residual-government-law-v2-1229-veche-episode-removes-and-replaces-tysyatsky",
         "claim:residual-law-merchant-entrustment-proof-exception",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:foundation-respiration",
         "wk:biology_physiology:research-fish-gutting-gall-bladder",
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
@@ -243000,6 +244170,7 @@
       ],
       "remove": [
         "claim:fibre-hackle-removes-shive",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
       ],
       "removed": [
@@ -243511,6 +244682,7 @@
         "claim:foundations-ms-17-individual-variation",
         "claim:foundations-ms-34-role-adjustment",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:population-joining-wax-soften",
@@ -243960,6 +245132,7 @@
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:stone-grinding-metal-use",
         "claim:water-percolation-openings",
@@ -243973,7 +245146,8 @@
       "rocks": [
         "claim:foundations-earth-15-igneous-rock-formation",
         "claim:foundations-earth-18-metamorphic-rock-formation",
-        "claim:foundations-earth-22-hydrothermal-metal-transport"
+        "claim:foundations-earth-22-hydrothermal-metal-transport",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "rod": [
         "claim:population-physics-section-response",
@@ -245109,6 +246283,8 @@
       ],
       "secluded": [
         "claim:fauna-mammals-moose-solitary-calf-seclusion",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:fauna-moose"
       ],
       "second": [
@@ -245757,8 +246933,15 @@
         "wk:biology_physiology:candidate-shivering-thermogenesis"
       ],
       "shock": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:static-root-loss-can-cause-transplant-shock",
         "wk:biology_physiology:static-transplant-root-disturbance"
+      ],
+      "shoe": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
+      "shoeing": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "shoemakers": [
         "claim:population-shoe-input"
@@ -245959,6 +247142,9 @@
         "wk:biology_physiology:fauna-cross-spider",
         "wk:material_culture:silk"
       ],
+      "silken": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
+      ],
       "silver": [
         "claim:fauna-eel-migration",
         "wk:environment:betula-pendula-properties"
@@ -246022,6 +247208,7 @@
         "claim:fauna-ewe-lambing-seclusion",
         "claim:food-practices-millet-cleaning-waste",
         "claim:livestock-rumen-fermentation",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:residual-law-detained-thief-and-princely-court",
         "claim:terrain-parent-material-assemblage"
       ],
@@ -246741,6 +247928,7 @@
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:population-joining-steel-temper",
         "claim:population-net-cord",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -246968,7 +248156,9 @@
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles"
       ],
       "spaces": [
-        "claim:settlement-underfloor-storage"
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+        "claim:settlement-underfloor-storage",
+        "wk:biology_physiology:cat-hiding-places"
       ],
       "spanning": [
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion"
@@ -247047,7 +248237,9 @@
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-06-wood-drying-property-change",
         "claim:microbial-growth-depends-on-species-temperature-range",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:plant-development-responds-to-light",
         "claim:population-material-wood-shrinkage",
         "claim:regional-fish-exploitation",
@@ -247390,6 +248582,8 @@
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
       ],
       "stages": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:candidate-v2-postnatal-lactation",
         "wk:craft_technology:reconstructed-place-work-flow"
       ],
@@ -247411,6 +248605,9 @@
       ],
       "stall": [
         "claim:place-outdoors-market-activity-and-empty-intervals"
+      ],
+      "stance": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "stand": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
@@ -249330,6 +250527,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:population-joining-wax-soften",
         "claim:population-material-wood-decay",
@@ -249416,6 +250614,7 @@
       ],
       "tend": [
         "claim:fauna-bee-worker-tasks",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "wk:biology_physiology:fauna-honeybee"
       ],
       "tender": [
@@ -249685,6 +250884,7 @@
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:population-material-iron-coating",
         "claim:posadnik-fedor-conflict-1224",
@@ -250033,6 +251233,8 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -250237,6 +251439,7 @@
         "wk:biology_physiology:bearberry-lingonberry-identification",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
         "wk:biology_physiology:candidate-v3-oral-health",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-dragonfly",
@@ -250822,6 +252025,8 @@
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -250830,6 +252035,7 @@
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -250852,6 +252058,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
@@ -251583,6 +252790,8 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
@@ -251590,6 +252799,7 @@
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
@@ -251597,6 +252807,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
         "claim:plant-development-responds-to-light",
         "claim:population-boat-work",
@@ -251709,6 +252920,8 @@
         "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
         "wk:biology_physiology:animal-homeostasis",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+        "wk:biology_physiology:cat-hiding-places",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-atlantic-salmon",
         "wk:biology_physiology:fauna-common-toad",
@@ -252043,6 +253256,7 @@
         "wk:biology_physiology:foundation-absorption"
       ],
       "traction": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:transport-sledge-summer-cargo",
         "claim:transport-winter-sledge-1220"
       ],
@@ -252277,6 +253491,8 @@
         "claim:research-surface-inversion-can-trap-smoke-near-ground"
       ],
       "trapped": [
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "wk:biology_physiology:equine-hoof-function-and-debris",
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk"
       ],
       "trapping": [
@@ -252328,6 +253544,9 @@
       "treadle": [
         "wk:material_culture:weaving-device-component"
       ],
+      "treat": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
       "treating": [
         "claim:place-outdoors-shore-working-edge-composition"
       ],
@@ -252346,6 +253565,7 @@
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:population-joining-metal-anneal",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
@@ -252442,6 +253662,7 @@
         "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap"
       ],
       "trim": [
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment"
       ],
       "trodden": [
@@ -252812,6 +254033,7 @@
       "uneven": [
         "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
         "claim:foundations-mat-09-glass-brittle-thermal-stress",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:population-joining-assembly-expansion",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:residual-nature-snow-uneven-roof-loading",
@@ -253213,6 +254435,7 @@
         "claim:occupation-smith-tongs",
         "claim:ordinary-life-shoes-protect-feet",
         "claim:ordinary-life-smith-anvil-hammer-tongs",
+        "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
@@ -254472,6 +255695,7 @@
       "weight": [
         "claim:gramota-73-grivna-term",
         "claim:material-water-textile-water-load",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:population-physics-floating-shape",
         "claim:population-weight-bark",
         "claim:population-weight-cord",
@@ -254635,6 +255859,7 @@
       ],
       "what": [
         "claim:healer-observation-and-questioning",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:public-world-witness-account-has-bounded-scope",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:research-memory-source-misattribution",
@@ -254738,6 +255963,7 @@
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "claim:water-capillary-height",
+        "wk:biology_physiology:cat-hiding-places",
         "wk:environment:slope-water-triggers",
         "wk:npc_daily_life:animal-care-needs-presence"
       ],
@@ -254830,6 +256056,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "white": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:white-willow-depends-on-moist-lit-riparian-habitat",
         "wk:environment:white-willow-riparian-habitat"
@@ -254880,6 +256107,9 @@
         "claim:rp-mother-household-care-succession",
         "claim:social-priest-fragment-relates-office-address",
         "claim:static-horses-are-hindgut-fermenters"
+      ],
+      "why": [
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons"
       ],
       "wick": [
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
@@ -255144,6 +256374,7 @@
         "claim:ordinary-life-fisher-needs-water-and-gear",
         "claim:ordinary-life-linen-wool-clothing",
         "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-outdoors-season-work-space-reallocation",
@@ -255673,6 +256904,7 @@
         "claim:social-hired-work-relates-business-record",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-fibres-twist-yarn",
+        "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:npc_daily_life:boat-worker",
         "wk:npc_daily_life:storage-worker",
         "wk:social_law_economy:hired-work-reference"
@@ -255683,6 +256915,8 @@
         "claim:fauna-bee-waggle",
         "claim:fauna-bee-winter-cluster",
         "claim:fauna-bee-worker-tasks",
+        "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "wk:biology_physiology:fauna-honeybee"
       ],
@@ -255853,6 +257087,7 @@
       "wound": [
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:static-repeated-skin-friction-can-cause-blistering",

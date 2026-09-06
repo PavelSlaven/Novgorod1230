@@ -11308,6 +11308,48 @@
       "retrieval_text": "Замачивание и отделение луба липы Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон. Если липовое лыко уже установлено, замачивание в воде может поддержать практическое отделение волокон и их гибкую дальнейшую обработку, например скручивание. Это editorial reconstruction для Новгородской земли 1200–1300, не доказательство местного дерева или коры, не фиксированный способ, срок, инструмент, выход или готовое изделие; она не объявляет тот же приём законом для крапивы либо всех лубяных растений. луб липы лыко мочить кору отделить луб замочить лыко отделить волокна крутить шнур"
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons:en",
+      "target_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ant brood care and relocation Qualitative relation of worker care, cocoons, and bounded movement of immature ant stages. Ant workers tend immature stages; in species with silken cocoons, full-grown larvae make cocoons before pupation. This identifies neither a white object in a particular nest as a cocoon, its species, why workers carry it, nor what is happening to the colony. ants carry cocoons ant brood ants move pupae ants carry white cocoons ant cocoon"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons:ru",
+      "target_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Муравьи: расплод и перенос Качественная связь ухода рабочих муравьёв за расплодом, коконов и ограниченного переноса незрелых стадий. Рабочие муравьи ухаживают за незрелыми стадиями; у видов с шёлковыми коконами выросшие личинки делают кокон перед окукливанием. Это не определяет, что белый предмет в конкретном гнезде — кокон, какой там вид, почему рабочие его несут или что происходит с колонией. муравьи несут коконы муравьиный расплод муравьи переносят куколок муравьи несут белые коконы муравьиный кокон"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog:en",
+      "target_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hoof function and debris Qualitative relation of hoof functions to trapped debris and its removal in basic care. Basic hoof cleaning can remove rocks, dirt, manure, and other debris trapped around the frog; a brush can remove dirt and mud. This is a debris-removal purpose, not a diagnosis, a forceful-holding instruction, evidence of a wound, shoeing, or treatment. dirt in hoof clean horse hoof hoof frog debris clean dirt from hoof rock around frog mud in hoof"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog:ru",
+      "target_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Копыто лошади: функции и загрязнение Качественная связь функций копыта с застрявшей грязью и её удалением при базовом уходе. Базовая очистка копыта может удалить камни, грязь, навоз и иной мусор, застрявший вокруг стрелки; щётка может снять грязь и жидкую грязь. Это назначение очистки, а не диагноз, указание силой удерживать лошадь, доказательство раны, подковка или лечение. грязь в копыте чистить копыто стрелка копыта чистить грязь из копыта камень у стрелки грязь вокруг стрелки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-cats-can-use-secluded-or-elevated-hiding-places:en",
+      "target_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cat hiding places Qualitative relation of cats to quiet, secluded, or elevated hiding spaces. Cats can use quiet, secluded, or elevated places as hiding spaces. A cat being absent from a bowl establishes neither its location, reason for absence, condition, appetite, nor response to a familiar call. cat hiding cat in hayloft where is the cat cat not at bowl cat in hay"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-cats-can-use-secluded-or-elevated-hiding-places:ru",
+      "target_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кошки: укрытия Качественная связь кошек с тихими, скрытыми или возвышенными укрытиями. Кошки могут использовать тихие скрытые или возвышенные места как укрытия. Отсутствие кошки у миски не устанавливает её местонахождение, причину отсутствия, состояние, аппетит или ответ на знакомый зов. кошка спряталась кошка на сеновале где кошка кошка не у миски кошка в сене"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage:en",
       "target_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
       "domain": "social_law_economy",
@@ -11432,6 +11474,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "Остывание красильной ванны и поглощение красителя Качественные связи условий ванны, поглощения, закрепления и ровности окраски. Подготовка текстиля может влиять на поглощение красителя, а недостаточная очистка может способствовать пятнистому поглощению. Это не устанавливает загрязнение, вид волокна, краситель, ванну, цвет или результат окраски. красильная ванна остывание поглощение красителя ровность подготовка ткани пятнистая окраска"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction:en",
+      "target_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hoof function and debris Qualitative relation of hoof functions to trapped debris and its removal in basic care. Equine feet bear weight, absorb shock, and provide traction. This is neither a diagnosis of uneven stance, an inference of pain or injury, nor an instruction to trim, shoe, or treat a particular horse. dirt in hoof clean horse hoof hoof frog debris hoof bears weight hoof traction horse uneven stance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction:ru",
+      "target_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Копыто лошади: функции и загрязнение Качественная связь функций копыта с застрявшей грязью и её удалением при базовом уходе. Копытная часть ноги лошади несёт вес, амортизирует удар и обеспечивает сцепление. Это не диагноз неровной постановки, не вывод о боли или травме и не предписание расчистки копыта, подковы либо лечения конкретной лошади. грязь в копыте чистить копыто стрелка копыта копыто несёт вес сцепление копыта лошадь неровно ставит ногу"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture:en",
@@ -11880,6 +11936,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Эмолент, защитная плёнка и сухая кожа Качественная связь подходящего эмолентного или окклюзивного средства, защитной плёнки и удержания влаги в сухой коже. Если маслянистое или жирное нанесение на кожу действительно остаётся сплошной гидрофобной поверхностной плёнкой, оно может уменьшить испарительную потерю влаги с поверхности кожи. Это условная физическая связь, а не обещание, что любой жир или масло годится, останется на месте, переносится кожей, лечит повреждение или подходит для ожога, мокнущей либо инфицированной кожи. сухая потрескавшаяся кожа эмолент мазь для сухой кожи жир на сухой коже масло на потрескавшейся коже защитная жирная плёнка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation:en",
+      "target_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ant brood care and relocation Qualitative relation of worker care, cocoons, and bounded movement of immature ant stages. In some ant species, workers can carry eggs, larvae, or pupae to another nest site during colony budding. This is a conditional some-species relation, not a cause, direction, temperature explanation, or proof that a particular colony is relocating. ants carry cocoons ant brood ants move pupae ants relocate brood ants carry eggs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation:ru",
+      "target_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Муравьи: расплод и перенос Качественная связь ухода рабочих муравьёв за расплодом, коконов и ограниченного переноса незрелых стадий. У некоторых видов муравьёв рабочие могут переносить яйца, личинок или куколок на другое место гнездования при отпочковании колонии. Это условная связь для части видов, не причина, направление, температурное объяснение или доказательство текущего переселения конкретной колонии. муравьи несут коконы муравьиный расплод муравьи переносят куколок муравьи переселяют расплод муравьи несут яйца"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path:en",
@@ -20380,6 +20450,20 @@
       "retrieval_text": "Гомеостаз животных Организм животного отвечает на внутренние и внешние изменения."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:ant-brood-care-and-relocation:en",
+      "target_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ant brood care and relocation Qualitative relation of worker care, cocoons, and bounded movement of immature ant stages. ants carry cocoons ant brood ants move pupae"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:ant-brood-care-and-relocation:ru",
+      "target_ref": "wk:biology_physiology:ant-brood-care-and-relocation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Муравьи: расплод и перенос Качественная связь ухода рабочих муравьёв за расплодом, коконов и ограниченного переноса незрелых стадий. муравьи несут коконы муравьиный расплод муравьи переносят куколок"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:aquatic-macrophyte-form-attachment:en",
       "target_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
       "domain": "biology_physiology",
@@ -20870,6 +20954,20 @@
       "retrieval_text": "Вестибулярная постуральная коррекция"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:cat-hiding-places:en",
+      "target_ref": "wk:biology_physiology:cat-hiding-places",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cat hiding places Qualitative relation of cats to quiet, secluded, or elevated hiding spaces. cat hiding cat in hayloft where is the cat"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:cat-hiding-places:ru",
+      "target_ref": "wk:biology_physiology:cat-hiding-places",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кошки: укрытия Качественная связь кошек с тихими, скрытыми или возвышенными укрытиями. кошка спряталась кошка на сеновале где кошка"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:chemical-exposure-not-illness:en",
       "target_ref": "wk:biology_physiology:chemical-exposure-not-illness",
       "domain": "biology_physiology",
@@ -21008,6 +21106,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Теплоизоляция эндотермов Шерсть, жир или перья уменьшают теплопотери эндотермов."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:equine-hoof-function-and-debris:en",
+      "target_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Equine hoof function and debris Qualitative relation of hoof functions to trapped debris and its removal in basic care. dirt in hoof clean horse hoof hoof frog debris"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:equine-hoof-function-and-debris:ru",
+      "target_ref": "wk:biology_physiology:equine-hoof-function-and-debris",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Копыто лошади: функции и загрязнение Качественная связь функций копыта с застрявшей грязью и её удалением при базовом уходе. грязь в копыте чистить копыто стрелка копыта"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:exercise-heat-dissipation:en",

@@ -1,0 +1,43 @@
+{
+  "schema": "wk_place_first_offline_review_v1",
+  "batch_id": "place-batch-07-known-gap-replay",
+  "known_gap_replay": true,
+  "reviewer_agent_identity": "/root/place_scene_a",
+  "input_commit": "e4587e88d01123f2939febafe5de5052f682d2fc",
+  "corpus_claim_count": 1410,
+  "method": "Independent WK-only replay against current compiled runtime bundle. Rechecks only original known gaps 007, 024, 056; no source, map, code, or candidate input used.",
+  "baseline": {
+    "original_corpus_claim_count": 1405,
+    "original_diagnostic": {"covered": 97, "substantial_gap": 3},
+    "mixed_unseen_clean_streak": "0/3"
+  },
+  "cases": [
+    {
+      "case_id": "place07-core-007",
+      "verdict": "covered",
+      "scene_ru": "У края сосновой рощи ребёнок сидит у сухой хвои, где ветки осыпали край муравейника; глубокая сторона остаётся менее удобной для близкого взгляда. Белые предметы совместимы с возможностью незрелых стадий и коконов у части видов, но WK не определяет ими именно эти предметы. Старший держит ребёнка на тропе и не даёт разбирать насыпь.",
+      "interaction_ru": "Наблюдение остаётся бережным: ребёнок следит за потоком рабочих, не трогая коконы платком или руками. Рабочие ухаживают за незрелыми стадиями; у некоторых видов перенос яиц, личинок или куколок может сопровождать отпочкование колонии, однако это не устанавливает, что сейчас идёт переселение, перенос вызван жарой или ведёт внутрь определённой камеры.",
+      "variation_ru": "Тень, жара и осыпавшиеся ветки могут менять доступный ребёнку обзор, а не объяснение поведения. Иной вид муравьёв может не иметь таких коконов; точная причина, температура гнезда и текущая судьба расплода остаются неустановленными.",
+      "claim_refs": ["claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons","claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation","claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": []
+    },
+    {
+      "case_id": "place07-core-024",
+      "verdict": "covered",
+      "scene_ru": "Утренний сенник сухой, но между копнами узкий скрипучий проход; лучина даёт свет лишь рядом с ребёнком и взрослым. Кошка не вернулась к миске, поэтому это повод искать, а не доказательство голода, болезни или того, что она слышит зов. Сено остаётся горючим сухим материалом: открытый огонь у копен не становится способом выманить животное.",
+      "interaction_ru": "Взрослый и ребёнок сначала гасят либо убирают горящую лучину от сена, затем осматривают тихие закрытые щели и более высокие места, куда кошка может уйти как в укрытие, не раздвигая копны резко. Они зовут и слушают, но ответ не гарантирован; молоко можно оставить у обычного места, не делая его приманкой с обязательным исходом.",
+      "variation_ru": "Скрип досок и тесный проход меняют, куда можно заглянуть с лучиной; после поиска укрытия остаются теми же лишь пока их не нарушили. Фактическое место кошки, её здоровье, аппетит и реакция на голос — current state.",
+      "claim_refs": ["claim:place-cats-can-use-secluded-or-elevated-hiding-places","claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance","claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": []
+    },
+    {
+      "case_id": "place07-core-056",
+      "verdict": "covered",
+      "scene_ru": "В дождливый вечер двор постоялого дома разделён сухим стойлом и глубокой грязью у входа; у конюха есть крюк, ведро и солома. Лошадь переступает и ставит ногу неровно, но один такой признак не называет причину. До очистки она остаётся на более сухом месте, а не возвращается без нужды в размешанную грязь.",
+      "interaction_ru": "Конюх спокойно очищает видимую глину и иной мусор вокруг стрелки крюком, не применяя силу и не превращая действие в лечение. Копытная часть ноги несёт вес, амортизирует удар и даёт сцепление; это объясняет практическую важность осмотра, но не вывод о травме, боли, подкове или эффекте очистки на неровную постановку.",
+      "variation_ru": "После дождя у входа снова может налипнуть грязь, а сухая солома поддерживает отделённую поверхность стойла. Если неровная постановка не меняется или появляются другие наблюдения, причина остаётся требующей отдельной оценки, а не нового диагноза из этой сцены.",
+      "claim_refs": ["claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog","claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction","claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause","claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "gaps": []
+    }
+  ]
+}

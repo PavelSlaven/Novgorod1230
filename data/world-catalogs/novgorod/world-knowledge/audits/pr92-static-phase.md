@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,405 approved claims, 909 concepts,
-521 sources and 1,024 evidence records**. This includes 156 independently
+The integrated corpus contains **1,410 approved claims, 912 concepts,
+527 sources and 1,031 evidence records**. This includes 156 independently
 reviewed premises using editorial-reconstruction sources; 167 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,628 x 1,024 float32 entries (18,956,288 bytes)** and
+package contains **4,644 x 1,024 float32 entries (19,021,824 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,405-claim corpus
+## Checks actually completed on the 1,410-claim corpus
 
-- Compiler: all 1,405 claims and independent approval bindings validate.
+- Compiler: all 1,410 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,8 +42,8 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **333-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996496**,
-  Recall@20 **0.997998**, gate PASS.
+- **338-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996548**,
+  Recall@20 **0.998028**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -64,7 +64,7 @@ premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
 The latest confirmed green CI checkpoint is
-`8504a4fd0f784e3a13c19345ea2ab69033afbffe` (run 33973272939).
+`e4587e88d01123f2939febafe5de5052f682d2fc` (run 33976419573).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
 rank 13 after corpus growth; the latter also exposed the stale normative
@@ -687,3 +687,73 @@ map, domain list, controlled input or previous batches. Input freeze precedes
 free classification and WK-only reconstruction. No new clean batch is claimed.
 The 1,399-claim checkpoint passed exact CI `33973272939`; later integrations
 still require their own exact-HEAD CI.
+
+## Seventh place-first unseen batch — diagnostic
+
+The 75 controlled and 25 independently generated free inputs were frozen
+with the 1,405-claim bundle at `e4587e88d01123f2939febafe5de5052f682d2fc`.
+This checkpoint passed exact full CI `33976419573`. The controlled generator
+reports 61 practical/natural/physical and 14 social central needs; root fixed
+open classifications for all 25 free cases before review-specific WK lookup.
+All free central needs were practical/natural/physical without an imposed
+quota: social props such as a grave, trade or a letter do not change the
+central causal question into a social dilemma.
+
+`/root/place05_scene_a` read A/C, `/root/place07_scene_b` read B, and root
+reconstructed the independently generated free set. The diagnostic retains
+three factual leads: **007 ant brood/cocoon handling, 024 ordinary domestic
+cat behaviour, and 056 basic equine hoof-care relations**. These do not ask
+for the exact reason for one insect movement, the hidden location of a cat,
+a guaranteed response to milk, or a diagnosis from uneven foot placement.
+They concern useful general biology and care context.
+
+Four initial absence findings were resolved with existing full-text WK:
+elastic recovery and resistance do not require a trap blueprint; honeybee
+light/weather/foraging premises support a bounded placement comparison;
+ordinary bark-gathering and leaf-care attempts do not require a claim that
+unspecified plants cure an ailment. Intended efficacy is not a world fact.
+Original leads and triage remain in the records. Root also reviewed all
+100 scenes and completed corrections to mismatched material/animal/heat
+citations and invented outcomes. No new source knowledge or corpus change
+was used to improve this diagnostic. Final JSON, unique-ID, nonempty scene/
+interaction/variation and compiled-reference validation passes for all 100
+corrected reviews: **97 covered / 3 knowledge gaps**. This batch does not
+raise the **0/3** streak.
+
+The four new review files and this diagnostic are subsequent local work,
+not content certified by the preceding published commit. No live gameplay,
+gameplay-owner repair or merge was performed.
+
+Five modern general animal premises were independently verified against the
+candidate frozen at `007afeb7df3bad2820b9f658bbc4e7d4f9f9b165`, then re-frozen
+at `0dc6869deed17fd7bf0e754af7654a715aeb078b` after correcting only the CSU
+author and section metadata. `/root/place06_verify_publish` confirmed that
+the displayed metadata matched its already-read source; no claim meaning or
+verdict changed. The existing verification path now compiles all five:
+ant workers tend immature stages and cocoon-forming larvae; some species move
+brood to another nest during budding; cats can use secluded or elevated
+hiding places; equine feet bear weight, absorb shock and provide traction;
+basic hoof cleaning can remove trapped debris around the frog.
+
+These premises do not identify an observed white object or heat-driven
+intra-nest movement, locate a missing cat or guarantee a cue response, diagnose
+a horse, define hidden anatomy or prescribe forceful handling or treatment.
+The category and place maps link them to existing animal/environment families;
+no family or residual was automatically closed.
+
+Independent WK-only known-case replay by `/root/place_scene_a` covers **3/3**
+fixed cases on the 1,410-claim corpus. The original **97/3** diagnostic and
+mixed unseen streak **0/3** remain unchanged. Local compiler, **95/95** focused
+tests, aligned 4,644 vectors and the **338/133** retrieval suites pass with
+unchanged model, gates and runtime owner. Root read the replay and tightened
+ant identification, hay-fire and hoof-outcome wording before final validation.
+
+Two independent generators prepared `place-batch-08-{core,free}.json` for the
+next unseen hundred. The controlled component retains 61 practical/natural/
+physical and 14 social central needs across 75 open labels. Input-only review
+prompted clarification of concrete means and observable upkeep, not adaptation
+to WK answers. The free component remains unconstrained by a domain list.
+A separate final input-only reader passed all 100 cases for schema, diversity,
+means, observable upkeep and historical neutrality without consulting WK.
+This integration freezes the inputs before reconstruction. They are not reviewed
+against WK and do not yet count as acceptance.

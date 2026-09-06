@@ -967,6 +967,8 @@
             "Какие способы рубки, переноски, ночёвки и ориентирования зависят от means?"
           ],
           "claim_refs": [
+            "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+            "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
             "claim:residual-tree-picea-abies-cones-brown-at-maturity",
             "claim:place-outdoors-forest-structure-and-season"
           ],
@@ -1568,6 +1570,9 @@
             "Как человек и животное взаимно ограничивают место и время работы?"
           ],
           "claim_refs": [
+            "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+            "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+            "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
             "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
             "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
             "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",

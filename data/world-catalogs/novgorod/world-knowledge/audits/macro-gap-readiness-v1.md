@@ -416,3 +416,26 @@ or unseen 0/3. Both maps retain their open families and partial records.
 The next blind 75+25 inputs passed input-only preflight; reconstruction is
 pending their freeze. See the static-phase report for actual vector,
 retrieval and test results; later exact-HEAD CI is required separately.
+
+The 1,405-claim integration subsequently passed exact full CI at
+`e4587e88d01123f2939febafe5de5052f682d2fc` (run `33976419573`). Its frozen
+seventh place-first 75+25 inputs have WK-only scene reviews. Three leads
+remain: ant brood handling, ordinary domestic-cat behaviour and basic
+equine hoof care. Exact trap mechanics, an optimal hive blueprint and
+efficacy of unspecified medicinal plants were not treated as requirements
+for a plausible ordinary scene. Root's free classification was 25 practical
+central needs, fixed before lookup without a quota. The later local review
+package remains diagnostic, not a new clean hundred or published CI result;
+streak **0/3** and static acceptance open.
+
+Five bounded modern animal premises at candidate `0dc6869d` subsequently
+received independent source/domain approval and compile into 1,410 claims.
+They cover ant brood/cocoons and some-species budding, cat hiding places, and
+equine-foot function/debris removal without asserting local presence, exact
+movement cause, cat location, diagnosis, forced handling or treatment.
+Known-case replay covers 3/3; the original seventh-batch 97/3 remains
+diagnostic and the streak remains **0/3**. Both maps, 4,644 vectors, 95 tests
+and passing 338/133 retrieval suites are locally aligned. Exact-HEAD CI for
+this later integration is still required. The independently generated eighth
+75+25 inputs passed a separate final input-only preflight and are frozen by this
+integration before any WK-only review; they are not evidence of a clean batch.

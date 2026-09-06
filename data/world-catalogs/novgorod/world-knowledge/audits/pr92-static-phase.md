@@ -808,3 +808,12 @@ These inputs are only frozen probes. No military coverage result, new claim,
 clean batch or saturation credit is asserted before separate WK-only readers
 reconstruct the scenes. No live gameplay or repair of combat or other gameplay
 owners occurred.
+
+Contract §0.5 and `military-first-cartography.json` now define the matching
+open static method and 12 broad, revisable factual families with explicit
+residual needs. The map links 58 approved refs (48 unique) but does not infer
+current equipment, forces, commands or outcomes. Independent Contract Auditor
+`/root/military_contract_audit` returned `PASS_WITH_NOTES`: existing WK
+authoring/compiler remains the sole owner, and no runtime schema, resolver,
+materializer, combat/state owner or activation changed. Corpus/RAG/docs checks,
+54/54 knowledge-source tests and 3/3 cartography tests pass.

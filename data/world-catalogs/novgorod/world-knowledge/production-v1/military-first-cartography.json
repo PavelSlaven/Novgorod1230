@@ -1,0 +1,169 @@
+{
+  "schema": "world_knowledge_military_first_cartography_v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "purpose": "Open, game-need-first map of factual premises for military reality in a thirteenth-century Novgorod RPG. It is a static research and sampling aid, not a corpus inventory, a scenario roster, a combat ruleset, or proof that a military event is present.",
+  "guardrails": [
+    "The named situations are probes, not a whitelist of military actions or scenes.",
+    "A claim supports only its stated qualitative premise; current people, arms, supplies, orders, routes, injuries, ownership and outcomes remain committed-world state.",
+    "Exact damage, hit resolution, body state, movement, inventory, permissions, time, persistence and combat consequences stay with their existing code owners.",
+    "This pass is static only: it does not run live gameplay, repair gameplay owners, or claim gameplay saturation."
+  ],
+  "factual_families": [
+    {
+      "id": "participants_roles_statuses",
+      "scope": "People in armed, supporting, civic-defence and noncombatant roles; authority, dependency and the difference between a named record and a general institution.",
+      "factual_needs": [
+        "What roles can be distinguished without assuming a standing modern army: commander, retainer, militia participant, messenger, scout, craft worker, carrier, healer, guard and civilian?",
+        "What social status, obligation, local authority and household ties can shape participation, access to equipment and treatment of others?"
+      ],
+      "applicability": ["urban conflict", "rural expedition", "march", "siege", "aftermath"],
+      "claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments", "claim:candidate-v9-veche-elected-prince-chiefly-military-commander"],
+      "residual_needs": ["Broader source-backed role and status map for Novgorod and its hinterland", "Bounded treatment of obligations and civilian participation"],
+      "code_owner_boundary": "No current roster, command authority, loyalty, knowledge, permission or decision is inferred."
+    },
+    {
+      "id": "weapons_armor_and_personal_equipment",
+      "scope": "Historically compatible weapon, armour and carrying categories; fitting, use limits, wear, storage, damage, maintenance and repair as factual premises.",
+      "factual_needs": [
+        "What weapon, protection, clothing, belt, harness and carried-tool classes are compatible with the setting?",
+        "How do moisture, corrosion, edge condition, fastening, leather, wood and ordinary handling constrain serviceability without inventing exact combat values?"
+      ],
+      "applicability": ["preparation", "travel", "battle", "post-battle maintenance"],
+      "claim_refs": ["claim:agriculture-fauna-ash-hunting-bow", "claim:candidate-novgorod-helmet-half-mask-find", "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting", "claim:stone-grinding-metal-use", "claim:wood-anisotropy-moisture"],
+      "residual_needs": ["Weapon and armour form/use/repair families beyond isolated finds", "Shield, bowstring, arrow, spear, scabbard and fastening premises", "Period-compatible carrying and field-maintenance practices"],
+      "code_owner_boundary": "No object, ownership, condition, protection value, reach, ammunition, damage or successful repair is created."
+    },
+    {
+      "id": "training_readiness_and_fatigue",
+      "scope": "Practice, conditioning, handling familiarity, rest, exertion, thirst, cold and ordinary readiness limits.",
+      "factual_needs": [
+        "What distinguishes drilled practice, novice handling and experienced routine without assigning skill to a particular person?",
+        "How do carrying, repetitive friction, cold, sleep loss, food and fluid needs constrain sustained activity?"
+      ],
+      "applicability": ["training", "guard duty", "march", "combat", "recovery"],
+      "claim_refs": ["claim:activity-fluid-balance", "claim:static-repeated-skin-friction-can-cause-blistering", "claim:candidate-physiology-v3-shivering-thermogenesis", "claim:sweat-evaporation-reduces-surface-heat"],
+      "residual_needs": ["Qualitative training and readiness premises", "Sleep, load-carrying and group-rest relations"],
+      "code_owner_boundary": "No skill level, fatigue value, stamina, schedule or performance outcome follows."
+    },
+    {
+      "id": "formation_command_and_signals",
+      "scope": "How groups maintain contact, visibility, hearing, orders, handover, assembly and confusion in changing terrain and weather.",
+      "factual_needs": [
+        "What makes voice, visual and messenger signals more or less usable?",
+        "How can density, line of sight, noise and local leadership affect coordination without asserting a fixed doctrine?"
+      ],
+      "applicability": ["formation", "watch", "march", "ambush", "siege", "flight"],
+      "claim_refs": ["claim:sound-background-noise-masks-speech", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"],
+      "residual_needs": ["Period-compatible signalling and command practice", "Formation and cohesion under changing ground and visibility"],
+      "code_owner_boundary": "No order, allegiance, doctrine, morale, perception or group decision is supplied."
+    },
+    {
+      "id": "march_camp_scout_and_ambush",
+      "scope": "Movement, halts, camp routines, observation, concealment, traces, scouting and ambush conditions.",
+      "factual_needs": [
+        "What do ground, weather, daylight, sound, smoke, animals and traffic traces make easier or harder to notice and traverse?",
+        "What shelter, water, fuel, sanitation, guarding and resupply questions arise in a temporary camp?"
+      ],
+      "applicability": ["road", "forest", "field", "wetland", "riverbank", "winter travel"],
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-outdoors-clearing-and-trace-renewal", "claim:place-outdoors-cover-opening-and-work-visibility", "claim:foundations-earth-27-fog-visibility", "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"],
+      "residual_needs": ["Camp selection, scouting, concealment and trace-reading families", "Field sanitation and temporary-shelter premises"],
+      "code_owner_boundary": "No route, enemy presence, camp, hidden person, detection result or safe passage is inferred."
+    },
+    {
+      "id": "mounted_foot_and_ranged_movement",
+      "scope": "Qualitative differences among mounted, foot and ranged participants, including animal handling and terrain dependence.",
+      "factual_needs": [
+        "How do horse behaviour, harness, footing, forage, water, weather and threat response constrain mounted movement?",
+        "What material and environmental premises affect carrying, foot movement and projectile use without calculating a strike?"
+      ],
+      "applicability": ["cavalry", "infantry", "archery", "transport", "pursuit"],
+      "claim_refs": ["claim:environment-p1-horse-transport", "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight", "claim:transport-horse-sledge-equipment", "claim:static-horses-are-hindgut-fermenters", "claim:static-straw-is-a-traditional-horse-bedding-source"],
+      "residual_needs": ["Mounted and foot formation/use constraints", "Ranged-weapon handling, ammunition and weather premises", "Horse care under campaign conditions"],
+      "code_owner_boundary": "No horse, rider, harness, ammunition, control, speed, target or combat result is created."
+    },
+    {
+      "id": "supply_transport_and_crossings",
+      "scope": "Food, water, fodder, fuel, carts, sledges, boats, loads, river crossings and their practical limits.",
+      "factual_needs": [
+        "How do storage, spoilage, animal feed, weather, ground and load affect supply continuity?",
+        "What do water level, current, ice, landing edges, bridges, boats and temporary means imply qualitatively for movement and delay?"
+      ],
+      "applicability": ["march", "camp", "river crossing", "winter transport", "siege supply"],
+      "claim_refs": ["claim:transport-horse-sledge-equipment", "claim:transport-sledge-summer-cargo", "claim:transport-boat-cargo-dispatch", "claim:foundations-earth2-11-river-ice-jam-flow-obstruction", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:stored-grain-condition-depends-on-temperature-moisture"],
+      "residual_needs": ["Campaign provisioning and fodder families", "Crossing, bridge, ford and boat-use premises", "Load distribution and loss/delay relations"],
+      "code_owner_boundary": "No supplies, capacity, water state, crossing, route safety, transport asset or arrival result is asserted."
+    },
+    {
+      "id": "siege_city_defence_and_fire",
+      "scope": "Approaches, walls, gates, timber-earth structures, observation, fire, smoke, repair, evacuation and containment.",
+      "factual_needs": [
+        "What is historically compatible about timber-and-earth defensive construction and its exposure to water, soil and fire?",
+        "What qualitative effects can smoke, visibility, crowding, tools, water and local repair needs have without assuming a specific siege machine or plan?"
+      ],
+      "applicability": ["town wall", "gate", "street", "riverside defence", "fire response"],
+      "claim_refs": ["claim:civic-wood-earth-wall", "claim:civic-defence-log-courses", "claim:civic-defence-stake-support", "claim:population-material-wood-combustion", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "claim:water-can-cool-class-a-fire-fuel-and-flame"],
+      "residual_needs": ["Thirteenth-century Novgorod defence and siege material culture", "Fire spread, emergency movement and ordinary repair context", "Gate, wall, ditch and civic-defence operational families"],
+      "code_owner_boundary": "No fortification state, breach, fire, water, defender, attacker, evacuation or suppression outcome follows."
+    },
+    {
+      "id": "terrain_weather_daylight_and_environment",
+      "scope": "Ground, slope, vegetation, water, mud, snow, ice, wind, rain, fog, temperature, smoke and natural light as military environment.",
+      "factual_needs": [
+        "How do season and weather alter footing, sight, sound, wetness, cold, fire, smoke and work?",
+        "How do forest, field, bank, wetland, settlement and water edge create differing practical constraints?"
+      ],
+      "applicability": ["all military and civilian situations"],
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:foundations-earth-27-fog-visibility", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind", "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion"],
+      "residual_needs": ["Winter/cold, ground, daylight and natural-navigation composition", "Terrain-specific concealment, mobility and environmental hazards"],
+      "code_owner_boundary": "No weather, season, light level, terrain state, visibility range or traversal result is generated."
+    },
+    {
+      "id": "wounds_first_aid_and_evacuation",
+      "scope": "Injury mechanisms, observable red flags, immediate bounded aid, carrying, rest and the limits of diagnosis and treatment.",
+      "factual_needs": [
+        "What physical injury, bleeding, burn, cold-exposure, fracture and infection premises help distinguish a reasonable attempt from a guaranteed outcome?",
+        "What makes immediate care, moving a person, stopping work and seeking qualified help relevant without importing a modern medical system into 1230?"
+      ],
+      "applicability": ["battle", "accident", "camp", "aftermath", "civilian emergency"],
+      "claim_refs": ["claim:care-direct-pressure-bleeding", "claim:coagulation-reduces-blood-loss", "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it", "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes", "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help", "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"],
+      "residual_needs": ["Historical care roles and constraints", "Transport/evacuation and disability premises", "Broader wound, infection and recovery composition"],
+      "code_owner_boundary": "No injury, diagnosis, treatment resource, severity, survival, recovery, evacuation or body-state transition is decided here."
+    },
+    {
+      "id": "capture_flight_pursuit_and_spoils",
+      "scope": "Practical, legal, social and material premises around surrender, restraint, escape, pursuit, property, confiscation, captives and returns.",
+      "factual_needs": [
+        "What constraints of terrain, fatigue, visibility, social control and transport shape capture, escape and pursuit?",
+        "What historical and ordinary distinctions are needed before discussing taken goods, prisoners, compensation or return to civilian life?"
+      ],
+      "applicability": ["battle", "raid", "road", "town", "aftermath"],
+      "claim_refs": ["claim:candidate-v7-npl-1223-colyvan-captives-and-gold", "claim:candidate-v7-npl-1222-kesi-campaign", "claim:place-outdoors-cover-opening-and-work-visibility", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "residual_needs": ["Period-compatible captivity, ransom, spoils, restraint and return context", "Flight/pursuit practical premises across terrain and weather"],
+      "code_owner_boundary": "No crime, title transfer, captivity, authority, prisoner, pursuit result or entitlement is inferred."
+    },
+    {
+      "id": "civilian_and_environmental_aftermath",
+      "scope": "Effects on households, dwellings, food, animals, water, waste, fire, displacement, repair, work, fear and social recovery.",
+      "factual_needs": [
+        "What ordinary household and environmental needs become salient after disruption without assuming that violence occurred?",
+        "How do damaged shelter, contaminated food or water, lost labour, displaced animals, smoke and repair work interact qualitatively?"
+      ],
+      "applicability": ["village", "urban yard", "market", "field", "riverbank", "post-conflict recovery"],
+      "claim_refs": ["claim:ordinary-life-household-needs-heat-food-storage", "claim:ordinary-life-household-repairs-compete-with-new-goods", "claim:work-waste-context", "claim:place-outdoors-clearing-and-trace-renewal", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "residual_needs": ["Displacement, damaged-housing, livestock-loss and civilian recovery families", "Civilian social and legal aftermath without treating an episode as a universal rule"],
+      "code_owner_boundary": "No destruction, displaced person, loss, contamination, repair, claim, ownership or recovery outcome is created."
+    }
+  ],
+  "sampling_policy": {
+    "batch_size": 100,
+    "stratified_cases": 75,
+    "free_adversarial_cases": 25,
+    "stratified_rule": "The 75 cases draw from rotating factual families and cross-cutting axes; they are not a fixed per-family quota or a permanent examination.",
+    "free_rule": "The 25 cases have no supplied primary domain. Their generator may combine unusual places, people, activities, weather, time, maintenance and civilian consequences to expose omissions outside the current map.",
+    "axes_to_rotate_and_expand": ["participant and status", "place and terrain", "season", "weather", "daylight", "activity", "force context", "equipment and its condition", "supply state", "injury or care context", "civilian presence", "maintenance and aftermath"],
+    "independence": "Blind situation generators receive no WK answers. Separate WK-only readers receive frozen inputs and reconstruct only from WK. A significant unsupported premise is a knowledge gap; generators and readers must not repair it with invented mechanics or current-world facts.",
+    "lifecycle": ["Generate and validate input-only probes", "Freeze the probe batch", "Run independent WK-only reconstructions", "Record substantial unsupported premises as gaps", "Add and independently review static factual claims", "Replay only known gaps against the updated corpus"],
+    "no_live_gameplay": true
+  },
+  "not_a_completeness_verdict": "This open map guides continuing static expansion. Coverage of a batch cannot prove complete military reality or gameplay saturation."
+}

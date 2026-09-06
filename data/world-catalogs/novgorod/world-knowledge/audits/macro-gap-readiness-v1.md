@@ -457,3 +457,11 @@ military/environment/logistics/aftermath probes without reading WK. They are
 frozen inputs only: separate WK-only reconstruction, gap triage and any needed
 source work remain pending. Cases are probes, not a closed military taxonomy,
 combat-mechanics contract or live gameplay campaign.
+
+Contract §0.5 and a new open military-first cartography make this method
+machine-readable without creating a runtime owner. Its 12 families retain
+explicit gaps and 58 approved references rather than declaring coverage.
+Independent Contract Auditor returned `PASS_WITH_NOTES`; corpus/RAG/docs,
+54 knowledge-source tests and 3 cartography tests pass. The remaining note is
+methodological: frozen input/review artifacts, not the unit test, demonstrate
+actual generator/reader independence and rotating strata.

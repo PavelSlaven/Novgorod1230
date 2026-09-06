@@ -135,6 +135,11 @@ place-by-conditions reconstruction checks. It does not create location
 presence, an object whitelist, a materializer or gameplay activation.
 Structural map validation is not evidence of environmental completeness.
 
+World Knowledge §0.5 adds an open military-first factual need-map and static
+75 rotating + 25 blind-free probe method. It does not define combat mechanics,
+a military scenario whitelist, force state, equipment presence or gameplay
+activation; separate WK-only reconstruction exposes missing premises.
+
 ## 7. Domain guides and legacy/supporting documents
 
 The following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.

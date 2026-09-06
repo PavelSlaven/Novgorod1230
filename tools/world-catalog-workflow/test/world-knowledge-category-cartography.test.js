@@ -43,6 +43,30 @@ test('place-first need map validates open composition and support, not readiness
     .includes('PLACE_CARTOGRAPHY_COMPOSITION_UNMAPPED:nonexistent-environment'));
 });
 
+test('military-first map stays open, static and linked only to compiled claims', async () => {
+  const [cartography, pack] = await Promise.all([
+    json(new URL('military-first-cartography.json', AUTHORING)),
+    loadWorldKnowledgeAuthoringInput(fileURLToPath(AUTHORING))
+  ]);
+  assert.equal(cartography.schema, 'world_knowledge_military_first_cartography_v1');
+  assert.ok(cartography.factual_families.length > 0);
+  assert.equal(new Set(cartography.factual_families.map(({ id }) => id)).size,
+    cartography.factual_families.length);
+  const claimRefs = new Set(pack.claims.map(({ claim_ref }) => claim_ref));
+  for (const family of cartography.factual_families) {
+    assert.ok(family.factual_needs.length > 0);
+    assert.ok(family.residual_needs.length > 0);
+    assert.ok(family.code_owner_boundary);
+    for (const ref of family.claim_refs) assert.ok(claimRefs.has(ref), ref);
+  }
+  assert.equal(cartography.sampling_policy.stratified_cases
+    + cartography.sampling_policy.free_adversarial_cases,
+    cartography.sampling_policy.batch_size);
+  assert.ok(cartography.sampling_policy.free_adversarial_cases
+    >= cartography.sampling_policy.batch_size / 4);
+  assert.equal(cartography.sampling_policy.no_live_gameplay, true);
+});
+
 test('production category cartography covers real profiles, locations, and claims without declaring completeness', async () => {
   const [cartography, pack, locations] = await Promise.all([
     json(CARTOGRAPHY), loadWorldKnowledgeAuthoringInput(fileURLToPath(AUTHORING)),

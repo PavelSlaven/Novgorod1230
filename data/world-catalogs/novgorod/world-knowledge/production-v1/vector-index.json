@@ -20758,6 +20758,104 @@
       "retrieval_text": "Ответ на повреждение ткани Повреждение ткани запускает воспалительный и восстановительный ответ. Повреждение ткани может запустить воспаление и восстановительный ответ; это не первая помощь."
     },
     {
+      "entry_ref": "wk-retrieval:claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard:en",
+      "target_ref": "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wax and balance observation Observable wax qualities and repeatable checks of an available balance. An available balance depends on support, suspension, arms, pans, and load placement to give repeatable comparisons. Rechecking can reveal a handling or condition concern, not a defect, fault, official standard, numerical error, or transaction result. wax impurities inspect wax balance repeats weigh again scale gives different result balance pans weigh goods again"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard:ru",
+      "target_ref": "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Осмотр воска и весов Наблюдаемые признаки воска и повторяемая проверка доступных весов. Доступные весы зависят от опоры, подвеса, плеч, чаш и размещения груза, чтобы давать повторяемое сравнение. Повторная проверка может показать повод проверить обращение или состояние, но не называет дефект, виновного, эталон, числовую ошибку или итог сделки. воск с примесями проверить кусок воска весы качаются повторно взвесить весы дают разный результат чаши весов повторно взвесить товар"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement:en",
+      "target_ref": "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Partial payment and linear goods comparison Cautious handling of payment-metal portions and shared linear comparison without deciding price or official measure. Existing payment-metal portions can be kept separate and compared by visible condition and available shared weighing. This establishes no composition, value, coin authenticity, exchange rate, consent, or settlement. partial silver payment measure cloth measure rope board length doubtful payment metal split payment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement:ru",
+      "target_ref": "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Частичный платёж и линейное сравнение товара Осторожная работа с частями платёжного металла и общим линейным ориентиром без установления цены или меры. Части уже имеющегося платёжного металла можно держать раздельно и сопоставить по видимому состоянию и доступному общему взвешиванию. Это не устанавливает состав, ценность, подлинность монеты, курс, согласие или итог расчёта. часть серебра в уплату отмерить сукно мерить верёвку доска длиннее сомнительный кусок металла разделить платёж"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict:en",
+      "target_ref": "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fresh fish and seed-grain condition Qualitative limits for fresh food and separately retained seed grain. Time and temperature affect cautious handling of existing fresh fish; sensory signs can warrant further checking or caution. They do not alone establish elapsed time, spoilage, pathogen, safety, or food outcome. fresh fish travel fish odor reserve seed grain store seed separately fish delayed in travel fish freshness fish smell fish warm"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict:ru",
+      "target_ref": "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Свежая рыба и посевное зерно Качественные пределы свежего пищевого товара и отдельно сохранённого посевного зерна. Время и температура влияют на осторожное обращение с уже имеющейся свежей рыбой; заметные признаки могут потребовать дополнительной проверки или большей осторожности. Они сами по себе не устанавливают время, порчу, возбудителя, безопасность или исход еды. свежая рыба в дороге рыба пахнет отложить зерно на посев посевное зерно отдельно рыба после задержки свежесть рыбы рыба в тепле"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference:en",
+      "target_ref": "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Partial payment and linear goods comparison Cautious handling of payment-metal portions and shared linear comparison without deciding price or official measure. Existing cloth, rope, boards, or other linear goods can be repeatedly placed against a shared visible reference with aligned ends. This gives relative length, not an official measure, exact quantity, price, or acceptance. partial silver payment measure cloth measure rope board length compare board lengths"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference:ru",
+      "target_ref": "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Частичный платёж и линейное сравнение товара Осторожная работа с частями платёжного металла и общим линейным ориентиром без установления цены или меры. Ткань, верёвку, доску или иной уже имеющийся линейный товар можно повторно приложить к общему видимому ориентиру, совместив концы. Это сообщает наблюдаемую относительную длину, но не создаёт официальную меру, точное число, цену или принятие. часть серебра в уплату отмерить сукно мерить верёвку доска длиннее сравнить длину досок"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited:en",
+      "target_ref": "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Lost pack-animal response Initial search from known signs and attendance to remaining cargo without a recovery guarantee. When an established pack animal is no longer controlled, people can start from last known signs and attend remaining cargo where possible. Weather, surface, and visibility may limit signs; this creates no animal, route, blame, recovery, or outcome. horse wandered away lost pack animal search tracks remaining cargo search last tracks remaining pack cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited:ru",
+      "target_ref": "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Потеря вьючного животного Начальный поиск по известным следам и охрана оставшегося груза без гарантии находки. Если уже известное вьючное животное перестало быть под контролем, поиск можно начать от последних известных следов, а оставшийся груз — по возможности не оставлять без внимания. Погода, поверхность и видимость могут ограничить следы; это не создаёт животное, маршрут, виновного, находку или исход. лошадь ушла с дороги пропал вьюк искать животное по следам оставшийся груз искать по последним следам оставшийся вьюк"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use:en",
+      "target_ref": "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fresh fish and seed-grain condition Qualitative limits for fresh food and separately retained seed grain. Seed grain can be reserved and protected separately from other household grain, so food, sale, and planting needs can compete. This chooses no household use and predicts no viability, yield, hunger, or exchange. fresh fish travel fish odor reserve seed grain store seed separately keep seed grain separate sell seed grain save grain for spring"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use:ru",
+      "target_ref": "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Свежая рыба и посевное зерно Качественные пределы свежего пищевого товара и отдельно сохранённого посевного зерна. Отобранное на будущий посев зерно можно хранить и защищать отдельно от другого хозяйственного зерна; поэтому еда, продажа и посев могут конкурировать. Это не выбирает семейное решение и не предсказывает всхожесть, урожай, голод или обмен. свежая рыба в дороге рыба пахнет отложить зерно на посев посевное зерно отдельно зерно на посев отдельно продать посевное зерно сберечь зерно до весны"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits:en",
+      "target_ref": "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wax and balance observation Observable wax qualities and repeatable checks of an available balance. Observable purity, colour, and inclusions in existing beeswax can support cautious comparison of a sample with accessible lot parts. A sample proves neither every piece nor intent, price, acceptance, or adulteration. wax impurities inspect wax balance repeats weigh again wax colour inspect wax lot"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits:ru",
+      "target_ref": "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Осмотр воска и весов Наблюдаемые признаки воска и повторяемая проверка доступных весов. Видимые чистота, цвет и включения уже имеющегося воска могут помочь осторожно сопоставить образец с доступной частью партии. Образец не доказывает состав или состояние каждого куска, намерение продавца, цену, приёмку или подделку. воск с примесями проверить кусок воска весы качаются повторно взвесить примеси в воске цвет воска проверить партию воска"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:transport-boat-cargo-dispatch:en",
       "target_ref": "claim:transport-boat-cargo-dispatch",
       "domain": "material_culture",
@@ -25322,6 +25420,20 @@
       "retrieval_text": "Ответ на повреждение ткани Повреждение ткани запускает воспалительный и восстановительный ответ."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:trade-economy-fresh-food-and-seed-condition:en",
+      "target_ref": "wk:biology_physiology:trade-economy-fresh-food-and-seed-condition",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Fresh fish and seed-grain condition Qualitative limits for fresh food and separately retained seed grain. fresh fish travel fish odor reserve seed grain store seed separately"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:trade-economy-fresh-food-and-seed-condition:ru",
+      "target_ref": "wk:biology_physiology:trade-economy-fresh-food-and-seed-condition",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Свежая рыба и посевное зерно Качественные пределы свежего пищевого товара и отдельно сохранённого посевного зерна. свежая рыба в дороге рыба пахнет отложить зерно на посев посевное зерно отдельно"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:trophic-levels:en",
       "target_ref": "wk:biology_physiology:trophic-levels",
       "domain": "biology_physiology",
@@ -26944,6 +27056,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Пахота"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:trade-economy-wax-and-balance-observation:en",
+      "target_ref": "wk:craft_technology:trade-economy-wax-and-balance-observation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wax and balance observation Observable wax qualities and repeatable checks of an available balance. wax impurities inspect wax balance repeats weigh again"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:trade-economy-wax-and-balance-observation:ru",
+      "target_ref": "wk:craft_technology:trade-economy-wax-and-balance-observation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Осмотр воска и весов Наблюдаемые признаки воска и повторяемая проверка доступных весов. воск с примесями проверить кусок воска весы качаются повторно взвесить"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:tree-bort-practice:en",
@@ -33190,6 +33316,20 @@
       "retrieval_text": "Снижение личной отдачи в совместной работе Ограниченная качественная предпосылка; не состояние конкретного actor."
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_behavior:trade-economy-lost-pack-animal-response:en",
+      "target_ref": "wk:social_behavior:trade-economy-lost-pack-animal-response",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Lost pack-animal response Initial search from known signs and attendance to remaining cargo without a recovery guarantee. horse wandered away lost pack animal search tracks remaining cargo"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:trade-economy-lost-pack-animal-response:ru",
+      "target_ref": "wk:social_behavior:trade-economy-lost-pack-animal-response",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Потеря вьючного животного Начальный поиск по известным следам и охрана оставшегося груза без гарантии находки. лошадь ушла с дороги пропал вьюк искать животное по следам оставшийся груз"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_law_economy:accounting-amount:en",
       "target_ref": "wk:social_law_economy:accounting-amount",
       "domain": "social_law_economy",
@@ -34616,6 +34756,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Чужие товары или средства Товары или средства другой стороны чужой товар"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits:en",
+      "target_ref": "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Partial payment and linear goods comparison Cautious handling of payment-metal portions and shared linear comparison without deciding price or official measure. partial silver payment measure cloth measure rope board length"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits:ru",
+      "target_ref": "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Частичный платёж и линейное сравнение товара Осторожная работа с частями платёжного металла и общим линейным ориентиром без установления цены или меры. часть серебра в уплату отмерить сукно мерить верёвку доска длиннее"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:transaction-obligation:en",

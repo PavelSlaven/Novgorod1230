@@ -1,0 +1,605 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "claim_digest": "f5a8da92cf2d5c7c19dd994c891a6ba6fd18889a72be4f9303bbe053e3949fb0",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-place"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no local drainage, terrain state, water, route, resource or outcome is asserted. USDA citation was scope-checked from catalog metadata; PDF was unavailable in this browser session."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "claim_digest": "840c79e2adc40359faaaf7ef04770f0761318554429ca6e9e41d3b338862e0f2",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-place"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no local drainage, terrain state, water, route, resource or outcome is asserted. USDA citation was scope-checked from catalog metadata; PDF was unavailable in this browser session."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "claim_digest": "6608c7b0840e0cbeb909f109fe63a1f0bf88e4dabcd14ad6670ae62ff7ce166a",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-place"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no local drainage, terrain state, water, route, resource or outcome is asserted. USDA citation was scope-checked from catalog metadata; PDF was unavailable in this browser session."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "claim_digest": "3821c83e3e8e6bdab86e8b1d9ce0ff88e74c5d1a5b5f35630f48f7667bf042f0",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-place"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no local drainage, terrain state, water, route, resource or outcome is asserted. USDA citation was scope-checked from catalog metadata; PDF was unavailable in this browser session."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "claim_digest": "0b15bbc3c01fb040c7328f9ce171966eabbf69a85c60314607cc547a4ba11c7d",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-place"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal material relation only; no local drainage, terrain state, water, route, resource or outcome is asserted. USDA citation was scope-checked from catalog metadata; PDF was unavailable in this browser session."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "claim_digest": "9f419e9058d8f6b56a055a944dc155be7adaf2a1a8c24b5650287738d9f11375",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-rural"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General husbandry/storage dependency; FAO source is current guidance, not evidence of a 1230 household. No household, animal, stock, ownership, access, yield or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "claim_digest": "d80fc03e255b656cc98456dedf05f339f9ef970d0313237664ae1501e0166874",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-rural"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General husbandry/storage dependency; FAO source is current guidance, not evidence of a 1230 household. No household, animal, stock, ownership, access, yield or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "claim_digest": "0f85dab5ae92b5f12663c9f7e3fd8bfaaaf466f934475c18c2bd87edd3b5d062",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-rural"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General husbandry/storage dependency; FAO source is current guidance, not evidence of a 1230 household. No household, animal, stock, ownership, access, yield or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "claim_digest": "9eb0f04e95ef91c090d2b210d7e77297520221f90f30caa9e12cf6ad73cd895f",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-rural"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General husbandry/storage dependency; FAO source is current guidance, not evidence of a 1230 household. No household, animal, stock, ownership, access, yield or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "claim_digest": "178a0dd22a532ad1bb674fb6cff83c49c522e9592b069402b2fb5419f1d710f3",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-rural"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General husbandry/storage dependency; FAO source is current guidance, not evidence of a 1230 household. No household, animal, stock, ownership, access, yield or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "claim_digest": "19aa2e0650e54ea3b332aeaf6d75b6d1f1b8c2855c089e117fc5414c233f6b95",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-work"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General interference relation only; OSHA material is current safety guidance, not a 1230 worksite rule. No equipment, worksite, procedure or result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "claim_digest": "a33c95b9dcd0a3f05c6aa0aa4c4becb22b8dc6979d4c44143401e672a50c3322",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-work"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General interference relation only; OSHA material is current safety guidance, not a 1230 worksite rule. No equipment, worksite, procedure or result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "claim_digest": "0721d0a850938b380bb793401cfcfa5f229a57334044955d9c1dff080f305a47",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-work"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General interference relation only; OSHA material is current safety guidance, not a 1230 worksite rule. No equipment, worksite, procedure or result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "claim_digest": "d3b57368c9d2a79a46a657d1924bc94a6084e02d4034fcfc238eb688b4150fc2",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-work"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General interference relation only; OSHA material is current safety guidance, not a 1230 worksite rule. No equipment, worksite, procedure or result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "claim_digest": "54b75a889d6f906375f3b34902179e2b080a229443260fb13181312dd735907e",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-work"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General interference relation only; OSHA material is current safety guidance, not a 1230 worksite rule. No equipment, worksite, procedure or result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "claim_digest": "09260d92009672aca7448a2b2b0266827b133ea7b4e0c08df8c895e0c2f47018",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-travel"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal travel dependency only; NPS URL returned 404 in this review. Claim is an honest editorial relation, not proof of a road, guide, safe passage, distance or arrival."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "claim_digest": "4c46eb54c37d611a37b89a58dfb912bdb30c74e73450758a478b3d61f9d8e976",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-travel"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal travel dependency only; NPS URL returned 404 in this review. Claim is an honest editorial relation, not proof of a road, guide, safe passage, distance or arrival."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "claim_digest": "f3c48276b4cf3ed5b2fb22138a3003e8a30c98257384539b57420f8736008bb7",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-travel"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal travel dependency only; NPS URL returned 404 in this review. Claim is an honest editorial relation, not proof of a road, guide, safe passage, distance or arrival."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "claim_digest": "d026ad29319de268e531fbc7b648f7a280e9827feca79ed6dd9d344b444c348f",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-travel"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal travel dependency only; NPS URL returned 404 in this review. Claim is an honest editorial relation, not proof of a road, guide, safe passage, distance or arrival."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "claim_digest": "b179b82810761c2f87a8d58de424ce4749491199621bce86f6f0592725c65a39",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-travel"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Universal travel dependency only; NPS URL returned 404 in this review. Claim is an honest editorial relation, not proof of a road, guide, safe passage, distance or arrival."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "claim_digest": "bb62a49cbda4baf56006899969807eecafd610ad5fd203ccdbe3d4a9bbd04dd7",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-military"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial composition of established conditions only; not evidence of a 1230 force or doctrine. Creates no people, command, equipment, conflict or combat outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "claim_digest": "7d11524816681fadc84dc63a026fe364255b33a17f6cd5cfda31415943f8dfb2",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-military"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial composition of established conditions only; not evidence of a 1230 force or doctrine. Creates no people, command, equipment, conflict or combat outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "claim_digest": "ec65974867da0563f6fec25d81c722c4ce8dbc0344648b28d757a94686dac27d",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-military"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial composition of established conditions only; not evidence of a 1230 force or doctrine. Creates no people, command, equipment, conflict or combat outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "claim_digest": "4d1d6414b3bb18fcb2d4bce25b35b1dbe854c584802c8dc79e49d704bfcb29f7",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-military"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial composition of established conditions only; not evidence of a 1230 force or doctrine. Creates no people, command, equipment, conflict or combat outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "claim_digest": "dfa89da8938ce11ed9a086d5285cffa79bf97c005bb9a33b42f510972ea8e5a2",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-military"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial composition of established conditions only; not evidence of a 1230 force or doctrine. Creates no people, command, equipment, conflict or combat outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "claim_digest": "ceaf37026e0196f854db8313b8a27104e3bc41737a57d17c53bf41e79dbe04ce",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-social"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial social boundary only; no literacy, apprenticeship, permission, authority, ownership or legal outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "claim_digest": "d95bc1fde522c7fbba27d0a14c9f8bc6fb124d2a95f735adde60293442bdb978",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-social"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial social boundary only; no literacy, apprenticeship, permission, authority, ownership or legal outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "claim_digest": "55610d637da06fde03e269883728ce1845fd3f2316039964721d175a5211de11",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-social"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial social boundary only; no literacy, apprenticeship, permission, authority, ownership or legal outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "claim_digest": "cea36d714cdbfca81fa8970d344f8b71c99ad2b9e1b5c475ce5974c7531f6d32",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-social"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial social boundary only; no literacy, apprenticeship, permission, authority, ownership or legal outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "claim_digest": "ea093fb388173018285482617d6e3e69a7bcd27ba72d33ee1eeac61d33c80f00",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-social"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial social boundary only; no literacy, apprenticeship, permission, authority, ownership or legal outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "claim_digest": "84c27f6c49402b3447a10b9a573356fa80cc4d709b8b3fb360f93f3647f0f7b4",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-care"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Current CDC hygiene guidance supports generic cleanliness context, not medieval treatment. No illness, contamination, helper, diagnosis, recovery or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "claim_digest": "2247ec3676b74c2964659a7f7e99a991e4c23c942df6073648b451ab6793d52b",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-care"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Current CDC hygiene guidance supports generic cleanliness context, not medieval treatment. No illness, contamination, helper, diagnosis, recovery or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "claim_digest": "20bd688ee673ef1ce9d442b0c116edecacd1590dca7a6f3f67c38c6cc032ad8d",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-care"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Current CDC hygiene guidance supports generic cleanliness context, not medieval treatment. No illness, contamination, helper, diagnosis, recovery or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "claim_digest": "d487d569450ba1df8e289b8e5ffa61584d0022f0f31a05e95846138b7e24286d",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-care"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Current CDC hygiene guidance supports generic cleanliness context, not medieval treatment. No illness, contamination, helper, diagnosis, recovery or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "claim_digest": "41cc5291f51a00e143f33350dbd6ef80e239910a7fe6dd951834588b9ce97e33",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-care"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Current CDC hygiene guidance supports generic cleanliness context, not medieval treatment. No illness, contamination, helper, diagnosis, recovery or outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "claim_digest": "419ba1947ae42e5db9eb279214bcf26b4ab8bf9302269179eb72f66f1ce6382c",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General established-input dependency; FAO guidance is not 1230 evidence. No animal, food, product, ration, yield, safety or care result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "claim_digest": "02198d19a80f7d036c39388d0fb1bae27b15a0fb5144ef37afb12a87d31031a1",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General established-input dependency; FAO guidance is not 1230 evidence. No animal, food, product, ration, yield, safety or care result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "claim_digest": "7392256ed0f347ae3ec6e0941c4b950056ee274eb0a867bf5e68d2580e126ca2",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General established-input dependency; FAO guidance is not 1230 evidence. No animal, food, product, ration, yield, safety or care result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "claim_digest": "890f140d4f2e33acdcf22d647e010dfe296de115b825fc154eccc42abdfb1640",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General established-input dependency; FAO guidance is not 1230 evidence. No animal, food, product, ration, yield, safety or care result is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "claim_digest": "a1cf9905583d2a66c0fe6b0df3e66fb59acc389d63eae3389699b4311e8b305f",
+      "candidate_ref": "git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json#claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "auditor_ref": "/root/reality_claim_verifier",
+      "independence_basis": "Independent review of frozen candidate RU/EN localization, source scope and editorial boundary; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_ref": "verification/reality-first-static-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General established-input dependency; FAO guidance is not 1230 evidence. No animal, food, product, ration, yield, safety or care result is asserted."
+    }
+  ]
+}

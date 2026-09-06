@@ -1,0 +1,205 @@
+{
+  "batch": "reality-batch-02",
+  "reviewer": "/root/reality_clean_cross_triage",
+  "corpus_basis": {
+    "commit": "cdee6e195c54c584f50e30bcc5f1b30ab4841dff",
+    "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json"
+  },
+  "method": "Independent WK-only cross-triage of the 18 cases marked status=gap in reality-batch-02 review-a, checked against the same production runtime bundle and the full 100-case review summary. A covered composition needs only enough reusable premises for a bounded, conditional response; it need not establish an exact technique, local state, species, diagnosis, price, law, or outcome. A genuine gap is reserved for an absent central reusable factual premise, and out_of_scope_state for a requested local verdict that WK must not manufacture.",
+  "triage": [
+    {
+      "case_id": "reality2-core-001",
+      "original_gap": "Нет центральной premise о приготовлении гречки, признаках достатка воды или связи их с пригоранием.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Испарение воды уже поддерживает наблюдение за остатком жидкости и осторожную повторную пробу после малого изменения жара либо воды. Точное состояние гречки, момент пригорания и удачный результат остаются локальными, поэтому отдельная premise о гречке не нужна.",
+      "claim_refs": [
+        "claim:population-physics-evaporation-below-boiling"
+      ]
+    },
+    {
+      "case_id": "reality2-core-003",
+      "original_gap": "Нет central premise о временной правке расшатанного деревянного соединения клином либо обвязкой.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Runtime прямо допускает временный клин, распорку или посадку для ограничения видимого люфта при условии подгонки и нагрузки. Это покрывает осмотр и временное снятие нагрузки без обещания прочности табурета или постоянного ремонта.",
+      "claim_refs": [
+        "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+        "claim:population-joining-bond-weak-link"
+      ]
+    },
+    {
+      "case_id": "reality2-core-008",
+      "original_gap": "Нет центральной premise о бытовом предотвращении замерзания ведра и сравнительном эффекте укрытия.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Замерзание — известный переход воды; защищённое размещение и укрытие являются ограниченной пробой уменьшить воздействие, а не утверждением, что ведро останется жидким. Срок, температура и исход конкретной ночи — local state.",
+      "claim_refs": [
+        "claim:population-physics-freezing-condensation-energy",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ]
+    },
+    {
+      "case_id": "reality2-core-010",
+      "original_gap": "Нет central premise о выборе зелёной ветви и её пригодности как временного штифта.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Свойства древесины зависят от направления, породы и влаги, а трещины уменьшают целостность. Поэтому можно выбрать визуально прямую неповреждённую ветвь и пробно проверить временный штифт без вывода о породе, несущей способности или долговечности.",
+      "claim_refs": [
+        "claim:wood-anisotropy-moisture",
+        "claim:foundations-mat-02-wood-drying-crack-strength"
+      ]
+    },
+    {
+      "case_id": "reality2-core-014",
+      "original_gap": "Нет центральной premise о привлечении мух мясом либо о действенности обычного накрытия против него.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Для открыто оставленной пищи runtime уже требует учитывать насекомых и повторное загрязнение. Отделить и прикрыть данное мясо — bounded precaution; ни наличие мух, ни безопасность мяса, ни результат накрытия не объявляются.",
+      "claim_refs": [
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:food-preservation-qualitative"
+      ]
+    },
+    {
+      "case_id": "reality2-core-017",
+      "original_gap": "Нет central premise о безопасном облегчении судороги кисти или признаках её ухудшения.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Скелетные мышцы обеспечивают движение сокращением и расслаблением, а отдых и тепло допустимы как contextual support без лечения. Этого хватает прекратить хват и осторожно вернуть движение; причина судороги, тяжесть и дальнейший исход не выводятся.",
+      "claim_refs": [
+        "claim:foundations-life-18-muscle-movement",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+      ]
+    },
+    {
+      "case_id": "reality2-core-020",
+      "original_gap": "Нет центральной premise о морозовом повреждении ростков или об эффекте укрытия.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Runtime прямо говорит, что временное укрытие до замерзания может удерживать местное тепло без гарантии защиты, а уязвимость зависит от растения и стадии. Это полностью покрывает осторожное укрытие без вывода о выживании гряды.",
+      "claim_refs": [
+        "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+        "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development"
+      ]
+    },
+    {
+      "case_id": "reality2-core-021",
+      "original_gap": "Нет central premise о временном раскреплении накренившегося забора и удержании столба в мокром грунте.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Временная распорка уже может ограничивать люфт, а мокрый грунт способен ухудшать работу под нагрузкой. Поэтому снять нагрузку, подпереть и осмотреть основание можно без утверждения, что столб удержится или что известна причина наклона.",
+      "claim_refs": [
+        "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ]
+    },
+    {
+      "case_id": "reality2-core-026",
+      "original_gap": "Нет центральной premise о влиянии удержанного пара на корку хлеба.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Испарение воды поддерживает открытое остывание как наблюдаемый процесс; хранение не обещает безопасности или качества. Выбор решётки вместо плотного накрытия — case-specific техника, а не отсутствующая reusable factual family; корка конкретной буханки остаётся неизвестной.",
+      "claim_refs": [
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:food-preservation-qualitative"
+      ]
+    },
+    {
+      "case_id": "reality2-core-027",
+      "original_gap": "Нет центральной premise о хранении лука, прорастании и влиянии сортировки на порчу.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Здесь не нужен verdict о порче или сроке: заданные ростки и мягкость позволяют отделить наблюдаемо отличающиеся луковицы и оставить остальные для повторного осмотра. Общая premise о защите хранимой пищи от потерь достаточна для такого bounded sorting.",
+      "claim_refs": [
+        "claim:food-preservation-qualitative",
+        "claim:ordinary-life-household-needs-heat-food-storage"
+      ]
+    },
+    {
+      "case_id": "reality2-core-029",
+      "original_gap": "Нет центральной premise о сцеплении репьёв с шерстью и безопасном способе их снятия.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Шерстяная ткань и изменение формы материала под нагрузкой уже известны. Можно придержать ткань и снимать видимые зацепы по одному, затем осмотреть волокна; требовать отдельную premise о каждом репье означало бы превратить частную технику в ложный reusable gap.",
+      "claim_refs": [
+        "claim:clothing-wool",
+        "claim:population-physics-load-deformation"
+      ]
+    },
+    {
+      "case_id": "reality2-core-033",
+      "original_gap": "Нет центральной premise о безопасном согревании онемевших человеческих стоп и признаках холодовой травмы.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Человеческая терморегуляция зависит от теплообмена, а при наличии безопасности отдых и тепло — contextual support. Поэтому допустимо убрать воздействие холода и наблюдать чувство и боль без назначения способа лечения, диагноза холодовой травмы или исхода.",
+      "claim_refs": [
+        "claim:human-thermoregulation-depends-on-heat-exchange",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+      ]
+    },
+    {
+      "case_id": "reality2-core-035",
+      "original_gap": "Нет центральной premise о влиянии холода или мягкого нагрева на гибкость кожаного ремня.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Наличное кожаное снаряжение можно осмотреть до применения, а результат деформации зависит от материала и нагрузки. Медленная проба без рывка и отказ при видимой трещине — достаточный bounded response; температура, выделка и успешное размягчение ремня остаются local state.",
+      "claim_refs": [
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+        "claim:population-physics-load-deformation"
+      ]
+    },
+    {
+      "case_id": "reality2-core-038",
+      "original_gap": "Нет центральной premise о действии уксуса на минеральный налёт в сосуде.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Runtime допускает неполную реакцию слабой кислоты и основания, поэтому малая обратимая проба и последующее ополаскивание являются ограниченным способом наблюдать данный налёт. Состав налёта, сила уксуса и результат очистки не заданы; отдельный recipe не нужен.",
+      "claim_refs": [
+        "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization"
+      ]
+    },
+    {
+      "case_id": "reality2-core-039",
+      "original_gap": "Нет central premise о плесени на хлебе, её переносе крошками или обращении с соседним запасом.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Видимо затронутую пищу можно отделить, а защита от повторного загрязнения важна без вывода о безопасности партии. Убрать отдельную буханку и не разносить крошки — bounded handling, не диагноз плесени, токсина или соседнего хлеба.",
+      "claim_refs": [
+        "claim:food-preservation-qualitative",
+        "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material"
+      ]
+    },
+    {
+      "case_id": "reality2-core-041",
+      "original_gap": "Нет центральной premise о безопасной поддержке согнутой бобовой лозы и её восстановлении.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Устойчивость тела на опоре зависит от положения центра тяжести, а рост растения не гарантирован. Ненагруженная опора и свободная подвязка могут ограничить дальнейший наклон, не объявляя восстановление лозы, её вид или урожай.",
+      "claim_refs": [
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ]
+    },
+    {
+      "case_id": "reality2-core-043",
+      "original_gap": "Нет центральной premise о влиянии положения и подстилки на комфорт кашляющего человека.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Кашель может быть рефлексом очищения дыхательных путей и не даёт диагноза; жилое место допускает настилы и подстилки. Изменить положение для удобства, обеспечить воздух и наблюдать — bounded comfort response, не лечение или вывод о причине кашля.",
+      "claim_refs": [
+        "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+        "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually"
+      ]
+    },
+    {
+      "case_id": "reality2-core-047",
+      "original_gap": "Нет central premise о раскладке и вязке длинного шеста на санях, предотвращающей качание.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Runtime уже прямо покрывает осмотр укладки узла, удержание натяжения под нагрузкой и освобождение после снятия нагрузки. Закрепить длинный груз в разнесённых точках и проверить до движения — bounded composition без расчёта прочности, маршрута или безопасного исхода.",
+      "claim_refs": [
+        "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+        "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+      ]
+    }
+  ],
+  "summary": {
+    "all_cases": 100,
+    "review_a_status_counts": {
+      "covered": 32,
+      "gap": 18
+    },
+    "review_b_status_counts": {
+      "covered": 50
+    },
+    "flagged": 18,
+    "genuine_gap": 0,
+    "covered_composable": 18,
+    "out_of_scope_state": 0,
+    "grouped_families": []
+  }
+}

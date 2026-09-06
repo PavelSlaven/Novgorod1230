@@ -208,6 +208,8 @@
     "macro-batch14-context-v1.json",
     "verification-macro-batch14-context-v1.json",
     "macro-batch14-practical-v1.json",
-    "verification-macro-batch14-practical-v1.json"
+    "verification-macro-batch14-practical-v1.json",
+    "macro-batch17-gap-closure-v1.json",
+    "verification-macro-batch17-gap-closure-v1.json"
   ]
 }

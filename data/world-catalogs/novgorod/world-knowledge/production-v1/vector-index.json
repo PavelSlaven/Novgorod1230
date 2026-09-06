@@ -10174,6 +10174,62 @@
       "retrieval_text": "проверка взвешивания на торгу Редакторская premise о повторяемом общем сравнении при споре о весе. Когда при продаже на вес уже возникло расхождение, люди могут повторить общее наблюдаемое сравнение на доступных весах с признанным или согласованным способом, прежде чем решать, как поступить. Это не называет единицу, цену, должностное лицо, обязательную процедуру или исход. торг весы спор мера веса торг спор о весе признанная мера веса повторное взвешивание"
     },
     {
+      "entry_ref": "wk-retrieval:claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk:en",
+      "target_ref": "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "High-moisture stored hay and self-heating Qualitative relation among high-moisture stored hay, heating, odour, and smouldering or fire risk. High-moisture stored hay can heat, develop a musty or caramel odour and, in severe conditions, smoulder or burn. This establishes no moisture, temperature, timing, stack size, fire, or loss in a concrete scene. hay heating musty hay stack smoking hay hay fire hay heats and smells musty haystack smouldering hay"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk:ru",
+      "target_ref": "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Сырое запасённое сено и самонагрев Качественная связь влажного запасённого сена, нагрева, запаха и риска тления или пожара. Влажное запасённое сено может нагреваться, пахнуть затхло или карамельно, а в тяжёлых условиях — тлеть или гореть. Это не устанавливает влажность, температуру, срок, размер стога, огонь или ущерб в конкретной сцене. сено греется стог пахнет затхло дым из сена самовозгорание сена сено греется и пахнет затхлый запах стога сено тлеет"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety:en",
+      "target_ref": "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sticky plant coating inference limits Possible link between a sticky coating and honeydew, with limits on inference from appearance. A sticky plant coating can be honeydew from sap-feeding insects or another plant or environmental residue; appearance alone cannot identify its cause or establish skin safety. It names no insect, plant, contact, irritation, or diagnosis. sticky leaves honeydew aphid residue sticky plant sap sticky leaves aphids"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety:ru",
+      "target_ref": "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Липкий налёт на растении: границы вывода Возможная связь липкого налёта с медвяной росой и пределы вывода по одному виду налёта. Липкий налёт на растении может быть медвяной росой от сосущих сок насекомых или иным растительным либо окружающим остатком; по одному виду налёта нельзя установить причину или безопасность для кожи. Это не называет насекомое, растение, контакт, раздражение или диагноз. липкие листья медвяная роса тля липкий сок липкий налёт растение липкие листья тля липкий сок на растении"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart:en",
+      "target_ref": "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "High-moisture stored hay and self-heating Qualitative relation among high-moisture stored hay, heating, odour, and smouldering or fire risk. A musty or caramel odour or smoke can warrant treating stored hay as a possible heating hazard: do not pull apart a suspected hot or smouldering mass, keep people and animals clear, and seek available fire help. This confirms neither fire, local help, nor outcome. hay heating musty hay stack smoking hay hay fire do not move smoking hay caramel hay smell hot hay help"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart:ru",
+      "target_ref": "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Сырое запасённое сено и самонагрев Качественная связь влажного запасённого сена, нагрева, запаха и риска тления или пожара. Затхлый или карамельный запах либо дым могут быть поводом считать запасённое сено возможным очагом нагрева: не разваливать подозрительно горячую или тлеющую массу, отвести людей и животных и искать доступную пожарную помощь. Это не подтверждает пожар, местную помощь или исход. сено греется стог пахнет затхло дым из сена самовозгорание сена дым из стога не разбирать карамельный запах сена горячее сено помощь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help:en",
+      "target_ref": "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Unknown material on skin: first response A cautious response sequence for skin contact with an unknown material. After skin contact with an already established unknown dye or mordant bath, a practical first response is to stop exposure, remove contaminated material, rinse affected skin with available clean water, observe, and seek available experienced help for persistent or concerning effects. This names no bath composition, dose, diagnosis, treatment, or outcome. dye on skin mordant spill unknown liquid skin rinse chemical dye bath on hands mordant on skin rinse unknown dye"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help:ru",
+      "target_ref": "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Первый ответ на неизвестное вещество на коже Осторожная последовательность действий при контакте кожи с неизвестным веществом. После контакта кожи с уже известной как неизвестная красильной или протравной ванной разумный первый ответ — прекратить контакт, снять загрязнённый материал, промыть кожу доступной чистой водой, наблюдать и при стойких или тревожных проявлениях искать доступную опытную помощь. Это не называет состав ванны, дозу, диагноз, лечение или исход. краска на коже протрава на руках неизвестная жидкость кожа смыть вещество красильная ванна на руках протрава попала на кожу смыть неизвестную краску"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:en",
       "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
       "domain": "biology_physiology",
@@ -23614,6 +23670,20 @@
       "retrieval_text": "Молочнокислое брожение Брожение с образованием молочной кислоты."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b17-unknown-material-skin-first-response:en",
+      "target_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Unknown material on skin: first response A cautious response sequence for skin contact with an unknown material. dye on skin mordant spill unknown liquid skin rinse chemical"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b17-unknown-material-skin-first-response:ru",
+      "target_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Первый ответ на неизвестное вещество на коже Осторожная последовательность действий при контакте кожи с неизвестным веществом. краска на коже протрава на руках неизвестная жидкость кожа смыть вещество"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:mb14-practical-care:en",
       "target_ref": "wk:biology_physiology:mb14-practical-care",
       "domain": "biology_physiology",
@@ -26874,6 +26944,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Образование магматических пород Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b17-damp-stored-hay-heating:en",
+      "target_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "High-moisture stored hay and self-heating Qualitative relation among high-moisture stored hay, heating, odour, and smouldering or fire risk. hay heating musty hay stack smoking hay hay fire"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b17-damp-stored-hay-heating:ru",
+      "target_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Сырое запасённое сено и самонагрев Качественная связь влажного запасённого сена, нагрева, запаха и риска тления или пожара. сено греется стог пахнет затхло дым из сена самовозгорание сена"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b17-sticky-plant-coating-limits:en",
+      "target_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sticky plant coating inference limits Possible link between a sticky coating and honeydew, with limits on inference from appearance. sticky leaves honeydew aphid residue sticky plant sap"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b17-sticky-plant-coating-limits:ru",
+      "target_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Липкий налёт на растении: границы вывода Возможная связь липкого налёта с медвяной росой и пределы вывода по одному виду налёта. липкие листья медвяная роса тля липкий сок липкий налёт растение"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:mb14-practical-field-and-water:en",

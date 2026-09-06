@@ -4501,6 +4501,70 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:macro-b17-atsdr-unidentified-chemical",
+      "title": "Unidentified Chemical: Medical Management Guidelines for Acute Chemical Exposure",
+      "authors": [
+        "Agency for Toxic Substances and Disease Registry"
+      ],
+      "publication": "CDC/ATSDR Toxic Substances Portal",
+      "source_kind": "official_documentation",
+      "citation": "https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=1138&toxid=243",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:macro-b17-cornell-ranunculosides",
+      "title": "Ranunculosides or Ranoculins",
+      "authors": [
+        "Cornell University Department of Animal Science"
+      ],
+      "publication": "Plants Poisonous to Livestock",
+      "source_kind": "official_documentation",
+      "citation": "https://poisonousplants.ansci.cornell.edu/toxicagents/ranunculoside.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:macro-b17-ndsu-hay-fire",
+      "title": "Preventing Hay Fires Due to Excessive Moisture",
+      "authors": [
+        "North Dakota State University Agriculture"
+      ],
+      "publication": "NDSU Agriculture",
+      "source_kind": "official_documentation",
+      "citation": "https://www.ndsu.edu/agriculture/ag-hub/preventing-hay-fires-due-excessive-moisture",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:macro-b17-umd-honeydew",
+      "title": "Honeydew and Sooty Mold",
+      "authors": [
+        "University of Maryland Extension"
+      ],
+      "publication": "University of Maryland Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.umd.edu/resource/honeydew-and-sooty-mold",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:makarov-northern-village-3",
       "title": "Археология севернорусской деревни X–XIII веков. Том 3: Палеоэкологические условия, общество и культура",
       "authors": [
@@ -15472,6 +15536,56 @@
         "section": "Reading a mixed shoreline trace"
       },
       "note": "Editorial cautious reading of already observed mixed traces; it identifies no past structure, date, owner, safety or entitlement.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b17-damp-hay-heating-fire",
+      "source_ref": "source:macro-b17-ndsu-hay-fire",
+      "anchor": {
+        "section": "Preventing Hay Fires Due to Excessive Moisture; Reducing the Risk"
+      },
+      "note": "NDSU explains that excessive moisture in stored hay leads to heating and can create a fire hazard; it also identifies musty or caramel odour as a sign of heating. This establishes no moisture level, stack, temperature, timing, local storage, fire, or loss.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b17-damp-hay-smoulder-response",
+      "source_ref": "source:macro-b17-ndsu-hay-fire",
+      "anchor": {
+        "section": "If Fire Is Likely"
+      },
+      "note": "NDSU warns not to move hot or smoking hay because exposing overheated or smouldering hay to oxygen can produce uncontrolled fire, and calls for fire response and livestock evacuation. This supports a qualitative first-response boundary, not a guaranteed ignition, local responder, method, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b17-honeydew-sap-feeding",
+      "source_ref": "source:macro-b17-umd-honeydew",
+      "anchor": {
+        "section": "Honeydew and Sooty Mold"
+      },
+      "note": "University of Maryland Extension identifies honeydew as a sugary waste product produced by many sap-sucking insects. This does not identify an insect, plant, coating, infestation, condition, or local presence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b17-plant-sap-irritation",
+      "source_ref": "source:macro-b17-cornell-ranunculosides",
+      "anchor": {
+        "section": "Toxic Properties; Safety"
+      },
+      "note": "Cornell says fresh Ranunculaceae sap may redden, swell, or blister skin. This demonstrates that some plant sap can irritate; it does not make an unidentified coating, plant, insect residue, contact, symptom, or diagnosis certain.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b17-unknown-material-skin-response",
+      "source_ref": "source:macro-b17-atsdr-unidentified-chemical",
+      "anchor": {
+        "section": "Basic Decontamination; Follow-up"
+      },
+      "note": "ATSDR's unidentified-chemical guidance calls for removal of contaminated clothing and flushing exposed or irritated skin with plain water, while recognizing that identity and effects are unknown. This supports only a general first-response sequence, not composition, dose, diagnosis, treatment, or outcome.",
       "review_status": "approved"
     },
     {
@@ -27144,6 +27258,47 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+          "locale": "ru",
+          "labels": [
+            "Первый ответ на неизвестное вещество на коже"
+          ],
+          "short_definition": "Осторожная последовательность действий при контакте кожи с неизвестным веществом.",
+          "search_aliases": [
+            "краска на коже",
+            "протрава на руках",
+            "неизвестная жидкость кожа",
+            "смыть вещество"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+          "locale": "en",
+          "labels": [
+            "Unknown material on skin: first response"
+          ],
+          "short_definition": "A cautious response sequence for skin contact with an unknown material.",
+          "search_aliases": [
+            "dye on skin",
+            "mordant spill",
+            "unknown liquid skin",
+            "rinse chemical"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:mb14-practical-care",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -34983,6 +35138,88 @@
           ],
           "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
           "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+          "locale": "ru",
+          "labels": [
+            "Сырое запасённое сено и самонагрев"
+          ],
+          "short_definition": "Качественная связь влажного запасённого сена, нагрева, запаха и риска тления или пожара.",
+          "search_aliases": [
+            "сено греется",
+            "стог пахнет затхло",
+            "дым из сена",
+            "самовозгорание сена"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+          "locale": "en",
+          "labels": [
+            "High-moisture stored hay and self-heating"
+          ],
+          "short_definition": "Qualitative relation among high-moisture stored hay, heating, odour, and smouldering or fire risk.",
+          "search_aliases": [
+            "hay heating",
+            "musty hay stack",
+            "smoking hay",
+            "hay fire"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+          "locale": "ru",
+          "labels": [
+            "Липкий налёт на растении: границы вывода"
+          ],
+          "short_definition": "Возможная связь липкого налёта с медвяной росой и пределы вывода по одному виду налёта.",
+          "search_aliases": [
+            "липкие листья",
+            "медвяная роса",
+            "тля липкий сок",
+            "липкий налёт растение"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+          "locale": "en",
+          "labels": [
+            "Sticky plant coating inference limits"
+          ],
+          "short_definition": "Possible link between a sticky coating and honeydew, with limits on inference from appearance.",
+          "search_aliases": [
+            "sticky leaves",
+            "honeydew",
+            "aphid residue",
+            "sticky plant sap"
+          ]
         }
       }
     },
@@ -89441,6 +89678,228 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+      "domain": "environment",
+      "subject_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "high_moisture_stored_hay_can_heat_develop_a_musty_or_caramel_odour_and_in_severe_conditions_smoulder_or_burn"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:macro-b17-damp-hay-heating-fire"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+          "locale": "ru",
+          "runtime_text": "Влажное запасённое сено может нагреваться, пахнуть затхло или карамельно, а в тяжёлых условиях — тлеть или гореть. Это не устанавливает влажность, температуру, срок, размер стога, огонь или ущерб в конкретной сцене.",
+          "search_aliases": [
+            "сено греется и пахнет",
+            "затхлый запах стога",
+            "сено тлеет"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+          "locale": "en",
+          "runtime_text": "High-moisture stored hay can heat, develop a musty or caramel odour and, in severe conditions, smoulder or burn. This establishes no moisture, temperature, timing, stack size, fire, or loss in a concrete scene.",
+          "search_aliases": [
+            "hay heats and smells",
+            "musty haystack",
+            "smouldering hay"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-b17-high-moisture-stored-hay"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+      "domain": "environment",
+      "subject_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_sticky_coating_on_a_plant_can_be_honeydew_from_sap_feeding_insects_or_another_plant_or_environmental_residue_so_appearance_alone_does_not_identify_its_cause_or_establish_skin_safety"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:macro-b17-honeydew-sap-feeding",
+        "evidence:macro-b17-plant-sap-irritation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+          "locale": "ru",
+          "runtime_text": "Липкий налёт на растении может быть медвяной росой от сосущих сок насекомых или иным растительным либо окружающим остатком; по одному виду налёта нельзя установить причину или безопасность для кожи. Это не называет насекомое, растение, контакт, раздражение или диагноз.",
+          "search_aliases": [
+            "липкие листья тля",
+            "медвяная роса",
+            "липкий сок на растении"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+          "locale": "en",
+          "runtime_text": "A sticky plant coating can be honeydew from sap-feeding insects or another plant or environmental residue; appearance alone cannot identify its cause or establish skin safety. It names no insect, plant, contact, irritation, or diagnosis.",
+          "search_aliases": [
+            "sticky leaves aphids",
+            "honeydew",
+            "sticky plant sap"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-b17-sticky-plant-coating-limits"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+      "domain": "environment",
+      "subject_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "musty_or_caramel_odour_or_smoke_can_warrant_treating_stored_hay_as_a_possible_heating_hazard_by_not_pulling_apart_a_suspected_hot_or_smouldering_mass_keeping_people_and_animals_clear_and_seeking_available_fire_help"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:macro-b17-damp-hay-heating-fire",
+        "evidence:macro-b17-damp-hay-smoulder-response"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+          "locale": "ru",
+          "runtime_text": "Затхлый или карамельный запах либо дым могут быть поводом считать запасённое сено возможным очагом нагрева: не разваливать подозрительно горячую или тлеющую массу, отвести людей и животных и искать доступную пожарную помощь. Это не подтверждает пожар, местную помощь или исход.",
+          "search_aliases": [
+            "дым из стога не разбирать",
+            "карамельный запах сена",
+            "горячее сено помощь"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+          "locale": "en",
+          "runtime_text": "A musty or caramel odour or smoke can warrant treating stored hay as a possible heating hazard: do not pull apart a suspected hot or smouldering mass, keep people and animals clear, and seek available fire help. This confirms neither fire, local help, nor outcome.",
+          "search_aliases": [
+            "do not move smoking hay",
+            "caramel hay smell",
+            "hot hay help"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-b17-suspected-hot-hay-response"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "after_contact_with_an_already_established_unknown_dye_or_mordant_bath_a_practical_first_response_is_to_stop_exposure_remove_contaminated_material_rinse_the_affected_skin_with_available_clean_water_observe_and_seek_available_experienced_help_for_persistent_or_concerning_effects_without_identifying_the_bath_or_diagnosing_injury"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:macro-b17-unknown-material-skin-response"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+          "locale": "ru",
+          "runtime_text": "После контакта кожи с уже известной как неизвестная красильной или протравной ванной разумный первый ответ — прекратить контакт, снять загрязнённый материал, промыть кожу доступной чистой водой, наблюдать и при стойких или тревожных проявлениях искать доступную опытную помощь. Это не называет состав ванны, дозу, диагноз, лечение или исход.",
+          "search_aliases": [
+            "красильная ванна на руках",
+            "протрава попала на кожу",
+            "смыть неизвестную краску"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+          "locale": "en",
+          "runtime_text": "After skin contact with an already established unknown dye or mordant bath, a practical first response is to stop exposure, remove contaminated material, rinse affected skin with available clean water, observe, and seek available experienced help for persistent or concerning effects. This names no bath composition, dose, diagnosis, treatment, or outcome.",
+          "search_aliases": [
+            "dye bath on hands",
+            "mordant on skin",
+            "rinse unknown dye"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:macro-b17-unknown-dye-mordant-skin-response"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:reconstructed-birth-household-support",
@@ -134572,6 +135031,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:macro-b17-unknown-material-skin-first-response": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:mb14-practical-care": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:mb14-practical-care",
@@ -136711,6 +137179,24 @@
       "wk:environment:igneous-rock-formation": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:environment:igneous-rock-formation",
+        "domain": "environment",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:environment:macro-b17-damp-stored-hay-heating": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:environment:macro-b17-damp-stored-hay-heating",
+        "domain": "environment",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:environment:macro-b17-sticky-plant-coating-limits": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:environment:macro-b17-sticky-plant-coating-limits",
         "domain": "environment",
         "broader_refs": [],
         "related_refs": [],
@@ -142209,6 +142695,9 @@
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins"
       ],
+      "wk:biology_physiology:macro-b17-unknown-material-skin-first-response": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
+      ],
       "wk:biology_physiology:mb14-practical-care": [
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
@@ -143086,6 +143575,13 @@
       ],
       "wk:environment:igneous-rock-formation": [
         "claim:foundations-earth-15-igneous-rock-formation"
+      ],
+      "wk:environment:macro-b17-damp-stored-hay-heating": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
+      "wk:environment:macro-b17-sticky-plant-coating-limits": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
       ],
       "wk:environment:mb14-practical-field-and-water": [
         "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
@@ -145330,6 +145826,7 @@
         "claim:livestock-swine-comparative-diet",
         "claim:livestock-swine-membership",
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
@@ -145715,6 +146212,9 @@
         "claim:foundations-haz-04-slope-force-strength",
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
         "claim:mb14-practical-sowing-follows-local-workable-soil",
@@ -147461,6 +147961,10 @@
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
@@ -149184,6 +149688,10 @@
         "claim:livestock-swine-membership",
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:material-water-alum-skin-water",
@@ -151569,6 +152077,7 @@
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-ruminant-membership",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:military-world-carrying-an-injured-person-is-conditional",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
@@ -152632,6 +153141,8 @@
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
         "claim:human-life-kin-can-offer-contextual-support",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:ordinary-life-festive-clothes-differ-from-work",
         "claim:ordinary-life-fisher-needs-water-and-gear",
         "claim:ordinary-life-household-needs-heat-food-storage",
@@ -152724,6 +153235,7 @@
       ],
       "ванна": [
         "claim:fauna-chicken-dust-bathing",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "wk:chemistry_process:dyebath-cooling-and-uptake",
         "wk:craft_technology:dyebath-textile-handling"
@@ -152733,6 +153245,7 @@
         "wk:craft_technology:dyebath-textile-handling"
       ],
       "ванной": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "wk:craft_technology:dyebath-textile-handling"
       ],
       "ванну": [
@@ -152740,6 +153253,7 @@
         "claim:textile-dye-application"
       ],
       "ванны": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
@@ -153406,10 +153920,12 @@
         "claim:fungal-decomposition-affects-nutrient-recycling",
         "claim:grain-processing-bread-optional-leaven",
         "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
-        "wk:biology_physiology:fungal-decomposition"
+        "wk:biology_physiology:fungal-decomposition",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "веществом": [
-        "claim:fauna-crayfish-diet"
+        "claim:fauna-crayfish-diet",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "вещи": [
         "claim:clothing-bone-button",
@@ -153804,6 +154320,10 @@
       "видом": [
         "wk:biology_physiology:static-bait-b11-animal-material-target-fit"
       ],
+      "виду": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
       "виды": [
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
@@ -154052,10 +154572,12 @@
       "влажного": [
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
       ],
       "влажное": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:milling-moisture-changes-grain-deformation",
         "wk:environment:common-reed-rhizome-habitat",
         "wk:environment:white-willow-riparian-habitat"
@@ -154093,6 +154615,7 @@
         "claim:foundations-earth-30-upslope-fog",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:population-joining-bond-moisture",
         "claim:population-material-wood-combustion",
@@ -154659,6 +155182,7 @@
         "claim:foundations-earth-25-snowmelt-runoff",
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
         "claim:healer-portable-and-household-kit",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-leather-water-processing",
         "claim:material-water-textile-water-load",
         "claim:material-water-vegetable-leather-water",
@@ -155146,7 +155670,8 @@
         "wk:biology_physiology:fauna-tawny-owl"
       ],
       "возможная": [
-        "claim:residual-traces-animal-sign-absence-limit"
+        "claim:residual-traces-animal-sign-absence-limit",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "возможно": [
         "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
@@ -155207,6 +155732,7 @@
         "claim:clothing-votola-cloak",
         "claim:fodder-hay-account",
         "claim:judicial-accusation-record",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:textile-indigo-yellow-analysis",
         "wk:biology_physiology:foundation-infection-entry",
         "wk:environment:static-weather-b06-cloud-rain-observation",
@@ -156283,6 +156809,7 @@
         "wk:biology_physiology:static-hop-bine-support-water",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
         "wk:craft_technology:urban-wooden-coverings",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits"
       ],
       "выводили": [
@@ -157852,6 +158379,7 @@
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "гореть": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:population-material-wood-combustion"
       ],
       "горизонт": [
@@ -158007,6 +158535,7 @@
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
       ],
       "горячее": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:ordinary-life-shoes-protect-feet"
       ],
@@ -158028,6 +158557,9 @@
       ],
       "горячих": [
         "claim:foundations-earth-23-hydrothermal-precipitation"
+      ],
+      "горячую": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "господин": [
         "claim:residual-law-zakup-complaint-not-escape"
@@ -158308,6 +158840,7 @@
         "wk:biology_physiology:young-bird-ground-stage-and-intervention",
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:physics_material_science:liquid-surface-wetting",
         "wk:physics_material_science:wet-granular-capillary-cohesion",
         "wk:social_behavior:reconstructed-road-hospitality-boundary",
@@ -158331,6 +158864,10 @@
       ],
       "гребень": [
         "claim:fibre-hackle-removes-shive"
+      ],
+      "греется": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "греть": [
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
@@ -159187,6 +159724,7 @@
       ],
       "действий": [
         "claim:foundations-ms-30-conflict-incompatibility",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:social_behavior:foundations-ms-30-conflict-incompatibility"
       ],
       "действительно": [
@@ -159752,6 +160290,8 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
         "claim:military-world-cold-and-wetness-need-practical-boundaries",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
@@ -160057,6 +160597,7 @@
         "claim:household-boat-repair-clamp",
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:human-life-visitors-add-resource-demands",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
         "claim:material-water-hemp-cellulosic-fibre",
@@ -160474,6 +161015,7 @@
       ],
       "дозу": [
         "claim:foundations-haz-01-exposure-modifiers",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
@@ -161242,6 +161784,7 @@
       ],
       "доступной": [
         "claim:healer-portable-and-household-kit",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
         "claim:microbial-growth-depends-on-available-moisture",
@@ -161292,6 +161835,8 @@
       ],
       "доступную": [
         "claim:drying-reduces-microbial-growth-conditions",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
@@ -161760,6 +162305,7 @@
         "claim:social-written-prayer-relates-invocation"
       ],
       "дым": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
         "claim:military-world-ground-and-weather-change-practical-options",
         "claim:military-world-traces-need-cautious-interpretation",
@@ -161777,6 +162323,7 @@
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
       "дыма": [
@@ -162706,6 +163253,7 @@
         "claim:fauna-mammals-red-fox-prey-population-effect",
         "claim:foundations-earth-09-ecological-competition",
         "claim:foundations-ms3-01-initial-attention",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
         "claim:military-world-armed-disruption-affects-civilian-work",
         "claim:military-world-flight-and-pursuit-share-environmental-limits",
@@ -162801,7 +163349,8 @@
         "claim:grain-processing-bread-liquid",
         "claim:material-water-textile-liquid-contaminants",
         "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
-        "claim:water-permeability-connected-pores"
+        "claim:water-permeability-connected-pores",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "жидкостью": [
         "wk:physics_material_science:liquid-surface-wetting"
@@ -163297,6 +163846,7 @@
         "claim:place-outdoors-shore-working-edge-composition"
       ],
       "загрязнённый": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
       ],
       "загрязнителей": [
@@ -164089,6 +164639,14 @@
       "запасе": [
         "claim:foundations-earth-21-groundwater-withdrawal-balance"
       ],
+      "запасённого": [
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
+      "запасённое": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
       "запасов": [
         "claim:foundations-earth-21-groundwater-withdrawal-balance",
         "claim:population-household-storage",
@@ -164105,13 +164663,16 @@
         "claim:practical-food-provisions"
       ],
       "запах": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "wk:physics_material_science:research-carbon-monoxide-perceptibility"
       ],
       "запаха": [
-        "claim:research-carbon-monoxide-is-colorless-and-odorless"
+        "claim:research-carbon-monoxide-is-colorless-and-odorless",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "запахи": [
         "claim:fauna-tick-senses",
@@ -164461,6 +165022,14 @@
       ],
       "затупившейся": [
         "claim:stone-whetstone-edge-maintenance"
+      ],
+      "затхло": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
+      "затхлый": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "захват": [
         "claim:foundations-life-31-phagocytosis",
@@ -165399,6 +165968,7 @@
         "claim:household-clay-key-and-compatible-patch",
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:human-life-standing-can-affect-social-access",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-new-linen-water",
         "claim:material-water-plant-fibre-cellulose",
@@ -165461,6 +166031,7 @@
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization",
         "wk:craft_technology:wax-plate-candle-forming",
         "wk:craft_technology:woodworked-objects-and-waste",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:material_culture:gramota-73-debt-record",
         "wk:material_culture:hemp-fibre",
         "wk:material_culture:iron-pan-lifter",
@@ -165543,6 +166114,9 @@
       "известное": [
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:public-world-armed-presence-changes-public-risk"
+      ],
+      "известной": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "известность": [
         "claim:healer-experience-and-reputation"
@@ -166230,6 +166804,10 @@
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
@@ -166735,6 +167313,7 @@
         "wk:environment:hydrothermal-precipitation",
         "wk:environment:igneous-cooling-texture",
         "wk:environment:igneous-rock-formation",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:metamorphic-rock-formation",
         "wk:environment:mineral-hardness-not-brittleness",
         "wk:environment:mineral-hardness-scratch-comparison",
@@ -167326,6 +167905,9 @@
         "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
         "wk:environment:cloud-radiative-two-way-effect"
       ],
+      "иным": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
+      ],
       "иных": [
         "claim:livestock-rumen-forage-digestion",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
@@ -167352,6 +167934,8 @@
       "искать": [
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
         "claim:healer-livelihood-and-household-support",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-outdoors-cover-opening-and-work-visibility",
         "claim:public-world-armed-presence-changes-public-risk",
         "claim:public-world-dispute-can-use-questions-and-kin",
@@ -167960,6 +168544,8 @@
         "claim:foundations-life-47-host-susceptibility",
         "claim:judicial-accusation-record",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
@@ -168228,6 +168814,7 @@
         "claim:harvest-sickle-crops-grasses",
         "claim:later-novgorod-judicial-charter",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:oil-rawhide-moisture-resistance",
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -168509,6 +169096,12 @@
       "капюшон": [
         "claim:clothing-votola-cloak"
       ],
+      "карамельно": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
+      "карамельный": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
       "караул": [
         "claim:military-world-camp-work-areas-benefit-from-separation",
         "claim:military-world-exertion-competes-with-attention-and-recovery",
@@ -168704,6 +169297,7 @@
         "wk:chemistry_process:plant-leaves-as-dye-source",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
@@ -169464,6 +170058,7 @@
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:foundation-skin-sensation",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:skin-barrier",
         "wk:biology_physiology:skin-emollient-and-occlusive-film",
         "wk:craft_technology:reconstructed-practical-cloth-leather-work",
@@ -169521,6 +170116,7 @@
         "claim:population-shoe-input",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:skin-emollient-and-occlusive-film",
         "wk:material_culture:alum-tawed-skin"
       ],
@@ -169538,6 +170134,8 @@
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
         "claim:household-leather-offcut",
         "claim:leather-broad-context",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-rawhide-wet-dry",
         "claim:material-water-vegetable-leather-water",
         "claim:oil-fat-vegetable-leather-flexibility",
@@ -169550,6 +170148,7 @@
         "claim:textile-conditioning-matters",
         "claim:transport-boat-cargo-dispatch",
         "claim:vegetable-tanning-collagen-stabilization",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:skin-emollient-and-occlusive-film",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:biology_physiology:sweat-evaporation",
@@ -169582,6 +170181,7 @@
         "wk:chemistry_process:environmental-exposure-routes"
       ],
       "кожу": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-wet-equipment-benefits-from-inspection",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
@@ -170148,6 +170748,7 @@
         "claim:foundations-chm-08-equilibrium-condition-change",
         "claim:foundations-chm-10-metal-environment-corrosion",
         "claim:foundations-haz-03-exposure-routes",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:material-water-alum-skin-water",
         "claim:occupation-wood-plane",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -170487,6 +171088,8 @@
         "claim:foundations-haz-02-exposure-not-illness",
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-life-44-pathogen-transport",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:milling-grain-compression-shear-fracture",
         "claim:milling-plate-gap-pressure-fineness",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
@@ -170509,6 +171112,7 @@
       "контакта": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:force-contact-geometry",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-flight-and-pursuit-share-environmental-limits",
         "claim:milling-grain-compression-shear-fracture",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
@@ -170531,6 +171135,7 @@
         "claim:wood-liquid-capillary-uptake",
         "claim:wood-liquid-moisture-change",
         "wk:biology_physiology:fauna-tick",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:static-wood-ash-contact-irritation",
         "wk:physics_material_science:contact-pressure",
         "wk:physics_material_science:thin-horn-water-softening"
@@ -171497,10 +172102,12 @@
         "wk:environment:candidate-nettle-bast-fibre-extraction"
       ],
       "красильная": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "wk:chemistry_process:dyebath-cooling-and-uptake",
         "wk:craft_technology:dyebath-textile-handling"
       ],
       "красильной": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
@@ -171548,11 +172155,15 @@
         "wk:chemistry_process:plant-leaves-as-dye-source"
       ],
       "краска": [
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:plant-leaves-as-dye-source"
       ],
       "краски": [
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "wk:chemistry_process:plant-leaves-as-dye-source"
+      ],
+      "краску": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "красная": [
         "claim:pigment-red-ochre",
@@ -172566,6 +173177,7 @@
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-established-casualty-needs-hazard-aware-help",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
@@ -172626,6 +173238,8 @@
         "claim:household-clay-drying-and-incompatible-movement",
         "claim:household-roof-local-condition-guides-repair",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-established-local-observance-can-change-availability",
         "claim:maslo-birchbark-718-account",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -172695,6 +173309,17 @@
       "липиды": [
         "claim:foundations-life-03-cell-macromolecules",
         "wk:biology_physiology:foundation-cell-macromolecules"
+      ],
+      "липкие": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "липкий": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "липкого": [
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "липовая": [
         "claim:construction-bast-vessel-fastening"
@@ -172784,13 +173409,15 @@
         "claim:bearberry-lingonberry-resemblance-not-identification",
         "claim:fauna-mammals-eurasian-beaver-herbivory",
         "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:residual-traces-animal-trace-types",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
         "claim:residual-tree-betula-pendula-simple-leaves",
         "wk:biology_physiology:bearberry-lingonberry-identification",
-        "wk:chemistry_process:plant-leaves-as-dye-source"
+        "wk:chemistry_process:plant-leaves-as-dye-source",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "листьями": [
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
@@ -173431,6 +174058,7 @@
         "claim:clothing-silk-shirt",
         "claim:fauna-adder-defence",
         "claim:fauna-culex-female-blood",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:military-world-custody-needs-attention-and-basic-needs",
         "claim:military-world-defence-repair-competes-for-people-and-material",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
@@ -173703,6 +174331,7 @@
         "claim:agriculture-fauna-hemp-processing-tow",
         "claim:construction-animal-glue-chalk",
         "claim:gramota-73-grivna-term",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:measurement-grain-mass-volume-density",
         "claim:measurement-net-excludes-tare",
         "claim:measurement-units-must-be-identified",
@@ -173790,6 +174419,7 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:harvest-sickle-wooden-handle",
         "claim:human-life-household-tasks-can-offer-learning",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:ordinary-life-linen-wool-clothing",
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -174109,6 +174739,14 @@
       ],
       "медведя": [
         "claim:fauna-mammals-brown-bear-maternal-care"
+      ],
+      "медвяная": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "медвяной": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "медицинская": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
@@ -174565,6 +175203,7 @@
         "wk:environment:reconstructed-military-observation-crossing"
       ],
       "местную": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
@@ -175336,6 +175975,7 @@
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:material-water-alum-skin-water",
         "claim:material-water-natural-fibres-water-swelling",
@@ -175636,6 +176276,8 @@
         "claim:human-life-visitors-add-resource-demands",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-established-local-observance-can-change-availability",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
@@ -176569,6 +177211,8 @@
         "claim:human-life-standing-can-affect-social-access",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
@@ -176698,6 +177342,7 @@
         "wk:biology_physiology:foundation-ontogeny",
         "wk:biology_physiology:foundation-reflex",
         "wk:biology_physiology:foundation-sleep-wake-cycle",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:plant-light-development",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:research-pupil-light-reflex",
@@ -176712,6 +177357,7 @@
         "wk:chemistry_process:heterogeneous-reaction-interface",
         "wk:chemistry_process:metal-classes-composition",
         "wk:chemistry_process:static-ground-b05-fibre-alkali-response",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:reconstructed-mixed-shoreline-trace",
         "wk:environment:regional-fish-exploitation",
         "wk:environment:research-flood-high-water-mark-observation",
@@ -176789,6 +177435,7 @@
         "claim:foundations-ms3-01-initial-attention"
       ],
       "наблюдать": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-training-links-practice-feedback-and-rest",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside"
@@ -176964,12 +177611,14 @@
       "нагрева": [
         "claim:brittle-fracture-defects",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:population-material-clay-steam",
         "claim:static-forge-welding-requires-heated-pressed-interface",
         "wk:biology_physiology:research-fish-heating-muscle-texture",
         "wk:chemistry_process:research-starch-gelatinization-thickening",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:craft_technology:place-thermal-processes",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:brittle-fracture-defects",
         "wk:physics_material_science:static-forge-welding-pressure-conditions"
       ],
@@ -176985,6 +177634,9 @@
       ],
       "нагревания": [
         "claim:clay-firing-structural-transformation"
+      ],
+      "нагреваться": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
       ],
       "нагреве": [
         "claim:population-joining-wax-soften",
@@ -177235,6 +177887,8 @@
         "claim:candidate-novgorod-psalter-eleventh-century",
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:occupation-directed-grain-procurement",
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
@@ -177342,6 +177996,14 @@
       ],
       "наледь": [
         "claim:residual-nature-roof-melt-eave-refreezing"
+      ],
+      "налёт": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "налёта": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "наличие": [
         "claim:agriculture-fauna-ash-hunting-bow",
@@ -177876,6 +178538,9 @@
       "наседкой": [
         "wk:biology_physiology:domestic-chicken-behavior"
       ],
+      "насекомое": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
+      ],
       "насекомоядности": [
         "wk:biology_physiology:static-animal-b06-british-bat-activity"
       ],
@@ -177905,6 +178570,7 @@
         "claim:fauna-frog-invertebrate-diet",
         "claim:fauna-pike-juvenile-predation",
         "claim:foundations-mat-07-wood-storage-biological-damage",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:residual-traces-deadwood-feeding-signs"
       ],
       "населения": [
@@ -178609,6 +179275,10 @@
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-collateral-follows-established-security-terms",
         "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
         "claim:macro-gap-political-communication-needs-accepted-performance",
@@ -179527,8 +180197,15 @@
       "неизвестна": [
         "claim:military-world-long-implements-need-clearance"
       ],
+      "неизвестная": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
+      ],
       "неизвестно": [
         "claim:household-riverside-storage"
+      ],
+      "неизвестное": [
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "неизвестной": [
         "claim:water-capillary-height"
@@ -179536,6 +180213,9 @@
       "неизвестному": [
         "claim:metal-classes-composition",
         "wk:chemistry_process:metal-classes-composition"
+      ],
+      "неизвестную": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "неизвестны": [
         "claim:judicial-accusation-record",
@@ -179545,7 +180225,8 @@
         "claim:textile-indigo-yellow-analysis"
       ],
       "неизвестным": [
-        "claim:textile-indigo-yellow-analysis"
+        "claim:textile-indigo-yellow-analysis",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "неизменном": [
         "claim:foundations-phys-10-gas-temperature-pressure-volume",
@@ -179601,6 +180282,7 @@
       "нельзя": [
         "claim:environment-p1-pig",
         "claim:food-energy-nutrients",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:measurement-units-must-be-identified",
         "claim:metal-classes-composition",
         "claim:pain-nociception-distinct",
@@ -182395,6 +183077,7 @@
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
       ],
       "огонь": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -182760,7 +183443,9 @@
       ],
       "одному": [
         "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
-        "claim:place-outdoors-clearing-and-trace-renewal"
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "одну": [
         "claim:clothing-button-shirt",
@@ -182967,6 +183652,9 @@
       ],
       "окружающий": [
         "claim:sound-background-noise-masks-speech"
+      ],
+      "окружающим": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
       ],
       "окружающими": [
         "claim:foundations-ms-23-group-pressure",
@@ -183579,6 +184267,9 @@
       ],
       "опытной": [
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption"
+      ],
+      "опытную": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "опытным": [
         "claim:healer-experience-and-reputation"
@@ -184198,6 +184889,9 @@
         "wk:environment:poozerie-cereal-millet-source",
         "wk:environment:troitsky-local-plant-remains"
       ],
+      "остатком": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
+      ],
       "остаток": [
         "claim:casting-sprue",
         "claim:macro-gap-payment-changes-only-accepted-obligation-part",
@@ -184243,6 +184937,7 @@
         "wk:physics_material_science:research-floating-body-small-angle-stability"
       ],
       "осторожная": [
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:environment:reconstructed-mixed-shoreline-trace"
       ],
       "осторожно": [
@@ -184393,6 +185088,7 @@
         "claim:human-life-audience-can-interpret-standing-contextually",
         "claim:human-life-household-formation-needs-residence-provisioning",
         "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-leather-water-processing",
         "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
         "claim:metal-properties-depend-on-state",
@@ -184542,12 +185238,16 @@
         "claim:water-percolation-openings",
         "wk:biology_physiology:foundation-infection-entry"
       ],
+      "отвести": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
       "ответ": [
         "claim:candidate-physiology-v3-threat-autonomic-arousal",
         "claim:foundations-life-35-antibodies",
         "claim:foundations-life-36-immune-memory",
         "claim:foundations-ms-34-role-adjustment",
         "claim:human-life-travellers-may-seek-local-information",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-community-response-to-impairment-varies",
@@ -184555,6 +185255,7 @@
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "wk:biology_physiology:foundation-antibodies",
         "wk:biology_physiology:foundation-immune-memory",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
         "wk:biology_physiology:tissue-injury-response",
         "wk:social_behavior:foundations-ms-34-role-adjustment"
@@ -185410,6 +186111,9 @@
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
       ],
+      "очагом": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
       "очень": [
         "claim:ordinary-life-shoes-protect-feet",
         "claim:population-material-leather-dry",
@@ -185769,6 +186473,13 @@
         "claim:fauna-cross-spider-web",
         "wk:biology_physiology:fauna-cross-spider"
       ],
+      "пахнет": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
+      "пахнуть": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
       "пахота": [
         "wk:craft_technology:tillage"
       ],
@@ -185867,6 +186578,8 @@
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment"
       ],
       "первый": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:residual-postpartum-newborn-physiology"
       ],
       "пергамент": [
@@ -187351,6 +188064,7 @@
         "claim:human-life-kin-can-offer-contextual-support",
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:livestock-swine-comparative-diet",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-plant-fibre-cellulose",
@@ -187434,6 +188148,7 @@
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:foundation-lymphoid-system",
         "wk:biology_physiology:wild-mushroom-identification",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:mineral-hardness-scratch-comparison",
         "wk:environment:river-ice-jam-flow-obstruction",
         "wk:environment:slope-force-strength",
@@ -187660,6 +188375,7 @@
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
       ],
       "поводом": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue"
       ],
       "поводу": [
@@ -188350,6 +189066,9 @@
       "подозрении": [
         "claim:household-trauma-unnecessary-movement-can-worsen"
       ],
+      "подозрительно": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
       "подойти": [
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "wk:biology_physiology:place-domestic-waterfowl-group-handling"
@@ -188468,6 +189187,7 @@
         "claim:leather-broad-context",
         "claim:livestock-rumen-forage-digestion",
         "claim:localized-improvement-context",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:social-debt-record-may-contain-entry",
@@ -188618,11 +189338,13 @@
         "claim:candidate-v5-gramota600-is-near-1230-private-letter"
       ],
       "пожар": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
       "пожара": [
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:water-class-a-fire-cooling"
       ],
       "пожаре": [
@@ -188631,6 +189353,9 @@
       ],
       "пожарного": [
         "wk:physics_material_science:research-fire-plume-upper-layer-transport"
+      ],
+      "пожарную": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "пожарный": [
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
@@ -189360,6 +190085,8 @@
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-kin-can-offer-contextual-support",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:military-world-small-group-coordination-needs-established-roles",
         "claim:ordinary-life-help-can-create-reciprocity",
@@ -189425,6 +190152,9 @@
       ],
       "попадающий": [
         "claim:research-bright-retinal-light-can-constrict-pupils"
+      ],
+      "попала": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "поперёк": [
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
@@ -189817,6 +190547,7 @@
         "claim:flayed-skin-processing-purpose",
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:fuel-pit-charcoal-burning-charcoal-output",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:military-world-established-casualty-needs-hazard-aware-help",
@@ -189884,6 +190615,7 @@
         "claim:sound-reflections-arrive-after-direct-path",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
         "claim:textile-dye-application",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence"
       ],
@@ -190904,6 +191636,7 @@
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:static-animal-b06-bat-roost-disturbance",
         "wk:environment:static-cloven-hoof-trace-comparison",
@@ -191303,6 +192036,7 @@
         "claim:foundations-ms3-02-working-memory"
       ],
       "прекратить": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
@@ -191495,6 +192229,7 @@
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-collateral-follows-established-security-terms",
         "claim:material-water-alum-skin-water",
@@ -191609,6 +192344,7 @@
         "wk:biology_physiology:foundation-airborne-exposure",
         "wk:biology_physiology:foundation-fertilization",
         "wk:biology_physiology:foundation-mitosis",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:mb14-practical-care",
         "wk:biology_physiology:reconstructed-birth-household-support",
         "wk:biology_physiology:reconstructed-health-support",
@@ -192404,6 +193140,7 @@
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
         "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
         "claim:healer-belief-and-bodily-attention",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
@@ -192859,6 +193596,9 @@
         "claim:early-rus-hunting-ground-terms",
         "claim:harvest-sheep-shearing-scissors"
       ],
+      "промыть": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
+      ],
       "проникать": [
         "claim:material-water-natural-fibres-water-swelling"
       ],
@@ -193145,8 +193885,15 @@
         "claim:fauna-mussel-filtration",
         "wk:biology_physiology:fauna-pearl-mussel"
       ],
+      "протрава": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
+      ],
       "протраве": [
         "claim:textile-chrysin-analysis"
+      ],
+      "протравной": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "протравный": [
         "claim:textile-ellagic-acid-analysis"
@@ -193480,6 +194227,9 @@
       ],
       "проще": [
         "claim:place-outdoors-cover-opening-and-work-visibility"
+      ],
+      "проявлениях": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "проявляют": [
         "claim:fauna-mammals-domestic-horse-forage-behavior"
@@ -194222,6 +194972,7 @@
         "claim:population-glass-fracture"
       ],
       "разбирать": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:sound-background-noise-masks-speech"
       ],
       "разбирают": [
@@ -194258,6 +195009,9 @@
       "разбухать": [
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-rawhide-wet-dry"
+      ],
+      "разваливать": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "разведчицы": [
         "claim:fauna-bee-swarming"
@@ -194433,6 +195187,7 @@
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
         "claim:foundations-life-17-reflex",
         "claim:foundations-life-19-sensory-receptor",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:biology_physiology:foundation-reflex",
         "wk:biology_physiology:foundation-sensory-receptor",
@@ -194603,6 +195358,7 @@
         "claim:foundations-earth-16-igneous-cooling-texture",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:practical-leather-cut",
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -194865,6 +195621,9 @@
       ],
       "разумны": [
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "разумный": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "разумными": [
         "claim:human-life-travel-conditions-can-justify-delay"
@@ -195450,6 +196209,7 @@
       "растение": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -195457,11 +196217,14 @@
         "claim:research-vaccinium-vitis-idaea-fruit-is-documented-edible",
         "claim:textile-ellagic-acid-analysis",
         "claim:vegetable-tanning-prepared-hide",
-        "wk:biology_physiology:mezereon-toxicity"
+        "wk:biology_physiology:mezereon-toxicity",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "растении": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
-        "wk:biology_physiology:static-hop-bine-support-water"
+        "wk:biology_physiology:static-hop-bine-support-water",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "растений": [
         "claim:fauna-mammals-moose-browse-aquatic-forage",
@@ -195592,6 +196355,7 @@
       ],
       "растительным": [
         "claim:fauna-crayfish-diet",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:vegetable-tanning-prepared-hide",
         "wk:material_culture:vegetable-tanned-leather"
@@ -196596,6 +197360,7 @@
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:social_behavior:reconstructed-road-hospitality-boundary"
       ],
       "риске": [
@@ -196876,6 +197641,14 @@
       "ромбические": [
         "claim:clothing-shirt-gussets"
       ],
+      "роса": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "росой": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
       "росписи": [
         "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories"
       ],
@@ -197025,6 +197798,10 @@
       ],
       "руками": [
         "claim:military-world-carried-equipment-needs-secure-access"
+      ],
+      "руках": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "руки": [
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
@@ -197476,6 +198253,9 @@
         "claim:wild-mushroom-resemblance-not-edibility",
         "wk:biology_physiology:wild-mushroom-identification"
       ],
+      "самовозгорание": [
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
       "самого": [
         "claim:population-rod-input",
         "claim:residual-law-zakup-loss-context"
@@ -197490,6 +198270,9 @@
       ],
       "самом": [
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use"
+      ],
+      "самонагрев": [
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "самопроизвольном": [
         "claim:foundations-thm-10-thermal-gradient-heat-flow"
@@ -198312,6 +199095,8 @@
         "wk:craft_technology:leather-broad-context",
         "wk:craft_technology:linden-bast-soaking-and-separation",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:poozerie-cereal-millet-source",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
@@ -198739,7 +199524,9 @@
       ],
       "сена": [
         "claim:livestock-rumen-forage-digestion",
-        "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "сене": [
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places"
@@ -198751,7 +199538,10 @@
       "сено": [
         "claim:fodder-hay-account",
         "claim:fodder-healthy-horse-forage",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:practical-fodder-hay",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:material_culture:hay",
         "wk:npc_daily_life:reconstructed-practical-seasonal-work"
       ],
@@ -199988,6 +200778,10 @@
       "смотреть": [
         "claim:healer-observation-and-questioning"
       ],
+      "смыть": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
+      ],
       "смягчить": [
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture"
       ],
@@ -200170,6 +200964,7 @@
         "wk:biology_physiology:flayed-skin-preservation"
       ],
       "снять": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
       ],
       "со": [
@@ -200809,9 +201604,11 @@
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response"
       ],
       "сок": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mezereon-poisonous-sap-all-parts",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
-        "wk:biology_physiology:mezereon-toxicity"
+        "wk:biology_physiology:mezereon-toxicity",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "соке": [
         "wk:biology_physiology:static-ranunculaceae-sap-contact"
@@ -201244,6 +202041,7 @@
         "claim:casting-tin",
         "claim:fauna-mammals-moose-ecosystem-engineering",
         "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:metal-classes-composition",
         "claim:occupation-smith-heat-treatment",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
@@ -201546,6 +202344,9 @@
       ],
       "сосульки": [
         "claim:residual-nature-roof-melt-eave-refreezing"
+      ],
+      "сосущих": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
       ],
       "сотен": [
         "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
@@ -202442,6 +203243,7 @@
         "claim:food-preservation-qualitative",
         "claim:foundations-mat-07-wood-storage-biological-damage",
         "claim:fur-skin-cooling-cleansing",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-gap-payment-changes-only-accepted-obligation-part",
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
         "claim:pine-pitch-severe-oxidation",
@@ -202976,11 +203778,21 @@
       "стихнуть": [
         "claim:place-outdoors-activity-sensory-pulses"
       ],
+      "стог": [
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
+      "стога": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
       "стоит": [
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces"
       ],
       "стойка": [
         "wk:material_culture:iron-splinter-holder"
+      ],
+      "стойких": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
       ],
       "стойкость": [
         "claim:textile-dye-mordant-fixation"
@@ -203749,6 +204561,7 @@
         "claim:household-tar-pot",
         "claim:household-utensil-wood",
         "claim:household-wooden-tableware",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:material-water-rawhide-wet-dry",
@@ -203936,6 +204749,7 @@
         "claim:textile-indigo-yellow-analysis"
       ],
       "считать": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-outdoors-shore-working-edge-composition"
       ],
       "считая": [
@@ -204021,7 +204835,8 @@
         "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination"
       ],
       "сырое": [
-        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts"
+        "claim:candidate-v6-raw-meat-and-catfish-are-food-safety-handling-contexts",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "сырой": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -204735,6 +205550,7 @@
         "claim:candidate-physiology-v3-shivering-thermogenesis",
         "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
         "claim:fur-skin-cooling-cleansing",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:mb14-practical-clay-firing-needs-gradual-observation",
         "claim:occupation-smith-heat-treatment",
         "claim:oil-tanning-crosslinking-fibres",
@@ -205295,6 +206111,22 @@
       ],
       "ткачеством": [
         "wk:material_culture:woven-textile"
+      ],
+      "тлеет": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
+      "тления": [
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
+      "тлеть": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
+      "тлеющую": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
+      "тля": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "то": [
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
@@ -206041,6 +206873,9 @@
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
+      "тревожных": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"
+      ],
       "трение": [
         "claim:dry-friction",
         "claim:foundations-phys-04-fluid-viscous-resistance",
@@ -206312,7 +207147,8 @@
         "wk:environment:cloud-droplet-growth-precipitation"
       ],
       "тяжёлых": [
-        "claim:candidate-physiology-v3-dehydration-functional-risk"
+        "claim:candidate-physiology-v3-dehydration-functional-risk",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
       ],
       "тяжести": [
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
@@ -206801,6 +207637,7 @@
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:healer-observation-and-questioning",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-collateral-follows-established-security-terms",
@@ -207710,6 +208547,7 @@
         "claim:foundations-physical-b2-snd-03-sound-frequency-pitch",
         "claim:foundations-thm-05-surface-area-heterogeneous-rate",
         "claim:foundations-thm-07-thermal-expansion-state-change",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-gap-collateral-follows-established-security-terms",
         "claim:population-material-leather-dry",
         "claim:population-material-leather-mould",
@@ -207938,6 +208776,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
@@ -208090,6 +208929,7 @@
         "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling"
       ],
       "установить": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:place-outdoors-clearing-and-trace-renewal"
       ],
       "установка": [
@@ -208733,6 +209573,7 @@
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
       ],
       "ущерб": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening"
       ],
@@ -211008,6 +211849,7 @@
       "чистой": [
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task"
       ],
@@ -212311,6 +213153,10 @@
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-leather-water-processing",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-new-linen-water",
@@ -215399,6 +216245,7 @@
         "claim:fauna-mammals-mountain-hare-seasonal-pelage",
         "claim:fauna-perch-experience",
         "claim:foundations-ms3-10-ultimatum-expectations",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "wk:biology_physiology:fauna-eurasian-perch"
       ],
@@ -215432,6 +216279,7 @@
         "claim:flayed-skin-processing-purpose",
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:fuel-pit-charcoal-burning-charcoal-output",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:military-world-established-casualty-needs-hazard-aware-help",
@@ -215818,6 +216666,7 @@
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:foundations-phys-01-air-drag-fall",
         "claim:human-life-category-does-not-determine-means-ties-skill",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-writing-carries-attributed-account-only",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
@@ -215879,6 +216728,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:healer-observation-and-questioning",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
@@ -216056,6 +216906,7 @@
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk",
         "wk:biology_physiology:young-bird-ground-stage-and-intervention",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
         "wk:psychology_behavior:foundations-ms-02-attention-novelty",
@@ -216233,6 +217084,7 @@
         "claim:localized-improvement-context",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-established-local-observance-can-change-availability",
@@ -216377,6 +217229,7 @@
         "wk:biology_physiology:foundation-phagocytes",
         "wk:biology_physiology:foundation-virion-structure",
         "wk:biology_physiology:horse-forage-feeding",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:reconstructed-birth-household-support",
         "wk:biology_physiology:residual-postpartum-maternal-recovery",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
@@ -216876,6 +217729,9 @@
         "claim:livestock-swine-membership",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
@@ -217619,6 +218475,8 @@
         "wk:environment:freezing-fog-rime",
         "wk:environment:groundwater-recharge-discharge",
         "wk:environment:hunting-fur-procurement",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:mb14-practical-field-and-water",
         "wk:environment:medieval-novgorod-fishing-context",
         "wk:environment:mineral-hardness-not-brittleness",
@@ -217899,6 +218757,7 @@
         "claim:fauna-mammals-european-otter-aquatic-prey-diet",
         "claim:fauna-mammals-red-fox-prey-population-effect",
         "claim:foundations-earth-09-ecological-competition",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
         "claim:military-world-animals-and-households-have-continuing-needs",
         "claim:military-world-armed-disruption-affects-civilian-work",
@@ -217940,6 +218799,7 @@
         "claim:foundations-phys-07-surface-tension-interface",
         "claim:foundations-physical-b2-elc-02-stationary-charge-distance-force",
         "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
@@ -218032,7 +218892,14 @@
         "claim:rp-property-claim-relates-acquisition-chain"
       ],
       "apart": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:religion-olenin-adjudication"
+      ],
+      "aphid": [
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
+      "aphids": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
       ],
       "apiary": [
         "claim:agriculture-fauna-rural-tree-borts",
@@ -218061,6 +218928,10 @@
       "appear": [
         "claim:population-felt-lining",
         "claim:residual-nature-celestial-pole-daily-circles"
+      ],
+      "appearance": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "appears": [
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator"
@@ -218691,6 +219562,7 @@
         "claim:household-clay-drying-and-incompatible-movement",
         "claim:later-novgorod-judicial-charter",
         "claim:livestock-rumen-fermentation-nutrients",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:material-water-new-linen-water",
         "claim:material-water-rawhide-wet-dry",
         "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
@@ -219464,6 +220336,8 @@
         "claim:healer-portable-and-household-kit",
         "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -219839,6 +220713,7 @@
       "bath": [
         "claim:bathing-washing-water",
         "claim:fauna-chicken-dust-bathing",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -219921,6 +220796,7 @@
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
         "claim:human-life-shared-role-can-be-negotiated",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
@@ -220413,6 +221289,7 @@
         "wk:craft_technology:plank-gap-caulking",
         "wk:craft_technology:reconstructed-place-work-flow",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:environment:reconstructed-place-outdoors",
         "wk:environment:research-freeze-thaw-sediment-erosion",
@@ -221357,6 +222234,7 @@
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
         "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:population-material-wood-combustion",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
@@ -221965,6 +222843,9 @@
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-established-local-observance-can-change-availability",
@@ -222370,6 +223251,7 @@
       ],
       "cannot": [
         "claim:food-energy-nutrients",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-textile-water-load",
         "claim:measurement-units-must-be-identified",
         "claim:metal-classes-composition",
@@ -222451,6 +223333,10 @@
       ],
       "captured": [
         "claim:foundations-ms3-01-initial-attention"
+      ],
+      "caramel": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "carbohydrate": [
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide"
@@ -222892,6 +223778,7 @@
         "claim:fauna-mammals-domestic-horse-separation-stress",
         "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
         "claim:foundations-physical-b2-chm-08-common-ion-precipitation-shift",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-vegetable-leather-water",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
@@ -222955,6 +223842,7 @@
       ],
       "cautious": [
         "claim:household-trauma-unnecessary-movement-can-worsen",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:mb14-practical-care",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:environment:reconstructed-mixed-shoreline-trace",
@@ -223465,6 +224353,7 @@
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:biology_physiology:fauna-animal-communication",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:catalyst-rate-not-equilibrium",
         "wk:chemistry_process:chemical-exposure-modifiers",
         "wk:chemistry_process:combustion-fuel-oxidizer",
@@ -223876,6 +224765,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
         "claim:fauna-mussel-filtration",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
@@ -223924,6 +224814,7 @@
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:foundations-earth-28-radiation-fog",
         "claim:healer-care-coordination-and-uncertainty",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
         "claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
         "claim:military-world-portage-is-coordinated-carry-work",
@@ -224151,9 +225042,11 @@
       "coating": [
         "claim:civic-defence-clay-gaps",
         "claim:construction-animal-glue-chalk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:pine-pitch-severe-oxidation",
         "claim:pine-pitch-woven-basket-coating",
         "claim:population-material-iron-coating",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:material_culture:pine-pitch-coating"
       ],
       "coatings": [
@@ -224948,6 +225841,7 @@
         "claim:casting-tin",
         "claim:fauna-mammals-moose-ecosystem-engineering",
         "claim:lime-transformations",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:metal-classes-composition",
         "claim:metal-properties-depend-on-state",
         "claim:occupation-smith-heat-treatment",
@@ -225047,6 +225941,7 @@
       ],
       "concerning": [
         "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:population-processes-malt-context",
         "wk:social_law_economy:church-payment-instruction",
@@ -225090,6 +225985,7 @@
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
         "claim:excavated-urban-structures",
         "claim:iron-corrosion-moisture-oxygen",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:novgorod-leather-items",
         "claim:novgorod-wooden-urban-elements",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
@@ -225337,6 +226233,7 @@
         "claim:human-life-travellers-may-seek-local-information",
         "claim:lime-transformations",
         "claim:livestock-rumen-fermentation",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
         "claim:place-outdoors-season-work-space-reallocation",
@@ -225443,6 +226340,9 @@
       ],
       "confirm": [
         "claim:residual-nature-snow-conceals-ice-gaps"
+      ],
+      "confirms": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "conflict": [
         "claim:candidate-gramota724-yugra-tribute-expedition",
@@ -225638,6 +226538,8 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:foundations-phys-07-surface-tension-interface",
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-leather-water-processing",
         "claim:milling-grain-compression-shear-fracture",
         "claim:milling-plate-gap-pressure-fineness",
@@ -225661,6 +226563,7 @@
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:fauna-tick",
         "wk:biology_physiology:foundation-pathogen-transport",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:research-nettle-food-contact-properties",
         "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:biology_physiology:static-ranunculaceae-sap-contact",
@@ -225746,6 +226649,7 @@
       "contaminated": [
         "claim:care-waterproof-wound-cover",
         "claim:foundations-life-44-pathogen-transport",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
         "wk:biology_physiology:foundation-pathogen-transport",
         "wk:physics_material_science:research-local-exhaust-airflow"
@@ -227945,6 +228849,7 @@
       ],
       "develop": [
         "claim:fauna-culex-life-cycle",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:population-material-leather-mould",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
@@ -228022,6 +228927,8 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-fermentation",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
         "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
         "claim:military-world-cold-and-wetness-need-practical-boundaries",
@@ -228786,6 +229693,7 @@
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:military-world-custody-needs-attention-and-basic-needs",
         "claim:occupation-smith-hammer",
@@ -229142,6 +230050,7 @@
       "dose": [
         "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
         "claim:foundations-haz-01-exposure-modifiers",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
@@ -229639,6 +230548,7 @@
       ],
       "dye": [
         "claim:clothing-nerev-coloured-wool",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
@@ -229649,6 +230559,7 @@
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-lac-dye-analysis",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:dyebath-cooling-and-uptake",
         "wk:chemistry_process:plant-leaves-as-dye-source",
         "wk:craft_technology:dyebath-textile-handling"
@@ -229978,6 +230889,7 @@
         "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:foundations-haz-01-exposure-modifiers",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
@@ -230474,6 +231386,7 @@
         "claim:foundations-life-27-ontogeny",
         "claim:foundations-life-39-ecosystem-change",
         "claim:household-trauma-danger-or-airway-changes-position-choice",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "wk:biology_physiology:exercise-heat-dissipation",
         "wk:biology_physiology:foundation-ecosystem-change",
         "wk:biology_physiology:foundation-ontogeny",
@@ -230662,6 +231575,7 @@
         "claim:leather-broad-context",
         "claim:livestock-rumen-forage-digestion",
         "claim:localized-improvement-context",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-writing-carries-attributed-account-only",
         "claim:material-water-leather-water-processing",
         "claim:occupation-directed-grain-procurement",
@@ -230726,6 +231640,7 @@
         "claim:household-trauma-danger-or-airway-changes-position-choice",
         "claim:human-life-oral-retelling-varies-with-context",
         "claim:livestock-swine-membership",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-collateral-follows-established-security-terms",
@@ -230840,6 +231755,7 @@
         "claim:foundations-earth-19-aquifer-pore-flow",
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
         "claim:foundations-ms3-01-initial-attention",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-rawhide-wet-dry",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -231576,6 +232492,7 @@
       "experienced": [
         "claim:healer-care-coordination-and-uncertainty",
         "claim:healer-experience-and-reputation",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption"
       ],
@@ -231680,6 +232597,7 @@
         "claim:foundations-life-45-infection-entry",
         "claim:foundations-life-46-airborne-tuberculosis-exposure",
         "claim:foundations-ms3-02-working-memory",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-cold-and-wetness-need-practical-boundaries",
         "claim:military-world-established-casualty-needs-hazard-aware-help",
         "claim:oil-rawhide-moisture-resistance",
@@ -232292,6 +233210,7 @@
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:livestock-rumen-forage-digestion",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
@@ -232626,6 +233545,8 @@
       "fire": [
         "claim:grain-processing-bread-open-fire-baking",
         "claim:ha-firesteel-ignition",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:military-world-camp-needs-place-specific-arrangement",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
@@ -232641,6 +233562,7 @@
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
         "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
         "wk:craft_technology:fire-ignition",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:material_culture:firesteel",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
         "wk:physics_material_science:water-class-a-fire-cooling"
@@ -232679,6 +233601,7 @@
         "claim:food-practices-millet-cleaning-waste",
         "claim:foundations-phys-01-air-drag-fall",
         "claim:fuel-pit-charcoal-burning-air-sequence",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
         "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
@@ -232699,6 +233622,7 @@
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "claim:transport-winter-sledge-1220",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:mb14-practical-care",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10"
@@ -233421,6 +234345,7 @@
         "claim:human-life-visitors-add-resource-demands",
         "claim:later-novgorod-judicial-charter",
         "claim:livestock-rumen-fermentation-nutrients",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-textile-liquid-contaminants",
         "claim:material-water-vegetable-leather-water",
@@ -233582,6 +234507,7 @@
         "wk:biology_physiology:fauna-tick",
         "wk:biology_physiology:foundation-sensory-receptor",
         "wk:biology_physiology:horse-forage-feeding",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:reconstructed-health-support",
         "wk:biology_physiology:reconstructed-military-readiness-care",
@@ -234234,6 +235160,7 @@
         "claim:hard-stone-abrasive-shaping",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:human-life-shared-role-can-be-negotiated",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-new-linen-water",
@@ -234356,6 +235283,7 @@
         "wk:craft_technology:weight-fastening",
         "wk:craft_technology:woodworked-objects-and-waste",
         "wk:craft_technology:woodworking",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:pressure-gradient-wind",
         "wk:environment:residual-nature-sky",
         "wk:environment:residual-nature-winter",
@@ -235827,6 +236755,7 @@
       ],
       "hands": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-carried-equipment-needs-secure-access",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
@@ -235974,9 +236903,12 @@
         "claim:fodder-hay-account",
         "claim:fodder-healthy-horse-forage",
         "claim:livestock-rumen-forage-digestion",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:practical-fodder-hay",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:material_culture:hay",
         "wk:npc_daily_life:reconstructed-practical-seasonal-work"
       ],
@@ -235986,10 +236918,14 @@
       "haymaking": [
         "claim:fodder-hay-account"
       ],
+      "haystack": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
       "hazard": [
         "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure",
         "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
@@ -236121,6 +237057,7 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
         "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
         "claim:ordinary-life-household-needs-heat-food-storage",
@@ -236185,6 +237122,7 @@
         "claim:foundations-phys-09-mechanical-energy-dissipation",
         "claim:foundations-thm-07-thermal-expansion-state-change",
         "claim:heating-reduces-microbial-viability",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
         "claim:population-drying-workspace",
         "claim:population-joining-assembly-expansion",
@@ -236204,10 +237142,12 @@
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:craft_technology:place-thermal-processes",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:brittle-fracture-defects"
       ],
       "heats": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
       ],
       "heavier": [
@@ -236250,6 +237190,8 @@
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:human-life-kin-can-offer-contextual-support",
         "claim:livestock-rumen-forage-digestion",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
@@ -236413,11 +237355,13 @@
       "high": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
         "claim:foundations-ms3-02-working-memory",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:solute-concentration-reduces-available-water-for-many-microbes",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "claim:water-permeability-connected-pores",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-flood-high-water-mark-observation"
       ],
       "higher": [
@@ -236716,6 +237660,10 @@
         "claim:fauna-bee-diurnal",
         "claim:fauna-bee-winter-cluster"
       ],
+      "honeydew": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
       "hood": [
         "claim:clothing-votola-cloak"
       ],
@@ -236860,6 +237808,7 @@
       "hot": [
         "claim:foundations-earth-22-hydrothermal-metal-transport",
         "claim:foundations-earth-23-hydrothermal-precipitation",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
@@ -237254,6 +238203,7 @@
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:fibre-hackle-removes-shive",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:occupation-directed-grain-procurement",
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
@@ -237842,6 +238792,7 @@
         "claim:localized-improvement-context",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:material-water-leather-water-processing",
@@ -238537,6 +239488,7 @@
         "claim:rp-mother-household-care-succession",
         "claim:textile-lac-dye-analysis",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits"
       ],
       "inferred": [
@@ -238801,6 +239753,7 @@
       ],
       "insect": [
         "claim:fauna-pike-juvenile-predation",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "wk:biology_physiology:static-animal-b06-british-bat-activity"
       ],
       "insectivorous": [
@@ -238813,6 +239766,7 @@
         "claim:fauna-frog-invertebrate-diet",
         "claim:fauna-great-tit-summer-diet",
         "claim:foundations-mat-07-wood-storage-biological-damage",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:residual-traces-deadwood-feeding-signs",
@@ -239384,6 +240338,7 @@
       "irritation": [
         "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
         "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
         "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
@@ -239643,6 +240598,7 @@
         "claim:livestock-swine-comparative-diet",
         "claim:localized-improvement-context",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-hemp-cellulosic-fibre",
@@ -240047,6 +241003,7 @@
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
         "claim:grain-processing-bread-optional-leaven",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-rawhide-wet-dry",
@@ -240229,6 +241186,7 @@
         "claim:grain-processing-bread-liquid",
         "claim:healer-portable-and-household-kit",
         "claim:household-clay-key-and-compatible-patch",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-writing-carries-attributed-account-only",
         "claim:maslo-birchbark-718-account",
         "claim:military-world-long-implements-need-clearance",
@@ -240442,6 +241400,7 @@
       ],
       "keep": [
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "wk:biology_physiology:fauna-red-squirrel"
@@ -241146,6 +242105,7 @@
         "claim:fauna-dragonfly-emergence",
         "claim:fauna-mammals-eurasian-beaver-herbivory",
         "claim:fauna-mammals-moose-browse-aquatic-forage",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:practical-textile-cut",
@@ -241157,7 +242117,8 @@
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "wk:biology_physiology:bearberry-lingonberry-identification",
         "wk:biology_physiology:research-nettle-food-contact-properties",
-        "wk:chemistry_process:plant-leaves-as-dye-source"
+        "wk:chemistry_process:plant-leaves-as-dye-source",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "leaving": [
         "claim:material-water-alum-skin-water",
@@ -241577,6 +242538,7 @@
         "wk:biology_physiology:work-intensity-duration",
         "wk:chemistry_process:candidate-macro-causal-v2-water-and-toxic-exposure",
         "wk:craft_technology:mb14-practical-making-and-repair",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:research-track-substrate-interpretation",
         "wk:environment:residual-trace-formation-and-preservation",
@@ -241631,6 +242593,7 @@
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:poozerie-cereal-millet-source",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration"
       ],
@@ -241686,6 +242649,7 @@
         "claim:wood-liquid-directional-uptake",
         "claim:wood-liquid-fibre-saturation",
         "claim:wood-liquid-moisture-change",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:research-starch-gelatinization-thickening",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:physics_material_science:capillary-action",
@@ -241920,6 +242884,7 @@
         "claim:household-roof-local-condition-guides-repair",
         "claim:human-life-travellers-may-seek-local-information",
         "claim:leather-broad-context",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-established-local-observance-can-change-availability",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-vegetable-leather-water",
@@ -242112,6 +243077,7 @@
         "claim:endotherm-insulation-reduces-heat-loss",
         "claim:foundations-earth-14-ecosystem-energy-flow",
         "claim:foundations-ms-31-conflict-misperception",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:material-water-textile-water-load",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
@@ -242688,6 +243654,7 @@
         "claim:agriculture-fauna-hemp-processing-tow",
         "claim:construction-animal-glue-chalk",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:measurement-grain-mass-volume-density",
         "claim:measurement-units-must-be-identified",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
@@ -242760,6 +243727,7 @@
         "claim:household-wooden-tableware",
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
         "claim:material-water-hemp-cellulosic-fibre",
@@ -242842,6 +243810,7 @@
         "wk:architecture_settlement:urban-pavements",
         "wk:biology_physiology:foundation-mitosis",
         "wk:biology_physiology:foundation-virion-structure",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:metal-classes-composition",
         "wk:chemistry_process:plant-leaves-as-dye-source",
         "wk:craft_technology:bark-assembly",
@@ -243903,6 +244872,7 @@
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
         "claim:household-clay-drying-and-incompatible-movement",
         "claim:iron-corrosion-moisture-oxygen",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
         "claim:microbial-growth-depends-on-available-moisture",
         "claim:milling-moisture-changes-grain-deformation",
@@ -243935,6 +244905,7 @@
         "wk:biology_physiology:stored-grain-condition",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:chemistry_process:place-salt-moisture-caking",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:moisture-vaporization-heat-demand",
         "wk:physics_material_science:static-birch-bark-water-deformation",
         "wk:physics_material_science:static-ground-b05-wet-soil-trafficability",
@@ -244066,10 +245037,12 @@
       ],
       "mordant": [
         "claim:clothing-nerev-coloured-wool",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:textile-chrysin-analysis",
         "claim:textile-dye-mordant-fixation",
-        "claim:textile-ellagic-acid-analysis"
+        "claim:textile-ellagic-acid-analysis",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "mordants": [
         "claim:textile-dye-mordant-fixation"
@@ -244224,6 +245197,7 @@
         "claim:foundations-life-13-alveolar-exchange",
         "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
         "claim:household-clay-drying-and-incompatible-movement",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
@@ -244421,6 +245395,11 @@
         "wk:environment:urban-bird-period-specific",
         "wk:physics_material_science:static-force-equilibrium"
       ],
+      "musty": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
+      ],
       "mutual": [
         "claim:foundations-ms2-03-distrust-cooperation",
         "claim:foundations-ms3-08-mutual-cooperation",
@@ -244516,6 +245495,8 @@
       "names": [
         "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:occupation-directed-grain-procurement",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
@@ -244821,6 +245802,7 @@
         "claim:healer-experience-and-reputation",
         "claim:healer-portable-and-household-kit",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -245184,6 +246166,9 @@
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
         "claim:macro-gap-political-communication-needs-accepted-performance",
         "claim:maslo-birchbark-718-account",
@@ -245491,6 +246476,7 @@
         "claim:healer-experience-and-reputation",
         "claim:healer-portable-and-household-kit",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -245882,6 +246868,7 @@
         "claim:livestock-swine-membership",
         "claim:localized-improvement-context",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-collateral-follows-established-security-terms",
         "claim:macro-gap-slaughter-needs-work-tools-and-place",
         "claim:macro-gap-writing-carries-attributed-account-only",
@@ -246976,6 +247963,7 @@
       ],
       "observe": [
         "claim:healer-observation-and-questioning",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside"
       ],
       "observed": [
@@ -247133,6 +248121,9 @@
         "claim:fauna-tick-senses"
       ],
       "odour": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:research-carbon-monoxide-perceptibility"
       ],
       "of": [
@@ -247937,6 +248928,7 @@
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-leather-water-processing",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:mb14-practical-sowing-follows-local-workable-soil",
@@ -248037,6 +249029,7 @@
         "wk:biology_physiology:fauna-great-tit",
         "wk:biology_physiology:fauna-tick",
         "wk:biology_physiology:fermentation",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:microbial-growth",
         "wk:biology_physiology:muscle-aerobic-energy",
         "wk:biology_physiology:place-plant-freezing-injury-context",
@@ -248047,6 +249040,7 @@
         "wk:chemistry_process:chemical-exposure-modifiers",
         "wk:chemistry_process:fermentation-conditions",
         "wk:environment:freeze-thaw-rock-fracture",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:rising-air-cooling-cloud-condensation",
         "wk:material_culture:bone",
         "wk:material_culture:bone-skate",
@@ -248663,6 +249657,10 @@
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
@@ -249223,6 +250221,7 @@
         "wk:environment:hydrothermal-precipitation",
         "wk:environment:igneous-cooling-texture",
         "wk:environment:igneous-rock-formation",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:metamorphic-rock-formation",
         "wk:environment:mineral-hardness-not-brittleness",
         "wk:environment:mineral-hardness-scratch-comparison",
@@ -249686,6 +250685,8 @@
         "claim:judicial-accusation-record",
         "claim:livestock-rumen-fermentation",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
@@ -250875,6 +251876,7 @@
         "claim:foundations-ms-34-role-adjustment",
         "claim:human-life-capacity-experience-help-vary",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:military-world-animals-and-households-have-continuing-needs",
         "claim:military-world-defence-repair-competes-for-people-and-material",
@@ -251043,6 +252045,7 @@
         "claim:residual-traces-animal-trace-weather-decay"
       ],
       "persistent": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:residual-tree-picea-abies-evergreen-needles"
       ],
@@ -251498,6 +252501,7 @@
         "claim:grain-processing-bread-ground-plant-base",
         "claim:grain-processing-bread-liquid",
         "claim:livestock-ruminant-membership",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-new-linen-water",
@@ -251539,6 +252543,7 @@
         "wk:biology_physiology:static-hop-bine-support-water",
         "wk:biology_physiology:static-plant-wilt-nondiagnostic",
         "wk:chemistry_process:plant-leaves-as-dye-source",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:static-wetland-plant-regional-compatibility",
         "wk:environment:troitsky-local-plant-remains",
         "wk:material_culture:historically-recorded-maslo",
@@ -251906,6 +252911,7 @@
         "claim:foundations-life-45-infection-entry",
         "claim:healer-portable-and-household-kit",
         "claim:judicial-accusation-record",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:posadnik-fedor-conflict-1224",
@@ -251922,6 +252928,7 @@
         "wk:chemistry_process:environmental-exposure-routes",
         "wk:chemistry_process:fermentation-conditions",
         "wk:environment:candidate-water-circulation-oxygen",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:slope-force-strength",
         "wk:environment:static-weather-b06-cloud-rain-observation",
         "wk:social_law_economy:judicial-accusation-record"
@@ -252014,6 +253021,7 @@
         "claim:healer-observation-and-questioning",
         "claim:human-life-household-pressure-can-interrupt-learning",
         "claim:human-life-learning-observation-practice-feedback",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:practical-document-genres",
@@ -253583,6 +254591,7 @@
         "wk:material_culture:novgorod-leather-items"
       ],
       "pull": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:practical-boat-shore-transfer"
       ],
       "pulley": [
@@ -253822,6 +254831,7 @@
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:environment:candidate-macro-causal-v2-solar-cues",
         "wk:environment:candidate-v2-ice-snow-hazards",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
@@ -255074,6 +256084,7 @@
         "wk:craft_technology:dyebath-textile-handling",
         "wk:craft_technology:linden-bast-soaking-and-separation",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
@@ -255335,6 +256346,7 @@
       "remove": [
         "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination",
         "claim:fibre-hackle-removes-shive",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
       ],
@@ -255759,11 +256771,13 @@
       ],
       "residue": [
         "claim:fauna-earthworm-soil-effects",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
         "claim:population-material-wood-combustion",
-        "wk:biology_physiology:wet-hide-work-context"
+        "wk:biology_physiology:wet-hide-work-context",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "residues": [
         "claim:fauna-earthworm-feeding-burrows",
@@ -255878,6 +256892,7 @@
         "claim:foundations-ms-34-role-adjustment",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
         "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-crossing-conditions-remain-local",
         "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
@@ -255897,6 +256912,7 @@
         "wk:biology_physiology:foundation-antibodies",
         "wk:biology_physiology:foundation-immune-memory",
         "wk:biology_physiology:foundation-reflex",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:plant-photoperiod-response",
         "wk:biology_physiology:research-orienting-response",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
@@ -256230,6 +257246,10 @@
       "ring": [
         "claim:population-weight-bark"
       ],
+      "rinse": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
+      ],
       "rinsing": [
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work"
       ],
@@ -256287,6 +257307,7 @@
         "wk:biology_physiology:static-transplant-root-disturbance",
         "wk:chemistry_process:static-wood-ash-contact-irritation",
         "wk:chemistry_process:static-wood-ash-lye-wool-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:social_behavior:reconstructed-road-hospitality-boundary"
       ],
       "risks": [
@@ -256907,6 +257928,7 @@
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-ruminant-membership",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
         "claim:military-world-carrying-an-injured-person-is-conditional",
         "claim:military-world-training-links-practice-feedback-and-rest",
@@ -257071,10 +258093,12 @@
         "claim:terrain-parent-material-assemblage"
       ],
       "sap": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mezereon-poisonous-sap-all-parts",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "wk:biology_physiology:mezereon-toxicity",
-        "wk:biology_physiology:static-ranunculaceae-sap-contact"
+        "wk:biology_physiology:static-ranunculaceae-sap-contact",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "sapling": [
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation"
@@ -257233,6 +258257,7 @@
         "claim:household-tar-pot",
         "claim:household-utensil-wood",
         "claim:household-wooden-tableware",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
         "claim:maslo-birchbark-718-account",
         "claim:material-water-alum-skin-water",
@@ -257624,6 +258649,8 @@
         "claim:fauna-mammals-wild-boar-thermal-wallowing-activity",
         "claim:healer-care-coordination-and-uncertainty",
         "claim:healer-livelihood-and-household-support",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:public-world-dispute-can-use-questions-and-kin",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-local-authority-is-one-escalation-option",
@@ -257671,7 +258698,8 @@
         "wk:psychology_behavior:foundations-ms-03-attention-expectation"
       ],
       "self": [
-        "claim:foundations-ms2-03-distrust-cooperation"
+        "claim:foundations-ms2-03-distrust-cooperation",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "sell": [
         "claim:rp-merchant-credit-relates-third-party-goods"
@@ -257807,6 +258835,7 @@
         "claim:sound-reflections-arrive-after-direct-path",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
         "claim:textile-dye-application",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:craft_technology:bathing-washing",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence"
@@ -257941,6 +258970,7 @@
       "severe": [
         "claim:candidate-physiology-v3-dehydration-functional-risk",
         "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:pine-pitch-severe-oxidation",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts"
       ],
@@ -258569,6 +259599,7 @@
         "claim:clothing-porty-cut",
         "claim:foundations-earth-16-igneous-cooling-texture",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:practical-leather-cut",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -258653,6 +259684,8 @@
         "claim:foundations-life-45-infection-entry",
         "claim:fur-skin-cooling-cleansing",
         "claim:intact-skin-reduces-pathogen-entry",
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-alum-skin-water",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
@@ -258671,6 +259704,7 @@
         "wk:biology_physiology:flayed-skin-preservation",
         "wk:biology_physiology:foundation-infection-entry",
         "wk:biology_physiology:foundation-skin-sensation",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:skin-barrier",
         "wk:biology_physiology:skin-emollient-and-occlusive-film",
         "wk:biology_physiology:static-skin-friction-context-b06",
@@ -258850,11 +259884,13 @@
         "claim:water-capillary-height"
       ],
       "smell": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-outdoors-activity-sensory-pulses",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue"
       ],
       "smells": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:place-outdoors-activity-sensory-pulses"
       ],
       "smith": [
@@ -258883,6 +259919,7 @@
         "claim:occupation-smith-iron-input"
       ],
       "smoke": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:military-world-fire-and-smoke-need-access-and-separation",
         "claim:military-world-ground-and-weather-change-practical-options",
         "claim:military-world-traces-need-cautious-interpretation",
@@ -258914,8 +259951,10 @@
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context"
       ],
       "smoking": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
-        "wk:chemistry_process:fish-smoking-context"
+        "wk:chemistry_process:fish-smoking-context",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "smoky": [
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
@@ -258929,6 +259968,14 @@
       ],
       "smoothed": [
         "claim:hard-stone-abrasive-shaping"
+      ],
+      "smoulder": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
+      "smouldering": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "snag": [
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads"
@@ -259744,7 +260791,8 @@
         "wk:biology_physiology:fauna-cross-spider"
       ],
       "spill": [
-        "wk:architecture_settlement:reconstructed-place-work-space"
+        "wk:architecture_settlement:reconstructed-place-work-space",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response"
       ],
       "spillage": [
         "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access"
@@ -259913,6 +260961,10 @@
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk",
         "wk:psychology_behavior:foundations-ms-17-individual-variation"
+      ],
+      "stack": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
       "stacked": [
         "claim:civic-defence-log-courses"
@@ -260333,6 +261385,10 @@
       "sticking": [
         "claim:oil-tanning-crosslinking-fibres"
       ],
+      "sticky": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "wk:environment:macro-b17-sticky-plant-coating-limits"
+      ],
       "stiff": [
         "claim:residual-tree-picea-abies-evergreen-needles"
       ],
@@ -260513,6 +261569,7 @@
         "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments"
       ],
       "stop": [
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
@@ -260572,11 +261629,14 @@
         "claim:fauna-bee-winter-cluster"
       ],
       "stored": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:practical-food-grain-storage",
         "claim:settlement-underfloor-storage",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
         "wk:biology_physiology:stored-grain-condition",
+        "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:physics_material_science:stored-grain-airflow-temperature-management",
         "wk:physics_material_science:stored-grain-moisture-migration",
         "wk:physics_material_science:wood-storage-biological-damage"
@@ -261476,7 +262536,8 @@
         "wk:biology_physiology:foundation-infection-chain"
       ],
       "suspected": [
-        "claim:household-trauma-unnecessary-movement-can-worsen"
+        "claim:household-trauma-unnecessary-movement-can-worsen",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
       ],
       "suspended": [
         "claim:foundations-earth-27-fog-visibility",
@@ -261945,6 +263006,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:household-dough-temperature-changes-proofing",
         "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:mb14-practical-clay-firing-needs-gradual-observation",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:metal-properties-depend-on-state",
@@ -263461,6 +264523,9 @@
         "claim:livestock-ruminant-membership",
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-leather-water-processing",
         "claim:material-water-linen-flax-origin",
@@ -264073,6 +265138,7 @@
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
         "claim:fauna-bird-migration-cues",
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-gap-established-local-observance-can-change-availability",
         "claim:plant-development-responds-to-light",
         "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
@@ -264266,6 +265332,7 @@
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
         "claim:lime-transformations",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:material-water-textile-water-load",
         "claim:material-water-vegetable-leather-water",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
@@ -265078,6 +266145,7 @@
         "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
       ],
       "treating": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
         "claim:place-outdoors-shore-working-edge-composition"
       ],
@@ -265093,6 +266161,7 @@
         "claim:healer-care-coordination-and-uncertainty",
         "claim:healer-experience-and-reputation",
         "claim:household-trauma-danger-or-airway-changes-position-choice",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:military-world-established-casualty-needs-hazard-aware-help",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
@@ -265750,8 +266819,10 @@
       ],
       "unknown": [
         "claim:judicial-accusation-record",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:metal-classes-composition",
         "claim:military-world-long-implements-need-clearance",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:chemistry_process:metal-classes-composition",
         "wk:social_law_economy:judicial-accusation-record"
       ],
@@ -266772,6 +267843,7 @@
         "claim:population-material-clay-drying"
       ],
       "warrant": [
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help"
       ],
@@ -266944,6 +268016,7 @@
         "claim:human-life-travellers-may-seek-local-information",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lime-transformations",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:material-water-alum-skin-water",
         "claim:material-water-leather-water-processing",
@@ -268041,6 +269114,7 @@
         "claim:judicial-accusation-record",
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
@@ -268158,6 +269232,7 @@
         "wk:biology_physiology:foundation-muscle-movement",
         "wk:biology_physiology:foundation-organ-systems",
         "wk:biology_physiology:human-thermoregulation",
+        "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:muscle-fatigue",
         "wk:biology_physiology:stomatal-opening-tradeoff",
         "wk:biology_physiology:sweating-water-loss",
@@ -268169,6 +269244,7 @@
         "wk:chemistry_process:temperature-solubility-conditional",
         "wk:craft_technology:fire-ignition",
         "wk:craft_technology:urban-wooden-coverings",
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
         "wk:environment:pressure-gradient-wind",
         "wk:environment:wetland-hydric-soil",
         "wk:material_culture:forged-broad-headed-iron-nail",

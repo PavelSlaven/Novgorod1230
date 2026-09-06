@@ -204,6 +204,10 @@
     "static-plant-contact-b05.json",
     "verification-static-plant-contact-b05.json",
     "reconstructed-military-world-v1.json",
-    "verification-reconstructed-military-world-v1.json"
+    "verification-reconstructed-military-world-v1.json",
+    "macro-batch14-context-v1.json",
+    "verification-macro-batch14-context-v1.json",
+    "macro-batch14-practical-v1.json",
+    "verification-macro-batch14-practical-v1.json"
   ]
 }

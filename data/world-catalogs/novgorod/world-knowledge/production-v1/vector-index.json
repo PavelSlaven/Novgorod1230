@@ -10132,6 +10132,48 @@
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Низкая температура замедляет многие микробные процессы, но есть исключения."
     },
     {
+      "entry_ref": "wk-retrieval:claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function:en",
+      "target_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "mixed shoreline trace Editorial cautious reading of already observed mixed shoreline traces. Stakes, charcoal and uneven ground together can suggest prior human use of a shore, but do not identify a dwelling, function, date, owner or extent. stakes charcoal mounds former shore use shore dwelling traces"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function:ru",
+      "target_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "смешанный береговой след Редакторская осторожная интерпретация сочетания уже видимых следов на берегу. Колья, уголь и неровный грунт вместе могут указывать на прежнее использование берега людьми, но не называют жильё, функцию, дату, хозяина или размер места. колья уголь холмики следы старого жилья следы жилья на берегу"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid:en",
+      "target_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "road hospitality boundary Editorial premise about temporary traveller aid within risk and household means. An unfamiliar traveller in bad weather can prompt bounded aid: a host assesses risk and means, offers dry shelter, warmth, food or directions, or refuses or redirects. It is neither entitlement nor a uniform duty. traveller rain shelter stranger at the door traveller rain lodging stranger hospitality host shelter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid:ru",
+      "target_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "границы дорожного гостеприимства Редакторская premise о временной помощи путнику в пределах риска и хозяйских средств. Незнакомый путник в непогоду может вызвать ограниченную помощь: хозяин оценивает риск и средства, предлагает сухое место, тепло, еду или направление — либо отказывает или направляет дальше. Это не право гостя и не одинаковая обязанность. путник дождь ночлег гость у дороги ночлег в дождь случайный путник гостеприимство хозяина"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution:en",
+      "target_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "market weighing check Editorial premise about a repeatable shared comparison in a weight dispute. Where an apparent difference arises in a sale by weight, people can repeat a shared observable comparison on available scales with an accepted reference or agreed method before deciding how to proceed. This names no unit, price, official, mandatory procedure or outcome. market scale dispute weight measure market weight dispute accepted measure repeat weighing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution:ru",
+      "target_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "проверка взвешивания на торгу Редакторская premise о повторяемом общем сравнении при споре о весе. Когда при продаже на вес уже возникло расхождение, люди могут повторить общее наблюдаемое сравнение на доступных весах с признанным или согласованным способом, прежде чем решать, как поступить. Это не называет единицу, цену, должностное лицо, обязательную процедуру или исход. торг весы спор мера веса торг спор о весе признанная мера веса повторное взвешивание"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:en",
       "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
       "domain": "biology_physiology",
@@ -10438,6 +10480,230 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Растительно-дублёная кожа Кожа с растительным дублением; способ выделки конкретного объекта требует отдельного основания. Растительно-дублёная кожа при прямом контакте с водой может усыхать или твердеть; миграция дубильных веществ к поверхности может вызвать окрашивание и поверхностную хрупкость. Это не общее правило для любой кожи и не свидетельство местной технологии дубления. Растительное дубление вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control:en",
+      "target_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Field and water Local conditions for sowing, shore work, and boats. Approaching piles or a berth, a boatman balances oars with wind and current; if control is lacking, waits or chooses another approach without promising manoeuvre. oats cabbage boat wind current pier"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control:ru",
+      "target_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Поле и вода Локальные условия посева, берега и лодки. Подходя к сваям или причалу, лодочник соотносит вёсла с ветром и течением; если контроля нет, ждёт или выбирает иной подход без обещания манёвра. овёс капуста лодка ветер течение пристань"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold:en",
+      "target_ref": "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Field and water Local conditions for sowing, shore work, and boats. Young cabbage transplants in late cold can be covered with available material or planting delayed if no protection exists; this establishes neither frost nor survival. oats cabbage boat wind current transplant cold cover"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold:ru",
+      "target_ref": "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Поле и вода Локальные условия посева, берега и лодки. Молодую капустную рассаду при позднем холоде можно прикрыть доступным материалом либо отложить пересадку, если защиты нет; это не устанавливает мороз, наличие покрытия или выживание. овёс капуста лодка ветер течение рассада холод укрытие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-clay-firing-needs-gradual-observation:en",
+      "target_ref": "claim:mb14-practical-clay-firing-needs-gradual-observation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. Clay firing proceeds in stages: fuel and air are changed gradually and vessels watched separately, without promising equal results or an exact temperature. net wood kiln forge rope wagon firing clay pottery"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-clay-firing-needs-gradual-observation:ru",
+      "target_ref": "claim:mb14-practical-clay-firing-needs-gradual-observation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Обжиг глины идёт этапами: топливо и воздух меняют постепенно, а сосуды наблюдают по отдельности, не обещая одинаковый результат или точную температуру. сеть древесина обжиг кузница верёвка телега глина печь гончар"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-deep-cut-first-response-is-pressure-and-help:en",
+      "target_ref": "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical care Cautious actions around animal and human illness or injury. For an already bleeding cut, work can stop and a clean cover with direct pressure can be applied; concerning or persistent bleeding calls for help without asserting depth or outcome. lambing fever cut first aid bleeding pressure"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-deep-cut-first-response-is-pressure-and-help:ru",
+      "target_ref": "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практический уход Осторожные действия при животном и человеческом недомогании. При уже кровоточащем порезе работу останавливают, накладывают чистое покрытие с прямым давлением и при тревожном или неослабевающем кровотечении зовут помощь, не определяя глубину или исход. окот лихорадка порез первая помощь кровотечение давление"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-ewe-lamb-postbirth-observation:en",
+      "target_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical care Cautious actions around animal and human illness or injury. After lambing, ewe and lamb can be kept under quiet individual observation; inability to stand or nurse calls for available experienced help without asserting cause or outcome. lambing fever cut first aid ewe lamb care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-ewe-lamb-postbirth-observation:ru",
+      "target_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практический уход Осторожные действия при животном и человеческом недомогании. После окота овцу и ягнёнка можно держать под спокойным отдельным наблюдением; если кто-то не встаёт или не сосёт, зовут доступного опытного помощника, не называя причину или исход. окот лихорадка порез первая помощь овца ягнёнок уход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-fever-needs-observation-not-causal-assumption:en",
+      "target_ref": "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical care Cautious actions around animal and human illness or injury. Fever is a sign, not a complete diagnosis: ordinary care can give rest, water, and observation, while worsening calls for available experienced help without asserting cause or recovery. lambing fever cut first aid illness care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-fever-needs-observation-not-causal-assumption:ru",
+      "target_ref": "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практический уход Осторожные действия при животном и человеческом недомогании. Лихорадка — признак, а не готовый диагноз: обычный уход может дать покой, воду и наблюдение, а ухудшение требует доступной опытной помощи без утверждения причины или выздоровления. окот лихорадка порез первая помощь болезнь уход вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport:en",
+      "target_ref": "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Household work Food keeping, shelter protection, transport, and washing. Fragile vessels for river transport can be separated and cushioned with available soft material, or carried in smaller loads, without promising they remain sound. milk roof pottery washing boat packing transport"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport:ru",
+      "target_ref": "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Домашняя работа Хранение пищи, защита жилья, перевозка и стирка. Хрупкую посуду для речной перевозки разделяют и прокладывают доступным мягким материалом либо везут меньшими частями, не обещая целость или отсутствие поломки. молоко крыша посуда стирка лодка упаковка перевозка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work:en",
+      "target_ref": "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Household work Food keeping, shelter protection, transport, and washing. Greasy soil on linen can need suitable soap or another surfactant plus repeated washing and rinsing; cold water and one pass do not promise a clean result. milk roof pottery washing linen grease soap"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work:ru",
+      "target_ref": "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Домашняя работа Хранение пищи, защита жилья, перевозка и стирка. Жир на льне может потребовать подходящего мыла или иного поверхностно-активного средства, повторной стирки и полоскания; холодная вода и один проход не обещают чистый результат. молоко крыша посуда стирка лён жир мыло"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-iron-workability-is-qualitative-not-temperature:en",
+      "target_ref": "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. Hot iron can be worked and a cooled piece may return to the fire; visible heat cues are qualitative guides, not exact temperature or a guaranteed result. net wood kiln forge rope wagon iron heat smithing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-iron-workability-is-qualitative-not-temperature:ru",
+      "target_ref": "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Горячее железо можно ковать, а остывшую заготовку иногда возвращают в горн; видимые признаки жара — только качественный ориентир, не точная температура или гарантия результата. сеть древесина обжиг кузница верёвка телега железо горн ковка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use:en",
+      "target_ref": "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Household work Food keeping, shelter protection, transport, and washing. In heat, milk is better kept in the coolest available place and used or processed sooner, without asserting freshness, safe duration, or spoilage. milk roof pottery washing heat storage spoilage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use:ru",
+      "target_ref": "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Домашняя работа Хранение пищи, защита жилья, перевозка и стирка. В жару молоко разумнее держать в самом прохладном доступном месте и использовать или переработать скорее, не утверждая свежесть, безопасный срок или порчу. молоко крыша посуда стирка жара хранение порча"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-net-draw-needs-clear-controlled-water-edge:en",
+      "target_ref": "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. A net draw needs a sufficiently clear, controlled water edge and gear check; reeds or another obstruction can make a short trial or delay wiser. net wood kiln forge rope wagon reeds fishing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-net-draw-needs-clear-controlled-water-edge:ru",
+      "target_ref": "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Для тяги невода нужны достаточно свободная управляемая кромка воды и проверка снасти; камыш или иной зацеп могут сделать разумнее короткую пробу либо ожидание. сеть древесина обжиг кузница верёвка телега невод камыш рыбалка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores:en",
+      "target_ref": "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Household work Food keeping, shelter protection, transport, and washing. When rain enters through a roof, a household can first make temporary cover and move vulnerable stores away from the leak, without assuming access, material, or success. milk roof pottery washing leak rain grain"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores:ru",
+      "target_ref": "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Домашняя работа Хранение пищи, защита жилья, перевозка и стирка. Если дождь идёт через крышу, сначала делают временное прикрытие и уводят уязвимые запасы от течи, а полный ремонт оставляют без предположений о доступе, материале или успехе. молоко крыша посуда стирка течь дождь зерно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-sowing-follows-local-workable-soil:en",
+      "target_ref": "claim:mb14-practical-sowing-follows-local-workable-soil",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Field and water Local conditions for sowing, shore work, and boats. Spring oat sowing can begin on a small locally workable patch; a wet strip can wait without copying a neighbour or promising germination or yield. oats cabbage boat wind current sowing field wet soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-sowing-follows-local-workable-soil:ru",
+      "target_ref": "claim:mb14-practical-sowing-follows-local-workable-soil",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Поле и вода Локальные условия посева, берега и лодки. Весенний сев овса можно начать с малого участка, когда именно эта земля годится для работы; мокрую полосу оставляют ждать, не копируя соседа и не обещая всходы или урожай. овёс капуста лодка ветер течение посев поле сырая почва"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes:en",
+      "target_ref": "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. When a wagon pulls aside, a driver can first reduce or redistribute load, then compare wheel, axle, and road behavior without treating one sign as a diagnosis. net wood kiln forge rope wagon wheel axle load"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes:ru",
+      "target_ref": "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Когда телегу уводит в сторону, возчик сначала уменьшает или перераспределяет груз, затем сравнивает колесо, ось и дорогу, не выдавая один признак за готовую поломку. сеть древесина обжиг кузница верёвка телега колесо ось груз"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair:en",
+      "target_ref": "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. Wet fibre rope is inspected for wear before a voyage; local damage is mended only with time and material, otherwise load or plan changes without promising strength. net wood kiln forge rope wagon rigging repair voyage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair:ru",
+      "target_ref": "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Мокрую волокнистую снасть осматривают на износ перед рейсом; местное повреждение чинят лишь при наличии времени и материала, иначе меняют груз или план без обещания прочности. сеть древесина обжиг кузница верёвка телега снасть ремонт рейс"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint:en",
+      "target_ref": "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. Wood splitting varies with grain and moisture: secure the piece, follow an observed line, and reposition or stop a resistant piece without promising boards. net wood kiln forge rope wagon splitting wedge log"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint:ru",
+      "target_ref": "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. Раскол древесины меняется с направлением волокон и влажностью: заготовку закрепляют, идут по наблюдаемой линии, а неподатливую переустанавливают или оставляют без обещания выхода досок. сеть древесина обжиг кузница верёвка телега раскол клин бревно"
     },
     {
       "entry_ref": "wk-retrieval:claim:measurement-grain-mass-volume-density:en",
@@ -23348,6 +23614,20 @@
       "retrieval_text": "Молочнокислое брожение Брожение с образованием молочной кислоты."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:mb14-practical-care:en",
+      "target_ref": "wk:biology_physiology:mb14-practical-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Practical care Cautious actions around animal and human illness or injury. lambing fever cut first aid"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:mb14-practical-care:ru",
+      "target_ref": "wk:biology_physiology:mb14-practical-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Практический уход Осторожные действия при животном и человеческом недомогании. окот лихорадка порез первая помощь"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:metabolic-heat:en",
       "target_ref": "wk:biology_physiology:metabolic-heat",
       "domain": "biology_physiology",
@@ -25630,6 +25910,20 @@
       "retrieval_text": "Замачивание и отделение луба липы Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон. луб липы лыко мочить кору отделить луб"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:mb14-practical-making-and-repair:en",
+      "target_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Practical making and repair Observable limits of craft, gear, and vehicle work. net wood kiln forge rope wagon"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:mb14-practical-making-and-repair:ru",
+      "target_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Практическая работа и ремонт Наблюдаемые ограничения ремесла, снасти и повозки. сеть древесина обжиг кузница верёвка телега"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:metalworking-broad-context:en",
       "target_ref": "wk:craft_technology:metalworking-broad-context",
       "domain": "craft_technology",
@@ -26582,6 +26876,20 @@
       "retrieval_text": "Образование магматических пород Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
     },
     {
+      "entry_ref": "wk-retrieval:wk:environment:mb14-practical-field-and-water:en",
+      "target_ref": "wk:environment:mb14-practical-field-and-water",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Field and water Local conditions for sowing, shore work, and boats. oats cabbage boat wind current"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:mb14-practical-field-and-water:ru",
+      "target_ref": "wk:environment:mb14-practical-field-and-water",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Поле и вода Локальные условия посева, берега и лодки. овёс капуста лодка ветер течение"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:medieval-novgorod-domestic-food-base:en",
       "target_ref": "wk:environment:medieval-novgorod-domestic-food-base",
       "domain": "environment",
@@ -26818,6 +27126,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-mixed-shoreline-trace:en",
+      "target_ref": "wk:environment:reconstructed-mixed-shoreline-trace",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "mixed shoreline trace Editorial cautious reading of already observed mixed shoreline traces. stakes charcoal mounds former shore use"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-mixed-shoreline-trace:ru",
+      "target_ref": "wk:environment:reconstructed-mixed-shoreline-trace",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "смешанный береговой след Редакторская осторожная интерпретация сочетания уже видимых следов на берегу. колья уголь холмики следы старого жилья"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:reconstructed-place-outdoors:en",
@@ -29732,6 +30054,20 @@
       "retrieval_text": "Рыбак Рыбак: материальная или функциональная категория; наличие и параметры задаёт состояние мира."
     },
     {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:mb14-practical-household-work:en",
+      "target_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Household work Food keeping, shelter protection, transport, and washing. milk roof pottery washing"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:mb14-practical-household-work:ru",
+      "target_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Домашняя работа Хранение пищи, защита жилья, перевозка и стирка. молоко крыша посуда стирка"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:neutral-household-context:en",
       "target_ref": "wk:npc_daily_life:neutral-household-context",
       "domain": "npc_daily_life",
@@ -32042,6 +32378,20 @@
       "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. песня рассказ игра"
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-road-hospitality-boundary:en",
+      "target_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "road hospitality boundary Editorial premise about temporary traveller aid within risk and household means. traveller rain shelter stranger at the door"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-road-hospitality-boundary:ru",
+      "target_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "границы дорожного гостеприимства Редакторская premise о временной помощи путнику в пределах риска и хозяйских средств. путник дождь ночлег гость у дороги"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-social-variation:en",
       "target_ref": "wk:social_behavior:reconstructed-social-variation",
       "domain": "npc_daily_life",
@@ -33118,6 +33468,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. брак родня дом"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-market-weighing-check:en",
+      "target_ref": "wk:social_law_economy:reconstructed-market-weighing-check",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "market weighing check Editorial premise about a repeatable shared comparison in a weight dispute. market scale dispute weight measure"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-market-weighing-check:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-market-weighing-check",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "проверка взвешивания на торгу Редакторская premise о повторяемом общем сравнении при споре о весе. торг весы спор мера веса"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-military-coordination-custody:en",

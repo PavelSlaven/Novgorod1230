@@ -10230,6 +10230,202 @@
       "retrieval_text": "Первый ответ на неизвестное вещество на коже Осторожная последовательность действий при контакте кожи с неизвестным веществом. После контакта кожи с уже известной как неизвестная красильной или протравной ванной разумный первый ответ — прекратить контакт, снять загрязнённый материал, промыть кожу доступной чистой водой, наблюдать и при стойких или тревожных проявлениях искать доступную опытную помощь. Это не называет состав ванны, дозу, диагноз, лечение или исход. краска на коже протрава на руках неизвестная жидкость кожа смыть вещество красильная ванна на руках протрава попала на кожу смыть неизвестную краску"
     },
     {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle:en",
+      "target_ref": "claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Blood-feeding flies and cattle Blood-feeding flies as a cause of defensive behaviour in cattle. Blood-feeding flies can disturb cattle and prompt defensive behavior. This does not establish an infestation, a particular fly, disease, or production outcome. flies bite cattle cattle fly defense horn flies cattle swat flies biting flies cattle"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle:ru",
+      "target_ref": "claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кровососущие мухи и скот Кровососущие мухи как причина оборонительного поведения скота. Кровососущие мухи могут беспокоить крупный рогатый скот и вызывать защитное поведение. Это не доказывает нашествие, конкретную муху, болезнь или хозяйственный итог. мухи кусают коров скот отбивается от мух слепни коровы скот отмахивается от мух слепни беспокоят коров"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-cow-calf-separation-is-a-stressful-transition-and-context-can-moderate-added-stress:en",
+      "target_ref": "claim:macro-b1819-cow-calf-separation-is-a-stressful-transition-and-context-can-moderate-added-stress",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cow-calf separation Cow-calf separation as a stressful transition shaped by context. Cow-calf separation is a stressful transition; familiar surroundings with known food or water and avoidance of extra disturbance can reduce added stress. This supplies no handling plan or outcome. wean calf separate cow calf calf separation calf weaning stress calf after weaning"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-cow-calf-separation-is-a-stressful-transition-and-context-can-moderate-added-stress:ru",
+      "target_ref": "claim:macro-b1819-cow-calf-separation-is-a-stressful-transition-and-context-can-moderate-added-stress",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Разделение коровы и телёнка Разделение матери и телёнка как стрессовый переход с зависимостью от контекста. Разделение коровы и телёнка — стрессовый переход; знакомое окружение с известными едой или водой и отсутствие лишнего беспокойства могут уменьшать добавочный стресс. Это не задаёт план обращения или исход. отнять телёнка разлучить корову и телёнка отъём телят отъём телёнка стресс разлучить корову телёнка телёнок после отъёма"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment:en",
+      "target_ref": "claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nonspecific cattle distress observations Cattle observations warranting cautious assessment rather than a premature diagnosis. Reduced eating or drinking, unusual posture or movement, breathing or discharge changes, altered manure, or lagging in cattle can warrant careful observation and available experienced animal-care assessment. No single sign identifies a cause or treatment. sick cow cattle lagging cattle illness signs cow not eating and lagging cattle breathing oddly observe sick cattle"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment:ru",
+      "target_ref": "claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неспецифичные признаки неблагополучия КРС Наблюдаемые у крупного рогатого скота признаки, требующие осторожной оценки без поспешного диагноза. Снижение еды или питья, необычная поза либо движение, дыхание или выделения, изменение навоза и отставание от группы у КРС могут быть поводом для внимательного наблюдения и доступной опытной помощи по животным. Один признак не устанавливает причину или лечение. болеет корова корова отстала признаки болезни КРС корова не ест и отстаёт КРС странно дышит что наблюдать у больной коровы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying:en",
+      "target_ref": "claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Chicken nest sites and egg laying A nest site as an egg-laying context for a domestic hen. A laying hen can use a nest site for egg laying; a nest site itself does not prove a present egg or egg-laying event in a scene. hen laying eggs chicken nest laying hen hen in nest laying hen eggs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying:ru",
+      "target_ref": "claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Гнездо и яйцекладка кур Гнездо как контекст яйцекладки домашней курицы. Несущаяся курица может пользоваться гнездом для яйцекладки; само гнездо не доказывает яйцо или происходящую яйцекладку в сцене. курица несётся куриное гнездо несушка курица в гнезде несушка яйца гнездо курицы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response:en",
+      "target_ref": "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke, ash, and eye irritation Qualitative relation between smoke or ash, eye irritation, and simple particle removal. Smoke or ash can irritate eyes; a qualitative immediate response is to reduce exposure and wash off ash or particles with available clean water, without diagnosing an eye injury or promising recovery. smoke in eyes ash in eye rinse smoke eyes ash in eyes rinse eyes from smoke"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response:ru",
+      "target_ref": "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым, зола и раздражение глаз Качественная связь дыма, золы, раздражения глаз и простого удаления частиц. Дым или зола могут раздражать глаза; качественный немедленный ответ — уменьшить воздействие и смыть золу либо частицы доступной чистой водой, не объявляя травму глаза и не обещая выздоровления. дым режет глаза зола попала в глаз промыть глаза от дыма дым в глазах зола в глазах"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known:en",
+      "target_ref": "claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Storm-hung wood hazard Damaged limbs or wood remaining as unstable overhead hazards. After storm damage, a broken or hung limb can remain overhead and fall without warning; until its state is known, the space below is not ordinary safe working ground. hung branch storm damaged tree overhead limb hazard hung branch hazard storm tree overhead broken limb after storm"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known:ru",
+      "target_ref": "claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Зависшая после бури древесина Повреждённые ветви и стволы как неустойчивая верхняя опасность. После бури сломанная или зависшая ветвь может оставаться над головой и упасть без предупреждения; пока её состояние неясно, пространство ниже нельзя считать обычным безопасным местом для работы. зависшая ветка бурелом опасность ветка в кроне после бури зависшая ветка опасна бурелом над головой после бури дерево"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-wet-cold-wind-can-overwhelm-sheep-insulation-and-dry-shelter-reduces-exposure:en",
+      "target_ref": "claim:macro-b1819-wet-cold-wind-can-overwhelm-sheep-insulation-and-dry-shelter-reduces-exposure",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wet cold in small ruminants Relation between wet cold, coat insulation, and shelter for sheep and goats. Cold, wet, or windy conditions can reduce sheep coat insulation and increase heat loss; dry shelter, wind protection, and drier footing or bedding reduce that exposure. This describes no particular weather, animal, or outcome. wet sheep cold sheep rain shelter cold wet flock wet sheep in wind sheep cold rain dry sheep shelter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b1819-wet-cold-wind-can-overwhelm-sheep-insulation-and-dry-shelter-reduces-exposure:ru",
+      "target_ref": "claim:macro-b1819-wet-cold-wind-can-overwhelm-sheep-insulation-and-dry-shelter-reduces-exposure",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Мокрый холод для овец Связь мокрого холода с теплоизоляцией шерсти и укрытием. Холод, сырость и ветер могут ухудшать теплоизоляцию шерсти овцы и усиливать потерю тепла; сухое укрытие, защита от ветра и более сухая подстилка либо грунт уменьшают это воздействие. Это не описывает конкретную погоду, животное или исход. мокрая овца мёрзнет овцы под дождём овца холод укрытие мокрая овца на ветру овцы холод дождь сухое укрытие овец"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water:en",
+      "target_ref": "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Heated cooking-fat fire response Cautious response to fat burning in an already established pan. If cooking fat in an already established pan ignites, a cautious response is to turn off heat if safe, cover the pan, and leave it covered while not using water to extinguish it. This confirms no fire, pan, cover, or outcome. grease fire burning oil pan fire grease fire no water cover burning oil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water:ru",
+      "target_ref": "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Огонь от горячего жира Осторожный ответ на возгорание жира в уже существующей посуде. Если жир в уже существующей посуде загорелся, осторожный ответ — при возможности выключить нагрев, накрыть посуду и не снимать крышку до остывания; воду для тушения не используют. Это не подтверждает огонь, посуду, крышку или исход. жир загорелся масло горит сковорода в огне горит жир не лить воду накрыть горящее масло"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work:en",
+      "target_ref": "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Flexible basket stock and clay selection Moisture-conditioned basket stock and clay plasticity limits. Dried willow rods can absorb moisture and become more flexible for weaving, so basket work depends on their actual condition rather than appearance alone. This creates no willow, rods, basket, or successful bend. soak willow flexible rods workable clay wet mud soak willow rods basket rods brittle"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work:ru",
+      "target_ref": "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Гибкие прутья и выбор глины Зависимость плетения от влажности прутьев и формования от пластичности глины. Сухие ивовые прутья могут впитывать влагу и становиться гибче для плетения; работа зависит от реального состояния прутьев, а не только от их вида. Это не создаёт иву, прутья, корзину или удачный изгиб. прутья ломаются замочить иву глина или грязь пластичность глины замочить ивовые прутья прутья для корзины ломаются"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment:en",
+      "target_ref": "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Bast retting and warp tension control Qualitative conditions for monitoring bast separation and warp evenness. Retting separates bast-fibre bundles from stem tissues, so practical work can require assessing whether separation has progressed before following fibre work. It sets no duration, water, method, quality, tool, or result. flax retting bast fibre separation uneven warp warp tension flax retting check bast separation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment:ru",
+      "target_ref": "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Контроль мочки луба и натяжения основы Качественные условия наблюдения за разделением луба и ровностью основы. Мочка отделяет лубяные волокна от тканей стебля; поэтому перед следующей обработкой разумно оценить, продвинулось ли отделение. Это не задаёт срок, воду, способ, качество, инструмент или результат. мочка льна лен не отделяется натяжение основы основа провисла мочка льна контроль лен отделяется от стебля"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal:en",
+      "target_ref": "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Waterpower and pack-load limits Flow/head limits for water work and balance limits for animal packs. An imbalanced pack load can raise an animal's energy expenditure, fatigue, and injury risk, so loading can require balancing sides and observing animal and load. This sets no weight, route, equipment, or safe-travel guarantee. watermill flow mill obstruction pack balance uneven pack load imbalanced pack load balance horse packs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal:ru",
+      "target_ref": "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Ограничения водяной тяги и вьюка Поток и напор для водяной работы, баланс груза на животном. Неуравновешенный вьюк может повышать расход сил, утомление и риск травмы животного; при погрузке важно уравновесить стороны и наблюдать животное с грузом. Это не задаёт вес, маршрут, снаряжение или безопасный исход. мельница не идёт мало воды на колесе засор лотка вьюк криво лежит кривой вьюк уравновесить груз на лошади"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment:en",
+      "target_ref": "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Bast retting and warp tension control Qualitative conditions for monitoring bast separation and warp evenness. Uneven warp tension can arise from winding or spacing conditions, so a weaver can distinguish slack or tight sections before controlled adjustment. This creates no loom, thread, defect, or successful repair. flax retting bast fibre separation uneven warp warp tension uneven warp tension slack warp threads"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment:ru",
+      "target_ref": "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Контроль мочки луба и натяжения основы Качественные условия наблюдения за разделением луба и ровностью основы. Неравномерное натяжение основы может возникать при намотке или раскладке; ткачу полезно различить свободные и тугие участки перед осторожной правкой. Это не создаёт станок, нити, дефект или удачный ремонт. мочка льна лен не отделяется натяжение основы основа провисла основа натянута неровно провисшие нити ткачество"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path:en",
+      "target_ref": "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Waterpower and pack-load limits Flow/head limits for water work and balance limits for animal packs. Water-driven work depends on usable flow and head, so a reduced or obstructed established water path can limit operation. This establishes no mill, wheel, output, repair, or result. watermill flow mill obstruction pack balance uneven pack load watermill low flow mill race obstruction"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path:ru",
+      "target_ref": "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Ограничения водяной тяги и вьюка Поток и напор для водяной работы, баланс груза на животном. Водяная работа зависит от пригодных потока и напора; уменьшение или засорение уже существующего водного пути может ограничить её. Это не доказывает мельницу, колесо, выработку, ремонт или результат. мельница не идёт мало воды на колесе засор лотка вьюк криво лежит мельница мало воды засорён лоток мельницы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay:en",
+      "target_ref": "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Flexible basket stock and clay selection Moisture-conditioned basket stock and clay plasticity limits. Pottery forming depends on clay plasticity, so wet surface mud alone does not establish workable clay; its handling response needs testing. This establishes no deposit, composition, processing, firing, or vessel. soak willow flexible rods workable clay wet mud mud or clay test clay plasticity"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay:ru",
+      "target_ref": "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Гибкие прутья и выбор глины Зависимость плетения от влажности прутьев и формования от пластичности глины. Формование посуды зависит от пластичности глины, поэтому мокрая поверхностная грязь сама по себе не доказывает пригодность материала: нужна проверка его поведения в руках. Это не устанавливает залежь, состав, обработку, обжиг или сосуд. прутья ломаются замочить иву глина или грязь пластичность глины грязь вместо глины проверить пластичность глины"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:en",
       "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
       "domain": "biology_physiology",
@@ -23684,6 +23880,90 @@
       "retrieval_text": "Первый ответ на неизвестное вещество на коже Осторожная последовательность действий при контакте кожи с неизвестным веществом. краска на коже протрава на руках неизвестная жидкость кожа смыть вещество"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cattle-blood-feeding-flies:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-cattle-blood-feeding-flies",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Blood-feeding flies and cattle Blood-feeding flies as a cause of defensive behaviour in cattle. flies bite cattle cattle fly defense horn flies"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cattle-blood-feeding-flies:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-cattle-blood-feeding-flies",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Кровососущие мухи и скот Кровососущие мухи как причина оборонительного поведения скота. мухи кусают коров скот отбивается от мух слепни коровы"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cattle-observation:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-cattle-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Nonspecific cattle distress observations Cattle observations warranting cautious assessment rather than a premature diagnosis. sick cow cattle lagging cattle illness signs"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cattle-observation:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-cattle-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неспецифичные признаки неблагополучия КРС Наблюдаемые у крупного рогатого скота признаки, требующие осторожной оценки без поспешного диагноза. болеет корова корова отстала признаки болезни КРС"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-chicken-nesting-laying:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-chicken-nesting-laying",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Chicken nest sites and egg laying A nest site as an egg-laying context for a domestic hen. hen laying eggs chicken nest laying hen"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-chicken-nesting-laying:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-chicken-nesting-laying",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Гнездо и яйцекладка кур Гнездо как контекст яйцекладки домашней курицы. курица несётся куриное гнездо несушка"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cow-calf-separation:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-cow-calf-separation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cow-calf separation Cow-calf separation as a stressful transition shaped by context. wean calf separate cow calf calf separation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-cow-calf-separation:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-cow-calf-separation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Разделение коровы и телёнка Разделение матери и телёнка как стрессовый переход с зависимостью от контекста. отнять телёнка разлучить корову и телёнка отъём телят"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-small-ruminant-wet-cold:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-small-ruminant-wet-cold",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wet cold in small ruminants Relation between wet cold, coat insulation, and shelter for sheep and goats. wet sheep cold sheep rain shelter cold wet flock"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-small-ruminant-wet-cold:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-small-ruminant-wet-cold",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Мокрый холод для овец Связь мокрого холода с теплоизоляцией шерсти и укрытием. мокрая овца мёрзнет овцы под дождём овца холод укрытие"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-smoke-ash-eye-response:en",
+      "target_ref": "wk:biology_physiology:macro-b1819-smoke-ash-eye-response",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Smoke, ash, and eye irritation Qualitative relation between smoke or ash, eye irritation, and simple particle removal. smoke in eyes ash in eye rinse smoke eyes"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b1819-smoke-ash-eye-response:ru",
+      "target_ref": "wk:biology_physiology:macro-b1819-smoke-ash-eye-response",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Дым, зола и раздражение глаз Качественная связь дыма, золы, раздражения глаз и простого удаления частиц. дым режет глаза зола попала в глаз промыть глаза от дыма"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:mb14-practical-care:en",
       "target_ref": "wk:biology_physiology:mb14-practical-care",
       "domain": "biology_physiology",
@@ -25280,6 +25560,20 @@
       "retrieval_text": "Получение извести, гашение и карбонизация являются разными превращениями Получение извести, гашение и карбонизация являются разными превращениями; добавление воды к негашёной извести опасно и экзотермично, но точный процесс требует состава и условий."
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:macro-b19-heated-cooking-fat-fire-response:en",
+      "target_ref": "wk:chemistry_process:macro-b19-heated-cooking-fat-fire-response",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Heated cooking-fat fire response Cautious response to fat burning in an already established pan. grease fire burning oil pan fire"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:macro-b19-heated-cooking-fat-fire-response:ru",
+      "target_ref": "wk:chemistry_process:macro-b19-heated-cooking-fat-fire-response",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Огонь от горячего жира Осторожный ответ на возгорание жира в уже существующей посуде. жир загорелся масло горит сковорода в огне"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:metal-classes-composition:en",
       "target_ref": "wk:chemistry_process:metal-classes-composition",
       "domain": "chemistry_process",
@@ -25978,6 +26272,34 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Замачивание и отделение луба липы Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон. луб липы лыко мочить кору отделить луб"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b19-bast-and-warp-process-control:en",
+      "target_ref": "wk:craft_technology:macro-b19-bast-and-warp-process-control",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Bast retting and warp tension control Qualitative conditions for monitoring bast separation and warp evenness. flax retting bast fibre separation uneven warp warp tension"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b19-bast-and-warp-process-control:ru",
+      "target_ref": "wk:craft_technology:macro-b19-bast-and-warp-process-control",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Контроль мочки луба и натяжения основы Качественные условия наблюдения за разделением луба и ровностью основы. мочка льна лен не отделяется натяжение основы основа провисла"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection:en",
+      "target_ref": "wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Flexible basket stock and clay selection Moisture-conditioned basket stock and clay plasticity limits. soak willow flexible rods workable clay wet mud"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection:ru",
+      "target_ref": "wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Гибкие прутья и выбор глины Зависимость плетения от влажности прутьев и формования от пластичности глины. прутья ломаются замочить иву глина или грязь пластичность глины"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:mb14-practical-making-and-repair:en",
@@ -26972,6 +27294,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Липкий налёт на растении: границы вывода Возможная связь липкого налёта с медвяной росой и пределы вывода по одному виду налёта. липкие листья медвяная роса тля липкий сок липкий налёт растение"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b1819-storm-hung-wood:en",
+      "target_ref": "wk:environment:macro-b1819-storm-hung-wood",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Storm-hung wood hazard Damaged limbs or wood remaining as unstable overhead hazards. hung branch storm damaged tree overhead limb hazard"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b1819-storm-hung-wood:ru",
+      "target_ref": "wk:environment:macro-b1819-storm-hung-wood",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Зависшая после бури древесина Повреждённые ветви и стволы как неустойчивая верхняя опасность. зависшая ветка бурелом опасность ветка в кроне после бури"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:mb14-practical-field-and-water:en",
@@ -30836,6 +31172,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Смачивание поверхности жидкостью Поведение границы между жидкостью и поверхностью, не свойство сквозного течения."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits:en",
+      "target_ref": "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Waterpower and pack-load limits Flow/head limits for water work and balance limits for animal packs. watermill flow mill obstruction pack balance uneven pack load"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits:ru",
+      "target_ref": "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Ограничения водяной тяги и вьюка Поток и напор для водяной работы, баланс груза на животном. мельница не идёт мало воды на колесе засор лотка вьюк криво лежит"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:material-thermal-insulation-porosity:en",

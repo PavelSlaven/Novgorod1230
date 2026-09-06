@@ -210,6 +210,10 @@
     "macro-batch14-practical-v1.json",
     "verification-macro-batch14-practical-v1.json",
     "macro-batch17-gap-closure-v1.json",
-    "verification-macro-batch17-gap-closure-v1.json"
+    "verification-macro-batch17-gap-closure-v1.json",
+    "macro-batch19-process-gap-closure-v1.json",
+    "verification-macro-batch19-process-gap-closure-v1.json",
+    "macro-batch1819-nature-gap-closure-v1.json",
+    "verification-macro-batch1819-nature-gap-closure-v1.json"
   ]
 }

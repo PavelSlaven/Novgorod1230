@@ -1,0 +1,278 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-young-bird-guidance-wcv",
+      "title": "Baby Bird Season Is Here: What to Do When You Find a Young Bird",
+      "authors": ["Wildlife Center of Virginia"],
+      "publication": "Wildlife Center of Virginia, 2026",
+      "source_kind": "official_documentation",
+      "citation": "https://wildlifecenter.org/news-events/news/2026/baby-bird-season-here-what-do-when-you-find-young-bird",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-young-bird-guidance-werc",
+      "title": "Found A Baby Bird",
+      "authors": ["Wildlife Education and Rehabilitation Center"],
+      "publication": "Wildlife Education and Rehabilitation Center",
+      "source_kind": "official_documentation",
+      "citation": "https://www.werc-ca.org/foundababybird",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-poultry-examination-merck",
+      "title": "Physical Examination of Backyard Poultry",
+      "authors": ["Merck Veterinary Manual"],
+      "publication": "Merck Veterinary Manual",
+      "source_kind": "official_documentation",
+      "citation": "https://www.merckvetmanual.com/exotic-and-laboratory-animals/backyard-poultry/physical-examination-of-backyard-poultry",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-poultry-handling-penn-state",
+      "title": "Handling Poultry",
+      "authors": ["Penn State Extension"],
+      "publication": "Penn State Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.psu.edu/handling-poultry",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-feathered-mobile-young-bird-can-be-fledgling",
+      "source_ref": "source:place-young-bird-guidance-wcv",
+      "anchor": {"section": "Fledglings: Meant to be on the ground"},
+      "note": "The Wildlife Center of Virginia describes a fully feathered young bird able to hop or flutter as likely a fledgling, says time on the ground can be normal, and recommends giving it space while keeping pets and children away. This supports a bounded observation and non-interference relation, not species, health, parent presence, nest location, abandonment, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-sparse-young-bird-or-direct-danger-changes-response",
+      "source_ref": "source:place-young-bird-guidance-wcv",
+      "anchor": {"section": "Nestlings: Help them get back home"},
+      "note": "The Wildlife Center of Virginia describes a young bird with few or no feathers as a nestling and advises returning it to its nest if possible. This does not establish a nest, safe access, handling method, injury, feeding, treatment, or survival.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-young-bird-direct-danger-nearby-move",
+      "source_ref": "source:place-young-bird-guidance-werc",
+      "anchor": {"section": "Baby Birds"},
+      "note": "WERC distinguishes barely feathered nestlings from feathered fledglings, advises leaving a fledgling alone unless injured, and where cats threaten it recommends removing the cats or moving the bird only within a short radius. This supports only a nearby move under immediate danger, not distance, treatment, health, parent behaviour, or a destination invented by WK.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-domestic-fowl-body-wing-support",
+      "source_ref": "source:place-poultry-examination-merck",
+      "anchor": {"section": "Physical Examination of Backyard Poultry"},
+      "note": "Merck advises holding domestic-fowl wings folded close to the body, supporting the breast while lifting, avoiding upside-down restraint, and not squeezing the breast because thoracic compression compromises breathing. This is a brief examination boundary, not a force, duration, species protocol, diagnosis, treatment, or guarantee of safety.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-domestic-fowl-whole-body-and-wing-restraint",
+      "source_ref": "source:place-poultry-handling-penn-state",
+      "anchor": {"section": "Handling demonstration"},
+      "note": "Penn State Extension advises restraining the wings, lifting the whole body rather than the wings alone, supporting the bird with one arm, and covering the wings with the other to reduce flapping injury. This does not establish a medieval handling custom, exact technique, force, duration, diagnosis, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-poultry-observable-emergency-signs",
+      "source_ref": "source:place-poultry-examination-merck",
+      "anchor": {"section": "Physical Examination of Backyard Poultry"},
+      "note": "Merck identifies acute hemorrhage, open fractures, extreme respiratory difficulty, weakness, and severe neurologic or posture abnormalities as findings that require emergency care before ordinary examination. This supports stopping casual handling and seeking more experienced help, not diagnosis, cause, contagion, treatment, available specialist, or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_fully_or_mostly_feathered_alert_mobile_young_bird_on_the_ground_can_be_a_fledgling_and_ground_presence_alone_does_not_prove_orphaning_or_injury"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-feathered-mobile-young-bird-can-be-fledgling"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_nearly_bare_or_sparsely_feathered_nestling_can_be_returned_to_an_accessible_known_nest_if_possible_while_a_feathered_fledgling_in_immediate_danger_can_be_moved_only_nearby_after_removing_the_danger_where_possible"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-sparse-young-bird-or-direct-danger-changes-response", "evidence:place-young-bird-direct-danger-nearby-move"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "brief_domestic_fowl_examination_supports_the_whole_body_and_keeps_wings_folded_near_it_without_lifting_by_one_wing_or_compressing_the_breast_and_breathing"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-domestic-fowl-body-wing-support", "evidence:place-domestic-fowl-whole-body-and-wing-restraint"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "bleeding_apparent_open_fracture_extreme_breathing_difficulty_marked_weakness_or_severe_abnormal_posture_are_observable_reasons_to_stop_casual_poultry_examination_and_seek_more_experienced_help_without_treating_one_ambiguous_sign_as_a_diagnosis"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-poultry-observable-emergency-signs"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "locale": "ru",
+      "labels": ["Молодая птица на земле: стадия и вмешательство"],
+      "short_definition": "Наблюдаемые границы между слётком, птенцом вне гнезда и непосредственной опасностью.",
+      "search_aliases": ["птенец на земле", "слёток", "вернуть птенца в гнездо"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "locale": "en",
+      "labels": ["Young bird on the ground: stage and intervention"],
+      "short_definition": "Observable boundaries among a fledgling, a nestling outside a nest, and immediate danger.",
+      "search_aliases": ["baby bird on ground", "fledgling", "return nestling to nest"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "locale": "ru",
+      "labels": ["Домашняя птица: щадящий осмотр"],
+      "short_definition": "Качественные границы поддержки тела и крыльев и прекращения обычного осмотра.",
+      "search_aliases": ["осмотреть крыло утки", "держать домашнюю птицу", "птице трудно дышать"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "locale": "en",
+      "labels": ["Domestic fowl: gentle examination"],
+      "short_definition": "Qualitative boundaries for body and wing support and stopping an ordinary examination.",
+      "search_aliases": ["examine duck wing", "hold domestic bird", "bird breathing difficulty"]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "locale": "ru",
+      "runtime_text": "Полностью или почти полностью оперившаяся молодая птица, которая выглядит бодрой и может ходить, прыгать или держаться на низкой опоре, может быть слётком: само пребывание на земле не доказывает сиротство или травму. Обычно ей оставляют пространство и убирают непосредственное беспокойство, не устанавливая этим вид, здоровье, родителей, гнездо или исход.",
+      "search_aliases": ["птенец сидит на земле", "слёток в саду", "молодая птица прыгает"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "locale": "en",
+      "runtime_text": "A fully or mostly feathered young bird that appears alert and can walk, hop, or use low cover may be a fledgling: being on the ground does not itself prove orphaning or injury. Ordinarily it is given space and immediate disturbance is removed, without establishing species, health, parents, nest, or outcome.",
+      "search_aliases": ["baby bird sits on ground", "fledgling in garden", "young bird hopping"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "locale": "ru",
+      "runtime_text": "Почти голого или слабо оперившегося птенца можно вернуть в доступное известное гнездо, если это возможно; оперившегося слётка при непосредственной опасности можно перенести только поблизости, сперва по возможности устранив опасность. Это не задаёт расстояние, способ обращения, кормление, лечение, здоровье, реакцию родителей или выживание.",
+      "search_aliases": ["голый птенец вне гнезда", "слёток в опасности", "перенести птенца недалеко"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "locale": "en",
+      "runtime_text": "A nearly bare or sparsely feathered nestling may be returned to an accessible known nest if possible; a feathered fledgling in immediate danger may be moved only nearby after removing the danger where possible. This supplies no distance, handling method, feeding, treatment, health finding, parental response, or survival outcome.",
+      "search_aliases": ["bare nestling outside nest", "fledgling in danger", "move baby bird nearby"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "locale": "ru",
+      "runtime_text": "При кратком осмотре домашней птицы поддерживают всё тело и удерживают сложенные крылья у него, не поднимая птицу за одно крыло и не сдавливая грудь или дыхательные движения. Это не видовая процедура, точное усилие или время, диагноз, лечение либо гарантия безопасности птицы и человека.",
+      "search_aliases": ["осмотр крыла утки", "удерживать крылья птицы", "не сдавливать грудь птицы"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "locale": "en",
+      "runtime_text": "For a brief domestic-fowl examination, support the whole body and keep folded wings near it rather than lifting the bird by one wing or compressing the breast or breathing movements. This is not a species protocol, exact force or duration, diagnosis, treatment, or guarantee of safety for bird or handler.",
+      "search_aliases": ["examine duck wing", "restrain bird wings", "do not compress bird breast"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "locale": "ru",
+      "runtime_text": "Кровотечение, явная открытая переломная травма, крайняя трудность дыхания, выраженная слабость или тяжёлая необычная поза — наблюдаемые основания прекратить обычный осмотр птицы и искать более опытную помощь. Торчащее перо или неохотный взмах сами по себе не устанавливают такой признак, диагноз, причину или лечение.",
+      "search_aliases": ["птица кровоточит", "птице трудно дышать", "когда прекратить осмотр птицы"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "locale": "en",
+      "runtime_text": "Bleeding, an apparent open fracture, extreme breathing difficulty, marked weakness, or severe abnormal posture are observable reasons to stop ordinary bird examination and seek more experienced help. A projecting feather or reluctant wingbeat alone establishes neither such a sign, a diagnosis, a cause, nor treatment.",
+      "search_aliases": ["bird bleeding", "bird breathing difficulty", "when to stop bird examination"]
+    }
+  ]
+}

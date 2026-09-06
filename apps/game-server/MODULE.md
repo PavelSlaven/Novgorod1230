@@ -300,11 +300,17 @@ unactivated.
 Release v15 is the direct non-selectable child of v14. It pins
 `wk-pack:novgorod-1230@revision:production-v1` and
 `wk-embedding:giga-480m-0826:v1`. The server loads the compiled bilingual
-pack and flat vector index at startup, starts the local embedding worker
-lazily, and grounds player semantic resolution, S1/N1 ordinary
+pack and flat vector index and starts the exact offline embedding worker at
+startup, then grounds player semantic resolution, S1/N1 ordinary
 materialization, conversation, and autonomous NPC decisions before their
 semantic LLM calls. Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
+The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local
+weights, startup/encode timeout, malformed vector or scan failure returns typed
+`WORLD_KNOWLEDGE_UNAVAILABLE` before the semantic consumer and P16 commit; no
+lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
+the internal cause in its normal temporary-unavailable envelope, and a retry
+after encoder recovery follows the existing idempotency owner.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

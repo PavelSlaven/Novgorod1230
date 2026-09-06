@@ -2,13 +2,30 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { createWorldKnowledgeCore } from '@rus/world-knowledge';
+import { createWorldKnowledgeCore, WorldKnowledgeError } from '@rus/world-knowledge';
 import { loadProductionWorldKnowledge } from
   '../src/internal/world-knowledge-production.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
+
+test('production loader requires the exact encoder readiness at startup', async () => {
+  let readyCalls = 0;
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url)),
+    requireEncoderReady: true,
+    encoderFactory: ({ profilePath }) => {
+      assert.match(profilePath, /giga-480m-0826-v1\.json$/u);
+      return { ready: async () => { readyCalls += 1; },
+        encode: async () => new Float32Array(1024), close: async () => {} };
+    }
+  });
+  assert.equal(readyCalls, 1);
+  assert.equal(loaded.embedding_profile.embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
+  assert.equal(loaded.vector_index.dimension, 1024);
+});
 
 test('production grounding plans once and injects only an applicable bounded slice', async () => {
   const calls = [];
@@ -138,7 +155,7 @@ test('an unused focus does not block a supplied physical premise or force its hi
     requested_predicates: [], search_hints: ['twisting textile fibres to form yarn'] };
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { async encode() { throw new Error('lexical test'); } },
+      encoder: { encode: async () => new Float32Array(1024) },
       vector_index: { search: () => new Map() } },
     placeRefs: ['region_novgorod_land'],
     roleRunner: { async run() { calls += 1; return { output: plan }; } }
@@ -178,7 +195,7 @@ test('a material focus can retrieve its chemical facts without expanding selecte
   ]));
 });
 
-test('grounding uses current safe context and keeps lexical retrieval when vectors fail', async () => {
+test('grounding fails closed when query encoding fails, then retries without lexical fallback', async () => {
   const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
   const [loaded, scenario] = await Promise.all([
     loadProductionWorldKnowledge({ rootDir }),
@@ -186,21 +203,26 @@ test('grounding uses current safe context and keeps lexical retrieval when vecto
       scenarioDefinitionRevision: 32 })
   ]);
   let query;
-  const diagnostics = [];
+  let coreCalls = 0;
+  let encoderCalls = 0;
   const worldKnowledge = { ...loaded,
     calendar_profile: scenario.calendar_profile,
     core: { resolveWorldKnowledge(value, options) {
+      coreCalls += 1;
       query = value;
       return loaded.core.resolveWorldKnowledge(value, options);
     } },
     encoder: { encode: async () => {
-      const error = new Error('worker unavailable');
-      error.code = 'WK_VECTOR_WORKER_EXIT';
-      throw error;
+      encoderCalls += 1;
+      if (encoderCalls === 1) {
+        const error = new Error('worker unavailable');
+        error.code = 'WK_VECTOR_WORKER_EXIT';
+        throw error;
+      }
+      return new Float32Array(1024);
     } } };
   const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
     placeRefs: ['region_novgorod_land'],
-    telemetry: { onDetail: (entry) => diagnostics.push(entry) },
     roleRunner: { async run() {
       return { output: {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
@@ -221,6 +243,14 @@ test('grounding uses current safe context and keeps lexical retrieval when vecto
       position: { location_ref: 'location:current-bank',
         g5_node_id: 'g5:current-bank' }
     } };
+  await assert.rejects(
+    grounder.ground(request, 'semantic_resolution'),
+    (error) => error instanceof WorldKnowledgeError
+      && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE'
+      && error.details.cause_code === 'WK_VECTOR_WORKER_EXIT'
+  );
+  assert.equal(coreCalls, 0);
+
   const grounded = await grounder.ground(request, 'semantic_resolution');
 
   assert.equal(query.context.time.year, 1231);
@@ -231,11 +261,36 @@ test('grounding uses current safe context and keeps lexical retrieval when vecto
     { occupation_ref: 'occupation:fisher' });
   assert.equal(grounded.world_knowledge.facts[0].claim_ref,
     'claim:regional-fish-exploitation');
-  assert.equal(diagnostics[0].vector_status,
-    'structured_lexical_fallback');
-  assert.equal(diagnostics[0].vector_error_code, 'WK_VECTOR_WORKER_EXIT');
-  assert.equal(diagnostics[0].planner_calls[0].usage.input_tokens, 20);
-  assert.ok(diagnostics[0].planner_ms >= 0);
+  assert.equal(coreCalls, 1);
+  assert.equal(encoderCalls, 2);
+});
+
+test('grounding fails closed when flat vector scan fails without calling Core', async () => {
+  const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
+  const loaded = await loadProductionWorldKnowledge({ rootDir });
+  let coreCalls = 0;
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() { coreCalls += 1; throw new Error('must not run'); } },
+      encoder: { encode: async () => new Float32Array(1024) },
+      vector_index: { search() { throw Object.assign(new Error('bad vector scan'),
+        { code: 'WK_VECTOR_SCAN_FAILED' }); } } },
+    roleRunner: { async run() { return { output: {
+      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+      domains: ['environment'],
+      focus_refs: ['wk:environment:regional-fish-exploitation'],
+      requested_predicates: [], search_hints: ['добыча рыбы']
+    } }; } }
+  });
+
+  await assert.rejects(
+    grounder.ground({ semantic_input: 'Можно ли добыть рыбу?', player_safe_state: {} },
+      'semantic_resolution'),
+    (error) => error instanceof WorldKnowledgeError
+      && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE'
+      && error.details.cause_code === 'WK_VECTOR_SCAN_FAILED'
+  );
+  assert.equal(coreCalls, 0);
 });
 
 test('NPC action grounding reads only the projected NPC role and historical context', async () => {

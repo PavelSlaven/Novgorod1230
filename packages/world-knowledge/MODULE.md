@@ -14,7 +14,8 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 
 - query/bundle validation и slice construction;
 - exact, structured и localized lexical retrieval;
-- optional caller-provided vector scores и pure flat-vector scan; vector
+- caller-provided vector scores и pure flat-vector scan; Core остаётся
+  backend-neutral, а active production server требует этот input; vector
   similarity only adds recall candidates and never bypasses applicability;
 - pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,

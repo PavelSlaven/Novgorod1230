@@ -49,6 +49,7 @@ export async function createSpatialV3ProductionCompositionRoot({
   now,
   pools: suppliedPools = null,
   bindingsFactory = null,
+  worldKnowledgeEncoderFactory = undefined,
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
@@ -81,7 +82,10 @@ export async function createSpatialV3ProductionCompositionRoot({
         rootDir: config.rootDir ?? process.cwd()
       }),
       loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
-        python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python' }),
+        python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
+        requireEncoderReady: true,
+        ...(worldKnowledgeEncoderFactory == null ? {}
+          : { encoderFactory: worldKnowledgeEncoderFactory }) }),
       loadLowerDvinaTraceMaterializationBundle({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: 32

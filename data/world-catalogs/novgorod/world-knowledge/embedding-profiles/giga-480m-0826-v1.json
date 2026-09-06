@@ -11,6 +11,12 @@
   "document_mode": "plain",
   "license": "MIT",
   "upstream_url": "https://huggingface.co/ai-sage/Giga-Embeddings-instruct-480M-0826",
+  "model_card_url": "https://huggingface.co/ai-sage/Giga-Embeddings-instruct-480M-0826/blob/0c94f705aa35719324fb46f7e75b0a5c275da6e4/README.md",
+  "commercial_use_allowed": true,
+  "redistribution_allowed": true,
+  "weights_distribution": "not_in_repository",
+  "notice_path": "data/world-catalogs/novgorod/world-knowledge/embedding-profiles/GIGA_480M_0826_NOTICE.md",
+  "license_reviewed_at": "2026-09-07",
   "verified_at": "2026-09-03",
   "status": "production"
 }

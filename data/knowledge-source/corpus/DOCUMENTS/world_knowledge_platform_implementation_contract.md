@@ -1,7 +1,7 @@
 # World Knowledge Platform — полный implementation contract
 
 **Проект:** `PavelSlaven/Novgorod1230` / «Русь XIII век»
-**Статус:** `ACTIVE` как норматив реализованной World Knowledge Platform production-v1 в PR92 (`4.13.0-world-knowledge.1`). Runtime wiring spatial-v3 production v15 имеет статус `validated_candidate_not_active`; production activation не заявляется этим документом и определяется actual versioned release/binding. Неактивированные optional stages остаются target именно там, где это указано.
+**Статус:** `ACTIVE` как норматив реализованной World Knowledge Platform production-v1 в PR92 (`4.13.0-world-knowledge.2`). Runtime wiring spatial-v3 production v15 имеет статус `validated_candidate_not_active`; production activation не заявляется этим документом и определяется actual versioned release/binding. Неактивированные optional stages остаются target именно там, где это указано.
 **Главный production target:** fully offline gameplay с локальной World Knowledge Platform и локальными весами моделей; облачные модели — пользовательская опция для отдельных LLM-ролей.
 **Первый game Knowledge Pack:** factual model реальности, необходимой игре `Novgorod1230`, включая Новгородскую землю около 1230 года и общие знания физики, материалов, химии, биологии и других естественно-научных/бытовых областей.
 **Первый target embedding profile:** `ai-sage/Giga-Embeddings-instruct-480M-0826` с exact revision pin при реальном embedding cutover.
@@ -1879,7 +1879,7 @@ assembled approved records
 → build runtime projections
 → build exact/structured/lexical indexes
 → build embedding retrieval texts
-→ optional precompute corpus embeddings
+→ precompute corpus embeddings for the active production profile
 → bundle
 ```
 
@@ -1928,7 +1928,7 @@ exact indexes
 structured applicability indexes
 lexical indexes
 embedding profile metadata
-optional precomputed vectors
+required precomputed vectors for the active production profile
 embedding entry metadata
 ```
 
@@ -1990,7 +1990,9 @@ actor/context facets
 question-class/profile lookup
 ```
 
-Lexical retrieval — обязательный baseline recall path.
+Lexical retrieval — обязательный baseline для сборки, сравнения и exact/structured
+дополнения. В spatial-v3 production v15 он не является runtime fallback при
+недоступности обязательного Giga encoder/vector path.
 
 ---
 
@@ -2003,17 +2005,23 @@ Lexical retrieval — обязательный baseline recall path.
   "schema": "world_knowledge_embedding_profile_v1",
   "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
   "model_id": "ai-sage/Giga-Embeddings-instruct-480M-0826",
-  "model_revision": "<pinned exact revision>",
+  "model_revision": "0c94f705aa35719324fb46f7e75b0a5c275da6e4",
   "dimension": 1024,
   "normalization": "l2",
   "pooling": "mean",
   "query_mode": "instruct",
+  "query_format": "Instruct: {task}\\nQuery: {text}",
   "document_mode": "plain",
   "status": "production"
 }
 ```
 
-На дату подготовки этого контракта upstream model card указывает MIT license, ~480M parameters, embedding dimension 1024, mean pooling + L2 normalization и instruction prefix только для asymmetric query. Перед distribution exact revision и applicable license/notice должны быть повторно pinned/reviewed.
+Для exact revision выше upstream model card указывает MIT license, ~480M
+parameters, embedding dimension 1024, mean pooling + L2 normalization и
+instruction prefix только для asymmetric query. Проверенная release-запись и
+notice находятся в production embedding profile и соседнем
+`GIGA_480M_0826_NOTICE.md`; веса не входят в Git. Перед самостоятельным
+redistribution weights applicable license/notice проверяются повторно.
 
 Corpus vectors и runtime query vectors строятся одной exact model revision/profile.
 
@@ -2100,7 +2108,7 @@ ANN/HNSW/vector DB добавляются только после measured laten
 2. domain/predicate narrowing
 3. structured applicability prefilter
 4. localized lexical retrieval
-5. optional Giga semantic retrieval
+5. required Giga semantic retrieval for spatial-v3 production v15
 6. merge/deduplicate
 7. full deterministic applicability
 8. conflict grouping
@@ -2782,6 +2790,15 @@ bundle/index operational failure → unavailable
 
 Operational failure не маскируется под factual uncertainty.
 
+Для spatial-v3 production v15 Giga query encoder, exact profile, corpus vectors
+и flat vector scan образуют одну обязательную локальную dependency. Ошибка
+startup/encode/timeout/profile/index/vector scan возвращает typed
+`WORLD_KNOWLEDGE_UNAVAILABLE` для текущего turn до semantic consumer и commit.
+Lexical retrieval после такой ошибки не вызывается. Сервер остаётся жив и
+публикует обычный безопасный HTTP error envelope; повтор turn после
+восстановления encoder проходит обычный idempotent flow. Отказ WK не создаёт
+state, idempotency, narration или отдельный failure ledger.
+
 Repeated unresolved в declared production question class является authoring coverage defect и должен быть видим telemetry/eval.
 
 ---
@@ -2925,7 +2942,7 @@ multi-agent research chain на каждый turn
 1. exact refs
 2. structured indexes
 3. localized lexical index
-4. Giga flat semantic retrieval
+4. Giga flat semantic retrieval (mandatory in spatial-v3 production v15)
 5. improve lexical/FTS after measured gap
 6. ANN/HNSW after measured latency gap
 7. external SQL/vector backend only after measured scale need
@@ -3050,7 +3067,7 @@ Quality improvement и performance cutover — отдельные gates.
 
 ```text
 0 или 1 query-planner LLM call
-+ 0 или 1 local query embedding call
++ 1 local query embedding call when a WK slice is required
 + 1 deterministic Knowledge Core retrieval
 + 1 main semantic LLM call
 ```
@@ -3570,6 +3587,10 @@ Target проекта — систематически расширять primit
 - lexical+vector merge;
 - benchmark.
 
+Для active production-v1 / spatial-v3 v15 этот stage завершён и обязателен:
+отсутствие exact local model snapshot, encoder или vector index является
+operational unavailable, а не переходом к lexical-only gameplay.
+
 ## Stage 5 — World/materialization consumers
 
 - location factual envelope;
@@ -3768,14 +3789,18 @@ saturation или ремонт других gameplay owners.
 32. translation fallback не меняет structured truth;
 33. telemetry измеряет planner/retrieval/model/narrator separately;
 34. reference correctness eval проходит;
-35. retrieval Recall@K и noise измерены;
-36. unsupported-premise rate измерен;
-37. anti-script unseen probes проходят;
-38. committed gameplay state переживает reload/retry where applicable;
-39. fully-local profile существует и проходит offline gate;
-40. licenses/notices/source rights учтены для release;
-41. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;
-42. required CI на exact merge HEAD зелёный.
+35. active production WK need fail-closed возвращает
+    `WORLD_KNOWLEDGE_UNAVAILABLE` при любой Giga/vector operational failure;
+36. exact model snapshot заранее provisioned, runtime работает
+    `local_files_only`/offline и readiness smoke проходит на target hardware;
+37. retrieval Recall@K и noise измерены;
+38. unsupported-premise rate измерен;
+39. anti-script unseen probes проходят;
+40. committed gameplay state переживает reload/retry where applicable;
+41. fully-local profile существует и проходит offline gate;
+42. licenses/notices/source rights учтены для release;
+43. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;
+44. required CI на exact merge HEAD зелёный.
 
 ---
 
@@ -3822,7 +3847,7 @@ SOURCE KNOWLEDGE
 → coverage profiles by real game needs
 → localized retrieval surfaces
 → immutable local Knowledge Pack
-→ exact + structured + lexical + optional Giga retrieval
+→ exact + structured + lexical + required Giga retrieval in active production
 → deterministic applicability/conflicts/ranking/packing
 → compact relevant factual slice
 → replaceable semantic LLM using slice as factual premise set

@@ -8,7 +8,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v15';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.13.0-world-knowledge.1',
+  contract_version: '4.13.0-world-knowledge.2',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',

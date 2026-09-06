@@ -1,6 +1,7 @@
 import { performance } from 'node:perf_hooks';
 import { requestWorldKnowledgeQueryPlan } from '@rus/turn';
 import { projectCalendar } from '@rus/time-events-history/calendar';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
 
 const PURPOSES = new Set(['semantic_resolution', 'materialization_support',
   'npc_decision', 'conversation', 'narration']);
@@ -84,8 +85,6 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       let embeddingMs = null;
       let vectorMs = null;
       let vectorScores;
-      let vectorStatus = 'ok';
-      let vectorErrorCode = null;
       try {
         const embeddingStarted = performance.now();
         const vector = await worldKnowledge.encoder.encode(
@@ -98,12 +97,15 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         });
         vectorMs = Math.max(0, performance.now() - vectorStarted);
       } catch (error) {
-        vectorStatus = 'structured_lexical_fallback';
-        vectorErrorCode = String(error?.code ?? 'VECTOR_RETRIEVAL_UNAVAILABLE');
+        throw new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
+          'Production World Knowledge retrieval is unavailable.', {
+            cause_code: String(error?.details?.cause_code ?? error?.code
+              ?? 'VECTOR_RETRIEVAL_UNAVAILABLE')
+          });
       }
       const retrievalStarted = performance.now();
       const slice = worldKnowledge.core.resolveWorldKnowledge(query,
-        vectorScores == null ? undefined : { vectorScores });
+        { vectorScores });
       const grounded = Object.freeze({ ...request,
         world_knowledge: modelSlice(slice) });
       const purposeCache = cache.get(request) ?? new Map();
@@ -132,7 +134,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         claim_refs: Object.freeze([...slice.hard_constraints, ...slice.facts]
           .map(({ claim_ref }) => claim_ref)),
         slice_chars: slice.context_text.length,
-        vector_status: vectorStatus, vector_error_code: vectorErrorCode,
+        vector_status: 'ok', vector_error_code: null,
         query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
         retrieval_ms: Math.max(0, performance.now() - retrievalStarted),
         total_grounding_ms: Math.max(0, performance.now() - started)

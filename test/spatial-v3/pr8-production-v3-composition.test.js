@@ -358,6 +358,7 @@ test('production-v15 root is sole owner', async () => {
       runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
     },
     pools: setup.pools,
+    worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
     bindingsFactory: setup.bindingsFactory,
     targetRootFactory: setup.targetRootFactory
   });
@@ -461,6 +462,7 @@ test('configured composition loader selects only the activated v6 release', asyn
         runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
       },
       pools: setup.pools,
+      worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
       bindingsFactory: setup.bindingsFactory,
       targetRootFactory: setup.targetRootFactory
     }
@@ -488,12 +490,18 @@ test('production composition rejects every binding except builtin v6', async () 
         runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
       },
       pools: setup.pools,
+      worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
       targetRootFactory: setup.targetRootFactory
     }),
     (error) => error.code === 'RUNTIME_BINDINGS_MODULE_INACTIVE'
   );
   assert.equal(setup.closed(), 1);
 });
+
+function readyWorldKnowledgeEncoder() {
+  return Object.freeze({ ready: async () => {},
+    encode: async () => new Float32Array(1024), close: async () => {} });
+}
 
 test('production-v6 binding validation fails closed without every sole-owner port', () => {
   assert.throws(

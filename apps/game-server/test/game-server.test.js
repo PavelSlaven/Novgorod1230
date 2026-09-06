@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
 import { TurnWorkflowError } from '@rus/turn';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
 import { errorEnvelope } from '../src/http/contracts.js';
 import {
   createGameCompositionRoot,
@@ -317,6 +318,30 @@ test('HTTP boundary hides runtime contract failures from the player', async (t) 
   });
   assert.equal(JSON.stringify(body).includes('TRACE_ROUTE_BODY'), false);
   assert.equal(JSON.stringify(body).includes('trace_ld_v1_body'), false);
+});
+
+test('HTTP boundary hides World Knowledge operational failures from the player', async (t) => {
+  const root = { submitTurn: async () => {
+    throw new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
+      'Giga World Knowledge query encoding is unavailable.', {
+        cause_code: 'WK_EMBEDDING_WORKER_EXIT'
+      });
+  } };
+  const server = createGameHttpServer({ root });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ raw_text: 'Добыть рыбу' })
+  });
+  const body = await response.json();
+  assert.equal(response.status, 500);
+  assert.deepEqual(body.error, {
+    code: 'TEMPORARY_ACTION_UNAVAILABLE',
+    message: 'Действие временно недоступно. Попробуйте ещё раз.'
+  });
+  assert.equal(JSON.stringify(body).includes('WORLD_KNOWLEDGE'), false);
+  assert.equal(JSON.stringify(body).includes('WK_EMBEDDING'), false);
 });
 
 test('infrastructure adapters require explicit provider and database ports', async () => {

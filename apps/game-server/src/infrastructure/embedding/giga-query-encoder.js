@@ -2,17 +2,21 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
 
 const WORKER = fileURLToPath(new URL('./giga-query-worker.py', import.meta.url));
 
 export function createGigaQueryEncoder({ profilePath,
-  python = 'python' } = {}) {
+  python = 'python', timeoutMs = 120_000, spawnProcess = spawn,
+  workerPath = WORKER } = {}) {
   if (typeof profilePath !== 'string' || !profilePath
-      || typeof python !== 'string' || !python.trim()) {
+      || typeof python !== 'string' || !python.trim()
+      || !Number.isInteger(timeoutMs) || timeoutMs < 1
+      || typeof spawnProcess !== 'function') {
     throw new TypeError('Giga query encoder configuration is invalid');
   }
   let child = null;
-  let ready = null;
+  let startup = null;
   let nextId = 1;
   const pending = new Map();
 
@@ -26,27 +30,38 @@ export function createGigaQueryEncoder({ profilePath,
     return new Promise((accept, reject) => {
       const timeout = setTimeout(() => {
         pending.delete(id);
-        reject(new Error('Giga query encoding timed out'));
-      }, 120_000);
+        reject(unavailable('WK_EMBEDDING_TIMEOUT'));
+      }, timeoutMs);
       pending.set(id, { accept, reject, timeout });
-      child.stdin.write(`${JSON.stringify({ id, text: normalized })}\n`);
+      try {
+        child.stdin.write(`${JSON.stringify({ id, text: normalized })}\n`);
+      } catch {
+        clearTimeout(timeout);
+        pending.delete(id);
+        reject(unavailable('WK_EMBEDDING_WORKER_WRITE_FAILED'));
+      }
     });
   }
 
   function start() {
-    if (ready != null) return ready;
-    ready = new Promise((accept, reject) => {
-      child = spawn(python, ['-u', WORKER, '--profile', resolve(profilePath)], {
+    if (startup != null) return startup;
+    startup = new Promise((accept, reject) => {
+      const spawned = spawnProcess(python,
+        ['-u', workerPath, '--profile', resolve(profilePath)], {
         windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, PYTHONUTF8: '1', HF_HUB_OFFLINE: '1',
           TRANSFORMERS_OFFLINE: '1' }
       });
-      child.stderr.resume();
+      child = spawned;
+      spawned.stderr.resume();
       let settled = false;
       const startupTimeout = setTimeout(() => {
-        if (!settled) reject(new Error('Giga query encoder startup timed out'));
-      }, 120_000);
-      createInterface({ input: child.stdout }).on('line', (line) => {
+        if (!settled) {
+          fail(unavailable('WK_EMBEDDING_STARTUP_TIMEOUT'));
+          spawned.kill?.();
+        }
+      }, timeoutMs);
+      createInterface({ input: spawned.stdout }).on('line', (line) => {
         let message;
         try { message = JSON.parse(line); } catch { return; }
         if (message.ready === true && !settled) {
@@ -59,29 +74,39 @@ export function createGigaQueryEncoder({ profilePath,
         if (request == null) return;
         pending.delete(message.id);
         clearTimeout(request.timeout);
-        if (!Array.isArray(message.vector) || message.vector.length !== 1024
+        if (message.error != null) {
+          request.reject(unavailable('WK_EMBEDDING_ENCODE_FAILED'));
+        } else if (!Array.isArray(message.vector)
+            || message.vector.length !== 1024
             || message.vector.some((value) => !Number.isFinite(value))) {
-          request.reject(new Error('Giga query encoding failed'));
+          request.reject(unavailable('WK_EMBEDDING_VECTOR_INVALID'));
         } else request.accept(new Float32Array(message.vector));
       });
-      child.once('error', fail);
-      child.once('exit', () => fail(new Error('Giga query encoder exited')));
+      spawned.once('error', () => fail(unavailable(
+        'WK_EMBEDDING_WORKER_ERROR')));
+      spawned.once('exit', () => fail(unavailable(
+        'WK_EMBEDDING_WORKER_EXIT')));
       function fail(error) {
         clearTimeout(startupTimeout);
-        if (!settled) reject(error);
+        if (!settled) {
+          settled = true;
+          reject(error);
+        }
         for (const request of pending.values()) {
           clearTimeout(request.timeout);
           request.reject(error);
         }
         pending.clear();
-        child = null;
-        ready = null;
+        if (child === spawned) {
+          child = null;
+          startup = null;
+        }
       }
     });
-    return ready;
+    return startup;
   }
 
-  return Object.freeze({ encode,
+  return Object.freeze({ encode, ready: start,
     async close() {
       if (child == null) return;
       const current = child;
@@ -89,4 +114,11 @@ export function createGigaQueryEncoder({ profilePath,
       await new Promise((accept) => current.once('exit', accept));
     }
   });
+}
+
+function unavailable(causeCode) {
+  return new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
+    'Giga World Knowledge query encoding is unavailable.', {
+      cause_code: causeCode
+    });
 }

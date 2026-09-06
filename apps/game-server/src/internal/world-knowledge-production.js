@@ -11,7 +11,8 @@ const VECTOR_METADATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/produ
 const VECTOR_DATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/vectors.f32';
 
 export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
-  python = 'python' } = {}) {
+  python = 'python', requireEncoderReady = false,
+  encoderFactory = createGigaQueryEncoder } = {}) {
   const [bundle, embeddingProfile, vectorMetadata, vectorBytes] =
     await Promise.all([
     readJson(resolve(rootDir, BUNDLE_PATH)),
@@ -51,12 +52,59 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
       || !validEntries(vectorMetadata.entries, bundle)) {
     throw new TypeError('World Knowledge vector index is invalid');
   }
+  const encoder = encoderFactory({
+    profilePath: resolve(rootDir, EMBEDDING_PROFILE_PATH), python });
+  if (requireEncoderReady) await encoder.ready();
   return freeze({ bundle, embedding_profile: embeddingProfile,
     core: createWorldKnowledgeCore(bundle),
     vector_index: createWorldKnowledgeFlatVectorIndex(vectorMetadata,
       vectorBytes, { conceptToClaimRefs: bundle.exact_indexes.concept_to_claim_refs }),
-    encoder: createGigaQueryEncoder({
-      profilePath: resolve(rootDir, EMBEDDING_PROFILE_PATH), python }) });
+    encoder });
+}
+
+export async function checkProductionWorldKnowledgeReadiness({
+  rootDir = process.cwd(), python = 'python'
+} = {}) {
+  const loaded = await loadProductionWorldKnowledge({ rootDir, python,
+    requireEncoderReady: true });
+  try {
+    const russian = await loaded.encoder.encode(
+      'Как вода, мороз и грязь влияют на зимнюю дорогу?');
+    const repeat = await loaded.encoder.encode(
+      'Как вода, мороз и грязь влияют на зимнюю дорогу?');
+    const english = await loaded.encoder.encode(
+      'How do water, frost, and mud affect a winter road?');
+    const dimensions = [russian.length, repeat.length, english.length];
+    if (dimensions.some((value) => value !== 1024)
+        || [...russian, ...repeat, ...english].some((value) =>
+          !Number.isFinite(value))) {
+      throw new TypeError('World Knowledge readiness vector is invalid');
+    }
+    const difference = Math.max(...russian.map((value, index) =>
+      Math.abs(value - repeat[index])));
+    if (difference > 1e-6) {
+      throw new TypeError('World Knowledge query encoder is not deterministic');
+    }
+    const domains = loaded.bundle.manifest.domains;
+    const russianHits = loaded.vector_index.search(russian,
+      { locale: 'ru', domains, limit: 3 });
+    const englishHits = loaded.vector_index.search(english,
+      { locale: 'en', domains, limit: 3 });
+    if (russianHits.size === 0 || englishHits.size === 0) {
+      throw new TypeError('World Knowledge production vector retrieval failed');
+    }
+    return freeze({ status: 'ready', offline: true,
+      embedding_profile_ref: loaded.embedding_profile.embedding_profile_ref,
+      model_id: loaded.embedding_profile.model_id,
+      model_revision: loaded.embedding_profile.model_revision,
+      dimension: loaded.embedding_profile.dimension,
+      russian_norm: vectorNorm(russian), english_norm: vectorNorm(english),
+      deterministic_max_delta: difference,
+      russian_top_refs: [...russianHits.keys()],
+      english_top_refs: [...englishHits.keys()] });
+  } finally {
+    await loaded.encoder.close();
+  }
 }
 
 function validEntries(entries, bundle) {
@@ -79,6 +127,10 @@ function validEntries(entries, bundle) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+function vectorNorm(vector) {
+  return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
 }
 
 function freeze(value) {

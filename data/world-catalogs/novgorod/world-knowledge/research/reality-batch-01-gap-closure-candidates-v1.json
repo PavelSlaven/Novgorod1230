@@ -21,13 +21,13 @@
     {
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:reality-batch-01-umn-herbs",
-      "title": "Harvesting and preserving herbs",
+      "title": "Preserving food at home: Drying",
       "authors": [
         "University of Minnesota Extension"
       ],
       "publication": "University of Minnesota Extension",
       "source_kind": "official_documentation",
-      "citation": "https://extension.umn.edu/growing-herbs/harvesting-and-preserving-herbs",
+      "citation": "https://extension.umn.edu/food/preparing/cooking-at-home/food-preservation/drying",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -36,14 +36,14 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:reality-batch-01-cdc-wounds",
-      "title": "Preventing tetanus after a disaster",
+      "source_ref": "source:reality-batch-01-medlineplus-wounds",
+      "title": "How wounds heal",
       "authors": [
-        "Centers for Disease Control and Prevention"
+        "U.S. National Library of Medicine"
       ],
-      "publication": "CDC",
+      "publication": "MedlinePlus Medical Encyclopedia",
       "source_kind": "official_documentation",
-      "citation": "https://www.cdc.gov/tetanus/prevention/index.html",
+      "citation": "https://medlineplus.gov/ency/patientinstructions/000741.htm",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -52,14 +52,14 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:reality-batch-01-usda-soil",
-      "title": "Soil Health",
+      "source_ref": "source:reality-batch-01-fao-soil",
+      "title": "Physical properties",
       "authors": [
-        "USDA Natural Resources Conservation Service"
+        "Food and Agriculture Organization of the United Nations"
       ],
-      "publication": "USDA NRCS",
+      "publication": "FAO Soils Portal",
       "source_kind": "official_documentation",
-      "citation": "https://www.nrcs.usda.gov/conservation-basics/natural-resource-concerns/soil/soil-health",
+      "citation": "https://www.fao.org/soils-portal/soil-survey/soil-properties/physical-properties/en/",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -68,14 +68,14 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:reality-batch-01-ucd-horse",
-      "title": "Horse Care Guidelines",
+      "source_ref": "source:reality-batch-01-pmc-horse",
+      "title": "Heat stress in horses: a literature review",
       "authors": [
-        "UC Davis Center for Equine Health"
+        "H. Kang and colleagues"
       ],
-      "publication": "University of California, Davis",
-      "source_kind": "official_documentation",
-      "citation": "https://ceh.vetmed.ucdavis.edu/horse-care-guidelines",
+      "publication": "Journal of Animal Science and Biotechnology, 2023",
+      "source_kind": "scholarship",
+      "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10267279/",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -109,39 +109,39 @@
       "evidence_ref": "evidence:reality-batch-01-herbs",
       "source_ref": "source:reality-batch-01-umn-herbs",
       "anchor": {
-        "section": "Drying and storing herbs"
+        "section": "Air drying"
       },
-      "note": "University Extension guidance supports dry, protected herb storage and condition checks. It establishes no herb, aroma, mold, quantity, safety, medicinal use or storage outcome.",
+      "note": "University Extension describes air drying herbs indoors in a dry setting. It establishes no herb, aroma, mold, quantity, safety, medicinal use or storage outcome.",
       "review_status": "approved"
     },
     {
       "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:reality-batch-01-horse",
-      "source_ref": "source:reality-batch-01-ucd-horse",
+      "source_ref": "source:reality-batch-01-pmc-horse",
       "anchor": {
-        "section": "Routine care and observation"
+        "section": "Abstract and thermoregulation discussion"
       },
-      "note": "Equine-care guidance supports observing a working horse and checking tack contact. It establishes no horse, workload, diagnosis, injury, treatment or work decision.",
+      "note": "The review supports observable thermoregulatory responses to exercise and heat. It establishes no horse, workload, diagnosis, injury, treatment, tack condition or work decision.",
       "review_status": "approved"
     },
     {
       "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:reality-batch-01-abrasion",
-      "source_ref": "source:reality-batch-01-cdc-wounds",
+      "source_ref": "source:reality-batch-01-medlineplus-wounds",
       "anchor": {
-        "section": "Wound cleaning and tetanus prevention"
+        "section": "Minor wounds and infection prevention"
       },
-      "note": "CDC guidance supports prompt cleaning of a minor dirty wound. It establishes no wound, contamination, infection, tetanus status, treatment availability or outcome.",
+      "note": "MedlinePlus describes minor wounds, their care needs, and infection prevention. It establishes no wound, contamination, infection, treatment availability or outcome.",
       "review_status": "approved"
     },
     {
       "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:reality-batch-01-soil",
-      "source_ref": "source:reality-batch-01-usda-soil",
+      "source_ref": "source:reality-batch-01-fao-soil",
       "anchor": {
-        "section": "Soil structure and water"
+        "section": "Soil structure and soil water characteristics"
       },
-      "note": "USDA soil guidance supports qualitative effects of texture and water on soil condition. It establishes no ground, stake, excavation, bearing value, collapse or outcome.",
+      "note": "FAO describes texture, structure, water movement, moisture storage and their effects on soil stability. It establishes no ground, stake, excavation, bearing value, collapse or outcome.",
       "review_status": "approved"
     }
   ],

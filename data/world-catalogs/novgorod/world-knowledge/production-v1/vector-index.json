@@ -542,6 +542,104 @@
       "retrieval_text": "Письмо жены о выкупе коровы Документный факт рубежа XII–XIII веков, не правило о браке или собственности. Грамота №8 имеет условную дату 1180–1200 с вероятным смещением вперёд; это частное письмо от жены Семьюна к Игучку о выкупе коровы. Это единичный документный факт, не правило о браке, собственности или сделка 1230 года. жена корова выкуп грамота №8"
     },
     {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination:en",
+      "target_ref": "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water and toxic exposure General limits of water disinfection and toxic exposure. Boiling water inactivates many disease-causing microorganisms, but does not remove toxic chemicals or fuel or by itself prevent later recontamination."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вода и токсическое воздействие Общие ограничения обеззараживания воды и токсических воздействий. Кипячение воды обезвреживает многие болезнетворные микроорганизмы, но не удаляет токсичные химикаты или топливо и само по себе не предотвращает повторное загрязнение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure:en",
+      "target_ref": "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposure and function General relations of exposure and functional burden. Carbon-monoxide inhalation impairs oxygen delivery and use; hazard depends on exposure circumstances, without establishing exposure, diagnosis, severity, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Воздействие и функция Общие связи воздействий и функциональной нагрузки. Вдыхание угарного газа нарушает доставку и использование кислорода; опасность зависит от обстоятельств воздействия, но это не устанавливает воздействие, диагноз, тяжесть или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use:en",
+      "target_ref": "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposure and function General relations of exposure and functional burden. A musculoskeletal injury such as fracture or dislocation can limit ordinary movement, limb use, or weight bearing; this establishes neither diagnosis nor severity."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Воздействие и функция Общие связи воздействий и функциональной нагрузки. Костно-суставная травма, например перелом или вывих, может ограничить обычное движение, использование конечности или опору на неё; это не устанавливает диагноз или тяжесть травмы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden:en",
+      "target_ref": "claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposure and function General relations of exposure and functional burden. Parasites can produce variable symptoms or functional burden, but this establishes no parasite presence, route, or burden for an individual."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Воздействие и функция Общие связи воздействий и функциональной нагрузки. Паразиты могут давать разные симптомы или функциональную нагрузку, но это не устанавливает наличие паразита, путь заражения или нагрузку у конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing:en",
+      "target_ref": "claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposure and function General relations of exposure and functional burden. Tooth decay or injury can cause pain and may interfere with ordinary chewing; this establishes no diagnosis or individual condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Воздействие и функция Общие связи воздействий и функциональной нагрузки. Кариес или травма зуба могут вызвать боль и мешать обычному жеванию; это не устанавливает диагноз или состояние конкретного человека."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context:en",
+      "target_ref": "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water and toxic exposure General limits of water disinfection and toxic exposure. Toxic exposure can occur by ingestion, inhalation, or skin contact; effects vary with substance, dose, time, and context, without establishing exposure or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вода и токсическое воздействие Общие ограничения обеззараживания воды и токсических воздействий. Токсичное воздействие возможно при проглатывании, вдыхании или контакте с кожей; его последствия зависят от вещества, дозы, времени и обстоятельств, но не устанавливают воздействие или исход."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues:en",
+      "target_ref": "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Solar cues Qualitative observations of Sun and shadow. A visible Sun and shadow can be only qualitative cues to direction and time of day; they provide no exact compass, clock, position, route, or navigation result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues:ru",
+      "target_ref": "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Солнечные ориентиры Качественные наблюдения Солнца и тени. Видимое Солнце и тень могут быть лишь качественными ориентирами направления и времени суток; они не дают точного компаса, часа, положения, маршрута или результата навигации."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:candidate-nettle-bast-fibre-retting-decortication:en",
       "target_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
       "domain": "environment",
@@ -9380,28 +9478,28 @@
       "target_ref": "claim:human-life-audience-can-interpret-standing-contextually",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Seniority or status can affect who speaks first or is asked, but does not settle a disagreement. age gender status seniority audience"
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. An audience can interpret seniority or standing differently by relationship and setting; no etiquette rule is set. age gender status audience seniority standing setting"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-audience-can-interpret-standing-contextually:ru",
       "target_ref": "claim:human-life-audience-can-interpret-standing-contextually",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Старшинство или статус могут влиять на очередность речи или просьб, но не решают спор. возраст гендер статус старшинство аудитория"
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Аудитория может по-разному понимать старшинство или положение в зависимости от отношений и обстановки; этикетное правило не задано. возраст гендер статус аудитория старшинство положение обстановка"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-capacity-experience-help-vary:en",
       "target_ref": "claim:human-life-capacity-experience-help-vary",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A dependent person can be cautious about contradicting a patron, especially before others; no decision is predetermined. age gender status capacity help"
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Physical capacity, experience, and access to help can vary between people and contexts; no ability score is assigned. age gender status capacity experience help"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-capacity-experience-help-vary:ru",
       "target_ref": "claim:human-life-capacity-experience-help-vary",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Зависимый человек может осторожничать, возражая покровителю, особенно при людях; решение не предопределено. возраст гендер статус опыт помощь"
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Физические возможности, опыт и доступ к помощи различаются между людьми и контекстами; оценка способности не назначается. возраст гендер статус возможности опыт помощь"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-category-does-not-determine-means-ties-skill:en",
@@ -9450,14 +9548,14 @@
       "target_ref": "claim:human-life-household-pressure-can-interrupt-learning",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Trust, skill, and safe conditions can precede moving from helper tasks to more responsible work. child apprentice learn season learning"
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Seasonal work, care, and household pressure can interrupt practical learning; no calendar or schedule follows. child apprentice learn season care household learning"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-household-pressure-can-interrupt-learning:ru",
       "target_ref": "claim:human-life-household-pressure-can-interrupt-learning",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Доверие, умение и безопасные условия могут предшествовать переходу от подсобного к более ответственному делу. ребёнок ученик учиться сезон обучение"
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Сезонная работа, уход и нагрузка дома могут прерывать практическое обучение; календарь или расписание не следуют. ребёнок ученик учиться сезон уход дом обучение"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-household-tasks-can-offer-learning:en",
@@ -9492,28 +9590,28 @@
       "target_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
       "domain": "social_law_economy",
       "locale": "en",
-      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. A widow can continue household management when means and kin support make it possible; this is not a right or current status. marriage kin household disagreement"
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Kin ties can create competing loyalties or disagreements; no conflict or authority is inferred. marriage kin household loyalty disagreement"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-kin-ties-can-create-competing-loyalties:ru",
       "target_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
       "domain": "social_law_economy",
       "locale": "ru",
-      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Вдова может вести дом, когда позволяют средства и поддержка родни; это не право и не текущий статус. брак родня дом родство спор"
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Родственные связи могут создавать конкурирующую лояльность или разногласие; конфликт или власть не предполагаются. брак родня дом родство лояльность спор"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-feedback-can-shape-practice:en",
       "target_ref": "claim:human-life-learning-feedback-can-shape-practice",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Family instruction can combine spoken explanation, demonstration, and correction; no school or tutor is created. child apprentice learn feedback skill"
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Feedback and a visible result can shape further practice; competence is not measured. child apprentice learn feedback result practice"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-feedback-can-shape-practice:ru",
       "target_ref": "claim:human-life-learning-feedback-can-shape-practice",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Семейное обучение может сочетать устное объяснение, показ и исправление; школа или наставник не создаются. ребёнок ученик учиться исправление умение"
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Обратная связь и видимый результат могут менять дальнейшую практику; умение не измеряется. ребёнок ученик учиться обратная связь результат практика"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-needs-time-task-material-access:en",
@@ -9534,28 +9632,28 @@
       "target_ref": "claim:human-life-learning-observation-practice-feedback",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. A child can learn counting by grouping ordinary objects and carrying light wood chips; this creates no child or lesson. child apprentice learn demonstration"
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Practical learning can proceed through observation, repetition, correction, and demonstration; this assigns no teacher, pupil, skill, or lesson. child apprentice learn observation repetition correction demonstration"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-observation-practice-feedback:ru",
       "target_ref": "claim:human-life-learning-observation-practice-feedback",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Ребёнок может учиться счёту, группируя обычные предметы и нося лёгкую щепу; это не создаёт ребёнка или урок. ребёнок ученик учиться показ"
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Практическое обучение может идти через наблюдение, повторение, исправление и показ; это не назначает учителя, ученика, умение или урок. ребёнок ученик учиться наблюдение повторение исправление показ"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-tasks-can-match-capacity-risk:en",
       "target_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Children can imitate household or craft tasks in play before responsible work; no age threshold is set. child apprentice learn task"
+      "retrieval_text": "Learning and apprenticeship Editorial premises for practical learning. Learning tasks can be adjusted to present capacity and risk; no age threshold or duty is set. child apprentice learn learning task capacity risk"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-learning-tasks-can-match-capacity-risk:ru",
       "target_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Дети могут в игре подражать домашнему или ремесленному делу до ответственной работы; возрастной порог не задан. ребёнок ученик учиться задача"
+      "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. Учебные задачи можно соразмерять текущим возможностям и риску; возрастной порог или обязанность не задаются. ребёнок ученик учиться обучение задача возможность риск"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-lodging-trades-space-privacy-comfort-security:en",
@@ -9576,42 +9674,42 @@
       "target_ref": "claim:human-life-oral-retelling-varies-with-context",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Children can join play or imitation while adults can listen, lead a story, or join without a fixed age rule. song story play retelling memory"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Oral retelling can vary with memory, audience, purpose, and performer; factual truth is not established. song story play retelling memory audience performer"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-oral-retelling-varies-with-context:ru",
       "target_ref": "claim:human-life-oral-retelling-varies-with-context",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Дети могут участвовать в игре или подражании, взрослые — слушать, рассказывать или участвовать без жёсткого возрастного правила. песня рассказ игра пересказ память"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Устный пересказ меняется с памятью, аудиторией, целью и рассказчиком; фактическая истинность не устанавливается. песня рассказ игра пересказ память аудитория рассказчик"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-perceived-role-can-shape-expectations:en",
       "target_ref": "claim:human-life-perceived-role-can-shape-expectations",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A well-resourced householder can signal means through better clothing or more generous refreshment without proving wealth. age gender status"
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Perceived age, gender, status, and experience can shape interaction expectations, while individuals still vary. age gender status experience"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-perceived-role-can-shape-expectations:ru",
       "target_ref": "claim:human-life-perceived-role-can-shape-expectations",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Состоятельный хозяин может показывать средства лучшей одеждой или щедрым угощением, но это не доказывает богатство. возраст гендер статус"
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Воспринятые возраст, гендер, статус и опыт могут менять ожидания во взаимодействии, но люди различаются. возраст гендер статус опыт"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-performance-needs-willing-participants-suitable-occasion:en",
       "target_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Song, dance, and storytelling can be different forms of shared recreation with different participants. song story play performance game"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. A performance or game depends on willing participants, audience response, and a suitable occasion; no event is created. song story play performance game participants audience"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-performance-needs-willing-participants-suitable-occasion:ru",
       "target_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Песня, танец и рассказ могут быть разными видами общего досуга с разными участниками. песня рассказ игра выступление"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Выступление или игра зависят от желающих участников, реакции аудитории и подходящего случая; событие не создаётся. песня рассказ игра выступление участники аудитория"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-reception-depends-on-trust-ties-means:en",
@@ -9632,112 +9730,112 @@
       "target_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Oral stories can mix remembered events, entertainment, and local news without proving each detail true. song story play music"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Recreation can use voice, memory, bodily play, or available ordinary objects; no instrument, object, or skill is granted. song story play music voice memory object"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-recreation-can-use-voice-memory-body-or-objects:ru",
       "target_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Устные рассказы могут смешивать память о событиях, развлечение и местные вести, не доказывая каждую деталь. песня рассказ игра музыка"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Досуг может использовать голос, память, телесную игру или доступные обычные предметы; инструмент, предмет или умение не выдаются. песня рассказ игра музыка голос память предмет"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-recreation-competes-for-time:en",
       "target_ref": "claim:human-life-recreation-competes-for-time",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. A board or marked game can offer shared recreation when people have time, light, and a place. song story play recreation time"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Recreation can compete with work, care, travel, light, and fatigue for time; no routine is implied. song story play recreation work care travel fatigue"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-recreation-competes-for-time:ru",
       "target_ref": "claim:human-life-recreation-competes-for-time",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Настольная или размеченная игра может дать общий досуг, когда есть время, свет и место. песня рассказ игра досуг время"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Досуг конкурирует за время с работой, уходом, дорогой, светом и усталостью; распорядок не задаётся. песня рассказ игра досуг работа уход дорога усталость"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-recreation-participation-can-be-uneven-voluntary:en",
       "target_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Work, care, travel, light, and fatigue can limit who joins song, play, dance, or storytelling. song story play participation recreation"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Participation in shared recreation can be uneven and voluntary; no group membership or consent is inferred. song story play participation recreation voluntary"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-recreation-participation-can-be-uneven-voluntary:ru",
       "target_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Работа, уход, путь, свет и усталость могут ограничивать участие в песне, игре, танце или рассказе. песня рассказ игра участие досуг"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Участие в общем досуге может быть неравным и добровольным; принадлежность к группе или согласие не предполагаются. песня рассказ игра участие досуг добровольность"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-relationship-change-can-alter-household-arrangement:en",
       "target_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
       "domain": "social_law_economy",
       "locale": "en",
-      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Limited means can favor repair, reuse, and careful preservation of household goods. marriage kin household departure"
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Absence, departure, or a changed relationship can alter household arrangements; no person or event is materialized. marriage kin household departure absence relationship"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-relationship-change-can-alter-household-arrangement:ru",
       "target_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
       "domain": "social_law_economy",
       "locale": "ru",
-      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. При скромных средствах вероятны починка, повторное использование и бережное хранение домашнего добра. брак родня дом уход"
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Отсутствие, уход или изменение отношений могут менять устройство хозяйства; человек или событие не materialize. брак родня дом уход отсутствие отношения"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory:en",
       "target_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Wooden or bone toys can support children’s play and imitation of ordinary work. song story play"
+      "retrieval_text": "Recreation, music, and oral culture Conditional premises for shared recreation. Shared speech, stories, song, or play can provide recreation and circulate remembered material; no specific repertoire is proved. song story play memory"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory:ru",
       "target_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Деревянные или костяные игрушки могут поддерживать детскую игру и подражание обычному труду. песня рассказ игра"
+      "retrieval_text": "Досуг, музыка и устная культура Условные предпосылки совместного досуга. Общая речь, рассказы, песня или игра могут развлекать и передавать запомненное; конкретный репертуар не доказывается. песня рассказ игра память"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-shared-role-can-be-negotiated:en",
       "target_ref": "claim:human-life-shared-role-can-be-negotiated",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A person can be valued for kin connections, experience, or available labour in different combinations. age gender status role conversation"
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. A person's role in shared work or conversation can be negotiated rather than assumed from one descriptor. age gender status role work conversation negotiation"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-shared-role-can-be-negotiated:ru",
       "target_ref": "claim:human-life-shared-role-can-be-negotiated",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Человека могут ценить за родственные связи, опыт или доступный труд в разных сочетаниях. возраст гендер статус роль разговор"
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Роль человека в общей работе или разговоре можно согласовать, а не выводить из одного признака. возраст гендер статус роль работа разговор договорённость"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-standing-can-affect-social-access:en",
       "target_ref": "claim:human-life-standing-can-affect-social-access",
       "domain": "npc_daily_life",
       "locale": "en",
-      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Public status display can differ from food, goods, or credit actually available to a household. age gender status standing protection"
+      "retrieval_text": "Age, gender, and status Non-deterministic differences in social expectations. Social standing can affect access to introductions, credit, protection, or deference, but none is guaranteed. age gender status standing introductions credit protection"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-standing-can-affect-social-access:ru",
       "target_ref": "claim:human-life-standing-can-affect-social-access",
       "domain": "npc_daily_life",
       "locale": "ru",
-      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Публичный вид статуса может отличаться от реально доступных дому еды, вещей или кредита. возраст гендер статус положение защита"
+      "retrieval_text": "Возраст, гендер и статус Негарантированные различия социальных ожиданий. Положение может влиять на доступ к знакомствам, кредиту, защите или почтению, но ничего из этого не гарантировано. возраст гендер статус положение знакомства кредит защита"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-starting-household-needs-coordination:en",
       "target_ref": "claim:human-life-starting-household-needs-coordination",
       "domain": "social_law_economy",
       "locale": "en",
-      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Kin help or remarriage can be alternative responses to household strain with different care arrangements. marriage kin household storage"
+      "retrieval_text": "Household formation and kin Editorial household premises, not legal norms. Starting a household can require coordinating ordinary shelter, food, work, and storage needs; no goods or ownership are created. marriage kin household shelter food work storage"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-starting-household-needs-coordination:ru",
       "target_ref": "claim:human-life-starting-household-needs-coordination",
       "domain": "social_law_economy",
       "locale": "ru",
-      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Помощь родни или повторный брак могут быть разными ответами на трудность дома и по-разному менять уход. брак родня дом хранение"
+      "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. Начало нового хозяйства может требовать согласовать обычные нужды жилья, пищи, труда и хранения; вещи или собственность не создаются. брак родня дом жильё пища труд хранение"
     },
     {
       "entry_ref": "wk-retrieval:claim:human-life-stay-can-enable-consented-exchange:en",
@@ -10032,6 +10130,146 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Низкая температура замедляет многие микробные процессы, но есть исключения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:en",
+      "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "birth and household support Editorial premises about practical support around an established childbirth and household labour. After established childbirth, mother and newborn needs and available support can reshape household labour without assigning care, duty, recovery, or outcome. childbirth postpartum household work postpartum labour newborn support"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:ru",
+      "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "рождение и домашняя поддержка Редакторские premises о practical support при уже установленных родах и изменении домашнего труда. После установленных родов нужды матери и новорождённого вместе с доступной поддержкой могут менять распределение, отсрочку или устройство домашнего труда без заданного ухода, обязанности, восстановления или исхода. роды уход после родов после родов домашний труд"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-birth-needs-practical-support-and-time:en",
+      "target_ref": "claim:macro-gap-birth-needs-practical-support-and-time",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "birth and household support Editorial premises about practical support around an established childbirth and household labour. When childbirth is already underway, available people, resting space, warmth, water, cloth, observation, and time shape practical support without an outcome or medical protocol. childbirth postpartum household work childbirth support birth care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-birth-needs-practical-support-and-time:ru",
+      "target_ref": "claim:macro-gap-birth-needs-practical-support-and-time",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "рождение и домашняя поддержка Редакторские premises о practical support при уже установленных родах и изменении домашнего труда. При уже начавшихся родах доступные люди, место для отдыха, тепло, вода, ткань, наблюдение и время определяют возможную practical support без исхода или медицинского protocol. роды уход после родов тепло и вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-carcass-handling-can-separate-material-streams:en",
+      "target_ref": "claim:macro-gap-carcass-handling-can-separate-material-streams",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "animal material handling Editorial premises about work, place, and material separation from an already present animal. Handling an established carcass can separate food material, hide, bone, offal, and waste without yield, ownership, safety, or fitness. slaughter carcass handling hide bone offal"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-carcass-handling-can-separate-material-streams:ru",
+      "target_ref": "claim:macro-gap-carcass-handling-can-separate-material-streams",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "забой и обработка животного материала Редакторские premises о труде, месте и разделении материала уже наличного животного. Обработка уже установленной туши может разделять пищевой материал, шкуру, кость, внутренности и отходы без заданных выхода, владения, безопасности или пригодности. забой разделка туши шкура и кости"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-collateral-follows-established-security-terms:en",
+      "target_ref": "claim:macro-gap-collateral-follows-established-security-terms",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "security and obligation boundaries Editorial boundaries for established security terms, performance, and legal analogy. Where security terms are established, possession, title, redemption, default, and disposal follow them; title does not transfer automatically. collateral obligation payment redemption"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-collateral-follows-established-security-terms:ru",
+      "target_ref": "claim:macro-gap-collateral-follows-established-security-terms",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "обеспечение и границы обязательства Редакторские boundaries для установленных условий залога, исполнения и юридической аналогии. При уже установленных условиях обеспечения владение, титул, выкуп, неисполнение и распоряжение залогом следуют этим условиям и не передают титул автоматически. залог исполнение обязательства выкуп залога"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-established-local-observance-can-change-availability:en",
+      "target_ref": "claim:macro-gap-established-local-observance-can-change-availability",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "local religious observance Editorial premises about practical availability during an already established local observance. An established local religious observance can change timing or availability of service, meals, work, or gathering without inferring participation, belief, duty, date, or reaction. religious observance local service service availability"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-established-local-observance-can-change-availability:ru",
+      "target_ref": "claim:macro-gap-established-local-observance-can-change-availability",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "местное религиозное observance Редакторские premises о practical availability при уже установленном местном observance. Уже установленное местное религиозное observance может менять время или доступность службы, трапезы, работы либо собрания без вывода об участии, вере, обязанности, дате или реакции. праздничное наблюдение местное богослужение время службы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-legal-analogy-needs-applicable-recognized-basis:en",
+      "target_ref": "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "security and obligation boundaries Editorial boundaries for established security terms, performance, and legal analogy. A historical legal analogy creates no scene consequence without applicable place, time, status, and recognised forum basis. collateral obligation payment legal analogy recognised forum"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-legal-analogy-needs-applicable-recognized-basis:ru",
+      "target_ref": "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "обеспечение и границы обязательства Редакторские boundaries для установленных условий залога, исполнения и юридической аналогии. Историческая юридическая аналогия не создаёт последствия сцены без применимых места, времени, статуса и признанной основы форума. залог исполнение обязательства юридическая аналогия признанный форум"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-payment-changes-only-accepted-obligation-part:en",
+      "target_ref": "claim:macro-gap-payment-changes-only-accepted-obligation-part",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "security and obligation boundaries Editorial boundaries for established security terms, performance, and legal analogy. Payment or delivery changes only an established and accepted part of an obligation; kind, quantity, quality, time, and balance stay distinct. collateral obligation payment payment obligation balance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-payment-changes-only-accepted-obligation-part:ru",
+      "target_ref": "claim:macro-gap-payment-changes-only-accepted-obligation-part",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "обеспечение и границы обязательства Редакторские boundaries для установленных условий залога, исполнения и юридической аналогии. Платёж или передача меняют лишь уже установленную и принятую часть обязательства; вид, количество, качество, срок и остаток остаются разными вопросами. залог исполнение обязательства платёж часть обязательства"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-political-communication-needs-accepted-performance:en",
+      "target_ref": "claim:macro-gap-political-communication-needs-accepted-performance",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "political communication and records Editorial boundaries for established political communication and written attributed accounts. Embassy, tribute, protection, or peace communication creates no settlement, submission, duty, or peace without established parties, mandate, accepted terms, and performance. embassy written account tribute peace terms"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-political-communication-needs-accepted-performance:ru",
+      "target_ref": "claim:macro-gap-political-communication-needs-accepted-performance",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "политическое сообщение и запись Редакторские boundaries для установленного политического сообщения и attributed account в записи. Посольство, дань, защита или сообщение о мире не создают settlement, submission, duty или мир без уже установленных сторон, mandate, принятых условий и исполнения. посольство письменное сообщение дань мирные условия"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-slaughter-needs-work-tools-and-place:en",
+      "target_ref": "claim:macro-gap-slaughter-needs-work-tools-and-place",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "animal material handling Editorial premises about work, place, and material separation from an already present animal. Slaughter of an already present animal can need labour, tools, and a workable place; it begins handling animal material, not free food. slaughter carcass handling animal slaughter slaughter tools"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-slaughter-needs-work-tools-and-place:ru",
+      "target_ref": "claim:macro-gap-slaughter-needs-work-tools-and-place",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "забой и обработка животного материала Редакторские premises о труде, месте и разделении материала уже наличного животного. Забой уже наличного животного может требовать труда, инструментов и пригодного места; он начинает обращение с животным материалом, а не создаёт бесплатную пищу. забой разделка туши забой животного инструменты для забоя"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-writing-carries-attributed-account-only:en",
+      "target_ref": "claim:macro-gap-writing-carries-attributed-account-only",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "political communication and records Editorial boundaries for established political communication and written attributed accounts. Writing can carry an attributed account, but its carrier alone does not establish author, delivery, completeness, authenticity, or legal force. embassy written account document carrier"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-gap-writing-carries-attributed-account-only:ru",
+      "target_ref": "claim:macro-gap-writing-carries-attributed-account-only",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "политическое сообщение и запись Редакторские boundaries для установленного политического сообщения и attributed account в записи. Запись может нести attributed account, но carrier сам не доказывает автора, доставку, полноту, подлинность или legal force. посольство письменное сообщение письменный отчёт доставка записи"
     },
     {
       "entry_ref": "wk-retrieval:claim:maslo-birchbark-718-account:en",
@@ -21206,6 +21444,20 @@
       "retrieval_text": "Снижение перфузии мозга и осознания"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function:en",
+      "target_ref": "wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Exposure and function General relations of exposure and functional burden."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function:ru",
+      "target_ref": "wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Воздействие и функция Общие связи воздействий и функциональной нагрузки."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:candidate-oxygen-delivery-brain-function:en",
       "target_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
       "domain": "biology_physiology",
@@ -23306,6 +23558,20 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-birth-household-support:en",
+      "target_ref": "wk:biology_physiology:reconstructed-birth-household-support",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "birth and household support Editorial premises about practical support around an established childbirth and household labour. childbirth postpartum household work"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-birth-household-support:ru",
+      "target_ref": "wk:biology_physiology:reconstructed-birth-household-support",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "рождение и домашняя поддержка Редакторские premises о practical support при уже установленных родах и изменении домашнего труда. роды уход после родов"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-health-support:en",
       "target_ref": "wk:biology_physiology:reconstructed-health-support",
       "domain": "biology_physiology",
@@ -24326,6 +24592,20 @@
       "domain": "chemistry_process",
       "locale": "ru",
       "retrieval_text": "acid base neutralization При реакции кислоты и основания могут образовываться соль и вода."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:candidate-macro-causal-v2-water-and-toxic-exposure:en",
+      "target_ref": "wk:chemistry_process:candidate-macro-causal-v2-water-and-toxic-exposure",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Water and toxic exposure General limits of water disinfection and toxic exposure."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:candidate-macro-causal-v2-water-and-toxic-exposure:ru",
+      "target_ref": "wk:chemistry_process:candidate-macro-causal-v2-water-and-toxic-exposure",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Вода и токсическое воздействие Общие ограничения обеззараживания воды и токсических воздействий."
     },
     {
       "entry_ref": "wk-retrieval:wk:chemistry_process:candidate-v6-food-cross-contamination:en",
@@ -25476,6 +25756,20 @@
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-animal-material-handling:en",
+      "target_ref": "wk:craft_technology:reconstructed-animal-material-handling",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "animal material handling Editorial premises about work, place, and material separation from an already present animal. slaughter carcass handling"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-animal-material-handling:ru",
+      "target_ref": "wk:craft_technology:reconstructed-animal-material-handling",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "забой и обработка животного материала Редакторские premises о труде, месте и разделении материала уже наличного животного. забой разделка туши"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-military-field-maintenance-transport:en",
       "target_ref": "wk:craft_technology:reconstructed-military-field-maintenance-transport",
       "domain": "craft_technology",
@@ -25950,6 +26244,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Перенос и задержание древесного плавника при паводке Условный речной механизм, а не наличие плавника в сцене."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-macro-causal-v2-solar-cues:en",
+      "target_ref": "wk:environment:candidate-macro-causal-v2-solar-cues",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Solar cues Qualitative observations of Sun and shadow."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:candidate-macro-causal-v2-solar-cues:ru",
+      "target_ref": "wk:environment:candidate-macro-causal-v2-solar-cues",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Солнечные ориентиры Качественные наблюдения Солнца и тени."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:candidate-nettle-bast-fibre-extraction:en",
@@ -29508,6 +29816,20 @@
       "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. ребёнок ученик учиться"
     },
     {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-local-religious-observance:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-local-religious-observance",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "local religious observance Editorial premises about practical availability during an already established local observance. religious observance local service"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-local-religious-observance:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-local-religious-observance",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "местное религиозное observance Редакторские premises о practical availability при уже установленном местном observance. праздничное наблюдение местное богослужение"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-military-camp-household-disruption:en",
       "target_ref": "wk:npc_daily_life:reconstructed-military-camp-household-disruption",
       "domain": "npc_daily_life",
@@ -32812,6 +33134,20 @@
       "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека."
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-political-communication-records:en",
+      "target_ref": "wk:social_law_economy:reconstructed-political-communication-records",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "political communication and records Editorial boundaries for established political communication and written attributed accounts. embassy written account"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-political-communication-records:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-political-communication-records",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "политическое сообщение и запись Редакторские boundaries для установленного политического сообщения и attributed account в записи. посольство письменное сообщение"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-public-dispute-and-language:en",
       "target_ref": "wk:social_law_economy:reconstructed-public-dispute-and-language",
       "domain": "social_law_economy",
@@ -32824,6 +33160,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. спор суд речь имя"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-security-obligation-boundaries:en",
+      "target_ref": "wk:social_law_economy:reconstructed-security-obligation-boundaries",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "security and obligation boundaries Editorial boundaries for established security terms, performance, and legal analogy. collateral obligation payment"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-security-obligation-boundaries:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-security-obligation-boundaries",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "обеспечение и границы обязательства Редакторские boundaries для установленных условий залога, исполнения и юридической аналогии. залог исполнение обязательства"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:regional-economic-activities:en",

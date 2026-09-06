@@ -188,7 +188,8 @@
       "claim_ref_samples": [
         "claim:agriculture-rural-role-context",
         "claim:animal-care-needs-presence",
-        "claim:resource-occupation-needs-setting"
+        "claim:resource-occupation-needs-setting",
+        "claim:macro-gap-established-local-observance-can-change-availability"
       ]
     },
     {
@@ -1562,8 +1563,10 @@
       "coverage": "12 independently reviewed taxon-property premises; local presence and yield remain contextual."
     },
     {"id":"reconstructed-ordinary-lifeways-v1","source_path":"reconstructed-ordinary-lifeways-v1.json","domains":["architecture_settlement","craft_technology","social_behavior"],"location_applicability":"Ordinary contextual reconstruction; no scene, stock or NPC state.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative work/household context","npc":"non-deterministic role context"},"coverage":"25 reviewed editorial lifeway premises."},
-    {"id":"reconstructed-human-lifeways-v1","source_path":"reconstructed-human-lifeways-v1.json","domains":["npc_daily_life","social_law_economy"],"location_applicability":"Ordinary human-context reconstruction; no person, household or decision state.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative social practice","npc":"non-deterministic context"},"coverage":"30 reviewed editorial human-lifeway premises."},
-    {"id":"reconstructed-practical-world-v1","source_path":"reconstructed-practical-world-v1.json","domains":["architecture_settlement","craft_technology","material_culture","npc_daily_life"],"location_applicability":"Ordinary practical reconstruction; no object presence, quantity or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative upkeep/work","npc":"non-deterministic routine context"},"coverage":"30 reviewed editorial practical-world premises."},
+{"id":"reconstructed-human-lifeways-v1","source_path":"reconstructed-human-lifeways-v1.json","domains":["npc_daily_life","social_law_economy"],"location_applicability":"Ordinary human-context reconstruction; no person, household or decision state.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative social practice","npc":"non-deterministic context"},"coverage":"30 reviewed editorial human-lifeway premises."},
+    {"id":"macro-causal-gap-closure-v2","source_path":"macro-causal-gap-closure-v2.json","domains":["environment","biology_physiology","chemistry_process"],"location_applicability":"Universal causal premises only; no scene exposure, condition or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"bounded causal relations","npc":"no diagnosis or outcome"},"coverage":"7 independently approved causal gap-closure premises; contextual state remains owner-supplied."},
+    {"id":"reconstructed-macro-gap-closure-v2","source_path":"reconstructed-macro-gap-closure-v2.json","domains":["biology_physiology","craft_technology","social_law_economy","npc_daily_life"],"location_applicability":"Bounded 1200–1300 Novgorod Land reconstruction; no present household, animal, obligation, authority or observance.","applicability":{"resource":"conditional","material":"conditional","process":"bounded contextual relations","npc":"non-deterministic context"},"coverage":"10 independently approved macro gap-closure premises; family completeness remains separately open."},
+{"id":"reconstructed-practical-world-v1","source_path":"reconstructed-practical-world-v1.json","domains":["architecture_settlement","craft_technology","material_culture","npc_daily_life"],"location_applicability":"Ordinary practical reconstruction; no object presence, quantity or outcome.","applicability":{"resource":"conditional","material":"conditional","process":"qualitative upkeep/work","npc":"non-deterministic routine context"},"coverage":"30 reviewed editorial practical-world premises."},
     {"id":"reconstructed-military-world-v1","source_path":"reconstructed-military-world-v1.json","domains":["architecture_settlement","biology_physiology","craft_technology","environment","material_culture","npc_daily_life","social_law_economy"],"location_applicability":"Editorial 1200–1300 Novgorod Land military-world reconstruction; no force, scene, equipment, person, authority or outcome is present by default.","applicability":{"resource":"only actual means and access","material":"only already established equipment and structures","process":"qualitative readiness, movement, care and recovery context","npc":"non-deterministic coordination and household context"},"coverage":"35 independently approved editorial premises across seven compositional families; no combat mechanics or scenario facts."}
   ],
   "families": [
@@ -1600,7 +1603,7 @@
     {"id":"reconstructed-net-drying-and-repair","domain":"craft_technology","subdomain":"ordinary_fishing_gear_maintenance","family":"Net drying, repair and workspace context","location_applicability":"Fishing and drying workspaces when gear is separately established","applicability":{"resource":"time and drying conditions only when established","material":"net and repair means only when present","process":"qualitative maintenance","npc":"fishing-work context only"},"coverage":"partial: no net, damage, repair result, timer or workspace state.","claim_refs":["claim:practical-net-dry","claim:practical-net-repair","claim:practical-net-space"]},
     {"id":"reconstructed-dwelling-upkeep","domain":"architecture_settlement","subdomain":"ordinary_dwelling_maintenance","family":"Roof, weather, smoke, draft and fuel upkeep context","location_applicability":"Dwellings only when separately established","applicability":{"resource":"fuel only when present","material":"roof and dwelling fabric","process":"qualitative upkeep and heating","npc":"household context only"},"coverage":"partial: no dwelling, weather state, smoke state, fuel stock or repair result.","claim_refs":["claim:practical-dwelling-roof","claim:practical-dwelling-rain-snow","claim:practical-dwelling-smoke-draft","claim:practical-dwelling-fuel","claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually","claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"]},
     {"id":"reconstructed-food-provisioning-and-animal-care","domain":"npc_daily_life","subdomain":"ordinary_food_and_animal_care","family":"Provisions, fodder, livestock care and seasonal work context","location_applicability":"Household, farm and travel contexts when resources and actors are established","applicability":{"resource":"food, fodder and animals only when present","material":"provisions and care equipment only when present","process":"feeding, care and seasonal work context","npc":"non-deterministic household routine context"},"coverage":"partial: no stock, animal, season, schedule, care action or outcome.","claim_refs":["claim:practical-food-provisions","claim:practical-fodder-hay","claim:practical-livestock-care","claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression","claim:place-poultry-observable-emergency-signs-bound-casual-examination","claim:practical-season-work","claim:practical-work-tradeoff","claim:place-outdoors-season-work-space-reallocation"]},
-    {"id":"reconstructed-food-handling","domain":"craft_technology","subdomain":"ordinary_food_handling","family":"Milk, preservation, cooking and grain-storage context","location_applicability":"Household, storage and cooking contexts when food and facilities are established","applicability":{"resource":"food and fuel only when present","material":"provisions and storage only when present","process":"qualitative cooking and preservation","npc":"household-work context only"},"coverage":"partial: no food, spoilage, fuel, storage condition or output.","claim_refs":["claim:practical-food-milk","claim:practical-food-preserve","claim:practical-food-cooking","claim:practical-food-grain-storage","claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"]},
+    {"id":"reconstructed-food-handling","domain":"craft_technology","subdomain":"ordinary_food_handling","family":"Milk, preservation, cooking, grain-storage and established carcass-handling context","location_applicability":"Household, storage and cooking contexts when food, facilities and animal material are established","applicability":{"resource":"food and fuel only when present","material":"provisions, storage and animal material only when present","process":"qualitative cooking, preservation and carcass handling","npc":"household-work context only"},"coverage":"partial: no food, carcass, spoilage, fuel, storage condition, yield or output.","claim_refs":["claim:practical-food-milk","claim:practical-food-preserve","claim:practical-food-cooking","claim:practical-food-grain-storage","claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains","claim:macro-gap-slaughter-needs-work-tools-and-place","claim:macro-gap-carcass-handling-can-separate-material-streams"]},
     {"id":"reconstructed-textile-and-leather-repair","domain":"craft_technology","subdomain":"ordinary_textile_and_leather_work","family":"Spinning, weaving, dyeing, cutting, sewing and leather repair context","location_applicability":"Household and workshop contexts when materials and tools are established","applicability":{"resource":"fibre and leather only when present","material":"textiles, leather and footwear","process":"qualitative making and repair","npc":"craft-role context only"},"coverage":"partial: no tool, material, item, repair result or recipe admission.","claim_refs":["claim:practical-textile-spin","claim:practical-textile-weave","claim:practical-textile-cut","claim:practical-textile-sew","claim:practical-textile-repair","claim:practical-leather-cut","claim:practical-leather-stitch","claim:practical-leather-patch","claim:practical-leather-shoe","claim:place-dye-moving-submerged-textile-can-support-even-contact"]},
     {
       "id": "biology-animal-body-condition-and-insulation",
@@ -2276,7 +2279,8 @@
         "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
         "claim:foundations-haz-01-exposure-modifiers",
-        "claim:foundations-haz-03-exposure-routes"
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context"
       ]
     },
     {
@@ -3708,7 +3712,8 @@
         "claim:animal-care-needs-presence",
         "claim:neutral-household-context",
         "claim:population-storage-role",
-        "claim:resource-occupation-needs-setting"
+        "claim:resource-occupation-needs-setting",
+        "claim:macro-gap-established-local-observance-can-change-availability"
       ]
     },
     {
@@ -4188,7 +4193,8 @@
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
-        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms"
+        "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:macro-gap-writing-carries-attributed-account-only"
       ]
     },
     {
@@ -4259,7 +4265,8 @@
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-settlement-demand-reports-court-choice",
         "claim:social-spousal-complaint-reports-marital-treatment",
-        "claim:social-written-complaint-may-assert-compensation"
+        "claim:social-written-complaint-may-assert-compensation",
+        "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis"
       ]
     },
     {
@@ -4289,7 +4296,9 @@
         "claim:social-guarantor-relates-transaction-obligation",
         "claim:social-hired-work-relates-business-record",
         "claim:social-loan-request-relates-loan",
-        "claim:social-payment-register-records-entry"
+        "claim:social-payment-register-records-entry",
+        "claim:macro-gap-collateral-follows-established-security-terms",
+        "claim:macro-gap-payment-changes-only-accepted-obligation-part"
       ]
     },
     {
@@ -4445,7 +4454,8 @@
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
-        "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion"
+        "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
+        "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure"
       ]
     },
     {
@@ -4552,7 +4562,8 @@
       "coverage": "bounded household-treatment safety premise, not universal chemical-removal impossibility",
       "claim_refs": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
-        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination"
       ]
     },
     {
@@ -4612,7 +4623,8 @@
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
-        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"
+        "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+        "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure"
       ]
     },
     {
@@ -4674,7 +4686,8 @@
       "evidence_boundary": "No office competence, jurisdiction, campaign routine, route, tribute right, authority, force, external relation or present actor follows.",
       "claim_refs": [
         "claim:candidate-gramota222-letter-to-posadnik",
-        "claim:candidate-gramota724-yugra-tribute-expedition"
+        "claim:candidate-gramota724-yugra-tribute-expedition",
+        "claim:macro-gap-political-communication-needs-accepted-performance"
       ]
     },
     {
@@ -4692,7 +4705,8 @@
       "coverage": "bounded independently verified universal premise",
       "evidence_boundary": "No parasite presence, exposure, infection, symptom, diagnosis, transmission, treatment or outcome.",
       "claim_refs": [
-        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection"
+        "claim:candidate-parasite-presence-can-be-medically-relevant-without-establishing-infection",
+        "claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden"
       ]
     },
     {
@@ -4859,7 +4873,9 @@
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
-        "claim:candidate-v3-disability-reflects-health-and-context-interaction"
+        "claim:candidate-v3-disability-reflects-health-and-context-interaction",
+        "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
+        "claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing"
       ]
     },
     {
@@ -5068,6 +5084,7 @@
         "claim:residual-nature-pole-star-precession-limit",
         "claim:residual-nature-moonlight-reflected-sunlight",
         "claim:residual-nature-moon-phase-time-of-visibility",
+        "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
         "claim:place-outdoors-cover-opening-and-work-visibility"
       ]
     },
@@ -5076,7 +5093,7 @@
     {"id":"residual-law-offence-testimony","domain":"social_law_economy","subdomain":"law_practice","family":"injury_theft_boundary_and_arson_normative_context","location_applicability":"Documentary normative comparator, not operative adjudication.","applicability":{"resource":"conditional disputed goods","material":"conditional evidence","process":"bounded procedure/remedy","npc":"party/witness/authority context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-visible-injury-and-witness","claim:residual-law-injury-and-treatment-payments","claim:residual-law-unauthorized-horse-use","claim:residual-law-detained-thief-and-princely-court","claim:residual-law-boundaries-and-marked-trees","claim:residual-law-arson-remedy-and-sanction"]},
     {"id":"residual-law-credit-property","domain":"social_law_economy","subdomain":"transactions","family":"debt_entrustment_interest_and_creditor_priority","location_applicability":"Documentary credit and property comparator context.","applicability":{"resource":"conditional","material":"conditional records","process":"bounded proof/priority context","npc":"party/witness context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-debt-denial-witness-oath","claim:residual-law-merchant-entrustment-proof-exception","claim:residual-law-interest-agreement-and-witnesses","claim:residual-law-monthly-and-longer-interest","claim:residual-law-creditor-priority"]},
     {"id":"residual-law-status-family","domain":"social_law_economy","subdomain":"status_and_succession","family":"dependency_status_widow_and_child_inheritance","location_applicability":"Documentary status and household-succession comparator context.","applicability":{"resource":"conditional household property","material":"conditional records","process":"bounded status/succession context","npc":"role context"},"coverage":"bounded documentary normative premises","claim_refs":["claim:residual-law-zakup-complaint-not-escape","claim:residual-law-zakup-loss-context","claim:residual-law-zakup-illegal-sale","claim:residual-law-status-and-witness-exceptions","claim:residual-law-daughters-and-status-inheritance","claim:residual-law-widow-separate-property","claim:residual-law-stepchildren-paternal-inheritance","claim:residual-law-dependency-and-agreement"]},
-    {"id":"residual-postpartum-newborn-primitives","domain":"biology_physiology","subdomain":"human_reproduction","family":"postpartum_lactation_and_early_newborn_physiology","location_applicability":"General physiology, not individual diagnosis or outcome.","applicability":{"resource":"conditional care","material":"none","process":"qualitative physiology","npc":"care/dependency context"},"coverage":"bounded postpartum/newborn premises","claim_refs":["claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts","claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth","claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery","claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment","claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts","claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk","claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors","claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods","claim:residual-postpartum-breastfeeding-protects-against-infectious-disease","claim:residual-postpartum-early-child-nutrition-supports-growth-and-development"]},
+    {"id":"residual-postpartum-newborn-primitives","domain":"biology_physiology","subdomain":"human_reproduction","family":"postpartum_lactation_early_newborn_and_established_household-support","location_applicability":"General physiology and already-established childbirth contexts, not individual diagnosis or outcome.","applicability":{"resource":"conditional care","material":"conditional warmth, water and cloth","process":"qualitative physiology and household support","npc":"care/dependency context"},"coverage":"bounded postpartum/newborn and practical-support premises","claim_refs":["claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts","claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth","claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery","claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment","claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts","claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk","claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors","claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods","claim:residual-postpartum-breastfeeding-protects-against-infectious-disease","claim:residual-postpartum-early-child-nutrition-supports-growth-and-development","claim:macro-gap-birth-needs-practical-support-and-time","claim:macro-gap-after-childbirth-needs-can-reshape-household-labour"]},
     {"id":"residual-tree-taxon-properties","domain":"environment","subdomain":"flora","family":"birch_pine_spruce_and_alder_properties","location_applicability":"General taxon properties; no local tree, yield or stock.","applicability":{"resource":"conditional","material":"conditional plant/wood","process":"seasonal/taxon property","npc":"none"},"coverage":"bounded taxon-property premises","claim_refs":["claim:residual-tree-betula-pendula-deciduous","claim:residual-tree-betula-pendula-simple-leaves","claim:residual-tree-betula-pendula-male-female-catkins","claim:residual-tree-betula-pendula-moist-soil","claim:residual-tree-pinus-sylvestris-evergreen-needles","claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity","claim:residual-tree-pinus-sylvestris-dry-infertile-soils","claim:residual-tree-picea-abies-evergreen-needles","claim:residual-tree-picea-abies-cones-brown-at-maturity","claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves","claim:residual-tree-alnus-glutinosa-catkins-nutlets","claim:residual-tree-alnus-glutinosa-moist-soil"]}
   ],
   "missing_families": [
@@ -5097,7 +5114,7 @@
         "potential:travel"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Минимальная композиционная модель: footprints, scat, feeding signs, disturbed vegetation, различимость/неоднозначность, влияние снега/грязи/дождя/ветра/времени. Без вывода о конкретном звере в сцене. Current support and limits: Footprint/substrate interpretation is now independently grounded. Other trace types and specific weather/preservation conditions remain partial; no local trace, taxon, age, route or encounter follows.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Минимальная композиционная модель: footprints, scat, feeding signs, disturbed vegetation, различимость/неоднозначность, влияние снега/грязи/дождя/ветра/времени. Без вывода о конкретном звере в сцене. Current support and limits: Footprint/substrate interpretation is now independently grounded. Other trace types and specific weather/preservation conditions remain partial; no local trace, taxon, age, route or encounter follows.",
       "supporting_claim_refs": [
         "claim:fauna-tawny-owl-pellets",
         "claim:fauna-dragonfly-emergence",
@@ -5124,7 +5141,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Source-backed различия possession/custody/title/acquisition и применимые формы доказательства/перехода имущества. Current support and limits: Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Source-backed различия possession/custody/title/acquisition и применимые формы доказательства/перехода имущества. Current support and limits: Existing textual cases support acquisition-chain, market-proof and entrusted-goods contexts. Residual: locally applicable Novgorod-1230 title/acquisition procedures need separate historical evidence. Current title, custody, access, acquisition event and dispute outcome remain state/owner questions.",
       "supporting_claim_refs": [
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:rp-market-purchase-relates-proof-participant",
@@ -5151,7 +5168,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Закрыть основные типы обязательства, collateral/guarantee/default там, где это доказуемо для периода. Current support and limits: Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Закрыть основные типы обязательства, collateral/guarantee/default там, где это доказуемо для периода. Current support and limits: Existing claims support documented debt, loan requests, guarantees and bounded merchant credit. Residual: general pledge, interest, deadlines and locally enforceable default rules need evidence. Actual parties, principal, collateral, balance, transfer and enforcement outcome remain state/mechanics. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:debt-record-practice",
         "claim:debt-needs-parties-and-basis",
@@ -5164,8 +5181,7 @@
         "claim:public-world-local-authority-is-one-escalation-option",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
-        "claim:public-world-witness-account-has-bounded-scope"
-      ],
+        "claim:public-world-witness-account-has-bounded-scope","claim:macro-gap-collateral-follows-established-security-terms","claim:macro-gap-payment-changes-only-accepted-obligation-part"],
       "supporting_family_ids": [
         "social-property-and-market",
         "social-documentary-practice",
@@ -5188,7 +5204,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен минимальный period-local набор процедурных primitives: witness, oath, written evidence, accusation, inquiry, limits. Current support and limits: Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужен минимальный period-local набор процедурных primitives: witness, oath, written evidence, accusation, inquiry, limits. Current support and limits: Narrow market/deposit witness-oath cases and documented accusations/inquiries are grounded. Residual: no universal credibility hierarchy or local Novgorod-1230 procedure follows. Actual observation, testimony, admissibility and adjudicated outcome remain knowledge/authority/state. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -5200,8 +5216,7 @@
         "claim:public-world-local-authority-is-one-escalation-option",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
-        "claim:public-world-witness-account-has-bounded-scope"
-      ],
+        "claim:public-world-witness-account-has-bounded-scope","claim:macro-gap-writing-carries-attributed-account-only"],
       "supporting_family_ids": [
         "social-law-practice",
         "social-documentary-practice",
@@ -5224,13 +5239,12 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна явная provenance/applicability модель: что можно применять к Новгороду около 1230, что только comparative. Current support and limits: Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужна явная provenance/applicability модель: что можно применять к Новгороду около 1230, что только comparative. Current support and limits: Existing claims retain textual, chronological and participant limits; the later judicial charter is explicitly excluded as a 1230 procedure source. Residual: new local legal rules require period/place/status evidence. Current jurisdiction, identity, status and activated authority are state/owner inputs.",
       "supporting_claim_refs": [
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:religion-olenin-adjudication",
-        "claim:later-novgorod-judicial-charter"
-      ],
+        "claim:later-novgorod-judicial-charter","claim:macro-gap-legal-analogy-needs-applicable-recognized-basis"],
       "supporting_family_ids": [
         "social-law-practice",
         "social-administration"
@@ -5252,7 +5266,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны меры, счётные единицы, формы оплаты/расчёта и qualitative quality distinctions с датировкой. Current support and limits: Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны меры, счётные единицы, формы оплаты/расчёта и qualitative quality distinctions с датировкой. Current support and limits: Existing commodity accounting, payment-register, accounting-unit, procurement and settlement-demand claims provide context. Residual: historical measurement conventions, quality distinctions and settlement practices need evidence. No conversion or price follows; actual mass, quality, bargain, payment and completion are state/mechanics.",
       "supporting_claim_refs": [
         "claim:social-daily-fur-sale-accounting",
         "claim:social-payment-register-records-entry",
@@ -5282,7 +5296,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны source-backed сезонные transport/provisioning patterns региона. Текущий лёд, запасы и доступность остаются state. Current support and limits: Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners. Reviewed editorial support now supplies Provisions, fodder, livestock care and seasonal work context; Standing, lodging, visitors and travel delay context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны source-backed сезонные transport/provisioning patterns региона. Текущий лёд, запасы и доступность остаются state. Current support and limits: Scoped transport, storage and food-condition premises provide compositional support, not a universal seasonal supply calendar. Residual: asserted regional provisioning routines require historical evidence. Current season, ice, route passability, transport availability, stocks, spoilage, capacity and dispatch remain state/owners. Reviewed editorial support now supplies Provisions, fodder, livestock care and seasonal work context; Standing, lodging, visitors and travel delay context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:transport-winter-sledge-1220",
         "claim:transport-sledge-summer-cargo",
@@ -5333,7 +5347,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны primitives эксплуатации речного транспорта: посадка/высадка, перенос груза, причаливание, удержание, rowing/poling/towing — только там, где это исторически подтверждается. Current support and limits: Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics. Reviewed editorial support now supplies Small-boat loading, shore transfer, weather care, leaks and unloading. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны primitives эксплуатации речного транспорта: посадка/высадка, перенос груза, причаливание, удержание, rowing/poling/towing — только там, где это исторически подтверждается. Current support and limits: Cargo, boat-use arrangements, work and repair compose with weight/displacement, immersed buoyant support, static friction, rope condition and a bounded small-heel floating-body righting premise. These support conditional handling without a fixed loading/mooring recipe. Arbitrary large-angle/damaged-vessel stability and specific historical handling practices remain distinct needs. Vessel, capacity, conditions, crew and transfer outcome remain state/mechanics. Reviewed editorial support now supplies Small-boat loading, shore transfer, weather care, leaks and unloading. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "material-transport",
         "built-river-landing-access",
@@ -5376,7 +5390,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing spinning, weaving and garment construction compose with approved stitching-to-support repair. Residual factual work concerns other repair/finishing mechanisms and period-local practice if asserted; actual textile, tool, skill, strength and repair outcome remain state/mechanics. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Existing spinning, weaving and garment construction compose with approved stitching-to-support repair. Residual factual work concerns other repair/finishing mechanisms and period-local practice if asserted; actual textile, tool, skill, strength and repair outcome remain state/mechanics. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:textile-fibres-twist-yarn",
         "claim:population-processes-weaving-thread",
@@ -5420,7 +5434,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Existing hide preparation, tanning, shoemaking/repair and water response compose with possible separation when a stitched leather join fails. This is not proof of every assembly type or medieval maintenance method; material condition, exact load, damage, repair and identity remain owner-supplied. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Existing hide preparation, tanning, shoemaking/repair and water response compose with possible separation when a stitched leather join fails. This is not proof of every assembly type or medieval maintenance method; material condition, exact load, damage, repair and identity remain owner-supplied. Reviewed editorial support now supplies Spinning, weaving, cutting, sewing and leather repair context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:population-hide-leather-distinction",
         "claim:vegetable-tanning-prepared-hide",
@@ -5464,7 +5478,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен простой historical cooking envelope: boiling/baking/roasting/stewing/drying/fermentation там, где подтверждено, типичные process/tool relations. Не каталог рецептов. Current support and limits: Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужен простой historical cooking envelope: boiling/baking/roasting/stewing/drying/fermentation там, где подтверждено, типичные process/tool relations. Не каталог рецептов. Current support and limits: Heating, preservation, pathogen transport and raw-to-cooked/ready food cross-contact through hands, utensils or preparation surfaces are grounded. Residual: any asserted local preparation custom needs historical support. Current contamination, organism, food, cleanliness, thermal exposure, dose, disease and safe eating remain state/mechanics. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_claim_refs": [
         "claim:heating-reduces-microbial-viability",
         "claim:food-preservation-qualitative",
@@ -5500,7 +5514,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Можно добавить пару доказанных repair primitives, но точная течь и состояние крыши — scene state. Current support and limits: Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state. Reviewed editorial support now supplies Roof, weather, smoke, draft and fuel upkeep context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Можно добавить пару доказанных repair primitives, но точная течь и состояние крыши — scene state. Current support and limits: Oak-shingle roofs, wood/moisture and joint condition compose with pressure-driven outflow, capillary uptake and wind-driven rain crossing enclosure openings. They support conditional leakage/wetting, not a universal weatherproofing method or guaranteed drainage. Specific local roof/repair customs remain historical questions; actual openings, pressure, water, defect and weather remain state. Reviewed editorial support now supplies Roof, weather, smoke, draft and fuel upkeep context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "materials-wood-moisture-and-coatings",
@@ -5537,7 +5551,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужна archaeological/historical модель wells, drainage, waste/latrine handling, bathing/water access — без материализации конкретной ямы/колодца. Current support and limits: Washing, exposure routes, infection-chain limits, food/contact transfer and surface runoff carrying sewage into rivers/lakes are supported. Remaining historical work concerns asserted local sanitation customs; actual installation, contamination and illness are state/mechanics.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Для Новгорода нужна archaeological/historical модель wells, drainage, waste/latrine handling, bathing/water access — без материализации конкретной ямы/колодца. Current support and limits: Washing, exposure routes, infection-chain limits, food/contact transfer and surface runoff carrying sewage into rivers/lakes are supported. Remaining historical work concerns asserted local sanitation customs; actual installation, contamination and illness are state/mechanics.",
       "supporting_family_ids": [
         "built-bathing-sanitation",
         "chemistry-exposure-and-routes",
@@ -5569,7 +5583,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Norms, prescriptions and social roles supply factual context. Generic request/refusal/promise/threat meaning is the semantic boundary, not a missing universal fact. Further evidence is needed only for asserted local custom/legal form; compliance, commitment and hidden intent remain state/semantics. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification; Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Norms, prescriptions and social roles supply factual context. Generic request/refusal/promise/threat meaning is the semantic boundary, not a missing universal fact. Further evidence is needed only for asserted local custom/legal form; compliance, commitment and hidden intent remain state/semantics. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification; Competing accounts, negotiation, witnesses and contextual public escalation. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-roles-norms-and-socialization",
         "social-trust-conflict-and-repair",
@@ -5639,7 +5653,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужен небольшой source-backed XIII-century social envelope вокруг публичной репутации, оскорбления, примирения, status-sensitive reactions. Не reputation score. Current support and limits: Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужен небольшой source-backed XIII-century social envelope вокруг публичной репутации, оскорбления, примирения, status-sensitive reactions. Не reputation score. Current support and limits: Norms and a bounded apology/trust study support non-deterministic evaluation context. Reputation and responses belong to social state/semantics, not a universal score. Asserted local honour/status customs remain a scoped historical research need. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Competing accounts, negotiation, witnesses and contextual public escalation. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-trust-conflict-and-repair",
         "psychology-affect-regulation-and-stress",
@@ -5683,7 +5697,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "Conditional pooled-work output reduction, role expectations and documented division of labour in pre-Mongol building projects supply bounded support. They do not establish universal coordination benefits or a mandatory labour hierarchy. Specific coordination effects remain conditional factual questions; staffing, task dependencies, rates, schedule and decisions remain owner/state responsibilities. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints; Work responsibility, reputation, reciprocity and bounded hospitality. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Conditional pooled-work output reduction, role expectations and documented division of labour in pre-Mongol building projects supply bounded support. They do not establish universal coordination benefits or a mandatory labour hierarchy. Specific coordination effects remain conditional factual questions; staffing, task dependencies, rates, schedule and decisions remain owner/state responsibilities. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints; Work responsibility, reputation, reciprocity and bounded hospitality. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-group-influence-and-coordination",
         "npc-craft-occupations",
@@ -5730,7 +5744,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужны местные household/dependency comparators, чтобы не строить быт на общеславянской юридической аналогии. Current support and limits: Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements; Conditional support, activity adaptation and varied social responses to illness or impairment. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "OPEN P2_REVIEW (independent residual review, 2026-09-05). Required primitives: Нужны местные household/dependency comparators, чтобы не строить быт на общеславянской юридической аналогии. Current support and limits: Kin requests, helping and conditional care/succession provisions in Extended Russkaya Pravda supply bounded dependency, provision and custody-of-goods premises. These are not established enacted Novgorod-1230 law or universal gender/motive/duty rules. Actual household, age, need and responsibility remain state; additional asserted local customs require historical support. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements; Conditional support, activity adaptation and varied social responses to illness or impairment. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-family-care",
         "social-belonging-and-prosocial-relations",
@@ -5779,7 +5793,7 @@
         "potential:open_RPG_semantic_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен гораздо более цельный envelope: clergy/monastic roles, fasting/feasts, services, sacraments, calendar observance, household/church practice в пределах источников. Current support and limits: Baptism, feast-list text, a thirteenth-century day-to-commemoration monthbook, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Texts, buildings and objects do not establish attendance, belief or a universal custom.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужен гораздо более цельный envelope: clergy/monastic roles, fasting/feasts, services, sacraments, calendar observance, household/church practice в пределах источников. Current support and limits: Baptism, feast-list text, a thirteenth-century day-to-commemoration monthbook, prayer invocation and a probable communion object supply bounded cases. Broader Novgorod-1230 observance/institutional claims need period/place/status evidence. Texts, buildings and objects do not establish attendance, belief or a universal custom.",
       "supporting_family_ids": [
         "social-religious-context",
         "material-vessels-furniture-ritual"
@@ -5789,8 +5803,7 @@
         "claim:social-church-calendar-text-relates-feast-list",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
         "claim:social-written-prayer-relates-invocation",
-        "claim:probable-travel-chalice-communion"
-      ]
+        "claim:probable-travel-chalice-communion","claim:macro-gap-established-local-observance-can-change-availability"]
     },
     {
       "id": "combustion-carbon-monoxide-and-ventilation",
@@ -5881,7 +5894,8 @@
       ],
       "supporting_claim_refs": [
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
-        "claim:heating-reduces-microbial-viability"
+        "claim:heating-reduces-microbial-viability",
+        "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination"
       ]
     },
     {
@@ -5989,7 +6003,7 @@
         "fishing_camp"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: reviewed birch, pine, spruce and alder properties add useful primitives, but a broad regional tree envelope still needs more taxa, parts, phenology and bounded uses. Further static assessment must test whether ordinary woodland answers remain unsupported; local presence, yield and stock remain contextual.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).: reviewed birch, pine, spruce and alder properties add useful primitives, but a broad regional tree envelope still needs more taxa, parts, phenology and bounded uses. Further static assessment must test whether ordinary woodland answers remain unsupported; local presence, yield and stock remain contextual.",
       "supporting_family_ids": [
         "built-storage-and-household",
         "environment-plant-resources",
@@ -6067,7 +6081,7 @@
         "A1"
       ],
       "coverage": "partial",
-      "reason": "Net mending/worn-part replacement and bounded comparative evidence for tarred-tow hull caulking and retaining clamps are grounded. This is not a universal medieval maintenance routine or a guarantee of watertightness. Other asserted local hull-care customs require historical support. Reviewed editorial support now supplies Net drying, repair and workspace context; Small-boat loading, shore transfer, weather care, leaks and unloading. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Net mending/worn-part replacement and bounded comparative evidence for tarred-tow hull caulking and retaining clamps are grounded. This is not a universal medieval maintenance routine or a guarantee of watertightness. Other asserted local hull-care customs require historical support. Reviewed editorial support now supplies Net drying, repair and workspace context; Small-boat loading, shore transfer, weather care, leaks and unloading. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "craft-fibre-fishing-processing",
         "material-fishing-hunting",
@@ -6107,7 +6121,7 @@
         "potential:npc_interaction"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: written household/official/church register distinctions and graphic substitutions; these do not establish a spoken dialect model. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужен usable envelope древненовгородской речи: основные доказанные dialect/register constraints и границы реконструкции. Не надо хранить все возможные реплики. Current support and limits: The surviving birch-letter corpus is predominantly Old Russian, its household categories are reported as dialectal and near living Old Russian speech, and a conditionally dated alphabet exercise supplies one written-language comparator. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: written household/official/church register distinctions and graphic substitutions; these do not establish a spoken dialect model. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-documentary-practice",
         "social-roles-norms-and-socialization",
@@ -6148,7 +6162,7 @@
         "potential:ordinary_npc_materialization"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: bounded owner-label uncertainty, letter etiquette, dated from-to address and husband-derived female forms. Patronymics, bynames and broader spoken address still open. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужен source-backed generative envelope: attested name forms, patronymic/bynames, kin/address/title patterns. Конкретное имя NPC может затем выбрать LLM внутри envelope. Current support and limits: Named correspondents, name lists, kin letters, office-address fragments, bounded v5 forms and Anna's addressed request to Klimyata are grounded. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: bounded owner-label uncertainty, letter etiquette, dated from-to address and husband-derived female forms. Patronymics, bynames and broader spoken address still open. Reviewed editorial support now supplies Oral register, distinguishing name forms, address and clarification. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-documentary-practice",
         "social-religious-context",
@@ -6192,7 +6206,7 @@
         "potential:education"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить достаточную модель everyday writing: surfaces/tools, типы записей, numeracy/accounting, кто/в каких контекстах мог пользоваться письменностью с честной неопределённостью. Current support and limits: Practical document genres, accounts, named correspondence and alphabet exercises are attested. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: birch inner surface/styli, practical record purposes, genres and syllable/numeral/alphabet exercises. Numeracy operations and literacy access contexts still open.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Добавить достаточную модель everyday writing: surfaces/tools, типы записей, numeracy/accounting, кто/в каких контекстах мог пользоваться письменностью с честной неопределённостью. Current support and limits: Practical document genres, accounts, named correspondence and alphabet exercises are attested. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: birch inner surface/styli, practical record purposes, genres and syllable/numeral/alphabet exercises. Numeracy operations and literacy access contexts still open.",
       "supporting_family_ids": [
         "social-documentary-practice",
         "material-written-objects",
@@ -6229,7 +6243,7 @@
         "potential:equipment_materialization"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Conditional weapon, shield, armour and mounted-equipment roles. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужна настоящая period material-culture карта основных weapon/armour classes, материалов, применения, wear/repair primitives. Current support and limits: The later helmet comparator and the 1220 chronicle record of Vsevolod's court armed in armour now combine with bounded universal iron-corrosion and temporary oil-film relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Conditional weapon, shield, armour and mounted-equipment roles. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "material-fishing-hunting",
         "material-tools",
@@ -6266,7 +6280,7 @@
         "potential:settlement_defence"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Coordination, communication, provisioning and household costs of armed activity; Conditional weapon, shield, armour and mounted-equipment roles. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны роли, mobilization, command contexts, movement/provisioning, siege/defence, aftermath/peacemaking как bounded historical relations. Current support and limits: Chronicle records now supply five regiments, Kesi and Kolivan campaigns, and a bounded captives-and-gold aftermath. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Coordination, communication, provisioning and household costs of armed activity; Conditional weapon, shield, armour and mounted-equipment roles. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "npc-political-roles",
         "built-civic-defence",
@@ -6306,7 +6320,7 @@
         "potential:legal_context"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужна модель kinship vocabulary и source-backed marriage/household formation/dissolution/inheritance relations, не только три anecdotes. Current support and limits: Bounded wife/children and two Gostyata records add family, property-report and another-wife comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Household formation, kin support and changing labour or care arrangements. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-family-care",
         "npc-household-routines",
@@ -6344,7 +6358,7 @@
         "potential:law"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Standing, lodging, visitors and travel delay context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны основные documented social statuses, dependency/freedom, rank, gender/age role contexts. Не deterministic behaviour. Current support and limits: Gramota 109 and the 1220 wife-and-children monastic event now combine with the late-XII-century documentary administrative, non-child sense of otrok. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Work responsibility, reputation, reciprocity and bounded hospitality; Standing, lodging, visitors and travel delay context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-roles-norms-and-socialization",
         "social-law-practice",
@@ -6399,7 +6413,7 @@
         "potential:household"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: postpartum bleeding/infection risk, uterine contraction, lactation and early-newborn nutrition add useful primitives, but useful ordinary care/recovery answers still require offline assessment beyond these relations. Individual pregnancy, complication, timing and outcome remain body/time state.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).: postpartum bleeding/infection risk, uterine contraction, lactation and early-newborn nutrition add useful primitives, but useful ordinary care/recovery answers still require offline assessment beyond these relations. Individual pregnancy, complication, timing and outcome remain body/time state.",
       "supporting_family_ids": [
         "biology-reproduction-and-development",
         "social-family-care",
@@ -6411,8 +6425,7 @@
         "claim:candidate-v2-labor-is-a-staged-process",
         "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
         "claim:candidate-v2-lactation-is-milk-production-and-secretion",
-        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts", "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth", "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery", "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment", "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts", "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk", "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors", "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods", "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease", "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development"
-      ]
+        "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts", "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth", "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery", "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment", "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts", "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk", "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors", "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods", "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease", "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development","claim:macro-gap-birth-needs-practical-support-and-time","claim:macro-gap-after-childbirth-needs-can-reshape-household-labour"]
     },
     {
       "id": "human-lifecycle-childhood-puberty-and-aging",
@@ -6466,7 +6479,7 @@
         "potential:npc_routine"
       ],
       "coverage": "partial",
-      "reason": "Infection chains, immunity, sickness behaviour, fever/sleep relations, disability context, foodborne observations and three bounded dehydration premises are grounded. The residual is bounded P2: diagnosis, cause, severity, care availability and outcome require a concrete body/state premise; these relations are not a medical composition system. Reviewed editorial support now supplies Conditional support, activity adaptation and varied social responses to illness or impairment. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "Infection chains, immunity, sickness behaviour, fever/sleep relations, disability context, foodborne observations and three bounded dehydration premises are grounded. The residual is bounded P2: diagnosis, cause, severity, care availability and outcome require a concrete body/state premise; these relations are not a medical composition system. Reviewed editorial support now supplies Conditional support, activity adaptation and varied social responses to illness or impairment. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "biology-pathogen-immunity-and-infection",
         "physiology-autonomic-and-functional-response",
@@ -6515,7 +6528,7 @@
         "potential:care"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Добавить небольшой generic toxicology/poisoning envelope и наиболее game-relevant parasite relations; exact dose/severity/treatment — body mechanics. Current support and limits: Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Добавить небольшой generic toxicology/poisoning envelope и наиболее game-relevant parasite relations; exact dose/severity/treatment — body mechanics. Current support and limits: Barrier injury, bleeding, wound repair, parasite-host relation, qualitative fracture/dislocation and oral-decay premises are now joined by three bounded burn relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage.",
       "supporting_family_ids": [
         "body-injury-repair-and-barrier",
         "biology-pathogen-immunity-and-infection",
@@ -6530,8 +6543,7 @@
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel",
         "claim:candidate-v6-burn-is-tissue-damage-from-several-energy-or-chemical-causes",
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
-        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
-      ]
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area","claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use","claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing","claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context","claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden"]
     },
     {
       "id": "novgorod-government-institutions-and-competencies",
@@ -6551,7 +6563,7 @@
         "potential:administration"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: dated records add offices, veche/oath, ends, hundred terminology and office relations, but useful institutional-competence answers require offline assessment beyond 14 episodes. Current officeholder, jurisdiction, levy and decision remain state/context.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).: dated records add offices, veche/oath, ends, hundred terminology and office relations, but useful institutional-competence answers require offline assessment beyond 14 episodes. Current officeholder, jurisdiction, levy and decision remain state/context.",
       "supporting_family_ids": [
         "npc-political-roles",
         "social-administration",
@@ -6587,7 +6599,7 @@
         "potential:warfare"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: dated embassy, volost/envoy, campaign and peace records add useful external-relation primitives, but useful diplomacy/tribute/travel answers require offline assessment beyond these episodes. They never establish a current mission, treaty, route access, provisions or foreign disposition.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).: dated embassy, volost/envoy, campaign and peace records add useful external-relation primitives, but useful diplomacy/tribute/travel answers require offline assessment beyond these episodes. They never establish a current mission, treaty, route access, provisions or foreign disposition.",
       "supporting_family_ids": [
         "npc-political-roles",
         "social-administration",
@@ -6599,8 +6611,7 @@
         "claim:candidate-gramota724-yugra-tribute-expedition",
         "claim:candidate-v5-gramota600-reports-khotynians-context",
         "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
-        "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends", "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans", "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri"
-      ]
+        "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends", "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans", "claim:residual-government-law-v1-1229-records-whole-volost-and-envoys-to-yuri","claim:macro-gap-political-communication-needs-accepted-performance"]
     },
     {
       "id": "crime-responsibility-sanctions-and-public-safety",
@@ -6620,7 +6631,7 @@
         "potential:public_safety"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1: reviewed normative premises now cover injury/witnesses, debt, dependency, boundaries, arson and inheritance, but useful offense-to-procedure/remedy answers require offline assessment beyond documentary comparators. They never establish present guilt, operative court, exact sanction or outcome. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).: reviewed normative premises now cover injury/witnesses, debt, dependency, boundaries, arson and inheritance, but useful offense-to-procedure/remedy answers require offline assessment beyond documentary comparators. They never establish present guilt, operative court, exact sanction or outcome. Reviewed editorial support now supplies Competing accounts, negotiation, witnesses and contextual public escalation. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-law-practice",
         "social-property-and-market",
@@ -6679,7 +6690,7 @@
         "potential:npc_development"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Literacy learning + household/craft skill transmission, observation/practice/correction/master-learner relations там, где источники позволяют. Current support and limits: Generic learning/socialization, later Onfim records and the museum's bounded writing/reading/counting learning description provide educational comparators. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Learning through observation, tasks, feedback and household constraints. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "psychology-learning-and-skilled-action",
         "social-roles-norms-and-socialization",
@@ -6719,7 +6730,7 @@
         "potential:npc_routine"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Oral recreation, performance and retelling context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны не только предметы, но и bounded practices: play/game contexts, musical performance, gatherings, oral storytelling/ritual performance там, где доказуемо. Current support and limits: Gusli and charm-prayer comparators are joined by museum records of toys, collective-game balls and tops, a toy sail and bone skates. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Oral recreation, performance and retelling context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-belonging-and-prosocial-relations",
         "material-vessels-furniture-ritual",
@@ -6761,7 +6772,7 @@
         "potential:settlement"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Для Новгорода нужен базовый зимний physical envelope: снег/наст/уплотнение, weak ice/open water, freeze-thaw surface, qualitative snow load. Current support and limits: Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners. New independently verified support: compaction, melt-refreeze crust, drift, density versus depth, uneven roof loading, eave refreezing, current-weakened ice and concealed openings. Seasonal formation/breakup and surface processes still require a separate coverage decision.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Для Новгорода нужен базовый зимний physical envelope: снег/наст/уплотнение, weak ice/open water, freeze-thaw surface, qualitative snow load. Current support and limits: Snowmelt, ice jams, rock freeze-thaw, sledges and ice grips are supplemented by possible ice/snow slip hazard and qualitative ice-strength relations. They still do not cover crust, openings, structural snow loading or a local safe route; exact weather, load and passability remain owners. New independently verified support: compaction, melt-refreeze crust, drift, density versus depth, uneven roof loading, eave refreezing, current-weakened ice and concealed openings. Seasonal formation/breakup and surface processes still require a separate coverage decision.",
       "supporting_family_ids": [
         "environment-weather",
         "environment-hydrology",
@@ -6801,7 +6812,7 @@
         "potential:time"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужны qualitative relations солнца/луны/звёзд, twilight/darkness/visibility и возможность ориентирования; exact azimuth/sunrise/time остаётся code-owned. Current support and limits: Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: twilight fading, stellar orientation and competence, celestial-pole motion, epoch-dependent Polaris precision, reflected moonlight and phase/visibility timing. Solar orientation and the full natural-navigation envelope remain open.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужны qualitative relations солнца/луны/звёзд, twilight/darkness/visibility и возможность ориентирования; exact azimuth/sunrise/time остаётся code-owned. Current support and limits: Fog/smoke visibility remains distinct from human celestial orientation; v6 adds only that lunar phases change the Moon's apparent illuminated portion. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. New independently verified support: twilight fading, stellar orientation and competence, celestial-pole motion, epoch-dependent Polaris precision, reflected moonlight and phase/visibility timing. Solar orientation and the full natural-navigation envelope remain open.",
       "supporting_family_ids": [
         "environment-weather",
         "smoke-optical-visibility",
@@ -6815,8 +6826,7 @@
         "claim:residual-nature-celestial-pole-daily-circles",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:residual-nature-moonlight-reflected-sunlight",
-        "claim:residual-nature-moon-phase-time-of-visibility"
-      ]
+        "claim:residual-nature-moon-phase-time-of-visibility","claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues"]
     },
     {
       "id": "food-system-animal-products-and-care",
@@ -6836,7 +6846,7 @@
         "potential:animal_husbandry"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context; Provisions, fodder, livestock care and seasonal work context. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Это не мелкий residual. Нужен полноценный basic food-system envelope: slaughter/butchery, fish handling, dairy, fats, salt, drinks, meal practices, fodder cycles и basic animal husbandry. Current support and limits: Grain, bread, drying, fermentation, fish and domestic-animal context are joined by bounded raw-animal-food separation, cleaning and handling relations. Required factual primitives remain open; actor-state and exact-mechanics limits do not substitute for their coverage. Reviewed editorial support now supplies Milk, preservation, cooking and grain-storage context; Provisions, fodder, livestock care and seasonal work context. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "material-food-resources",
         "environment-fauna-subsistence",
@@ -6857,8 +6867,7 @@
         "claim:practical-fodder-hay",
         "claim:practical-livestock-care",
         "claim:practical-season-work",
-        "claim:practical-work-tradeoff"
-      ]
+        "claim:practical-work-tradeoff","claim:macro-gap-slaughter-needs-work-tools-and-place","claim:macro-gap-carcass-handling-can-separate-material-streams"]
     },
     {
       "id": "hospitality-travel-and-lodging",
@@ -6878,7 +6887,7 @@
         "potential:household"
       ],
       "coverage": "partial",
-      "reason": "OPEN P1 (independent residual review, 2026-09-05). Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route. Reviewed editorial support now supplies Standing, lodging, visitors and travel delay context; Work responsibility, reputation, reciprocity and bounded hospitality. Residual significance awaits offline assessment under contract §0.2–0.3; lack of exact-year attestation alone is not a blocker.",
+      "reason": "PARTIAL P2 (static macro audit, 2026-09-06).. Required primitives: Нужна историческая область guest/host, temporary lodging, feeding travellers, escorts/guides, road information, reception/departure obligations — насколько позволяют источники. Current support and limits: Universal sleep need and its possible focus/reaction relation supply only a bodily-rest premise. They do not establish historical hospitality customs, lodging availability, traveller obligations, invitation, access, stock, or route. Reviewed editorial support now supplies Standing, lodging, visitors and travel delay context; Work responsibility, reputation, reciprocity and bounded hospitality. Static macro audit found ordinary gameplay composition supported; remaining exact local custom, taxon, procedure, numeracy or availability detail is P2, while current state and mechanics remain owner-supplied.",
       "supporting_family_ids": [
         "social-belonging-and-prosocial-relations",
         "npc-household-routines",

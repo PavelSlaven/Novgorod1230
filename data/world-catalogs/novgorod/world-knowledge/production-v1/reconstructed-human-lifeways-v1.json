@@ -377,7 +377,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "children_can_learn_counting_by_grouping_ordinary_objects_and_carrying_light_wood_chips"
+        "value": "practical_learning_can_proceed_through_observation_repetition_correction_and_demonstration_without_assigning_teacher_pupil_skill_or_lesson"
       },
       "polarity": "support",
       "applicability": {
@@ -417,7 +417,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "children_can_imitate_household_or_craft_tasks_in_play_before_they_are_trusted_with_responsible_work"
+        "value": "learning_tasks_can_be_adjusted_to_present_capacity_and_risk_without_setting_age_threshold_or_duty"
       },
       "polarity": "support",
       "applicability": {
@@ -497,7 +497,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "family_instruction_can_combine_spoken_explanation_demonstration_and_correction"
+        "value": "feedback_and_a_visible_result_can_shape_further_practice_without_measuring_competence"
       },
       "polarity": "support",
       "applicability": {
@@ -577,7 +577,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "trust_skill_and_safe_conditions_can_precede_a_move_from_helper_tasks_to_more_responsible_work"
+        "value": "seasonal_work_care_and_household_pressure_can_interrupt_practical_learning_without_implying_calendar_or_schedule"
       },
       "polarity": "support",
       "applicability": {
@@ -737,7 +737,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a_widow_can_continue_household_management_when_means_and_kin_support_make_it_possible"
+        "value": "kin_ties_can_create_competing_loyalties_or_disagreements_without_inferring_conflict_or_authority"
       },
       "polarity": "support",
       "applicability": {
@@ -777,7 +777,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "kin_help_or_remarriage_can_be_alternative_responses_to_household_strain_with_different_care_arrangements"
+        "value": "starting_a_household_can_require_coordination_of_ordinary_shelter_food_work_and_storage_needs_without_creating_goods_or_ownership"
       },
       "polarity": "support",
       "applicability": {
@@ -817,7 +817,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "limited_means_can_favor_repair_reuse_and_careful_preservation_of_household_goods"
+        "value": "absence_departure_or_a_changed_relationship_can_alter_household_arrangements_without_materializing_a_person_or_event"
       },
       "polarity": "support",
       "applicability": {
@@ -857,7 +857,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a_well_resourced_householder_can_signal_means_through_better_clothing_or_more_generous_refreshment_without_proving_wealth"
+        "value": "perceived_age_gender_status_and_experience_can_shape_interaction_expectations_while_individuals_still_vary"
       },
       "polarity": "support",
       "applicability": {
@@ -897,7 +897,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a_dependent_person_can_be_cautious_about_contradicting_a_patron_especially_before_an_audience"
+        "value": "physical_capacity_experience_and_access_to_help_can_vary_between_people_and_contexts_without_assigning_an_ability_score"
       },
       "polarity": "support",
       "applicability": {
@@ -937,7 +937,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "public_status_display_can_differ_from_actual_food_goods_or_credit_available_to_a_household"
+        "value": "social_standing_can_affect_access_to_introductions_credit_protection_or_deference_without_guaranteeing_any_of_them"
       },
       "polarity": "support",
       "applicability": {
@@ -1017,7 +1017,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "seniority_or_status_can_change_who_speaks_first_or_is_asked_but_not_settle_a_disagreement"
+        "value": "an_audience_can_interpret_seniority_or_standing_differently_by_relationship_and_setting_without_setting_an_etiquette_rule"
       },
       "polarity": "support",
       "applicability": {
@@ -1057,7 +1057,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a_person_can_be_valued_for_kin_connections_experience_or_available_labour_in_different_combinations"
+        "value": "a_persons_role_in_shared_work_or_conversation_can_be_negotiated_rather_than_assumed_from_one_descriptor"
       },
       "polarity": "support",
       "applicability": {
@@ -1337,7 +1337,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "wooden_or_bone_toys_can_support_childrens_play_and_imitation_of_ordinary_work"
+        "value": "shared_speech_stories_song_or_play_can_provide_recreation_and_circulate_remembered_material_without_proving_a_specific_repertoire"
       },
       "polarity": "support",
       "applicability": {
@@ -1377,7 +1377,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "a_board_or_marked_game_can_offer_shared_recreation_when_people_have_time_light_and_a_place"
+        "value": "recreation_can_compete_with_work_care_travel_light_and_fatigue_for_time_without_implying_a_routine"
       },
       "polarity": "support",
       "applicability": {
@@ -1417,7 +1417,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "song_dance_and_storytelling_can_be_different_forms_of_shared_recreation_with_different_participants"
+        "value": "a_performance_or_game_depends_on_willing_participants_audience_response_and_a_suitable_occasion_without_creating_an_event"
       },
       "polarity": "support",
       "applicability": {
@@ -1457,7 +1457,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "children_can_join_play_or_imitation_while_adults_can_listen_lead_a_story_or_participate_without_a_fixed_age_rule"
+        "value": "oral_retelling_can_vary_with_memory_audience_purpose_and_performer_without_establishing_factual_truth"
       },
       "polarity": "support",
       "applicability": {
@@ -1497,7 +1497,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "work_care_travel_light_and_fatigue_can_limit_who_joins_song_play_dance_or_storytelling"
+        "value": "participation_in_shared_recreation_can_be_uneven_and_voluntary_without_inferring_group_membership_or_consent"
       },
       "polarity": "support",
       "applicability": {
@@ -1537,7 +1537,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "oral_stories_can_mix_remembered_events_entertainment_and_local_news_without_proving_each_detail_true"
+        "value": "recreation_can_use_voice_memory_bodily_play_or_available_ordinary_objects_without_granting_an_instrument_object_or_skill"
       },
       "polarity": "support",
       "applicability": {
@@ -1717,9 +1717,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-observation-practice-feedback",
       "locale": "ru",
-      "runtime_text": "Ребёнок может учиться счёту, группируя обычные предметы и нося лёгкую щепу; это не создаёт ребёнка или урок.",
+      "runtime_text": "Практическое обучение может идти через наблюдение, повторение, исправление и показ; это не назначает учителя, ученика, умение или урок.",
       "search_aliases": [
-        "учиться",
+        "наблюдение",
+        "повторение",
+        "исправление",
         "показ"
       ]
     },
@@ -1727,9 +1729,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-observation-practice-feedback",
       "locale": "en",
-      "runtime_text": "A child can learn counting by grouping ordinary objects and carrying light wood chips; this creates no child or lesson.",
+      "runtime_text": "Practical learning can proceed through observation, repetition, correction, and demonstration; this assigns no teacher, pupil, skill, or lesson.",
       "search_aliases": [
-        "learn",
+        "observation",
+        "repetition",
+        "correction",
         "demonstration"
       ]
     },
@@ -1737,20 +1741,24 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
       "locale": "ru",
-      "runtime_text": "Дети могут в игре подражать домашнему или ремесленному делу до ответственной работы; возрастной порог не задан.",
+      "runtime_text": "Учебные задачи можно соразмерять текущим возможностям и риску; возрастной порог или обязанность не задаются.",
       "search_aliases": [
-        "ученик",
-        "задача"
+        "обучение",
+        "задача",
+        "возможность",
+        "риск"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-tasks-can-match-capacity-risk",
       "locale": "en",
-      "runtime_text": "Children can imitate household or craft tasks in play before responsible work; no age threshold is set.",
+      "runtime_text": "Learning tasks can be adjusted to present capacity and risk; no age threshold or duty is set.",
       "search_aliases": [
-        "apprentice",
-        "task"
+        "learning",
+        "task",
+        "capacity",
+        "risk"
       ]
     },
     {
@@ -1777,20 +1785,22 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-feedback-can-shape-practice",
       "locale": "ru",
-      "runtime_text": "Семейное обучение может сочетать устное объяснение, показ и исправление; школа или наставник не создаются.",
+      "runtime_text": "Обратная связь и видимый результат могут менять дальнейшую практику; умение не измеряется.",
       "search_aliases": [
-        "исправление",
-        "умение"
+        "обратная связь",
+        "результат",
+        "практика"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-learning-feedback-can-shape-practice",
       "locale": "en",
-      "runtime_text": "Family instruction can combine spoken explanation, demonstration, and correction; no school or tutor is created.",
+      "runtime_text": "Feedback and a visible result can shape further practice; competence is not measured.",
       "search_aliases": [
         "feedback",
-        "skill"
+        "result",
+        "practice"
       ]
     },
     {
@@ -1817,9 +1827,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-household-pressure-can-interrupt-learning",
       "locale": "ru",
-      "runtime_text": "Доверие, умение и безопасные условия могут предшествовать переходу от подсобного к более ответственному делу.",
+      "runtime_text": "Сезонная работа, уход и нагрузка дома могут прерывать практическое обучение; календарь или расписание не следуют.",
       "search_aliases": [
         "сезон",
+        "уход",
+        "дом",
         "обучение"
       ]
     },
@@ -1827,9 +1839,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-household-pressure-can-interrupt-learning",
       "locale": "en",
-      "runtime_text": "Trust, skill, and safe conditions can precede moving from helper tasks to more responsible work.",
+      "runtime_text": "Seasonal work, care, and household pressure can interrupt practical learning; no calendar or schedule follows.",
       "search_aliases": [
         "season",
+        "care",
+        "household",
         "learning"
       ]
     },
@@ -1897,9 +1911,10 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
       "locale": "ru",
-      "runtime_text": "Вдова может вести дом, когда позволяют средства и поддержка родни; это не право и не текущий статус.",
+      "runtime_text": "Родственные связи могут создавать конкурирующую лояльность или разногласие; конфликт или власть не предполагаются.",
       "search_aliases": [
         "родство",
+        "лояльность",
         "спор"
       ]
     },
@@ -1907,9 +1922,10 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-kin-ties-can-create-competing-loyalties",
       "locale": "en",
-      "runtime_text": "A widow can continue household management when means and kin support make it possible; this is not a right or current status.",
+      "runtime_text": "Kin ties can create competing loyalties or disagreements; no conflict or authority is inferred.",
       "search_aliases": [
         "kin",
+        "loyalty",
         "disagreement"
       ]
     },
@@ -1917,9 +1933,12 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-starting-household-needs-coordination",
       "locale": "ru",
-      "runtime_text": "Помощь родни или повторный брак могут быть разными ответами на трудность дома и по-разному менять уход.",
+      "runtime_text": "Начало нового хозяйства может требовать согласовать обычные нужды жилья, пищи, труда и хранения; вещи или собственность не создаются.",
       "search_aliases": [
         "дом",
+        "жильё",
+        "пища",
+        "труд",
         "хранение"
       ]
     },
@@ -1927,9 +1946,12 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-starting-household-needs-coordination",
       "locale": "en",
-      "runtime_text": "Kin help or remarriage can be alternative responses to household strain with different care arrangements.",
+      "runtime_text": "Starting a household can require coordinating ordinary shelter, food, work, and storage needs; no goods or ownership are created.",
       "search_aliases": [
         "household",
+        "shelter",
+        "food",
+        "work",
         "storage"
       ]
     },
@@ -1937,9 +1959,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
       "locale": "ru",
-      "runtime_text": "При скромных средствах вероятны починка, повторное использование и бережное хранение домашнего добра.",
+      "runtime_text": "Отсутствие, уход или изменение отношений могут менять устройство хозяйства; человек или событие не materialize.",
       "search_aliases": [
         "уход",
+        "отсутствие",
+        "отношения",
         "дом"
       ]
     },
@@ -1947,9 +1971,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
       "locale": "en",
-      "runtime_text": "Limited means can favor repair, reuse, and careful preservation of household goods.",
+      "runtime_text": "Absence, departure, or a changed relationship can alter household arrangements; no person or event is materialized.",
       "search_aliases": [
         "departure",
+        "absence",
+        "relationship",
         "household"
       ]
     },
@@ -1957,28 +1983,33 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-perceived-role-can-shape-expectations",
       "locale": "ru",
-      "runtime_text": "Состоятельный хозяин может показывать средства лучшей одеждой или щедрым угощением, но это не доказывает богатство.",
+      "runtime_text": "Воспринятые возраст, гендер, статус и опыт могут менять ожидания во взаимодействии, но люди различаются.",
       "search_aliases": [
         "возраст",
-        "статус"
+        "гендер",
+        "статус",
+        "опыт"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-perceived-role-can-shape-expectations",
       "locale": "en",
-      "runtime_text": "A well-resourced householder can signal means through better clothing or more generous refreshment without proving wealth.",
+      "runtime_text": "Perceived age, gender, status, and experience can shape interaction expectations, while individuals still vary.",
       "search_aliases": [
         "age",
-        "status"
+        "gender",
+        "status",
+        "experience"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-capacity-experience-help-vary",
       "locale": "ru",
-      "runtime_text": "Зависимый человек может осторожничать, возражая покровителю, особенно при людях; решение не предопределено.",
+      "runtime_text": "Физические возможности, опыт и доступ к помощи различаются между людьми и контекстами; оценка способности не назначается.",
       "search_aliases": [
+        "возможности",
         "опыт",
         "помощь"
       ]
@@ -1987,9 +2018,10 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-capacity-experience-help-vary",
       "locale": "en",
-      "runtime_text": "A dependent person can be cautious about contradicting a patron, especially before others; no decision is predetermined.",
+      "runtime_text": "Physical capacity, experience, and access to help can vary between people and contexts; no ability score is assigned.",
       "search_aliases": [
         "capacity",
+        "experience",
         "help"
       ]
     },
@@ -1997,9 +2029,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-standing-can-affect-social-access",
       "locale": "ru",
-      "runtime_text": "Публичный вид статуса может отличаться от реально доступных дому еды, вещей или кредита.",
+      "runtime_text": "Положение может влиять на доступ к знакомствам, кредиту, защите или почтению, но ничего из этого не гарантировано.",
       "search_aliases": [
         "положение",
+        "знакомства",
+        "кредит",
         "защита"
       ]
     },
@@ -2007,9 +2041,11 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-standing-can-affect-social-access",
       "locale": "en",
-      "runtime_text": "Public status display can differ from food, goods, or credit actually available to a household.",
+      "runtime_text": "Social standing can affect access to introductions, credit, protection, or deference, but none is guaranteed.",
       "search_aliases": [
         "standing",
+        "introductions",
+        "credit",
         "protection"
       ]
     },
@@ -2037,40 +2073,48 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-audience-can-interpret-standing-contextually",
       "locale": "ru",
-      "runtime_text": "Старшинство или статус могут влиять на очередность речи или просьб, но не решают спор.",
+      "runtime_text": "Аудитория может по-разному понимать старшинство или положение в зависимости от отношений и обстановки; этикетное правило не задано.",
       "search_aliases": [
+        "аудитория",
         "старшинство",
-        "аудитория"
+        "положение",
+        "обстановка"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-audience-can-interpret-standing-contextually",
       "locale": "en",
-      "runtime_text": "Seniority or status can affect who speaks first or is asked, but does not settle a disagreement.",
+      "runtime_text": "An audience can interpret seniority or standing differently by relationship and setting; no etiquette rule is set.",
       "search_aliases": [
+        "audience",
         "seniority",
-        "audience"
+        "standing",
+        "setting"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-shared-role-can-be-negotiated",
       "locale": "ru",
-      "runtime_text": "Человека могут ценить за родственные связи, опыт или доступный труд в разных сочетаниях.",
+      "runtime_text": "Роль человека в общей работе или разговоре можно согласовать, а не выводить из одного признака.",
       "search_aliases": [
         "роль",
-        "разговор"
+        "работа",
+        "разговор",
+        "договорённость"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-shared-role-can-be-negotiated",
       "locale": "en",
-      "runtime_text": "A person can be valued for kin connections, experience, or available labour in different combinations.",
+      "runtime_text": "A person's role in shared work or conversation can be negotiated rather than assumed from one descriptor.",
       "search_aliases": [
         "role",
-        "conversation"
+        "work",
+        "conversation",
+        "negotiation"
       ]
     },
     {
@@ -2197,120 +2241,146 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
       "locale": "ru",
-      "runtime_text": "Деревянные или костяные игрушки могут поддерживать детскую игру и подражание обычному труду.",
+      "runtime_text": "Общая речь, рассказы, песня или игра могут развлекать и передавать запомненное; конкретный репертуар не доказывается.",
       "search_aliases": [
+        "рассказ",
         "песня",
-        "рассказ"
+        "игра",
+        "память"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
       "locale": "en",
-      "runtime_text": "Wooden or bone toys can support children’s play and imitation of ordinary work.",
+      "runtime_text": "Shared speech, stories, song, or play can provide recreation and circulate remembered material; no specific repertoire is proved.",
       "search_aliases": [
+        "story",
         "song",
-        "story"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-recreation-competes-for-time",
-      "locale": "ru",
-      "runtime_text": "Настольная или размеченная игра может дать общий досуг, когда есть время, свет и место.",
-      "search_aliases": [
-        "досуг",
-        "время"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-recreation-competes-for-time",
-      "locale": "en",
-      "runtime_text": "A board or marked game can offer shared recreation when people have time, light, and a place.",
-      "search_aliases": [
-        "recreation",
-        "time"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
-      "locale": "ru",
-      "runtime_text": "Песня, танец и рассказ могут быть разными видами общего досуга с разными участниками.",
-      "search_aliases": [
-        "игра",
-        "выступление"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
-      "locale": "en",
-      "runtime_text": "Song, dance, and storytelling can be different forms of shared recreation with different participants.",
-      "search_aliases": [
-        "performance",
-        "game"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-oral-retelling-varies-with-context",
-      "locale": "ru",
-      "runtime_text": "Дети могут участвовать в игре или подражании, взрослые — слушать, рассказывать или участвовать без жёсткого возрастного правила.",
-      "search_aliases": [
-        "пересказ",
-        "память"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:human-life-oral-retelling-varies-with-context",
-      "locale": "en",
-      "runtime_text": "Children can join play or imitation while adults can listen, lead a story, or join without a fixed age rule.",
-      "search_aliases": [
-        "retelling",
+        "play",
         "memory"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-recreation-competes-for-time",
+      "locale": "ru",
+      "runtime_text": "Досуг конкурирует за время с работой, уходом, дорогой, светом и усталостью; распорядок не задаётся.",
+      "search_aliases": [
+        "досуг",
+        "работа",
+        "уход",
+        "дорога",
+        "усталость"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-recreation-competes-for-time",
+      "locale": "en",
+      "runtime_text": "Recreation can compete with work, care, travel, light, and fatigue for time; no routine is implied.",
+      "search_aliases": [
+        "recreation",
+        "work",
+        "care",
+        "travel",
+        "fatigue"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+      "locale": "ru",
+      "runtime_text": "Выступление или игра зависят от желающих участников, реакции аудитории и подходящего случая; событие не создаётся.",
+      "search_aliases": [
+        "выступление",
+        "игра",
+        "участники",
+        "аудитория"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+      "locale": "en",
+      "runtime_text": "A performance or game depends on willing participants, audience response, and a suitable occasion; no event is created.",
+      "search_aliases": [
+        "performance",
+        "game",
+        "participants",
+        "audience"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-oral-retelling-varies-with-context",
+      "locale": "ru",
+      "runtime_text": "Устный пересказ меняется с памятью, аудиторией, целью и рассказчиком; фактическая истинность не устанавливается.",
+      "search_aliases": [
+        "пересказ",
+        "память",
+        "аудитория",
+        "рассказчик"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-life-oral-retelling-varies-with-context",
+      "locale": "en",
+      "runtime_text": "Oral retelling can vary with memory, audience, purpose, and performer; factual truth is not established.",
+      "search_aliases": [
+        "retelling",
+        "memory",
+        "audience",
+        "performer"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
       "locale": "ru",
-      "runtime_text": "Работа, уход, путь, свет и усталость могут ограничивать участие в песне, игре, танце или рассказе.",
+      "runtime_text": "Участие в общем досуге может быть неравным и добровольным; принадлежность к группе или согласие не предполагаются.",
       "search_aliases": [
         "участие",
-        "досуг"
+        "досуг",
+        "добровольность"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-recreation-participation-can-be-uneven-voluntary",
       "locale": "en",
-      "runtime_text": "Work, care, travel, light, and fatigue can limit who joins song, play, dance, or storytelling.",
+      "runtime_text": "Participation in shared recreation can be uneven and voluntary; no group membership or consent is inferred.",
       "search_aliases": [
         "participation",
-        "recreation"
+        "recreation",
+        "voluntary"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
       "locale": "ru",
-      "runtime_text": "Устные рассказы могут смешивать память о событиях, развлечение и местные вести, не доказывая каждую деталь.",
+      "runtime_text": "Досуг может использовать голос, память, телесную игру или доступные обычные предметы; инструмент, предмет или умение не выдаются.",
       "search_aliases": [
         "музыка",
-        "игра"
+        "игра",
+        "голос",
+        "память",
+        "предмет"
       ]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
       "locale": "en",
-      "runtime_text": "Oral stories can mix remembered events, entertainment, and local news without proving each detail true.",
+      "runtime_text": "Recreation can use voice, memory, bodily play, or available ordinary objects; no instrument, object, or skill is granted.",
       "search_aliases": [
         "music",
-        "play"
+        "play",
+        "voice",
+        "memory",
+        "object"
       ]
     }
   ]

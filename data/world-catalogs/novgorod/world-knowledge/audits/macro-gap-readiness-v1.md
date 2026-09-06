@@ -465,3 +465,26 @@ Independent Contract Auditor returned `PASS_WITH_NOTES`; corpus/RAG/docs,
 54 knowledge-source tests and 3 cartography tests pass. The remaining note is
 methodological: frozen input/review artifacts, not the unit test, demonstrate
 actual generator/reader independence and rotating strata.
+
+Separate WK-only readers then reconstructed the frozen hundred against the
+1,414-claim corpus. Independent secondary triage retained **14 covered and 86
+substantial gaps**; the recurring needs were consolidated into ten broad
+compositional groups rather than copied into 86 scenario-specific facts. A
+35-claim candidate was frozen at `f62abfae9cff3e7efc4c466516027b8eb6d01770`
+and received **35/35 independent APPROVE** verdicts before production binding.
+
+The integrated corpus now contains **1,449 claims**. Its military additions
+cover qualitative equipment fit, carrying and wet care; bows in weather;
+march, camp, supply and animal care; crossings and portage; reconnaissance,
+watch and signals; training, formations, retreat and pursuit; fortifications,
+fire and civilian protection; casualty movement; custody and abandoned gear;
+and civilian displacement and aftermath. They do not define exact combat
+numbers, doctrine, present forces, ownership, authority, diagnosis or outcome.
+
+Four new independent WK-only readers replayed the same frozen cases against
+the integrated bundle and produced concrete scene, interaction and variation
+records: **100/100 covered, zero missing compiled refs**. This is known-case
+regression evidence, not an unseen clean batch, completeness proof or gameplay
+saturation; the mixed unseen streak remains **0/3**. The aligned local state has
+4,740 vectors, passing 349/133 retrieval suites and 101 focused tests. No live
+gameplay or repair of combat and other gameplay owners occurred.

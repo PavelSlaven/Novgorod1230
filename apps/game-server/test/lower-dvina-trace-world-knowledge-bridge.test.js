@@ -40,7 +40,7 @@ test('WK materialization substrate covers real trace location and participant pr
       domains: ['craft_technology', 'material_culture'], hints: ['fishing', 'net', 'hook'],
       expected_claim_refs: ['claim:population-net-cord', 'claim:population-iron-hook'] },
     { family: 'heat_light', location: 'trace_ld_v1_loc_old_drying_shed',
-      domains: ['craft_technology', 'material_culture'], hints: ['drying', 'fire', 'light'],
+      domains: ['craft_technology', 'material_culture'], hints: ['fire', 'light', 'candlestick'],
       expected_claim_refs: ['claim:ha-firesteel-ignition', 'claim:fuel-iron-candlestick-form'] },
     { family: 'storage_food', location: 'trace_ld_v1_loc_zhdanko_storehouse',
       domains: ['architecture_settlement', 'material_culture', 'biology_physiology'],

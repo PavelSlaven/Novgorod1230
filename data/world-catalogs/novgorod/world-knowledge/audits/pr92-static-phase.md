@@ -817,3 +817,42 @@ current equipment, forces, commands or outcomes. Independent Contract Auditor
 authoring/compiler remains the sole owner, and no runtime schema, resolver,
 materializer, combat/state owner or activation changed. Corpus/RAG/docs checks,
 54/54 knowledge-source tests and 3/3 cartography tests pass.
+
+## Military-first diagnosis, verified fill and replay
+
+Four separate WK-only readers reconstructed the frozen 75 controlled and 25
+free/adversarial probes against the 1,414-claim bundle. Independent secondary
+triage retained **14 covered / 86 substantial gaps**. Repeated absences were
+grouped into ten reusable premise areas: equipment carrying/fit/wet care;
+bow-and-weather handling; march/camp/supply/animal care; mounted movement,
+crossings and boats; scouts/traces/watch/signals; training/formation/retreat/
+pursuit; fortification/siege/fire/civil defence; casualty movement/basic care;
+custody/abandoned gear; and civilian flight/aftermath. The diagnostic files
+preserve every original case rather than treating these groups as a whitelist.
+
+The 35 bounded editorial premises frozen at
+`f62abfae9cff3e7efc4c466516027b8eb6d01770` received **35/35 independent
+source/domain APPROVE** verdicts from `/root/military01_verifier`. They use
+general physical, biological and organisational relations suitable for game
+composition. They do not assert exact combat mechanics, a present force,
+ownership, command authority, legal status, diagnosis, treatment efficacy,
+historical doctrine or a guaranteed outcome. Existing authoring, verification,
+compiler and retrieval paths remain the only WK owners.
+
+The compiled bundle now contains **1,449 claims, 921 concepts, 532 sources and
+1,042 evidence records**. Both cartographies link the new premises without
+claiming that their families are closed. The aligned retrieval state contains
+4,740 vectors; gameplay retrieval passes 349 cases (hybrid R@10
+0.9909264565, R@20 0.9923591213) and the 133-case baseline passes (hybrid R@10
+and R@20 0.9699248120; hard negatives and applicability 1.0 in both suites).
+Focused WK checks pass **101/101**.
+
+Four further independent WK-only readers replayed the exact frozen inputs on
+the integrated bundle. Their concrete scene, practical interaction and changed-
+condition reconstructions validate as **100/100 covered**, with 100 unique IDs,
+no substantial gaps, no missing compiled claim references and no duplicated
+interaction/variation text within a component. This replay proves that the
+known gaps are composable through WK; it is not a new unseen sample and cannot
+change the original diagnostic or the mixed unseen streak **0/3**. No live
+gameplay, gameplay saturation run, combat-engine change or other owner repair
+was performed.

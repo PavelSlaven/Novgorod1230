@@ -1,6 +1,20 @@
 # Macro-gap static readiness — PR92
 
-## Current verdict: mixed sampling required; acceptance open
+## Current verdict: static mixed acceptance satisfied; not world completeness or gameplay saturation
+
+At exact HEAD `9ef17db71a69ce306120accfd009eaef688647d5`, the static
+mixed-sampling acceptance criterion is satisfied. This is a bounded result:
+it does **not** claim exhaustive knowledge of the world, cartography closure,
+or gameplay saturation. No live gameplay campaign or gameplay-owner repair
+was performed.
+
+The compiled corpus contains **1,525 approved claims, 962 concepts, 582
+sources and 1,118 evidence records**; all 1,525 claims have assembled
+independent verification bindings. Cartography contains **235 supported
+families**, retains **49 partial needs**, and reports **no open P1** factual
+family need under the approved reconstruction rule. These figures describe
+the current static corpus and open map, not a proof that all possible
+gameplay knowledge has been enumerated.
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
@@ -25,7 +39,7 @@ The independent reality-first rubric remains:
 - Food systems, materials, craft, settlement and sanitation.
 - Mobility, navigation, hospitality, religion, play, music and oral culture.
 
-## Current evidence and open acceptance work
+## Current evidence and completed mixed acceptance
 
 The aligned corpus, vectors, retrieval checks and preserved scope are
 summarized in [pr92-static-phase.md](pr92-static-phase.md). The independent
@@ -44,7 +58,10 @@ Contract §0.3 now requires three consecutive independent mixed batches:
 new gaps. Free generation sees no domain list, corpus or previous examples;
 classification follows input freeze and accepts new domains. The controlled
 75 retain at least 60 practical/natural/physical cases, while strata rotate
-and can expand. The current mixed clean streak is **0 of 3**.
+and can expand. The current mixed clean streak is **3 of 3**: B22, B23 after
+independent cross-triage, and B24 are consecutive clean mixed hundreds. They
+are the acceptance evidence; the earlier material below is retained as
+historical diagnosis, including every earlier `0/3` checkpoint.
 Earlier batches 03–08 used fixed 20-by-five strata. Their substantive reviews
 remain diagnostic baselines, not proof that the strata themselves are complete.
 **Batch 04 was clean; batch 05 found new needs and reset the streak to 0.**
@@ -91,8 +108,7 @@ composition. Attributed concrete answers are retained in the A1 review;
 the initial findings remain in Git. No corpus change followed this batch.
 It was one clean sample under the superseded fixed-strata method, not a
 mixed-method acceptance sample or completeness proof.
-There is no world-completeness claim, gameplay saturation result or final
-merge recommendation. The final independent
+There is no world-completeness claim or gameplay saturation result. The final
 coverage verdict must refer to the actually published corpus and completed
 offline results, with exact-HEAD green CI reported separately.
 
@@ -488,3 +504,31 @@ regression evidence, not an unseen clean batch, completeness proof or gameplay
 saturation; the mixed unseen streak remains **0/3**. The aligned local state has
 4,740 vectors, passing 349/133 retrieval suites and 101 focused tests. No live
 gameplay or repair of combat and other gameplay owners occurred.
+
+## Final static checkpoint — exact HEAD `9ef17db7`
+
+Later macro batches preserve the distinction between diagnosis, repair and
+acceptance. B15 and B16 were clean mixed hundreds. B17–B21 found diagnostic
+gaps; each was consolidated into reusable factual families and independently
+verified before integration, rather than filled with scenario-specific facts.
+B22 was clean, B23's six initial leads were independently cross-triaged as
+composable, and B24 was clean. Thus B22+B23+B24 satisfy the required three
+consecutive clean mixed 100-case batches. The fixed inputs, WK-only reviews
+and B23 cross-triage remain the primary evidence; this summary does not turn
+known-case replays into unseen samples.
+
+The final aligned vector package is **4,974 x 1,024 float32 entries
+(20,373,504 bytes)**. The 165-case retrieval benchmark passes with hybrid
+Recall@10/20 **0.933434**; the 380-case gameplay-coverage retrieval benchmark
+passes with hybrid Recall@10 **0.971974** and Recall@20 **0.973289**. In both,
+applicability precision and hard-constraint recall are **1.0**. These are
+retrieval checks, not live gameplay tests.
+
+The subsequent trade/economy-first diagnostic used 100 blind probes. Its 13
+raw leads triaged to ten genuine gaps, consolidated into seven reusable
+families: payment-metal handling, linear comparison, wax quality, fresh-fish
+caution, seed reserve, lost pack-animal response and balance repeatability.
+All seven premises received independent APPROVE verdicts; a known-case replay
+then covered **10/10**. The replay is closure regression evidence, not unseen
+acceptance, and no premise asserts a present price, stock, ownership, rule,
+consent or transaction outcome.

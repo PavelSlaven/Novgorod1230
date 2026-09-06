@@ -1,6 +1,6 @@
 # PR92 — static coverage checkpoint, 2026-09-06
 
-## Status: integration checked; offline context acceptance pending
+## Status: static mixed acceptance satisfied; not world completeness or gameplay saturation
 
 The user's clarified requirement permits plausible reconstruction from
 neighbouring periods/settings and practical reasoning. WK contract §0.2
@@ -8,17 +8,16 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,414 approved claims, 914 concepts,
-531 sources and 1,037 evidence records**. This includes 156 independently
-reviewed premises using editorial-reconstruction sources; 167 claims have
-editorial directness overall, including editorial composition of external sources.
-Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
-(practical), `6dff36d` (public) and `1a96aea` (healer practice). Existing per-claim verification bindings
-validate against the full assembled authoring input. No new approval system
-or runtime owner was introduced.
+At exact HEAD `9ef17db71a69ce306120accfd009eaef688647d5`, the integrated corpus
+contains **1,525 approved claims, 962 concepts, 582 sources and 1,118 evidence
+records**. All 1,525 production claims have assembled independent verification
+bindings. Earlier reconstruction milestones include `9e59d01` (ordinary/human),
+`6210be8` (practical), `6dff36d` (public) and `1a96aea` (healer practice).
+No new approval system or runtime owner was introduced.
 
-Cartography has **182 supported families and 49 retained partial need
-records**. The latter contain earlier direct-source-oriented limitations
+Cartography has **235 supported families and 49 retained partial need
+records**, with no open P1 factual-family need under the approved reconstruction
+rule. The latter contain earlier direct-source-oriented limitations
 and newly linked reconstruction support. They are not 49 independently
 confirmed current P1 blockers, nor automatically closed P2 details: their
 game-useful significance was independently reassessed on the 1,278-claim
@@ -28,30 +27,24 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,656 x 1,024 float32 entries (19,070,976 bytes)** and
+package contains **4,974 x 1,024 float32 entries (20,373,504 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,414-claim corpus
+## Checks actually completed on exact HEAD
 
-- Compiler: all 1,414 claims and independent approval bindings validate.
+- Compiler: all 1,525 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
-- Focused authoring/runtime/population/foundation/cartography tests:
-  **95/95 pass**: 47 authoring/runtime/foundation/fauna/cartography checks,
-  then 48 population checks after vector generation, including exact
-  candidate, independent approval and vector alignment.
-  Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **342-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996589**,
-  Recall@20 **0.998051**, gate PASS.
-- Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
+- **380-case** gameplay retrieval benchmark: hybrid Recall@10 **0.971974**,
+  Recall@20 **0.973289**, gate PASS.
+- **165-case** retrieval benchmark: hybrid Recall@10/20 **0.933434**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
 - Knowledge-source generation/check and documentation/activation checks pass
   after synchronizing the changed contract/index and existing retrieval-policy pin.
-- Category/place-first tests were rerun after the 41-environment map merge.
-  Every published integration must pass its own exact-HEAD CI; the live
-  result is recorded on PR92 rather than inferred from this pre-push report.
+  Every published integration must pass its own exact-HEAD CI; the live result
+  is recorded on PR92 rather than inferred from this static report.
 
 The mixed ordinary-dispute probe still misses two relevant soft premises in
 top 20; an aggregate pass is not perfect recall. Three new positive probes
@@ -63,7 +56,11 @@ incorrect widow-claim expectation was corrected to the actual kin-help
 premise after reading the claim text; neither corpus nor gate was changed
 to force that result.
 
-The latest confirmed green CI checkpoint is
+The following CI paragraph is historical checkpoint context; it does not
+describe the current exact HEAD. The final exact-HEAD CI result is recorded
+on PR92 separately.
+
+An earlier confirmed green CI checkpoint was
 `e4587e88d01123f2939febafe5de5052f682d2fc` (run 33976419573).
 Earlier checkpoints `869a6273` and `effe3f52` failed full CI. The first exposed
 a broad storage/fish/grain top-12 probe whose fish-as-food premise fell to
@@ -101,7 +98,9 @@ must not be discarded or coerced into the old twenty. Stratified areas and
 their granularity rotate, with at least 60 practical/natural/physical cases
 in the controlled 75. Both sampling components and actual domain findings
 are reported. Earlier fully stratified batches are retained as diagnostic
-baselines, not mixed-method acceptance. The mixed clean streak is **0 of 3**.
+baselines, not mixed-method acceptance. The mixed clean streak is **3 of 3**:
+B22, B23 after independent cross-triage, and B24. The historical entries
+below preserve the earlier diagnostic `0/3` checkpoints.
 
 Independent Contract Auditor `/root/mixed_sampling_contract_audit` returned
 `PASS_WITH_NOTES` for this method change: no new runtime owner, whitelist,
@@ -856,3 +855,33 @@ known gaps are composable through WK; it is not a new unseen sample and cannot
 change the original diagnostic or the mixed unseen streak **0/3**. No live
 gameplay, gameplay saturation run, combat-engine change or other owner repair
 was performed.
+
+## Final static acceptance and trade/economy-first follow-up
+
+At exact HEAD `9ef17db71a69ce306120accfd009eaef688647d5`, B15 and B16 are
+clean mixed hundreds; B17–B21 are diagnostic batches whose genuine gaps were
+consolidated into reusable factual families and independently verified before
+production integration. B22 is clean, B23 has six initial leads independently
+cross-triaged as composable, and B24 is clean. Therefore B22+B23+B24 are the
+three consecutive clean mixed batches required by contract §0.3. They confirm
+static sampling readiness only: neither a known-case replay nor this result
+claims exhaustive world knowledge or gameplay saturation.
+
+The trade/economy-first pass then used 100 blind probes for deals, exchange,
+money and measures, debt, storage, transport, seasonality, quality, disputes
+and household economy. Independent WK-only reviews produced 13 raw leads;
+cross-triage retained ten genuine gaps and consolidated them into seven
+reusable families rather than scenario facts. The seven bounded premises cover
+payment-metal handling, linear comparison, wax observation, fresh-fish
+caution, seed reserve, lost pack-animal response and balance repeatability.
+They received **7/7 independent APPROVE** verdicts. The subsequent **10/10**
+replay is explicitly known-case regression evidence, not an unseen acceptance
+sample; it creates no authoritative stock, price, measure, title, legal rule,
+consent or transaction outcome.
+
+No live gameplay campaign ran in this phase, and no inventory, ownership,
+materialization, persistence, body, combat, NPC, narration or spatial owner
+was repaired. The existing runtime still uses the local pinned
+`wk-embedding:giga-480m-0826:v1` query encoder for hybrid retrieval and has a
+structured lexical fallback if that encoder is unavailable; vectors are not
+silently produced by ordinary application code.

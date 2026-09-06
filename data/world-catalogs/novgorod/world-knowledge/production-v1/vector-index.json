@@ -16880,6 +16880,566 @@
       "retrieval_text": "Независимые случайные испытания Если испытания действительно независимы, предыдущий исход не меняет вероятности следующего. В модели независимых честных бросков повторения допустимы и не делают противоположный исход обязательным; это не доказывает честность реальной кости."
     },
     {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1:en",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. Cleaning hands, tools and contact surfaces removes visible soil but does not diagnose illness care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1:ru",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. Мытьё рук, инструментов и поверхностей убирает видимую грязь, но не ставит диагноз уход чистота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2:en",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. separating waste from water and food reduces direct contact care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2:ru",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. отделение отходов от воды и пищи уменьшает прямой контакт уход чистота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3:en",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. rest, warmth and protection can support comfort after exertion or minor injury care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3:ru",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. отдых, тепло и защита поддерживают комфорт после нагрузки уход чистота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4:en",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. a wound can be covered and observed for change care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4:ru",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. рану можно закрыть и наблюдать уход чистота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5:en",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. experienced help may be sought when available, without promised diagnosis or recovery. care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5:ru",
+      "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. опытную помощь ищут при наличии без обещания диагноза или выздоровления. уход чистота"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r1:en",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. Food can spoil when time, warmth and moisture favour deterioration fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r1:ru",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. Пища может портиться от времени, тепла и влаги корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r2:en",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. clean handling and separation from waste reduce direct fouling fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r2:ru",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. чистое обращение и отделение от отходов уменьшают загрязнение корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r3:en",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. an animal product needs an actual animal and collection or processing labour fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r3:ru",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. животный продукт требует реального животного и труда сбора либо обработки корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r4:en",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. animals need water, feed, rest and shelter appropriate to conditions fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r4:ru",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. животным нужны вода, корм, отдых и укрытие корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r5:en",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. milk, meat, eggs, hides or wool are not interchangeable and each depends on a real source and handling path. fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-food-animal-products-and-care-need-established-inputs-r5:ru",
+      "target_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. молоко, мясо, яйца, шкуры и шерсть не взаимозаменяемы и требуют реального источника и пути обращения. корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1:en",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. People on watch need relief, food, water and shelter according to actual circumstances guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1:ru",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. Караульным нужны смена, пища, вода и укрытие караул поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2:en",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. equipment needs carrying, storage and inspection guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2:ru",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. снаряжению — переноска, хранение и осмотр караул поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3:en",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. a horse needs fodder, water, rest and handling guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3:ru",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. лошади — корм, вода, отдых и уход караул поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4:en",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. damp can affect clothing, cords and stored supplies guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4:ru",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. сырость влияет на одежду, верёвки и запасы караул поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5:en",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. a march or guard changes only through available routes, orders, people and material means. This supplies no force, command or combat result. guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5:ru",
+      "target_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. поход меняется только через реальные пути, приказы, людей и средства. Это не создаёт отряд, командование или боевой исход. караул поход"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1:en",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. A work flow needs a clear path between material, tool and work surface worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1:ru",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. Рабочий поток требует прохода между материалом, инструментом и поверхностью мастерская безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2:en",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. a carried load can obstruct another task worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2:ru",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. груз может мешать другой операции мастерская безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3:en",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. heat, sparks and dry fuel need separation worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3:ru",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. жар, искры и сухое топливо разводят мастерская безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4:en",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. moisture changes material handling and drying time worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4:ru",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. влага меняет сушку мастерская безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5:en",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. moving parts or suspended loads require people and loose clothing to stay clear. Actual equipment and conditions decide the result. worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5:ru",
+      "target_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. от движущихся и подвешенных частей держатся в стороне. Исход зависит от реального оборудования и условий. мастерская безопасность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r1:en",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. At an established place, drainage changes where water stands place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r1:ru",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. Дренаж меняет, где стоит вода местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r2:en",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. ground bearing changes footing and load placement place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r2:ru",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. несущая способность грунта — опору и постановку груза местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r3:en",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. vegetation can screen sight and snag a load place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r3:ru",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. растительность может закрывать обзор и цеплять груз местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r4:en",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. wind and wetness change exposure place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r4:ru",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. ветер и сырость меняют воздействие среды местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r5:en",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. daylight changes what can be inspected or done safely. Each relation requires the observed place and condition. place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-place-environmental-composition-needs-observed-conditions-r5:ru",
+      "target_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. дневной свет — возможность осмотра и работы. Это требует наблюдения реального места, не создаёт его. местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1:en",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. Dry stored grain needs protection from wetting and pests yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1:ru",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. Сухое зерно защищают от намокания и вредителей двор хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2:en",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. fodder is kept apart from animal waste yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2:ru",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. корм держат отдельно от навоза двор хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3:en",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. animals need water, feed, shelter and routine handling yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3:ru",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. животным нужны вода, корм, укрытие и уход двор хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4:en",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. a yard needs a passable path for people and loads yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4:ru",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. во дворе нужен проход для людей и грузов двор хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5:en",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. cleaning or moving stock takes labour and interrupts other work. These depend on existing household, stock and stores. yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5:ru",
+      "target_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. чистка или перегон требует труда. Это зависимости уже существующих хозяйства, запасов и животных. двор хозяйство"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1:en",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. A written carrier can be copied, carried, read aloud or left unread according to access and literacy writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1:ru",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. Запись можно переписать, перенести, прочесть вслух или оставить непрочитанной — по доступу и грамотности грамота ученик вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2:en",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. learning a craft requires observation, instruction, practice and materials writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2:ru",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. ремесло требует наблюдения, наставления, практики и материалов грамота ученик вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3:en",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. requested entry or tool use remains subject to the holder's response writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3:ru",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. вход или инструмент зависят от ответа держателя грамота ученик вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4:en",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. possession and ownership are not the same fact writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4:ru",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. владение и собственность — не один факт грамота ученик вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5:en",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. a disputed object can prompt inquiry, return, refusal or appeal without fixing a legal outcome. writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5:ru",
+      "target_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. спорная вещь допускает разбирательство, возврат, отказ или обращение без заданного юридического итога. грамота ученик вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1:en",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. A wet or uneven surface changes footing and pace travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1:ru",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. Мокрая или неровная поверхность меняет опору и темп дорога ориентирование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2:en",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. darkness or poor visibility weakens wayfinding travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2:ru",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. темнота ослабляет ориентирование дорога ориентирование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3:en",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. wind, rain and cold increase exposure travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3:ru",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. ветер, дождь и холод усиливают воздействие среды дорога ориентирование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4:en",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. a heavier load changes endurance and balance travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4:ru",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. тяжёлый груз меняет выносливость дорога ориентирование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5:en",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. tracks, landmarks and local knowledge can aid orientation but can be absent, old or misleading. This proves neither route nor arrival. travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5:ru",
+      "target_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. следы и ориентиры могут помогать, но быть старыми или ложными. Это не доказывает маршрут или прибытие. дорога ориентирование"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths:en",
       "target_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
       "domain": "architecture_settlement",
@@ -25364,6 +25924,34 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-first-food-animal-care:en",
+      "target_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Food, animals, and care Conditional links among food, animals, and care means. fodder animal care"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-first-food-animal-care:ru",
+      "target_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Пища, животные и уход Условные связи пищи, животных и средств ухода. корм животное"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-first-ordinary-care:en",
+      "target_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ordinary care and sanitation Non-diagnostic bounds of ordinary care. care sanitation"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-first-ordinary-care:ru",
+      "target_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Обычный уход и санитарное разделение Недiagnosticические пределы обычного ухода. уход чистота"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-birth-household-support:en",
       "target_ref": "wk:biology_physiology:reconstructed-birth-household-support",
       "domain": "biology_physiology",
@@ -27702,6 +28290,20 @@
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reality-first-worksite-flow:en",
+      "target_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Ordinary work flow Links among work process, space, and attention. worksite clearance"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reality-first-worksite-flow:ru",
+      "target_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Поток обычной работы Связь процесса работы, пространства и внимания. мастерская безопасность"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-animal-material-handling:en",
       "target_ref": "wk:craft_technology:reconstructed-animal-material-handling",
       "domain": "craft_technology",
@@ -28890,6 +29492,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Радиационный туман Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-first-place-composition:en",
+      "target_ref": "wk:environment:reality-first-place-composition",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Place condition composition Links among observed conditions of an established place. place conditions"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-first-place-composition:ru",
+      "target_ref": "wk:environment:reality-first-place-composition",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Состав условий места Связь наблюдаемых условий уже установленного места. местность условия места"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-first-travel-exposure:en",
+      "target_ref": "wk:environment:reality-first-travel-exposure",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Travel, wayfinding, and exposure Conditional bounds of travel and orientation. travel wayfinding"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-first-travel-exposure:ru",
+      "target_ref": "wk:environment:reality-first-travel-exposure",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Путь, ориентирование и воздействие Условные пределы путешествия и ориентирования. дорога ориентирование"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:reconstructed-military-observation-crossing:en",
@@ -31076,6 +31706,20 @@
       "retrieval_text": "Недублёная высушенная шкура Недублёная шкура (rawhide); не общее название выделанной кожи."
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:reality-first-military-basis:en",
+      "target_ref": "wk:material_culture:reality-first-military-basis",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Ordinary material basis of military context Means and care bounds in an established military context. guard march"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reality-first-military-basis:ru",
+      "target_ref": "wk:material_culture:reality-first-military-basis",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Обычная материальная основа военного контекста Пределы средств и ухода при уже установленном военном контексте. караул поход"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-armed-public-world:en",
       "target_ref": "wk:material_culture:reconstructed-armed-public-world",
       "domain": "material_culture",
@@ -31872,6 +32516,20 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Посадник: контекст деятельности Именованные летописные эпизоды деятельности посадников посадник военная деятельность"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reality-first-rural-household:en",
+      "target_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "Rural household and yard Conditional links among household, stores, and animals. yard subsistence"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reality-first-rural-household:ru",
+      "target_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "Сельское хозяйство и двор Условная связь хозяйства, запасов и животных. двор хозяйство"
     },
     {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-compound-upkeep-context:en",
@@ -35288,6 +35946,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Просьба о защите Заявленная просьба о защите защита"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reality-first-social-materiality:en",
+      "target_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Social materiality and learning Bounds of writing, learning, access, and possession inquiry. writing apprentice property"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reality-first-social-materiality:ru",
+      "target_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Социальная материальность и обучение Границы записи, обучения, доступа и вещного спора. грамота ученик вещь"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-community-environment:en",

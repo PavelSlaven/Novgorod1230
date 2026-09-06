@@ -9,6 +9,7 @@
     "This pass is static only: it does not run live gameplay, repair gameplay owners, or claim gameplay saturation."
   ],
   "factual_families": [
+    {"id":"reality_first_ordinary_military_basis","scope":"Established guard or movement context: relief, equipment, horse care, damp supplies and material means.","factual_needs":["What ordinary dependencies constrain an already established guard or march without creating force, command or combat outcome?"],"applicability":["guard","march","established military context"],"claim_refs":["claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1","claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2","claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3","claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4","claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5"],"residual_needs":["Rare force organization, siege, campaign logistics and outcome-bearing scenes remain bounded P2."],"code_owner_boundary":"No force, commander, weapon, order, route, body state or combat result is created.","coverage":"supported: five atomic material-context premises; no completeness claim."},
     {
       "id": "participants_roles_statuses",
       "scope": "People in armed, supporting, civic-defence and noncombatant roles; authority, dependency and the difference between a named record and a general institution.",

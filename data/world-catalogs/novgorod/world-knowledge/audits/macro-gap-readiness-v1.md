@@ -4,7 +4,7 @@
 
 The previous independent 1,024-claim audit on `39b891c` and its blanket
 P2 classification are **superseded**, not acceptance evidence for the
-current 1,405-claim corpus. The later direct-attestation-only residual
+current 1,414-claim corpus. The later direct-attestation-only residual
 assessment is also not the user's current criterion: reviewed plausible
 reconstruction is expressly allowed by WK contract §0.2.
 
@@ -439,3 +439,21 @@ and passing 338/133 retrieval suites are locally aligned. Exact-HEAD CI for
 this later integration is still required. The independently generated eighth
 75+25 inputs passed a separate final input-only preflight and are frozen by this
 integration before any WK-only review; they are not evidence of a clean batch.
+
+The eighth place-first hundred was frozen at `a9df6a06` and independently
+reviewed in four 25-case blocks. Root citation/scope triage retains **98 covered
+/ 2 gaps**: bounded response to a young bird on the ground and safe brief
+domestic-fowl examination. Four narrowly scoped modern biology premises passed
+independent source/domain review only after two correction rounds and now
+compile into 1,414 claims. WK-only replay covers both known cases, but the
+original 98/2 and mixed streak **0/3** remain unchanged. Aligned local checks:
+4,656 vectors, 95 tests, passing 342/133 retrieval suites; exact-HEAD CI is
+still required.
+
+A separate military-first static pass now has 75 rotating controlled and 25
+independently unconstrained free/adversarial inputs. Four blind generators and
+an independent input-only preflight produced and checked 100 unique, broad
+military/environment/logistics/aftermath probes without reading WK. They are
+frozen inputs only: separate WK-only reconstruction, gap triage and any needed
+source work remain pending. Cases are probes, not a closed military taxonomy,
+combat-mechanics contract or live gameplay campaign.

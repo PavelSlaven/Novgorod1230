@@ -3,6 +3,8 @@
   "includes": [
     "place-animal-brood-cat-hoof-v1.json",
     "verification-place-animal-brood-cat-hoof-v1.json",
+    "place-young-bird-poultry-handling-v1.json",
+    "verification-place-young-bird-poultry-handling-v1.json",
     "place-skin-fat-context-v1.json",
     "verification-place-skin-fat-context-v1.json",
     "place-garden-birds-dyes-v1.json",

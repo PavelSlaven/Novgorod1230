@@ -11336,6 +11336,20 @@
       "retrieval_text": "Копыто лошади: функции и загрязнение Качественная связь функций копыта с застрявшей грязью и её удалением при базовом уходе. Базовая очистка копыта может удалить камни, грязь, навоз и иной мусор, застрявший вокруг стрелки; щётка может снять грязь и жидкую грязь. Это назначение очистки, а не диагноз, указание силой удерживать лошадь, доказательство раны, подковка или лечение. грязь в копыте чистить копыто стрелка копыта чистить грязь из копыта камень у стрелки грязь вокруг стрелки"
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression:en",
+      "target_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic fowl: gentle examination Qualitative boundaries for body and wing support and stopping an ordinary examination. For a brief domestic-fowl examination, support the whole body and keep folded wings near it rather than lifting the bird by one wing, compressing the breast, or interfering with breathing. This is not a species protocol, exact force or duration, diagnosis, treatment, or guarantee of safety for bird or handler. examine duck wing hold domestic bird bird breathing difficulty restrain bird wings do not compress bird breast"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression:ru",
+      "target_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Домашняя птица: щадящий осмотр Качественные границы поддержки тела и крыльев и прекращения обычного осмотра. При кратком осмотре домашней птицы поддерживают всё тело и удерживают сложенные крылья у него, не поднимая птицу за одно крыло, не сдавливая грудь и не мешая дыханию. Это не видовая процедура, точное усилие или время, диагноз, лечение либо гарантия безопасности птицы и человека. осмотреть крыло утки держать домашнюю птицу птице трудно дышать осмотр крыла утки удерживать крылья птицы не сдавливать грудь птицы"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-cats-can-use-secluded-or-elevated-hiding-places:en",
       "target_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
       "domain": "biology_physiology",
@@ -11502,6 +11516,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Эмолент, защитная плёнка и сухая кожа Качественная связь подходящего эмолентного или окклюзивного средства, защитной плёнки и удержания влаги в сухой коже. Если уже установлено, что средство для кожи действительно эмолентное или окклюзивное, оно может образовать защитную плёнку, удерживающую влагу, и поддержать увлажнённость сухой кожи. Обычный жир или масло без этого свойства не получает такой гарантии; это не назначение лечения, не исторический медицинский приём, не рецепт и не основание мазать средство на ожог, мокнущую либо инфицированную кожу. сухая потрескавшаяся кожа эмолент мазь для сухой кожи смягчить кожу защитная плёнка на коже"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling:en",
+      "target_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Young bird on the ground: stage and intervention Observable boundaries among a fledgling, a nestling outside a nest, and a cat threat. A fully feathered young bird able to hop or flutter may be a fledgling: being on the ground does not itself prove orphaning or injury. Ordinarily it is given space and immediate disturbance is removed, without establishing species, health, parents, nest, or outcome. baby bird on ground fledgling return nestling to nest baby bird sits on ground fledgling in garden young bird hopping"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling:ru",
+      "target_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Молодая птица на земле: стадия и вмешательство Наблюдаемые границы между слётком, птенцом вне гнезда и угрозой кошек. Полностью оперившаяся молодая птица, которая может прыгать или перепархивать, может быть слётком: само пребывание на земле не доказывает сиротство или травму. Обычно ей оставляют пространство и убирают непосредственное беспокойство, не устанавливая этим вид, здоровье, родителей, гнездо или исход. птенец на земле слёток вернуть птенца в гнездо птенец сидит на земле слёток в саду молодая птица прыгает"
     },
     {
       "entry_ref": "wk-retrieval:claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt:en",
@@ -11854,6 +11882,20 @@
       "retrieval_text": "Групповое движение домашних водоплавающих Качественная связь стадного движения домашних гусей и подхода человека к водоплавающей птице. Подход и движения человека могут влиять на реакцию домашней птицы, включая уток и гусей; спокойные, размеренные движения могут не дать птицам чрезмерно возбудиться. Это не гарантирует управление, послушание на свист, отклик на команду или перенос поведения овец. согнать гусей стая гусей подойти к уткам подойти к гусям птицы испугались"
     },
     {
+      "entry_ref": "wk-retrieval:claim:place-poultry-observable-emergency-signs-bound-casual-examination:en",
+      "target_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic fowl: gentle examination Qualitative boundaries for body and wing support and stopping an ordinary examination. Bleeding, head trauma, seizures or other neurologic signs, an apparent open fracture, extreme breathing difficulty, or marked weakness are observable reasons to stop ordinary bird examination and recognize an emergency-care need. A projecting feather or reluctant wingbeat alone establishes neither such a sign, a diagnosis, a cause, available care, nor treatment. examine duck wing hold domestic bird bird breathing difficulty bird bleeding when to stop bird examination"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-poultry-observable-emergency-signs-bound-casual-examination:ru",
+      "target_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Домашняя птица: щадящий осмотр Качественные границы поддержки тела и крыльев и прекращения обычного осмотра. Кровотечение, травма головы, судороги или другие неврологические признаки, явная открытая переломная травма, крайняя трудность дыхания либо выраженная слабость — наблюдаемые основания прекратить обычный осмотр птицы и признать необходимость экстренной помощи. Торчащее перо или неохотный взмах сами по себе не устанавливают такой признак, диагноз, причину, доступную помощь или лечение. осмотреть крыло утки держать домашнюю птицу птице трудно дышать птица кровоточит когда прекратить осмотр птицы"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair:en",
       "target_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
       "domain": "physics_material_science",
@@ -12048,6 +12090,20 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Рабочее пространство и следы Качественные пределы пространства, следов и препятствий. Если установлены и рабочая вода, и вода для чистой задачи, отдельные сосуды, поверхности или пути стока могут не дать им смешаться напрямую. Это editorial reconstruction, не планировка, не качество воды и не правило для всякого двора. проход стружка расчистка чистая вода рабочая вода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-young-bird-plumage-and-immediate-danger-bound-intervention:en",
+      "target_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Young bird on the ground: stage and intervention Observable boundaries among a fledgling, a nestling outside a nest, and a cat threat. A nearly bare or sparsely feathered nestling may be returned to an accessible known nest if possible; a feathered fledgling threatened by cats is protected by removing the cats or moving the bird only nearby. This is not a general rule for every danger and supplies no distance, handling method, feeding, treatment, health finding, parental response, or survival outcome. baby bird on ground fledgling return nestling to nest bare nestling outside nest fledgling in danger move baby bird nearby"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:place-young-bird-plumage-and-immediate-danger-bound-intervention:ru",
+      "target_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Молодая птица на земле: стадия и вмешательство Наблюдаемые границы между слётком, птенцом вне гнезда и угрозой кошек. Почти голого или слабо оперившегося птенца можно вернуть в доступное известное гнездо, если это возможно; при угрозе кошек оперившегося слётка защищают, убирая кошек либо перенося птицу только поблизости. Это не общее правило для любой опасности и не задаёт расстояние, способ обращения, кормление, лечение, здоровье, реакцию родителей или выживание. птенец на земле слёток вернуть птенца в гнездо голый птенец вне гнезда слёток в опасности перенести птенца недалеко"
     },
     {
       "entry_ref": "wk-retrieval:claim:plant-development-responds-to-light:en",
@@ -21052,6 +21108,20 @@
       "retrieval_text": "Курица Домашняя курица Поведение домашней курицы Домашняя курица — стайная птица: она может искать корм клеванием и разгрёбыванием, чистить оперение, принимать пылевые ванны и, будучи наседкой, инкубировать яйца. курица петух наседка домашняя птица"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:domestic-fowl-gentle-examination:en",
+      "target_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Domestic fowl: gentle examination Qualitative boundaries for body and wing support and stopping an ordinary examination. examine duck wing hold domestic bird bird breathing difficulty"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:domestic-fowl-gentle-examination:ru",
+      "target_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Домашняя птица: щадящий осмотр Качественные границы поддержки тела и крыльев и прекращения обычного осмотра. осмотреть крыло утки держать домашнюю птицу птице трудно дышать"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:ecological-competition:en",
       "target_ref": "wk:biology_physiology:ecological-competition",
       "domain": "biology_physiology",
@@ -23668,6 +23738,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Дрожжевое брожение Брожение сахаров дрожжами."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:young-bird-ground-stage-and-intervention:en",
+      "target_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Young bird on the ground: stage and intervention Observable boundaries among a fledgling, a nestling outside a nest, and a cat threat. baby bird on ground fledgling return nestling to nest"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:young-bird-ground-stage-and-intervention:ru",
+      "target_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Молодая птица на земле: стадия и вмешательство Наблюдаемые границы между слётком, птенцом вне гнезда и угрозой кошек. птенец на земле слёток вернуть птенца в гнездо"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology:candidate-plant-diagnostic-identity:en",

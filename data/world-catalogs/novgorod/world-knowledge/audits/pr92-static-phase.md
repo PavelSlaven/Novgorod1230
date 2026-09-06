@@ -1,4 +1,4 @@
-# PR92 — static coverage checkpoint, 2026-09-05
+# PR92 — static coverage checkpoint, 2026-09-06
 
 ## Status: integration checked; offline context acceptance pending
 
@@ -8,8 +8,8 @@ requires useful context about work, clothing, tools, household, means,
 status and behaviour, not direct attestation of every ordinary detail.
 Reviewed reconstruction remains distinguishable from attested knowledge.
 
-The integrated corpus contains **1,410 approved claims, 912 concepts,
-527 sources and 1,031 evidence records**. This includes 156 independently
+The integrated corpus contains **1,414 approved claims, 914 concepts,
+531 sources and 1,037 evidence records**. This includes 156 independently
 reviewed premises using editorial-reconstruction sources; 167 claims have
 editorial directness overall, including editorial composition of external sources.
 Earlier reconstruction milestones include `9e59d01` (ordinary/human), `6210be8`
@@ -28,13 +28,13 @@ Counts and a filled matrix
 do not prove completeness of the map or world.
 
 All 1,497 archive files retain their dispositions. The expanded vector
-package contains **4,644 x 1,024 float32 entries (19,021,824 bytes)** and
+package contains **4,656 x 1,024 float32 entries (19,070,976 bytes)** and
 uses the existing `wk-embedding:giga-480m-0826:v1` profile. No model or
 dependency version changed.
 
-## Checks actually completed on the 1,410-claim corpus
+## Checks actually completed on the 1,414-claim corpus
 
-- Compiler: all 1,410 claims and independent approval bindings validate.
+- Compiler: all 1,414 claims and independent approval bindings validate.
 - Category-cartography and open place-first structural validation pass.
   Structure is not evidence of environmental completeness.
 - Focused authoring/runtime/population/foundation/cartography tests:
@@ -42,8 +42,8 @@ dependency version changed.
   then 48 population checks after vector generation, including exact
   candidate, independent approval and vector alignment.
   Earlier knowledge-source/RAG checks remain **26/26 pass** on unchanged canonical inputs.
-- **338-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996548**,
-  Recall@20 **0.998028**, gate PASS.
+- **342-case** gameplay retrieval benchmark: hybrid Recall@10 **0.996589**,
+  Recall@20 **0.998051**, gate PASS.
 - Unchanged **133-case** baseline: hybrid Recall@10/20 **0.969925**, gate PASS.
 - Both retain hard-constraint recall and applicability precision **1.0**.
   No gate, model, dependency or runtime owner changed.
@@ -757,3 +757,54 @@ A separate final input-only reader passed all 100 cases for schema, diversity,
 means, observable upkeep and historical neutrality without consulting WK.
 This integration freezes the inputs before reconstruction. They are not reviewed
 against WK and do not yet count as acceptance.
+
+## Eighth place-first unseen batch — diagnostic
+
+The 75 controlled and 25 independently generated free inputs were frozen at
+`a9df6a0681349747fc9bb3106dfff7964fc3598a` before WK-only reconstruction.
+Four independent readers handled separate 25-case blocks. Root then read all
+100 inputs and reviews, validated every cited claim and corrected scope/citation
+mismatches without changing the corpus. The controlled split retained 61
+practical/natural/physical and 14 social central needs; root classified all 25
+free cases as practical/natural/physical before lookup, without a quota.
+
+The final original diagnostic is **98 covered / two substantial gaps**:
+`place08-core-054` needed bounded observation and intervention around a young
+bird on the ground; `place08-core-060` needed safe brief domestic-fowl handling
+and observable signs that end a casual examination. Six other exact-effect
+leads were rejected transparently because existing WK already bounded the
+attempt or the input supplied no basis for guaranteed efficacy. The original
+result therefore remains **98/2**, and the mixed unseen streak remains **0/3**.
+
+Four modern general-biology premises were independently checked against exact
+candidate `b274091285cc4e0e650fa158c9712a7f781bf41c`. The verifier twice
+requested narrower authorship, danger and symptom language before final
+`APPROVE`; the final claims cover fledgling-compatible ground presence,
+plumage/nest/cat-threat response boundaries, whole-body/folded-wing support
+without chest compression, and observable emergency signs. They do not identify
+species, orphaning, injury, diagnosis, treatment, local presence or outcome.
+The ordinary production compiler binds all four verdicts and now contains
+1,414 claims.
+
+Independent WK-only replay reconstructs both known gaps on the 1,414-claim
+bundle with exact refs: **2/2 covered**. Replay is not unseen evidence and does
+not rewrite the original 98/2 or **0/3** streak. Both maps, 4,656 vectors,
+95/95 focused tests and passing 342/133 retrieval suites are aligned locally.
+Exact-HEAD CI remains required for the published integration.
+
+## Military-first static pass — inputs frozen for WK-only review
+
+Four blind generators produced 75 rotating controlled and 25 unconstrained
+free/adversarial military probes. They did not read WK, cartography, reviews,
+gameplay code or each other's inputs. The 100 unique cases span equipment use
+and upkeep, training, movement, command, camp and supply, reconnaissance,
+crossings, fortifications, weather/terrain, injury/custody/flight and civilian
+aftermath. Labels are sampling annotations, never a scenario whitelist or
+combat mechanics. An independent input-only auditor rejected missing fields
+and one contradictory place description; the original generator corrected
+them without reading WK, and the final audit returned `APPROVE`.
+
+These inputs are only frozen probes. No military coverage result, new claim,
+clean batch or saturation credit is asserted before separate WK-only readers
+reconstruct the scenes. No live gameplay or repair of combat or other gameplay
+owners occurred.

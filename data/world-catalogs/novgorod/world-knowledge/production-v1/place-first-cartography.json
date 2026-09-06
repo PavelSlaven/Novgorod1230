@@ -1570,6 +1570,8 @@
             "Как человек и животное взаимно ограничивают место и время работы?"
           ],
           "claim_refs": [
+            "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+            "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
             "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
             "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
             "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
@@ -2640,6 +2642,8 @@
             "Какие следы рыхления, обрезки, вредителей, упавших плодов и дождя видны?"
           ],
           "claim_refs": [
+            "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+            "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
             "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
             "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
             "claim:animal-pollination-affects-flowering-plant-reproduction",

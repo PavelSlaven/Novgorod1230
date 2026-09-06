@@ -13,8 +13,7 @@ weather, trees, flies, medical care, eggs, nor any outcome.
   sheep/small ruminants; it does not claim a local weather event or condition.
 - CDC supports smoke/ash eye irritation, reducing exposure, and washing ash
   from eyes; the candidate contains no medical diagnosis or treatment.
-- Maryland Extension supports nests as an egg-laying context and separates this
-  from broody incubation.
+- Maryland Extension supports nests as an egg-laying context.
 - US Forest Service supports suspended storm limbs as an overhead hazard.
 - UNL Extension supports blood-feeding horn flies and cattle defensive behavior.
 

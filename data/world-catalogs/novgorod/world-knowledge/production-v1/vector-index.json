@@ -16880,6 +16880,300 @@
       "retrieval_text": "Независимые случайные испытания Если испытания действительно независимы, предыдущий исход не меняет вероятности следующего. В модели независимых честных бросков повторения допустимы и не делают противоположный исход обязательным; это не доказывает честность реальной кости."
     },
     {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground:en",
+      "target_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland reed cutting Observation and conditional cutting of already present wetland reed. Cut reed stems can be gathered or set aside before moving across wet ground. Amount and outcome are unset. cut reed gather reed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground:ru",
+      "target_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Срезка болотного тростника Наблюдение и условная срезка уже наличного болотного тростника. Срезанные стебли можно собрать или отложить до движения по мокрому грунту. Количество и результат не задаются. срезать тростник собрать тростник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor:en",
+      "target_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Dried herb storage Storage conditions and inspection of dried herbs. Stored dried herbs can be checked for dampness, visible mold, or stale odor. Spoilage and safety are not proven. dried herbs mold on dried herbs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor:ru",
+      "target_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Хранение сушёных трав Условия хранения и осмотр сушёных трав. Хранимые сушёные травы можно проверить на сырость, видимую плесень или затхлый запах. Порча и безопасность не доказаны. сушёные травы плесень на травах"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material:en",
+      "target_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Dried herb storage Storage conditions and inspection of dried herbs. Dried herbs can be separated from damp or visibly moldy material to limit contact. Preservation is not guaranteed. dried herbs separate moldy herbs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material:ru",
+      "target_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Хранение сушёных трав Условия хранения и осмотр сушёных трав. Сушёные травы можно отделить от сырого или видимо заплесневелого материала, чтобы ограничить контакт. Сохранность не гарантирована. сушёные травы отделить заплесневелые травы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-need-dry-protected-storage:en",
+      "target_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Dried herb storage Storage conditions and inspection of dried herbs. Already dried herbs can be kept in dry, protected storage. Herb type and quality are unset. dried herbs store dried herbs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-dried-herbs-need-dry-protected-storage:ru",
+      "target_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Хранение сушёных трав Условия хранения и осмотр сушёных трав. Уже сушёные травы можно хранить в сухом защищённом месте. Вид травы и её качество не заданы. сушёные травы хранить сушёные травы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement:en",
+      "target_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working horse observation Nondiagnostic observation of a horse after work and under harness. Contact areas under present horse harness can be observed for rubbing, heat, or displacement. Injury is not diagnosed. tired horse horse harness rub"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement:ru",
+      "target_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение рабочей лошади Недигностическое наблюдение лошади после работы и упряжи. Участки контакта под наличной упряжью можно осмотреть на натирание, тепло или смещение. Травма не диагностируется. лошадь устала натерла упряжь лошади"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation:en",
+      "target_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working horse observation Nondiagnostic observation of a horse after work and under harness. Observing a working horse can support considering rest, cooling, or harness adjustment without deciding work fitness or outcome. tired horse rest working horse"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation:ru",
+      "target_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение рабочей лошади Недигностическое наблюдение лошади после работы и упряжи. Наблюдение рабочей лошади может обосновывать рассмотрение отдыха, охлаждения или правки упряжи, не решая пригодность к работе или исход. лошадь устала дать лошади отдых"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care:en",
+      "target_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor abrasion care Initial nondiagnostic care for an already observed minor abrasion. An observed minor abrasion can be kept clean, covered when practical, and watched for change. Diagnosis and treatment are not claimed. dirty abrasion watch abrasion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care:ru",
+      "target_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Уход за малой ссадиной Начальная недиагностическая помощь при уже замеченной малой ссадине. Малую уже замеченную ссадину можно при возможности держать чистой, покрытой и наблюдать за изменениями. Диагноз и лечение не заявляются. грязная ссадина наблюдать ссадину"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently:en",
+      "target_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor abrasion care Initial nondiagnostic care for an already observed minor abrasion. An already observed minor dirty abrasion can be rinsed or cleaned gently before covering. Contamination and infection are not established. dirty abrasion clean dirty abrasion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently:ru",
+      "target_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Уход за малой ссадиной Начальная недиагностическая помощь при уже замеченной малой ссадине. Уже замеченную малую грязную ссадину можно осторожно промыть либо очистить до покрытия. Загрязнение и инфекция не установлены. грязная ссадина промыть грязную ссадину"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material:en",
+      "target_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor abrasion care Initial nondiagnostic care for an already observed minor abrasion. Care of an observed minor dirty abrasion can use clean hands and available clean covering material. Sterility and outcome are unset. dirty abrasion clean dressing abrasion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material:ru",
+      "target_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Уход за малой ссадиной Начальная недиагностическая помощь при уже замеченной малой ссадине. Для ухода за уже замеченной малой грязной ссадиной можно использовать чистые руки и доступный чистый покрывающий материал. Стерильность и исход не заданы. грязная ссадина чистая повязка ссадина"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading:en",
+      "target_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Releasable load-bearing rope knot Conditional holding and release of tensioned rope. Before loading, a knot can be checked for dressing, contact, and a clear release path. Strength is not determined. release rope knot inspect rope knot"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading:ru",
+      "target_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Развязываемый грузовой узел Условное удержание и освобождение натянутой верёвки. Перед нагрузкой узел можно осмотреть по укладке, контакту и свободе освобождения. Прочность не определяется. развязать узел осмотреть узел"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded:en",
+      "target_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Releasable load-bearing rope knot Conditional holding and release of tensioned rope. A releasable load-bearing knot can hold tension when loaded and release after unloading. Strength and success are unset. release rope knot release load knot"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded:ru",
+      "target_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Развязываемый грузовой узел Условное удержание и освобождение натянутой верёвки. Развязываемый грузовой узел может держать натяжение под нагрузкой и освобождаться после её снятия. Прочность и успех не заданы. развязать узел развязать грузовой узел"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part:en",
+      "target_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Releasable load-bearing rope knot Conditional holding and release of tensioned rope. Releasing a releasable knot can require access to its working part and control of remaining tension. release rope knot knot working end"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part:ru",
+      "target_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Развязываемый грузовой узел Условное удержание и освобождение натянутой верёвки. Освобождение развязываемого узла может требовать доступа к ходовому концу и контроля остаточного натяжения. развязать узел ходовой конец узла"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation:en",
+      "target_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Temporary soil stability Texture and moisture effects on a temporary stake or small excavation. Saturated soil can lose cohesion or slump around a small excavation. Collapse and safe depth are not determined. stake wet soil wet hole slumps"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation:ru",
+      "target_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Временная устойчивость грунта Влияние текстуры и влажности грунта на временную опору или малую выемку. Насыщенный водой грунт может терять связность или осыпаться у малой выемки. Обвал и безопасная глубина не определяются. колышек в мокром грунте мокрая яма осыпается"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake:en",
+      "target_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Temporary soil stability Texture and moisture effects on a temporary stake or small excavation. Soil texture and moisture can change local resistance to a temporary stake. Holding strength is unset. stake wet soil stake in soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake:ru",
+      "target_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Временная устойчивость грунта Влияние текстуры и влажности грунта на временную опору или малую выемку. Текстура и влажность грунта могут менять местное сопротивление временному колышку. Удерживающая прочность не задана. колышек в мокром грунте колышек в грунте"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes:en",
+      "target_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Temporary soil stability Texture and moisture effects on a temporary stake or small excavation. A temporary stake or small excavation can be checked locally as ground texture or wetness changes. Stability outcome is not predicted. stake wet soil check stake stability"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes:ru",
+      "target_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Временная устойчивость грунта Влияние текстуры и влажности грунта на временную опору или малую выемку. Временный колышек или малую выемку можно местно проверять при изменении текстуры либо мокроты грунта. Исход устойчивости не предсказывается. колышек в мокром грунте проверить устойчивость колышка"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement:en",
+      "target_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland reed cutting Observation and conditional cutting of already present wetland reed. Cutting a present wetland reed stem can need clear hand and foot placement around a blade and wet ground. A safe outcome is unset. cut reed cut reed safely"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement:ru",
+      "target_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Срезка болотного тростника Наблюдение и условная срезка уже наличного болотного тростника. Срезка наличного болотного стебля может требовать ясного положения рук и ног относительно лезвия и мокрого грунта. Безопасный исход не задан. срезать тростник срезать тростник безопасно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation:en",
+      "target_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland reed cutting Observation and conditional cutting of already present wetland reed. Among already present wetland stems, observation can distinguish dry or intact stems from visibly damaged or wet ones. Presence, species, access, and harvest are unset. cut reed choose dry reed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation:ru",
+      "target_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Срезка болотного тростника Наблюдение и условная срезка уже наличного болотного тростника. Среди уже наличных болотных стеблей можно наблюдением отличить сухие или целые от явно повреждённых либо мокрых. Наличие, вид, доступ и сбор не заданы. срезать тростник выбрать сухой тростник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment:en",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Loose wooden joinery Sag inspection and temporary stabilization of a wooden joint. A loose or sagging wooden join can be unloaded or supported before adjustment. Condition and repair result are unset. sagging door support loose chair"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment:ru",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Расшатанное деревянное соединение Осмотр провисания и временная стабилизация деревянного соединения. Расшатанное или провисшее деревянное соединение можно разгрузить либо подпереть до правки. Состояние и результат починки не заданы. расшатанная дверь подпереть расшатанный стул"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points:en",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Loose wooden joinery Sag inspection and temporary stabilization of a wooden joint. Visible sag or looseness in a wooden assembly can be inspected at joints, frame, or bearing points. Cause is not diagnosed. sagging door sagging wooden door"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points:ru",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Расшатанное деревянное соединение Осмотр провисания и временная стабилизация деревянного соединения. Видимое провисание или люфт деревянной сборки можно осмотреть у соединений, рамы или точек опоры. Причина не диагностируется. расшатанная дверь провисшая деревянная дверь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally:en",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Loose wooden joinery Sag inspection and temporary stabilization of a wooden joint. A temporary wedge, brace, or reseating can limit visible movement as fit, material, and load allow. Stability is not guaranteed. sagging door wedge loose door"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally:ru",
+      "target_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Расшатанное деревянное соединение Осмотр провисания и временная стабилизация деревянного соединения. Временный клин, распорка или посадка соединения могут ограничить видимый люфт по подгонке, материалу и нагрузке. Устойчивость не гарантирована. расшатанная дверь подклинить дверь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change:en",
+      "target_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working horse observation Nondiagnostic observation of a horse after work and under harness. A present working horse can show observable heat, sweat, or breathing changes after exertion. Fatigue and illness are not established. tired horse horse hot after work"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change:ru",
+      "target_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение рабочей лошади Недигностическое наблюдение лошади после работы и упряжи. Уже наличная рабочая лошадь после усилия может показывать заметные изменения тепла, пота или дыхания. Усталость и болезнь не устанавливаются. лошадь устала лошадь горячая после работы"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1:en",
       "target_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
       "domain": "biology_physiology",
@@ -25924,6 +26218,34 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-minor-abrasion-care:en",
+      "target_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Minor abrasion care Initial nondiagnostic care for an already observed minor abrasion. dirty abrasion"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-minor-abrasion-care:ru",
+      "target_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Уход за малой ссадиной Начальная недиагностическая помощь при уже замеченной малой ссадине. грязная ссадина"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-working-horse-observation:en",
+      "target_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Working horse observation Nondiagnostic observation of a horse after work and under harness. tired horse"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-working-horse-observation:ru",
+      "target_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение рабочей лошади Недигностическое наблюдение лошади после работы и упряжи. лошадь устала"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:reality-first-food-animal-care:en",
       "target_ref": "wk:biology_physiology:reality-first-food-animal-care",
       "domain": "biology_physiology",
@@ -28290,6 +28612,20 @@
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reality-batch-01-wooden-joinery:en",
+      "target_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Loose wooden joinery Sag inspection and temporary stabilization of a wooden joint. sagging door"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reality-batch-01-wooden-joinery:ru",
+      "target_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Расшатанное деревянное соединение Осмотр провисания и временная стабилизация деревянного соединения. расшатанная дверь"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:reality-first-worksite-flow:en",
       "target_ref": "wk:craft_technology:reality-first-worksite-flow",
       "domain": "craft_technology",
@@ -29492,6 +29828,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Радиационный туман Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-batch-01-soil-temporary-stability:en",
+      "target_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Temporary soil stability Texture and moisture effects on a temporary stake or small excavation. stake wet soil"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-batch-01-soil-temporary-stability:ru",
+      "target_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Временная устойчивость грунта Влияние текстуры и влажности грунта на временную опору или малую выемку. колышек в мокром грунте"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-batch-01-wetland-reed-cutting:en",
+      "target_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Wetland reed cutting Observation and conditional cutting of already present wetland reed. cut reed"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reality-batch-01-wetland-reed-cutting:ru",
+      "target_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Срезка болотного тростника Наблюдение и условная срезка уже наличного болотного тростника. срезать тростник"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:reality-first-place-composition:en",
@@ -31706,6 +32070,20 @@
       "retrieval_text": "Недублёная высушенная шкура Недублёная шкура (rawhide); не общее название выделанной кожи."
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:reality-batch-01-dried-herb-storage:en",
+      "target_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Dried herb storage Storage conditions and inspection of dried herbs. dried herbs"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reality-batch-01-dried-herb-storage:ru",
+      "target_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Хранение сушёных трав Условия хранения и осмотр сушёных трав. сушёные травы"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:reality-first-military-basis:en",
       "target_ref": "wk:material_culture:reality-first-military-basis",
       "domain": "material_culture",
@@ -33426,6 +33804,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Независимые случайные испытания"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:reality-batch-01-releasable-rope-knot:en",
+      "target_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Releasable load-bearing rope knot Conditional holding and release of tensioned rope. release rope knot"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:reality-batch-01-releasable-rope-knot:ru",
+      "target_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Развязываемый грузовой узел Условное удержание и освобождение натянутой верёвки. развязать узел"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air:en",

@@ -189,7 +189,7 @@
       "concept_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
       "locale": "ru",
       "labels": ["Молодая птица на земле: стадия и вмешательство"],
-      "short_definition": "Наблюдаемые границы между слётком, птенцом вне гнезда и непосредственной опасностью.",
+      "short_definition": "Наблюдаемые границы между слётком, птенцом вне гнезда и угрозой кошек.",
       "search_aliases": ["птенец на земле", "слёток", "вернуть птенца в гнездо"]
     },
     {
@@ -197,7 +197,7 @@
       "concept_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
       "locale": "en",
       "labels": ["Young bird on the ground: stage and intervention"],
-      "short_definition": "Observable boundaries among a fledgling, a nestling outside a nest, and immediate danger.",
+      "short_definition": "Observable boundaries among a fledgling, a nestling outside a nest, and a cat threat.",
       "search_aliases": ["baby bird on ground", "fledgling", "return nestling to nest"]
     },
     {

@@ -5,8 +5,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-01",
       "claim_ref": "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
-      "claim_digest": "44c50719fb8938174f37d636be28e93e49550a7858a402ad9c29599d0bc68d96",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+      "claim_digest": "ed7642fe2469153b54b1314c0bc06be27df35d2997157607cdad9659e8a649e6",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -14,14 +14,14 @@
       ],
       "review_ref": "verification/final-nature-gap-closure-v1.md",
       "verdict": "APPROVE",
-      "limits": "No local bank, load, collapse or route."
+      "limits": "No particular bank, thaw, collapse, route or load."
     },
     {
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-02",
       "claim_ref": "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
-      "claim_digest": "58e079dcd8178de8ee64d2974061c6bc0436c6b4609d91853a0501f3f96f5065",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
+      "claim_digest": "1a937c52676e1d6706176b69da0d703fd89f64988fed076d42c26b775241c8db",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -35,8 +35,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-03",
       "claim_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
-      "claim_digest": "c41dcff6b210713a94e9d1dc3de9079669737f809d9037f5cbb75a35d056295e",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+      "claim_digest": "9680c7e60273126ea921e5b7bb3749f7c8db11eff3c17f5a91f27ceafe98354d",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -44,14 +44,14 @@
       ],
       "review_ref": "verification/final-nature-gap-closure-v1.md",
       "verdict": "APPROVE",
-      "limits": "No safe bank or passage."
+      "limits": "No particular bank stability, passage or protection."
     },
     {
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-04",
       "claim_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
-      "claim_digest": "50d4ee4f146fc70959caf3322a26d5721b7912b310c75af047a8c952051fd4d7",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+      "claim_digest": "1f61c41783b31913381557b4ce7f922a53a0be20e88ddc8458e9f064b7233ecc",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -65,8 +65,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-05",
       "claim_ref": "claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
-      "claim_digest": "0cb74adfae20af2741cb77b2da14aea6f2418461459eb4aa059cc6ebde28d059",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
+      "claim_digest": "2398d435beec72185bd65fba3d7ae92f404749df0f97f8631aea8e7f4295ad73",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -81,8 +81,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-06",
       "claim_ref": "claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
-      "claim_digest": "e1c3c2cad2b15d9b476c448017861e7792b721aa544f10468bf61b6ff72b23c8",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
+      "claim_digest": "9cdd280e3a9edfe828846d2f21a77d3c34069179ac26aa0103c716c519f10616",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -97,8 +97,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-07",
       "claim_ref": "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
-      "claim_digest": "ee09b2336b63932d1cd7fc1857756e4f9f41678334676e90ae20ef8927488611",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+      "claim_digest": "d292e7a4a0dfbb82616035563e5f78fd6bbb496f3e00f53c4327642f30138a16",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -112,8 +112,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-08",
       "claim_ref": "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
-      "claim_digest": "e3f32149da4e3546720d7e7ee3917bc2cee9a54f1fa4554766d57277be62f19a",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+      "claim_digest": "28b3816684d806386cee52a02c9dc89e2fad686b62a48c75401c9c7b4b7545fd",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -127,8 +127,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-09",
       "claim_ref": "claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves",
-      "claim_digest": "69de7c6cf4b32865766f1472a1385760923ed565f6d6fc11c96c40dfc542d8d4",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves",
+      "claim_digest": "bc713d88e81c5aef0a6f65db6028927cf62bdb4d3906a3719d0d53e765e68690",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -142,8 +142,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-10",
       "claim_ref": "claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
-      "claim_digest": "1cf3976f22c2675922d01fc913a67388742286dbcff30cda105ad50549530685",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
+      "claim_digest": "5f51288f735d08cffeb30558d3de7f1c17b7982bc0ade149401c6b5891a764f2",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -157,8 +157,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-11",
       "claim_ref": "claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food",
-      "claim_digest": "c51f58829e5bdcc9ad5e8278ca3ac27b7a4553b4a14f43c2c64ca5a2f07e9c8c",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food",
+      "claim_digest": "ee56522add74747f0d530e62add173c685e6fdb06be8fefa5b27bc61ea03a0f5",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -172,8 +172,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-12",
       "claim_ref": "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
-      "claim_digest": "91ce7263b1f36816411ac2e9dc9c12cd0532d0241f8586bf88dc98fd6fa64e3b",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
+      "claim_digest": "7edf4687612ca1ec46901dc1f79bd7fcefe674381348627687e23070d2e70c2a",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -187,8 +187,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-13",
       "claim_ref": "claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike",
-      "claim_digest": "da385a810113d50c89394125b6088834d677a9852364c83d1db85a234b42f997",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike",
+      "claim_digest": "6d50c7762689193e962d99d73de7cae4ae36a196a649c562a23af88fcc39fd24",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -202,8 +202,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-14",
       "claim_ref": "claim:final-nature-channel-flow-can-transport-large-woody-debris",
-      "claim_digest": "1bf8d9e3f7c692541848d32327f62547ec65183f628e85a5d835d9947abda62a",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-channel-flow-can-transport-large-woody-debris",
+      "claim_digest": "5d879b0409fe219b48145178a978680788a458969a1b7aa1cfb40e54a69b1b33",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-channel-flow-can-transport-large-woody-debris",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -217,8 +217,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-15",
       "claim_ref": "claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
-      "claim_digest": "5a915ed9974857009082bb8d752a4bf29a64ca31532717db33ec8fa255f4a49d",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
+      "claim_digest": "934a771950eb48d139ba7d5de2b5c243c3518a896d01bfb0e1c58629e328df9b",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -232,8 +232,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-16",
       "claim_ref": "claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
-      "claim_digest": "6902a856b490a5a53c55725b1f59a1f37e6b2fba905d477c7d1f23d57da3200c",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
+      "claim_digest": "e1a6617bd8e422728715967ce3fc89b7316a6de41b0d8d712738a8744f6019f4",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -247,8 +247,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-17",
       "claim_ref": "claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
-      "claim_digest": "26864afea241bf581b68ad69366455b319282f2263eddbfda2fc11dbbc253568",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
+      "claim_digest": "e5f4d15d8b52908fcfc018bf16f27876cb8e8e34e537cd16b3f7316d08d10dc1",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [
@@ -263,8 +263,8 @@
       "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:final-nature-18",
       "claim_ref": "claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
-      "claim_digest": "32b78a36b90541a550bd64f0829eefc77225ec31512c2d8735ecc35ff6bf20c7",
-      "candidate_ref": "git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
+      "claim_digest": "ae5a7999aca313747093ae0dc4ad78ca76773c309f62bf40616c325356ef2fca",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-nature-gap-closure-v1.json#claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
       "auditor_ref": "/root/trade_economy_replay",
       "independence_basis": "Independent source and scope review.",
       "evidence_checked": [

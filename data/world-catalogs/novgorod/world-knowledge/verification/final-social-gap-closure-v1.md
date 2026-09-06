@@ -18,3 +18,11 @@ not assign office, jurisdiction, command, membership, or power.
 
 Verdict: **18/18 APPROVE**. The per-claim records bind the exact claim,
 localizations, concepts, editorial evidence and source via `claim_digest`.
+
+## Promotion reconciliation
+
+Candidate `f8e0e32322f5afba28b53fdd166239b9bc8cbb80` was promoted at
+`c0b9278757554052039041a823f06f6681414db6`. The social shard changed only
+candidate-to-approved status fields; claim content and the independent
+**18/18 APPROVE** verdicts are unchanged. Digests and candidate references
+now bind the assembled three-shard approved snapshot at `c0b9278757554052039041a823f06f6681414db6`.

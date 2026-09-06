@@ -1,23 +1,275 @@
 {
-  "schema":"world_knowledge_authoring_fragment_v1",
-  "verifications":[
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-holding-custody-title","claim_ref":"claim:final-social-holding-or-custody-does-not-by-itself-establish-title","claim_digest":"698add95a0bee5be4649cb4ace765641b7b6e0268afc45253db366bfdeaa2db9","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-holding-or-custody-does-not-by-itself-establish-title","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-property"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Distinction only; creates no owner, title, transfer, duty or legal result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-finding-return-inquiry","claim_ref":"claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition","claim_digest":"3ee477a8c0a13964e48709df0bb4f176ac091eeae0237f812f5f0a34084e0e04","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-property"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Inquiry only; no acquisition, abandonment, theft, duty or outcome."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-competing-accounts","claim_ref":"claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry","claim_digest":"495bfa46544cd26316b45a0db1a043cb13b53a52e06502c002eb256050d32de1","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-property"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Accounts guide inquiry only; no proof, return duty or credibility verdict."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-water-access-labour","claim_ref":"claim:final-social-household-water-use-depends-on-access-vessels-and-labour","claim_digest":"ebc54ed5ee5be0c57264803c27d6678fc0308ab48f81250901dc6c5bcff90918","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-household-water-use-depends-on-access-vessels-and-labour","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-water"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Qualitative competition only; creates no water, source, quantity or result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-washing-drying","claim_ref":"claim:final-social-washing-and-drying-can-change-visible-household-soil","claim_digest":"ee7b12878f7b7e17ffe2e588c4e45a1a5c785ff4142190e18e1b65acbbbb1306","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-washing-and-drying-can-change-visible-household-soil","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-water"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Visible soil and wetness only; no cleanliness, safety or completed result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-waste-separation","claim_ref":"claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact","claim_digest":"1a66ca9dbc5a9f316be02f51dca465f90d2952e3bb7db2edee664dc70dcd9fa4","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-water"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Conditional contact reduction; no contamination, illness, infrastructure or outcome."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-observation-limits","claim_ref":"claim:final-social-observation-is-bounded-by-position-conditions-and-attention","claim_digest":"3aca1312087f5c167717cd4d963de19af5839bed36162ce5533a0a3744aa0ba2","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-observation-is-bounded-by-position-conditions-and-attention","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-information"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No particular perception, accuracy, memory, knowledge or actor state."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-retelling-limits","claim_ref":"claim:final-social-retelling-can-preserve-or-change-source-and-detail","claim_digest":"6f9b8c10c4c1a4339f23369baafd4ca4969ad999e1bf86513669f44114ef12ab","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-retelling-can-preserve-or-change-source-and-detail","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-information"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No deceit, truth, intent, admissibility or factual result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-corroboration-limits","claim_ref":"claim:final-social-independent-accounts-can-corroborate-without-proving-truth","claim_digest":"b9f65d164fe1cfb7e666f0752ee92b4675cc80e784c95a4ce63b618ceac58ab7","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-independent-accounts-can-corroborate-without-proving-truth","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-information"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Comparison only; no proof, credibility, legal evidence status or event result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-service-roles","claim_ref":"claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor","claim_digest":"d09846cad4933f50e90ddbdffeadddecfd37630ea006c5409346553711eba701","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-religion"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"Only after service or visit is established; no rank, skill, belief, rite or access."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-observance-context","claim_ref":"claim:final-social-established-observance-can-change-food-time-and-visiting-context","claim_digest":"2063e84305e9530994d787bbfe261f35feb24db2b5225d50f9da87d1532bb3f0","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-established-observance-can-change-food-time-and-visiting-context","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-religion"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No date, obligation, menu, attendance or outcome."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-household-church-contact","claim_ref":"claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes","claim_digest":"0ed561aeb7f2ec1990f2a35af45b70e877283e0d84f2d5a34f51b2a29275d806","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-religion"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No belief, authority, entitlement, access or religious result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-veche-interface","claim_ref":"claim:final-social-veche-can-provide-bounded-public-deliberation-interface","claim_digest":"ecc7528ba6e30ad9fbdcb4960e01dc7de046a48bdb35b5b54e9dff4b3316a7f6","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-veche-can-provide-bounded-public-deliberation-interface","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No membership, competence, jurisdiction, decision or outcome."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-posadnik-interface","claim_ref":"claim:final-social-posadnik-role-can-frame-civic-administrative-contact","claim_digest":"2e2ebc8091c060d972adc4752cf0b8f2c357bbf0ca9c22cc5fc041d9c4473e30","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-posadnik-role-can-frame-civic-administrative-contact","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No officeholder, power, jurisdiction, document, command or decision."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-tysyatsky-interface","claim_ref":"claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact","claim_digest":"3d7c91cdeb2238d3a67dbb1044d30877a2ac45476682ba9f43f6322ff3e781b4","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No command, market authority, jurisdiction, levy, duty or result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-archbishop-interface","claim_ref":"claim:final-social-archbishop-role-can-frame-church-and-public-contact","claim_digest":"3d23cd7836af5c20805e8ef59dc71520ae66ec4a4ced3b0a965ec99b5f1681e3","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-archbishop-role-can-frame-church-and-public-contact","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No cleric, jurisdiction, resources, rite, authority over a person or result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-prince-interface","claim_ref":"claim:final-social-prince-role-can-frame-external-or-command-contact","claim_digest":"b1fd615f16adb298972f0f95b9d84eb7a131b6b48523fd5fe603fac42b1d1991","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-prince-role-can-frame-external-or-command-contact","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No prince, force, territory, jurisdiction, treaty, levy, duty or result."},
-    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-social-novgorod-end-interface","claim_ref":"claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination","claim_digest":"a5ba92a4face89f8ad915b1a977fd5f7e0c8ffc1a914fd5887ad3edc56206699","candidate_ref":"git:f8e0e32322f5afba28b53fdd166239b9bc8cbb80:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination","auditor_ref":"/root/pr92_final_auditor","independence_basis":"Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.","evidence_checked":["evidence:final-social-institutions"],"review_ref":"verification/final-social-gap-closure-v1.md#independent-review","verdict":"APPROVE","limits":"No boundary, membership, representation, authority, duty or collective outcome."}
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-holding-custody-title",
+      "claim_ref": "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+      "claim_digest": "6cbf410680bdb47be57cec1362e334f836e5ef5c27437aafba0ac26a32e4d806",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-property"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Distinction only; creates no owner, title, transfer, duty or legal result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-finding-return-inquiry",
+      "claim_ref": "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+      "claim_digest": "7957c9f529a94975d27d922d6ffc6ff5a44fd85eedcf1a4d828b41c77bf142d1",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-property"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Inquiry only; no acquisition, abandonment, theft, duty or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-competing-accounts",
+      "claim_ref": "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry",
+      "claim_digest": "74c08dee0aec4ecba88af92b3ca403bfa617d536e10744d4dcd0dbf05c5baea5",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-property"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Accounts guide inquiry only; no proof, return duty or credibility verdict."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-water-access-labour",
+      "claim_ref": "claim:final-social-household-water-use-depends-on-access-vessels-and-labour",
+      "claim_digest": "e8e9a13de3d1a1719f95b0c34497fcbcf69af8017f7cd84385b7496e408a7077",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-household-water-use-depends-on-access-vessels-and-labour",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-water"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Qualitative competition only; creates no water, source, quantity or result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-washing-drying",
+      "claim_ref": "claim:final-social-washing-and-drying-can-change-visible-household-soil",
+      "claim_digest": "9621cfcb2f06e71ace7b2b6897f4f12414504e0c10c0df56780ce50fa0600efb",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-washing-and-drying-can-change-visible-household-soil",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-water"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Visible soil and wetness only; no cleanliness, safety or completed result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-waste-separation",
+      "claim_ref": "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+      "claim_digest": "d11ec771879aa7d3a935667c11a1e5b1e84aeba2cce7b55c6c97cb59d7f92981",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-water"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Conditional contact reduction; no contamination, illness, infrastructure or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-observation-limits",
+      "claim_ref": "claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+      "claim_digest": "a0b80c3e5527f4c555963a92a18c394f41afbaa9d4077fd70437cd83a6f47341",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-information"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No particular perception, accuracy, memory, knowledge or actor state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-retelling-limits",
+      "claim_ref": "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
+      "claim_digest": "e74130b154ff80766fdedfa08d0a423dc4def26209acdde032dedf964e19b8b1",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-retelling-can-preserve-or-change-source-and-detail",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-information"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No deceit, truth, intent, admissibility or factual result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-corroboration-limits",
+      "claim_ref": "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+      "claim_digest": "b8019fad7c568179a9e03ba7f939147143488c4e2481de483c303e9791e94b57",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-information"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Comparison only; no proof, credibility, legal evidence status or event result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-service-roles",
+      "claim_ref": "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor",
+      "claim_digest": "77c812a7c7f0f43d43875d72370629f1fd66808d85d2a24a4d048988fde62b3b",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-religion"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "Only after service or visit is established; no rank, skill, belief, rite or access."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-observance-context",
+      "claim_ref": "claim:final-social-established-observance-can-change-food-time-and-visiting-context",
+      "claim_digest": "0dc683c2b3a2b553b613d4d7ac3c6b2dcc7fc3c9b676a4a0c20512ebaf91c6f0",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-established-observance-can-change-food-time-and-visiting-context",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-religion"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No date, obligation, menu, attendance or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-household-church-contact",
+      "claim_ref": "claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+      "claim_digest": "b2e53a982ed7e67b89657ebcd2f115954a94bded165ad1f03c414ada31f9cd4a",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-religion"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No belief, authority, entitlement, access or religious result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-veche-interface",
+      "claim_ref": "claim:final-social-veche-can-provide-bounded-public-deliberation-interface",
+      "claim_digest": "1729bdf468291c75695cd0b35561c1e1754fe599a1b30701e5a6529cd63d1edc",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-veche-can-provide-bounded-public-deliberation-interface",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No membership, competence, jurisdiction, decision or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-posadnik-interface",
+      "claim_ref": "claim:final-social-posadnik-role-can-frame-civic-administrative-contact",
+      "claim_digest": "435da6d8b5ebb606faa5f81d44cff97d4cc8507601cdb7fd9fe9b67d673d91d1",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-posadnik-role-can-frame-civic-administrative-contact",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No officeholder, power, jurisdiction, document, command or decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-tysyatsky-interface",
+      "claim_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+      "claim_digest": "ccd88b72d93d5530e519cc92aa167a750de2a50de55c500ad9e83595499269f2",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No command, market authority, jurisdiction, levy, duty or result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-archbishop-interface",
+      "claim_ref": "claim:final-social-archbishop-role-can-frame-church-and-public-contact",
+      "claim_digest": "ddffcdd74ffac6c88ec50acbc7624e3ed206cde6ca8a73e25102c0f2095c8b60",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-archbishop-role-can-frame-church-and-public-contact",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No cleric, jurisdiction, resources, rite, authority over a person or result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-prince-interface",
+      "claim_ref": "claim:final-social-prince-role-can-frame-external-or-command-contact",
+      "claim_digest": "35e7c8bd3c54ecda10498dc93fcfe3eaadaf0889e8e9831862cbb5244af9025b",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-prince-role-can-frame-external-or-command-contact",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No prince, force, territory, jurisdiction, treaty, levy, duty or result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-social-novgorod-end-interface",
+      "claim_ref": "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+      "claim_digest": "a940231ac05da8407407238177c85349a302080fc8a3ee90ffb75a59ba7214b8",
+      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+      "auditor_ref": "/root/pr92_final_auditor",
+      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
+      "evidence_checked": [
+        "evidence:final-social-institutions"
+      ],
+      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
+      "verdict": "APPROVE",
+      "limits": "No boundary, membership, representation, authority, duty or collective outcome."
+    }
   ]
 }

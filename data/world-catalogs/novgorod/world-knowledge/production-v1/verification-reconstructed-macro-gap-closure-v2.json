@@ -1,0 +1,155 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-birth-needs-practical-support-and-time",
+      "claim_ref": "claim:macro-gap-birth-needs-practical-support-and-time",
+      "claim_digest": "da51bf75cca0e70904a42f436b01961d456c3b1da98decd24a4d5e9fdc3138cd",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-birth-needs-practical-support-and-time",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-childbirth-household"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-after-childbirth-needs-can-reshape-household-labour",
+      "claim_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
+      "claim_digest": "b57f3687059cc1511509499288c6c5cac8dac490122c70f8927f0ddef6d67a3b",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-childbirth-household"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-slaughter-needs-work-tools-and-place",
+      "claim_ref": "claim:macro-gap-slaughter-needs-work-tools-and-place",
+      "claim_digest": "dd95b73f071b282923ca282a7bd6f13bcc6e72a5dd95f7e379c0dbcefaafa7ad",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-slaughter-needs-work-tools-and-place",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-animal-material"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-carcass-handling-can-separate-material-streams",
+      "claim_ref": "claim:macro-gap-carcass-handling-can-separate-material-streams",
+      "claim_digest": "33d57c9139adee4db5e5593828cc591ca7d54e707958b767ce6377f43199ba74",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-carcass-handling-can-separate-material-streams",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-animal-material"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-collateral-follows-established-security-terms",
+      "claim_ref": "claim:macro-gap-collateral-follows-established-security-terms",
+      "claim_digest": "188760165471e0f0ef432c6b7066fc554b99e05dcf0dbbf21ef06307df4e481a",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-collateral-follows-established-security-terms",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-obligation-law"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-payment-changes-only-accepted-obligation-part",
+      "claim_ref": "claim:macro-gap-payment-changes-only-accepted-obligation-part",
+      "claim_digest": "8bf68f23abc65e70983f913711cf7148ff74bfff1d1668020459de219d6e9ce5",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-payment-changes-only-accepted-obligation-part",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-obligation-law"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-legal-analogy-needs-applicable-recognized-basis",
+      "claim_ref": "claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
+      "claim_digest": "3b5f60f1efb95b76fc2bee24a65654d503bab5c572ada1aa7fe9de09e915c949",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-legal-analogy-needs-applicable-recognized-basis",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-obligation-law"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-political-communication-needs-accepted-performance",
+      "claim_ref": "claim:macro-gap-political-communication-needs-accepted-performance",
+      "claim_digest": "c1eb0f54069b1fb25b541695820781f1b384945a83b9d7a2f79b7d487af64683",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-political-communication-needs-accepted-performance",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-communication-record"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-writing-carries-attributed-account-only",
+      "claim_ref": "claim:macro-gap-writing-carries-attributed-account-only",
+      "claim_digest": "a7ecd80f90bfa12d0f3ec1de0b27921c29ce79a1d366fbdb5af48c504d655b54",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-writing-carries-attributed-account-only",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-communication-record"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-macro-gap-closure-v2-established-local-observance-can-change-availability",
+      "claim_ref": "claim:macro-gap-established-local-observance-can-change-availability",
+      "claim_digest": "5fbe38ab82890e2aa3a30ab390509f8fd560b9e3d8b4c0bc343d094efba0c21a",
+      "candidate_ref": "git:3785dbae7d2bb3d1255daf9e66f12b14536b4288:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-macro-gap-closure-v2.json#claim:macro-gap-established-local-observance-can-change-availability",
+      "auditor_ref": "/root/macro_editorial_verifier",
+      "independence_basis": "Independent plausibility and content-alignment review of the exact candidate claim, RU/EN runtime text, aliases, evidence note, and editorial boundary; reviewer did not author the candidate.",
+      "evidence_checked": [
+        "evidence:macro-gap-observance"
+      ],
+      "review_ref": "verification/reconstructed-macro-gap-closure-v2.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Editorial, conditional premise only; no current person, animal, household, item, resource, right, obligation, forum, mandate, agreement, outcome, date, or NPC decision."
+    }
+  ]
+}

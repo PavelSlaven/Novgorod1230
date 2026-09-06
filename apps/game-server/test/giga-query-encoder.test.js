@@ -47,6 +47,7 @@ test('encoder restarts after startup timeout', async () => {
   assert.equal(children.length, 2);
   ready(children[1]);
   await Promise.resolve();
+  children[0].emit('exit', 1);
   vector(children[1]);
   assert.equal((await retry).length, 1024);
 });

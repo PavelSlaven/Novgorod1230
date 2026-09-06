@@ -26,15 +26,17 @@ export function createGigaQueryEncoder({ profilePath,
       throw new TypeError('Giga query text is invalid');
     }
     await start();
+    const active = child;
+    if (active == null) throw unavailable('WK_EMBEDDING_WORKER_EXIT');
     const id = nextId++;
     return new Promise((accept, reject) => {
       const timeout = setTimeout(() => {
         pending.delete(id);
         reject(unavailable('WK_EMBEDDING_TIMEOUT'));
       }, timeoutMs);
-      pending.set(id, { accept, reject, timeout });
+      pending.set(id, { accept, reject, timeout, child: active });
       try {
-        child.stdin.write(`${JSON.stringify({ id, text: normalized })}\n`);
+        active.stdin.write(`${JSON.stringify({ id, text: normalized })}\n`);
       } catch {
         clearTimeout(timeout);
         pending.delete(id);
@@ -71,7 +73,7 @@ export function createGigaQueryEncoder({ profilePath,
           return;
         }
         const request = pending.get(message.id);
-        if (request == null) return;
+        if (request == null || request.child !== spawned) return;
         pending.delete(message.id);
         clearTimeout(request.timeout);
         if (message.error != null) {
@@ -92,11 +94,12 @@ export function createGigaQueryEncoder({ profilePath,
           settled = true;
           reject(error);
         }
-        for (const request of pending.values()) {
+        for (const [id, request] of pending) {
+          if (request.child !== spawned) continue;
           clearTimeout(request.timeout);
           request.reject(error);
+          pending.delete(id);
         }
-        pending.clear();
         if (child === spawned) {
           child = null;
           startup = null;

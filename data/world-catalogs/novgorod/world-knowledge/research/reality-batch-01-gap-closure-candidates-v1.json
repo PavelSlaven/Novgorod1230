@@ -143,6 +143,16 @@
       },
       "note": "FAO describes texture, structure, water movement, moisture storage and their effects on soil stability. It establishes no ground, stake, excavation, bearing value, collapse or outcome.",
       "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-editorial-observable-bridges",
+      "source_ref": "source:reality-batch-01-editorial",
+      "anchor": {
+        "section": "Observable condition and low-risk response bridges"
+      },
+      "note": "Bounded editorial bridges cover observable stale odour and separation of visibly damp or moldy herbs; harness contact rubbing or displacement and considering rest, cooling or adjustment; clean hands and available clean covering for a minor abrasion; and qualitative inference from soil texture and water to local temporary-stake or small-excavation checks. They establish no presence, state, cause, diagnosis, threshold, safety, historical practice or outcome.",
+      "review_status": "approved"
     }
   ],
   "concepts": [
@@ -517,8 +527,8 @@
       "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -526,7 +536,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-herbs"
+        "evidence:reality-batch-01-herbs",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -545,8 +556,8 @@
       "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -554,7 +565,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-herbs"
+        "evidence:reality-batch-01-herbs",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -605,8 +617,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -614,7 +626,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-horse"
+        "evidence:reality-batch-01-horse",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -635,8 +648,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -644,7 +657,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-horse"
+        "evidence:reality-batch-01-horse",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -695,8 +709,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -704,7 +718,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-abrasion"
+        "evidence:reality-batch-01-abrasion",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -755,8 +770,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -764,7 +779,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-soil"
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -785,8 +801,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -794,7 +810,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-soil"
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -815,8 +832,8 @@
       },
       "qualifiers": {
         "typicality": "unknown",
-        "confidence": "high",
-        "directness": "direct"
+        "confidence": "medium",
+        "directness": "editorial"
       },
       "knowledge_access": {
         "class": "domain_internal_only",
@@ -824,7 +841,8 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:reality-batch-01-soil"
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
       ],
       "review_status": "approved",
       "conflict_group_ref": null

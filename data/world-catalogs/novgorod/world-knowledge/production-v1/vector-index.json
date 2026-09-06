@@ -5456,6 +5456,762 @@
       "retrieval_text": "Очистка волокон прядильных растений Чесало могло удалять остатки кострики с волокон прядильных растений. Кудряшов описывает ручное и стационарное чесала из слоёв Луковца середины XII и XI веков; совместимость с Новгородской землёй 1100–1300 годов выводится. Это не отождествляет всякий гребень с чесалом и не устанавливает конкретное волокно, обязательную последовательность, готовность к прядению, наличный инструмент, доступ, умение или результат."
     },
     {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods:en",
+      "target_ref": "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. American basswood (Tilia americana) bast can source flexible goods such as cordage, mats, nets, or baskets. It supplies no method, strength, or local practice. linden bast conifer in winter wet bank tree basswood rope bast net bast mat"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods:ru",
+      "target_ref": "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. Волокнистый луб американской липы (Tilia americana) может быть материалом для гибких вещей: бечёвки, мата, сети или корзины. Это не задаёт технологию, прочность или местную практику. липа луб хвойное зимой дерево на сыром берегу верёвка из липы лубяная сеть лубяной мат"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark:en",
+      "target_ref": "claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. American basswood bast properties do not establish the same fibre quality or use for unidentified tree bark. linden bast conifer in winter wet bank tree other tree bark bark fibre unknown tree"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark:ru",
+      "target_ref": "claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. Волокнистый луб американской липы не доказывает такое же волокно или применение для коры неопределённого дерева. липа луб хвойное зимой дерево на сыром берегу кора не липы волокно из коры неизвестное дерево"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material:en",
+      "target_ref": "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. American basswood (Tilia americana) inner bark is fibrous bast distinct from outer bark and wood. This creates no tree, harvest, or finished cordage. linden bast conifer in winter wet bank tree basswood bast inner bark basswood fibre"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material:ru",
+      "target_ref": "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. Внутренняя кора американской липы (basswood, Tilia americana) — волокнистый луб, отличный от внешней коры и древесины. Это не создаёт дерево, заготовку или готовую бечёвку. липа луб хвойное зимой дерево на сыром берегу луб липы внутренняя кора липовое волокно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-channel-flow-can-transport-large-woody-debris:en",
+      "target_ref": "claim:final-nature-channel-flow-can-transport-large-woody-debris",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Channel flow can transport large woody debris such as logs and branches. It creates no particular item, obstacle, or velocity. bank after thaw log by river river debris log in current branches in river woody debris"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-channel-flow-can-transport-large-woody-debris:ru",
+      "target_ref": "claim:final-nature-channel-flow-can-transport-large-woody-debris",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Течение русла может переносить крупный древесный нанос: брёвна и ветви. Это не создаёт конкретный предмет, преграду или скорость воды. берег после оттепели бревно у реки нанос на берегу бревно несёт течением ветки в реке древесный нанос"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers:en",
+      "target_ref": "claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. Deciduous trees have seasonal leaf states while evergreen conifers retain needles; one foliage state cannot describe every tree. linden bast conifer in winter wet bank tree deciduous winter conifer needles leaves in spring"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers:ru",
+      "target_ref": "claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. У лиственных деревьев состояние листвы меняется по сезонам, а вечнозелёные хвойные сохраняют хвою; нельзя описывать все деревья одной сезонной листвой. липа луб хвойное зимой дерево на сыром берегу лиственное дерево зимой хвоя зимой листья весной"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris:en",
+      "target_ref": "claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Aquatic herb forms Rooted aquatic herbs with floating or emergent leaves. A floating-leaved aquatic plant can be rooted below water; surface vegetation is not necessarily free-floating debris. leaves on water rhizome in mud aquatic herb floating leaves water lily roots plant on water"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris:ru",
+      "target_ref": "claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Формы водных трав Укоренённые водные травы с плавающими и надводными листьями. Водное растение с плавающими листьями может быть укоренено под водой; растительность на поверхности не обязательно является свободным наносом. листья на воде корневище в иле водная трава плавающие листья кувшинка корни растение на воде"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability:en",
+      "target_ref": "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Repeated freeze-thaw can break bank soil apart and leave it more vulnerable to erosion after thaw. It predicts no collapse, passage, or load limit. bank after thaw log by river river debris frozen ground bank erosion"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability:ru",
+      "target_ref": "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Повторное промерзание и оттаивание могут разрушать грунт берега и делать его более уязвимым к размыву после оттепели. Это не предсказывает обвал, проходимость или допустимую нагрузку. берег после оттепели бревно у реки нанос на берегу промерзший грунт размыв берега"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike:en",
+      "target_ref": "claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-plant identification limits Resemblance does not establish plant identity, edibility, or safe part. A known food use for one identified plant or part does not transfer to an unidentified specimen, another part, or a lookalike. looks edible wild plant safe poison hemlock other plant part similar berry unknown specimen"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike:ru",
+      "target_ref": "claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения определения диких растений Сходство растения не доказывает вид, съедобность или безопасную часть. Известное пищевое употребление одного определённого растения или его части не переносится на неизвестный образец, другую часть либо похожее растение без дополнительных данных. похоже на съедобное дикая трава съедобна болиголов другая часть растения похожая ягода неизвестный образец"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport:en",
+      "target_ref": "claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Transported large woody debris can be deposited or stranded in a channel or margin. It proves no arrival time, stability, or passage. bank after thaw log by river river debris stranded log bank debris wood in channel"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport:ru",
+      "target_ref": "claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Перенесённый крупный древесный нанос может отложиться или застрять в русле либо у берега. Это не говорит, когда он пришёл, устойчив ли он и можно ли пройти. берег после оттепели бревно у реки нанос на берегу бревно застряло нанос у берега дерево в русле"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility:en",
+      "target_ref": "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-plant identification limits Resemblance does not establish plant identity, edibility, or safe part. Because a toxic plant can be confused with edible relatives, resemblance or a vernacular description alone does not establish identity or edibility. looks edible wild plant safe poison hemlock unknown wild plant plant lookalike"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility:ru",
+      "target_ref": "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения определения диких растений Сходство растения не доказывает вид, съедобность или безопасную часть. Поскольку ядовитое растение можно спутать со съедобными родственниками, одного сходства или народного описания недостаточно для определения вида и съедобности неизвестного растения. похоже на съедобное дикая трава съедобна болиголов неизвестная трава растение двойник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food:en",
+      "target_ref": "claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-plant identification limits Resemblance does not establish plant identity, edibility, or safe part. Poison hemlock is toxic and its parts are not food. This establishes no scene presence or poisoning. looks edible wild plant safe poison hemlock poison hemlock toxic toxic apiaceae hemlock parts"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food:ru",
+      "target_ref": "claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения определения диких растений Сходство растения не доказывает вид, съедобность или безопасную часть. Болиголов пятнистый — ядовитое растение, части которого не являются пищей. Это не доказывает его наличие в сцене или отравление. похоже на съедобное дикая трава съедобна болиголов болиголов ядовит ядовитая зонтичная трава части болиголова"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy:en",
+      "target_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Riparian vegetation and organic debris can slow floodwater and dissipate stream energy. This proves no stable or passable bank. bank after thaw log by river river debris bank vegetation flow debris slows water floodplain plants"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy:ru",
+      "target_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Прибрежная растительность и органический нанос могут замедлять паводковую воду и рассеивать энергию потока. Это не доказывает устойчивый или проходимый берег. берег после оттепели бревно у реки нанос на берегу кусты у берега течение нанос тормозит воду растительность паводок"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves:en",
+      "target_ref": "claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Aquatic herb forms Rooted aquatic herbs with floating or emergent leaves. A rooted rhizomatous aquatic herb can be anchored in substrate while leaves float or emerge. This identifies no plant, depth, or access. leaves on water rhizome in mud aquatic herb"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves:ru",
+      "target_ref": "claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Формы водных трав Укоренённые водные травы с плавающими и надводными листьями. Укоренённая водная трава с корневищем может держаться в грунте, а листья — плавать на воде или подниматься над ней. Это не определяет растение, глубину или доступность. листья на воде корневище в иле водная трава"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts:en",
+      "target_ref": "claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Aquatic herb forms Rooted aquatic herbs with floating or emergent leaves. A rooted aquatic plant can have distinct submerged and surface parts; one visible part does not show the condition or extent of the whole plant. leaves on water rhizome in mud aquatic herb submerged plant parts water lily roots plant in mud"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts:ru",
+      "target_ref": "claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Формы водных трав Укоренённые водные травы с плавающими и надводными листьями. Укоренённое водное растение может иметь разные подводные и поверхностные части; видимая часть не показывает состояние или протяжённость всего растения. листья на воде корневище в иле водная трава подводные части растения корни кувшинки растение в иле"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition:en",
+      "target_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Where vegetation or debris slows floodwater, sediment can be deposited. This establishes no depth, age, or safe footing. bank after thaw log by river river debris bank sediment mud after flood deposition in shrubs"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition:ru",
+      "target_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Там, где растительность или органический нанос замедляют паводковую воду, может откладываться осадок. Это не устанавливает его глубину, возраст или прочность под ногами. берег после оттепели бревно у реки нанос на берегу нанос у берега ил после паводка осадок в кустах"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state:en",
+      "target_ref": "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Freeze-thaw and water can affect soil detachment; thawed wet ground warrants erosion caution but supplies no bearing capacity. bank after thaw log by river river debris wet thawed soil bank after frost soil detaches"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state:ru",
+      "target_ref": "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Промерзание, оттаивание и вода могут менять отделение грунта; оттаявший влажный грунт требует осторожности к размыву, но не задаёт несущую способность. берег после оттепели бревно у реки нанос на берегу мокрый грунт после мороза оттаявший берег грунт осыпается"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context:en",
+      "target_ref": "claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. Woody plants at wet riparian sites can differ from drier upland context; woodland alone does not identify a tree or shrub. linden bast conifer in winter wet bank tree alder by water dry upland tree bank shrub"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context:ru",
+      "target_ref": "claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. Древесные растения влажных берегов могут отличаться от растений сухих возвышенностей; один факт леса не называет вид дерева или кустарника. липа луб хвойное зимой дерево на сыром берегу ольха у воды дерево на сухом месте кустарник берег"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage:en",
+      "target_ref": "claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. Transport and deposition of large wood can change local shore or channel obstacles, without predicting passage, access, or route outcome. bank after thaw log by river river debris bank log obstacle wood blocks path debris obstacle"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage:ru",
+      "target_ref": "claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. Перенос и отложение крупной древесины могут менять местные препятствия у берега или в русле, но не предсказывают проходимость, доступ либо исход маршрута. берег после оттепели бревно у реки нанос на берегу завал у берега бревно мешает пути нанос препятствие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support:en",
+      "target_ref": "claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal support Nondiagnostic observation and support after birth. After an established birth, mother and newborn can need observation, warmth, feeding, and available support. Complication, diagnosis, and outcome are unset. after birth after birth support"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support:ru",
+      "target_ref": "claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовая поддержка Недиагностическое наблюдение и поддержка после рождения. После уже установленного рождения матери и младенцу могут требоваться наблюдение, тепло, кормление и доступная поддержка. Осложнение, диагноз и исход не заданы. после родов после родов мать младенец"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards:en",
+      "target_ref": "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Water-fire limits Fuel-class limits for water cooling and escape. Fire response needs escape and caution around unknown electrical, flammable-liquid, or oil hazards; method and outcome are unset. water fire escape fire"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards:ru",
+      "target_ref": "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Пределы воды при огне Классовые пределы водяного охлаждения и безопасного отхода. Ответ на огонь требует пути отхода и осторожности с неясными электрическими, горючими жидкостями или жировыми опасностями; способ и исход не заданы. вода тушение уйти от огня"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis:en",
+      "target_ref": "claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Uncertain exposure Cautious observational bounds for uncertain toxic or parasite risk. A parasite concern can support hygiene, observation, and contextual help seeking, not proof of parasite, infection, or treatment. unknown exposure parasite concern"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis:ru",
+      "target_ref": "claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неясное воздействие Осторожные пределы наблюдения при неясном токсичном или паразитарном риске. Подозрение на паразита может обосновывать гигиену, наблюдение и поиск помощи по обстоятельствам, но не доказывает паразита, заражение или лечение. неясное отравление подозрение на паразитов"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-postnatal-care-can-share-attention-between-parent-infant-and-household-needs:en",
+      "target_ref": "claim:final-practical-postnatal-care-can-share-attention-between-parent-infant-and-household-needs",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal support Nondiagnostic observation and support after birth. Postnatal care can share attention between parent, infant, warmth, feeding, rest, and household needs. No helper or schedule is created. after birth postnatal household care"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-postnatal-care-can-share-attention-between-parent-infant-and-household-needs:ru",
+      "target_ref": "claim:final-practical-postnatal-care-can-share-attention-between-parent-infant-and-household-needs",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовая поддержка Недиагностическое наблюдение и поддержка после рождения. Послеродовой уход может распределять внимание между родителем, младенцем, теплом, кормлением, отдыхом и домом. Помощник и расписание не создаются. после родов послеродовой уход дом"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access:en",
+      "target_ref": "claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Equipment and repair Carrying, inspection, and conditional repair of present equipment. A present weapon or hand tool needs carrying or placement that balances retention, access, and movement. It sets no owner, skill, or use. inspect weapon carry weapon stow tool"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access:ru",
+      "target_ref": "claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Снаряжение и починка Ношение, осмотр и условная починка наличного снаряжения. Наличное оружие или ручной инструмент требуют надёжного ношения либо размещения, сочетая удержание, доступ и свободу движения. Это не задаёт владельца, умение или применение. осмотреть оружие нести оружие убрать инструмент"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-protective-layers-and-shields-need-fit-and-clearance:en",
+      "target_ref": "claim:final-practical-protective-layers-and-shields-need-fit-and-clearance",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Equipment and repair Carrying, inspection, and conditional repair of present equipment. Present protective layers, shields, or helmets can need fit and clearance for movement, sight, and access. Protection and combat outcome are unset. inspect weapon shield fit adjust helmet"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-protective-layers-and-shields-need-fit-and-clearance:ru",
+      "target_ref": "claim:final-practical-protective-layers-and-shields-need-fit-and-clearance",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Снаряжение и починка Ношение, осмотр и условная починка наличного снаряжения. Наличным защитным слоям, щитам или шлемам могут требоваться подгонка и просвет для движения, зрения и доступа. Защита и исход боя не заданы. осмотреть оружие щит мешает подогнать шлем"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis:en",
+      "target_ref": "claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal support Nondiagnostic observation and support after birth. Severe or worsening postnatal concerns can justify available experienced assessment without diagnosis or treatment. after birth postnatal concern"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis:ru",
+      "target_ref": "claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовая поддержка Недиагностическое наблюдение и поддержка после рождения. Тяжёлые либо нарастающие послеродовые тревоги могут быть поводом искать доступную опытную оценку без диагноза или назначения лечения. после родов тревога после родов"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available:en",
+      "target_ref": "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Storage conditions Moisture inspection and separation of stored goods. Where space and openings exist, separation and air movement can limit interference without guaranteeing drying. damp storage ventilate storage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available:ru",
+      "target_ref": "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Условия хранения Осмотр влажности и разделение хранимых вещей. При доступных месте и проёмах отделение сырого или сомнительного материала и движение воздуха могут уменьшать помехи без гарантии сушки. сырость в хранении проветрить хранение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate:en",
+      "target_ref": "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Storage conditions Moisture inspection and separation of stored goods. Stored-goods condition can change with air moisture and time without fixed rate, cause, or outcome. damp storage"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate:ru",
+      "target_ref": "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Условия хранения Осмотр влажности и разделение хранимых вещей. Состояние уже хранимых вещей может меняться с влажностью воздуха и временем без фиксированной скорости, причины или исхода. сырость в хранении влажное хранение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change:en",
+      "target_ref": "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Storage conditions Moisture inspection and separation of stored goods. Stored organic goods can be checked for moisture, odour, or visible change for cautious handling. Spoilage and loss are not proven. damp storage check stored goods"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change:ru",
+      "target_ref": "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Условия хранения Осмотр влажности и разделение хранимых вещей. Хранимые органические вещи можно проверять на влагу, запах или видимые изменения для осторожного обращения. Порча и потеря не доказаны. сырость в хранении проверить припасы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help:en",
+      "target_ref": "claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Uncertain exposure Cautious observational bounds for uncertain toxic or parasite risk. With available help, uncertain exposure can be described by source, route, timing, and changes without turning observations into diagnosis. unknown exposure describe exposure"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help:ru",
+      "target_ref": "claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неясное воздействие Осторожные пределы наблюдения при неясном токсичном или паразитарном риске. При доступной помощи неясное воздействие можно описать по источнику, пути, времени и изменениям, не превращая наблюдение в диагноз. неясное отравление описать воздействие"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation:en",
+      "target_ref": "claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Uncertain exposure Cautious observational bounds for uncertain toxic or parasite risk. An uncertain observed toxic contact or inhalation context can call for distance from the source and observation. Substance, dose, poisoning, and outcome are unset. unknown exposure unknown substance"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation:ru",
+      "target_ref": "claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неясное воздействие Осторожные пределы наблюдения при неясном токсичном или паразитарном риске. Неясный уже наблюдаемый токсичный контакт или вдыхание может требовать отойти от источника и наблюдать изменения. Вещество, доза, отравление и исход не заданы. неясное отравление неизвестное вещество"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire:en",
+      "target_ref": "claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Water-fire limits Fuel-class limits for water cooling and escape. Water cooling can matter for established ordinary solid-combustible fire, but fuel class needs cautious assessment. It is not every fire. water fire water wood fire"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire:ru",
+      "target_ref": "claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Пределы воды при огне Классовые пределы водяного охлаждения и безопасного отхода. Охлаждение водой уместно для уже установленного огня обычных твёрдых горючих материалов, но класс топлива надо знать или осторожно оценить. Это не любой пожар. вода тушение вода на дерево огонь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area:en",
+      "target_ref": "claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet net and hull Inspection and conditional care of wet gear and boat. Wet-gear or hull care competes for space, time, and dry work area without schedule or result. wet net dry gear"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area:ru",
+      "target_ref": "claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая сеть и корпус Осмотр и условный уход за мокрой снастью и лодкой. Уход за мокрой снастью или корпусом конкурирует за место, время и сухую рабочую площадку без расписания или результата. мокрая сеть сушить снасть"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse:en",
+      "target_ref": "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet net and hull Inspection and conditional care of wet gear and boat. Wet netting or cordage can need inspection, drying, and conditional repair before reuse. No net, owner, or success is created. wet net"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse:ru",
+      "target_ref": "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая сеть и корпус Осмотр и условный уход за мокрой снастью и лодкой. Мокрые сети или снасти могут требовать осмотра, сушки и условной починки перед повторным применением. Сеть, владелец и успех не создаются. мокрая сеть"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel:en",
+      "target_ref": "claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet net and hull Inspection and conditional care of wet gear and boat. A wet wooden hull or boat seam can be inspected locally before repair or travel. Leak, strength, access, and safe voyage are unset. wet net inspect boat seam"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel:ru",
+      "target_ref": "claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая сеть и корпус Осмотр и условный уход за мокрой снастью и лодкой. Мокрый деревянный корпус или шов лодки можно местно осмотреть перед ремонтом либо ходом. Течь, прочность, доступ и безопасный путь не заданы. мокрая сеть осмотреть шов лодки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use:en",
+      "target_ref": "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Equipment and repair Carrying, inspection, and conditional repair of present equipment. Present wood, leather, textile, or metal equipment can be inspected for visible condition before use. Hidden damage and failure are unset. inspect weapon inspect equipment"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use:ru",
+      "target_ref": "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Снаряжение и починка Ношение, осмотр и условная починка наличного снаряжения. Наличное снаряжение из дерева, кожи, ткани или металла можно осмотреть по видимому состоянию перед использованием. Скрытое повреждение и отказ не определяются. осмотреть оружие осмотреть снаряжение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally:en",
+      "target_ref": "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Equipment and repair Carrying, inspection, and conditional repair of present equipment. A visible worn fastening, edge, or covering can be limited, repaired, replaced, or deferred as means allow. Success is not guaranteed. inspect weapon worn fastening"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally:ru",
+      "target_ref": "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Снаряжение и починка Ношение, осмотр и условная починка наличного снаряжения. Видимый износ крепления, края или покрытия можно ограничить, чинить, заменить либо отложить по доступным средствам. Успех не гарантирован. осмотреть оружие изношенное крепление"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-archbishop-role-can-frame-church-and-public-contact:en",
+      "target_ref": "claim:final-social-archbishop-role-can-frame-church-and-public-contact",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. An already identified archbishop role can frame church and public contact or referral. It creates no cleric, jurisdiction, resources, rite, authority over a person, or result. veche posadnik tysyatsky archbishop prince Novgorod end church contact public matter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-archbishop-role-can-frame-church-and-public-contact:ru",
+      "target_ref": "claim:final-social-archbishop-role-can-frame-church-and-public-contact",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. Уже названная роль архиепископа может задавать контекст церковного и публичного обращения либо перенаправления. Она не создаёт духовное лицо, юрисдикцию, средства, обряд, власть над человеком или итог. вече посадник тысяцкий архиепископ князь конец церковное обращение публичное дело"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry:en",
+      "target_ref": "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Possession, custody and return inquiry Bounded distinction among holding, custody, claimed title, and inquiry into an object's connection. With competing accounts of an object, known transfer, custody, marking, witness, or message context can be compared. This guides inquiry but proves neither title, truth, nor a required return. found object return property holds another's thing whose item property dispute item marking transfer witness"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry:ru",
+      "target_ref": "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Владение, хранение и возврат вещи Осторожное различение фактического держания, хранения, притязания и проверки происхождения вещи. При спорных рассказах о вещи можно сопоставить известный переход, хранение, метку, свидетеля или сообщение. Это направляет проверку, но не доказывает право, правду или обязательный возврат. нашёл вещь вернуть находку держит чужое чья вещь спор о вещи метка на вещи свидетель передачи"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-established-observance-can-change-food-time-and-visiting-context:en",
+      "target_ref": "claim:final-social-established-observance-can-change-food-time-and-visiting-context",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary religious life Conditional service, fast, feast, and household-church context without assigning a rite. An established feast, fast, commemoration, or service can change food preparation, visiting, and shared time. It supplies no date, obligation, menu, attendance, or observance outcome. service fast feast church and household fast food feast visit commemoration"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-established-observance-can-change-food-time-and-visiting-context:ru",
+      "target_ref": "claim:final-social-established-observance-can-change-food-time-and-visiting-context",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычный религиозный быт Условный контекст службы, поста, праздника и контакта дома с церковью без назначения обряда. Уже установленный праздник, пост, поминовение или служба могут менять приготовление пищи, визиты и общее время. Дата, обязанность, еда, посещение и итог соблюдения не задаются. служба пост праздник церковь и дом постная еда праздничный визит поминовение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition:en",
+      "target_ref": "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Possession, custody and return inquiry Bounded distinction among holding, custody, claimed title, and inquiry into an object's connection. Finding an established object can leave its prior connection unknown and start a return or provenance inquiry; finding alone does not make it ownerless, acquired, or stolen. found object return property holds another's thing whose item return found item abandoned thing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition:ru",
+      "target_ref": "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Владение, хранение и возврат вещи Осторожное различение фактического держания, хранения, притязания и проверки происхождения вещи. Находка уже известной вещи оставляет её прежнюю связь неизвестной и может начать проверку происхождения или возврата; сама находка не делает вещь ничьей, своей или украденной. нашёл вещь вернуть находку держит чужое чья вещь брошенная вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-holding-or-custody-does-not-by-itself-establish-title:en",
+      "target_ref": "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Possession, custody and return inquiry Bounded distinction among holding, custody, claimed title, and inquiry into an object's connection. Physical holding or agreed custody of an established thing can differ from a claim of title; possession alone does not settle ownership or a right to keep it. found object return property holds another's thing whose item holds another's item custody claim of title"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-holding-or-custody-does-not-by-itself-establish-title:ru",
+      "target_ref": "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Владение, хранение и возврат вещи Осторожное различение фактического держания, хранения, притязания и проверки происхождения вещи. Фактическое держание или согласованное хранение уже известной вещи может отличаться от притязания на неё: само владение в руках не решает, кому она принадлежит и можно ли её оставить. нашёл вещь вернуть находку держит чужое чья вещь держит чужую вещь хранит вещь право на вещь"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes:en",
+      "target_ref": "claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary religious life Conditional service, fast, feast, and household-church context without assigning a rite. An established household-church contact can concern prayer, message, care, request, offering, or visit. It proves neither belief, authority, access, entitlement, nor a religious result. service fast feast church and household household and church ask a priest church offering"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes:ru",
+      "target_ref": "claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычный религиозный быт Условный контекст службы, поста, праздника и контакта дома с церковью без назначения обряда. Уже известный контакт дома с церковью может касаться молитвы, сообщения, заботы, просьбы, дара или визита. Он не доказывает веру, власть, доступ, право или религиозный итог. служба пост праздник церковь и дом дом и церковь просьба священнику дар церкви"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-household-water-use-depends-on-access-vessels-and-labour:en",
+      "target_ref": "claim:final-social-household-water-use-depends-on-access-vessels-and-labour",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household water and waste Water access, carrying, washing, waste separation, and drainage without asserting environmental state. Household water use depends on an available access point, vessel, and labour: carrying, washing, cooking, and cleaning compete for access, time, and effort. It creates no water or source. carry water wash at home waste drainage water vessel cooking water"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-household-water-use-depends-on-access-vessels-and-labour:ru",
+      "target_ref": "claim:final-social-household-water-use-depends-on-access-vessels-and-labour",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Домашняя вода и отходы Доступ к воде, перенос, мытьё, раздельные пути отходов и стока без утверждения состояния среды. Домашняя вода требует уже доступного места набора, тары и труда: перенос, мытьё, готовка и уборка конкурируют за доступ, время и усилия. Вода и источник этим не создаются. принести воду мыть в доме отходы сток ведро воды вода для готовки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-independent-accounts-can-corroborate-without-proving-truth:en",
+      "target_ref": "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Observation, retelling and corroboration Limits of perception, memory, retelling, and comparison of independent accounts. Independent observations, messages, or material traces can be compared for corroboration. Agreement or disagreement alone proves neither what happened nor credibility. who saw rumour retelling compare accounts independent witness corroborate rumour"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-independent-accounts-can-corroborate-without-proving-truth:ru",
+      "target_ref": "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение, пересказ и проверка сведений Пределы восприятия, памяти, пересказа и сопоставления независимых сведений. Независимые наблюдения, сообщения или вещественные следы можно сопоставить для проверки совпадений. Совпадение либо расхождение само по себе не доказывает случившееся и не задаёт доверия. кто видел слух пересказ сверить показания сверить рассказы независимый свидетель подтвердить слух"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination:en",
+      "target_ref": "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. An already identified Novgorod end can frame neighbourhood affiliation and local coordination. Its boundary, membership, representation, authority, duty, and collective outcome are not set. veche posadnik tysyatsky archbishop prince Novgorod end neighbours local coordination"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination:ru",
+      "target_ref": "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. Уже названный новгородский конец может задавать контекст соседской принадлежности и местного согласования. Его граница, состав, представительство, власть, обязанность и общий итог не задаются. вече посадник тысяцкий архиепископ князь конец конец Новгорода соседи местное согласование"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-observation-is-bounded-by-position-conditions-and-attention:en",
+      "target_ref": "claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Observation, retelling and corroboration Limits of perception, memory, retelling, and comparison of independent accounts. What an observer can later report depends on position, light, noise, duration, obstruction, and attention. This makes no particular observation accurate or complete. who saw rumour retelling compare accounts what a witness saw poor light could not hear"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-observation-is-bounded-by-position-conditions-and-attention:ru",
+      "target_ref": "claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение, пересказ и проверка сведений Пределы восприятия, памяти, пересказа и сопоставления независимых сведений. То, что наблюдатель потом может сообщить, зависит от положения, света, шума, длительности, помех и внимания. Это не делает конкретное наблюдение точным или полным. кто видел слух пересказ сверить показания что видел свидетель плохой свет не расслышал"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-posadnik-role-can-frame-civic-administrative-contact:en",
+      "target_ref": "claim:final-social-posadnik-role-can-frame-civic-administrative-contact",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. An already identified posadnik role can frame civic or administrative contact and referral. It creates no officeholder, power, jurisdiction, document, command, or decision. veche posadnik tysyatsky archbishop prince Novgorod end contact posadnik civic matter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-posadnik-role-can-frame-civic-administrative-contact:ru",
+      "target_ref": "claim:final-social-posadnik-role-can-frame-civic-administrative-contact",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. Уже названная роль посадника может задавать контекст гражданского или административного обращения и перенаправления. Она не создаёт должностное лицо, власть, юрисдикцию, документ, приказ или решение. вече посадник тысяцкий архиепископ князь конец обращение к посаднику городское дело"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-prince-role-can-frame-external-or-command-contact:en",
+      "target_ref": "claim:final-social-prince-role-can-frame-external-or-command-contact",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. An already identified prince role can frame external-relations or command contact and referral. It creates no prince, force, territory, jurisdiction, treaty, levy, duty, or result. veche posadnik tysyatsky archbishop prince Novgorod end external matter command contact"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-prince-role-can-frame-external-or-command-contact:ru",
+      "target_ref": "claim:final-social-prince-role-can-frame-external-or-command-contact",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. Уже названная роль князя может задавать контекст внешнего дела, командного обращения или перенаправления. Князь, сила, территория, юрисдикция, договор, сбор, обязанность и итог не создаются. вече посадник тысяцкий архиепископ князь конец внешнее дело военное обращение"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor:en",
+      "target_ref": "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary religious life Conditional service, fast, feast, and household-church context without assigning a rite. When a service or visit is already occurring, cleric, worker, and visitor roles can differ in attention to space, movement, speech, and care. This assigns no rank, skill, belief, or rite. service fast feast church and household cleric at service service visitor church worker"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor:ru",
+      "target_ref": "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычный религиозный быт Условный контекст службы, поста, праздника и контакта дома с церковью без назначения обряда. Если служба или посещение уже происходят, служитель, работник и посетитель могут по-разному следить за пространством, движением, речью и уходом. Это не назначает человеку сан, умение, веру или обряд. служба пост праздник церковь и дом служитель в церкви посетитель службы церковный работник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-retelling-can-preserve-or-change-source-and-detail:en",
+      "target_ref": "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Observation, retelling and corroboration Limits of perception, memory, retelling, and comparison of independent accounts. A retelling can distinguish or blur what was observed, heard, inferred, or later remembered; detail can be preserved or changed. This proves neither deceit nor truth. who saw rumour retelling compare accounts unclear memory"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-retelling-can-preserve-or-change-source-and-detail:ru",
+      "target_ref": "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение, пересказ и проверка сведений Пределы восприятия, памяти, пересказа и сопоставления независимых сведений. Пересказ может различать или смешивать увиденное, услышанное, вывод и позднее воспоминание; детали могут сохраниться или измениться. Это не доказывает обман или истинность. кто видел слух пересказ сверить показания помнит неясно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact:en",
+      "target_ref": "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household water and waste Water access, carrying, washing, waste separation, and drainage without asserting environmental state. Where space and means allow, waste can be kept apart from water collection, food, and frequent passage, limiting direct contact. Drainage, weather, and later handling can change conditions without establishing contamination or illness. carry water wash at home waste drainage waste near water separate waste"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact:ru",
+      "target_ref": "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Домашняя вода и отходы Доступ к воде, перенос, мытьё, раздельные пути отходов и стока без утверждения состояния среды. Где позволяют место и средства, отходы можно держать в стороне от набора воды, пищи и частого прохода, уменьшая прямой контакт. Сток, погода и дальнейшее обращение меняют условия, но загрязнение и болезнь не устанавливаются. принести воду мыть в доме отходы сток отходы у воды держать отходы отдельно"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact:en",
+      "target_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. An already identified tysyatsky role can frame public contact and referral about urban, military, or trade matters. It creates no command, market authority, jurisdiction, levy, duty, or result. veche posadnik tysyatsky archbishop prince Novgorod end military matter trade matter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact:ru",
+      "target_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. Уже названная роль тысяцкого может задавать контекст публичного обращения о городском, военном или торговом деле и перенаправления. Власть, рынок, юрисдикция, сбор, обязанность и итог не создаются. вече посадник тысяцкий архиепископ князь конец военное дело торговое дело"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-veche-can-provide-bounded-public-deliberation-interface:en",
+      "target_ref": "claim:final-social-veche-can-provide-bounded-public-deliberation-interface",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. Where a veche or recognized public gathering is already established, people can bring a matter, hear accounts, or seek collective attention. Membership, competence, jurisdiction, decision, and outcome are not set. veche posadnik tysyatsky archbishop prince Novgorod end town gathering bring a matter"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-veche-can-provide-bounded-public-deliberation-interface:ru",
+      "target_ref": "claim:final-social-veche-can-provide-bounded-public-deliberation-interface",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. При уже известном вече или признанном публичном собрании можно вынести вопрос, выслушать рассказы или искать общее внимание. Состав, компетенция, юрисдикция, решение и итог не задаются. вече посадник тысяцкий архиепископ князь конец собрание горожан вынести вопрос"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-washing-and-drying-can-change-visible-household-soil:en",
+      "target_ref": "claim:final-social-washing-and-drying-can-change-visible-household-soil",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household water and waste Water access, carrying, washing, waste separation, and drainage without asserting environmental state. Washing an established person, object, or surface can remove or move visible soil; wetness then changes with time, air, heat, and handling. Cleanliness and safety are not guaranteed. carry water wash at home waste drainage wash soil wet item dry after washing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-social-washing-and-drying-can-change-visible-household-soil:ru",
+      "target_ref": "claim:final-social-washing-and-drying-can-change-visible-household-soil",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Домашняя вода и отходы Доступ к воде, перенос, мытьё, раздельные пути отходов и стока без утверждения состояния среды. Мытьё уже имеющегося человека, вещи или поверхности может убрать либо перенести видимую грязь; затем сырость меняется от времени, воздуха, тепла и обращения. Чистота и безопасность не гарантируются. принести воду мыть в доме отходы сток мыть грязь мокрая вещь сушить после мытья"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability:en",
       "target_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
       "domain": "physics_material_science",
@@ -21500,6 +22256,20 @@
       "retrieval_text": "Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов Раскопки средневекового Новгорода фиксируют сооружения и архитектурные детали домов; конкретный план, дата, материал и присутствие здания требуют локального основания."
     },
     {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:final-practical-storage-conditions:en",
+      "target_ref": "wk:architecture_settlement:final-practical-storage-conditions",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Storage conditions Moisture inspection and separation of stored goods. damp storage"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:final-practical-storage-conditions:ru",
+      "target_ref": "wk:architecture_settlement:final-practical-storage-conditions",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Условия хранения Осмотр влажности и разделение хранимых вещей. сырость в хранении"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:fishing-workspace:en",
       "target_ref": "wk:architecture_settlement:fishing-workspace",
       "domain": "architecture_settlement",
@@ -21680,6 +22450,20 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. дом внутри очаг и дым сырой пол"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-household-water-and-waste-context:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Household water and waste Water access, carrying, washing, waste separation, and drainage without asserting environmental state. carry water wash at home waste drainage"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-household-water-and-waste-context:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Домашняя вода и отходы Доступ к воде, перенос, мытьё, раздельные пути отходов и стока без утверждения состояния среды. принести воду мыть в доме отходы сток"
     },
     {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-military-defence-emergency-work:en",
@@ -23388,6 +24172,48 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Брожение Микробное превращение субстрата зависит от условий."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-nature-wild-plant-identification-limits:en",
+      "target_ref": "wk:biology_physiology:final-nature-wild-plant-identification-limits",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Wild-plant identification limits Resemblance does not establish plant identity, edibility, or safe part. looks edible wild plant safe poison hemlock"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-nature-wild-plant-identification-limits:ru",
+      "target_ref": "wk:biology_physiology:final-nature-wild-plant-identification-limits",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Ограничения определения диких растений Сходство растения не доказывает вид, съедобность или безопасную часть. похоже на съедобное дикая трава съедобна болиголов"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-practical-postnatal-support:en",
+      "target_ref": "wk:biology_physiology:final-practical-postnatal-support",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Postnatal support Nondiagnostic observation and support after birth. after birth"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-practical-postnatal-support:ru",
+      "target_ref": "wk:biology_physiology:final-practical-postnatal-support",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Послеродовая поддержка Недиагностическое наблюдение и поддержка после рождения. после родов"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-practical-uncertain-exposure:en",
+      "target_ref": "wk:biology_physiology:final-practical-uncertain-exposure",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Uncertain exposure Cautious observational bounds for uncertain toxic or parasite risk. unknown exposure"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-practical-uncertain-exposure:ru",
+      "target_ref": "wk:biology_physiology:final-practical-uncertain-exposure",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Неясное воздействие Осторожные пределы наблюдения при неясном токсичном или паразитарном риске. неясное отравление"
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:flayed-skin-preservation:en",
@@ -26498,6 +27324,34 @@
       "retrieval_text": "Электромагнитный двигатель непрерывного вращения электродвигатель электрический мотор"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-practical-arms-and-repair:en",
+      "target_ref": "wk:craft_technology:final-practical-arms-and-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Equipment and repair Carrying, inspection, and conditional repair of present equipment. inspect weapon"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-practical-arms-and-repair:ru",
+      "target_ref": "wk:craft_technology:final-practical-arms-and-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Снаряжение и починка Ношение, осмотр и условная починка наличного снаряжения. осмотреть оружие"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-practical-wet-net-and-hull:en",
+      "target_ref": "wk:craft_technology:final-practical-wet-net-and-hull",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet net and hull Inspection and conditional care of wet gear and boat. wet net"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-practical-wet-net-and-hull:ru",
+      "target_ref": "wk:craft_technology:final-practical-wet-net-and-hull",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Мокрая сеть и корпус Осмотр и условный уход за мокрой снастью и лодкой. мокрая сеть"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:fire-ignition:en",
       "target_ref": "wk:craft_technology:fire-ignition",
       "domain": "craft_technology",
@@ -27504,6 +28358,48 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Свиньи в средневековых находках"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-aquatic-herb-forms:en",
+      "target_ref": "wk:environment:final-nature-aquatic-herb-forms",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Aquatic herb forms Rooted aquatic herbs with floating or emergent leaves. leaves on water rhizome in mud aquatic herb"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-aquatic-herb-forms:ru",
+      "target_ref": "wk:environment:final-nature-aquatic-herb-forms",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Формы водных трав Укоренённые водные травы с плавающими и надводными листьями. листья на воде корневище в иле водная трава"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-bank-and-riparian-processes:en",
+      "target_ref": "wk:environment:final-nature-bank-and-riparian-processes",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Bank, thaw, and riparian debris Qualitative relations among thaw, banks, flow, vegetation, and woody debris. bank after thaw log by river river debris"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-bank-and-riparian-processes:ru",
+      "target_ref": "wk:environment:final-nature-bank-and-riparian-processes",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Берег, промерзание и речной нанос Качественные связи промерзания, берега, течения, растительности и древесного наноса. берег после оттепели бревно у реки нанос на берегу"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-tree-and-bast-context:en",
+      "target_ref": "wk:environment:final-nature-tree-and-bast-context",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Trees and bast fibre Seasonal and habitat differences in trees and linden bast as fibrous inner bark. linden bast conifer in winter wet bank tree"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-nature-tree-and-bast-context:ru",
+      "target_ref": "wk:environment:final-nature-tree-and-bast-context",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. липа луб хвойное зимой дерево на сыром берегу"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:flax-hemp-cultivation:en",
@@ -31412,6 +32308,20 @@
       "retrieval_text": "Скручивание текстильных волокон Общая способность текстильных волокон скручиваться в пряжу; не рецепт подготовки и не гарантированный результат."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:final-practical-water-fire-limits:en",
+      "target_ref": "wk:physics_material_science:final-practical-water-fire-limits",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Water-fire limits Fuel-class limits for water cooling and escape. water fire"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:final-practical-water-fire-limits:ru",
+      "target_ref": "wk:physics_material_science:final-practical-water-fire-limits",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Пределы воды при огне Классовые пределы водяного охлаждения и безопасного отхода. вода тушение"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:fishing-net-serviceability:en",
       "target_ref": "wk:physics_material_science:fishing-net-serviceability",
       "domain": "physics_material_science",
@@ -32966,6 +33876,20 @@
       "retrieval_text": "Экспериментальные механизмы внимания, памяти и стресса Экспериментальные результаты о внимании, памяти, фрустрации и остром стрессе действуют только в описанных условиях."
     },
     {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:reconstructed-information-provenance-limits:en",
+      "target_ref": "wk:psychology_behavior:reconstructed-information-provenance-limits",
+      "domain": "psychology_behavior",
+      "locale": "en",
+      "retrieval_text": "Observation, retelling and corroboration Limits of perception, memory, retelling, and comparison of independent accounts. who saw rumour retelling compare accounts"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:psychology_behavior:reconstructed-information-provenance-limits:ru",
+      "target_ref": "wk:psychology_behavior:reconstructed-information-provenance-limits",
+      "domain": "psychology_behavior",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение, пересказ и проверка сведений Пределы восприятия, памяти, пересказа и сопоставления независимых сведений. кто видел слух пересказ сверить показания"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:psychology_behavior:research-memory-postevent-misinformation:en",
       "target_ref": "wk:psychology_behavior:research-memory-postevent-misinformation",
       "domain": "psychology_behavior",
@@ -33258,6 +34182,20 @@
       "domain": "social_behavior",
       "locale": "ru",
       "retrieval_text": "Обычные социальные отношения"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-ordinary-religious-life:en",
+      "target_ref": "wk:social_behavior:reconstructed-ordinary-religious-life",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Ordinary religious life Conditional service, fast, feast, and household-church context without assigning a rite. service fast feast church and household"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-ordinary-religious-life:ru",
+      "target_ref": "wk:social_behavior:reconstructed-ordinary-religious-life",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Обычный религиозный быт Условный контекст службы, поста, праздника и контакта дома с церковью без назначения обряда. служба пост праздник церковь и дом"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-recreation-oral-culture:en",
@@ -34408,6 +35346,20 @@
       "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека."
     },
     {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-novgorod-institutional-interfaces:en",
+      "target_ref": "wk:social_law_economy:reconstructed-novgorod-institutional-interfaces",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Novgorod institutional interfaces Bounded role-to-interface context for veche, posadnik, tysyatsky, archbishop, prince, and an end. veche posadnik tysyatsky archbishop prince Novgorod end"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-novgorod-institutional-interfaces:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-novgorod-institutional-interfaces",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Новгородские институциональные интерфейсы Осторожный role-to-interface контекст веча, посадника, тысяцкого, архиепископа, князя и конца. вече посадник тысяцкий архиепископ князь конец"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-political-communication-records:en",
       "target_ref": "wk:social_law_economy:reconstructed-political-communication-records",
       "domain": "social_law_economy",
@@ -34420,6 +35372,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "политическое сообщение и запись Редакторские boundaries для установленного политического сообщения и attributed account в записи. посольство письменное сообщение"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-possession-and-return-inquiry:en",
+      "target_ref": "wk:social_law_economy:reconstructed-possession-and-return-inquiry",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Possession, custody and return inquiry Bounded distinction among holding, custody, claimed title, and inquiry into an object's connection. found object return property holds another's thing whose item"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-possession-and-return-inquiry:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-possession-and-return-inquiry",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Владение, хранение и возврат вещи Осторожное различение фактического держания, хранения, притязания и проверки происхождения вещи. нашёл вещь вернуть находку держит чужое чья вещь"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-public-dispute-and-language:en",

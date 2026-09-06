@@ -220,6 +220,12 @@
     "macro-batch21-gap-closure-v1.json",
     "verification-macro-batch21-gap-closure-v1.json",
     "trade-economy-gap-closure-v1.json",
-    "verification-trade-economy-gap-closure-v1.json"
+    "verification-trade-economy-gap-closure-v1.json",
+    "final-nature-gap-closure-v1.json",
+    "verification-final-nature-gap-closure-v1.json",
+    "final-social-gap-closure-v1.json",
+    "verification-final-social-gap-closure-v1.json",
+    "final-practical-gap-closure-v1.json",
+    "verification-final-practical-gap-closure-v1.json"
   ]
 }

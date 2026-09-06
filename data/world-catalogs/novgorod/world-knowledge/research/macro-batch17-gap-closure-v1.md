@@ -10,7 +10,7 @@ substance, dye recipe, person, diagnosis, availability of help, or outcome.
 
 North Dakota State University Extension describes excessive moisture as the
 main cause of hay fires: high-moisture stored hay can heat, develop a musty or
-caramel smell, and in severe cases smoulder or ignite.  Its immediate safety
+caramel smell, and in severe cases smoulder or burn.  Its immediate safety
 advice is deliberately reduced here to the transferable minimum: do not pull
 apart a suspected hot or smoking mass, keep people and animals clear, and seek
 available fire assistance.  No moisture, temperature, storage method, timing,

@@ -1,0 +1,235 @@
+{
+  "schema": "wk_military_first_offline_review_v1",
+  "batch_id": "military-batch-01",
+  "reviewer_agent_identity": "/root/military01_wk_b",
+  "input_commit": "b67287b3",
+  "corpus_claim_count": 1414,
+  "method": "Independent WK-only reconstruction of controlled cases 026--050. Given people and equipment are not extended; exact combat mechanics, force state, outcomes, authority, and ungrounded historical detail are excluded. A substantial gap is recorded only where the central need cannot be answered without such invention.",
+  "cases": [
+    {
+      "case_id": "military01-core-026",
+      "verdict": "substantial_gap",
+      "scene_ru": "На мокрой лесной дороге колёса, копыта и ноги уже используют более твёрдую полосу, а лужи и колеи сужают проход у ветви. Мешки, телега, верёвка и оружие даны сценой; их масса и пригодность к проходу не становятся неограниченными.",
+      "interaction_ru": "Руководитель может остановить группу, осмотреть колею и переносить доступный груз по частям, не выдавая это за готовый строевой порядок. Более влажный грунт хуже переносит нагрузку и допускает колею; длительная напряжённая работа ограничивается усталостью.",
+      "variation_ru": "Новый дождь и следующее движение меняют грунт, а прочность конкретной верёвки, телеги и упряжи не задана. WK не сообщает, как смешанная военная колонна распределяет людей, охрану и груз в таком сужении.",
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-outdoors-traffic-wet-ground-and-ruts", "claim:work-intensity-duration"],
+      "gaps": ["field-column-order-and-load-passage: grounded rules for spacing, escort placement, cart/pack sequence, and re-forming a mixed moving column at a constrained muddy passage"]
+    },
+    {
+      "case_id": "military01-core-027",
+      "verdict": "substantial_gap",
+      "scene_ru": "У края луга группа видит более сухой подъём и мокрую низину у ручья; заданные огонь, котёл, привязи и животные требуют отдельных мест, а не одной автоматически безопасной площадки. Сумерки, усталость и влажное топливо ограничивают работу.",
+      "interaction_ru": "Можно выбрать доступный участок, держать проход к воде свободным и наблюдать за огнём и привязью, не объявляя воду чистой, костёр безопасным или животных спокойными. Условия труда и пространство меняются с погодой и текущим занятием.",
+      "variation_ru": "Ночной дождь, ветер, число людей и фактическая вода изменят лагерь. WK не даёт связанной модели размещения полевого лагеря, отходов, водопоя, огня, животных и дозора.",
+      "claim_refs": ["claim:place-outdoors-microterrain-patches", "claim:place-outdoors-season-work-space-reallocation", "claim:work-intensity-duration"],
+      "gaps": ["temporary-field-camp-layout-and-sanitation: separation and practical management of sleeping, fire, water, animal, waste, and watch areas"]
+    },
+    {
+      "case_id": "military01-core-028",
+      "verdict": "substantial_gap",
+      "scene_ru": "У брода песок, кусты и гребень дают разные линии обзора; свежая нарушенная поверхность остаётся наблюдением, а не доказательством людей или противника. Уставшая лошадь и заданное снаряжение не дают разведчику дополнительной уверенности.",
+      "interaction_ru": "Разведчик может отметить видимые следы, звук и направление, затем передать именно ограниченное наблюдение. Открытый участок улучшает обзор, тогда как кусты экранируют его; погода и трафик стирают следы.",
+      "variation_ru": "Ветер, новый дождь, животные и местные перевозки меняют картину. WK не даёт правила различения человеческих, конных и иных следов, их свежести или безопасного разведывательного возвращения.",
+      "claim_refs": ["claim:place-outdoors-cover-opening-and-work-visibility", "claim:residual-traces-animal-trace-weather-decay", "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause"],
+      "gaps": ["military-reconnaissance-trace-interpretation: bounded inference from human/horse/vehicle traces and a scout's report/return under uncertainty"]
+    },
+    {
+      "case_id": "military01-core-029",
+      "verdict": "substantial_gap",
+      "scene_ru": "У воды ветер, кусты и работающие сараи дробят обзор и шум; заданные рог, колокол и факел остаются средствами, но не обещают единого понятого сигнала. Люди снаружи палисада уже образуют отдельную задачу доступа.",
+      "interaction_ru": "Командир может подать доступный сигнал и повторить его через видимого посыльного, но сильный фон способен маскировать речь, а видимость зависит от открытых и закрытых участков.",
+      "variation_ru": "Шторм, сумерки и расстояние меняют слышимость и обзор. WK не покрывает договорённые военные сигналы, их обучение, дальность и надёжное управление gate detail/patrol.",
+      "claim_refs": ["claim:sound-background-noise-masks-speech", "claim:place-outdoors-cover-opening-and-work-visibility", "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"],
+      "gaps": ["field-signals-and-control: historical/practical signal vocabulary, relay discipline, and coordination limits for a defensive detail"]
+    },
+    {
+      "case_id": "military01-core-030",
+      "verdict": "substantial_gap",
+      "scene_ru": "На утопленной лесной дороге поворот, валежник и берега прячут часть пространства; снег и упавшее снаряжение меняют темп людей и лошадей. Невидимая сторона поворота не подтверждает засаду.",
+      "interaction_ru": "Сопровождающие могут остановиться, осмотреть доступный участок и не заводить в теснину одновременно людей и вьюк. Лес сочетает открытые и закрытые пятна, а снег и влажный грунт меняют путь.",
+      "variation_ru": "Следы быстро меняются погодой и трафиком; число и намерения возможных нападающих не даны. WK не даёт тактической модели безопасного прохода, охранения и реакции на засаду малой группы.",
+      "claim_refs": ["claim:place-outdoors-forest-structure-and-season", "claim:place-outdoors-microterrain-patches", "claim:residual-nature-snow-grain-compaction"],
+      "gaps": ["small-party-route-security-and-ambush-response: movement, observation, escort placement, and bounded response at a concealed choke point"]
+    },
+    {
+      "case_id": "military01-core-031",
+      "verdict": "substantial_gap",
+      "scene_ru": "На морозном дворе возница может держать заданные мешки и бочки раздельно, замечая слабый обруч и натёртое место под хомутом. Зерно и солёная пища уже заданы как груз, но их точный запас и рацион не следуют из сцены.",
+      "interaction_ru": "Он учитывает тару отдельно от содержимого, проверяет доступную упряжь и не меняет корм лошади резко. Температура и влажность ограничивают хранение зерна, а здоровой лошади подходят сено и пастбищный корм.",
+      "variation_ru": "Длительность пути, объём еды, состояние бочки и конкретное животное не заданы. Распределение рациона и воинский порядок снабжения здесь не выводятся.",
+      "claim_refs": ["claim:measurement-net-excludes-tare", "claim:stored-grain-condition-depends-on-temperature-moisture", "claim:fodder-healthy-horse-forage", "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"],
+      "gaps": ["campaign-provision-transport-and-harness-care: linked load handling, barrel security, animal comfort, harness inspection, and constrained redistribution without inventing a ration or standard column"]
+    },
+    {
+      "case_id": "military01-core-032",
+      "verdict": "substantial_gap",
+      "scene_ru": "У мокрой пристани подход, верёвки, лодка, люди, кони и вьюки уже заданы, но не образуют бесконечную грузоподъёмность. Течение и скользкие доски требуют разделять посадку и перенос груза по наблюдаемому месту.",
+      "interaction_ru": "Лодочник может осматривать подход, держать груз доступным и не обещать устойчивость или добровольное поведение коня. Ветер и течение могут помогать или мешать ходу на вёслах, а у работающего берега вода, опора и грузовой путь связаны.",
+      "variation_ru": "Глубина, размер судна, число рейсов и фактическое состояние верёвок не даны. WK не содержит достаточной premise о загрузке, устойчивости, погрузке лошадей и организации речной переправы.",
+      "claim_refs": ["claim:practical-boat-weather-water", "claim:place-outdoors-shore-working-edge-composition", "claim:modern-fibre-rope-condition-can-reduce-available-strength"],
+      "gaps": ["river-crossing-with-people-horses-and-loads: craft capacity, loading sequence, stability, horse handling, and crossing organization"]
+    },
+    {
+      "case_id": "military01-core-033",
+      "verdict": "substantial_gap",
+      "scene_ru": "На озере ветер переносит снег, а накатанный и свежий снег различаются; тёмный канал у берега остаётся поводом для осторожности, не доказательством прохода или провала. Люди, кони и сани уже имеют конечную нагрузку.",
+      "interaction_ru": "Проводник может выбирать видимый маршрут и останавливаться перед сомнительным участком, не превращая полынью или след в точную оценку прочности. Ветер способен ухудшить обзор и образовать заносы, а лёд и снег могут быть скользкими.",
+      "variation_ru": "Свет, новый снег, толщина льда и распределение нагрузки не заданы. WK не даёт качественной методики оценки льда для людей, лошадей и саней либо зимней организации движения.",
+      "claim_refs": ["claim:residual-nature-snow-wind-drift-visibility", "claim:residual-nature-snow-grain-compaction", "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"],
+      "gaps": ["winter-waterway-travel: qualitative ice assessment, route choice, load/animal constraints, and response to a weak or open section"]
+    },
+    {
+      "case_id": "military01-core-034",
+      "verdict": "substantial_gap",
+      "scene_ru": "На поле гребни, вода, изгороди и подъём создают неодинаковую опору; мокрые рукояти и глина не делают щиты и копья одинаково пригодными. Сообщение о коннице остаётся сообщением, а не начавшимся боем.",
+      "interaction_ru": "Соседи могут искать более твёрдый участок и не разрывать проходы у изгороди; мокрый грунт снижает проходимость под нагрузкой, а длительное усилие утомляет. Щит даёт удерживаемое прикрытие, оружию нужны доступ и досягаемость.",
+      "variation_ru": "Число людей, их опыт, уклон и противник не заданы. WK не покрывает взаимную поддержку, строй, действия плохо обученной пехоты против конницы и связь с местностью.",
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:work-intensity-duration", "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs"],
+      "gaps": ["foot-formation-and-mounted-threat: formation, spacing, mutual support, command, and terrain-dependent defensive action"]
+    },
+    {
+      "case_id": "military01-core-035",
+      "verdict": "substantial_gap",
+      "scene_ru": "У дороги конь уже вспотел, в копыте есть грязь, а мокрый ремень и заданная сбруя требуют осмотра, не мгновенной готовности. Пастбище и кормовая сумка являются возможным контекстом корма, а не нормой рациона.",
+      "interaction_ru": "Всадник может очистить доступный мусор около стрелки копыта, проверить посадку сбруи и не объявлять усталую лошадь больной или готовой к новому дальнему ходу. Копыта несут вес и дают сцепление; наблюдаемое снижение работоспособности не устанавливает причину.",
+      "variation_ru": "Нужда в воде, отдыхе, корме, трение сбруи и возможный дальнейший ход не имеют в WK достаточной связанной модели. Точный результат спешки не задан.",
+      "claim_refs": ["claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog", "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction", "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause"],
+      "gaps": ["mounted-readiness-after-travel: linked rest, watering, feeding, sweat/cooling, tack fit, footing, rider workload, and safe re-deployment"]
+    },
+    {
+      "case_id": "military01-core-036",
+      "verdict": "substantial_gap",
+      "scene_ru": "На склоне кусты и камыш открывают лишь отдельные окна к гати; мокрые стрелы, холодные пальцы и заданный лук не превращаются в точную дальность или запас сухих боеприпасов. Преследователь не установлен.",
+      "interaction_ru": "Лучник может выбрать доступное окно обзора, держать стрелы защищёнными насколько позволяет снаряжение и не стрелять через скрытую линию. Открытые и закрытые участки меняют видимость, а снег, дождь и работа меняют опору и внимание.",
+      "variation_ru": "Ветер, влажность тетивы и оперения, количество стрел и умение стрелка не заданы. WK не покрывает практическое использование лука в сырость и ветер, выбор позиции и пределы стрелковой поддержки.",
+      "claim_refs": ["claim:place-outdoors-cover-opening-and-work-visibility", "claim:place-outdoors-microterrain-patches", "claim:agriculture-fauna-ash-hunting-bow"],
+      "gaps": ["archery-in-field-weather: bowstring/fletching moisture, wind and sight effects, ammunition handling, position choice, and bounded supporting fire"]
+    },
+    {
+      "case_id": "military01-core-037",
+      "verdict": "substantial_gap",
+      "scene_ru": "В ночном лесном лагере мокрый край одежды, влажные дрова и овраг делают огонь и слух неполными средствами наблюдения. Прерывистый звук остаётся неизвестным источником, а не врагом или зверем.",
+      "interaction_ru": "Дозорный может удерживать доступный малый огонь, слушать с безопасного места и передать внимание сменяющему человеку. Усталость ограничивает продолжение усилия, а туман уменьшает видимость; временный watch может договориться о передаче внимания и сигнале.",
+      "variation_ru": "Ветер, дождь, число дозорных и фактическая тропа меняют результат. WK не покрывает полевой режим ночного дозора, сменность, удаление от огня и распознавание/проверку приближения.",
+      "claim_refs": ["claim:work-intensity-duration", "claim:foundations-earth-27-fog-visibility", "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"],
+      "gaps": ["night-field-watch: camp watch placement, relief, fire/light discipline, sound investigation, and alert response"]
+    },
+    {
+      "case_id": "military01-core-038",
+      "verdict": "substantial_gap",
+      "scene_ru": "В сухом сарае старший пехотинец отделяет мокрые ремни и металл от сухих досок, осматривает треснувший обод щита и не объявляет его восстановленным. Точильный камень, ткань и шнур уже заданы как доступные средства.",
+      "interaction_ru": "Он сушит и очищает доступные поверхности, проверяет ослабленные крепления и может наложить временную перевязку там, где она держится при осторожной проверке. Свойства дерева зависят от направления и влаги, а изношенная или узловатая верёвка может иметь меньшую доступную прочность.",
+      "variation_ru": "Глубина трещины, состояние металла, навык ремонта и реальная нагрузка не заданы; временная мера не становится исправным боевым предметом.",
+      "claim_refs": ["claim:wood-anisotropy-moisture", "claim:modern-fibre-rope-condition-can-reduce-available-strength", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting"],
+      "gaps": ["field-equipment-inspection-and-temporary-repair: qualitative distinction among cleaning, a cracked shield or worn fastening, provisional binding, and continued safe military use"]
+    },
+    {
+      "case_id": "military01-core-039",
+      "verdict": "substantial_gap",
+      "scene_ru": "У городской окраины вал, древесина, ров, дорога и сады делят обзор и проход; жители на дороге остаются отдельными людьми, не готовым гарнизоном. Сухой брус и заедающая петля требуют осмотра, но не доказывают пожар или поломку.",
+      "interaction_ru": "Страж и плотник могут осмотреть доступный участок, расчистить локальный проход и сообщить о наблюдаемом дефекте. Дерево меняет свойства с влагой, а стены, подлесок и открытые места дают разные линии обзора.",
+      "variation_ru": "Толщина вала, состояние рва, число защитников и возможность ремонта не заданы. WK не даёт практической модели timber-and-earth обороны, ворот, рва, огня и движения гражданских у укрепления.",
+      "claim_refs": ["claim:urban-wooden-coverings", "claim:wood-anisotropy-moisture", "claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": ["timber-earth-fortification-and-gate-use: observable defensive features, access control, maintenance, fire vulnerability, and civilian passage"]
+    },
+    {
+      "case_id": "military01-core-040",
+      "verdict": "substantial_gap",
+      "scene_ru": "У моста мокрая грязь, изношенные доски, брёвна, солома и дома делают любую работу одновременно задачей доступа и риска огня. Топоры, крюки, верёвка и вёдра даны, но не создают готовую осадную машину или безрисковое препятствие.",
+      "interaction_ru": "Плотник может отделить рабочих от опасного края, осмотреть доступные доски и переносить материал с учётом рычага, влаги и нагрузки. Ветер меняет ход огня и дыма; нагрузка может деформировать древесину и грунт.",
+      "variation_ru": "Число рук, конструкция моста, источник огня и приближение противника не заданы. WK не покрывает оборонительные работы у моста, создание задержки, пожарную дисциплину и компромисс между обороной и проходом жителей.",
+      "claim_refs": ["claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"],
+      "gaps": ["settlement-defense-labor-and-fire: improvised obstacles, bridge denial/damage limits, work organization, fire control, and civilian-access tradeoffs"]
+    },
+    {
+      "case_id": "military01-core-041",
+      "verdict": "covered",
+      "scene_ru": "У края поля помощник сначала выводит раненого из непосредственной опасности лишь настолько, насколько это возможно без лишнего движения; плащ, вода и ткань уже заданы, но не дают диагноза. Телега с домашними вещами остаётся ограниченным средством, не автоматической носилкой.",
+      "interaction_ru": "При уже кровоточащей наружной ране доступная чистая ткань может дать прямое давление; при подозрении на травму шеи, спины, таза или бедра лишнее перемещение способно ухудшить вред. Травма может потребовать более медленного хода, укрытия, помощников или переноски.",
+      "variation_ru": "Тяжесть раны, чистота ткани, число помощников и исход не заданы. Это не диагноз, не исторический лечебный протокол и не обещание выздоровления.",
+      "claim_refs": ["claim:care-direct-pressure-bleeding", "claim:household-trauma-unnecessary-movement-can-worsen", "claim:public-world-injured-person-needs-safe-carriage-or-shelter"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-042",
+      "verdict": "substantial_gap",
+      "scene_ru": "В ограждённом дворе две пленные и малое число усталых охранников уже создают конкуренцию между наблюдением, сбором вещей, лошадьми и выходом на дорогу. Верёвка и щиты даны, но не доказывают безопасное удержание, законный статус или исход.",
+      "interaction_ru": "Лидер может считать видимые задачи, держать людей в пределах наблюдения и не выдавать ограничение передвижения за безошибочную или правовую процедуру. Усталость и доступная способность к работе меняются с условиями и поддержкой.",
+      "variation_ru": "Еда, ночлег, сопротивление, бегство, местные правила и полномочия не заданы. WK не содержит связанной premise о перемещении, охране, снабжении и социально-правовой неопределённости пленников.",
+      "claim_refs": ["claim:work-intensity-duration", "claim:public-world-capacity-can-vary-day-to-day", "claim:public-world-armed-presence-changes-public-risk"],
+      "gaps": ["captives-on-the-move: practical guard-to-captive constraints, food/shelter/restraint, escape risk, communication, and non-presumed legal disposition"]
+    },
+    {
+      "case_id": "military01-core-043",
+      "verdict": "substantial_gap",
+      "scene_ru": "На лугу и у ручьёв дождь быстро меняет грязь, траву и видимые следы; уставший конь и плащ ограничивают всадника. След беглеца остаётся гипотезой, а не подтверждённым направлением.",
+      "interaction_ru": "Всадник может останавливаться у наблюдаемых нарушений грунта и сохранять связь с товарищами, не превращая скорость в гарантированный захват. Погода и движение изнашивают отпечатки, а снижение работоспособности лошади не устанавливает причину.",
+      "variation_ru": "Сила дождя, свежесть следа, число бегущих и поддержка не заданы. WK не покрывает человеческий/конный trail reading, пределы погони и согласование преследующей группы.",
+      "claim_refs": ["claim:residual-traces-animal-trace-weather-decay", "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause", "claim:place-outdoors-traffic-wet-ground-and-ruts"],
+      "gaps": ["pursuit-and-trail-loss: human/horse sign reading, weather degradation, mounted endurance, support contact, and stop criteria"]
+    },
+    {
+      "case_id": "military01-core-044",
+      "verdict": "substantial_gap",
+      "scene_ru": "На улице деревни семья видит ограниченные телеги, животных, мешки и связки одежды; свободное место на дороге и состояние колеса ограничивают то, что можно взять сразу. Военная тревога не фиксирует конкретный инвентарь или успешное бегство.",
+      "interaction_ru": "Домохозяин распределяет доступные руки между людьми, животными и переносимыми вещами, не принимая вес и объём за бесконечные. Потеря вооружённого человека, вещей или времени может перераспределить домашний труд, уход и запасы; способность людей меняется с усталостью и поддержкой.",
+      "variation_ru": "Маршрут, родственные решения, ценность вещей и наступление опасности не заданы. Это не предписание эвакуации и не гарантия сохранности имущества.",
+      "claim_refs": ["claim:population-physics-load-deformation", "claim:public-world-armed-loss-reaches-household", "claim:public-world-capacity-can-vary-day-to-day"],
+      "gaps": ["civilian-flight-and-household-preservation: prioritising dependants, animals, records, food, tools, cart capacity, and shelter during an uncertain military alarm"]
+    },
+    {
+      "case_id": "military01-core-045",
+      "verdict": "substantial_gap",
+      "scene_ru": "У мельницы поток, двор, зерновые сараи и две дороги уже разделяют работу и движение; сообщение может быть устным или письменным, но не создаёт автоматического подчинения. Загруженные телеги и текущая работа остаются конкурирующими обязательствами.",
+      "interaction_ru": "Посланец может изложить срочность, спросить о местном пути и договариваться о доступных людях и телегах. Социальная роль связывается с ожидаемым поведением, но сама по себе не определяет послушание или полномочие.",
+      "variation_ru": "Язык, доверие, источник приказа, хозяйственные обязанности и решение каждого человека не заданы. WK не покрывает смешанную военную координацию статусов, передачу приказа и практическое распределение задач.",
+      "claim_refs": ["claim:human-life-travellers-may-seek-local-information", "claim:foundations-ms-32-social-role", "claim:place-outdoors-season-work-space-reallocation"],
+      "gaps": ["mixed-status-command-and-local-mobilization: authority recognition, message credibility, negotiation, task allocation, and conflicting household/work obligations"]
+    },
+    {
+      "case_id": "military01-core-046",
+      "verdict": "substantial_gap",
+      "scene_ru": "У разлившегося притока мокрые подходы, потемневшие доски и напряжённый стык требуют осмотра; щиты, телега и животные даны, но не дают право или возможность снести мост. Быстрая вода и кусты ограничивают обзор и манёвр.",
+      "interaction_ru": "Плотник может осмотреть доступные доски и опоры, а группа — отделить людей и груз от сомнительного участка. Дерево зависит от влаги и направления, а влажный грунт хуже переносит нагрузку; это не устанавливает грузоподъёмность моста.",
+      "variation_ru": "Сечение, опоры, поток, число телег и состояние древесины не заданы. WK не даёт связанную premise для осмотра/использования малого моста, его нагрузки и безопасных ограниченных мер задержки.",
+      "claim_refs": ["claim:wood-anisotropy-moisture", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": ["small-bridge-security: practical inspection, load/footing/current limits, controlled access, and non-engineered delay measures"]
+    },
+    {
+      "case_id": "military01-core-047",
+      "verdict": "substantial_gap",
+      "scene_ru": "На ровном лугу наставник видит разные древки, ремни щитов и уровень подготовки; посохи и метки позволяют ограниченную безопасную пробу, но не превращают людей в готовый строй. Вода и отдых остаются ограниченными средствами.",
+      "interaction_ru": "Он может разделить людей по доступной дистанции, остановить упражнение при усталости и подправить наблюдаемые ремни. Устойчивое усилие сокращает доступную продолжительность, а оружию нужны доступ и досягаемость.",
+      "variation_ru": "Метод обучения, темп, безопасная дистанция, результат тренировки и перенос навыка в бой не заданы. WK не покрывает обучение оружию, строю и совместному движению смешанной группы.",
+      "claim_refs": ["claim:work-intensity-duration", "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs", "claim:modern-fibre-rope-condition-can-reduce-available-strength"],
+      "gaps": ["weapons-and-formation-training: safe drills, progressive practice, spacing, coordination, fatigue, and no-instant-competence learning"]
+    },
+    {
+      "case_id": "military01-core-048",
+      "verdict": "substantial_gap",
+      "scene_ru": "На ветреном крыльце защитные вещи уже существуют как заданная экипировка, но мокрые застёжки и прокладка не устанавливают комфорт, защиту или точную подвижность. Щит держится, доспех носится по частям тела, оружию нужен доступ.",
+      "interaction_ru": "Помощник может проверять видимые застёжки и укладку слоёв без обещания, что плохая посадка исправлена. Влага меняет свойства кожи и дерева, а длительная работа ограничивается усталостью.",
+      "variation_ru": "Конструкция доспеха, размер, точки натирания, теплообмен, допустимый объём движения и защитный эффект не заданы. WK не покрывает ношение, уход и подвижность защитного снаряжения.",
+      "claim_refs": ["claim:public-world-weapons-shields-armour-have-distinct-tradeoffs", "claim:material-water-leather-water-processing", "claim:work-intensity-duration"],
+      "gaps": ["armor-wear-and-maintenance: fit, layering, fastening, moisture, heat, rubbing, range of movement, and practical upkeep"]
+    },
+    {
+      "case_id": "military01-core-049",
+      "verdict": "substantial_gap",
+      "scene_ru": "В тёплом тихом хуторе после стычки грязная верёвка у колодца, сломанная крыша и разбросанные вещи требуют раздельно считать людей, воду, животных и проходы. Отсутствие нападавших сейчас не доказывает безопасность, чью-либо собственность или помощь извне.",
+      "interaction_ru": "Староста может сначала искать доступное укрытие и безопасное переносимое, а установленной ране дать осторожную помощь без диагноза. Потеря людей или снаряжения меняет домашний труд, уход и запасы; риск инфекции зависит от конкретной цепочки передачи, а не возникает автоматически.",
+      "variation_ru": "Число живых, раненых, погибших, источник воды, местная власть и дальнейшая угроза не заданы. WK не даёт связанной модели последствий боя для мирных жителей, обращения с погибшими, восстановления и безопасности участка.",
+      "claim_refs": ["claim:public-world-armed-loss-reaches-household", "claim:public-world-injured-person-needs-safe-carriage-or-shelter", "claim:foundations-life-43-infection-chain"],
+      "gaps": ["battlefield-aftermath-for-civilians: immediate security, casualties/dead, water/property/animals, contamination, recovery, and social coordination"]
+    },
+    {
+      "case_id": "military01-core-050",
+      "verdict": "substantial_gap",
+      "scene_ru": "На рассветной пристани мокрые наружные свёртки, скользкий настил, изношенное весло и туман ограничивают погрузку и обзор; лодка, вёсла и верёвка даны, но не становятся неограниченным складом или безопасным судном. Склады и рынок не доказывают чужую охрану или готовый маршрут.",
+      "interaction_ru": "Команда может осмотреть доступный настил, закрепить видимые свёртки и отложить выход при недостаточном обзоре, не обещая устойчивость или скорость. Ветер и течение могут помогать или мешать движению, а работающий берег связывает воду, опору, груз и дальнейший перенос.",
+      "variation_ru": "Размер судна, загрузка, видимость, маршрут, вахта и связь между лодкой и берегом не заданы. WK не покрывает речное военное перемещение: размещение груза, навигацию, наблюдение, высадку и связь.",
+      "claim_refs": ["claim:practical-boat-weather-water", "claim:place-outdoors-shore-working-edge-composition", "claim:foundations-earth-27-fog-visibility"],
+      "gaps": ["riverine-transport-and-security: cargo stowage, loading limits, navigation/visibility, watch, landing, and shore-boat communication"]
+    }
+  ]
+}

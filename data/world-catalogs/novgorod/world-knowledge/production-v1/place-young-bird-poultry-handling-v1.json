@@ -28,7 +28,7 @@
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:place-poultry-examination-merck",
       "title": "Physical Examination of Backyard Poultry",
-      "authors": ["Merck Veterinary Manual"],
+      "authors": ["Yuko Sato"],
       "publication": "Merck Veterinary Manual",
       "source_kind": "official_documentation",
       "citation": "https://www.merckvetmanual.com/exotic-and-laboratory-animals/backyard-poultry/physical-examination-of-backyard-poultry",
@@ -39,7 +39,7 @@
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:place-poultry-handling-penn-state",
       "title": "Handling Poultry",
-      "authors": ["Penn State Extension"],
+      "authors": ["Emily Shoop"],
       "publication": "Penn State Extension",
       "source_kind": "official_documentation",
       "citation": "https://extension.psu.edu/handling-poultry",
@@ -69,7 +69,7 @@
       "evidence_ref": "evidence:place-young-bird-direct-danger-nearby-move",
       "source_ref": "source:place-young-bird-guidance-werc",
       "anchor": {"section": "Baby Birds"},
-      "note": "WERC distinguishes barely feathered nestlings from feathered fledglings, advises leaving a fledgling alone unless injured, and where cats threaten it recommends removing the cats or moving the bird only within a short radius. This supports only a nearby move under immediate danger, not distance, treatment, health, parent behaviour, or a destination invented by WK.",
+      "note": "WERC distinguishes barely feathered nestlings from feathered fledglings, advises leaving a fledgling alone unless injured, and where cats threaten it recommends removing the cats or moving the bird only within a short radius. This supports only a nearby move under a cat threat, not a general danger rule, distance, treatment, health, parent behaviour, or a destination invented by WK.",
       "review_status": "approved"
     },
     {
@@ -93,7 +93,7 @@
       "evidence_ref": "evidence:place-poultry-observable-emergency-signs",
       "source_ref": "source:place-poultry-examination-merck",
       "anchor": {"section": "Physical Examination of Backyard Poultry"},
-      "note": "Merck identifies acute hemorrhage, open fractures, extreme respiratory difficulty, weakness, and severe neurologic or posture abnormalities as findings that require emergency care before ordinary examination. This supports stopping casual handling and seeking more experienced help, not diagnosis, cause, contagion, treatment, available specialist, or outcome.",
+      "note": "Merck identifies acute hemorrhage, head trauma, seizures or other neurologic signs, open fractures, extreme respiratory difficulty, and weakness as findings that require immediate emergency care before ordinary examination. This supports stopping casual handling and recognizing an emergency-care need, not diagnosis, cause, contagion, treatment, available specialist, or outcome.",
       "review_status": "approved"
     }
   ],
@@ -124,7 +124,7 @@
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
       "predicate": "supported_fact",
-      "object": {"kind": "literal", "value": "a_fully_or_mostly_feathered_alert_mobile_young_bird_on_the_ground_can_be_a_fledgling_and_ground_presence_alone_does_not_prove_orphaning_or_injury"},
+      "object": {"kind": "literal", "value": "a_fully_feathered_young_bird_able_to_hop_or_flutter_on_the_ground_can_be_a_fledgling_and_ground_presence_alone_does_not_prove_orphaning_or_injury"},
       "polarity": "support",
       "applicability": {"context_scope": "universal"},
       "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
@@ -140,7 +140,7 @@
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:young-bird-ground-stage-and-intervention",
       "predicate": "supported_fact",
-      "object": {"kind": "literal", "value": "a_nearly_bare_or_sparsely_feathered_nestling_can_be_returned_to_an_accessible_known_nest_if_possible_while_a_feathered_fledgling_in_immediate_danger_can_be_moved_only_nearby_after_removing_the_danger_where_possible"},
+      "object": {"kind": "literal", "value": "a_nearly_bare_or_sparsely_feathered_nestling_can_be_returned_to_an_accessible_known_nest_if_possible_while_a_feathered_fledgling_threatened_by_cats_can_be_protected_by_removing_the_cats_or_moving_it_only_nearby"},
       "polarity": "support",
       "applicability": {"context_scope": "universal"},
       "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
@@ -172,7 +172,7 @@
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:domestic-fowl-gentle-examination",
       "predicate": "supported_fact",
-      "object": {"kind": "literal", "value": "bleeding_apparent_open_fracture_extreme_breathing_difficulty_marked_weakness_or_severe_abnormal_posture_are_observable_reasons_to_stop_casual_poultry_examination_and_seek_more_experienced_help_without_treating_one_ambiguous_sign_as_a_diagnosis"},
+      "object": {"kind": "literal", "value": "bleeding_head_trauma_seizures_or_other_neurologic_signs_apparent_open_fracture_extreme_breathing_difficulty_or_marked_weakness_are_observable_reasons_to_stop_casual_poultry_examination_and_recognize_an_emergency_care_need_without_treating_one_ambiguous_sign_as_a_diagnosis"},
       "polarity": "support",
       "applicability": {"context_scope": "universal"},
       "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "direct"},
@@ -222,56 +222,56 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
       "locale": "ru",
-      "runtime_text": "Полностью или почти полностью оперившаяся молодая птица, которая выглядит бодрой и может ходить, прыгать или держаться на низкой опоре, может быть слётком: само пребывание на земле не доказывает сиротство или травму. Обычно ей оставляют пространство и убирают непосредственное беспокойство, не устанавливая этим вид, здоровье, родителей, гнездо или исход.",
+      "runtime_text": "Полностью оперившаяся молодая птица, которая может прыгать или перепархивать, может быть слётком: само пребывание на земле не доказывает сиротство или травму. Обычно ей оставляют пространство и убирают непосредственное беспокойство, не устанавливая этим вид, здоровье, родителей, гнездо или исход.",
       "search_aliases": ["птенец сидит на земле", "слёток в саду", "молодая птица прыгает"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
       "locale": "en",
-      "runtime_text": "A fully or mostly feathered young bird that appears alert and can walk, hop, or use low cover may be a fledgling: being on the ground does not itself prove orphaning or injury. Ordinarily it is given space and immediate disturbance is removed, without establishing species, health, parents, nest, or outcome.",
+      "runtime_text": "A fully feathered young bird able to hop or flutter may be a fledgling: being on the ground does not itself prove orphaning or injury. Ordinarily it is given space and immediate disturbance is removed, without establishing species, health, parents, nest, or outcome.",
       "search_aliases": ["baby bird sits on ground", "fledgling in garden", "young bird hopping"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
       "locale": "ru",
-      "runtime_text": "Почти голого или слабо оперившегося птенца можно вернуть в доступное известное гнездо, если это возможно; оперившегося слётка при непосредственной опасности можно перенести только поблизости, сперва по возможности устранив опасность. Это не задаёт расстояние, способ обращения, кормление, лечение, здоровье, реакцию родителей или выживание.",
+      "runtime_text": "Почти голого или слабо оперившегося птенца можно вернуть в доступное известное гнездо, если это возможно; при угрозе кошек оперившегося слётка защищают, убирая кошек либо перенося птицу только поблизости. Это не общее правило для любой опасности и не задаёт расстояние, способ обращения, кормление, лечение, здоровье, реакцию родителей или выживание.",
       "search_aliases": ["голый птенец вне гнезда", "слёток в опасности", "перенести птенца недалеко"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
       "locale": "en",
-      "runtime_text": "A nearly bare or sparsely feathered nestling may be returned to an accessible known nest if possible; a feathered fledgling in immediate danger may be moved only nearby after removing the danger where possible. This supplies no distance, handling method, feeding, treatment, health finding, parental response, or survival outcome.",
+      "runtime_text": "A nearly bare or sparsely feathered nestling may be returned to an accessible known nest if possible; a feathered fledgling threatened by cats is protected by removing the cats or moving the bird only nearby. This is not a general rule for every danger and supplies no distance, handling method, feeding, treatment, health finding, parental response, or survival outcome.",
       "search_aliases": ["bare nestling outside nest", "fledgling in danger", "move baby bird nearby"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
       "locale": "ru",
-      "runtime_text": "При кратком осмотре домашней птицы поддерживают всё тело и удерживают сложенные крылья у него, не поднимая птицу за одно крыло и не сдавливая грудь или дыхательные движения. Это не видовая процедура, точное усилие или время, диагноз, лечение либо гарантия безопасности птицы и человека.",
+      "runtime_text": "При кратком осмотре домашней птицы поддерживают всё тело и удерживают сложенные крылья у него, не поднимая птицу за одно крыло, не сдавливая грудь и не мешая дыханию. Это не видовая процедура, точное усилие или время, диагноз, лечение либо гарантия безопасности птицы и человека.",
       "search_aliases": ["осмотр крыла утки", "удерживать крылья птицы", "не сдавливать грудь птицы"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
       "locale": "en",
-      "runtime_text": "For a brief domestic-fowl examination, support the whole body and keep folded wings near it rather than lifting the bird by one wing or compressing the breast or breathing movements. This is not a species protocol, exact force or duration, diagnosis, treatment, or guarantee of safety for bird or handler.",
+      "runtime_text": "For a brief domestic-fowl examination, support the whole body and keep folded wings near it rather than lifting the bird by one wing, compressing the breast, or interfering with breathing. This is not a species protocol, exact force or duration, diagnosis, treatment, or guarantee of safety for bird or handler.",
       "search_aliases": ["examine duck wing", "restrain bird wings", "do not compress bird breast"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
       "locale": "ru",
-      "runtime_text": "Кровотечение, явная открытая переломная травма, крайняя трудность дыхания, выраженная слабость или тяжёлая необычная поза — наблюдаемые основания прекратить обычный осмотр птицы и искать более опытную помощь. Торчащее перо или неохотный взмах сами по себе не устанавливают такой признак, диагноз, причину или лечение.",
+      "runtime_text": "Кровотечение, травма головы, судороги или другие неврологические признаки, явная открытая переломная травма, крайняя трудность дыхания либо выраженная слабость — наблюдаемые основания прекратить обычный осмотр птицы и признать необходимость экстренной помощи. Торчащее перо или неохотный взмах сами по себе не устанавливают такой признак, диагноз, причину, доступную помощь или лечение.",
       "search_aliases": ["птица кровоточит", "птице трудно дышать", "когда прекратить осмотр птицы"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
       "locale": "en",
-      "runtime_text": "Bleeding, an apparent open fracture, extreme breathing difficulty, marked weakness, or severe abnormal posture are observable reasons to stop ordinary bird examination and seek more experienced help. A projecting feather or reluctant wingbeat alone establishes neither such a sign, a diagnosis, a cause, nor treatment.",
+      "runtime_text": "Bleeding, head trauma, seizures or other neurologic signs, an apparent open fracture, extreme breathing difficulty, or marked weakness are observable reasons to stop ordinary bird examination and recognize an emergency-care need. A projecting feather or reluctant wingbeat alone establishes neither such a sign, a diagnosis, a cause, available care, nor treatment.",
       "search_aliases": ["bird bleeding", "bird breathing difficulty", "when to stop bird examination"]
     }
   ]

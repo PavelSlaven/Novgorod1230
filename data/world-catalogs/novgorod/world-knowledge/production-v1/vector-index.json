@@ -10426,6 +10426,216 @@
       "retrieval_text": "Гибкие прутья и выбор глины Зависимость плетения от влажности прутьев и формования от пластичности глины. Формование посуды зависит от пластичности глины, поэтому мокрая поверхностная грязь сама по себе не доказывает пригодность материала: нужна проверка его поведения в руках. Это не устанавливает залежь, состав, обработку, обжиг или сосуд. прутья ломаются замочить иву глина или грязь пластичность глины грязь вместо глины проверить пластичность глины"
     },
     {
+      "entry_ref": "wk-retrieval:claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work:en",
+      "target_ref": "claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal work and trail conditions Weather and recovery constraints on animal work. After exertion, an already present horse can need gradual reduction of work and recovery observation before rest or further work. This sets no duration, diagnosis, or outcome. hive rain inspection horse cool down dog scent rain horse after hauling"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work:ru",
+      "target_ref": "claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия работы животных и следовой работы Погодные и восстановительные ограничения для животных в работе. После нагрузки уже имеющейся лошади может требоваться постепенное снижение работы и наблюдение за восстановлением, прежде чем считать её готовой к отдыху или новой работе. Это не задаёт срок, диагноз или исход. пчёлы дождь осмотр лошадь после работы собака след дождь лошадь после тяги охладить лошадь после работы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis:en",
+      "target_ref": "claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ankle soft-tissue observation Nondiagnostic observation and protection after ankle pain or swelling. After an ankle twist or impact, pain, swelling, or difficulty bearing weight can call for protection, observation, and available experienced assessment if severe or worsening. This supplies no diagnosis or treatment. twisted ankle swollen ankle pain bearing weight swollen ankle cannot walk"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis:ru",
+      "target_ref": "claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение после травмы голеностопа Недиагностическое наблюдение и защита после боли или отёка голеностопа. После подворачивания или удара голеностопа боль, отёк или трудность опоры могут требовать защитить место, наблюдать за изменением и при тяжёлых либо нарастающих признаках искать доступную опытную помощь. Это не ставит диагноз и не назначает лечение. подвернул ногу лодыжка опухла больно наступать подвернул лодыжку опухла нога не наступить"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-ash-can-conceal-hot-embers-so-apparent-ash-is-not-by-itself-safe-to-handle-or-leave:en",
+      "target_ref": "claim:macro-b20-ash-can-conceal-hot-embers-so-apparent-ash-is-not-by-itself-safe-to-handle-or-leave",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Hidden embers and snow glare Residual heat under ash and reflected snow light. Ash can conceal hot embers; an ash-covered site remains a heat and ignition hazard until cooled and checked. This creates no fire, fuel, or outcome. embers under ash snow glare eyes ash still hot"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-ash-can-conceal-hot-embers-so-apparent-ash-is-not-by-itself-safe-to-handle-or-leave:ru",
+      "target_ref": "claim:macro-b20-ash-can-conceal-hot-embers-so-apparent-ash-is-not-by-itself-safe-to-handle-or-leave",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Скрытые угли и снеговой блеск Остаточное тепло под золой и световой дискомфорт от снега. Зола может скрывать ещё горячие угли; покрытое золой место остаётся тепловой и пожарной опасностью, пока не остыло и не проверено. Это не создаёт огонь, топливо или исход. угли под золой снег слепит глаза зола ещё горячая"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work:en",
+      "target_ref": "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Hidden embers and snow glare Residual heat under ash and reflected snow light. Bright sunlight reflected from snow can cause eye discomfort and make visual work or travel less comfortable. This establishes no sun, weather, injury, or vision outcome. embers under ash snow glare eyes snow glare eyes hurt from snow"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work:ru",
+      "target_ref": "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Скрытые угли и снеговой блеск Остаточное тепло под золой и световой дискомфорт от снега. Яркий солнечный свет, отражённый снегом, может вызвать дискомфорт в глазах и сделать зрительную работу или путь менее удобными. Это не устанавливает солнце, погоду, травму или исход зрения. угли под золой снег слепит глаза снег слепит боль в глазах от снега"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling:en",
+      "target_ref": "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Heated pitch handling Qualitative hazards of heated pitch or bituminous material. Already heated pitch or bituminous material can burn skin and present fume exposure; handling can avoid direct contact and limit fumes. This creates no pitch, heating, or fire. hot pitch burn heated bitumen hot pitch hazard pitch burn"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling:ru",
+      "target_ref": "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Обращение с горячим пеком Качественные опасности нагретого пека или битумного материала. Уже нагретый пек или битумный материал может обжечь кожу и дать дымовую опасность; при обращении избегают прямого контакта и ограничивают воздействие паров. Это не создаёт пек, нагрев или пожар. горячий пек ожог смола на огне горячий пек опасность смола обожгла"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage:en",
+      "target_ref": "claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Resin, wool, and bent wood control Qualitative control of resin, insect-damaged wool, and bent wood. Stored wool or wool textiles can show insect damage or residue; inspection and separation from clean, dry stored material are qualitative measures. This identifies no pest, infestation, or result. resin on tool insects in wool steam bent wood moths in wool insect damaged wool"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage:ru",
+      "target_ref": "claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Смола, шерсть и гнутая древесина Качественный контроль липкой смолы, защиты шерсти и закрепления изгиба древесины. Хранимая шерсть или шерстяная ткань может иметь следы повреждения насекомыми либо остатки; осмотр и отделение затронутого материала от чистого сухого хранения — качественные меры. Это не определяет вредителя, нашествие или результат. смола на инструменте моль в шерсти гнутая древесина распрямляется шерсть повреждена насекомыми"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained:en",
+      "target_ref": "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal work and trail conditions Weather and recovery constraints on animal work. Opening or otherwise manipulating an already established honey-bee colony is qualitatively constrained by outside conditions: conditions that are not relatively warm and windless can limit non-urgent opening. This guarantees no colony response and sets no procedure. hive rain inspection horse cool down dog scent rain inspect hive wind open hive warm windless weather"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained:ru",
+      "target_ref": "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия работы животных и следовой работы Погодные и восстановительные ограничения для животных в работе. Открывание или иное беспокоящее обращение с уже существующей пчелиной семьёй качественно ограничено внешней погодой: условия, не являющиеся относительно тёплыми и безветренными, могут ограничивать несрочное открывание. Это не гарантирует реакцию семьи и не задаёт порядок. пчёлы дождь осмотр лошадь после работы собака след дождь осмотр улья ветер открыть улей тёплая безветренная погода"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-rain-or-other-weather-can-alter-canine-scent-work-without-proving-a-trail-is-lost:en",
+      "target_ref": "claim:macro-b20-rain-or-other-weather-can-alter-canine-scent-work-without-proving-a-trail-is-lost",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal work and trail conditions Weather and recovery constraints on animal work. Rain and other weather can alter canine scent-work conditions; a dog's response does not prove that a trail, person, or object is found or irretrievably lost. hive rain inspection horse cool down dog scent rain dog trail rain rain washed scent"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-rain-or-other-weather-can-alter-canine-scent-work-without-proving-a-trail-is-lost:ru",
+      "target_ref": "claim:macro-b20-rain-or-other-weather-can-alter-canine-scent-work-without-proving-a-trail-is-lost",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия работы животных и следовой работы Погодные и восстановительные ограничения для животных в работе. Дождь и иная погода могут менять условия следовой работы собаки; её реакция не доказывает, что след, человек или предмет найден либо окончательно утрачен. пчёлы дождь осмотр лошадь после работы собака след дождь дождь смыл след"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work:en",
+      "target_ref": "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Resin, wool, and bent wood control Qualitative control of resin, insect-damaged wool, and bent wood. As a bounded ordinary reconstruction, resinous residue on an already present hand tool is a sticky handling condition; it can be kept away from precise work or removed by a compatible available means. This sets no solvent or successful cleaning. resin on tool insects in wool steam bent wood resin on knife clean sticky tool"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work:ru",
+      "target_ref": "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Смола, шерсть и гнутая древесина Качественный контроль липкой смолы, защиты шерсти и закрепления изгиба древесины. Как ограниченная ordinary-реконструкция: смолистый остаток на уже имеющемся ручном инструменте — липкое условие обращения; его можно держать вне точной работы или убрать совместимым доступным средством. Это не задаёт растворитель или успех очистки. смола на инструменте моль в шерсти гнутая древесина распрямляется смола на ноже липкий инструмент очистить"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend:en",
+      "target_ref": "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Resin, wool, and bent wood control Qualitative control of resin, insect-damaged wool, and bent wood. Wood conditioned for bending can need restraint in its intended form while moisture and temperature change; early release can permit springback or distortion. This sets no species, time, temperature, or form. resin on tool insects in wool steam bent wood steam bend wood wood springback"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend:ru",
+      "target_ref": "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Смола, шерсть и гнутая древесина Качественный контроль липкой смолы, защиты шерсти и закрепления изгиба древесины. Древесину, подготовленную к изгибу, может требоваться удерживать в нужной форме, пока меняются её влажность и температура; раннее освобождение способно дать распрямление или искажение. Это не задаёт породу, время, температуру или форму. смола на инструменте моль в шерсти гнутая древесина распрямляется паром гнуть дерево дерево распрямилось после гибки"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures:en",
+      "target_ref": "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Rain crust and frost ground change Qualitative changes of soil surface and shallow embedded objects after rain, freezing and thawing. Repeated freezing and thawing in frost-susceptible ground can heave or settle soil and shift a shallow embedded post or structure, so its actual condition needs inspection before assuming alignment or stability. This confirms no frost, soil, post, movement, damage, or repair. soil crust after rain frost moved post frost heave ground ground heave winter shifted structure"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures:ru",
+      "target_ref": "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Почвенная корка и морозное смещение грунта Качественные изменения поверхности и неглубоко закреплённых предметов после дождя, замерзания и оттаивания. Повторное замерзание и оттаивание морозочувствительного грунта может пучить или осаживать почву и сдвигать неглубоко закреплённый столб либо конструкцию; перед выводом о ровности или устойчивости нужно осмотреть реальное состояние. Это не подтверждает мороз, грунт, столб, величину сдвига, повреждение или ремонт. корка после дождя земля не пропускает воду мороз сдвинул столб пучение грунта пучение земли перекос после зимы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee:en",
+      "target_ref": "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Willow cutting establishment limits Relation of willow cutting establishment to season, moisture and contact, without a survival guarantee. A fresh willow cutting can establish roots with a suitable season, adequate moisture and good planting-medium contact, but these do not guarantee rooting or survival. This creates no willow, cutting, site, water, or successful planting. plant willow cutting willow roots willow cutting dries willow moisture root willow cutting plant willow in moist soil willow cutting failed"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee:ru",
+      "target_ref": "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Укоренение черенка ивы: условия и пределы Связь укоренения черенка с сезоном, влагой и контактом, без гарантии приживаемости. Свежий черенок ивы может укорениться при подходящем сезоне, достаточной влаге и хорошем контакте с посадочной средой, но это не гарантирует корни или приживаемость. Это не создаёт иву, черенок, участок, воду или удачную посадку. посадить черенок ивы ива пустила корни черенок засох влага для ивы укоренить черенок ивы посадка ивы во влажную землю черенок ивы не прижился"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability:en",
+      "target_ref": "claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Rain crust and frost ground change Qualitative changes of soil surface and shallow embedded objects after rain, freezing and thawing. Rain and subsequent drying can form a soil surface crust that limits infiltration and seedling emergence, so actual crust condition matters for surface work rather than appearance alone. This confirms no rain, crust, field, crop, treatment, or result in a scene. soil crust after rain frost moved post frost heave ground water will not infiltrate break soil crust"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability:ru",
+      "target_ref": "claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Почвенная корка и морозное смещение грунта Качественные изменения поверхности и неглубоко закреплённых предметов после дождя, замерзания и оттаивания. Дождь и последующее высыхание могут образовать почвенную корку, которая ограничивает впитывание воды и выход всходов; поэтому для поверхностной работы важна реальная корка, а не только вид земли. Это не подтверждает дождь, корку, поле, культуру, способ обработки или результат в сцене. корка после дождя земля не пропускает воду мороз сдвинул столб пучение грунта вода не впитывается в землю разбить почвенную корку"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force:en",
+      "target_ref": "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet charcoal and saw-kerf control Qualitative limits on hot work with wet charcoal and continuing a binding saw cut. A saw kerf can close and bind from stock support, internal wood stress, or cut alignment; a practical response is to pause and restore control of support, alignment, or kerf opening rather than treat added force as a general solution. This confirms no saw, board, log, skill, injury, or cut completion. wet charcoal forge charcoal steams saw binds kerf closes support stock while sawing"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force:ru",
+      "target_ref": "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Влажное угольное топливо и заклинивание пропила Качественные пределы горячей работы на влажном угле и продолжения пиления при заклинивании пропила. Пропил может сжиматься и зажимать пилу из-за опоры заготовки, внутреннего напряжения древесины или направления реза; разумно остановиться и восстановить контроль опоры, направления или раскрытия пропила, а не считать добавленную силу общим решением. Это не подтверждает пилу, доску, бревно, навык, травму или завершение реза. мокрый уголь в горне уголь шипит пила зажата пропил сжимается подпереть заготовку при пилении"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work:en",
+      "target_ref": "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet charcoal and saw-kerf control Qualitative limits on hot work with wet charcoal and continuing a binding saw cut. Wet charcoal must give up energy to remove retained water, so it is unreliable for immediate hot forge work; it can first be dried or the fire managed with available drier fuel. This confirms no forge, fuel stock, drying method, temperature, or work result. wet charcoal forge charcoal steams saw binds kerf closes dry charcoal"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work:ru",
+      "target_ref": "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Влажное угольное топливо и заклинивание пропила Качественные пределы горячей работы на влажном угле и продолжения пиления при заклинивании пропила. Влажному древесному углю нужно отдать энергию на удаление удержанной воды, поэтому он ненадёжен для немедленной горячей кузнечной работы; сначала его сушат или ведут огонь с доступным более сухим топливом. Это не подтверждает горн, запас топлива, метод сушки, температуру или результат работы. мокрый уголь в горне уголь шипит пила зажата пропил сжимается уголь надо просушить уголь шипит от воды"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:macro-gap-after-childbirth-needs-can-reshape-household-labour:en",
       "target_ref": "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
       "domain": "biology_physiology",
@@ -23964,6 +24174,48 @@
       "retrieval_text": "Дым, зола и раздражение глаз Качественная связь дыма, золы, раздражения глаз и простого удаления частиц. дым режет глаза зола попала в глаз промыть глаза от дыма"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b20-animal-work-and-trail-conditions:en",
+      "target_ref": "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Animal work and trail conditions Weather and recovery constraints on animal work. hive rain inspection horse cool down dog scent rain"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b20-animal-work-and-trail-conditions:ru",
+      "target_ref": "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Условия работы животных и следовой работы Погодные и восстановительные ограничения для животных в работе. пчёлы дождь осмотр лошадь после работы собака след дождь"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b20-ankle-soft-tissue-observation:en",
+      "target_ref": "wk:biology_physiology:macro-b20-ankle-soft-tissue-observation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Ankle soft-tissue observation Nondiagnostic observation and protection after ankle pain or swelling. twisted ankle swollen ankle pain bearing weight"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b20-ankle-soft-tissue-observation:ru",
+      "target_ref": "wk:biology_physiology:macro-b20-ankle-soft-tissue-observation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Наблюдение после травмы голеностопа Недиагностическое наблюдение и защита после боли или отёка голеностопа. подвернул ногу лодыжка опухла больно наступать"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b21-willow-cutting-establishment-limits:en",
+      "target_ref": "wk:biology_physiology:macro-b21-willow-cutting-establishment-limits",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Willow cutting establishment limits Relation of willow cutting establishment to season, moisture and contact, without a survival guarantee. plant willow cutting willow roots willow cutting dries willow moisture"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:macro-b21-willow-cutting-establishment-limits:ru",
+      "target_ref": "wk:biology_physiology:macro-b21-willow-cutting-establishment-limits",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Укоренение черенка ивы: условия и пределы Связь укоренения черенка с сезоном, влагой и контактом, без гарантии приживаемости. посадить черенок ивы ива пустила корни черенок засох влага для ивы"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:mb14-practical-care:en",
       "target_ref": "wk:biology_physiology:mb14-practical-care",
       "domain": "biology_physiology",
@@ -25574,6 +25826,20 @@
       "retrieval_text": "Огонь от горячего жира Осторожный ответ на возгорание жира в уже существующей посуде. жир загорелся масло горит сковорода в огне"
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:macro-b20-heated-pitch-handling:en",
+      "target_ref": "wk:chemistry_process:macro-b20-heated-pitch-handling",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Heated pitch handling Qualitative hazards of heated pitch or bituminous material. hot pitch burn heated bitumen"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:macro-b20-heated-pitch-handling:ru",
+      "target_ref": "wk:chemistry_process:macro-b20-heated-pitch-handling",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Обращение с горячим пеком Качественные опасности нагретого пека или битумного материала. горячий пек ожог смола на огне"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:metal-classes-composition:en",
       "target_ref": "wk:chemistry_process:metal-classes-composition",
       "domain": "chemistry_process",
@@ -26300,6 +26566,34 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Гибкие прутья и выбор глины Зависимость плетения от влажности прутьев и формования от пластичности глины. прутья ломаются замочить иву глина или грязь пластичность глины"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control:en",
+      "target_ref": "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Resin, wool, and bent wood control Qualitative control of resin, insect-damaged wool, and bent wood. resin on tool insects in wool steam bent wood"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control:ru",
+      "target_ref": "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Смола, шерсть и гнутая древесина Качественный контроль липкой смолы, защиты шерсти и закрепления изгиба древесины. смола на инструменте моль в шерсти гнутая древесина распрямляется"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control:en",
+      "target_ref": "wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wet charcoal and saw-kerf control Qualitative limits on hot work with wet charcoal and continuing a binding saw cut. wet charcoal forge charcoal steams saw binds kerf closes"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control:ru",
+      "target_ref": "wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Влажное угольное топливо и заклинивание пропила Качественные пределы горячей работы на влажном угле и продолжения пиления при заклинивании пропила. мокрый уголь в горне уголь шипит пила зажата пропил сжимается"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:mb14-practical-making-and-repair:en",
@@ -27308,6 +27602,34 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Зависшая после бури древесина Повреждённые ветви и стволы как неустойчивая верхняя опасность. зависшая ветка бурелом опасность ветка в кроне после бури"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b20-embers-and-snow-light:en",
+      "target_ref": "wk:environment:macro-b20-embers-and-snow-light",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Hidden embers and snow glare Residual heat under ash and reflected snow light. embers under ash snow glare eyes"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b20-embers-and-snow-light:ru",
+      "target_ref": "wk:environment:macro-b20-embers-and-snow-light",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Скрытые угли и снеговой блеск Остаточное тепло под золой и световой дискомфорт от снега. угли под золой снег слепит глаза"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b21-rain-crust-and-frost-ground-change:en",
+      "target_ref": "wk:environment:macro-b21-rain-crust-and-frost-ground-change",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Rain crust and frost ground change Qualitative changes of soil surface and shallow embedded objects after rain, freezing and thawing. soil crust after rain frost moved post frost heave ground"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:macro-b21-rain-crust-and-frost-ground-change:ru",
+      "target_ref": "wk:environment:macro-b21-rain-crust-and-frost-ground-change",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Почвенная корка и морозное смещение грунта Качественные изменения поверхности и неглубоко закреплённых предметов после дождя, замерзания и оттаивания. корка после дождя земля не пропускает воду мороз сдвинул столб пучение грунта"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:mb14-practical-field-and-water:en",

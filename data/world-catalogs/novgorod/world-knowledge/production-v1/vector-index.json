@@ -10384,6 +10384,496 @@
       "retrieval_text": "Рост микроорганизмов Рост микроорганизмов зависит от условий среды. Рост микроорганизмов зависит от температурного диапазона конкретного вида."
     },
     {
+      "entry_ref": "wk-retrieval:claim:military-world-animals-and-households-have-continuing-needs:en",
+      "target_ref": "claim:military-world-animals-and-households-have-continuing-needs",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery. Present people, animals, and household work still need food, water, shelter, access, care, and labor through disruption or travel, without creating resources or duties."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-animals-and-households-have-continuing-needs:ru",
+      "target_ref": "claim:military-world-animals-and-households-have-continuing-needs",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении. Наличным людям, животным и домашнему труду во время нарушения или движения по-прежнему нужны пища, вода, укрытие, доступ, уход и труд, без создания ресурсов или обязанностей."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-armed-disruption-affects-civilian-work:en",
+      "target_ref": "claim:military-world-armed-disruption-affects-civilian-work",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery. Established armed presence, alarm, evacuation, or disruption can make households reassess dependants, animals, stores, privacy, work, and shelter without fixed reaction."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-armed-disruption-affects-civilian-work:ru",
+      "target_ref": "claim:military-world-armed-disruption-affects-civilian-work",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении. Установленное вооружённое присутствие, тревога, эвакуация или нарушенная работа могут заставить хозяйство пересмотреть зависимых, животных, запасы, приватность, труд и укрытие без заданной реакции."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-bow-and-arrows-need-condition-and-clear-handling:en",
+      "target_ref": "claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment. A present bow, string, and arrows need dry storage, inspection, and clear handling; wetness, wind, and damage leave exact use uncertain."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-bow-and-arrows-need-condition-and-clear-handling:ru",
+      "target_ref": "claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения. Наличным луку, тетиве и стрелам нужны сухое хранение, осмотр и свободное обращение; влага, ветер и повреждение оставляют точное применение неопределённым."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-camp-needs-place-specific-arrangement:en",
+      "target_ref": "claim:military-world-camp-needs-place-specific-arrangement",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery. A present temporary halt needs choices among dry ground, shelter, water, fire, animals, loads, waste, watch, and passage as the place allows."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-camp-needs-place-specific-arrangement:ru",
+      "target_ref": "claim:military-world-camp-needs-place-specific-arrangement",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении. Наличная временная остановка требует выбора между сухой опорой, укрытием, водой, огнём, животными, грузами, отходами, караулом и проходом по возможностям места."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-camp-work-areas-benefit-from-separation:en",
+      "target_ref": "claim:military-world-camp-work-areas-benefit-from-separation",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery. When room and means exist, rest, cooking, animal care, repair, storage, waste, and watch can be separated to reduce interference, without standard layout."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-camp-work-areas-benefit-from-separation:ru",
+      "target_ref": "claim:military-world-camp-work-areas-benefit-from-separation",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении. Когда есть место и средства, отдых, готовка, уход за животными, починка, хранение, отходы и караул можно разводить, уменьшая помехи, без стандартной схемы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-carried-equipment-needs-secure-access:en",
+      "target_ref": "claim:military-world-carried-equipment-needs-secure-access",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment. Present equipment may trade secure retention against prompt access, free hands, balance, and other work."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-carried-equipment-needs-secure-access:ru",
+      "target_ref": "claim:military-world-carried-equipment-needs-secure-access",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения. Наличное снаряжение приходится располагать между надёжным удержанием, быстрым доступом, свободными руками, равновесием и другой работой."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-carrying-an-injured-person-is-conditional:en",
+      "target_ref": "claim:military-world-carrying-an-injured-person-is-conditional",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries. Moving an established injured person may need slower pace, support, shelter, a carrier, or more help; safety is not determined."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-carrying-an-injured-person-is-conditional:ru",
+      "target_ref": "claim:military-world-carrying-an-injured-person-is-conditional",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи. Перенос установленно раненого может требовать медленного темпа, опоры, укрытия, носильщика или дополнительной помощи; безопасность такого переноса не задана."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-cold-and-wetness-need-practical-boundaries:en",
+      "target_ref": "claim:military-world-cold-and-wetness-need-practical-boundaries",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries. Cold, wetness, wind, and immersion make shelter, dry clothing, warmth, and reduced exposure relevant without diagnosis or promised recovery."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-cold-and-wetness-need-practical-boundaries:ru",
+      "target_ref": "claim:military-world-cold-and-wetness-need-practical-boundaries",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи. Холод, сырость, ветер и погружение делают важными укрытие, сухую одежду, тепло и уменьшение воздействия, не ставя диагноз и не обещая восстановление."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-crossing-conditions-remain-local:en",
+      "target_ref": "claim:military-world-crossing-conditions-remain-local",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings. At water or a bridge, bank access, current, depth, bottom, ice, structure, weather, load, and animal response need local assessment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-crossing-conditions-remain-local:ru",
+      "target_ref": "claim:military-world-crossing-conditions-remain-local",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах. У воды или моста доступ к берегу, течение, глубина, дно, лёд, состояние конструкции, погода, груз и животное требуют местной оценки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-crossing-needs-staged-load-handling:en",
+      "target_ref": "claim:military-world-crossing-needs-staged-load-handling",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying. At a ford, bridge, landing, or boat, loads can be staged, kept from needless wetness, and footing reassessed; passage is not guaranteed."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-crossing-needs-staged-load-handling:ru",
+      "target_ref": "claim:military-world-crossing-needs-staged-load-handling",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске. У брода, моста, высадки или лодки груз можно переносить поэтапно, беречь от лишней воды и заново оценивать опору; переход не гарантирован."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-custody-needs-attention-and-basic-needs:en",
+      "target_ref": "claim:military-world-custody-needs-attention-and-basic-needs",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody. Where custody or escort is established, supervision, space, light, food, drink, rest, movement, and attention matter; status, guilt, and disposition do not."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-custody-needs-attention-and-basic-needs:ru",
+      "target_ref": "claim:military-world-custody-needs-attention-and-basic-needs",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека. При уже установленном удержании или сопровождении важны наблюдение, место, свет, пища, питьё, отдых, движение и внимание людей; статус, вина и судьба не заданы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-defence-repair-competes-for-people-and-material:en",
+      "target_ref": "claim:military-world-defence-repair-competes-for-people-and-material",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work. Repair or temporary strengthening of a present defence needs available people, tools, material, light, passage, and time, competing with other work."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-defence-repair-competes-for-people-and-material:ru",
+      "target_ref": "claim:military-world-defence-repair-competes-for-people-and-material",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде. Починка или временное усиление наличной оборонной постройки требуют доступных людей, инструментов, материала, света, прохода и времени, конкурируя с остальными делами."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-defensive-structure-needs-local-inspection:en",
+      "target_ref": "claim:military-world-defensive-structure-needs-local-inspection",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work. A present wall, gate, ditch, bridge, or defensive work can be inspected by materials, joints, wetness, access, ground, and visible damage without capacity."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-defensive-structure-needs-local-inspection:ru",
+      "target_ref": "claim:military-world-defensive-structure-needs-local-inspection",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде. Наличную стену, ворота, ров, мост или оборонную работу можно осмотреть по материалам, стыкам, сырости, доступу, грунту и видимому повреждению без вывода о прочности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-established-casualty-needs-hazard-aware-help:en",
+      "target_ref": "claim:military-world-established-casualty-needs-hazard-aware-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries. After an established injury or collapse, danger, movement, exposure, helpers, shelter, and rest bound immediate support; this is not treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-established-casualty-needs-hazard-aware-help:ru",
+      "target_ref": "claim:military-world-established-casualty-needs-hazard-aware-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи. После установленной травмы или коллапса выбор немедленной помощи ограничивают опасность, переноска, воздействие среды, помощники, укрытие и отдых; это не лечение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-exertion-competes-with-attention-and-recovery:en",
+      "target_ref": "claim:military-world-exertion-competes-with-attention-and-recovery",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries. Sustained carrying, marching, watch, cold, or hard work makes rest, food, drink, warmth, and attention relevant without assigning fatigue."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-exertion-competes-with-attention-and-recovery:ru",
+      "target_ref": "claim:military-world-exertion-competes-with-attention-and-recovery",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи. Длительная переноска, марш, караул, холод или тяжёлая работа делают практически важными отдых, пищу, питьё, тепло и внимание, но не задают усталость числом."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-field-maintenance-is-conditional:en",
+      "target_ref": "claim:military-world-field-maintenance-is-conditional",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying. A worn fastening, join, edge, shaft, or fitting can be inspected, limited, repaired, replaced, or deferred by real means, time, and skill."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-field-maintenance-is-conditional:ru",
+      "target_ref": "claim:military-world-field-maintenance-is-conditional",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске. Изношенное крепление, шов, край, древко или фурнитура требуют осмотра, ограничения, починки, замены либо отсрочки по реальным средствам, времени и навыку."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-fire-and-smoke-need-access-and-separation:en",
+      "target_ref": "claim:military-world-fire-and-smoke-need-access-and-separation",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work. An established fire or smoke hazard makes exits, people, water, combustibles, wind, visibility, and work room relevant without predicting control."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-fire-and-smoke-need-access-and-separation:ru",
+      "target_ref": "claim:military-world-fire-and-smoke-need-access-and-separation",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде. Установленный пожар или дым в застройке делают практически важными выходы, людей, воду, горючее, ветер, видимость и место работы, не обещая локализацию."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-flight-and-pursuit-share-environmental-limits:en",
+      "target_ref": "claim:military-world-flight-and-pursuit-share-environmental-limits",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody. Established withdrawal, evasion, or following depends on terrain, visibility, local knowledge, fatigue, animals, companions, and routes without outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-flight-and-pursuit-share-environmental-limits:ru",
+      "target_ref": "claim:military-world-flight-and-pursuit-share-environmental-limits",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека. Установленные отход, уклонение или следование зависят от местности, видимости, знания места, усталости, животных, спутников и путей без гарантии контакта или исхода."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-gate-and-passage-use-needs-actual-access:en",
+      "target_ref": "claim:military-world-gate-and-passage-use-needs-actual-access",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work. Use of a present gate, narrow entry, wall walk, bridge, or yard passage depends on access, crowding, load, light, footing, and people, not control."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-gate-and-passage-use-needs-actual-access:ru",
+      "target_ref": "claim:military-world-gate-and-passage-use-needs-actual-access",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде. Пользование наличными воротами, узким входом, стеной, мостом или двором зависит от доступа, тесноты, груза, света, опоры и людей, не давая права входа или контроля."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-ground-and-weather-change-practical-options:en",
+      "target_ref": "claim:military-world-ground-and-weather-change-practical-options",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings. Ground, vegetation, water, snow, ice, rain, wind, fog, smoke, and light alter footing, cover, sight, sound, wetness, and work options."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-ground-and-weather-change-practical-options:ru",
+      "target_ref": "claim:military-world-ground-and-weather-change-practical-options",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах. Грунт, растительность, вода, снег, лёд, дождь, ветер, туман, дым и свет меняют опору, укрытие, видимость, звук, сырость и варианты работы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-loads-need-order-and-passage:en",
+      "target_ref": "claim:military-world-loads-need-order-and-passage",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying. People, animals, carts, boats, and loads need movement order, passage, and attention to footing, snags, and access; this sets no formation or safe route."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-loads-need-order-and-passage:ru",
+      "target_ref": "claim:military-world-loads-need-order-and-passage",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске. Людям, животным, телегам, лодкам и грузам нужны порядок движения, проход и внимание к опоре, зацепам и доступу; это не задаёт строй или безопасный путь."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-long-implements-need-clearance:en",
+      "target_ref": "claim:military-world-long-implements-need-clearance",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment. A long implement needs clearance from people, animals, walls, and brush to carry or reposition; its exact reach is unknown."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-long-implements-need-clearance:ru",
+      "target_ref": "claim:military-world-long-implements-need-clearance",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения. Длинному предмету нужен просвет от людей, животных, стен и кустов для переноски или поворота; его точная досягаемость неизвестна."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-message-needs-recipient-and-confirmation:en",
+      "target_ref": "claim:military-world-message-needs-recipient-and-confirmation",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody. A message, signal, or report is clearer with recipient, observable content, route or medium, and acknowledgement; it proves no authority, receipt, or compliance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-message-needs-recipient-and-confirmation:ru",
+      "target_ref": "claim:military-world-message-needs-recipient-and-confirmation",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека. Сообщение, сигнал или доклад яснее при заданных адресате, наблюдаемом содержании, пути или средстве и подтверждении; это не доказывает власть, получение или исполнение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-observation-is-bounded-by-conditions:en",
+      "target_ref": "claim:military-world-observation-is-bounded-by-conditions",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings. An observer can use openings, cover, light, sound, and traces for a bounded report; distance, weather, and obstruction limit identification."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-observation-is-bounded-by-conditions:ru",
+      "target_ref": "claim:military-world-observation-is-bounded-by-conditions",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах. Наблюдатель может использовать просветы, укрытие, свет, звук и следы для ограниченного сообщения; расстояние, погода и преграды ограничивают опознание."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-passage-can-disturb-animals-and-work:en",
+      "target_ref": "claim:military-world-passage-can-disturb-animals-and-work",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings. A noisy or crowded passage near animals, crops, stores, or work can interfere and call for room, slowing, separation, or local cooperation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-passage-can-disturb-animals-and-work:ru",
+      "target_ref": "claim:military-world-passage-can-disturb-animals-and-work",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах. Шумный или тесный проход рядом с животными, посевами, запасами или работой может мешать и требовать места, замедления, разделения дел или местного согласия."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-portage-is-coordinated-carry-work:en",
+      "target_ref": "claim:military-world-portage-is-coordinated-carry-work",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying. Portaging a present boat or bulky load needs a clear route, coordinated lifting, protection of vulnerable parts, and reassessment pauses."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-portage-is-coordinated-carry-work:ru",
+      "target_ref": "claim:military-world-portage-is-coordinated-carry-work",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске. Перенос наличной лодки или громоздкого груза требует чистого пути, согласованного подъёма, защиты уязвимых частей и остановок для проверки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-protective-layers-need-fit-and-adjustment:en",
+      "target_ref": "claim:military-world-protective-layers-need-fit-and-adjustment",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment. Worn protective layers and fastenings may need fit, adjustment, and checking; this does not set protection quality."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-protective-layers-need-fit-and-adjustment:ru",
+      "target_ref": "claim:military-world-protective-layers-need-fit-and-adjustment",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения. Носимые защитные слои и крепления могут требовать посадки, регулировки и осмотра; это не задаёт качество защиты."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-recovery-starts-with-actual-condition-and-access:en",
+      "target_ref": "claim:military-world-recovery-starts-with-actual-condition-and-access",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery. After established disruption, people can inspect accessible shelter, tools, stores, animals, water, routes, and injuries before repair, salvage, care, rest, or withdrawal."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-recovery-starts-with-actual-condition-and-access:ru",
+      "target_ref": "claim:military-world-recovery-starts-with-actual-condition-and-access",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении. После установленного нарушения люди могут осмотреть доступные укрытие, инструменты, запасы, животных, воду, пути и травмы до выбора починки, спасения, помощи, отдыха или отхода."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-siege-work-is-labour-and-logistics-bound:en",
+      "target_ref": "claim:military-world-siege-work-is-labour-and-logistics-bound",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work. Where an established conflict calls for settlement work, materials, digging, observation, shelter, water, food, tools, and rest constrain it without plan or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-siege-work-is-labour-and-logistics-bound:ru",
+      "target_ref": "claim:military-world-siege-work-is-labour-and-logistics-bound",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде. Если установленный конфликт требует работы у поселения, перенос материалов, земляные работы, наблюдение, укрытие, вода, пища, инструменты и отдых ограничивают её без плана или исхода."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-small-group-coordination-needs-established-roles:en",
+      "target_ref": "claim:military-world-small-group-coordination-needs-established-roles",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody. When people, relationships, and a shared task are established, they can divide observation, carrying, repair, care, and movement without creating authority."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-small-group-coordination-needs-established-roles:ru",
+      "target_ref": "claim:military-world-small-group-coordination-needs-established-roles",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека. Когда люди, связи и общая задача уже заданы, они могут делить наблюдение, переноску, починку, помощь и движение без создания власти или фиксированной организации."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-traces-need-cautious-interpretation:en",
+      "target_ref": "claim:military-world-traces-need-cautious-interpretation",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings. Tracks, disturbance, sounds, smoke, or animal behaviour justify attention and comparison, not identification of person, force, intent, or threat."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-traces-need-cautious-interpretation:ru",
+      "target_ref": "claim:military-world-traces-need-cautious-interpretation",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах. Следы, нарушения, звуки, дым или поведение животных дают повод к вниманию и сравнению с местом, но сами не называют человека, отряд, намерение или угрозу."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-training-links-practice-feedback-and-rest:en",
+      "target_ref": "claim:military-world-training-links-practice-feedback-and-rest",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries. Practice with an available task or tool can be paced, observed, corrected, and paused for fatigue or safety; repetition gives no instant competence."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-training-links-practice-feedback-and-rest:ru",
+      "target_ref": "claim:military-world-training-links-practice-feedback-and-rest",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи. Практику с наличной задачей или предметом можно дозировать, наблюдать, поправлять и прерывать из-за усталости или безопасности; повторение не даёт мгновенного умения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-watch-relief-keeps-attention-bounded:en",
+      "target_ref": "claim:military-world-watch-relief-keeps-attention-bounded",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody. An already organized watch can use relief, limited observation tasks, and an agreed alert path without setting schedule, code, strength, or threat."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-watch-relief-keeps-attention-bounded:ru",
+      "target_ref": "claim:military-world-watch-relief-keeps-attention-bounded",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека. Уже организованный караул может использовать смену, ограниченные задачи наблюдения и согласованный путь тревоги, не задавая график, код, численность или угрозу."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-wet-equipment-benefits-from-inspection:en",
+      "target_ref": "claim:military-world-wet-equipment-benefits-from-inspection",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment. After wetness, leather, cord, wood, cloth, and metal can be inspected, dried, or protected without declaring them sound."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-wet-equipment-benefits-from-inspection:ru",
+      "target_ref": "claim:military-world-wet-equipment-benefits-from-inspection",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения. После сырости кожу, шнур, дерево, ткань и металл можно осмотреть, просушить или убрать от лишней влаги, не объявляя их исправными."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-working-animal-care-intersects-travel:en",
+      "target_ref": "claim:military-world-working-animal-care-intersects-travel",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying. Travel with a working animal links footing, harness, water, fodder, rest, tethering, and room to turn, not pace or endurance."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:military-world-working-animal-care-intersects-travel:ru",
+      "target_ref": "claim:military-world-working-animal-care-intersects-travel",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске. Поездка с рабочим животным связывает опору, сбрую, воду, корм, отдых, привязь и место разворота, но не назначает темп или выносливость."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:milling-grain-compression-shear-fracture:en",
       "target_ref": "claim:milling-grain-compression-shear-fracture",
       "domain": "physics_material_science",
@@ -20128,6 +20618,20 @@
       "retrieval_text": "Жилой интерьер и меняющиеся условия Качественные связи совместной жизни, света, воздуха, ухода и следов в жилом помещении. дом внутри очаг и дым сырой пол"
     },
     {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-military-defence-emergency-work:en",
+      "target_ref": "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "defence and emergency work Editorial premises for fortification, fire, access, and work."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-military-defence-emergency-work:ru",
+      "target_ref": "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "оборона и аварийная работа Редакторские premises об укреплениях, пожаре, проходах и труде."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-place-work-space:en",
       "target_ref": "wk:architecture_settlement:reconstructed-place-work-space",
       "domain": "architecture_settlement",
@@ -22816,6 +23320,20 @@
       "retrieval_text": "Практическая поддержка при болезни и ограничении Редакторские посылки о поддержке и адаптации без медицинского протокола. болезнь ранение инвалидность уход"
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-military-readiness-care:en",
+      "target_ref": "wk:biology_physiology:reconstructed-military-readiness-care",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "readiness and care Editorial premises for exertion, cold, training, and care boundaries."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:reconstructed-military-readiness-care:ru",
+      "target_ref": "wk:biology_physiology:reconstructed-military-readiness-care",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "готовность и помощь Редакторские premises об усилии, холоде, обучении и границах помощи."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:research-circulatory-shock-perfusion:en",
       "target_ref": "wk:biology_physiology:research-circulatory-shock-perfusion",
       "domain": "biology_physiology",
@@ -24958,6 +25476,20 @@
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-military-field-maintenance-transport:en",
+      "target_ref": "wk:craft_technology:reconstructed-military-field-maintenance-transport",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "field maintenance and transport Editorial premises for upkeep, loads, animals, crossings, and carrying."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-military-field-maintenance-transport:ru",
+      "target_ref": "wk:craft_technology:reconstructed-military-field-maintenance-transport",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "полевая служба и перевозка Редакторские premises об уходе, грузе, животных, переправе и переноске."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:reconstructed-place-work-flow:en",
       "target_ref": "wk:craft_technology:reconstructed-place-work-flow",
       "domain": "craft_technology",
@@ -25964,6 +26496,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Радиационный туман Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-military-observation-crossing:en",
+      "target_ref": "wk:environment:reconstructed-military-observation-crossing",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "military environment and observation Editorial premises for ground, observation, traces, and crossings."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:reconstructed-military-observation-crossing:ru",
+      "target_ref": "wk:environment:reconstructed-military-observation-crossing",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "военная среда и наблюдение Редакторские premises о местности, видимости, следах и переправах."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:reconstructed-place-outdoors:en",
@@ -28136,6 +28682,20 @@
       "retrieval_text": "Обычные последствия вооружённого участия Редакторские качественные посылки о вооружённых людях и их хозяйственных последствиях. оружие отряд поход"
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-military-equipment-readiness:en",
+      "target_ref": "wk:material_culture:reconstructed-military-equipment-readiness",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "military equipment and readiness Editorial premises for carrying, fitting, inspection, and access to already existing equipment."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-military-equipment-readiness:ru",
+      "target_ref": "wk:material_culture:reconstructed-military-equipment-readiness",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "военное снаряжение и готовность Редакторские premises о ношении, посадке, осмотре и доступности уже существующего снаряжения."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:reconstructed-practical-boat-work:en",
       "target_ref": "wk:material_culture:reconstructed-practical-boat-work",
       "domain": "material_culture",
@@ -28946,6 +29506,20 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Обучение и ученичество Редакционные предпосылки практического обучения. ребёнок ученик учиться"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-military-camp-household-disruption:en",
+      "target_ref": "wk:npc_daily_life:reconstructed-military-camp-household-disruption",
+      "domain": "npc_daily_life",
+      "locale": "en",
+      "retrieval_text": "camp and household disruption Editorial premises for halts, animals, households, and recovery."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-military-camp-household-disruption:ru",
+      "target_ref": "wk:npc_daily_life:reconstructed-military-camp-household-disruption",
+      "domain": "npc_daily_life",
+      "locale": "ru",
+      "retrieval_text": "лагерь и хозяйственное нарушение Редакторские premises о привале, животных, хозяйстве и восстановлении."
     },
     {
       "entry_ref": "wk-retrieval:wk:npc_daily_life:reconstructed-practical-seasonal-work:en",
@@ -32222,6 +32796,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Создание дома и родня Редакционные бытовые предпосылки, не нормы права. брак родня дом"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-military-coordination-custody:en",
+      "target_ref": "wk:social_law_economy:reconstructed-military-coordination-custody",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "coordination and custody Editorial premises for small groups, messages, watch, and custody."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-military-coordination-custody:ru",
+      "target_ref": "wk:social_law_economy:reconstructed-military-coordination-custody",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "координация и содержание Редакторские premises о малой группе, сообщениях, карауле и удержании человека."
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:reconstructed-public-dispute-and-language:en",

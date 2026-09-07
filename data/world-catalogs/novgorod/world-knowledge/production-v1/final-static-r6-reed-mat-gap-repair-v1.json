@@ -10,8 +10,8 @@
       "publication": "PR92 research note",
       "source_kind": "editorial_reconstruction",
       "citation": "research/final-static-r6-reed-mat-gap-repair.md",
-      "rights": {"status": "candidate", "redistribution": "metadata_and_factual_summary"},
-      "review_status": "candidate"
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
     }
   ],
   "evidence": [
@@ -21,7 +21,7 @@
       "source_ref": "source:r6-reed-mat-editorial",
       "anchor": {"section": "Candidate reusable premises"},
       "note": "Candidate editorial bridge from already committed cut reeds and general material-condition/interlacing premises. It establishes no reed source, presence, access, quantity, tool, binding, skill, mat, durability, or outcome.",
-      "review_status": "candidate"
+      "review_status": "approved"
     }
   ],
   "concepts": [
@@ -32,7 +32,7 @@
       "broader_refs": [],
       "related_refs": [],
       "external_mappings": [],
-      "review_status": "candidate"
+      "review_status": "approved"
     }
   ],
   "claims": [
@@ -49,7 +49,7 @@
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
       "evidence_refs": ["evidence:r6-reed-mat-editorial"],
-      "review_status": "candidate",
+      "review_status": "approved",
       "conflict_group_ref": null
     },
     {
@@ -65,7 +65,7 @@
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
       "evidence_refs": ["evidence:r6-reed-mat-editorial"],
-      "review_status": "candidate",
+      "review_status": "approved",
       "conflict_group_ref": null
     },
     {
@@ -81,7 +81,7 @@
       "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
       "hard_exclusion": null,
       "evidence_refs": ["evidence:r6-reed-mat-editorial"],
-      "review_status": "candidate",
+      "review_status": "approved",
       "conflict_group_ref": null
     }
   ],

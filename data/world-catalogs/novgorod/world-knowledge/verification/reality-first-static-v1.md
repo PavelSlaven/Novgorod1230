@@ -1,6 +1,6 @@
 # Independent source/domain verification — reality-first static v1
 
-Candidate `git:7f1949457057775df31a0d813175e47fa5ef2657:data/world-catalogs/novgorod/world-knowledge/research/reality-first-static-candidates-v1.json` reviewed independently under World Knowledge §§0.2 and 35.1. Auditor `/root/reality_claim_verifier` did not author candidate. Review covers all 40 frozen atomic claims, their RU/EN localizations, evidence bindings and state boundary.
+Candidate was reviewed independently under World Knowledge §§0.2 and 35.1. Auditor `/root/reality_claim_verifier` did not author candidate. Review covers all 40 frozen atomic claims, their RU/EN localizations, evidence bindings and state boundary. Production payload `git:c092d563b5f20122b0e0fb23df19416468f8b6ad:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-first-static-v1.json` was confirmed exact-copy before rebinding every approval to it.
 
 ## Approved claims
 

@@ -6,7 +6,7 @@
       "verification_ref": "wk-verification:rb01-01",
       "claim_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
       "claim_digest": "4915588d0e0741bd5767e35d1bc38ba203261aca533cba9e790b3a30e35357b3",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -21,7 +21,7 @@
       "verification_ref": "wk-verification:rb01-02",
       "claim_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
       "claim_digest": "4288fece2e4cb1a5ce7bc5115c59a71f6bf380c3d1d07dbdf0824da36fd37d0a",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -36,7 +36,7 @@
       "verification_ref": "wk-verification:rb01-03",
       "claim_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
       "claim_digest": "13e44ad4cca3fa6270b5503382c5ccf28f6eddd9a85b170b20de31c23c822ed5",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -51,7 +51,7 @@
       "verification_ref": "wk-verification:rb01-04",
       "claim_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
       "claim_digest": "c54f1c09bd73ae231cd400903c0a33a54a90a51d93c3dc254ede1d3fe97c4625",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -66,7 +66,7 @@
       "verification_ref": "wk-verification:rb01-05",
       "claim_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
       "claim_digest": "0b713442653577fc72c3bb706e59d037bc3ba6799988eb4fd0fb9aa30a86b56a",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -81,7 +81,7 @@
       "verification_ref": "wk-verification:rb01-06",
       "claim_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
       "claim_digest": "afe03998f18a9e6f107edcc88aba1e7ff22f22cd598100e04dfa68d78125a6b9",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -96,7 +96,7 @@
       "verification_ref": "wk-verification:rb01-07",
       "claim_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
       "claim_digest": "5b88b4831385822fc9551e971034316097f3881c3cbf327650018b8013489e73",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -111,7 +111,7 @@
       "verification_ref": "wk-verification:rb01-08",
       "claim_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
       "claim_digest": "537d3468ca360c8ab371849c41831f947f19959d54fbf79b99f267b12e141500",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -126,7 +126,7 @@
       "verification_ref": "wk-verification:rb01-09",
       "claim_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
       "claim_digest": "446abca7dc86df900ecea69256ee6eee4a02ad125a6a517eecb56f218c62a7c7",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent candidate, triage and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -141,7 +141,7 @@
       "verification_ref": "wk-verification:rb01-10",
       "claim_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
       "claim_digest": "0ef34314776ba88b9a58f382dcad2ca2d779edfb930905dbafb0838e892588a3",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -156,7 +156,7 @@
       "verification_ref": "wk-verification:rb01-11",
       "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
       "claim_digest": "13ac24ad4df13ea39dba91d3a5224f17b0c8a6b0d577ae64a42c3407b3d56b32",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -172,7 +172,7 @@
       "verification_ref": "wk-verification:rb01-12",
       "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
       "claim_digest": "462743ad9ef9b8204e2f4fb0afc530b2ec7d419db334d7b640d6f4a7a146d564",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -188,7 +188,7 @@
       "verification_ref": "wk-verification:rb01-13",
       "claim_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
       "claim_digest": "0e43223dfa3fab52b727c17c1bc1faf92a7345e22cb71c9e2576282648658ca4",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -203,7 +203,7 @@
       "verification_ref": "wk-verification:rb01-14",
       "claim_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
       "claim_digest": "48f4bd4836ca10451c6cfdddafd349e73b456950438992fa8ce36ea346eac6f1",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -219,7 +219,7 @@
       "verification_ref": "wk-verification:rb01-15",
       "claim_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
       "claim_digest": "70c5302350d6b4b9fc110ee9b5ac990da22b7a73db76729ed78d17fa72ca1627",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -235,7 +235,7 @@
       "verification_ref": "wk-verification:rb01-16",
       "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
       "claim_digest": "42790a268abdb5be0784a2f9c55d0a746407bb47729c733e9580049a70ebd8ce",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -250,7 +250,7 @@
       "verification_ref": "wk-verification:rb01-17",
       "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
       "claim_digest": "33939ec68f3b613b8255c46a08c619cb762eeaa1894c856be85ef67cacf24ab3",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -266,7 +266,7 @@
       "verification_ref": "wk-verification:rb01-18",
       "claim_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
       "claim_digest": "b87250e264125dd7e4cebb4bcbb2447540ddc76dc209c7c8798c1f2f3cbf1fee",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -281,7 +281,7 @@
       "verification_ref": "wk-verification:rb01-19",
       "claim_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
       "claim_digest": "393e5566df7b2c232a184b3daacdf6cee1e9ce3f9c428b7a55b7df925fd67655",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -297,7 +297,7 @@
       "verification_ref": "wk-verification:rb01-20",
       "claim_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
       "claim_digest": "2043a2b94e502ffb70757319d97b083e7adb1ea9b807d67c051b18552881bdf5",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [
@@ -313,7 +313,7 @@
       "verification_ref": "wk-verification:rb01-21",
       "claim_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
       "claim_digest": "043b53d6b4089cbdf4cc3b8d94bd881e7dc568aabdc2de109ac198ef8adb2640",
-      "candidate_ref": "git:a0be3c4b6f60c3536cfc0956a08f4d4c1cdd3860:data/world-catalogs/novgorod/world-knowledge/research/reality-batch-01-gap-closure-candidates-v1.json#claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "candidate_ref": "git:0cbca1c9545d432faf15bbc7b9be6b5626d45220:data/world-catalogs/novgorod/world-knowledge/production-v1/reality-batch-01-gap-closure-v1.json#claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
       "auditor_ref": "/root/reality_gap_claim_verifier",
       "independence_basis": "Independent direct-source and boundary review; auditor did not author candidate.",
       "evidence_checked": [

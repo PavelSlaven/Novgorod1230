@@ -3,7 +3,7 @@
 ## Scope and method
 
 Independent review of all 15 claims in
-`git:de42b45aafb209f49c62d9f81d75e056b8f1439e:data/world-catalogs/novgorod/world-knowledge/research/trade-economy-batch-03-gap-closure-candidates-v1.json`.
+`git:a94e54cc34686beb040376aaa15abdf2887a2439:data/world-catalogs/novgorod/world-knowledge/production-v1/trade-economy-batch-03-gap-closure-v1.json`.
 The reviewer did not author the candidate. Reviewed candidate, triage,
 RU/EN localizations, exact evidence mappings and authoritative-boundary limits.
 `editorial_reconstruction` is allowed here as explicitly bounded reconstruction;

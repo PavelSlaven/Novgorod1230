@@ -1,0 +1,182 @@
+{
+  "batch": "trade-economy-batch-03-free",
+  "generator": "free_adversarial",
+  "sampling_component": "trade_household_economy",
+  "cases": [
+    {
+      "case_id": "te03free-001",
+      "location": "a riverside landing near Novgorod",
+      "person": "a boatman unloading mixed cargo",
+      "circumstances": "Several bundles look alike, but only some were kept above the waterline during rain.",
+      "situation": "What factual details would matter before treating the bundles as economically interchangeable?"
+    },
+    {
+      "case_id": "te03free-002",
+      "location": "a household yard in Novgorod",
+      "person": "a cook planning winter meals",
+      "circumstances": "A grain store has been opened repeatedly by different household members.",
+      "situation": "What general evidence can distinguish ordinary use, spoilage, and a mistaken count without assuming blame?"
+    },
+    {
+      "case_id": "te03free-003",
+      "location": "a timber-working yard outside Novgorod",
+      "person": "a carpenter exchanging labor for materials",
+      "circumstances": "The supplied boards vary in dryness and straightness.",
+      "situation": "Which reusable factual premises determine whether labor and materials can be compared fairly?"
+    },
+    {
+      "case_id": "te03free-004",
+      "location": "a roadside shelter on an approach to Novgorod",
+      "person": "a traveler carrying perishable food",
+      "circumstances": "The traveler must choose between moving now in poor weather or waiting with limited shelter.",
+      "situation": "What physical and economic constraints shape the choice without assuming a route, timetable, or outcome?"
+    },
+    {
+      "case_id": "te03free-005",
+      "location": "a shared bakehouse in Novgorod",
+      "person": "a household member bringing flour",
+      "circumstances": "Fuel, oven time, and flour are contributed by different people.",
+      "situation": "What facts would be needed to reason about contributions and resulting bread without inventing a local custom?"
+    },
+    {
+      "case_id": "te03free-006",
+      "location": "a market-side workshop in Novgorod",
+      "person": "a repairer examining a damaged clasp",
+      "circumstances": "Repair may preserve a usable object, while recasting would consume more material.",
+      "situation": "What general premises decide between repair, reuse, and transformation?"
+    },
+    {
+      "case_id": "te03free-007",
+      "location": "a farmstead near Novgorod",
+      "person": "a keeper storing fodder",
+      "circumstances": "Part of the fodder became damp after a roof leak.",
+      "situation": "How should condition, remaining usefulness, and waste be established before making an economic decision?"
+    },
+    {
+      "case_id": "te03free-008",
+      "location": "a busy quay in Novgorod",
+      "person": "a porter offered a small mixed load",
+      "circumstances": "The load contains fragile and durable goods that require different handling.",
+      "situation": "What factual factors make transport effort depend on more than apparent bulk?"
+    },
+    {
+      "case_id": "te03free-009",
+      "location": "a household storeroom in Novgorod",
+      "person": "a weaver sorting thread",
+      "circumstances": "Several skeins are tangled, shortened, or of uncertain fiber quality.",
+      "situation": "What observations support a general assessment of usable material without assigning an exact value?"
+    },
+    {
+      "case_id": "te03free-010",
+      "location": "a village edge near Novgorod",
+      "person": "a gatherer returning with wild plant material",
+      "circumstances": "The material can be used now, dried, or processed, each with different losses and labor.",
+      "situation": "Which causal facts govern a realistic comparison of those options?"
+    },
+    {
+      "case_id": "te03free-011",
+      "location": "a communal well in Novgorod",
+      "person": "a household water carrier",
+      "circumstances": "Fetching water competes with other tasks during a crowded part of the day.",
+      "situation": "What premises let a simulation represent opportunity cost without asserting a fixed queue or social rule?"
+    },
+    {
+      "case_id": "te03free-012",
+      "location": "a small stall in Novgorod",
+      "person": "a seller laying out dried goods",
+      "circumstances": "Some goods were exposed to smoke and some to moisture during storage.",
+      "situation": "What facts distinguish a change in quality, a change in quantity, and a merely cosmetic difference?"
+    },
+    {
+      "case_id": "te03free-013",
+      "location": "a smithing yard near Novgorod",
+      "person": "an apprentice collecting metal offcuts",
+      "circumstances": "The offcuts differ in composition, size, and prior use.",
+      "situation": "What general constraints prevent treating all scraps as freely substitutable input?"
+    },
+    {
+      "case_id": "te03free-014",
+      "location": "a lodging room in Novgorod",
+      "person": "a visiting trader organizing supplies",
+      "circumstances": "Food, packing material, and tools share one confined space overnight.",
+      "situation": "Which facts about access, contamination, damage, and placement matter before any later accounting?"
+    },
+    {
+      "case_id": "te03free-015",
+      "location": "a field margin near Novgorod",
+      "person": "a laborer choosing when to harvest a small crop patch",
+      "circumstances": "Weather, ripeness, available hands, and carrying capacity are all uncertain.",
+      "situation": "What general evidence should guide the attempt without presuming yields, labor terms, or weather results?"
+    },
+    {
+      "case_id": "te03free-016",
+      "location": "a clothing repair bench in Novgorod",
+      "person": "a parent mending a child's garment",
+      "circumstances": "The garment can be patched from saved cloth, altered into a smaller item, or left for later.",
+      "situation": "What factual premises compare these choices while respecting material conservation and time?"
+    },
+    {
+      "case_id": "te03free-017",
+      "location": "a riverbank near Novgorod",
+      "person": "a fisher preparing a catch",
+      "circumstances": "Part of the catch must be handled before it spoils, but tools and drying space are limited.",
+      "situation": "What general constraints determine feasible preservation work without asserting output or demand?"
+    },
+    {
+      "case_id": "te03free-018",
+      "location": "a courtyard in Novgorod",
+      "person": "a neighbor borrowing a hand tool",
+      "circumstances": "The tool is returned usable but more worn after urgent work.",
+      "situation": "What observable facts separate normal wear, damage, maintenance needs, and a changed future usefulness?"
+    },
+    {
+      "case_id": "te03free-019",
+      "location": "a pottery drying area near Novgorod",
+      "person": "a potter deciding what to fire",
+      "circumstances": "Some vessels are partly dry, others have flaws, and fuel is a real input.",
+      "situation": "What reusable facts determine which work can proceed and what losses are physically plausible?"
+    },
+    {
+      "case_id": "te03free-020",
+      "location": "a household kitchen in Novgorod",
+      "person": "an elder combining leftover ingredients",
+      "circumstances": "The ingredients have different freshness, preparation needs, and likely waste.",
+      "situation": "What general facts support a causal account of transformation rather than a free creation of food?"
+    },
+    {
+      "case_id": "te03free-021",
+      "location": "a loading yard outside Novgorod",
+      "person": "a cart driver balancing a load",
+      "circumstances": "Adding one awkward object may make the whole load less stable.",
+      "situation": "Which physical premises relate shape, securing, vehicle capacity, and risk without fixing a destination?"
+    },
+    {
+      "case_id": "te03free-022",
+      "location": "a household workroom in Novgorod",
+      "person": "a maker using saved wax and cloth scraps",
+      "circumstances": "The maker proposes a new ordinary household item with no prepared recipe.",
+      "situation": "What general premises allow evaluation of the attempt without requiring a pre-registered craft result?"
+    },
+    {
+      "case_id": "te03free-023",
+      "location": "a covered market passage in Novgorod",
+      "person": "a buyer comparing two containers of the same-looking goods",
+      "circumstances": "One container is fuller near the top, while the other may contain denser material.",
+      "situation": "What factual checks can compare quantity and condition without relying on a stated measure or price?"
+    },
+    {
+      "case_id": "te03free-024",
+      "location": "a household doorway in Novgorod",
+      "person": "a caretaker deciding how to use a broken storage basket",
+      "circumstances": "The basket might be repaired, used for a narrower task, or dismantled for material.",
+      "situation": "What facts establish remaining function, needed inputs, and material continuity across those options?"
+    },
+    {
+      "case_id": "te03free-025",
+      "location": "a garden plot near Novgorod",
+      "person": "a household member saving seed from a harvest",
+      "circumstances": "Keeping seed reduces immediate food use, and storage conditions may affect later viability.",
+      "situation": "What general causal premises let a world model represent this trade-off without claiming a fixed yield or future result?"
+    }
+  ]
+}

@@ -1,40 +1,37 @@
 # PR92 — static coverage checkpoint, 2026-09-07
 
-## Current final static reconciliation — audited content `6709cb2e`
+## Current final static reconciliation — R8 checkpoint `7c82e83a`
 
-The production corpus contains **1,655 independently approved claims, 997
-concepts, 611 sources and 1,159 evidence records**. Every compiled claim has
+The production corpus contains **1,723 independently approved claims, 1,032
+concepts, 645 sources and 1,206 evidence records**. Every compiled claim has
 one validated `APPROVE` binding to a committed candidate copy. Category
-cartography maps **268 supported families** and retains **14 explicitly
-bounded P2 families**; the final independent static audit found no current
-P0/P1 factual-family blocker. This is broad game-ready static coverage, not a
-mathematical claim of whole-world completeness or gameplay saturation.
+cartography maps **304 supported-family rows / 1,726 claim links** and retains
+**14 explicitly bounded P2 families**. No current P0/P1 factual-family blocker
+was found. This is broad game-ready static coverage, not a mathematical claim
+of whole-world completeness or gameplay saturation.
 
-The post-repair reality-first clean series contains 75 controlled cases (65
-practical/natural/physical) plus 25 independent free/adversarial cases.
-Independent WK-only review and cross-triage found no genuine remaining gap.
-The post-repair trade/economy-first clean series likewise contains 75
-controlled plus 25 free/adversarial cases; two reviewers covered 100/100 and
-an independent cross-audit found no genuine gap. Both are offline static
-tests, not live gameplay campaigns or scenario whitelists.
+The old R5 clean series is historical only: later R6 and R7 corpus-blind probes
+found reusable gaps and reset the contract §0.3 streak. After those repairs,
+R8 froze three new general mixed batches against the unchanged factual
+candidate `db1f8984a3b36838992b9a0c5911d6d2c735a951`. Each batch contains 75
+controlled cases (60 practical/natural/physical plus 15 social/institutional)
+and 25 independent free/adversarial cases. Independent WK-only reviews and
+cross-audits cover **300/300**, with no genuine or hidden substantial gap. R8
+therefore supplies the current fresh **3/3** static stopping sequence. These
+are offline static tests, not live gameplay campaigns or scenario whitelists.
 
-The matching vector package contains **5,304 x 1,024 float32 entries
-(21,725,184 bytes)** under the unchanged pinned
+The matching vector package contains **5,510 x 1,024 float32 entries
+(22,568,960 bytes)** under the unchanged pinned
 `wk-embedding:giga-480m-0826:v1` profile. The 174-case retrieval gate passes
-with hybrid Recall@10/20 **0.922126/0.922126**. The freshly rebuilt 389-case
+with hybrid Recall@10/20 **0.916379/0.922126**. The freshly rebuilt 389-case
 gameplay-coverage retrieval gate passes with hybrid Recall@10 **0.961825**
 and Recall@20 **0.962339**; hard-constraint recall and applicability precision
 are 1.0 in both reports. Production requires the local offline Giga encoder;
 encoder/vector failure returns typed `WORLD_KNOWLEDGE_UNAVAILABLE` before the
 semantic consumer and commit, with no lexical production fallback.
 
-Independent reports on that content are:
-
-- `pr92-final-grounding-1655.md`: PASS;
-- `pr92-final-verification-1655.md`: PASS;
-- `pr92-final-completeness-1655.md`: PASS_WITH_P2;
-- `pr92-final-contract-1655.md`: PASS;
-- `pr92-final-open-world-1655.md`: PASS.
+The `*-1655.md` and `*-1700.md` reports below this checkpoint are historical.
+Fresh independent final reports must use the single R8 checkpoint above.
 
 The exact merge HEAD still requires its own green full CI. No systematic live
 gameplay, saturation campaign, or repair of other gameplay owners is claimed.
@@ -993,3 +990,60 @@ acceptance criterion only. Mathematical completeness, current scene state,
 live gameplay saturation and future Gameplay Gap Auditor campaigns remain
 outside this phase. The final report-containing HEAD must still pass the full
 exact-HEAD CI gate before merge.
+
+## Post-1700 reset and final R8 static acceptance
+
+The 1,700-claim R5 result above was valid for its checkpoint, but it ceased to
+be final stopping evidence when later corpus-blind probes found new reusable
+premises. R6 first retained two genuine families: preparing/interlacing reed
+stems for a mat-like surface and agreeing perceptible nonverbal signals for
+shared work. Their independently approved repair, together with the already
+prepared cordage premises, produced a 1,709-claim corpus. The acceptance streak
+returned to **0/3**.
+
+R7 then ran three more general mixed hundreds. Independent review and
+cross-audit retained 11 genuine or hidden gaps in R7-01, three in R7-02 and
+none in R7-03. Fourteen bounded claims were independently approved on exact
+candidate `f2e068b60365efb67f94a6cf61e307c790ecca8a` and compiled through the
+existing authoring owner. They cover reusable oil-condition, confined-air,
+acidic-food/copper, layered-snow, unidentified-fume, sealed-pressure,
+reflection, animal-housing air, cold-injury, suspected-snakebite, fuelwood,
+linen, beeswax and medieval-potato-availability boundaries. None creates a
+scene object, recipe, diagnosis, authority or guaranteed outcome. The factual
+candidate became `db1f8984a3b36838992b9a0c5911d6d2c735a951`: **1,723 claims,
+1,032 concepts, 645 sources and 1,206 evidence records**. R7 was diagnostic,
+so its clean third batch did not count toward a new streak.
+
+R8 restarted from zero on that unchanged candidate. Three independent
+corpus-blind generators froze 300 globally unique situations at `1f68068e`.
+Every batch has 38 controlled practical/natural/physical cases in core A, 22
+more practical/natural/physical plus 15 social/institutional cases in core B,
+and 25 unconstrained free/adversarial cases. The controlled labels rotate
+across 75 primary domains per batch; the free lane has no supplied domain or
+need-group label.
+
+Six separate WK-only reads cover all 300 frozen inputs. Their deliberately
+strict first pass emitted 34, 26 and 54 preliminary leads. Three new
+independent cross-auditors then checked every case and every cited runtime ref:
+all 114 leads were composable from existing bounded premises, with **zero
+genuine gaps and zero hidden substantial gaps**. The review files were
+corrected only with those existing refs and bounded inferences; no corpus,
+cartography, runtime or vector content changed. The final records are frozen at
+`7c82e83ab14e8244d415f652ce3c5ed235ce794d`:
+
+| Batch | Controlled | Free | Final result | Substantial gaps |
+| --- | ---: | ---: | ---: | ---: |
+| R8-01 | 75 = 60 practical + 15 social | 25 | 100/100 covered | 0 |
+| R8-02 | 75 = 60 practical + 15 social | 25 | 100/100 covered | 0 |
+| R8-03 | 75 = 60 practical + 15 social | 25 | 100/100 covered | 0 |
+
+R8 is therefore the fresh consecutive **3/3** required by contract §0.3 on
+one unchanged factual candidate. It is an operational static stopping rule,
+not proof that every possible fact exists. It counts no known-case replay and
+no live gameplay. Gameplay Gap Auditor campaigns, gameplay saturation and
+repairs of inventory, ownership, materialization, persistence, body, combat,
+NPC, narration or spatial owners remain outside this phase.
+
+The aligned production retrieval artifacts contain 5,510 pinned vectors. The
+fresh 174-case and 389-case hybrid benchmark reports both pass on the 1,723-
+claim runtime; exact metrics are recorded in their committed JSON reports.

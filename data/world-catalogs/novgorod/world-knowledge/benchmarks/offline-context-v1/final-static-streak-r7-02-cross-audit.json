@@ -1,0 +1,191 @@
+{
+  "batch": "final-static-streak-r7-02",
+  "auditor": "r7_02_cross_audit",
+  "corpus_basis": {
+    "commit": "2286d4fcbc82a05da74dcbbd9960b8c0dedc40b8",
+    "bundle": "production-v1/runtime-bundle.json",
+    "claim_count": 1709
+  },
+  "method": "Independently read all 100 prompts and both 50-case reviews. Checked every cited claim_ref against the fixed runtime bundle, then tested whether each answer has semantically relevant support or bounded composition. A missing recipe, exact procedure, local custom, state, price, authority, or outcome was not treated as a gap. Review-reported gaps are triaged below; three retain a reusable factual deficiency.",
+  "covered_audit": {
+    "checked": 100,
+    "invalid_or_hidden_gaps": []
+  },
+  "gap_triage": [
+      {
+        "case_id": "r7-02-002",
+        "verdict": "composable_existing",
+        "family": "roof water shedding and local maintenance",
+        "reason": "Roof water shedding, local repair, and temporary cover are already supported; no fixed thatch-repair recipe is required.",
+        "refs": [
+          "claim:household-roof-layers-shed-water",
+          "claim:household-roof-local-condition-guides-repair",
+          "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores"
+        ]
+      },
+      {
+        "case_id": "r7-02-007",
+        "verdict": "composable_existing",
+        "family": "runoff, suspended matter and cautious water handling",
+        "reason": "Rain/runoff can transport sediment or contaminants, while settling and cloth can reduce suspended matter without claiming safe water.",
+        "refs": [
+          "claim:foundations-earth-24-water-cycle-fluxes",
+          "claim:foundations-earth-26-runoff-contaminant-transport",
+          "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
+        ]
+      },
+      {
+        "case_id": "r7-02-024",
+        "verdict": "composable_existing",
+        "family": "edge maintenance and cutting-material mechanics",
+        "reason": "The corpus supports historical edge maintenance and the material-removal/cutting boundary; it does not need an exact sickle angle to say that a damaged edge needs cautious maintenance.",
+        "refs": [
+          "claim:stone-whetstone-edge-maintenance",
+          "claim:foundations-mat-08-abrasive-hardness-material-removal",
+          "claim:harvest-sickle-crops-grasses"
+        ]
+      },
+      {
+        "case_id": "r7-02-032",
+        "verdict": "composable_existing",
+        "family": "neighbourhood coordination and conditional exchange",
+        "reason": "Local coordination and conditional household exchange support a bounded reconstruction; no universal duty or sanction is inferred.",
+        "refs": [
+          "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
+          "claim:human-life-starting-household-needs-coordination",
+          "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions"
+        ]
+      },
+      {
+        "case_id": "r7-02-035",
+        "verdict": "composable_existing",
+        "family": "marked boundaries, accounts and witnesses",
+        "reason": "The legal significance of marked boundaries plus competing accounts supports inquiry and witnesses, without inventing a local ruling.",
+        "refs": [
+          "claim:residual-law-boundaries-and-marked-trees",
+          "claim:public-world-dispute-starts-with-competing-accounts",
+          "claim:public-world-witness-account-has-bounded-scope"
+        ]
+      },
+      {
+        "case_id": "r7-02-037",
+        "verdict": "composable_existing",
+        "family": "funeral transfer and household coordination",
+        "reason": "Existing funeral-transfer and household-coordination claims support practical help; an obligatory rite or fixed role allocation remains unclaimed.",
+        "refs": [
+          "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+          "claim:human-life-starting-household-needs-coordination"
+        ]
+      },
+      {
+        "case_id": "r7-02-041",
+        "verdict": "composable_existing",
+        "family": "animal harness observation and load balance",
+        "reason": "The answer can require observation of harness contact, animal condition, load and movement without asserting a cattle-specific diagnosis or fixed correction.",
+        "refs": [
+          "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+          "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+          "claim:animal-homeostasis-responds-to-internal-external-change"
+        ]
+      },
+      {
+        "case_id": "r7-02-042",
+        "verdict": "composable_existing",
+        "family": "reed condition and preparation",
+        "reason": "Reed condition, drying and preparation are supported; corpus need not assert a universal best harvest season for every reed roof.",
+        "refs": [
+          "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+          "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation"
+        ]
+      },
+      {
+        "case_id": "r7-02-046",
+        "verdict": "composable_existing",
+        "family": "timber load response and observable support condition",
+        "reason": "Load response depends on material, geometry and force direction; supports and visible sag are inspectable, while no safe cart load is invented.",
+        "refs": [
+          "claim:population-physics-load-deformation",
+          "claim:population-material-wood-loading",
+          "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points"
+        ]
+      },
+      {
+        "case_id": "r7-02-047",
+        "verdict": "composable_existing",
+        "family": "wood moisture and combustion conditions",
+        "reason": "Wood moisture and combustion conditions support cautious drying/arrangement reasoning without a species-specific firing prescription.",
+        "refs": [
+          "claim:foundations-mat-06-wood-drying-property-change",
+          "claim:population-material-wood-combustion",
+          "claim:population-physics-evaporation-humidity"
+        ]
+      },
+      {
+        "case_id": "r7-02-049",
+        "verdict": "composable_existing",
+        "family": "iron fishing hooks and bounded heat treatment",
+        "reason": "The corpus supports iron fishing hooks and bounded steel heat treatment; it does not need a universal hook geometry or quench recipe.",
+        "refs": [
+          "claim:population-iron-hook",
+          "claim:occupation-smith-heat-treatment",
+          "claim:population-joining-steel-quench"
+        ]
+      },
+      {
+        "case_id": "r7-02-050",
+        "verdict": "composable_existing",
+        "family": "roof runoff and water-contamination boundary",
+        "reason": "Roof runoff and contamination boundaries support inspecting collection water and not assuming it is safe; no named roof contaminant list is needed.",
+        "refs": [
+          "claim:household-roof-layers-shed-water",
+          "claim:foundations-earth-26-runoff-contaminant-transport",
+          "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+        ]
+      },
+      {
+        "case_id": "r7-02-098",
+        "verdict": "composable_existing",
+        "family": "uncertain plant contact and skin irritation",
+        "reason": "The reviewer missed the existing plant-sap contact premise. It supports avoiding bare-skin contact and cautious observation without identifying the plant.",
+        "refs": [
+          "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+          "claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation"
+        ]
+      },
+    {
+      "case_id": "r7-02-005",
+      "verdict": "genuine_gap",
+      "family": "fuelwood moisture, wood type, preparation and household combustion behaviour",
+      "reason": "The bundle has general wood moisture and combustion facts, but no reusable premise for how dry hardwood and softwood differ in ordinary household burning. The prompt cannot be answered beyond an evasive generic warning.",
+      "refs": [
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:population-material-wood-combustion"
+      ]
+    },
+    {
+      "case_id": "r7-02-011",
+      "verdict": "genuine_gap",
+      "family": "linen finishing and sunlight/moisture bleaching",
+      "reason": "The bundle establishes linen origin and general drying conditions, but not the reusable relationship asked for between wet linen, daylight, repeated rinsing and visible lightening.",
+      "refs": [
+        "claim:material-water-linen-flax-origin",
+        "claim:population-physics-evaporation-humidity"
+      ]
+    },
+    {
+      "case_id": "r7-02-016",
+      "verdict": "genuine_gap",
+      "family": "beeswax rendering, gentle heating and coarse separation of debris",
+      "reason": "Wax is represented as a material and trade good, but the corpus lacks a reusable premise for separating wax from old comb debris by bounded heating and filtering. This is not a demand for a recipe or yield.",
+      "refs": [
+        "claim:agriculture-fauna-borts-wax",
+        "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
+      ]
+    }
+  ],
+  "conclusion": {
+    "genuine_gap_count": 3,
+    "hidden_gap_count": 0,
+    "clean": false
+  }
+}

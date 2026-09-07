@@ -1,0 +1,223 @@
+{
+  "batch": "final-static-streak-r7-01",
+  "auditor": "r7_01_cross_audit",
+  "corpus_basis": {
+    "commit": "2286d4fcbc82a05da74dcbbd9960b8c0dedc40b8",
+    "bundle": "production-v1/runtime-bundle.json",
+    "claim_count": 1709
+  },
+  "method": "Independently read all 100 input situations and the two 50-case reviews against the fixed runtime bundle. A covered result was accepted only when its answer could be reconstructed from semantically relevant claims plus bounded common-sense composition; a ready recipe, exact state, local custom, price, authority or outcome was not required. Every preliminary gap was re-triaged as a reusable factual absence or an existing composable answer.",
+  "covered_audit": {
+    "checked": 100,
+    "invalid_or_hidden_gaps": [
+      {
+        "case_id": "r7-01-c006",
+        "kind": "citation_mismatch",
+        "reason": "The answer is sound, but its cited bread and generic metal claims do not establish the described uneven porridge heating or mitigation. Existing direct claims do, so this is not a corpus gap.",
+        "refs": [
+          "claim:r201-porridge-1",
+          "claim:r201-porridge-2"
+        ]
+      },
+      {
+        "case_id": "r7-01-c046",
+        "kind": "citation_mismatch",
+        "reason": "The review omits the direct Novgorod handmade-pottery temper claim. Small comparative tests remain bounded composition, not a missing recipe.",
+        "refs": [
+          "claim:pottery-handmade-temper",
+          "claim:clay-firing-structural-transformation"
+        ]
+      },
+      {
+        "case_id": "r7-01-c051",
+        "kind": "citation_overreach",
+        "reason": "Wool-insect evidence cannot identify pea damage. The conservative isolation and dry-condition answer remains composable, but it must not name a pest from holes alone.",
+        "refs": [
+          "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+          "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+        ]
+      },
+      {
+        "case_id": "r7-01-c058",
+        "kind": "hidden_genuine_gap",
+        "reason": "The answer silently normalizes potatoes in Novgorod around 1230. A universal produce-storage relation does not establish historical local availability or exclude an anachronistic crop.",
+        "family": "historical crop availability and anachronism boundaries for gameplay-relevant foods",
+        "refs": [
+          "claim:static-cool-storage-can-slow-respiration-of-harvested-produce"
+        ]
+      }
+    ]
+  },
+  "gap_triage": [
+    {
+      "case_id": "r7-01-c054",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "Moist sheltered garden conditions already support a common nocturnal crop-loss cause; protect or inspect without asserting species, amount or successful outcome.",
+      "refs": [
+        "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ]
+    },
+    {
+      "case_id": "r7-01-c063",
+      "verdict": "genuine_gap",
+      "family": "stored edible or lamp oils: oxidation/rancidity, sediment, and cautious non-guaranteed use",
+      "reason": "The corpus has condition checks for organic goods and an oil film on iron, but no relation connecting oil deterioration or sediment to cautious use as food or wick fuel.",
+      "refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp"
+      ]
+    },
+    {
+      "case_id": "r7-01-c069",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "Source, retelling and independent-account uncertainty already support caution without declaring remote news true or inventing an authority response.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ]
+    },
+    {
+      "case_id": "r7-01-c070",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "The scene can require actual consent/access and negotiated passage while leaving any legal right, landowner and liability unclaimed; herd needs are already covered.",
+      "refs": [
+        "claim:military-world-gate-and-passage-use-needs-actual-access",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:fauna-mammals-ruminant-grazing-selectivity"
+      ]
+    },
+    {
+      "case_id": "r7-01-c071",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "Existing cooperation, defection and reciprocal-expectation premises allow a person to set a boundary or renegotiate help without inventing a local custom or debt.",
+      "refs": [
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:foundations-ms3-08-mutual-cooperation",
+        "claim:foundations-ms3-09-mutual-defection"
+      ]
+    },
+    {
+      "case_id": "r7-01-c075",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "Competing work can be openly scheduled around available people and an actual controller; no factual priority order or owner consent rule should be invented.",
+      "refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:human-life-capacity-experience-help-vary",
+        "claim:practical-work-tradeoff"
+      ]
+    },
+    {
+      "case_id": "r7-01-f001",
+      "verdict": "genuine_gap",
+      "family": "confined natural-space atmosphere: oxygen-displacement or combustion-gas hazard cues and cautious withdrawal",
+      "reason": "Indoor carbon-monoxide premises do not establish why a low cave flame dims, nor cover low-lying confined-air uncertainty without making an unsafe flame test authoritative.",
+      "refs": [
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure"
+      ]
+    },
+    {
+      "case_id": "r7-01-f002",
+      "verdict": "genuine_gap",
+      "family": "acidic food and copper contact: qualitative material interaction and cautious food-storage limit",
+      "reason": "Copper's historical use and generic material classes do not establish the food-contact interaction or a safe alternative.",
+      "refs": [
+        "claim:casting-copper",
+        "claim:metal-classes-composition"
+      ]
+    },
+    {
+      "case_id": "r7-01-f006",
+      "verdict": "genuine_gap",
+      "family": "snow-slope instability: avalanche warning context and immediate exposure reduction",
+      "reason": "The corpus covers rain-triggered slope movement but no snow-slope release, warning cues or narrow-valley exposure logic.",
+      "refs": [
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:residual-nature-snow-wind-drift-visibility"
+      ]
+    },
+    {
+      "case_id": "r7-01-f008",
+      "verdict": "genuine_gap",
+      "family": "unidentified burning material: flame-colour uncertainty and fume-exposure caution",
+      "reason": "Fire-escape and combustion claims do not connect unusual flame appearance to uncertainty about added material or inhalation risk.",
+      "refs": [
+        "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer"
+      ]
+    },
+    {
+      "case_id": "r7-01-f009",
+      "verdict": "composable_existing",
+      "family": null,
+      "reason": "No safety claim is warranted: melt only from reasonably clean snow when possible, treat meltwater quality as uncertain, and avoid worsening cold exposure. Existing water-uncertainty and cold-exposure limits support that bounded answer.",
+      "refs": [
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ]
+    },
+    {
+      "case_id": "r7-01-f011",
+      "verdict": "genuine_gap",
+      "family": "sealed food container swelling: gas formation, pressure and cautious handling without spoilage diagnosis",
+      "reason": "Gas pressure and dough fermentation exist separately, but the corpus lacks their reusable connection to a heated sealed food container and safe uncertainty handling.",
+      "refs": [
+        "claim:foundations-phys-10-gas-temperature-pressure-volume",
+        "claim:household-dough-yeast-gas-needs-retention"
+      ]
+    },
+    {
+      "case_id": "r7-01-f012",
+      "verdict": "genuine_gap",
+      "family": "specular reflection and daylight signal visibility limits",
+      "reason": "Snow and moonlight reflection do not establish directional reflected sunlight from polished metal, nor its low-light limit.",
+      "refs": [
+        "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
+        "claim:residual-nature-moonlight-reflected-sunlight"
+      ]
+    },
+    {
+      "case_id": "r7-01-f015",
+      "verdict": "genuine_gap",
+      "family": "animal-building air quality: manure-ammonia-like irritant exposure, ventilation and withdrawal cues",
+      "reason": "The corpus separates waste from water and covers smoke/CO, but has no reusable air-quality relation for an animal enclosure with eye irritation.",
+      "refs": [
+        "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+        "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room"
+      ]
+    },
+    {
+      "case_id": "r7-01-f016",
+      "verdict": "genuine_gap",
+      "family": "frostbite and cold-injury first response: avoid further freezing or abrasive snow warming, protect and seek help",
+      "reason": "Cold stress and shivering establish exposure but not the requested injury-specific harmful action or first-response limits.",
+      "refs": [
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:candidate-physiology-v3-shivering-thermogenesis"
+      ]
+    },
+    {
+      "case_id": "r7-01-f021",
+      "verdict": "genuine_gap",
+      "family": "unidentified snakebite: immediate low-risk first response and actions to avoid without species diagnosis",
+      "reason": "Adder defensive behaviour is not a first-aid premise, and no venom-bite response or uncertainty limit exists in the corpus.",
+      "refs": [
+        "claim:fauna-adder-defence",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
+      ]
+    }
+  ],
+  "conclusion": {
+    "genuine_gap_count": 10,
+    "hidden_gap_count": 1,
+    "clean": false
+  }
+}

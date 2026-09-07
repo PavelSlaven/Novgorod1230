@@ -1,0 +1,407 @@
+{
+  "batch": "final-static-streak-r7-03",
+  "auditor": "r7-03-cross-audit",
+  "corpus_basis": {
+    "commit": "2286d4fcbc82a05da74dcbbd9960b8c0dedc40b8",
+    "bundle": "production-v1/runtime-bundle.json",
+    "claim_count": 1709
+  },
+  "method": "Independently checked all 100 prompts against the 1709-claim runtime bundle. A gap requires a missing reusable factual premise, not a ready recipe, local rule, exact outcome, price, authority, or diagnosis. Bounded uncertainty and ordinary common-sense composition are allowed. Every preliminary review gap was re-triaged; cited refs were resolved against the bundle.",
+  "covered_audit": {
+    "checked": 100,
+    "invalid_or_hidden_gaps": [
+      {
+        "case_id": "fssr7-03-free-002",
+        "kind": "citation_relevance",
+        "finding": "The reviewed answer treats unspecified sealed papers as birch bark. Its birch-bark deformation citation is not generally applicable, although cautious handling and non-acquisition are supported.",
+        "resolution_refs": [
+          "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+          "claim:material-water-natural-fibres-water-swelling"
+        ]
+      },
+      {
+        "case_id": "fssr7-03-free-020",
+        "kind": "citation_relevance",
+        "finding": "The reviewed answer switches from warm eggs in a nest to a fledgling on the ground. That is the wrong life stage, but the corpus supports a cautious, non-abandonment inference without inventing the species or outcome.",
+        "resolution_refs": [
+          "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+          "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5"
+        ]
+      },
+      {
+        "case_id": "fssr7-03-free-008",
+        "kind": "citation_precision",
+        "finding": "The lost-pack-animal citation is only analogous to a missing companion. The reviewed conclusion remains valid through condition-bound travel and careful separation of report from observation, but this citation should not be presented as direct evidence about a person.",
+        "resolution_refs": [
+          "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+          "claim:military-world-traces-need-cautious-interpretation"
+        ]
+      }
+    ]
+  },
+  "gap_triage": [
+    {
+      "case_id": "fssr7-03-core-a-008",
+      "verdict": "composable_existing",
+      "family": "dairy curd drainage",
+      "reason": "The reviewer missed direct reusable premises for curd formation, progressive whey separation and a permeable straining support; humidity changes the rate but does not require a fixed recipe or outcome.",
+      "refs": [
+        "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+        "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+        "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-009",
+      "verdict": "composable_existing",
+      "family": "fermentation condition uncertainty",
+      "reason": "A sharp smell is not a diagnosis. Existing fermentation premises support stopping short of certainty, checking conditions and treating spoilage or contamination as possible.",
+      "refs": [
+        "claim:fermentation-conditions",
+        "claim:fermentation-depends-on-microbe-substrate-conditions"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-013",
+      "verdict": "composable_existing",
+      "family": "domestic-animal handling under uncertainty",
+      "reason": "The scene supports only a low-force, condition-bound response: avoid worsening the entanglement, observe the animal and seek help if injury is established. It does not require a species-specific restraint procedure.",
+      "refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:animal-care-needs-presence"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-017",
+      "verdict": "composable_existing",
+      "family": "wet-snow travel friction",
+      "reason": "Existing snow-state and friction premises support clearing accumulated snow, reducing load and reassessing travel; no numerical drag model or fixed runner treatment is needed.",
+      "refs": [
+        "claim:residual-nature-snow-grain-compaction",
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:dry-friction"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-020",
+      "verdict": "composable_existing",
+      "family": "freezing water and ceramic stress",
+      "reason": "Water expansion on freezing and ceramic brittleness already support inspection, slow cautious handling and no assumption of a sound jar.",
+      "refs": [
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:population-ceramic-fracture"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-029",
+      "verdict": "composable_existing",
+      "family": "household pest opportunity",
+      "reason": "The corpus explicitly relates open food, cracks and damp household conditions to small animals or insects, without asserting a species, infestation size or guaranteed control outcome.",
+      "refs": [
+        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-a-035",
+      "verdict": "composable_existing",
+      "family": "animal encounter uncertainty",
+      "reason": "No species-specific badger script is needed: the actor can separate the dog, keep distance and avoid inferring a fixed animal response from an incomplete encounter.",
+      "refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-domestic-dog-multimodal-communication"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-009",
+      "verdict": "composable_existing",
+      "family": "wind-constrained boat control",
+      "reason": "Wind is a physical loading condition and existing boat guidance already keeps manoeuvre conditional on wind, current and control. The corpus need not predict whether this sail tears.",
+      "refs": [
+        "claim:foundations-earth2-07-pressure-gradient-wind",
+        "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-011",
+      "verdict": "composable_existing",
+      "family": "storm shelter selection",
+      "reason": "The situation calls for reducing exposure and not treating an overhang as guaranteed safety; it does not need an invented local hail protocol.",
+      "refs": [
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-013",
+      "verdict": "composable_existing",
+      "family": "wet-bank fall risk",
+      "reason": "Wet unstable ground and an established injury context support stopping the child, avoiding a second casualty and reassessing access; no age-specific rescue algorithm is required.",
+      "refs": [
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-015",
+      "verdict": "composable_existing",
+      "family": "cold-exposure response",
+      "reason": "Pale numb toes are a reason to end exposure, get dry shelter and seek available help rather than diagnose frostbite or prescribe treatment.",
+      "refs": [
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:military-world-cold-and-wetness-need-practical-boundaries"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-016",
+      "verdict": "composable_existing",
+      "family": "lifting strain uncertainty",
+      "reason": "A sudden pull requires stopping the load, protecting function and observing change; the corpus need not name a back diagnosis or prescribe a treatment.",
+      "refs": [
+        "claim:foundations-life-18-muscle-movement",
+        "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-019",
+      "verdict": "composable_existing",
+      "family": "storm-exposed work structure",
+      "reason": "Existing wind and lightning risk facts support suspending work, clearing the structure and seeking substantial shelter without inventing scaffold specifications.",
+      "refs": [
+        "claim:foundations-earth2-07-pressure-gradient-wind",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-022",
+      "verdict": "composable_existing",
+      "family": "indoor draft and flame",
+      "reason": "The existing dwelling-draft and fuel premises support moving combustible material away, reducing the draft if safe and not treating the flame as stable.",
+      "refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:water-can-cool-class-a-fire-fuel-and-flame"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-024",
+      "verdict": "composable_existing",
+      "family": "shared household work",
+      "reason": "The task can be divided by explicit agreement, available fuel and ordinary reciprocity; it does not establish a compulsory rota or a fixed local institution.",
+      "refs": [
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:practical-dwelling-fuel",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-027",
+      "verdict": "composable_existing",
+      "family": "ordinary property dispute",
+      "reason": "Competing accounts, inspection of known damage and questions or kin are already a bounded starting point; no automatic liability or legal result follows.",
+      "refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-dispute-can-use-questions-and-kin"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-029",
+      "verdict": "composable_existing",
+      "family": "ordinary conduct near observance",
+      "reason": "The safe reconstruction is to control the animal and avoid inventing a local ritual prohibition. Existing church and public contact remains purpose- and context-bounded.",
+      "refs": [
+        "claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+        "claim:animal-homeostasis-responds-to-internal-external-change"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-031",
+      "verdict": "composable_existing",
+      "family": "competing seasonal obligations",
+      "reason": "Urgency can be explained, negotiated and reciprocated without declaring the promise void or assigning an outcome.",
+      "refs": [
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-032",
+      "verdict": "composable_existing",
+      "family": "condition-bound travel support",
+      "reason": "Exhaustion and travel exposure support discussing rest, warmth, drink, companionship and a slower or deferred journey. The corpus must not diagnose age-related disease or dictate the decision.",
+      "refs": [
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-033",
+      "verdict": "composable_existing",
+      "family": "repair reputation under uncertainty",
+      "reason": "The corpus directly supports a reputation effect from conduct and reports, while the uninspected object prevents a conclusion about fault.",
+      "refs": [
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:public-world-publicity-raises-reputation-risk"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-034",
+      "verdict": "composable_existing",
+      "family": "shared-water access",
+      "reason": "A queue can be handled by observed need, communication and careful vessel movement. A fixed priority rule would be invented local authority, so its absence is not a knowledge gap.",
+      "refs": [
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:human-life-reception-depends-on-trust-ties-means"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-core-b-035",
+      "verdict": "composable_existing",
+      "family": "bereavement support without invented ritual",
+      "reason": "Food, rest, practical help and consent-respecting presence are supported as contextual help; no specific mourning rite, privacy rule or household response is asserted.",
+      "refs": [
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:ordinary-life-help-can-create-reciprocity"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-001",
+      "verdict": "composable_existing",
+      "family": "post-storm unknown interior sound",
+      "reason": "The sound does not establish a human cause. Existing storm damage and sound-vibration facts support a lit, cautious inspection from outside before entry.",
+      "refs": [
+        "claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known",
+        "claim:foundations-physical-b2-snd-01-sound-source-vibration"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-003",
+      "verdict": "composable_existing",
+      "family": "ambiguous distant marsh lights",
+      "reason": "The observation supports alternative natural or human causes but no identification. Wet-ground and visibility facts justify keeping to known ground rather than approaching to verify it.",
+      "refs": [
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:foundations-earth-27-fog-visibility"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-004",
+      "verdict": "composable_existing",
+      "family": "suspect smoky drinking water",
+      "reason": "A smoke taste does not prove a specific contaminant. Existing smoke transport, contaminant routes and the limits of boiling support keeping the source provisional and seeking an alternative when available.",
+      "refs": [
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
+        "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-005",
+      "verdict": "composable_existing",
+      "family": "ambiguous animal trace",
+      "reason": "The corpus supports preserving uncertainty in altered traces; the actor can isolate the damaged boot and avoid naming a culprit or a disease from marks alone.",
+      "refs": [
+        "claim:residual-traces-animal-trace-weather-decay",
+        "claim:residual-traces-animal-sign-absence-limit"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-006",
+      "verdict": "composable_existing",
+      "family": "ambiguous social observation",
+      "reason": "A hidden object does not establish intent. Existing competing-account and reputation premises support observing, asking and avoiding an accusation as a fact.",
+      "refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:ordinary-life-public-reputation-follows-conduct"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-007",
+      "verdict": "composable_existing",
+      "family": "damp fresh-wood storage",
+      "reason": "Warmth and sour smell are condition signals, not a diagnosis of self-heating or mould. Existing moisture and storage premises support uncovering, inspecting and separating suspect material.",
+      "refs": [
+        "claim:wood-anisotropy-moisture",
+        "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-010",
+      "verdict": "composable_existing",
+      "family": "uncertain dog avoidance",
+      "reason": "The refusal has no determined cause. Existing animal-response and dog communication premises allow observation and cautious checking without inventing an odor, threat or perception.",
+      "refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-domestic-dog-multimodal-communication"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-011",
+      "verdict": "composable_existing",
+      "family": "unattended drifting boat",
+      "reason": "An empty boat does not establish an accident or owner. Existing boat control, load and shore-transfer facts support avoiding a hasty water entry and treating current conditions as local.",
+      "refs": [
+        "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+        "claim:practical-boat-shore-transfer",
+        "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-014",
+      "verdict": "composable_existing",
+      "family": "uncertain animal vocalisation",
+      "reason": "Night crowing is an observation, not a clock, omen or diagnosis. Existing animal-response premises support checking ordinary disturbance without asserting its cause.",
+      "refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-domestic-dog-multimodal-communication"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-017",
+      "verdict": "composable_existing",
+      "family": "post-load structural noise",
+      "reason": "A hum indicates vibration, not a determined pest or collapse. Existing sound and wood-loading premises support stopping the load and inspecting accessible structure cautiously.",
+      "refs": [
+        "claim:foundations-physical-b2-snd-01-sound-source-vibration",
+        "claim:population-material-wood-loading"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-018",
+      "verdict": "composable_existing",
+      "family": "ambiguous stained object",
+      "reason": "A rain-altered spot does not establish blood, victim, crime or ownership. Existing trace uncertainty and found-object handling support cautious non-forensic treatment.",
+      "refs": [
+        "claim:residual-traces-animal-trace-weather-decay",
+        "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-019",
+      "verdict": "composable_existing",
+      "family": "unknown corrosion on food vessel",
+      "reason": "The green film need not be named or treated as a diagnosis. General corrosion and uncertain toxic-contact premises support withholding the pot from food until cleaned or assessed, without claiming a specific salt or dose.",
+      "refs": [
+        "claim:foundations-chm-10-metal-environment-corrosion",
+        "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
+        "claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation"
+      ]
+    },
+    {
+      "case_id": "fssr7-03-free-023",
+      "verdict": "composable_existing",
+      "family": "second-hand water-illness report",
+      "reason": "The report does not diagnose a well. Existing separation, exposure and boiling-limit facts support observing reports, avoiding known risky contact where possible and not declaring causality.",
+      "refs": [
+        "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination"
+      ]
+    }
+  ],
+  "conclusion": {
+    "genuine_gap_count": 0,
+    "hidden_gap_count": 0,
+    "clean": true
+  }
+}

@@ -31,7 +31,13 @@ encoder/vector failure returns typed `WORLD_KNOWLEDGE_UNAVAILABLE` before the
 semantic consumer and commit, with no lexical production fallback.
 
 The `*-1655.md` and `*-1700.md` reports below this checkpoint are historical.
-Fresh independent final reports must use the single R8 checkpoint above.
+Fresh independent reports on the single R8 checkpoint are:
+
+- `pr92-final-grounding-1723.md`: PASS_WITH_P2_LIMITS;
+- `pr92-final-verification-1723.md`: PASS;
+- `pr92-final-completeness-1723.md`: PASS_WITH_P2;
+- `pr92-final-contract-1723.md`: PASS;
+- `pr92-final-open-world-1723.md`: PASS.
 
 The exact merge HEAD still requires its own green full CI. No systematic live
 gameplay, saturation campaign, or repair of other gameplay owners is claimed.

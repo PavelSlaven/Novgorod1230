@@ -40,4 +40,3 @@ Minnesota DNR ice page was Cloudflare-blocked. USNO twilight page timed out. Nei
 ## Remaining work
 
 Independent claim verification, candidate inclusion, cartography mapping, bilingual retrieval probes, vectors and final CI remain required. Winter coverage must be assessed cumulatively with existing freeze/thaw/slip/ice-strength premises, and sky coverage with existing phase/visibility premises. No readiness claim follows from this batch alone.
-

@@ -271,7 +271,7 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
 });
 
 for (const exhausted of ['identity budget', 'resolution cap']) {
-test(`exhausted ${exhausted} rejects before model or atomic plan`,
+test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
   async () => {
     const capped = exhausted === 'resolution cap';
     let aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'shore' },
@@ -303,10 +303,14 @@ test(`exhausted ${exhausted} rejects before model or atomic plan`,
       },
       ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
     });
-    await assert.rejects(() => resolver(request('найти другую вещь')),
-      (error) => error.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED'
-        && error.details.reason === 'budget_or_cap_exhausted');
+    const input = request('найти другую вещь');
+    input.working_projection = { visible_context: { scene: 'shore' } };
+    const result = await resolver(input);
     assert.equal(modelCalls, 0);
+    assert.deepEqual(result.working_projection, input.working_projection);
+    assert.deepEqual(result.write_fragments, []);
+    assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+    assert.equal(result.player_response_boundary, true);
     assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
     assert.equal(aggregate.state_version, capped ? 2 : 1);
   });

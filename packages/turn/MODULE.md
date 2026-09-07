@@ -27,8 +27,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - Общий ordinary discovery owner передаёт одну player-safe scene projection
   в seed и presence, включая structural repair; candidate query имеет нулевой
   evidence weight и не подтверждает соседние объекты, отношения или историю.
-  Неисполненный prerequisite при исчерпании бюджета возвращает typed
-  `TURN_ORDINARY_DISCOVERY_UNRESOLVED` до commit, а не успешный пустой шаг.
+  Исчерпание budget/cap без transition возвращает existing player-response no-op:
+  состояние неизменно, model/record/commit и technical failure отсутствуют; seed
+  transition того же turn всё ещё может запечатать собственный `no_change` plan.
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.

@@ -1,0 +1,659 @@
+{
+  "batch": "final-static-streak-r6-01-review-b",
+  "reviewer": "independent_wk_only_reviewer",
+  "corpus_basis": {
+    "commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+    "bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+    "claim_count": 1703
+  },
+  "method": "WK-only bounded compositional review: general facts plus historically compatible context; no exact recipe, current state, or outcome invented.",
+  "cases": [
+    {
+      "case_id": "r6-01-cb-013",
+      "status": "covered",
+      "answer_ru": "Высушенные ивовые прутья можно увлажнить для гибкой basket work; наличие местной ивы, сезон и готовая корзина не предполагаются.",
+      "refs": [
+        "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+        "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-014",
+      "status": "covered",
+      "answer_ru": "Хранение продуктов ограничивают холод, влага и повреждение; конкретное содержимое и его исход не определяются.",
+      "refs": [
+        "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+        "claim:stored-grain-condition-depends-on-temperature-moisture"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-015",
+      "status": "covered",
+      "answer_ru": "Паводок и оттепель меняют устойчивость берега; безопасную точку высадки нельзя объявить без состояния места.",
+      "refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-016",
+      "status": "covered",
+      "answer_ru": "Кость — хрупкий материал, поэтому раскол требует осмотра и не обещает ремонт либо замену.",
+      "refs": [
+        "claim:brittle-fracture-defects"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-017",
+      "status": "covered",
+      "answer_ru": "Неровные отверстия на капустных листьях совместимы с питанием улиток и слизней, особенно во влажном укрытом месте; конкретный вредитель и масштаб ущерба требуют наблюдения.",
+      "refs": [
+        "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
+        "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions"
+      ],
+      "inferences": [
+        "Нельзя объявить вредителя, заражение или результат мер без осмотра участка."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-018",
+      "status": "covered",
+      "answer_ru": "Влага у контактов кристаллов соли может вызвать слёживание через растворение и перекристаллизацию; остаток соли и ration не определяются.",
+      "refs": [
+        "claim:water-wetting-forces",
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-019",
+      "status": "covered",
+      "answer_ru": "Вьючный груз требует проверки баланса и состояния животного; мокрый груз и дорога не дают числовой безопасной нагрузки либо гарантии тяги.",
+      "refs": [
+        "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ],
+      "inferences": [
+        "Нельзя создать животное, определить его силу или предсказать успех перевозки."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-020",
+      "status": "covered",
+      "answer_ru": "Древесная зола даёт щёлочной сток и может раздражать кожу и глаза; применение требует осторожности.",
+      "refs": [
+        "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+        "claim:static-wood-ash-can-irritate-skin-and-eyes"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-021",
+      "status": "covered",
+      "answer_ru": "Боль или опухоль мягких тканей голеностопа требуют защиты, наблюдения и при нужде escalation без диагноза; точная травма и recovery не предсказываются.",
+      "refs": [
+        "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
+        "claim:wound-healing-time-dependent",
+        "claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-022",
+      "status": "covered",
+      "answer_ru": "Животный жир может питать фитиль, а исторический фитиль мог состоять из скрученных нитей; наличие материалов не подразумевается.",
+      "refs": [
+        "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+        "claim:candle-thread-wick"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-023",
+      "status": "covered",
+      "answer_ru": "Вода меняет влажность древесины, а видимый износ можно осмотреть до использования; объём гнили и надёжность моста не следуют.",
+      "refs": [
+        "claim:wood-liquid-moisture-change",
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-024",
+      "status": "covered",
+      "answer_ru": "Ферментация зависит от субстрата, микроорганизмов, времени и условий; запах сам по себе не даёт verdict пригодности.",
+      "refs": [
+        "claim:fermentation-conditions",
+        "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-025",
+      "status": "covered",
+      "answer_ru": "Солнце и тени дают лишь качественные ориентиры; погода и свет ограничивают следы и навигацию.",
+      "refs": [
+        "claim:candidate-macro-causal-v2-visible-sun-and-shadow-are-qualitative-directional-and-time-cues",
+        "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-026",
+      "status": "covered",
+      "answer_ru": "Смачивание и капиллярное поглощение объясняют пределы текстильного укрытия; водонепроницаемость конкретной ткани не следует.",
+      "refs": [
+        "claim:water-wetting-forces",
+        "claim:wood-liquid-capillary-uptake"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-027",
+      "status": "covered",
+      "answer_ru": "Компост/навоз может самонагреваться; дымящуюся или горячую массу не следует разбирать, нужны дистанция и помощь.",
+      "refs": [
+        "claim:r201-compost-1",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-028",
+      "status": "covered",
+      "answer_ru": "При грозовой угрозе нет безопасной позиции на открытом воздухе; следует избегать одиноких высоких деревьев и открытой воды, без гарантии shelter/outcome.",
+      "refs": [
+        "claim:military-world-ground-and-weather-change-practical-options",
+        "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-029",
+      "status": "covered",
+      "answer_ru": "Копчение сочетает сушку, дым, тепло и иногда соль; оно не гарантирует безопасность или срок хранения.",
+      "refs": [
+        "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-030",
+      "status": "covered",
+      "answer_ru": "Видимое состояние предмета можно осмотреть, но состав отложений и пригодность сосуда без осмотра не определяются.",
+      "refs": [
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-031",
+      "status": "covered",
+      "answer_ru": "Hospitality ограничена ресурсами и доверием: просьба stranger не создаёт обязательный ночлег, но допускает осторожное humane решение в пределах household.",
+      "refs": [
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-032",
+      "status": "covered",
+      "answer_ru": "Обсуждение брака может координировать household goods и будущий дом, а публичное поведение влияет на репутационный риск; это не создаёт согласие, title или обязательство.",
+      "refs": [
+        "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:human-life-household-formation-needs-residence-provisioning",
+        "claim:ordinary-life-public-reputation-follows-conduct"
+      ],
+      "inferences": [
+        "Нельзя вывести родство, согласие, имущество или итог proposal."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-033",
+      "status": "covered",
+      "answer_ru": "Износ материала видим и ремонт/отсрочка возможны по средствам; конкретная дисциплина мастера не предрешена.",
+      "refs": [
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+        "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-034",
+      "status": "covered",
+      "answer_ru": "Независимые сообщения и следы можно сопоставлять, но они сами не устанавливают виновность или итог спора.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+        "claim:social-settlement-demand-reports-court-choice"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-035",
+      "status": "covered",
+      "answer_ru": "На public celebration просьбу, спор или joining можно соразмерять роли, старшинству и публичности; publicity повышает репутационный риск, но не задаёт конкретный праздник или обязательный etiquette.",
+      "refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-publicity-raises-reputation-risk"
+      ],
+      "inferences": [
+        "Нельзя вывести вид celebration, статус людей или реакцию crowd."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-036",
+      "status": "covered",
+      "answer_ru": "Долговая запись и частные денежные письма подтверждают контекст обязательств, но не цену, отсрочку или согласие конкретного продавца.",
+      "refs": [
+        "claim:debt-record-practice",
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-cb-037",
+      "status": "covered",
+      "answer_ru": "Частные письма и деловые записи существовали, но конкретного получателя, доверенного посредника или право вскрытия нельзя придумать.",
+      "refs": [
+        "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+        "claim:candidate-gramota334-named-private-letter-monetary-context"
+      ],
+      "inferences": [
+        "Текущий инвентарь, точная процедура и outcome принадлежат scene state и mechanics."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-001",
+      "status": "covered",
+      "answer_ru": "Резной знак сам по себе не подтверждает родство или происхождение; перед разговором с elder допустимо искать независимые подтверждения, не объявляя parentage установленным.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
+      ],
+      "inferences": [
+        "Нельзя вывести, что token принадлежал неизвестному родителю или что elder признает его значение."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-002",
+      "status": "gap",
+      "answer_ru": "WK допускает общую координацию и проверку груза, но не объясняет, как заранее согласовать воспринимаемые участниками сигналы, когда речь или слух недоступны.",
+      "refs": [
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading"
+      ],
+      "inferences": [],
+      "gaps": [
+        "Не хватает reusable premise о заранее согласованных visual/tactile start-stop-hold signals и подтверждении их восприятия при совместной рискованной работе."
+      ]
+    },
+    {
+      "case_id": "r6-01-fr-003",
+      "status": "covered",
+      "answer_ru": "После пожара первичны доступ, разделение от огня/дыма и проверяемые сведения; найденная обувь не доказывает судьбу ребёнка или историю hamlet.",
+      "refs": [
+        "claim:military-world-fire-and-smoke-need-access-and-separation",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Нельзя объявить displacement, родство, погибших или доступную помощь фактом."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-004",
+      "status": "covered",
+      "answer_ru": "Туман уменьшает видимость, а подход лодки требует соотносить ветер, течение и управление вёслами; passenger не получает основания задавать курс вместо boatman.",
+      "refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+        "claim:transport-hired-boatman"
+      ],
+      "inferences": [
+        "Звон не подтверждает берег, позицию, маршрут или безопасный манёвр."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-005",
+      "status": "covered",
+      "answer_ru": "Просьба runaway не подтверждает ни offence, ни личность; наблюдение и осторожное разбирательство совместимы с humane interaction, но shelter не является автоматически обязанностью.",
+      "refs": [
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ],
+      "inferences": [
+        "Нельзя вывести защиту, наказание, доверие или решение монастыря."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-006",
+      "status": "covered",
+      "answer_ru": "При конфликте жестов нельзя объявлять mockery установленным: пересказ и интерпретация деталей могут меняться, поэтому de-escalation не опирается на выдуманное намерение.",
+      "refs": [
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Нельзя предсказать реакцию crowd или торговый исход."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-007",
+      "status": "covered",
+      "answer_ru": "Шум сам не устанавливает omen, угрозу или причину; спутники могут сравнить наблюдаемое, не превращая folk explanation в факт.",
+      "refs": [
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ],
+      "inferences": [
+        "Нельзя вывести религиозное убеждение каждого спутника или результат спора."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-008",
+      "status": "covered",
+      "answer_ru": "В банном контексте вода не делает старую рану безопасной: заживление зависит от времени и факторов, поэтому скрытая scar не даёт прогноза без осмотра.",
+      "refs": [
+        "claim:bathing-washing-water",
+        "claim:wound-healing-time-dependent"
+      ],
+      "inferences": [
+        "Нельзя объявить tear, тяжесть, помощь или outcome установленными."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-009",
+      "status": "covered",
+      "answer_ru": "При публичной processional situation проявление уважения можно соразмерить публичности и ролям; остановка громкой игры допустима как deference, но конкретный funeral rite не выдумывается.",
+      "refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor"
+      ],
+      "inferences": [
+        "Нельзя вывести вид procession, обязанность музыканта, санкцию или реакцию участников."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-010",
+      "status": "covered",
+      "answer_ru": "Сломанный забор и видимые плоды не доказывают abandonment либо право брать fruit; ownership и разрешение требуют отдельного основания.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
+      ],
+      "inferences": [
+        "Нельзя объявить owner, theft, permission или amends состоявшимися."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-011",
+      "status": "covered",
+      "answer_ru": "Роды — поэтапный процесс, которому нужны время, практическая помощь и дальнейшее наблюдение матери и новорождённого; конкретного помощника, беременность или исход bundle не создаёт.",
+      "refs": [
+        "claim:macro-gap-birth-needs-practical-support-and-time",
+        "claim:candidate-v2-labor-is-a-staged-process",
+        "claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support"
+      ],
+      "inferences": [
+        "Нельзя выводить наличие помощника, опыт, безопасность, диагноз либо outcome конкретных родов."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-012",
+      "status": "covered",
+      "answer_ru": "Подозрительный pass не становится подлинным от внешнего вида: для спорной вещи/покупки исторически известна проверка через участников и свидетелей, но не задана процедура конкретного toll.",
+      "refs": [
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "inferences": [
+        "Нельзя вывести подделку, полномочие toll worker или санкцию."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-013",
+      "status": "covered",
+      "answer_ru": "Дальний движущийся свет ночью допускает несколько объяснений; watch должен удерживать наблюдение и escalation в согласованных границах, не объявляя threat.",
+      "refs": [
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
+      ],
+      "inferences": [
+        "Нельзя вывести источник света, намерение, опасность или тревогу."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-014",
+      "status": "covered",
+      "answer_ru": "Возврат кольца не доказывает theft либо reward; ценную находку можно соотносить с независимыми наблюдениями, сохраняя неопределённость.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
+      ],
+      "inferences": [
+        "Нельзя обещать награду, обвинение или решение household."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-015",
+      "status": "covered",
+      "answer_ru": "Лёд и зимняя переправа зависят от физических условий; forced overnight не создаёт обязанность hospitality и не решает inheritance dispute.",
+      "refs": [
+        "claim:transport-winter-sledge-1220",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions"
+      ],
+      "inferences": [
+        "Нельзя вывести прочность льда, доступность hut, отношения братьев или исход конфликта."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-016",
+      "status": "covered",
+      "answer_ru": "Лихорадка — симптом, а не диагноз; лекарь может расспросить близких, наблюдать состояние, организовать доступную помощь и честно признать uncertainty без обещания cure.",
+      "refs": [
+        "claim:candidate-v5-fever-is-not-itself-a-disease",
+        "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+        "claim:healer-observation-and-questioning",
+        "claim:healer-care-coordination-and-uncertainty"
+      ],
+      "inferences": [
+        "Нельзя определить причину fever, создать healer, средство или outcome."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-017",
+      "status": "covered",
+      "answer_ru": "Похожесть вещей на рынке не устанавливает ownership родственника; сравнение независимых accounts/следов допустимо, но память novice не становится доказательством.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
+        "claim:rp-market-purchase-relates-proof-participant"
+      ],
+      "inferences": [
+        "Нельзя вывести identity вещей, custody или давление взрослых как факт."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-018",
+      "status": "covered",
+      "answer_ru": "Паводок может переносить debris, поэтому adults могут приоритизировать наблюдаемые вещи и доступ; рассказ детям не превращает rumor в warning.",
+      "refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Нельзя вывести масштаб flood, сохранность имущества или источник слуха."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-019",
+      "status": "covered",
+      "answer_ru": "Animal ownership и доступ в granary нельзя выводить из заявления performer; прежде допустимы наблюдение и запрос владельца, а не самовольный вход.",
+      "refs": [
+        "claim:animal-care-needs-presence",
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ],
+      "inferences": [
+        "Нельзя создать trained bird, право доступа или theft suspicion без state basis."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-020",
+      "status": "covered",
+      "answer_ru": "Служебный/религиозный контекст различает внимание cleric, worker и visitor, но private keepsake не доказывает нарушение либо обвинение.",
+      "refs": [
+        "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor"
+      ],
+      "inferences": [
+        "Нельзя вывести веру, статус charm, разрешение или реакцию chapel."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-021",
+      "status": "covered",
+      "answer_ru": "Ключ в руках подростка не доказывает доступ, вину или способ получения; независимые наблюдения могут уточнять факты до дисциплины.",
+      "refs": [
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
+      ],
+      "inferences": [
+        "Нельзя вывести sleepwalking, theft или владельца ключа."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-022",
+      "status": "covered",
+      "answer_ru": "Телесная отметина и refusal to explain не устанавливают прошлое, статус или риск; ночные precautions требуют наблюдаемых условий, а не биографии.",
+      "refs": [
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ],
+      "inferences": [
+        "Нельзя вывести imprisonment, намерение или решение camp."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-023",
+      "status": "covered",
+      "answer_ru": "Собака, следующая за ребёнком, не становится household animal автоматически; уход возможен только при установленном животном и контексте.",
+      "refs": [
+        "claim:animal-care-needs-presence",
+        "claim:animal-homeostasis-responds-to-internal-external-change"
+      ],
+      "inferences": [
+        "Нельзя вывести health, ownership, болезнь, расход или решение семьи."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-024",
+      "status": "covered",
+      "answer_ru": "После публичного insult apology и private negotiation возможны до formal escalation; форму извинения можно соразмерить seniority, роли и публичности, без гарантии принятия.",
+      "refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "inferences": [
+        "Нельзя вывести intent, статус visitor, позицию friends или восстановление reputation."
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "r6-01-fr-025",
+      "status": "covered",
+      "answer_ru": "У gate passage требует actual access, а противоречивые ответы не доказывают deception или illness; local authority — лишь один возможный путь escalation, не автоматическое задержание.",
+      "refs": [
+        "claim:military-world-gate-and-passage-use-needs-actual-access",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ],
+      "inferences": [
+        "Нельзя вывести личность, болезнь, документ, полномочие gate workers или решение authority."
+      ],
+      "gaps": []
+    }
+  ]
+}
